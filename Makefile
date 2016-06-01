@@ -887,9 +887,9 @@ endif
 
 .PHONY: fip.bin
 ifeq ($(CONFIG_NEED_BL301), y)
-fip.bin: tools prepare acs.bin bl301.bin
+fip.bin: tools prepare acs.bin bl301.bin fip_create
 else
-fip.bin: tools prepare acs.bin
+fip.bin: tools prepare acs.bin fip_create
 endif
 	$(Q)cp u-boot.bin $(FIP_FOLDER_SOC)/bl33.bin
 	@rm -f $(FIP_FOLDER_SOC)/fip.bin
@@ -922,9 +922,14 @@ acs.bin: tools prepare u-boot.bin
 bl21.bin: tools prepare u-boot.bin acs.bin
 	$(Q)$(MAKE) -C $(srctree)/$(CPUDIR)/${SOC}/firmware/bl21 all FIRMWARE=$@
 	$(Q)cp $(buildtree)/${BOARDDIR}/firmware/bl21.bin $(FIP_FOLDER_SOC)/bl21.bin -f
+	
+.PHONY: fip_create
+fip_create:
+	$(Q)$(MAKE) -C $(srctree)/tools/fip_create/
+	$(Q)cp $(srctree)/tools/fip_create/fip_create $(FIP_FOLDER)/
 
 .PHONY : boot.bin
-boot.bin: fip.bin
+boot.bin: fip.bin 
 ifeq ($(CONFIG_AML_UBOOT_AUTO_TEST), y)
 	$(Q)python $(FIP_FOLDER)/acs_tool.pyc $(FIP_FOLDER_SOC)/bl2_utst.bin $(FIP_FOLDER_SOC)/bl2_acs.bin $(FIP_FOLDER_SOC)/acs.bin 0
 else
@@ -1499,7 +1504,10 @@ distclean: mrproper
 	@rm -f $(FIP_FOLDER_SOC)/u-boot.bin
 	@rm -f $(FIP_FOLDER_SOC)/u-boot.bin.* $(FIP_FOLDER_SOC)/*.encrypt
 	@rm -f $(FIP_FOLDER)/u-boot.bin.* $(FIP_FOLDER)/*.bin $(FIP_FOLDER)/*.encrypt
+	@rm -f $(FIP_FOLDER)/fip_create
 	@rm -f $(srctree)/fip/aml_encrypt_gxb
+	@make -C $(srctree)/fip distclean
+	@$(MAKE) -C $(srctree)/tools/fip_create clean
 
 backup:
 	F=`basename $(srctree)` ; cd .. ; \

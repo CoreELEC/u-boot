@@ -872,9 +872,15 @@ $(ACS_BINARY): tools prepare u-boot.bin
 .PHONY : bl21.bin
 bl21.bin: tools prepare u-boot.bin acs.bin
 	$(Q)$(MAKE) -C $(srctree)/$(CPUDIR)/${SOC}/firmware/bl21 all FIRMWARE=$@
+	
+FIP_FOLDER := $(srctree)/fip
+.PHONY: fip_create
+fip_create:
+	$(Q)$(MAKE) -C $(srctree)/tools/fip_create/
+	$(Q)cp $(srctree)/tools/fip_create/fip_create $(FIP_FOLDER)/
 
 .PHONY : fip.bin bootimage
-fip.bin bootimage: $(ACS_BINARY) $(BL301_BINARY)
+fip.bin bootimage: $(ACS_BINARY) $(BL301_BINARY) fip_create
 	$(Q)$(MAKE) -C $(srctree)/fip $@
 
 #
@@ -1399,8 +1405,10 @@ distclean: mrproper
 	@rm -f $(FIP_FOLDER_SOC)/u-boot.bin
 	@rm -f $(FIP_FOLDER_SOC)/u-boot.bin.* $(FIP_FOLDER_SOC)/*.encrypt
 	@rm -f $(FIP_FOLDER)/u-boot.bin.* $(FIP_FOLDER)/*.bin $(FIP_FOLDER)/*.encrypt
+	@rm -f $(FIP_FOLDER)/fip_create
 	@rm -f $(srctree)/fip/aml_encrypt_gxb
 	@make -C $(srctree)/fip distclean
+	@$(MAKE) -C $(srctree)/tools/fip_create clean
 
 backup:
 	F=`basename $(srctree)` ; cd .. ; \

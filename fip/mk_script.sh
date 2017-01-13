@@ -285,9 +285,11 @@ function get_blx_bin() {
   while read line;
   do
     IFS=' ' read -ra DATA <<< "$line"
-    if [ ${CUR_REV[$index]} == ${DATA[2]} ]; then
+    # v1-fix support short-id
+    if [ "${CUR_REV[$index]:0:7}" == "${DATA[2]:0:7}" ]; then
       BLX_READY[${index}]="true"
-      dbg "blxbin:${DATA[0]} blxsrc:${DATA[2]}"
+      dbg "blxbin:${DATA[0]} blxsrc:  ${DATA[2]}"
+      dbg "blxbin:${DATA[0]} blxsrc-s:${DATA[2]:0:7}"
       # reset to history version
       #git --git-dir ${BLX_BIN_FOLDER[index]}/.git --work-tree=${BLX_BIN_FOLDER[index]} reset ${DATA[0]} --hard
       git_operate ${BLX_BIN_FOLDER[index]} reset ${DATA[0]} --hard

@@ -356,8 +356,8 @@ function fix_blx() {
 
   #$7:name flag
   if [ "$7" = "bl30" ]; then
-    declare blx_bin_limit=40960   # PD#132613 2016-10-31 update, 41984->40960
-    declare blx01_bin_limit=13312 # PD#132613 2016-10-31 update, 12288->13312
+    declare blx_bin_limit=41984   # PD#132613 2016-10-31 update, 41984->40960
+    declare blx01_bin_limit=12288 # PD#132613 2016-10-31 update, 12288->13312
   elif [ "$7" = "bl2" ]; then
     declare blx_bin_limit=41984
     declare blx01_bin_limit=7168
@@ -404,6 +404,15 @@ function build_fip() {
   local BLX_EXT=".bin"
   mkdir -p ${FIP_BUILD_FOLDER}
 
+  fix_blx \
+    ${FIP_BUILD_FOLDER}bl30.bin \
+    ${FIP_BUILD_FOLDER}zero_tmp \
+    ${FIP_BUILD_FOLDER}bl30_zero.bin \
+    ${FIP_BUILD_FOLDER}bl301.bin \
+    ${FIP_BUILD_FOLDER}bl301_zero.bin \
+    ${FIP_BUILD_FOLDER}bl30_new.bin \
+    bl30
+
   # acs_tool process ddr timing and configurable parameters
   python ${FIP_FOLDER}acs_tool.pyc ${FIP_BUILD_FOLDER}bl2.bin ${FIP_BUILD_FOLDER}bl2_acs.bin ${FIP_BUILD_FOLDER}acs.bin 0
 
@@ -421,11 +430,8 @@ function build_fip() {
     BLX_EXT=".img"
   fi
 
-  if [ "y" == "${CONFIG_NEED_BL301}" ]; then
-    FIP_ARGS="--bl30 ${FIP_BUILD_FOLDER}bl30.bin --bl31 ${FIP_BUILD_FOLDER}bl31${BLX_EXT} --bl32 ${FIP_BUILD_FOLDER}bl32${BLX_EXT} --bl33 ${FIP_BUILD_FOLDER}bl33.bin --bl301 ${FIP_BUILD_FOLDER}bl301.bin"
-  else
-    FIP_ARGS="--bl30 ${FIP_BUILD_FOLDER}bl30.bin --bl31 ${FIP_BUILD_FOLDER}bl31${BLX_EXT} --bl32 ${FIP_BUILD_FOLDER}bl32${BLX_EXT} --bl33 ${FIP_BUILD_FOLDER}bl33.bin"
-  fi
+  # v2: bl30/bl301 merged since 2016.03.22
+  FIP_ARGS="--bl30 ${FIP_BUILD_FOLDER}bl30_new.bin --bl31 ${FIP_BUILD_FOLDER}bl31${BLX_EXT} --bl32 ${FIP_BUILD_FOLDER}bl32${BLX_EXT} --bl33 ${FIP_BUILD_FOLDER}bl33.bin"
 
   # create fip.bin
   ./${FIP_FOLDER}fip_create ${FIP_ARGS} ${FIP_BUILD_FOLDER}fip.bin
@@ -437,12 +443,12 @@ function build_fip() {
 
   # secure boot
   if [ "gxl" == ${CUR_SOC} ] || [ "txl" == ${CUR_SOC} ]; then
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30.bin
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30_new.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl33.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl2sig  --input ${FIP_BUILD_FOLDER}bl2_new.bin   --output ${FIP_BUILD_FOLDER}bl2.n.bin.sig
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootmk  --output ${FIP_BUILD_FOLDER}u-boot.bin \
-    --bl2   ${FIP_BUILD_FOLDER}bl2.n.bin.sig  --bl30  ${FIP_BUILD_FOLDER}bl30.bin.enc  \
+    --bl2   ${FIP_BUILD_FOLDER}bl2.n.bin.sig  --bl30  ${FIP_BUILD_FOLDER}bl30_new.bin.enc  \
     --bl31  ${FIP_BUILD_FOLDER}bl31.bin.enc --bl33  ${FIP_BUILD_FOLDER}bl33.bin.enc
   else
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}boot.bin --output ${FIP_BUILD_FOLDER}u-boot.bin

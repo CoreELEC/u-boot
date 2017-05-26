@@ -3,15 +3,21 @@
 #  author: xiaobo.gu@amlogic.com
 #  2016.09.28
 #  2016.12.01-2016.12.20 Update for bootloader repo
-#
+#  2017.05.20-2017.05.26 Update for txlx and ATF1.3
 
 DEBUG_PRINT=0
+
+# include compile check script
+source fip/check_compile.sh
 
 BUILD_FOLDER="build/"
 FIP_BUILD_FOLDER="fip/build/"
 FIP_FOLDER="fip/"
 MAIN_FOLDER=""
 MANIFEST=".repo/manifest.xml"
+
+# secure boot solution for gxb/gxtvbb or later chip
+declare -a SECURE_BOOT_SOC_LIST=("gxb" "gxtvbb")
 
 # include uboot pre-build macros
 declare SOURCE_FILE=("build/.config")
@@ -24,6 +30,14 @@ declare -a BLX_BIN_FOLDER=("bl2/bin" "bl30/bin" "bl31/bin" "bl32/bin")
 declare -a BLX_BIN_NAME=("bl2.bin" "bl30.bin" "bl31.bin" "bl32.bin")
 declare -a BLX_IMG_NAME=("NULL" "NULL" "bl31.img" "bl32.img")
 declare -a BLX_NEEDFUL=("true" "true" "true" "false")
+declare UBOOT_SRC_FOLDER=${BLX_SRC_FOLDER[4]}
+
+# these soc use old bl31 code, others use new one
+declare -a BL31_OLD_VER_SOC_LIST=("gxb" "gxtvbb" "gxl" "txl")
+declare BL31_V1_3_SRC_FOLDER="bl31_1.3/src"
+declare BL31_V1_0_SRC_FOLDER="bl31/src"
+declare BL31_V1_3_BIN_FOLDER="bl31_1.3/bin"
+declare BL31_V1_0_BIN_FOLDER="bl31/bin"
 
 # blx priority. null: default, source: src code, others: bin path
 declare -a BIN_PATH=("null" "null" "null" "null")
@@ -53,8 +67,50 @@ function git_operate() {
   dbg "${GIT_OPERATE_INFO}"
 }
 
+# check use which bl31 build script
+function check_bl31_ver() {
+  # $1: soc
+  # return 1: use bl31 v1.3
+  # return 0: use bl31 v1.0
+  local -i ver=1
+  for soc_list in ${!BL31_OLD_VER_SOC_LIST[@]}; do
+    if [ "$1" == "${BL31_OLD_VER_SOC_LIST[${soc_list}]}" ]; then
+      ver=0
+    fi
+  done
+  return ${ver}
+}
+
+# get secure boot version
+function check_secure_ver() {
+  # $1: soc
+  # return 1 if not in the old version list
+  local -i ver=1
+  for soc_list in ${!SECURE_BOOT_SOC_LIST[@]}; do
+    if [ "$1" == "${SECURE_BOOT_SOC_LIST[${soc_list}]}" ]; then
+      ver=0
+    fi
+  done
+  return ${ver}
+}
+
+# some soc need use bl31_v1.3
+function switch_bl31() {
+  # $1: soc
+  check_bl31_ver $1
+  if [ $? != 0 ]; then
+    echo "check bl31 ver: use v1.3"
+    BLX_SRC_FOLDER[2]=${BL31_V1_3_SRC_FOLDER}
+    BLX_BIN_FOLDER[2]=${BL31_V1_3_BIN_FOLDER}
+  else
+    echo "check bl31 ver: use v1.0"
+    BLX_SRC_FOLDER[2]=${BL31_V1_0_SRC_FOLDER}
+    BLX_BIN_FOLDER[2]=${BL31_V1_0_BIN_FOLDER}
+  fi
+}
+
 function pre_build_uboot() {
-  cd ${BLX_SRC_FOLDER[4]}
+  cd ${UBOOT_SRC_FOLDER}
   echo -n "Compile config: "
   echo "$1"
   make distclean &> /dev/null
@@ -80,7 +136,7 @@ function pre_build_uboot() {
 function build_uboot() {
   echo "Build uboot...Please Wait..."
   mkdir -p ${FIP_BUILD_FOLDER}
-  cd ${BLX_SRC_FOLDER[4]}
+  cd ${UBOOT_SRC_FOLDER}
   make -j #&> /dev/null
   ret=$?
   source ${CONFIG_FILE} &> /dev/null # ignore warning/error
@@ -94,15 +150,15 @@ function build_uboot() {
     echo "Error: U-boot build failed... abort"
     exit -1
   else
-    cp ${BLX_SRC_FOLDER[4]}/build/u-boot.bin ${FIP_BUILD_FOLDER}bl33.bin -f
-    cp ${BLX_SRC_FOLDER[4]}/build/scp_task/bl301.bin ${FIP_BUILD_FOLDER} -f
-    cp ${BLX_SRC_FOLDER[4]}/build/${BOARD_DIR}/firmware/bl21.bin ${FIP_BUILD_FOLDER} -f
-    cp ${BLX_SRC_FOLDER[4]}/build/${BOARD_DIR}/firmware/acs.bin ${FIP_BUILD_FOLDER} -f
+    cp ${UBOOT_SRC_FOLDER}/build/u-boot.bin ${FIP_BUILD_FOLDER}bl33.bin -f
+    cp ${UBOOT_SRC_FOLDER}/build/scp_task/bl301.bin ${FIP_BUILD_FOLDER} -f
+    cp ${UBOOT_SRC_FOLDER}/build/${BOARD_DIR}/firmware/bl21.bin ${FIP_BUILD_FOLDER} -f
+    cp ${UBOOT_SRC_FOLDER}/build/${BOARD_DIR}/firmware/acs.bin ${FIP_BUILD_FOLDER} -f
   fi
 }
 
 function uboot_config_list() {
-  folder_board="${BLX_SRC_FOLDER[4]}/board/amlogic"
+  folder_board="${UBOOT_SRC_FOLDER}/board/amlogic"
   echo "      ******Amlogic Configs******"
   for file in ${folder_board}/*; do
     temp_file=`basename $file`
@@ -112,7 +168,7 @@ function uboot_config_list() {
     fi
   done
 
-  customer_folder="${BLX_SRC_FOLDER[4]}/customer/board"
+  customer_folder="${UBOOT_SRC_FOLDER}/customer/board"
   if [ -e ${customer_folder} ]; then
     echo "      ******Customer Configs******"
     for file in ${customer_folder}/*; do
@@ -135,6 +191,35 @@ function string_filter() {
   str_origin=${str_origin#*${str_filter}} # filter
   IFS=${str_split} read -ra DATA <<< "$str_origin"
   str_use=${DATA[$4]}
+}
+
+function get_info() {
+  echo -n "Get version info - "
+  # $1: blx src folder
+  # read manifest, get each blx information
+  while read -r line || [[ -n $line ]]; do
+    string_filter "${line}" "dest-branch=" '"' 1
+    GIT_INFO[0]=${str_use}
+    string_filter "${line}" "path=" '"' 1
+    GIT_INFO[1]=${str_use}
+    string_filter "${line}" "revision=" '"' 1
+    GIT_INFO[2]=${str_use}
+    string_filter "${line}" "name=" '"' 1
+    GIT_INFO[3]=${str_use}
+    string_filter "${line}" "remote=" '"' 1
+    GIT_INFO[4]=${str_use}
+    # if this line doesn't contain any info, skip it
+    if [ "${GIT_INFO[2]}" == "" ]; then
+      continue
+    fi
+    if [ "${GIT_INFO[1]}" == "${BLX_SRC_FOLDER[$loop]}" ]; then
+      #echo "found match index x: $loop, blx: ${DATA[0]}, rev: ${DATA[1]}"
+      CUR_REV[$loop]=${GIT_INFO[2]}
+      #CUR_BIN_BRANCH[$loop]=${GIT_INFO[0]}
+      echo "name:${BLX_NAME[$loop]}, path:${BLX_SRC_FOLDER[$loop]}, rev:${CUR_REV[$loop]} @ ${GIT_INFO[0]}"
+      break
+    fi
+  done < "$MANIFEST"
 }
 
 function get_versions() {
@@ -240,6 +325,26 @@ function build_bl31() {
   return
 }
 
+function build_bl31_v1_3() {
+  echo -n "Build bl31 v1.3...Please wait... "
+  # $1: src_folder, $2: bin_folder, $3: soc
+  cd $1
+  export CROSS_COMPILE=${AARCH64_TOOL_CHAIN}
+  sh mk $3 &> /dev/null
+  if [ $? != 0 ]; then
+    cd ${MAIN_FOLDER}
+    echo "Error: Build bl31 failed... abort"
+    exit -1
+  fi
+  cd ${MAIN_FOLDER}
+  local target="$1/build/${soc}/release/bl31.bin"
+  local target2="$1/build/${soc}/release/bl31.img"
+  cp ${target} $2 -f
+  cp ${target2} $2 -f
+  echo "done"
+  return
+}
+
 function build_bl32() {
   echo -n "Build bl32...Please wait... "
   # $1: src_folder, $2: bin_folder, $3: soc
@@ -265,6 +370,15 @@ function build_blx_src() {
     build_bl30 $src_folder $bin_folder $soc
   elif [ $name == ${BLX_NAME[2]} ]; then
     # bl31
+    # some soc use v1.3
+    check_bl31_ver $soc
+    if [ $? != 0 ]; then
+      echo "check bl31 ver: use v1.3"
+      build_bl31_v1_3 $src_folder $bin_folder $soc
+    else
+      echo "check bl31 ver: use v1.0"
+      build_bl31 $src_folder $bin_folder $soc
+    fi
     build_bl31 $src_folder $bin_folder $soc
   elif [ $name == ${BLX_NAME[3]} ]; then
     # bl32
@@ -323,7 +437,16 @@ function get_blx_bin() {
 }
 
 function build_blx() {
+  # build each blx
   mkdir -p ${FIP_BUILD_FOLDER}
+
+  # switch bl31 version
+  switch_bl31 ${CUR_SOC}
+
+  # get version of each blx
+  get_versions
+
+  # build loop
   for loop in ${!BLX_NAME[@]}; do
     dbg "BIN_PATH[${loop}]: ${BIN_PATH[loop]}"
     if [ "null" == ${BIN_PATH[loop]} ]; then
@@ -442,7 +565,8 @@ function build_fip() {
   dd if=/dev/zero of=${FIP_BUILD_FOLDER}zero_512 bs=1 count=512
 
   # secure boot
-  if [ "gxl" == ${CUR_SOC} ] || [ "txl" == ${CUR_SOC} ]; then
+  check_secure_ver ${CUR_SOC}
+  if [ $? == 1 ]; then
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30_new.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl33.bin
@@ -455,17 +579,18 @@ function build_fip() {
   fi
 
   if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
-    if [ "gxl" == ${CUR_SOC} ] || [ "txl" == ${CUR_SOC} ]; then
-      ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --efsgen --amluserkey ${BLX_SRC_FOLDER[4]}/${BOARD_DIR}/aml-user-key.sig \
+    check_secure_ver ${CUR_SOC}
+    if [ $? == 1 ]; then
+      ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig \
         --output ${FIP_BUILD_FOLDER}/u-boot.bin.encrypt.efuse
     fi
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}/u-boot.bin --amluserkey ${BLX_SRC_FOLDER[4]}/${BOARD_DIR}/aml-user-key.sig \
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig \
       --aeskey enable --output ${FIP_BUILD_FOLDER}/u-boot.bin.encrypt
   fi
 
   if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
     # boot.img put in fip/ folder, todo
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --imgsig --input ${BLX_SRC_FOLDER[4]}/${BOARD_DIR}/boot.img --amluserkey ${BLX_SRC_FOLDER[4]}/${BOARD_DIR}/aml-user-key.sig --output ${FIP_BUILD_FOLDER}/boot.img.encrypt
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --imgsig --input ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig --output ${FIP_BUILD_FOLDER}/boot.img.encrypt
   fi
 
   cat ${FIP_BUILD_FOLDER}zero_512 ${FIP_BUILD_FOLDER}u-boot.bin > ${FIP_BUILD_FOLDER}u-boot.bin.sd.bin
@@ -486,7 +611,7 @@ function update_bin_path() {
 
 function clean() {
   echo "Clean up"
-  cd ${BLX_SRC_FOLDER[4]}
+  cd ${UBOOT_SRC_FOLDER}
   make distclean
   cd ${MAIN_FOLDER}
   rm ${FIP_BUILD_FOLDER} -rf
@@ -496,7 +621,6 @@ function clean() {
 
 function build() {
   clean
-  get_versions
   pre_build_uboot $@
   build_uboot
   build_blx $@
@@ -511,7 +635,7 @@ function usage() {
     build script.
     bl[x].bin priority:
     1. uboot will use binaries under ${BLX_BIN_FOLDER[@]}... folder by default, blx version specified in xml file.
-    2. if you wanna use your own bl[x].bin, specify path by "--bl[x] path" parameter
+    2. if you wanna use your own bl[x].bin, specify path by "--bl[x] [path]" parameter
     3. if you want update bl[x].bin by source code, please add "--update-bl[x]" parameter
 
     command list:
@@ -533,7 +657,7 @@ function usage() {
         ./$(basename $0) gxb_p200_v1 --update-bl31 --update-bl2
       remark: this cmd will build uboot with bl31/bl2 source code
 
-      usable configs:
+      Usable configs:
 `uboot_config_list`
 
 EOF
@@ -554,6 +678,9 @@ function parser() {
     case "$arg" in
       -h|--help|help)
         usage
+        return ;;
+      --check-compile)
+        check_compile "${argv[@]:$((i+1))}"
         return ;;
       --bl2)
         update_bin_path 0 "${argv[@]:$((i))}"

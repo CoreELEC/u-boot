@@ -245,7 +245,18 @@ function get_versions() {
         #echo "found match index x: $loop, blx: ${DATA[0]}, rev: ${DATA[1]}"
         CUR_REV[$loop]=${GIT_INFO[2]}
         #CUR_BIN_BRANCH[$loop]=${GIT_INFO[0]}
-        echo "name:${BLX_NAME[$loop]}, path:${BLX_SRC_FOLDER[$loop]}, rev:${CUR_REV[$loop]} @ ${GIT_INFO[0]}"
+        echo -n "name:${BLX_NAME[$loop]}, path:${BLX_SRC_FOLDER[$loop]}, "
+        if [ "${CUR_REV[$loop]}" == "${GIT_INFO[0]}" ]; then
+          # if only specify branch name, not version, use latest binaries under bin/ folders
+          git_operate ${BLX_BIN_FOLDER[loop]} log --pretty=oneline -1
+          git_msg=${GIT_OPERATE_INFO}
+          IFS=' ' read -ra DATA <<< "$git_msg"
+          CUR_REV[$loop]=${DATA[2]}
+          echo -n "revL:${CUR_REV[$loop]} "
+        else
+          echo -n "rev:${CUR_REV[$loop]} "
+        fi
+        echo "@ ${GIT_INFO[0]}"
       fi
     done
   done < "$MANIFEST"
@@ -310,15 +321,15 @@ function build_bl31() {
     soc="gxl"
   fi
   make PLAT=${soc} SPD=${CONFIG_SPD} realclean &> /dev/null
-  make PLAT=${soc} SPD=${CONFIG_SPD} DEBUG=1 V=1 all &> /dev/null
+  make PLAT=${soc} SPD=${CONFIG_SPD} V=1 all &> /dev/null
   if [ $? != 0 ]; then
     cd ${MAIN_FOLDER}
     echo "Error: Build bl31 failed... abort"
     exit -1
   fi
   cd ${MAIN_FOLDER}
-  local target="$1/build/${soc}/debug/bl31.bin"
-  local target2="$1/build/${soc}/debug/bl31.img"
+  local target="$1/build/${soc}/release/bl31.bin"
+  local target2="$1/build/${soc}/release/bl31.img"
   cp ${target} $2 -f
   cp ${target2} $2 -f
   echo "done"

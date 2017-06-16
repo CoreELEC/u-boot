@@ -390,7 +390,6 @@ function build_blx_src() {
       echo "check bl31 ver: use v1.0"
       build_bl31 $src_folder $bin_folder $soc
     fi
-    build_bl31 $src_folder $bin_folder $soc
   elif [ $name == ${BLX_NAME[3]} ]; then
     # bl32
     build_bl32 $src_folder $bin_folder $soc

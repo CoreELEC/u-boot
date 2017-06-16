@@ -433,9 +433,9 @@ function get_blx_bin() {
     line_num=$((line_num+1))
   done <<< "${git_msg}"
   if [ "true" == ${BLX_READY[${index}]} ]; then
-    echo "Get ${BLX_BIN_NAME[$index]} from ${BLX_BIN_FOLDER[$index]}... done"
+    echo "Get ${BLX_NAME[$index]} from ${BLX_BIN_FOLDER[$index]}... done"
   else
-    echo -n "Get ${BLX_BIN_NAME[$index]} from ${BLX_BIN_FOLDER[$index]}... failed"
+    echo -n "Get ${BLX_NAME[$index]} from ${BLX_BIN_FOLDER[$index]}... failed"
     if [ "true" == ${BLX_NEEDFUL[$index]} ]; then
       echo "... abort"
       exit -1
@@ -469,8 +469,8 @@ function build_blx() {
         echo "Error: ${BIN_PATH[loop]} doesn't exist... abort"
         exit -1
       else
-        cp ${BIN_PATH[loop]} ${FIP_BUILD_FOLDER}${BLX_BIN_NAME[$loop]} -f
-        echo "Get ${BLX_BIN_NAME[$loop]} from ${BIN_PATH[loop]}... done"
+        cp ${BIN_PATH[loop]} ${FIP_BUILD_FOLDER} -f
+        echo "Get ${BLX_NAME[$loop]} from ${BIN_PATH[loop]}... done"
       fi
     fi
   done
@@ -578,7 +578,7 @@ function build_fip() {
   check_secure_ver ${CUR_SOC}
   if [ $? == 1 ]; then
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30_new.bin
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31.bin
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31${BLX_EXT}
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl33.bin
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl2sig  --input ${FIP_BUILD_FOLDER}bl2_new.bin   --output ${FIP_BUILD_FOLDER}bl2.n.bin.sig
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootmk  --output ${FIP_BUILD_FOLDER}u-boot.bin \

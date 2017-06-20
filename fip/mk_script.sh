@@ -571,42 +571,51 @@ function build_fip() {
   ./${FIP_FOLDER}fip_create --dump ${FIP_BUILD_FOLDER}fip.bin
 
   # build final bootloader
-  cat ${FIP_BUILD_FOLDER}bl2_new.bin ${FIP_BUILD_FOLDER}fip.bin > ${FIP_BUILD_FOLDER}boot.bin
-  dd if=/dev/zero of=${FIP_BUILD_FOLDER}zero_512 bs=1 count=512
+  cat ${FIP_BUILD_FOLDER}bl2_new.bin ${FIP_BUILD_FOLDER}fip.bin > ${FIP_BUILD_FOLDER}boot_new.bin
 
-  # secure boot
+  local BL33_COMPRESS_FLAG=""
+  if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
+    BL33_COMPRESS_FLAG="--compress lz4"
+  fi
+
+  #u-boot.bin generate
   check_secure_ver ${CUR_SOC}
   if [ $? == 1 ]; then
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30_new.bin
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31${BLX_EXT}
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl33.bin
+	if [ "y" == "${CONFIG_AML_SECURE_BOOT_V3}" ]; then
+	  ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3sig  --input ${FIP_BUILD_FOLDER}bl30_new.bin    --output ${FIP_BUILD_FOLDER}bl30_new.bin.enc
+	  ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3sig  --input ${FIP_BUILD_FOLDER}bl31${BLX_EXT}  --output ${FIP_BUILD_FOLDER}bl31${BLX_EXT}.enc
+	  ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3sig  --input ${FIP_BUILD_FOLDER}bl33.bin        --output ${FIP_BUILD_FOLDER}bl33.bin.enc   ${BL33_COMPRESS_FLAG}
+	else
+      ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl30_new.bin   --output ${FIP_BUILD_FOLDER}bl30_new.bin.enc
+      ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl31${BLX_EXT} --output ${FIP_BUILD_FOLDER}bl31${BLX_EXT}.enc
+      ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl3enc  --input ${FIP_BUILD_FOLDER}bl33.bin       --output ${FIP_BUILD_FOLDER}bl33.bin.enc   ${BL33_COMPRESS_FLAG}     
+    fi
+
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bl2sig  --input ${FIP_BUILD_FOLDER}bl2_new.bin   --output ${FIP_BUILD_FOLDER}bl2.n.bin.sig
+
     ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootmk  --output ${FIP_BUILD_FOLDER}u-boot.bin \
     --bl2   ${FIP_BUILD_FOLDER}bl2.n.bin.sig  --bl30  ${FIP_BUILD_FOLDER}bl30_new.bin.enc  \
-    --bl31  ${FIP_BUILD_FOLDER}bl31.bin.enc --bl33  ${FIP_BUILD_FOLDER}bl33.bin.enc
+    --bl31  ${FIP_BUILD_FOLDER}bl31${BLX_EXT}.enc --bl33  ${FIP_BUILD_FOLDER}bl33.bin.enc
   else
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}boot.bin --output ${FIP_BUILD_FOLDER}u-boot.bin
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}boot_new.bin --output ${FIP_BUILD_FOLDER}u-boot.bin
   fi
 
   if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
     check_secure_ver ${CUR_SOC}
     if [ $? == 1 ]; then
       ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig \
-        --output ${FIP_BUILD_FOLDER}/u-boot.bin.encrypt.efuse
+        --output ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.efuse
     fi
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig \
-      --aeskey enable --output ${FIP_BUILD_FOLDER}/u-boot.bin.encrypt
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --bootsig --input ${FIP_BUILD_FOLDER}u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig \
+      --aeskey enable --output ${FIP_BUILD_FOLDER}u-boot.bin.encrypt
   fi
 
   if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
     # boot.img put in fip/ folder, todo
-    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --imgsig --input ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig --output ${FIP_BUILD_FOLDER}/boot.img.encrypt
+    ./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} --imgsig --input ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-user-key.sig --output ${FIP_BUILD_FOLDER}boot.img.encrypt
   fi
 
-  cat ${FIP_BUILD_FOLDER}zero_512 ${FIP_BUILD_FOLDER}u-boot.bin > ${FIP_BUILD_FOLDER}u-boot.bin.sd.bin
-  if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
-    cat ${FIP_BUILD_FOLDER}zero_512 ${FIP_BUILD_FOLDER}u-boot.bin.encrypt > ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.sd.bin
-  fi
+  rm -fr ${FIP_BUILD_FOLDER}bl*.sig ${FIP_BUILD_FOLDER}bl*.enc ${FIP_BUILD_FOLDER}boot_new.bin ${FIP_BUILD_FOLDER}bl2_new.bin
 
   copy_bootloader
 

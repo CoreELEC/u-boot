@@ -45,6 +45,9 @@
 #define CONFIG_CEC_OSD_NAME		"KVim"
 
 #define CONFIG_INSTABOOT
+#define CONFIG_CMD_CFGLOAD
+
+//#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
 /* configs for dtb in boot.img */
 //#define DTB_BIND_KERNEL
 
@@ -266,7 +269,8 @@
             "run combine_key;" \
             "run upgrade_key;" \
             "run vim_check;" \
-            "run switch_bootmode;"
+            "run switch_bootmode;" \
+            "cfgload;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

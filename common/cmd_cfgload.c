@@ -16,7 +16,9 @@
 #include <cli_hush.h>
 #endif
 
-#define BOOTINI_MAGIC	"LIBRETECH-UBOOT-CONFIG"
+#ifndef BOOTINI_MAGIC
+#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
+#endif
 #define SZ_BOOTINI		SZ_64K
 
 /* Nothing to proceed with zero size string or comment.

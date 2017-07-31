@@ -47,6 +47,9 @@
 #define CONFIG_CEC_WAKEUP
 
 #define CONFIG_INSTABOOT
+#define CONFIG_CMD_CFGLOAD
+
+//#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
 
 /* support ext4*/
 #define CONFIG_CMD_EXT4 1
@@ -244,7 +247,8 @@
             "run storeargs;"\
             "run upgrade_key;" \
             "forceupdate;" \
-            "run switch_bootmode;"
+            "run switch_bootmode;" \
+            "cfgload;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

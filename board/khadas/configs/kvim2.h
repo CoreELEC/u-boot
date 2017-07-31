@@ -46,6 +46,9 @@
 #define CONFIG_CEC_OSD_NAME		"KVim2"
 
 #define CONFIG_INSTABOOT
+#define CONFIG_CMD_CFGLOAD
+
+//#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
 
 /* config for kbi */
 #define CONFIG_KHADAS_KBI 1
@@ -276,7 +279,8 @@
             "run vim2_check;" \
             "run wol_init;"\
             "forceupdate;" \
-            "run switch_bootmode;"
+            "run switch_bootmode;" \
+            "cfgload;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

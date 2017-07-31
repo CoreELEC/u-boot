@@ -42,6 +42,10 @@
 #define CONFIG_CEC_OSD_NAME		"Mbox"
 #define CONFIG_CEC_WAKEUP
 
+#define CONFIG_CMD_CFGLOAD
+
+//#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
+
 /* SMP Definitinos */
 #define CPU_RELEASE_ADDR		secondary_boot_func
 
@@ -234,7 +238,8 @@
             "run init_display;"\
             "run storeargs;"\
             "run upgrade_key;" \
-            "run switch_bootmode;"
+            "run switch_bootmode;" \
+            "cfgload;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

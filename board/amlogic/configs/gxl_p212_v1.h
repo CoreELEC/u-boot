@@ -46,6 +46,9 @@
 #define CONFIG_CEC_WAKEUP
 
 #define CONFIG_INSTABOOT
+#define CONFIG_CMD_CFGLOAD
+
+//#define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
 /* configs for dtb in boot.img */
 //#define DTB_BIND_KERNEL
 
@@ -247,7 +250,8 @@
             "run init_display;"\
             "run storeargs;"\
             "run upgrade_key;" \
-            "run switch_bootmode;"
+            "run switch_bootmode;" \
+            "cfgload;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

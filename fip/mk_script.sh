@@ -259,16 +259,16 @@ function parser() {
 	i=0
 	while [ $i -lt $# ]; do
 		arg="${argv[$i]}"
-		i=$((i + 1)) # must pleace here
+		i=$((i + 1))
 		case "$arg" in
 			-h|--help|help)
 				usage
 				exit ;;
 			--config)
 				print_config
-				return ;;
+				exit ;;
 			--check-compile)
-				check_compile "${argv[@]:$((i+1))}"
+				check_compile "${argv[@]:$((i))}"
 				exit ;;
 			clean|distclean|-distclean|--distclean)
 				clean

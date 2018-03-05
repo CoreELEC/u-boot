@@ -167,6 +167,7 @@ function build() {
 
 	# update bin path, use bin.git or user defined or source code
 	bin_path_parser $@
+	#bin_path_update $@
 
 	# build bl33/bl301..etc
 	build_uboot
@@ -275,6 +276,20 @@ function parser() {
 				exit ;;
 			*)
 		esac
+	done
+}
+
+function bin_path_update() {
+	# overwrite path in case some git repository doesn't exist
+	for loop in ${!BLX_BIN_FOLDER[@]}; do
+		if [ -ne ${BLX_BIN_FOLDER[$loop]} ]; then
+			dbg "BLX_BIN_FOLDER[$loop] doesn't exist, use src code"
+			update_bin_path $loop "source"
+		fi
+	done
+
+	for loop in ${!BLX_SRC_FOLDER[@]}; do
+		echo ""
 	done
 }
 

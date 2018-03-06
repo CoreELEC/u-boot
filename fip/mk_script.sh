@@ -141,7 +141,7 @@ function clean() {
 	make distclean
 	cd ${MAIN_FOLDER}
 	rm ${FIP_BUILD_FOLDER} -rf
-	rm ${BUILD_FOLDER} -rf
+	rm ${BUILD_FOLDER}/* -rf
 	return
 }
 
@@ -259,14 +259,14 @@ function parser() {
 	i=0
 	while [ $i -lt $# ]; do
 		arg="${argv[$i]}"
-		i=$((i + 1))
+		i=$((i + 1)) # must place here
 		case "$arg" in
 			-h|--help|help)
 				usage
 				exit ;;
 			--config)
 				print_config
-				exit ;;
+				return ;;
 			--check-compile)
 				check_compile "${argv[@]:$((i))}"
 				exit ;;

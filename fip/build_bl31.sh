@@ -12,14 +12,16 @@ declare BL31_V1_0_BIN_FOLDER="bl31/bin"
 function build_bl31() {
 	echo -n "Build bl31...Please wait... "
 	# $1: src_folder, $2: bin_folder, $3: soc
+	local target="$1/bl31.bin"
+	local target2="$1/bl31.img"
 	cd $1
 	export CROSS_COMPILE=${AARCH64_TOOL_CHAIN}
 	CONFIG_SPD="opteed"
 	#CONFIG_SPD="none"
 	local soc=$3
-	if [ $soc == "gxtvbb" ] || [ $soc == "gxb" ]; then
+	if [ "$soc" == "gxtvbb" ] || [ "$soc" == "gxb" ]; then
 		soc="gxbb"
-	elif [ $soc == "txl" ]; then
+	elif [ "$soc" == "txl" ]; then
 		soc="gxl"
 	fi
 	#make PLAT=${soc} SPD=${CONFIG_SPD} realclean &> /dev/null
@@ -31,8 +33,6 @@ function build_bl31() {
 		exit -1
 	fi
 	cd ${MAIN_FOLDER}
-	local target="$1/build/${soc}/release/bl31.bin"
-	local target2="$1/build/${soc}/release/bl31.img"
 	cp ${target} $2 -f
 	cp ${target2} $2 -f
 	echo "done"
@@ -42,9 +42,15 @@ function build_bl31() {
 function build_bl31_v1_3() {
 	echo -n "Build bl31 v1.3...Please wait... "
 	# $1: src_folder, $2: bin_folder, $3: soc
+	local target="$1/bl31.bin"
+	local target2="$1/bl31.img"
 	cd $1
 	export CROSS_COMPILE=${AARCH64_TOOL_CHAIN}
 	#sh mk $3 &> /dev/null
+	local soc=$3
+	if [ "$soc" == "txhd" ]; then
+		soc="axg"
+	fi
 	/bin/bash mk $soc
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
@@ -52,8 +58,6 @@ function build_bl31_v1_3() {
 		exit -1
 	fi
 	cd ${MAIN_FOLDER}
-	local target="$1/build/${soc}/release/bl31.bin"
-	local target2="$1/build/${soc}/release/bl31.img"
 	cp ${target} $2 -f
 	cp ${target2} $2 -f
 	echo "done"

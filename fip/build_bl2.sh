@@ -2,7 +2,7 @@
 
 function build_bl2() {
 	echo -n "Build bl2...Please wait..."
-	local target="$1/build/$3/release/bl2.bin"
+	local target="$1/bl2.bin"
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
 	export CROSS_COMPILE=${AARCH64_TOOL_CHAIN}

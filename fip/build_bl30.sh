@@ -19,9 +19,6 @@ function build_bl30() {
 		echo "Error: Build bl30 failed... abort"
 		exit -1
 	fi
-	rm ./bl30.bin -f
-	cp build/$soc/ec.RW.bin ./
-	mv ./ec.RW.bin bl30.bin
 	cd ${MAIN_FOLDER}
 	cp ${target} $2 -f
 	echo "done"

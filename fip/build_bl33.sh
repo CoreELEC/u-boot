@@ -55,4 +55,9 @@ function uboot_config_list() {
 
 function copy_bl33() {
 	cp ${UBOOT_SRC_FOLDER}/build/u-boot.bin ${FIP_BUILD_FOLDER}bl33.bin -f
+
+	# remove src link to prevent android "File system loop detected" issue
+	cd ${UBOOT_SRC_FOLDER}/build/
+	rm source
+	cd ${MAIN_FOLDER}
 }

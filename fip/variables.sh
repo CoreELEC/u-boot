@@ -7,7 +7,7 @@ export UBOOT_SRC_FOLDER MAIN_FOLDER
 BUILD_FOLDER="build/"
 FIP_FOLDER="fip/"
 MANIFEST=".repo/manifest.xml"
-FIP_BUILD_FOLDER="fip/build/"
+FIP_BUILD_FOLDER="fip/_tmp/"
 
 # include uboot pre-build defines
 SOURCE_FILE=("bl33/build/.config")

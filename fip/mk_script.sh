@@ -214,6 +214,9 @@ function usage() {
     5. check compile status with filter(optional)
         ./$(basename $0) --check-compile [filter]
 
+    6. update aml ddr fw by source code (for g12a and later use)
+        ./$(basename $0) [config_name] --update-bl2 --ddrfw
+
 
     Example:
     1) ./$(basename $0) gxb_p200_v1
@@ -301,6 +304,8 @@ function bin_path_parser() {
 		i=$((i + 1))
 	done
 	i=0
+	# ddr fw define, co-work with bl2 build script
+	export CONFIG_DDR_FW
 	while [ $i -lt $# ]; do
 		arg="${argv[$i]}"
 		i=$((i + 1)) # must pleace here
@@ -328,6 +333,10 @@ function bin_path_parser() {
 				continue ;;
 			--update-bl32)
 				update_bin_path 3 "source"
+				continue ;;
+			--ddrfw)
+				CONFIG_DDR_FW=1
+				export CONFIG_DDR_FW
 				continue ;;
 				*)
 		esac

@@ -53,6 +53,11 @@ function fix_blx() {
 
 	# blx_size: blx.bin size, zero_size: fill with zeros
 	blx_size=`du -b $1 | awk '{print int($1)}'`
+	if [ $blx_size -gt $blx_bin_limit ]; then
+		echo "Error: $7 ($1) too big. $blx_size > $blx_bin_limit"
+		exit 1
+	fi
+
 	zero_size=$blx_bin_limit-$blx_size
 	dd if=/dev/zero of=$2 bs=1 count=$zero_size
 	cat $1 $2 > $3

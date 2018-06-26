@@ -104,7 +104,7 @@ function encrypt() {
 		encrypt_step --bl3enc  --input ${BUILD_PATH}/bl30_new.bin   --output ${BUILD_PATH}/bl30_new.bin.enc
 		encrypt_step --bl3enc  --input ${BUILD_PATH}/bl31.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc
 		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
-			encrypt_step --bl3sig  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc
+			encrypt_step --bl3enc  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc
 		fi
 		encrypt_step --bl3enc  --input ${BUILD_PATH}/bl33.bin       --output ${BUILD_PATH}/bl33.bin.enc   ${BL33_COMPRESS_FLAG}
 	fi

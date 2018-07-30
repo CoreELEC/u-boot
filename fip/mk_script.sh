@@ -170,7 +170,7 @@ function build() {
 	#bin_path_update $@
 
 	# build bl33/bl301..etc
-	build_uboot
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -337,6 +337,11 @@ function bin_path_parser() {
 			--ddrfw)
 				CONFIG_DDR_FW=1
 				export CONFIG_DDR_FW
+				continue ;;
+			--systemroot)
+				CONFIG_SYSTEM_AS_ROOT=systemroot
+				echo "export CONFIG_SYSTEM_AS_ROOT"
+				export CONFIG_SYSTEM_AS_ROOT=systemroot
 				continue ;;
 				*)
 		esac

@@ -10,8 +10,9 @@ MANIFEST=".repo/manifest.xml"
 FIP_BUILD_FOLDER="fip/_tmp/"
 
 # include uboot pre-build defines
-SOURCE_FILE=("bl33/build/.config")
-CONFIG_FILE=("bl33/build/include/autoconf.mk")
+BL33_BUILD_FOLDER=("bl33/")
+SOURCE_FILE=("${BL33_BUILD_FOLDER}.config")
+CONFIG_FILE=("${BL33_BUILD_FOLDER}include/autoconf.mk")
 
 # variables
 declare BOARD_DIR=""

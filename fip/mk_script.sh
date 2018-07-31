@@ -42,12 +42,34 @@ function init_variable_early() {
 
 function init_variable_late() {
 	# after uboot build, source configs
-	source ${CONFIG_FILE} &> /dev/null # ignore warning/error
+	local CONFIG_FILE_TMP="${MAIN_FOLDER}/autoconf"
+	local STR_INVALID="option"
+	if [ ! -e ${CONFIG_FILE} ]; then
+		echo "${CONFIG_FILE} doesn't exist!"
+		cd ${MAIN_FOLDER}
+		exit -1
+	else
+		# workaround for source file error
+		while read LINE
+		do
+			#echo $LINE
+			# ignore "*(option)*" lines
+			if [[ ${LINE} =~ ${STR_INVALID} ]]; then
+				echo "ignore: $LINE"
+			else
+				#echo "LINE: ${LINE}"
+				echo "$LINE" >> "${CONFIG_FILE_TMP}"
+			fi
+		done < ${CONFIG_FILE}
+		source "${CONFIG_FILE_TMP}" &> /dev/null
+		rm ${CONFIG_FILE_TMP}
+	fi
 	if [ "y" == "${CONFIG_SUPPORT_CUSOTMER_BOARD}" ]; then
 		BOARD_DIR="customer/board/${CONFIG_SYS_BOARD}"
 	else
 		BOARD_DIR="${CONFIG_BOARDDIR}"
 	fi
+	export BOARD_DIR
 }
 
 function build_blx_src() {

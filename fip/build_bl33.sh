@@ -17,6 +17,7 @@ function pre_build_uboot() {
 }
 
 function build_uboot() {
+	export CROSS_COMPILE=/opt/gcc-linaro-7.3.1-2018.05-i686_aarch64-elf/bin/aarch64-elf-
 	echo "Build uboot...Please Wait...$1...$2..."
 	mkdir -p ${FIP_BUILD_FOLDER}
 	cd ${UBOOT_SRC_FOLDER}
@@ -54,10 +55,10 @@ function uboot_config_list() {
 }
 
 function copy_bl33() {
-	cp ${UBOOT_SRC_FOLDER}/build/u-boot.bin ${FIP_BUILD_FOLDER}bl33.bin -f
+	cp ${BL33_BUILD_FOLDER}/u-boot.bin ${FIP_BUILD_FOLDER}bl33.bin -f
 
 	# remove src link to prevent android "File system loop detected" issue
-	cd ${UBOOT_SRC_FOLDER}/build/
-	rm source
+	#cd ${UBOOT_SRC_FOLDER}/build/
+	#rm source
 	cd ${MAIN_FOLDER}
 }

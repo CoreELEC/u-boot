@@ -177,9 +177,9 @@ function build_fip() {
 }
 
 function copy_other_soc() {
-	cp ${UBOOT_SRC_FOLDER}/build/scp_task/bl301.bin ${BUILD_PATH} -f
+	cp ${BL33_BUILD_FOLDER}scp_task/bl301.bin ${BUILD_PATH} -f
 	#useless #cp ${UBOOT_SRC_FOLDER}/build/${BOARD_DIR}/firmware/bl21.bin ${BUILD_PATH} -f
-	cp ${UBOOT_SRC_FOLDER}/build/${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH} -f
+	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH} -f
 	# todo. cp bl40?
 }
 

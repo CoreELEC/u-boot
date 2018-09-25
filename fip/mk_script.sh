@@ -170,7 +170,13 @@ function build() {
 	#bin_path_update $@
 
 	# build bl33/bl301..etc
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT}
+	if [ ! CONFIG_SYSTEM_AS_ROOT ]; then
+		CONFIG_SYSTEM_AS_ROOT=null
+	fi
+	if [ ! CONFIG_AVB2 ]; then
+		CONFIG_AVB2=null
+	fi
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -342,6 +348,11 @@ function bin_path_parser() {
 				CONFIG_SYSTEM_AS_ROOT=systemroot
 				echo "export CONFIG_SYSTEM_AS_ROOT"
 				export CONFIG_SYSTEM_AS_ROOT=systemroot
+				continue ;;
+			--avb2)
+				CONFIG_AVB2=avb2
+				echo "export CONFIG_AVB2"
+				export CONFIG_AVB2=avb2
 				continue ;;
 				*)
 		esac

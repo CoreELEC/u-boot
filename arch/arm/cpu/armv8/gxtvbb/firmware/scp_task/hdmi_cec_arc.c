@@ -716,7 +716,7 @@ void cec_node_init(void)
 	int tx_stat;
 	unsigned char msg[1];
 	unsigned int kern_log_addr = (readl(P_AO_DEBUG_REG1) >> 16) & 0xf;
-	enum _cec_log_dev_addr_e player_dev[3][3] =
+	static enum _cec_log_dev_addr_e player_dev[3][3] =
 		{{CEC_PLAYBACK_DEVICE_1_ADDR, CEC_PLAYBACK_DEVICE_2_ADDR, CEC_PLAYBACK_DEVICE_3_ADDR},
 		 {CEC_PLAYBACK_DEVICE_2_ADDR, CEC_PLAYBACK_DEVICE_3_ADDR, CEC_PLAYBACK_DEVICE_1_ADDR},
 		 {CEC_PLAYBACK_DEVICE_3_ADDR, CEC_PLAYBACK_DEVICE_1_ADDR, CEC_PLAYBACK_DEVICE_2_ADDR}};
@@ -734,6 +734,7 @@ void cec_node_init(void)
 
 		cec_msg.power_status = 1;
 		cec_msg.cec_power = 0;
+		cec_msg.log_addr = 0;
 		cec_tx_msgs.send_idx = 0;
 		cec_tx_msgs.queue_idx = 0;
 		cec_tx_buf_init();

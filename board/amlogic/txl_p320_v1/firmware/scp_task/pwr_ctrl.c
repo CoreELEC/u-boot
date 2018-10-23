@@ -309,7 +309,7 @@ static unsigned int detect_key(unsigned int suspend_from)
 			irq[IRQ_TIMERA] = 0xFFFFFFFF;
 			/*uart_puts("timera ...\n");*/
 			if (time_out_ms != 0)
-				time_out_ms--;
+				time_out_ms -= 10;
 			if (time_out_ms == 0) {
 				wakeup_timer_clear();
 				exit_reason = AUTO_WAKEUP;

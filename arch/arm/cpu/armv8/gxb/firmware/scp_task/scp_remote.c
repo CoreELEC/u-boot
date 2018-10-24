@@ -124,6 +124,14 @@ static const reg_remote RDECODEMODE_RC6[] = {
 	{CONFIG_END, 0}
 };
 
+static const reg_remote RDECODEMODE_SOFTWARE_DECODE[] = {
+	{AO_MF_IR_DEC_BIT_0, 68 << 16 | 44 << 0},
+	{AO_MF_IR_DEC_REG0, 7 << 28 | (0xFA0 << 12) | 0x09},
+	{AO_MF_IR_DEC_REG1, 0x9f44},
+	{AO_MF_IR_DEC_REG2, 0x2},
+	{CONFIG_END, 0}
+};
+
 static const reg_remote *remoteregsTab[] = {
 	RDECODEMODE_NEC,
 	RDECODEMODE_DUOKAN,
@@ -131,6 +139,7 @@ static const reg_remote *remoteregsTab[] = {
 	RDECODEMODE_RCA,
 	RDECODEMODE_RCMM,
 	RDECODEMODE_RC6,
+	RDECODEMODE_SOFTWARE_DECODE
 };
 
 void setremotereg(const reg_remote * r)
@@ -183,6 +192,19 @@ void resume_remote_register(void)
 	writel(backuAO_IR_DEC_BIT_0, AO_MF_IR_DEC_BIT_0);
 	writel(bakeuAO_IR_DEC_LDR_REPEAT, AO_MF_IR_DEC_LDR_REPEAT);
 	readl(AO_MF_IR_DEC_FRAME);
+}
+
+static int ir_remote_default_32k_mode(void)
+{
+	set_remote_mode(CONFIG_IR_REMOTE_USE_PROTOCOL_SOFTWARE_DECODE);
+	return 0;
+}
+ static int init_default_mode_remote(void)
+{
+	ir_remote_default_32k_mode();
+	uart_put_hex(readl(AO_IR_DEC_STATUS), 32);
+	uart_put_hex(readl(AO_IR_DEC_FRAME), 32);
+	return 0;
 }
 
 static int ir_remote_init_32k_mode(void)

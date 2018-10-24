@@ -286,6 +286,8 @@ static unsigned int detect_key(unsigned int suspend_from)
 			asm volatile("wfi");
 	} while (1);
 
+	init_default_mode_remote();
+
 	wakeup_timer_clear();
 	return exit_reason;
 }

@@ -1006,6 +1006,7 @@ source "board/zipitz2/Kconfig"
 
 source "board/amlogic/Kconfig"
 source "board/khadas/Kconfig"
+source "board/h96proplus/Kconfig"
 source "customer/board/Kconfig"
 
 source "arch/arm/Kconfig.debug"

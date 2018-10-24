@@ -1,0 +1,22 @@
+if TARGET_MESON_GX
+
+config SYS_CPU
+	string
+	default "armv8"
+
+config SYS_BOARD
+	string
+	default "v2_2"
+
+config SYS_VENDOR
+	string
+	default "h96proplus"
+
+config SYS_SOC
+	string
+	default "gxl"
+
+config SYS_CONFIG_NAME
+	default "v2_2"
+
+endif

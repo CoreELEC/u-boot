@@ -127,6 +127,11 @@ do_board_defconfig () {
 	if [ ! -r $defconfig_path ]; then
 		defconfig_path=$srctree/board/khadas/defconfigs/$1
 	fi
+	
+	# h96proplus configs folder support
+	if [ ! -r $defconfig_path ]; then
+		defconfig_path=$srctree/board/h96proplus/defconfigs/$1
+	fi	
 
 	# amlogic customer configs support
 	if [ ! -r $defconfig_path ]; then

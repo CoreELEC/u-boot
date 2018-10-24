@@ -1,0 +1,16 @@
+
+config H96PROPLUS_V2_2
+	bool "Support H96Pro+ v2.2 q201 board"
+	default n
+
+config H96PROPLUS_V5_V6
+	bool "Support H96Pro+ v5/v6 q201 board"
+	default n
+
+if H96PROPLUS_V2_2
+source "board/h96proplus/v2_2/Kconfig"
+endif
+
+if H96PROPLUS_V5_V6
+source "board/h96proplus/v5_v6/Kconfig"
+endif

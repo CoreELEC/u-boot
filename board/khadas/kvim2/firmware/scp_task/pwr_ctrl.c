@@ -112,15 +112,17 @@ static void vcck_ctrl(unsigned int ctrl)
 
 static void power_off_at_mcu(unsigned int shutdown)
 {
-	if(shutdown == 0) {
+	if(shutdown == SYS_POWEROFF) {
 		aml_update_bits(PREG_PAD_GPIO0_EN_N, 1 << 2, 0);
 		aml_update_bits(PREG_PAD_GPIO0_O, 1 << 2, 1 << 2);
 	}
 }
 
-static void power_off_at_clk81(void)
+static void power_off_at_clk81(unsigned int suspend_from)
 {
-	hdmi_5v_ctrl(OFF);
+	if(suspend_from == SYS_POWEROFF) {
+		hdmi_5v_ctrl(OFF);
+	}
 	vcck_ctrl(OFF);
 	pwm_set_voltage(pwm_b, CONFIG_VDDEE_SLEEP_VOLTAGE);	// reduce power
 }

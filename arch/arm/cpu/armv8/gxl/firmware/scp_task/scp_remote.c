@@ -208,6 +208,11 @@ static unsigned int kk[] = {
 	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL2,
 	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL3,
 	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL4,
+	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL5,
+	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL6,
+	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL7,
+	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL8,
+	CONFIG_IR_REMOTE_POWER_UP_KEY_VAL9
 };
 
 static int init_remote(void)
@@ -218,7 +223,7 @@ static int init_remote(void)
 	return 0;
 }
 
-unsigned int usr_pwr_key = CONFIG_IR_REMOTE_POWER_UP_KEY_VAL5;
+unsigned int usr_pwr_key = CONFIG_IR_REMOTE_POWER_UP_KEY_VAL10;
 
 static int remote_detect_key(void)
 {

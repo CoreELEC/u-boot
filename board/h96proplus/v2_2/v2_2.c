@@ -466,7 +466,7 @@ phys_size_t get_effective_memsize(void)
 #ifdef CONFIG_MULTI_DTB
 int checkhw(char * name)
 {
-	unsigned int ddr_size=0;
+	unsigned long long int ddr_size=0;
 	char loc_name[64] = {0};
 	int i;
 	for (i=0; i<CONFIG_NR_DRAM_BANKS; i++) {
@@ -477,6 +477,12 @@ int checkhw(char * name)
 #endif
 	if (get_cpu_id().family_id == MESON_CPU_MAJOR_ID_GXM) {
 		switch (ddr_size) {
+			case 0x100000000:
+				strcpy(loc_name, "gxm_q201_4g\0");
+				break;
+			case 0xC0000000:
+				strcpy(loc_name, "gxm_q201_3g\0");
+				break;  			
 			case 0x80000000:
 				strcpy(loc_name, "gxm_q201_2g\0");
 				break;
@@ -494,6 +500,12 @@ int checkhw(char * name)
 	}
 	else {
 		switch (ddr_size) {
+			case 0x100000000:
+				strcpy(loc_name, "gxl_q231_4g\0");
+				break;
+			case 0xC0000000:
+				strcpy(loc_name, "gxl_q231_3g\0");
+				break;  			
 			case 0x80000000:
 				strcpy(loc_name, "gxl_p231_2g\0");
 				break;

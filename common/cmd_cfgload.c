@@ -53,6 +53,7 @@ static char* read_cfgload(void)
 		p = (char *)CONFIG_SYS_LOAD_ADDR;
 
 	setenv("filesize", "0");
+	setenv("mmc_dev", "");
 
 	for (i = 0; i < 3; i++) {
 		block_dev_desc_t *mmc_dev = mmc_get_dev(i);
@@ -64,6 +65,9 @@ static char* read_cfgload(void)
 			filesize = getenv_ulong("filesize", 16, 0);
 
 			if (0 != filesize) {
+				sprintf(cmd, "%x", i);
+				setenv("mmc_dev", cmd);
+
 				sprintf(cmd, "fatload mmc %x:1 0x%p boot.ini", i, (void *)p);
 				run_command(cmd, 0);
 				break;

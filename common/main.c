@@ -72,6 +72,10 @@ void main_loop(void)
 
 	cli_init();
 
+#ifdef CONFIG_CMD_CFGLOAD
+	run_command("cfgload",0);
+#endif
+
 	run_preboot_environment_command();
 
 #if defined(CONFIG_UPDATE_TFTP)

@@ -246,8 +246,7 @@
             "run init_display;"\
             "run storeargs;"\
             "run upgrade_key;" \
-            "run switch_bootmode;" \
-            "cfgload;"
+            "run switch_bootmode;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

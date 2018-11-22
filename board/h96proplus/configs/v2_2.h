@@ -247,8 +247,7 @@
             "run storeargs;"\
             "run upgrade_key;" \
             "forceupdate;" \
-            "run switch_bootmode;" \
-            "cfgload;"
+            "run switch_bootmode;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

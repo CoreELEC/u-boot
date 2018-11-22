@@ -269,8 +269,7 @@
             "run combine_key;" \
             "run upgrade_key;" \
             "run vim_check;" \
-            "run switch_bootmode;" \
-            "cfgload;"
+            "run switch_bootmode;"
 #define CONFIG_BOOTCOMMAND "run storeboot"
 
 //#define CONFIG_ENV_IS_NOWHERE  1

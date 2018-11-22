@@ -11,6 +11,9 @@
 #include <malloc.h>
 #include <linux/ctype.h>    /* isalpha, isdigit */
 #include <linux/sizes.h>
+#ifdef CONFIG_SYS_MMC_ENV_DEV
+#include <mmc.h>
+#endif
 
 #ifdef CONFIG_SYS_HUSH_PARSER
 #include <cli_hush.h>
@@ -20,6 +23,11 @@
 #define BOOTINI_MAGIC	"COREELEC-UBOOT-CONFIG"
 #endif
 #define SZ_BOOTINI		SZ_64K
+
+#ifdef CONFIG_SYS_MMC_ENV_DEV
+extern int get_part_info_from_tbl(block_dev_desc_t * dev_desc,
+	int part_num, disk_partition_t * info);
+#endif
 
 /* Nothing to proceed with zero size string or comment.
  *
@@ -59,8 +67,40 @@ static char* read_cfgload(void)
 
 	filesize = getenv_ulong("filesize", 16, 0);
 	if (0 == filesize) {
+#ifdef CONFIG_SYS_MMC_ENV_DEV
+		printf("cfgload: fatload: not boot.ini or empty file, try ext4load of internal storage\n");
+		block_dev_desc_t *mmc_dev = mmc_get_dev(CONFIG_SYS_MMC_ENV_DEV);
+
+		if (mmc_dev != NULL) {
+			int i = 0;
+			int part_found = -1;
+			disk_partition_t info = {};
+
+			do {
+				if (!(strcasecmp((const char *)info.name, "system"))) {
+					part_found = i;
+					printf("cfgload: found system partition at %d\n", part_found);
+					break;
+				}
+				i++;
+			} while (get_part_info_from_tbl(mmc_dev, i, &info) != -1);
+
+			if (part_found != -1) {
+				sprintf(cmd, "ext4load mmc %x:%x 0x%p boot.ini", CONFIG_SYS_MMC_ENV_DEV, part_found, (void *)p);
+				run_command(cmd, 0);
+
+				filesize = getenv_ulong("filesize", 16, 0);
+
+				if (0 == filesize) {
+					printf("cfgload: ext4load: not boot.ini or empty file\n");
+					return NULL;
+				}
+			}
+		}
+#else
 		printf("cfgload: no boot.ini or empty file\n");
 		return NULL;
+#endif
 	}
 
 	if (filesize > SZ_BOOTINI) {

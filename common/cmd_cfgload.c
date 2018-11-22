@@ -11,6 +11,7 @@
 #include <malloc.h>
 #include <linux/ctype.h>    /* isalpha, isdigit */
 #include <linux/sizes.h>
+#include <mmc.h>
 
 #ifdef CONFIG_SYS_HUSH_PARSER
 #include <cli_hush.h>
@@ -45,8 +46,9 @@ static int valid_command(const char* p)
 static char* read_cfgload(void)
 {
 	char cmd[128];
-	unsigned long filesize;
+	unsigned long filesize = 0;
 	char *p;
+	int i;
 
 	p = (char *)simple_strtoul(getenv("loadaddr"), NULL, 16);
 	if (NULL == p)
@@ -54,10 +56,23 @@ static char* read_cfgload(void)
 
 	setenv("filesize", "0");
 
-	sprintf(cmd, "fatload mmc 0:1 0x%p boot.ini", (void *)p);
-	run_command(cmd, 0);
+	for (i = 0; i < 3; i++) {
+		block_dev_desc_t *mmc_dev = mmc_get_dev(i);
 
-	filesize = getenv_ulong("filesize", 16, 0);
+		if ((mmc_dev != NULL) && (mmc_dev->part_type == PART_TYPE_DOS)) {
+			sprintf(cmd, "fatsize mmc %x:1 boot.ini", i);
+			run_command(cmd, 0);
+
+			filesize = getenv_ulong("filesize", 16, 0);
+
+			if (0 != filesize) {
+				sprintf(cmd, "fatload mmc %x:1 0x%p boot.ini", i, (void *)p);
+				run_command(cmd, 0);
+				break;
+			}
+		}
+	}
+
 	if (0 == filesize) {
 		printf("cfgload: no boot.ini or empty file\n");
 		return NULL;

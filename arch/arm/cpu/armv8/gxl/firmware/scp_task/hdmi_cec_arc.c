@@ -401,6 +401,26 @@ void cec_set_stream_path(void)
 	}
 }
 
+static void cec_routing_change(void)
+{
+	unsigned char phy_addr_ab = (readl(P_AO_DEBUG_REG1) >> 8) & 0xff;
+	unsigned char phy_addr_cd = readl(P_AO_DEBUG_REG1) & 0xff;
+	cec_dbg_print(", phy_addr_ab:0x", phy_addr_ab);
+	cec_dbg_print(", phy_addr_cd:0x", phy_addr_cd);
+	cec_dbg_print(", msg[4]:0x", cec_msg.buf[cec_msg.rx_read_pos].msg[4]);
+	cec_dbg_print(", msg[5]:0x", cec_msg.buf[cec_msg.rx_read_pos].msg[5]);
+	cec_dbg_prints("\n");
+
+	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
+		if ((hdmi_cec_func_config >> STREAMPATH_POWER_ON_MASK) & 0x1) {
+			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[4]) &&
+			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[5]))  {
+				cec_msg.cec_power = 0x1;
+			}
+		}
+	}
+}
+
 void cec_device_vendor_id(void)
 {
 	unsigned char msg[5];
@@ -524,6 +544,9 @@ unsigned int cec_handle_message(void)
 			break;
 		case CEC_OC_SET_STREAM_PATH:
 			cec_set_stream_path();
+			break;
+		case CEC_OC_ROUTING_CHANGE:
+			cec_routing_change();
 			break;
 		case CEC_OC_GIVE_DEVICE_POWER_STATUS:
 			cec_report_device_power_status();
@@ -678,9 +701,9 @@ void cec_node_init(void)
 	unsigned char msg[1];
 	unsigned int kern_log_addr = (readl(P_AO_DEBUG_REG1) >> 16) & 0xf;
 	static enum _cec_log_dev_addr_e player_dev[3][3] =
-		{{CEC_PLAYBACK_DEVICE_1_ADDR, CEC_PLAYBACK_DEVICE_2_ADDR, CEC_PLAYBACK_DEVICE_3_ADDR},
-		 {CEC_PLAYBACK_DEVICE_2_ADDR, CEC_PLAYBACK_DEVICE_3_ADDR, CEC_PLAYBACK_DEVICE_1_ADDR},
-		 {CEC_PLAYBACK_DEVICE_3_ADDR, CEC_PLAYBACK_DEVICE_1_ADDR, CEC_PLAYBACK_DEVICE_2_ADDR}};
+		{{CEC_RECORDING_DEVICE_1_ADDR, CEC_RECORDING_DEVICE_2_ADDR, CEC_RECORDING_DEVICE_3_ADDR},
+		 {CEC_RECORDING_DEVICE_2_ADDR, CEC_RECORDING_DEVICE_3_ADDR, CEC_RECORDING_DEVICE_1_ADDR},
+		 {CEC_RECORDING_DEVICE_3_ADDR, CEC_RECORDING_DEVICE_1_ADDR, CEC_RECORDING_DEVICE_2_ADDR}};
 
 	if (retry >= 12) {  // retry all device addr
 		cec_msg.log_addr = 0x0f;

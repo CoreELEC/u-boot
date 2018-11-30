@@ -200,7 +200,29 @@ function package() {
 			echo " ok!"
 		fi
 	fi
-	encrypt $@
+
+	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
+
+		${FIP_FOLDER}${CUR_SOC}/amlogic-sign.sh  -p ${FIP_BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key  -o ${BUILD_FOLDER}
+
+		if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
+			kernel_encrypt_signed="${FIP_FOLDER}${CUR_SOC}/signing-tool-g12a-dev/kernel.encrypt.signed.bash"
+		  if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img ]; then
+				"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/boot.img.encrypt
+			fi
+			if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ]; then
+				"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/recovery.img.encrypt
+			fi
+			if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dtb.img ]; then
+				"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/dtb.img.encrypt
+			fi
+			if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dt.img ]; then
+				"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/dt.img.encrypt
+			fi
+		fi
+	else
+		encrypt $@
+	fi
 	#copy_file
 	#cleanup
 	echo "Bootloader build done!"

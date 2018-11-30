@@ -280,8 +280,8 @@ if [ $unsigned_only != "true" ]; then
     --bl33-arb-cvn 0x0                                   \
     -o            "${bl_out_dir}/u-boot.bin.${postfix}"
 
-  head -c 49152 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.bl2.${postfix}"
-  tail -c +49153 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.tpl.${postfix}"
+  head -c 65536 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.bl2.${postfix}"
+  tail -c +65537 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.tpl.${postfix}"
 	dd if=/dev/urandom of=${bl_out_dir}/u-boot.bin.${postfix}.sd.bin count=1 >& /dev/null
 	cat ${bl_out_dir}/u-boot.bin.${postfix} >> ${bl_out_dir}/u-boot.bin.${postfix}.sd.bin
 fi
@@ -302,8 +302,8 @@ fi
     --ddrfw8       "${ddrfw}/aml_ddr.fw"                \
     -o "${bl_out_dir}/u-boot.bin.unsigned"
 
-head -c 49152 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.bl2.unsigned"
-tail -c +49153 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.tpl.unsigned"
+head -c 65536 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.bl2.unsigned"
+tail -c +65537 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.tpl.unsigned"
 dd if=/dev/urandom of=${bl_out_dir}/u-boot.bin.unsigned.sd.bin count=1 >& /dev/null
 cat ${bl_out_dir}/u-boot.bin.unsigned >> ${bl_out_dir}/u-boot.bin.unsigned.sd.bin
 

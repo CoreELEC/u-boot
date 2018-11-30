@@ -193,8 +193,10 @@ function build() {
 	# package final bootloader
 	package
 
-	# copy bootloader to main folder
-	copy_bootloader
+	if [ "y" != "${CONFIG_AML_SIGNED_UBOOT}" ]; then
+		# copy bootloader to main folder
+		copy_bootloader
+	fi
 }
 
 function usage() {

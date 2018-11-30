@@ -184,6 +184,9 @@ function get_blx_bin() {
 				if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
 					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME[index]} ${FIP_BUILD_FOLDER} 2>/dev/null
 				fi
+				if [ -e ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/bl2.v3.bin ]; then
+					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/bl2.v3.bin ${FIP_BUILD_FOLDER} -f
+				fi
 			fi
 			# undo reset
 			if [ 0 -ne ${line_num} ]; then

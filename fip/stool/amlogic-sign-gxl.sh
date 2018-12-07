@@ -5,9 +5,9 @@ set -euo pipefail
 readonly script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly tools_dir=${script_dir}
 
-sign_boot_tool="${tools_dir}/signing-tool-g12a/sign-boot-g12a.sh"
-sign_boot_tool_dev="${tools_dir}/signing-tool-g12a-dev/sign-boot-g12a-dev.sh"
-efuse_gen="${tools_dir}/signing-tool-g12a-dev/efuse-gen.sh"
+sign_boot_tool="${tools_dir}/signing-tool-gxl/sign-boot-gxl.sh"
+sign_boot_tool_dev="${tools_dir}/signing-tool-gxl-dev/sign-boot-gxl-dev.sh"
+efuse_gen="${tools_dir}/signing-tool-gxl-dev/efuse-gen.sh"
 
 
 function usage() {
@@ -29,9 +29,13 @@ postfix="signed"
 unsigned_only="false"
 ddrfw=${script_dir}
 BL32_IMG=
+hash_ver=1
+soc=
 
-while getopts "p:r:a:uno:" opt; do
+while getopts "s:h:p:r:a:uno:" opt; do
   case $opt in
+    s) readonly soc="$OPTARG" ;;
+    h) readonly hash_ver="$OPTARG" ;;
     p) readonly prebuilts="$OPTARG" ;;
     r) readonly fw_krsa_dir="$OPTARG" ;;
     a) readonly fw_kaes_dir="$OPTARG" ;;
@@ -243,7 +247,7 @@ fi
 
 if [ $unsigned_only != "true" ]; then
   "$sign_boot_tool" --create-signed-bl \
-    --key-hash-ver 2                                     \
+    --key-hash-ver $hash_ver                             \
     --root-key-idx 0                                     \
     --root-key    "$rsa_root"                            \
     --root-key-0  "$rsa_root0"                           \
@@ -262,14 +266,6 @@ if [ $unsigned_only != "true" ]; then
     --bl33-key    "$rsa_bl33"                            \
     --fip-key     "$rsa_bl2"                             \
     --kernel-key  "$rsa_kernel"                          \
-    --ddrfw1       "${ddrfw}/ddr4_1d.fw"                 \
-    --ddrfw2       "${ddrfw}/ddr4_2d.fw"                 \
-    --ddrfw3       "${ddrfw}/ddr3_1d.fw"                 \
-    --ddrfw4       "${ddrfw}/piei.fw"                    \
-    --ddrfw5       "${ddrfw}/lpddr4_1d.fw"               \
-    --ddrfw6       "${ddrfw}/lpddr4_2d.fw"               \
-    --ddrfw7       "${ddrfw}/diag_lpddr4.fw"             \
-    --ddrfw8       "${ddrfw}/aml_ddr.fw"                 \
     ${encryption_flags}                                  \
     -e            "$encryption_option"                   \
     --bl2-arb-cvn 0x0                                    \
@@ -280,30 +276,22 @@ if [ $unsigned_only != "true" ]; then
     --bl33-arb-cvn 0x0                                   \
     -o            "${bl_out_dir}/u-boot.bin.${postfix}"
 
-  head -c 65536 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.bl2.${postfix}"
-  tail -c +65537 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.tpl.${postfix}"
+  head -c 49152 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.bl2.${postfix}"
+  tail -c +49153 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.tpl.${postfix}"
 	dd if=/dev/urandom of=${bl_out_dir}/u-boot.bin.${postfix}.sd.bin count=1 >& /dev/null
 	cat ${bl_out_dir}/u-boot.bin.${postfix} >> ${bl_out_dir}/u-boot.bin.${postfix}.sd.bin
 fi
 
-"$sign_boot_tool_dev" --create-unsigned-bl              \
-    --bl2 "${soc_prebuilts}/bl2_new.bin"                \
-    --bl30 "${soc_prebuilts}/bl30_new.bin"              \
-    --bl31 "${soc_prebuilts}/bl31.img"                  \
-    --bl32 "${BL32_IMG}"                                \
-    --bl33 "${soc_prebuilts}/bl33.bin"                  \
-    --ddrfw1       "${ddrfw}/ddr4_1d.fw"                \
-    --ddrfw2       "${ddrfw}/ddr4_2d.fw"                \
-    --ddrfw3       "${ddrfw}/ddr3_1d.fw"                \
-    --ddrfw4       "${ddrfw}/piei.fw"                   \
-    --ddrfw5       "${ddrfw}/lpddr4_1d.fw"              \
-    --ddrfw6       "${ddrfw}/lpddr4_2d.fw"              \
-    --ddrfw7       "${ddrfw}/diag_lpddr4.fw"            \
-    --ddrfw8       "${ddrfw}/aml_ddr.fw"                \
+"$sign_boot_tool_dev" --create-unsigned-bl \
+    --bl2 "${soc_prebuilts}/bl2_new.bin"   \
+    --bl30 "${soc_prebuilts}/bl30_new.bin" \
+    --bl31 "${soc_prebuilts}/bl31.img"     \
+    --bl32 "${BL32_IMG}"                   \
+    --bl33 "${soc_prebuilts}/bl33.bin"     \
     -o "${bl_out_dir}/u-boot.bin.unsigned"
 
-head -c 65536 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.bl2.unsigned"
-tail -c +65537 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.tpl.unsigned"
+head -c 49152 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.bl2.unsigned"
+tail -c +49153 "${bl_out_dir}/u-boot.bin.unsigned" > "${bl_out_dir}/u-boot.bin.usb.tpl.unsigned"
 dd if=/dev/urandom of=${bl_out_dir}/u-boot.bin.unsigned.sd.bin count=1 >& /dev/null
 cat ${bl_out_dir}/u-boot.bin.unsigned >> ${bl_out_dir}/u-boot.bin.unsigned.sd.bin
 
@@ -311,7 +299,7 @@ cat ${bl_out_dir}/u-boot.bin.unsigned >> ${bl_out_dir}/u-boot.bin.unsigned.sd.bi
 rsa_root_hash=${soc_fw_krsa_dir}/rootkeys-hash.bin
 
 "$sign_boot_tool_dev" --create-root-hash \
-	--key-hash-ver 2                       \
+	--key-hash-ver $hash_ver               \
 	--root-key-0 "$rsa_root0"              \
 	--root-key-1 "$rsa_root1"              \
 	--root-key-2 "$rsa_root2"              \
@@ -319,8 +307,8 @@ rsa_root_hash=${soc_fw_krsa_dir}/rootkeys-hash.bin
 	-o "$rsa_root_hash"
 
 "$efuse_gen" --generate-efuse-pattern \
-	--soc g12a                          \
-	--key-hash-ver 2                    \
+	--soc $soc                        \
+	--key-hash-ver $hash_ver            \
 	--root-hash "$rsa_root_hash"        \
 	--aes-key "${kaes_bl2}"             \
 	--enable-sb true                    \

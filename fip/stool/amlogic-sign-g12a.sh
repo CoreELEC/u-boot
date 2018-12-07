@@ -27,11 +27,15 @@ bl_out_dir=
 encryption_option="FIPbl3x"
 postfix="signed"
 unsigned_only="false"
-ddrfw=${script_dir}
+ddrfw=
 BL32_IMG=
+hash_ver=2
+soc=
 
-while getopts "p:r:a:uno:" opt; do
+while getopts "s:h:p:r:a:uno:" opt; do
   case $opt in
+    s) readonly soc="$OPTARG" ;;
+    h) readonly hash_ver="$OPTARG" ;;
     p) readonly prebuilts="$OPTARG" ;;
     r) readonly fw_krsa_dir="$OPTARG" ;;
     a) readonly fw_kaes_dir="$OPTARG" ;;
@@ -64,6 +68,7 @@ if [ -e "${soc_prebuilts}/bl32.img"  ]; then
   BL32_IMG="${soc_prebuilts}/bl32.img"
 fi
 
+ddrfw=$soc_prebuilts
 soc_fw_krsa_dir=$fw_krsa_dir
 soc_fw_kaes_dir=$fw_kaes_dir
 

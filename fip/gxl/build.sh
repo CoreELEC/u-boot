@@ -211,23 +211,16 @@ function package() {
 				${BUILD_PATH}/bl2_new.bin \
 				bl2
 
-			${FIP_FOLDER}${CUR_SOC}/amlogic-sign.sh  -p ${FIP_BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key  -o ${BUILD_FOLDER}
+			list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl30_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin"
+			u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
+			zip -j $u_pack ${list_pack}
+
+			${FIP_FOLDER}/stool/sign.sh -z $u_pack -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -s ${CUR_SOC}
 
 			if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
-				kernel_encrypt_signed="${FIP_FOLDER}${CUR_SOC}/signing-tool-gxl-dev/kernel.encrypt.signed.bash"
-				if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img ]; then
-					"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/boot.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/boot.img.encrypt
-				fi
-				if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ]; then
-					"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/recovery.img.encrypt
-				fi
-				if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dtb.img ]; then
-					"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/dtb.img.encrypt
-				fi
-				if [ -e ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dt.img ]; then
-					"$kernel_encrypt_signed" ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/recovery.img ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key ${BUILD_FOLDER}/dt.img.encrypt
-				fi
+					${FIP_FOLDER}/stool/sign.sh -p ${UBOOT_SRC_FOLDER}/${BOARD_DIR} -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key
 			fi
+
 		else
 			echo "File ${BUILD_PATH}/bl2.v3.bin not found!"
 		fi

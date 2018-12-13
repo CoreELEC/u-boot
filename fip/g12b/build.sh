@@ -198,10 +198,15 @@ function package() {
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
 
+		mv -f ${BUILD_PATH}/bl33.bin  ${BUILD_PATH}/bl33.bin.org
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin.org --output ${BUILD_PATH}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
+		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
+
 		list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl30_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin"
 		list_pack="$list_pack ${FIP_FOLDER}/${CUR_SOC}/*.fw"
 		u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
-		zip -j $u_pack ${list_pack}
+		zip -j $u_pack ${list_pack} >& /dev/null
 
 		${FIP_FOLDER}/stool/sign.sh -s ${CUR_SOC} -z $u_pack -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key
 

@@ -49,7 +49,7 @@ if [[ -f $user_package ]]; then
 	temp_dir="$(dirname $user_package )"/"$(basename $user_package)"-`date +%Y%m%d-%H%M%S`
 	mkdir -p $temp_dir
 	if [[ -d $temp_dir ]]; then  
-	unzip $user_package -d $temp_dir
+	unzip $user_package -d $temp_dir >& /dev/null
 	if [[ -d $user_input ]]; then
 		echo "error!user package and input conflicts! Only one set is legal!" 
 		exit 1;

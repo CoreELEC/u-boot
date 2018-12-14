@@ -44,6 +44,8 @@
 #define MIIM_RTL8211F_TX_DELAY		0x100
 #define MIIM_RTL8211F_LCR		0x10
 
+#define MIIM_RTL821x_PHYCR2		0x19
+#define MIIM_RTL821x_CLKOUT_EN	0x1
 
 /* RealTek RTL8211x */
 static int rtl8211x_config(struct phy_device *phydev)
@@ -59,6 +61,52 @@ static int rtl8211f_config(struct phy_device *phydev)
 {
 	u16 reg;
 	u16 bmcr = 0;
+#ifndef CONFIG_KHADAS_KBI
+	int val;
+
+	/* close CLOCK output */
+	val = phy_read(phydev, MDIO_DEVAD_NONE, MIIM_RTL821x_PHYCR2);
+	if (val < 0)
+		return val;
+	phy_write(phydev, MDIO_DEVAD_NONE, MIIM_RTL8211F_PAGE_SELECT, 0xa43);
+	phy_write(phydev, MDIO_DEVAD_NONE, MIIM_RTL821x_PHYCR2,
+			(val & (~MIIM_RTL821x_CLKOUT_EN)));
+	phy_write(phydev, MDIO_DEVAD_NONE, MIIM_RTL8211F_PAGE_SELECT, 0x0);
+	phy_write(phydev, MDIO_DEVAD_NONE, MII_BMCR,
+			BMCR_RESET|BMCR_ANENABLE|BMCR_ANRESTART);
+
+	/* wait for ready */
+	do {
+		bmcr = phy_read(phydev, MDIO_DEVAD_NONE, MII_BMCR);
+		if (bmcr < 0)
+			return bmcr;
+	} while (bmcr & BMCR_RESET);
+
+	phy_write(phydev, MDIO_DEVAD_NONE,
+		  MIIM_RTL8211F_PAGE_SELECT, 0xd08);
+	reg = phy_read(phydev, MDIO_DEVAD_NONE, 0x11);
+
+	/* enable TX-delay for rgmii-id and rgmii-txid, otherwise disable it */
+	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+		reg |= MIIM_RTL8211F_TX_DELAY;
+	else
+		reg &= ~MIIM_RTL8211F_TX_DELAY;
+
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x11, reg);
+	/* restore to default page 0 */
+	phy_write(phydev, MDIO_DEVAD_NONE,
+		  MIIM_RTL8211F_PAGE_SELECT, 0x0);
+
+	/* Set green LED for Link, yellow LED for Active */
+	phy_write(phydev, MDIO_DEVAD_NONE,
+		  MIIM_RTL8211F_PAGE_SELECT, 0xd04);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x10, 0x617f);
+	phy_write(phydev, MDIO_DEVAD_NONE,
+		  MIIM_RTL8211F_PAGE_SELECT, 0x0);
+
+	genphy_config_aneg(phydev);
+#else	
 
 	reg = phy_read(phydev, MDIO_DEVAD_NONE, 0x19);
 	if (reg < 0)
@@ -83,9 +131,9 @@ static int rtl8211f_config(struct phy_device *phydev)
 	phy_write(phydev, MDIO_DEVAD_NONE, 0x10, 0xc171);
 
 	run_command("kbi resetflag 1", 0);
+#endif
 	return 0;
 }
-
 
 static int rtl8211x_parse_status(struct phy_device *phydev)
 {

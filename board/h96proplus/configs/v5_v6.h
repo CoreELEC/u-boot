@@ -122,7 +122,7 @@
         "cvbs_drv=0\0"\
         "active_slot=_a\0"\
         "boot_part=boot\0"\
-        "cecconfig=cec19\0"\
+        "cecconfig=cec3f\0"\
         "initargs="\
             "rootfstype=ramfs init=/init console=ttyS0,115200 no_console_suspend earlyprintk=aml-uart,0xc81004c0 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
             "\0"\
@@ -389,6 +389,7 @@
 #define CONFIG_EFUSE 1
 #define CONFIG_SYS_I2C_AML 1
 #define CONFIG_SYS_I2C_SPEED     400000
+#define CONFIG_PHY_REALTEK 1
 
 /* commands */
 #define CONFIG_CMD_CACHE 1
@@ -468,7 +469,7 @@
   #undef CONFIG_AML_CUSTOMER_ID
   #define CONFIG_AML_CUSTOMER_ID  CONFIG_CUSTOMER_ID
 #endif
-#define CONFIG_INTERNAL_PHY
+//#define CONFIG_INTERNAL_PHY
 
 #endif
 

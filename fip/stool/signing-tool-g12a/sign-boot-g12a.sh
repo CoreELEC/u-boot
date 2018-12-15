@@ -430,6 +430,134 @@ append_uint32_le() {
     echo $vrev | xxd -r -p >> $output
 }
 
+# Convert RSA private PEM key to public key
+# $1: input RSA private .PEM
+# $2: output public key file
+pem_to_pub() {
+    local input=$1
+    local output=$2
+    if [ ! -f "$1" ] || [ -z "$2" ]; then
+        echo "Argument error, \"$1\", \"$2\" "
+        exit 1
+    fi
+
+    openssl 2>/dev/null rsa -in $input -pubout -RSAPublicKey_out -out $output
+
+    if [ $? -ne 0 ]; then
+        echo "Error converting key"
+        exit 1
+    fi
+}
+
+# Convert RSA PEM key to precomputed binary key file
+# If input is already the precomputed binary key file, then it is simply copied
+# to the output
+# $1: input RSA private .PEM
+# $2: output precomputed binary key file
+pem_to_bin() {
+    local input=$1
+    local output=$2
+    if [ ! -f "$1" ] || [ -z "$2" ]; then
+        echo "Argument error, \"$1\", \"$2\" "
+        exit 1
+    fi
+
+    local insize=$(wc -c < $input)
+    if [ $insize -eq 1036 ]; then
+        # input is already precomputed binary key file
+        cp $input $output
+    fi
+
+    local pycmd="import sys; \
+                 sys.path.append(\"${TOOL_PATH}\"); \
+                 import pem_extract_pubkey; \
+                 sys.stdout.write(pem_extract_pubkey.extract_pubkey( \
+                    \"$input\", headerMode=False));"
+    /usr/bin/env python -c "$pycmd" > $output
+}
+
+# function: add control block for upgrade check/defnedkey
+# $1: input/output
+# $2: rsakey
+# $3: aeskey
+# $4: rsakeysha
+# typedef struct{
+#		unsigned char szPad0[16]; //fixed to 0
+#		unsigned char szIMGCHK[32];
+#		unsigned char szRTKCHK[32];
+#		unsigned char szAESCHK[32];
+#		unsigned char szPad1[16];
+#
+#		unsigned char szPad2[4];  //fixed to 0
+#		unsigned char szPad3[124];//random is perfect for RSA
+#
+#		unsigned char szPad4[4];  //fixed to 0
+#		unsigned char szPad5[124];//random is perfect for RSA
+#
+#		unsigned char szPad6[4];  //fixed to 0
+#		unsigned char szPad7[124];//random is perfect for RSA
+#	}st_upg_chk_blk;//128x4=512Bytes
+add_upgrade_check() {
+    if [ $# -lt 4 ]; then
+        echo Invalid args for $FUNCNAME
+        echo "args: input/output rsakey aeskey"
+        exit 1
+    fi
+
+    local sig="$TMP/sig"
+		dd if=/dev/zero of=${sig} bs=1 count=12 &> /dev/null         #szPad0[12]
+		echo -n 'SCPT' >> ${sig}                                     #szPad0[4]
+		openssl dgst -sha256 -binary -out $TMP/$(basename $1).sha $1
+		cat $TMP/$(basename $1).sha >> ${sig}                        #szIMGCHK[32]
+		rm -f $TMP/$(basename $1).sha
+		if [ -e $4 ]; then
+		  cat $4 >> ${sig}                                           #szRTKCHK[32]
+		else
+		  echo "Warning... Invalid RSA key SHA -- $4"
+		  dd if=/dev/zero of=${sig} bs=1 count=32 oflag=append conv=notrunc &> /dev/null  #szRTKCHK[32]
+		fi
+
+		if [ -e $3 ]; then
+		  cat "$3" >> ${sig}                                          #szAESCHK[32]
+		else
+		  echo "Warning... Invalid AES key -- $3"
+		  dd if=/dev/zero of=${sig} bs=1 count=32 oflag=append conv=notrunc &> /dev/null  #szAESCHK[32]
+		fi
+
+		dd if=/dev/zero of=${sig} bs=1 count=20 oflag=append conv=notrunc &> /dev/null		 #szPad1[16],szPad2[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null	 #szPad3[12]
+		dd if=/dev/zero of=${sig} bs=1 count=116 oflag=append conv=notrunc &> /dev/null    #szPad3[112],szPad4[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad5[12]
+		dd if=/dev/zero of=${sig} bs=1 count=116 oflag=append conv=notrunc &> /dev/null    #szPad5[112],szPad6[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad7[12]
+		dd if=/dev/zero of=${sig} bs=1 count=112 oflag=append conv=notrunc &> /dev/null    #szPad7[112]
+
+		modulus=`openssl rsa -in $2  -modulus -noout`
+		declare -i ikeylen=${#modulus}
+	  ikeylen=$[ (ikeylen -8) / 2]
+		declare -i iIndex
+		declare -i iTotal
+		iIndex=$[512%ikeylen]
+		if [ $iIndex -ne 0 ]; then
+			echo "invalid RSA key len $2\n"
+			exit 1
+		fi
+
+		iTotal=$[512/ikeylen]
+		#dd if=/dev/zero of=${sig}.dec bs=1 count=0 &> /dev/null
+		while [ $iIndex -lt $iTotal ]; do
+			local step=${sig}.$iIndex
+			dd if=${sig} of=${step} bs=1 skip=$[ikeylen*iIndex] count=${ikeylen} &> /dev/null
+			openssl rsautl -decrypt -raw -in ${step}     -inkey $2 -out ${step}.enc &> /dev/null
+			cat ${step}.enc >> $1
+			#openssl rsautl -encrypt -raw -in ${step}.enc -inkey $2 -out ${step}.enc.dec &> /dev/null
+			#cat ${step}.enc.dec >> ${sig}.dec
+			iIndex+=1
+    done
+
+    rm -f ${sig}*
+}
+
 # Encrypt/sign kernel
 #typedef struct {
 #	uint32_t magic;
@@ -455,6 +583,7 @@ sign_kernel() {
     local encrypt=false
     local stage="kernel"
     local i=0
+    local keyhashver=1
 
     # Parse args
     i=0
@@ -474,6 +603,8 @@ sign_kernel() {
                 aesiv="${argv[$i]}" ;;
             -v)
                 arb_cvn="${argv[$i]}" ;;
+            -h)
+                keyhashver="${argv[$i]}" ;;
             *)
                 echo "Unknown option $arg"; exit 1
                 ;;
@@ -547,52 +678,59 @@ sign_kernel() {
 
     echo
     echo Created signed kernel $output successfully
-}
 
-# Convert RSA private PEM key to public key
-# $1: input RSA private .PEM
-# $2: output public key file
-pem_to_pub() {
-    local input=$1
-    local output=$2
-    if [ ! -f "$1" ] || [ -z "$2" ]; then
-        echo "Argument error, \"$1\", \"$2\" "
-        exit 1
+    #......
+    #add_upgrade_check ${output} bl2key bl2aeskey r-key.e
+    local keypath=$(dirname $key)
+    local temp_folder=$SCRIPT_PATH/`date +%Y%m%d%H%M%S`
+
+    local rootkey0=$keypath/root0.pem
+    local rootkey1=$keypath/root1.pem
+    local rootkey2=$keypath/root2.pem
+    local rootkey3=$keypath/root3.pem
+    local bl2key=$keypath/bl2.pem
+    local bl2aeskey=$keypath/bl2aeskey
+
+    check_file bl2key   "$bl2key"
+    check_file rootkey0 "$rootkey0"
+    check_file rootkey1 "$rootkey1"
+    check_file rootkey2 "$rootkey2"
+    check_file rootkey3 "$rootkey3"
+
+		mkdir -p $temp_folder
+
+    if [ -d $temp_folder ]; then
+	    pem_to_pub $rootkey0 $temp_folder/rootkey0.pub
+	    pem_to_pub $rootkey1 $temp_folder/rootkey1.pub
+	    pem_to_pub $rootkey2 $temp_folder/rootkey2.pub
+	    pem_to_pub $rootkey3 $temp_folder/rootkey3.pub
+
+	    # Convert PEM key to rsa_public_key_t (precomputed RSA public key)
+	    pem_to_bin $temp_folder/rootkey0.pub $temp_folder/rootkey0.bin
+	    pem_to_bin $temp_folder/rootkey1.pub $temp_folder/rootkey1.bin
+	    pem_to_bin $temp_folder/rootkey2.pub $temp_folder/rootkey2.bin
+	    pem_to_bin $temp_folder/rootkey3.pub $temp_folder/rootkey3.bin
+
+	    # hash of keys
+	    declare -i keylen=$(get_pem_key_len $rootkey0)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey0.bin $keylen $temp_folder/rootkey0.sha
+	    keylen=$(get_pem_key_len $rootkey1)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey1.bin $keylen $temp_folder/rootkey1.sha
+	    keylen=$(get_pem_key_len $rootkey2)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey2.bin $keylen $temp_folder/rootkey2.sha
+	    keylen=$(get_pem_key_len $rootkey3)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey3.bin $keylen $temp_folder/rootkey3.sha
+
+	    cat $temp_folder/rootkey0.sha $temp_folder/rootkey1.sha $temp_folder/rootkey2.sha $temp_folder/rootkey3.sha > $temp_folder/r-key.4
+	    openssl dgst -sha256 -binary $temp_folder/r-key.4 > $temp_folder/r-key.e
+	    add_upgrade_check ${output} $bl2key ${bl2aeskey} $temp_folder/r-key.e
+
+	    rm -fr $temp_folder
     fi
-
-    openssl 2>/dev/null rsa -in $input -pubout -RSAPublicKey_out -out $output
-
-    if [ $? -ne 0 ]; then
-        echo "Error converting key"
-        exit 1
-    fi
-}
-
-# Convert RSA PEM key to precomputed binary key file
-# If input is already the precomputed binary key file, then it is simply copied
-# to the output
-# $1: input RSA private .PEM
-# $2: output precomputed binary key file
-pem_to_bin() {
-    local input=$1
-    local output=$2
-    if [ ! -f "$1" ] || [ -z "$2" ]; then
-        echo "Argument error, \"$1\", \"$2\" "
-        exit 1
-    fi
-
-    local insize=$(wc -c < $input)
-    if [ $insize -eq 1036 ]; then
-        # input is already precomputed binary key file
-        cp $input $output
-    fi
-
-    local pycmd="import sys; \
-                 sys.path.append(\"${TOOL_PATH}\"); \
-                 import pem_extract_pubkey; \
-                 sys.stdout.write(pem_extract_pubkey.extract_pubkey( \
-                    \"$input\", headerMode=False));"
-    /usr/bin/env python -c "$pycmd" > $output
 }
 
 # Create and sign FIP
@@ -1148,6 +1286,10 @@ sign_bl2_hdr() {
             --bl2-size $bl2size \
             -o "$TMP/bl2.hdr"
 
+    cat $TMP/rootkey0.sha $TMP/rootkey1.sha $TMP/rootkey2.sha $TMP/rootkey3.sha > $TMP/r-key.4
+    openssl dgst -sha256 -binary $TMP/r-key.4 > $TMP/r-key.e
+    rm -f $TMP/r-key.4
+
     # Add arb cvn
     if [ ! -z "$arb_cvn" ]; then
         printf %02x $arb_cvn | xxd -r -p > "$TMP/bl2cvn"
@@ -1177,6 +1319,7 @@ sign_bl2_hdr() {
 
     mv "$TMP/bl2.hdr" "$output"
 }
+
 
 # input bl2, bl30/31/32/33/kernel {.bin, rsa key, aes key, aes iv}
 create_signed_bl() {
@@ -1726,6 +1869,8 @@ create_signed_bl() {
 
     echo
     echo Created signed bootloader $output successfully
+
+    add_upgrade_check ${output} $bl2key ${bl2aeskey} $TMP/r-key.e
 }
 
 parse_main() {
@@ -1787,7 +1932,7 @@ cleanup() {
     for i in $tmpfiles ; do
         rm -f $TMP/$i
     done
-    rmdir $TMP || true
+    rm -fr $TMP
 }
 
 trap cleanup EXIT

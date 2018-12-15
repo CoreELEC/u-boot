@@ -37,7 +37,8 @@ hash_ver=1
 fi
 
 readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-kernel_encrypt_signed="${tools_dir}/signing-tool-${tool_type}-dev/kernel.encrypt.signed.bash"
+uboot_encrypt_signed="${tools_dir}/amlogic-sign-${tool_type}.sh"
+kernel_encrypt_signed="${tools_dir}/signing-tool-${tool_type}/sign-boot-${tool_type}.sh"
 
 INPUTDIR=
 OUTPUTDIR=
@@ -49,13 +50,13 @@ if [[ -f $user_package ]]; then
 	temp_dir="$(dirname $user_package )"/"$(basename $user_package)"-`date +%Y%m%d-%H%M%S`
 	mkdir -p $temp_dir
 	if [[ -d $temp_dir ]]; then  
-	unzip $user_package -d $temp_dir >& /dev/null
-	if [[ -d $user_input ]]; then
-		echo "error!user package and input conflicts! Only one set is legal!" 
-		exit 1;
-	else
-		user_input=$temp_dir
-	fi
+		unzip $user_package -d $temp_dir >& /dev/null
+		if [[ -d $user_input ]]; then
+			echo "error!user package and input conflicts! Only one set is legal!"
+			exit 1;
+		else
+			user_input=$temp_dir
+		fi
 	fi
 fi
 
@@ -73,34 +74,32 @@ if [[ ! -z $user_out ]]; then
 fi
 
 mkdir -p ${OUTPUTDIR}
-echo "--- output to ${OUTPUTDIR}---"
-
 
 #to sign uboot and output to ${OUTPUTDIR}
 if [ -e ${INPUTDIR}/bl2_new.bin ]; then
-	${tools_dir}/amlogic-sign-${tool_type}.sh -p ${INPUTDIR} -r ${RSAKEYDIR} -a ${AESKEYDIR} -o ${OUTPUTDIR} -h ${hash_ver} -s ${tool_type}
+  echo
+  echo "$user_package signing process ..."
+  "$uboot_encrypt_signed" -p ${INPUTDIR} -r ${RSAKEYDIR} -a ${AESKEYDIR} -o ${OUTPUTDIR} -h ${hash_ver} -s ${tool_type}
 fi
 
-
-#check and sign kernel
-if [ -e ${INPUTDIR}/boot.img ]; then
-	"$kernel_encrypt_signed" ${INPUTDIR}/boot.img ${RSAKEYDIR} ${OUTPUTDIR}/boot.img.encrypt
-fi
-
-#check and sign recovery
-if [ -e ${INPUTDIR}/recovery.img ]; then
-	"$kernel_encrypt_signed" ${INPUTDIR}/recovery.img ${RSAKEYDIR} ${OUTPUTDIR}/recovery.img.encrypt	
-fi
-
-#check and sign dtb
-if [ -e ${INPUTDIR}/dtb.img ]; then
-	"$kernel_encrypt_signed" ${INPUTDIR}/dtb.img ${RSAKEYDIR} ${OUTPUTDIR}/dtb.img.encrypt	
-fi
-
-#check and sign dtb with another name
-if [ -e ${INPUTDIR}/dt.img ]; then
-	"$kernel_encrypt_signed" ${INPUTDIR}/dt.img ${RSAKEYDIR} ${OUTPUTDIR}/dt.img.encrypt	
-fi
+#check and sign&encrypt kernel/recovery/dtb image
+arry=("boot.img" "recovery.img" "dtb.img" "dt.img");
+image_name="";
+for item in ${arry[@]}
+{
+	image_name=${INPUTDIR}/$item
+	if [ -e $image_name ]; then
+    echo
+    echo "$image_name signing process ..."
+    "$kernel_encrypt_signed" --sign-kernel \
+    -i $image_name                \
+    -k ${RSAKEYDIR}/kernelkey.pem \
+    -a ${RSAKEYDIR}/kernelaeskey  \
+    --iv ${RSAKEYDIR}/kernelaesiv \
+    -o ${OUTPUTDIR}/$item.signed.encrypted \
+    -h ${hash_ver}
+  fi
+}
 
 if [ -d $temp_dir ]; then
 	rm -fr $temp_dir

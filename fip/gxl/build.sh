@@ -223,7 +223,7 @@ function package() {
 			${FIP_FOLDER}/stool/sign.sh -z $u_pack -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -s ${CUR_SOC}
 
 			if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
-					${FIP_FOLDER}/stool/sign.sh -p ${UBOOT_SRC_FOLDER}/${BOARD_DIR} -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key
+					${FIP_FOLDER}/stool/sign.sh -s ${CUR_SOC} -p ${UBOOT_SRC_FOLDER}/${BOARD_DIR} -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key
 			fi
 
 		else

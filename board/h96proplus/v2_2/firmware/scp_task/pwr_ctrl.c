@@ -277,6 +277,10 @@ static unsigned int detect_key(unsigned int suspend_from)
 				exit_reason = REMOTE_CUS_WAKEUP;
 		}
 
+		if (!(readl(PREG_PAD_GPIO3_I) & (0x01 << 15))) {
+			exit_reason = WOL_WAKEUP;
+		}
+
 		if (irq[IRQ_AO_GPIO0] == IRQ_AO_GPIO0_NUM) {
 			irq[IRQ_AO_GPIO0] = 0xFFFFFFFF;
 			if ((readl(AO_GPIO_I) & (1<<2)) == 0)

@@ -42,7 +42,7 @@
 #define CONFIG_VDDEE_SLEEP_VOLTAGE	 850		// voltage for suspend
 
 /* configs for CEC */
-#define CONFIG_CEC_OSD_NAME		"LibreTech-CC"
+#define CONFIG_CEC_OSD_NAME		"AML-S905X-CC"
 #define CONFIG_CEC_WAKEUP
 
 #define CONFIG_INSTABOOT

@@ -516,3 +516,6 @@
 
 #endif
 
+#define CONFIG_VIDEO_BMP_GZIP
+#define CONFIG_CMD_SHOWLOGO
+#define CONFIG_SYS_VIDEO_LOGO_MAX_SIZE       (6 << 20)

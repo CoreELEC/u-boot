@@ -42,7 +42,7 @@
 #define CONFIG_VDDEE_SLEEP_VOLTAGE	 850		// voltage for suspend
 
 /* configs for CEC */
-#define CONFIG_CEC_OSD_NAME		"LibreTech-CC"
+#define CONFIG_CEC_OSD_NAME		"AML-S905X-CC"
 #define CONFIG_CEC_WAKEUP
 
 #define CONFIG_INSTABOOT
@@ -260,8 +260,8 @@
 
 /* ddr */
 #define CONFIG_DDR_SIZE					0 //MB //0 means ddr size auto-detect
-#define CONFIG_DDR_CLK					912  //MHz, Range: 384-1200, should be multiple of 24
-#define CONFIG_DDR4_CLK					1008  //MHz, for boards which use different ddr chip
+#define CONFIG_DDR_CLK					1056  //MHz, Range: 384-1200, should be multiple of 24
+#define CONFIG_DDR4_CLK					1056  //MHz, for boards which use different ddr chip
 /* DDR type setting
  *    CONFIG_DDR_TYPE_LPDDR3   : LPDDR3
  *    CONFIG_DDR_TYPE_DDR3     : DDR3

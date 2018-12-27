@@ -330,6 +330,31 @@ rsa_root_hash=${soc_fw_krsa_dir}/rootkeys-hash.bin
 	--aes-key "${kaes_bl2}"             \
 	--enable-sb true                    \
 	--enable-aes true                   \
+	-o "${bl_out_dir}/pattern.secureboot.efuse"
+
+#if found usb.password.hash.bin then generate pattern.usb.efuse
+#which contain usb password pattern
+
+readonly passwordhash=${soc_fw_krsa_dir}/usb.password.hash.bin
+if [ -f $passwordhash ]; then
+	"$efuse_gen" --generate-efuse-pattern \
+	--soc g12a                          \
+	--key-hash-ver 2                    \
+	--root-hash "$rsa_root_hash"        \
+	--aes-key "${kaes_bl2}"             \
+	--enable-sb true                    \
+	--enable-aes true                   \
+	--enable-usb-password true          \
+	--password-hash $passwordhash       \
 	-o "${bl_out_dir}/pattern.efuse"
+
+	"$efuse_gen" --generate-efuse-pattern \
+	--soc g12a                          \
+	--enable-usb-password true          \
+	--password-hash $passwordhash       \
+	-o "${bl_out_dir}/pattern.usb.efuse"
+else
+  cp -f "${bl_out_dir}/pattern.secureboot.efuse" "${bl_out_dir}/pattern.efuse"
+fi
 
 rm -f "$rsa_root_hash"

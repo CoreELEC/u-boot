@@ -29,7 +29,8 @@ fi
 ${ToolPath}/signing-tool-g12a/sign-boot-g12a.sh --sign-kernel \
         -i ${kerenlFile} \
         -k ${keyPath}/kernelkey.pem \
-        -a ${keyPath}/kernelaeskey \
+        -a ${keyPath}/kernelaeskey  \
         --iv ${keyPath}/kernelaesiv \
+        -h 2                        \
         -o $outPut
 

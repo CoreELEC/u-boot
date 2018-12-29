@@ -583,7 +583,7 @@ sign_kernel() {
     local encrypt=false
     local stage="kernel"
     local i=0
-    local keyhashver=1
+    local keyhashver=2
 
     # Parse args
     i=0

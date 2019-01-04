@@ -6,15 +6,20 @@ Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) --generate-efuse-pattern \\
                       --soc [gxl | txlx | g12a | g12b ] \\
+                      [--aml-key-path path-of-key]      \\
+                      [--enable-sb false]               \\
+                      [--enable-aes false]              \\
                       [--password-hash password.hash]   \\
-                      [--enable-jtag-password true]     \\
-                      [--enable-usb-password true]      \\
+                      [--enable-jtag-password false]    \\
+                      [--enable-usb-password false]     \\
+                      [--enable-anti-rollback false]    \\
                       -o pattern.efuse
 
 EOF
     exit 1
 }
 
+amlkeypath=""
 kwrap=""
 wrlock_kwrap="false"
 roothash=""
@@ -60,6 +65,8 @@ generate_efuse_pattern() {
         i=$((i + 1))
 	#echo "i=$i argv[$i]=${argv[$i]}"
         case "$arg" in
+            --aml-key-path)
+               amlkeypath="${argv[$i]}" ;;
             --kwrap)
                 kwrap="${argv[$i]}" ;;
             --root-hash)
@@ -135,6 +142,7 @@ generate_efuse_pattern() {
     done
 
 local tool_type=gxl
+local hashver=2
 
 #check soc first, only support gxl/txlx/g12a/g12b
 if [ ${soc} == "g12a" ] || [ ${soc} == "g12b" ]; then
@@ -148,22 +156,60 @@ else
 fi
 fi
 
-readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-local efuse_tool="${tools_dir}/signing-tool-${tool_type}-dev/efuse-gen.sh"
-
-usbJtagPwdArg=""
-
-if [ -f  "$passwordhash" ]; then
-    usbJtagPwdArg="--enable-usb-password $enableusbpassword --password-hash ${passwordhash} "
-    #echo "passwordhash [$usbJtagPwdArg]"
-
-    "$efuse_tool" --generate-efuse-pattern         \
-        --soc $soc                             \
-        ${usbJtagPwdArg}                       \
-        -o $output
-else
-	  usage
+if [ ${soc} == "gxl" ];then
+hashver=1
 fi
+
+readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+local sign_boot_tool_dev="${tools_dir}/signing-tool-${tool_type}-dev/sign-boot-${tool_type}-dev.sh"
+local efuse_gen="${tools_dir}/signing-tool-${tool_type}-dev/efuse-gen.sh"
+
+readonly rsa_root=${amlkeypath}/root.pem
+readonly rsa_root0=${amlkeypath}/root0.pem
+readonly rsa_root1=${amlkeypath}/root1.pem
+readonly rsa_root2=${amlkeypath}/root2.pem
+readonly rsa_root3=${amlkeypath}/root3.pem
+readonly kaes_bl2=${amlkeypath}/bl2aeskey
+
+local secure_boot_option=""
+local other_option=""
+
+if [ -e "$passwordhash" ]; then
+other_option="--password-hash ${passwordhash} "
+fi
+
+other_option="${other_option} --enable-usb-password $enableusbpassword --enable-jtag-password $enablejtagpassword --enable-anti-rollback $enableantirollback --raw-otp-pattern ${opt_raw_otp_pattern}"
+
+local rsa_root_hash=${amlkeypath}/rootkeys-hash.bin
+
+if [ -e $rsa_root0 ] ; then
+"$sign_boot_tool_dev" --create-root-hash \
+	--key-hash-ver $hashver                \
+	--root-key-0 "$rsa_root0"              \
+	--root-key-1 "$rsa_root1"              \
+	--root-key-2 "$rsa_root2"              \
+	--root-key-3 "$rsa_root3"              \
+	-o "$rsa_root_hash"
+
+if [ -e $rsa_root_hash ]; then
+secure_boot_option="--root-hash $rsa_root_hash "
+fi
+fi
+
+if [ -e ${kaes_bl2} ]; then
+secure_boot_option="${secure_boot_option} --aes-key ${kaes_bl2} "
+fi
+
+secure_boot_option="${secure_boot_option} --enable-sb ${enablesb} --enable-aes ${enableaes} "
+
+"$efuse_gen" --generate-efuse-pattern \
+  --soc $soc                          \
+  --key-hash-ver $hashver             \
+  $secure_boot_option                 \
+  $other_option                       \
+  -o ${output}
+
+rm -f $rsa_root_hash
 
 }
 

@@ -419,6 +419,8 @@ generate_efuse_pattern_gxl() {
 
     # OTP write lock control
     b_1b="00"
+    b_18="00"
+    b_19="00"
 
     # Construct license bits
     b4="00"
@@ -516,18 +518,21 @@ generate_efuse_pattern_gxl() {
         dd if=$roothash of=$patt bs=1 seek=48 count=32 \
             conv=notrunc >& /dev/null
         #TODO lock root hash block
+        b_18="$(printf %02x $(( 0x$b_18 | 0x18 )))"
     fi
 
     if [ "$aeskey" != "" ]; then
         dd if=$aeskey of=$patt bs=1 seek=80 count=32 \
             conv=notrunc >& /dev/null
         #TODO lock aes key block
+        b_18="$(printf %02x $(( 0x$b_18 | 0x60 )))"
     fi
 
     if [ "$passwordhash" != "" ]; then
         dd if=$passwordhash of=$patt bs=1 seek=128 count=32 \
             conv=notrunc >& /dev/null
         #TODO lock jtag password hash block
+        b_19="$(printf %02x $(( 0x$b_19 | 0x03 )))"
     fi
 
     if [ "$userefusefile" != "" ]; then
@@ -551,7 +556,7 @@ generate_efuse_pattern_gxl() {
         exit 1
     fi
 
-    echo 00 00 00 00 00 00 00 00 00 00 00 $b_1b 00 00 00 00 | xxd -r -p > $wrlock
+    echo 00 00 00 00 00 00 00 00 $b_18 $b_19 00 $b_1b 00 00 00 00 | xxd -r -p > $wrlock
     filesize=$(wc -c < $wrlock)
     if [ $filesize -ne 16 ]; then
         echo Internal Error -- Invalid write-lock pattern length

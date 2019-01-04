@@ -101,6 +101,32 @@ USB password process
 |        pattern.usb.efuse        //for usb password use only
 
 
+EFUSE pattern process
+|
+|--function usage
+|   ./efuse.sh --generate-efuse-pattern \                    //
+|               --soc [gxl | txlx | g12a | g12b ] \          //soc type, must afford
+|               [--aml-key-path path-of-key]      \          //key path, optional, will get RSA & AES key from it
+|               [--enable-sb false]               \          //secure boot enable flag, default is false
+|               [--enable-aes false]              \          //AES scramble enable flag, default is false
+|               [--password-hash password.hash]   \          //password hash input, password hash generated with amlpwdefs
+|               [--enable-jtag-password false]    \          //JTAG password enable flag, default is false
+|               [--enable-usb-password false]     \          //USB password enable flag, default is false
+|               [--enable-anti-rollback false]    \          //ANTI-ROLLBACK password enable flag, default is false
+|               -o pattern.efuse                             //output pattern file name
+|
+|--key prepare
+|   |-1. RSA key  //root RSA key which will be stored in EFUSE and one of them will be used to sign the user RSA key
+|   |-2. AES key  //AES key which will be stored in EFUSE and it will be used for BL2 scramble
+|
+|--password process
+|   |-1. tool amlpwdefs dedicated to generate the corresponding pattern with password & salt
+|        |- ./amlpwdefs --password password.bin --salt salt.bin //get output is password.bin_PMMMMMMMM_SNNNNNNNN.bin
+|
+|--NOTE: above EFUSE pattern generate process can be used separately, this is no dependence for all of them
+|
+
+
 FOLDER ARCHITECTURE:
 ------------Script Signing Tool Set folder------------
 |-1.  signing-tool-gxl      //D: tool set for signing -- DO NOT MODIFY
@@ -112,7 +138,7 @@ FOLDER ARCHITECTURE:
 |-7.  sign.sh               //F: tool for signing -- DO NOT MODIFY
 |-8.  key.create.bash       //F: tool for key generate -- DO NOT MODIFY
 |-9.  amlpwdefs             //F: tool for generate pattern with password binnary image(4byes -- 16bytes) & salt binary image(4bytes) -- DO NOT MODIFY
-|-10. efuse.sh              //F: tool for usb password process,input is amlpwdefs generaed -- DO NOT MODIFY
+|-10. efuse.sh              //F: tool for EFUSE pattern process -- DO NOT MODIFY
 |-11. readme.txt            //F: it is me
 
 ------------User defined file folder------------

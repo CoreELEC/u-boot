@@ -14,6 +14,7 @@ function usage() {
   echo "usage: $(basename "$0") -p <bootloader-prebuilts-dir>"
   echo "-r <signing-rsa-public-key-dir>"
   echo "-a <encryption-aes-key-dir>"
+  echo "-b <firmware-antirollback-config>"
   echo "-n"
   echo "-u"
   echo "-o <output-dir>"
@@ -31,14 +32,23 @@ ddrfw=
 BL32_IMG=
 hash_ver=2
 soc=
+enable_antirollback="false"
+fw_arb_config=
+bl2_arb_cvn="0x0"
+fip_arb_cvn="0x0"
+bl30_arb_cvn="0x0"
+bl31_arb_cvn="0x0"
+bl32_arb_cvn="0x0"
+bl33_arb_cvn="0x0"
 
-while getopts "s:h:p:r:a:uno:" opt; do
+while getopts "s:h:p:r:a:b:uno:" opt; do
   case $opt in
     s) readonly soc="$OPTARG" ;;
     h) readonly hash_ver="$OPTARG" ;;
     p) readonly prebuilts="$OPTARG" ;;
     r) readonly fw_krsa_dir="$OPTARG" ;;
     a) readonly fw_kaes_dir="$OPTARG" ;;
+    b) readonly fw_arb_config="$OPTARG" ;;
     n) readonly encryption_option="none" ;;
     u) readonly unsigned_only="true"; encryption_option="none" ;;
     o) readonly bl_out_dir="$OPTARG" ;;
@@ -218,6 +228,14 @@ function check_aes_iv_files() {
     fi
 }
 
+soc_fw_arb_config=$fw_arb_config
+if [[ ! -z $fw_arb_config && -s $soc_fw_arb_config ]]; then
+while read line
+do
+	eval "$line"
+done < $soc_fw_arb_config
+fi
+
 if [ $unsigned_only != "true" ]; then
   check_rsa_key_files
 fi
@@ -277,12 +295,12 @@ if [ $unsigned_only != "true" ]; then
     --ddrfw8       "${ddrfw}/aml_ddr.fw"                 \
     ${encryption_flags}                                  \
     -e            "$encryption_option"                   \
-    --bl2-arb-cvn 0x0                                    \
-    --fip-arb-cvn 0x0                                    \
-    --bl30-arb-cvn 0x0                                   \
-    --bl31-arb-cvn 0x0                                   \
-    --bl32-arb-cvn 0x0                                   \
-    --bl33-arb-cvn 0x0                                   \
+    --bl2-arb-cvn $bl2_arb_cvn                           \
+    --fip-arb-cvn $fip_arb_cvn                           \
+    --bl30-arb-cvn $bl30_arb_cvn                         \
+    --bl31-arb-cvn $bl31_arb_cvn                         \
+    --bl32-arb-cvn $bl32_arb_cvn                         \
+    --bl33-arb-cvn $bl33_arb_cvn                         \
     -o            "${bl_out_dir}/u-boot.bin.${postfix}"
 
   head -c 65536 "${bl_out_dir}/u-boot.bin.${postfix}" > "${bl_out_dir}/u-boot.bin.usb.bl2.${postfix}"
@@ -330,6 +348,7 @@ rsa_root_hash=${soc_fw_krsa_dir}/rootkeys-hash.bin
 	--aes-key "${kaes_bl2}"             \
 	--enable-sb true                    \
 	--enable-aes true                   \
+	--enable-anti-rollback $enable_antirollback    \
 	-o "${bl_out_dir}/pattern.secureboot.efuse"
 
 #if found usb.password.hash.bin then generate pattern.usb.efuse
@@ -344,6 +363,7 @@ if [ -f $passwordhash ]; then
 	--aes-key "${kaes_bl2}"             \
 	--enable-sb true                    \
 	--enable-aes true                   \
+	--enable-anti-rollback $enable_antirollback    \
 	--enable-usb-password true          \
 	--password-hash $passwordhash       \
 	-o "${bl_out_dir}/pattern.efuse"

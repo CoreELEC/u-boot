@@ -39,6 +39,7 @@ fi
 readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 uboot_encrypt_signed="${tools_dir}/amlogic-sign-${tool_type}.sh"
 kernel_encrypt_signed="${tools_dir}/signing-tool-${tool_type}/sign-boot-${tool_type}.sh"
+ARBCONFIG="${tools_dir}/fw_arb.txt"
 
 INPUTDIR=
 OUTPUTDIR=
@@ -79,7 +80,7 @@ mkdir -p ${OUTPUTDIR}
 if [ -e ${INPUTDIR}/bl2_new.bin ]; then
   echo
   echo "$user_package signing process ..."
-  "$uboot_encrypt_signed" -p ${INPUTDIR} -r ${RSAKEYDIR} -a ${AESKEYDIR} -o ${OUTPUTDIR} -h ${hash_ver} -s ${tool_type}
+  "$uboot_encrypt_signed" -p ${INPUTDIR} -r ${RSAKEYDIR} -a ${AESKEYDIR} -o ${OUTPUTDIR} -h ${hash_ver} -s ${tool_type} -b ${ARBCONFIG}
 fi
 
 #check and sign&encrypt kernel/recovery/dtb image

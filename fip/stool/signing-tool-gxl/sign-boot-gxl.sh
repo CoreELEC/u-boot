@@ -540,7 +540,16 @@ append_uint32_le() {
 #		unsigned char szPad1[16];
 #
 #		unsigned char szPad2[4];  //fixed to 0
-#		unsigned char szPad3[124];//random is perfect for RSA
+#		unsigned char szPad3[12]; //random is perfect for RSA
+#		unsigned int  nARBMagic; //magic for ARB magic, ARBU, ARBI...
+#		unsigned int  nBL2CVN;
+#		unsigned int  nFIPCVN;
+#		unsigned int  nBL30CVN;
+#		unsigned int  nBL31CVN;
+#		unsigned int  nBL32CVN;
+#		unsigned int  nBL33CVN;
+#		unsigned int  nIMGCVN;
+#		unsigned char szPad31[80];
 #
 #		unsigned char szPad4[4];  //fixed to 0
 #		unsigned char szPad5[124];//random is perfect for RSA
@@ -549,13 +558,50 @@ append_uint32_le() {
 #		unsigned char szPad7[124];//random is perfect for RSA
 #	}st_upg_chk_blk;//128x4=512Bytes
 add_upgrade_check() {
+	local arb_magic="0000"	#arb_magic: "ARBU", "ARBI"
+	local bl2_cvn="0"
+	local fip_cvn="0"
+	local bl30_cvn="0"
+	local bl31_cvn="0"
+	local bl32_cvn="0"
+	local bl33_cvn="0"
+	local img_cvn="0"
+	local argv=("$@")
+	local i=0
+
     if [ $# -lt 4 ]; then
         echo Invalid args for $FUNCNAME
         echo "args: input/output rsakey aeskey"
         exit 1
     fi
 
-    local sig="$TMP/sig"
+	# Parse args
+	i=0
+	while [ $i -lt $# ]; do
+		arg="${argv[$i]}"
+		i=$((i + 1))
+		case "$arg" in
+			--arb-magic)
+				arb_magic="${argv[$i]}" ;;
+			--bl2-cvn)
+				bl2_cvn="${argv[$i]}" ;;
+			--fip-cvn)
+				fip_cvn="${argv[$i]}" ;;
+			--bl30-cvn)
+				bl30_cvn="${argv[$i]}" ;;
+			--bl31-cvn)
+				bl31_cvn="${argv[$i]}" ;;
+			--bl32-cvn)
+				bl32_cvn="${argv[$i]}" ;;
+			--bl33-cvn)
+				bl33_cvn="${argv[$i]}" ;;
+			--img-cvn)
+				img_cvn="${argv[$i]}" ;;
+		esac
+		i=$((i + 1))
+	done
+
+	local sig="$TMP/sig"
 		dd if=/dev/zero of=${sig} bs=1 count=12 &> /dev/null         #szPad0[12]
 		echo -n 'SCPT' >> ${sig}                                     #szPad0[4]
 		openssl dgst -sha256 -binary -out $TMP/$(basename $1).sha $1
@@ -577,7 +623,26 @@ add_upgrade_check() {
 
 		dd if=/dev/zero of=${sig} bs=1 count=20 oflag=append conv=notrunc &> /dev/null		 #szPad1[16],szPad2[4]
 		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null	 #szPad3[12]
-		dd if=/dev/zero of=${sig} bs=1 count=116 oflag=append conv=notrunc &> /dev/null    #szPad3[112],szPad4[4]
+
+		# Add arb cvn
+		echo $arb_magic > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nARBMagic
+		printf "%02x %02x %02x %02x" $bl2_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nBL2CVN
+		printf "%02x %02x %02x %02x" $fip_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nFIPCVN
+		printf "%02x %02x %02x %02x" $bl30_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nBL30CVN
+		printf "%02x %02x %02x %02x" $bl31_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nBL31CVN
+		printf "%02x %02x %02x %02x" $bl32_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nBL32CVN
+		printf "%02x %02x %02x %02x" $bl33_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nBL33CVN
+		printf "%02x %02x %02x %02x" $img_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null	#nIMGCVN
+
+		dd if=/dev/zero of=${sig} bs=1 count=84 oflag=append conv=notrunc &> /dev/null     #szPad31[80],szPad4[4]
 		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad5[12]
 		dd if=/dev/zero of=${sig} bs=1 count=116 oflag=append conv=notrunc &> /dev/null    #szPad5[112],szPad6[4]
 		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad7[12]
@@ -824,7 +889,9 @@ sign_kernel() {
 
 	    cat $temp_folder/rootkey0.sha $temp_folder/rootkey1.sha $temp_folder/rootkey2.sha $temp_folder/rootkey3.sha > $temp_folder/r-key.4
 	    openssl dgst -sha256 -binary $temp_folder/r-key.4 > $temp_folder/r-key.e
-	    add_upgrade_check ${output} $bl2key ${bl2aeskey} $temp_folder/r-key.e
+	    add_upgrade_check ${output} $bl2key ${bl2aeskey} $temp_folder/r-key.e \
+			--arb-magic "ARBI" \
+			--img-cvn $arb_cvn
 
 	    rm -fr $temp_folder
     fi
@@ -1424,7 +1491,14 @@ create_signed_bl() {
     echo
     echo Created signed bootloader $output successfully
 
-    add_upgrade_check ${output} $bl2key ${bl2aeskey} $TMP/r-key.e
+    add_upgrade_check ${output} $bl2key ${bl2aeskey} $TMP/r-key.e \
+		--arb-magic "ARBU" \
+		--bl2-cvn $bl2_arb_cvn \
+		--fip-cvn $fip_arb_cvn \
+		--bl30-cvn $bl30_arb_cvn \
+		--bl31-cvn $bl31_arb_cvn \
+		--bl32-cvn $bl32_arb_cvn \
+		--bl33-cvn $bl33_arb_cvn
 
 }
 

@@ -19,14 +19,20 @@ function build_bl31() {
 	CONFIG_SPD="opteed"
 	#CONFIG_SPD="none"
 	local soc=$3
+	local bl2z_plat
 	if [ "$soc" == "gxtvbb" ] || [ "$soc" == "gxb" ]; then
 		soc="gxbb"
+		bl2z_plat="txl"
 	elif [ "$soc" == "txl" ]; then
 		soc="gxl"
+		bl2z_plat="txl"
+	elif [ "$soc" == "gxl" ]; then
+		soc="gxl"
+		bl2z_plat="gxl"
 	fi
 	#make PLAT=${soc} SPD=${CONFIG_SPD} realclean &> /dev/null
 	#make PLAT=${soc} SPD=${CONFIG_SPD} V=1 all &> /dev/null
-	/bin/bash mk $soc
+	/bin/bash mk $soc $bl2z_plat
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
 		echo "Error: Build bl31 failed... abort"

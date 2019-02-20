@@ -6,8 +6,10 @@ Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) --generate-efuse-pattern \\
                       --soc [gxl | txlx | g12a | g12b ] \\
-                      [--aml-key-path path-of-key]      \\
+                      [--aml-key-path path-of-key]  \\
+                      [--rsa-key-path path-of-rsa-key]  \\
                       [--enable-sb false]               \\
+                      [--aes-key  aes-key]              \\
                       [--enable-aes false]              \\
                       [--password-hash password.hash]   \\
                       [--enable-jtag-password false]    \\
@@ -19,14 +21,16 @@ EOF
     exit 1
 }
 
-amlkeypath=""
+randomstr=`date +%Y%m%d%H%M%S`
+amlkeypath=$randomstr
+rsakeypath=$randomstr
 kwrap=""
 wrlock_kwrap="false"
 roothash=""
-passwordhash=""
+passwordhash=$randomstr
 scanpasswordhash=""
 userefusefile=""
-aeskey=""
+aeskey=$randomstr
 m4roothash=""
 m4aeskey=""
 enablesb="false"
@@ -54,6 +58,11 @@ soc="unknown"
 socrev="a"
 opt_raw_otp_pattern="false"
 
+
+check_file() {
+    if [ ! -f "$2" ]; then echo Error: $1 file : \""$2"\" not exist; exit 1 ; fi
+}
+
 generate_efuse_pattern() {
     local argv=("$@")
     local i=0
@@ -61,12 +70,13 @@ generate_efuse_pattern() {
     i=0
     while [ $i -lt $# ]; do
         arg="${argv[$i]}"
-	#echo "i=$i arg=\"$arg\""
+				#echo "i=$i argv[$i]=${argv[$i]}"
         i=$((i + 1))
-	#echo "i=$i argv[$i]=${argv[$i]}"
         case "$arg" in
             --aml-key-path)
                amlkeypath="${argv[$i]}" ;;
+            --rsa-key-path)
+               rsakeypath="${argv[$i]}" ;;
             --kwrap)
                 kwrap="${argv[$i]}" ;;
             --root-hash)
@@ -126,8 +136,7 @@ generate_efuse_pattern() {
             --key-hash-ver)
                 keyhashver="${argv[$i]}" ;;
             --generate-efuse-pattern)
-                i=$((i - 1))
-		;;
+                i=$((i - 1));;
             --raw-otp-pattern)
                 opt_raw_otp_pattern="${argv[$i]}" ;;
             --soc)
@@ -164,43 +173,84 @@ readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 local sign_boot_tool_dev="${tools_dir}/signing-tool-${tool_type}-dev/sign-boot-${tool_type}-dev.sh"
 local efuse_gen="${tools_dir}/signing-tool-${tool_type}-dev/efuse-gen.sh"
 
-readonly rsa_root=${amlkeypath}/root.pem
-readonly rsa_root0=${amlkeypath}/root0.pem
-readonly rsa_root1=${amlkeypath}/root1.pem
-readonly rsa_root2=${amlkeypath}/root2.pem
-readonly rsa_root3=${amlkeypath}/root3.pem
-readonly kaes_bl2=${amlkeypath}/bl2aeskey
+if [ "$amlkeypath" != "$randomstr" ]; then
+	rsakeypath="$amlkeypath"
+	aeskey="$amlkeypath"/bl2aeskey
+	#echo rsakeypath=$rsakeypath
+	#echo aeskey=$aeskey
+fi
+
+readonly rsa_root0=${rsakeypath}/root0.pem
+readonly rsa_root1=${rsakeypath}/root1.pem
+readonly rsa_root2=${rsakeypath}/root2.pem
+readonly rsa_root3=${rsakeypath}/root3.pem
 
 local secure_boot_option=""
 local other_option=""
 
-if [ -e "$passwordhash" ]; then
-other_option="--password-hash ${passwordhash} "
+if [ "$passwordhash" != "$randomstr" ]; then
+	if [ -f "$passwordhash" ]; then
+	  local imagesize=$(wc -c < ${passwordhash})
+	  #echo passwordhashsize=$imagesize
+	  if [ $imagesize -ne 32 ]; then
+	    echo "password hash $passwordhash size=$imagesize is illegal!"
+	    exit 1
+	  fi
+		other_option="--password-hash ${passwordhash} "
+	else
+		check_file "password-hash"  "$passwordhash"
+	fi
 fi
 
-other_option="${other_option} --enable-usb-password $enableusbpassword --enable-jtag-password $enablejtagpassword --enable-anti-rollback $enableantirollback --raw-otp-pattern ${opt_raw_otp_pattern}"
+other_option="${other_option} --enable-usb-password $enableusbpassword --enable-jtag-password $enablejtagpassword \
+ --enable-anti-rollback $enableantirollback --raw-otp-pattern ${opt_raw_otp_pattern}"
 
-local rsa_root_hash=${amlkeypath}/rootkeys-hash.bin
-
-if [ -e $rsa_root0 ] ; then
-"$sign_boot_tool_dev" --create-root-hash \
-	--key-hash-ver $hashver                \
-	--root-key-0 "$rsa_root0"              \
-	--root-key-1 "$rsa_root1"              \
-	--root-key-2 "$rsa_root2"              \
-	--root-key-3 "$rsa_root3"              \
-	-o "$rsa_root_hash"
-
-if [ -e $rsa_root_hash ]; then
-secure_boot_option="--root-hash $rsa_root_hash "
+#aes key process
+if [ "$aeskey" != "$randomstr" ]; then
+	if [ -f "$aeskey" ]; then
+	  local imagesize=$(wc -c < ${aeskey})
+	  #echo passwordhashsize=$imagesize
+	  if [ $imagesize -ne 32 ]; then
+	    echo "password hash $aeskey size=$imagesize is illegal!"
+	    exit 1
+	  fi
+		secure_boot_option="${secure_boot_option} --aes-key ${aeskey} "
+	else
+		check_file "aes-key"  "$aeskey"
+	fi
 fi
-fi
 
-if [ -e ${kaes_bl2} ]; then
-secure_boot_option="${secure_boot_option} --aes-key ${kaes_bl2} "
+#rsa key process
+local rsa_root_hash=${rsakeypath}/rootkeys-hash.bin
+if [  "$rsakeypath" != "$randomstr" ]; then
+	if [ ! -d "$rsakeypath" ]; then
+		echo illegal rsa key path:$rsakeypath
+		exit 1
+	else
+		#key path does exist, rsa key process
+		check_file rootkey0 "$rsa_root0"
+		check_file rootkey1 "$rsa_root1"
+		check_file rootkey2 "$rsa_root2"
+		check_file rootkey3 "$rsa_root3"
+
+		"$sign_boot_tool_dev" --create-root-hash \
+		--key-hash-ver $hashver                  \
+		--root-key-0 "$rsa_root0"                \
+		--root-key-1 "$rsa_root1"                \
+		--root-key-2 "$rsa_root2"                \
+		--root-key-3 "$rsa_root3"                \
+		-o "$rsa_root_hash"
+
+		check_file rsarootsha   "$rsa_root_hash"
+
+		secure_boot_option="${secure_boot_option} --root-hash $rsa_root_hash "
+	fi
 fi
 
 secure_boot_option="${secure_boot_option} --enable-sb ${enablesb} --enable-aes ${enableaes} "
+
+#echo other_option=$other_option
+#echo secure_boot_option=$secure_boot_option
 
 "$efuse_gen" --generate-efuse-pattern \
   --soc $soc                          \
@@ -208,6 +258,16 @@ secure_boot_option="${secure_boot_option} --enable-sb ${enablesb} --enable-aes $
   $secure_boot_option                 \
   $other_option                       \
   -o ${output}
+
+#generate debug pattern for double check
+other_option="${other_option} --raw-otp-pattern true"
+
+"$efuse_gen" --generate-efuse-pattern \
+  --soc $soc                          \
+  --key-hash-ver $hashver             \
+  $secure_boot_option                 \
+  $other_option                       \
+  -o ${output}.debug
 
 rm -f $rsa_root_hash
 

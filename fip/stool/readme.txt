@@ -106,10 +106,12 @@ EFUSE pattern process
 |--function usage
 |   ./efuse.sh --generate-efuse-pattern \                    //
 |               --soc [gxl | txlx | g12a | g12b ] \          //soc type, must afford
-|               [--aml-key-path path-of-key]      \          //key path, optional, will get RSA & AES key from it
+|               [--aml-key-path path-of-key]      \          //key path, will get RSA & AES key from it
+|               [--rsa-key-path path-of-rsa-key]  \          //key path, will get RSA key from it
 |               [--enable-sb false]               \          //secure boot enable flag, default is false
+|               [--aes-key aes-key]               \          //aes key
 |               [--enable-aes false]              \          //AES scramble enable flag, default is false
-|               [--password-hash password.hash]   \          //password hash input, password hash generated with amlpwdefs
+|               [--password-hash password.hash]   \          //password hash input, password hash generated with amlpwdefs,32 bytes binary file
 |               [--enable-jtag-password false]    \          //JTAG password enable flag, default is false
 |               [--enable-usb-password false]     \          //USB password enable flag, default is false
 |               [--enable-anti-rollback false]    \          //ANTI-ROLLBACK password enable flag, default is false
@@ -117,7 +119,9 @@ EFUSE pattern process
 |
 |--key prepare
 |   |-1. RSA key  //root RSA key which will be stored in EFUSE and one of them will be used to sign the user RSA key
+|   |             //PEM format only
 |   |-2. AES key  //AES key which will be stored in EFUSE and it will be used for BL2 scramble
+|   |             //32 bytes binary file
 |
 |--password process
 |   |-1. tool amlpwdefs dedicated to generate the corresponding pattern with password & salt

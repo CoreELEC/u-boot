@@ -623,6 +623,60 @@ add_upgrade_check() {
     rm -f ${sig}*
 }
 
+# Check input is android 9.0 format or not
+# 1: input
+# returns True or False
+# android 9.0 file format: 2KB header + kernel/ramdisk/dtb
+# file header as following
+# 9.0 will use the unused[2] field like unused[0] = 1
+# define ANDR_BOOT_MAGIC "ANDROID!"  //414e44524f494421
+# define ANDR_BOOT_MAGIC_SIZE 8
+# define ANDR_BOOT_NAME_SIZE 16
+# define ANDR_BOOT_ARGS_SIZE 512
+# struct andr_img_hdr {
+#   char magic[ANDR_BOOT_MAGIC_SIZE];
+#   unsigned int kernel_size;	/* size in bytes */
+#   unsigned int kernel_addr;	/* physical load addr */
+#   unsigned int ramdisk_size;	/* size in bytes */
+#   unsigned int ramdisk_addr;	/* physical load addr */
+#   unsigned int second_size;	/* size in bytes */
+#   unsigned int second_addr;	/* physical load addr */
+#   unsigned int tags_addr;		/* physical addr for kernel tags */
+#   unsigned int page_size;		/* flash page size we assume */
+#   unsigned int unused[2];		/* future expansion: should be 0 */
+#   char name[ANDR_BOOT_NAME_SIZE]; /* asciiz product name */
+#   char cmdline[ANDR_BOOT_ARGS_SIZE];
+#   unsigned int id[8]; /* timestamp / checksum / sha1 / etc */
+#   };
+
+
+is_android9_img() {
+    local input=$1
+    if [ ! -f "$1" ]; then
+        echo "Argument error, \"$1\""
+        exit 1
+    fi
+    local insize=$(wc -c < $input)
+    if [ $insize -le 2048 ]; then
+        # less than size of img header
+        echo False
+        return
+    fi
+
+    local inmagic=$(xxd -p -l 8 $input)
+
+    if [ "$inmagic" == "414e44524f494421" ]; then
+      inmagic=$(xxd -p -seek 40 -l 4 $input)
+      if [ "$inmagic" == "01000000" ]; then
+        echo True
+      else
+        echo False
+      fi
+    else
+      echo False
+    fi
+}
+
 # Encrypt/sign kernel
 #typedef struct {
 #	uint32_t magic;
@@ -745,6 +799,14 @@ sign_kernel() {
     echo Created signed kernel $output successfully
 
     #......
+    #android 9.0 special process
+    #file format: 2KB android 9.0 file header + AML block header + Image
+    if [ "$(is_android9_img ${input})" == "True" ]; then
+            local tempfile=${output}.`date +%Y%m%d%H%M%S`
+            dd if=${input} of=${tempfile} bs=512 count=4 &> /dev/null
+            cat ${output} >> ${tempfile}
+            mv -f ${tempfile} ${output}
+    fi
     #add_upgrade_check ${output} bl2key bl2aeskey r-key.e
     local keypath=$(dirname $key)
     local temp_folder=$SCRIPT_PATH/`date +%Y%m%d%H%M%S`

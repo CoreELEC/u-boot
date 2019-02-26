@@ -302,6 +302,7 @@
 
 #define CONFIG_BOOTAREA_SIZE			(1 * SZ_1M)
 #define CONFIG_MBR_SIZE				512
+#define CONFIG_ENV_IS_NOWHERE		1
 #define CONFIG_ENV_SIZE				(64 * SZ_1K)
 #define CONFIG_UBOOT_SIZE			(CONFIG_BOOTAREA_SIZE - \
 		(CONFIG_MBR_SIZE + CONFIG_ENV_SIZE))
@@ -334,7 +335,7 @@
 #define CONFIG_DDR_PLL_BYPASS			0 //0:disable, 1:enable. ddr pll bypass function
 
 /* storage: emmc/nand/sd */
-#define CONFIG_ENV_IS_IN_MMC			1
+#define CONFIG_ENV_IS_IN_MMC			0
 #define 	CONFIG_ENV_OVERWRITE
 #define 	CONFIG_CMD_SAVEENV
 /* fixme, need fix*/
@@ -347,7 +348,7 @@
 #ifdef CONFIG_AML_SD_EMMC
 	#define CONFIG_GENERIC_MMC		1
 	#define CONFIG_CMD_MMC			1
-	#define	CONFIG_SYS_MMC_ENV_DEV		1
+	#define	CONFIG_SYS_MMC_ENV_DEV		0
 	#define CONFIG_EMMC_DDR52_EN		0
 	#define CONFIG_EMMC_DDR52_CLK		35000000
 #endif
@@ -387,7 +388,7 @@
 	#define CONFIG_BL2_SIZE			(64 * 1024)
 #endif
 
-#define CONFIG_ENV_IS_IN_SPI_FLASH		1
+#define CONFIG_ENV_IS_IN_SPI_FLASH		0
 #ifdef CONFIG_ENV_IS_IN_SPI_FLASH
 #define CONFIG_ENV_SECT_SIZE			(64 * SZ_1K)
 #if (CONFIG_ENV_SIZE < CONFIG_ENV_SECT_SIZE)

@@ -456,7 +456,9 @@ static int check_lock(void)
 		printf("lock state is NULL \n");
 		lock_s = "10000000";
 		setenv("lock", "10000000");
+#if CONFIG_FASTBOOT_FLASH_MMC_DEV == 1
 		saveenv();
+#endif
 	}
 	printf("lock state: %s\n", lock_s);
 
@@ -962,7 +964,9 @@ static void cb_flashing(struct usb_ep *ep, struct usb_request *req)
 		strcpy(lock_d, "10000000");
 		lock_s = "10000000";
 		setenv("lock", "10000000");
+#if CONFIG_FASTBOOT_FLASH_MMC_DEV == 1
 		saveenv();
+#endif
 	} else {
 		printf("lock state: %s\n", lock_s);
 		strcpy(lock_d, lock_s);

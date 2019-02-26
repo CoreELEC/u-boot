@@ -29,8 +29,10 @@ char *env_name_spec = NULL;
 
 static struct env_proxy* get_instance(void)
 {
+#if CONFIG_ENV_IS_IN_MMC == 0
 	struct env_proxy *__instance = NULL;
 
+#else
 	if (get_boot_device() == BOOT_DEVICE_SPI) {
 #if defined(CONFIG_ENV_IS_IN_SPI_FLASH)
 		__instance = &env_proxy_sf;
@@ -43,7 +45,7 @@ static struct env_proxy* get_instance(void)
 
 	if (__instance && (env_name_spec == NULL))
 		env_name_spec = *__instance->env_name_spec_cb;
-
+#endif
 	return __instance;
 }
 

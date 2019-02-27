@@ -32,6 +32,10 @@ if [ ${soc} == "g12b" ]; then
 tool_type=g12a
 fi
 
+if [ ${soc} == "tl1" ]; then
+tool_type=tl1
+fi
+
 if [ $soc == "gxl" ]; then
 hash_ver=1
 fi

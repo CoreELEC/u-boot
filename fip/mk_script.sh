@@ -75,9 +75,12 @@ function build_blx_src() {
 		build_bl31 $src_folder $bin_folder $soc
 	fi
 	elif [ $name == ${BLX_NAME[3]} ]; then
-		# bl32
-		if [ "y" == "${CONFIG_NEED_BL32}" ]; then
-			build_bl32 $src_folder $bin_folder $soc
+		# control flow for jenkins patchbuild
+		if [ "$BUILD_TYPE" != "AOSP" ]; then
+			# bl32
+			if [ "y" == "${CONFIG_NEED_BL32}" ]; then
+				build_bl32 $src_folder $bin_folder $soc
+			fi
 		fi
 	fi
 }

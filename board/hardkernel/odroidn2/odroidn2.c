@@ -212,8 +212,8 @@ static void board_mmc_register(unsigned port)
 }
 int board_mmc_init(bd_t	*bis)
 {
-	board_mmc_register(SDIO_PORT_C);	// eMMC
 	board_mmc_register(SDIO_PORT_B);	// SD card
+	board_mmc_register(SDIO_PORT_C);	// eMMC
 
 	return 0;
 }

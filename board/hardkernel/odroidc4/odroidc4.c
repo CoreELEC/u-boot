@@ -404,7 +404,7 @@ int board_late_init(void)
 	}
 
 	/* boot logo display - 1080p60hz */
-	run_command("showlogo", 0);
+	run_command("showlogo 1080p60hz 1920 1080 boot-logo-1080.bmp.gz", 0);
 	usbhost_early_poweron();
 
 	return 0;

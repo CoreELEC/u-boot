@@ -393,7 +393,7 @@ int board_late_init(void)
 	board_set_dtbfile("meson64_odroidn2%s.dtb");
 
 	/* boot logo display - 1080p60hz */
-	run_command("showlogo", 0);
+	run_command("showlogo 1080p60hz 1920 1080 boot-logo-1080.bmp.gz", 0);
 
 	if (get_boot_device() == BOOT_DEVICE_SPI) {
 		setenv("bootdelay", "0");

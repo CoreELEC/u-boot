@@ -140,7 +140,10 @@ function build_blx() {
 
 copy_bootloader() {
 	mkdir -p ${BUILD_FOLDER}
+	cp ${FIP_BUILD_FOLDER}fip.bin ${BUILD_FOLDER}fip.bin
 	cp ${FIP_BUILD_FOLDER}u-boot.bin ${BUILD_FOLDER}u-boot.bin
+	dd if=${BUILD_FOLDER}u-boot.bin of=${BUILD_FOLDER}bl2_64.bin bs=1 count=65536
+	cat ${BUILD_FOLDER}bl2_64.bin ${BUILD_FOLDER}fip.bin > ${BUILD_FOLDER}boot.bin
 	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt ${BUILD_FOLDER}u-boot.bin.encrypt
 	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.efuse ${BUILD_FOLDER}u-boot.bin.encrypt.efuse
 	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.sd.bin ${BUILD_FOLDER}u-boot.bin.encrypt.sd.bin

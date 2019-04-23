@@ -36,6 +36,10 @@ if [ ${soc} == "tl1" ]; then
 tool_type=tl1
 fi
 
+if [ ${soc} == "tm2" ]; then
+tool_type=tl1
+fi
+
 if [ $soc == "gxl" ]; then
 hash_ver=1
 fi

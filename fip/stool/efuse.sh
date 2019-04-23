@@ -5,7 +5,7 @@ usage() {
 Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) --generate-efuse-pattern \\
-                      --soc [gxl | txlx | g12a | g12b | tl1 ] \\
+                      --soc [gxl | txlx | g12a | g12b | tl1 | tm2 ] \\
                       [--aml-key-path path-of-key]  \\
                       [--rsa-key-path path-of-rsa-key]  \\
                       [--enable-sb false]               \\
@@ -153,14 +153,15 @@ generate_efuse_pattern() {
 local tool_type=gxl
 local hashver=2
 
-#check soc first, only support gxl/txlx/g12a/g12b/tl1
+#check soc first, only support gxl/txlx/g12a/g12b/tl1/tm2
 if [ ${soc} == "g12a" ] || [ ${soc} == "g12b" ]; then
 	tool_type=g12a
 	soc=g12a
 elif [ ${soc} == "txlx" ] || [ ${soc} == "gxl" ] ; then
   tool_type=gxl
-elif [ ${soc} == "tl1" ] ; then
+elif [ ${soc} == "tl1" ] || [ ${soc} == "tm2" ] ;  then
   tool_type=tl1
+  soc=tl1
 else
   echo invalid soc [$soc]
   exit 1

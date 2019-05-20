@@ -147,27 +147,6 @@ external_encrypt() {
     exit 1
 }
 
-# Get key len in bytes of private PEM RSA key
-# $1: PEM file
-get_pem_key_len() {
-    local pem=$1
-    local bits=0
-    if [ ! -f "$1" ]; then
-        echo "Argument error, \"$1\""
-        exit 1
-    fi
-    bits=$(openssl rsa -in $pem -text -noout | \
-        grep '^Private-Key: (' | \
-        sed 's/Private-Key: (//' | \
-        sed 's/ bit)//')
-    if [ "$bits" -ne 1024 ] && [ "$bits" -ne 2048 ] &&
-       [ "$bits" -ne 4096 ] && [ "$bits" -ne 8192]; then
-       echo "Unexpected key size  $bits"
-       exit 1
-    fi
-    echo $(( $bits / 8 ))
-}
-
 kwrap=""
 wrlock_kwrap="false"
 roothash=""

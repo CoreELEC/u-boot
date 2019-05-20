@@ -338,9 +338,9 @@ get_pem_key_len() {
         exit 1
     fi
     bits=$(openssl rsa -in $pem -text -noout | \
-        grep '^Private-Key: (' | \
-        sed 's/Private-Key: (//' | \
-        sed 's/ bit)//')
+        grep 'Private-Key: (' | \
+        sed -r 's/(RSA )?Private-Key: \(//'| \
+        sed -r 's/ bit(,.?[0-9].?primes)?\)//')
     if [ "$bits" == "" ]; then
        echo "Unexpected key size  $bits"
        exit 1

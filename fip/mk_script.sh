@@ -79,13 +79,13 @@ function build_blx_src() {
 	local bin_folder=$3
 	local soc=$4
 	#dbg "compile - name: ${name}, src_folder: ${src_folder}, bin_folder: ${bin_folder}, soc: ${soc}"
-	if [ $name == ${BLX_NAME[0]} ]; then
+	if [ $name == ${BLX_NAME_GLB[0]} ]; then
 		# bl2
 		build_bl2 $src_folder $bin_folder $soc
-	elif [ $name == ${BLX_NAME[1]} ]; then
+	elif [ $name == ${BLX_NAME_GLB[1]} ]; then
 		# bl30
 		build_bl30 $src_folder $bin_folder $soc
-	elif [ $name == ${BLX_NAME[2]} ]; then
+	elif [ $name == ${BLX_NAME_GLB[2]} ]; then
 		# bl31
 		# some soc use v1.3
 		check_bl31_ver $soc
@@ -96,7 +96,7 @@ function build_blx_src() {
 		echo "check bl31 ver: use v1.0"
 		build_bl31 $src_folder $bin_folder $soc
 	fi
-	elif [ $name == ${BLX_NAME[3]} ]; then
+	elif [ $name == ${BLX_NAME_GLB[3]} ]; then
 		# control flow for jenkins patchbuild
 		if [ "$BUILD_TYPE" != "AOSP" ]; then
 			# bl32
@@ -159,9 +159,13 @@ copy_bootloader() {
 }
 
 function update_bin_path() {
-	dbg "Update BIN_PATH[$1]=$2"
-	BIN_PATH[$1]=$2
-} 
+	for loop in ${!BLX_NAME[@]}; do
+		if [ "${BLX_NAME[$loop]}" == "${BLX_NAME_GLB[$1]}" ]; then
+			dbg "Update BIN_PATH[$1]=$2"
+			BIN_PATH[$loop]=$2
+		fi
+	done
+}
 
 function clean() {
 	echo "Clean up"

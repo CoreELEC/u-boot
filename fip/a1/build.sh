@@ -33,9 +33,6 @@ function fix_blx() {
 	#total 60K
 	#after encrypt process, bl2 add 4K header, cut off 4K tail
 
-	#bl30 limit 41K
-	#bl301 limit 12K
-
 	#bl2 limit 56K
 	#acs limit 4K, but encrypt tool need 64K bl2.bin, so fix to 8192byte.
 
@@ -45,10 +42,7 @@ function fix_blx() {
 	declare -i zero_size=0
 
 	#$7:name flag
-	if [ "$7" = "bl30" ]; then
-		blx_bin_limit=40960   # PD#132613 2016-10-31 update, 41984->40960
-		blx01_bin_limit=13312 # PD#132613 2016-10-31 update, 12288->13312
-	elif [ "$7" = "bl2" ]; then
+	if [ "$7" = "bl2" ]; then
 		blx_bin_limit=57344
 		blx01_bin_limit=4096
 	else
@@ -97,19 +91,18 @@ function encrypt_step() {
 function encrypt() {
 	#u-boot.bin generate
 	if [ "y" == "${CONFIG_AML_SECURE_BOOT_V3}" ]; then
-		encrypt_step --bl30sig --input ${BUILD_PATH}/bl30_new.bin         --output ${BUILD_PATH}/bl30_new.bin.g12.enc ${V3_PROCESS_FLAG}
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl30_new.bin.g12.enc --output ${BUILD_PATH}/bl30_new.bin.enc     ${V3_PROCESS_FLAG} --type bl30
 		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl31.${BL3X_SUFFIX}  --output ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl31
 		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
 			encrypt_step --bl3sig  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl32
 		fi
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
+		#encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
 	fi
 
 	encrypt_step --bl2sig  --input ${BUILD_PATH}/bl2_new.bin   --output ${BUILD_PATH}/bl2.n.bin.sig
 
 	encrypt_step --bootmk  --output ${BUILD_PATH}/u-boot.bin \
-		--bl2   ${BUILD_PATH}/bl2.n.bin.sig  --bl30  ${BUILD_PATH}/bl30_new.bin.enc  \
+		--bl2   ${BUILD_PATH}/bl2.n.bin.sig  \
 		--bl31  ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${FIP_BL32_PROCESS} --bl33  ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} \
 		--ddrfw1  ./${FIP_FOLDER}${CUR_SOC}/ddr4_1d.fw --ddrfw2  ./${FIP_FOLDER}${CUR_SOC}/ddr4_2d.fw \
 		--ddrfw3  ./${FIP_FOLDER}${CUR_SOC}/ddr3_1d.fw --ddrfw4  ./${FIP_FOLDER}${CUR_SOC}/piei.fw \
@@ -117,10 +110,11 @@ function encrypt() {
 		--ddrfw7  ./${FIP_FOLDER}${CUR_SOC}/diag_lpddr4.fw --ddrfw8 ./${FIP_FOLDER}${CUR_SOC}/${DDR_FW_NAME}
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
-		encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-			--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG}
-		encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-			--aeskey enable --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
+		echo empty for CONFIG_AML_CRYPTO_UBOOT
+		#encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+		#	--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG}
+		#encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+		#	--aeskey enable --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
 	fi
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
@@ -131,7 +125,6 @@ function encrypt() {
 }
 
 function build_fip() {
-	cp ${BUILD_PATH}/bl30.bin ${BUILD_PATH}/bl30_new.bin
 
 	# acs_tool process ddr timing and configurable parameters
 	#python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
@@ -146,8 +139,7 @@ function build_fip() {
 		${BUILD_PATH}/bl2_new.bin \
 		bl2
 
-	# v2: bl30/bl301 merged since 2016.03.22
-	FIP_ARGS="--bl30 ${BUILD_PATH}/bl30_new.bin --bl31 ${BUILD_PATH}/bl31.${BL3X_SUFFIX}"
+	FIP_ARGS=" --bl31 ${BUILD_PATH}/bl31.${BL3X_SUFFIX}"
 
 	if [ "y" == "${CONFIG_NEED_BL32}" ]; then
 		FIP_BL32="`find ${BUILD_PATH} -name "bl32.${BL3X_SUFFIX}"`"
@@ -169,10 +161,7 @@ function build_fip() {
 }
 
 function copy_other_soc() {
-	#cp ${BL33_BUILD_FOLDER}scp_task/bl301.bin ${BUILD_PATH} -f
-	#useless #cp ${UBOOT_SRC_FOLDER}/build/${BOARD_DIR}/firmware/bl21.bin ${BUILD_PATH} -f
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH} -f
-	# todo. cp bl40?
 }
 
 function package() {
@@ -201,7 +190,7 @@ function package() {
 		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
 		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
 
-		list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl30_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin"
+		list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin"
 		list_pack="$list_pack ${FIP_FOLDER}/${CUR_SOC}/*.fw"
 		u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
 		zip -j $u_pack ${list_pack} >& /dev/null

@@ -140,19 +140,7 @@ function build_blx() {
 
 copy_bootloader() {
 	mkdir -p ${BUILD_FOLDER}
-	cp ${FIP_BUILD_FOLDER}fip.bin ${BUILD_FOLDER}fip.bin
-	cp ${FIP_BUILD_FOLDER}u-boot.bin ${BUILD_FOLDER}u-boot.bin
-	dd if=${BUILD_FOLDER}u-boot.bin of=${BUILD_FOLDER}bl2_64.bin bs=1 count=65536
-	cat ${BUILD_FOLDER}bl2_64.bin ${BUILD_FOLDER}fip.bin > ${BUILD_FOLDER}boot.bin
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt ${BUILD_FOLDER}u-boot.bin.encrypt
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.efuse ${BUILD_FOLDER}u-boot.bin.encrypt.efuse
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.sd.bin ${BUILD_FOLDER}u-boot.bin.encrypt.sd.bin
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.usb.bl2 ${BUILD_FOLDER}u-boot.bin.encrypt.usb.bl2
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.encrypt.usb.tpl ${BUILD_FOLDER}u-boot.bin.encrypt.usb.tpl
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.sd.bin ${BUILD_FOLDER}u-boot.bin.sd.bin
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.usb.bl2 ${BUILD_FOLDER}u-boot.bin.usb.bl2
-	cp ${FIP_BUILD_FOLDER}u-boot.bin.usb.tpl ${BUILD_FOLDER}u-boot.bin.usb.tpl
-
+	cp ${FIP_BUILD_FOLDER}u-boot.bin* ${BUILD_FOLDER}
 	if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
 		cp ${FIP_BUILD_FOLDER}boot.img.encrypt ${BUILD_FOLDER}boot.img.encrypt
 	fi
@@ -174,6 +162,7 @@ function clean() {
 	cd ${MAIN_FOLDER}
 	rm ${FIP_BUILD_FOLDER} -rf
 	rm ${BUILD_FOLDER}/* -rf
+	mkdir -p ${BUILD_FOLDER}
 	return
 }
 

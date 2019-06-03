@@ -24,6 +24,7 @@ declare FIP_ARGS=""
 declare AML_BL2_NAME=""
 declare AML_KEY_BLOB_NANE=""
 declare FIP_BL32_PROCESS=""
+declare BOOT_SIG_FLAG=""
 
 BUILD_PATH=${FIP_BUILD_FOLDER}
 

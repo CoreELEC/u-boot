@@ -15,6 +15,10 @@ function init_vari() {
 		V3_PROCESS_FLAG="--level v3"
 	fi
 
+	if [ "y" == "${CONFIG_AML_CRYPTO_AES}" ]; then
+		BOOT_SIG_FLAG="--aeskey enable"
+	fi
+
 	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
 		BL33_COMPRESS_FLAG="--compress lz4"
 	fi
@@ -109,11 +113,8 @@ function encrypt() {
 		--ddrfw5  ./${FIP_FOLDER}${CUR_SOC}/diag_lpddr4.fw --ddrfw6 ./${FIP_FOLDER}${CUR_SOC}/${DDR_FW_NAME}
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
-		echo empty for CONFIG_AML_CRYPTO_UBOOT
-		#encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-		#	--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG}
-		#encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-		#	--aeskey enable --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
+		encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+		${BOOT_SIG_FLAG} --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
 	fi
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then

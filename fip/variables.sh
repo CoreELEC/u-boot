@@ -11,7 +11,7 @@ FIP_BUILD_FOLDER="fip/_tmp/"
 declare -a BLX_NAME_GLB=("bl2" "bl30" "bl31" "bl32")
 
 # include uboot pre-build defines
-BL33_BUILD_FOLDER=("bl33/")
+BL33_BUILD_FOLDER=("bl33/build/")
 SOURCE_FILE=("${BL33_BUILD_FOLDER}.config")
 CONFIG_FILE=("${BL33_BUILD_FOLDER}include/autoconf.mk")
 

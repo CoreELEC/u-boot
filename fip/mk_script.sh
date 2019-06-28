@@ -157,8 +157,16 @@ function update_bin_path() {
 
 function clean() {
 	echo "Clean up"
-	cd ${UBOOT_SRC_FOLDER}
-	make distclean
+	if [ -e ${BL33_PATH1} ]; then
+		cd ${MAIN_FOLDER}
+		cd ${BL33_PATH1}
+		make distclean
+	fi
+	if [ -e ${BL33_PATH2} ]; then
+		cd ${MAIN_FOLDER}
+		cd ${BL33_PATH2}
+		make distclean
+	fi
 	cd ${MAIN_FOLDER}
 	rm ${FIP_BUILD_FOLDER} -rf
 	rm ${BUILD_FOLDER}/* -rf

@@ -180,8 +180,8 @@ sign_bl2() {
     local bl2_payload_size=$(wc -c < ${input})
     trace "BL2 size specified $bl2size"
     trace "Input BL2 payload size $bl2_payload_size"
-    if [ $bl2size -ne $(($bl2_payload_size + 4096)) ]; then
-        echo Error: invalid bl2 input file size $bl2_payload_size
+    if [ $bl2size -lt $(($bl2_payload_size + 4096)) ]; then
+        echo Error: invalid bl2/bl30 input file size $bl2_payload_size
         exit 1
     fi
 
@@ -1827,6 +1827,7 @@ create_signed_bl() {
         cp $TMP/bl2.bin.out $TMP/bl2.bin.sig
     fi
 
+    local bl30finalsize=66560
     # Sign/encrypt BL30 payload using bl2 functions
     local bl30hdr_i="$bl30hdr"
     if [ "$bl30hdr" == "" ]; then
@@ -1839,14 +1840,14 @@ create_signed_bl() {
             --bl2-key-0 "$bl30key" --bl2-key-1 "$bl30key" \
             --bl2-key-2 "$bl30key" --bl2-key-3 "$bl30key" \
             --bl2-key "$bl30key" \
-            --bl2-size 58368 \
+            --bl2-size $bl30finalsize \
             --arb-cvn $bl30_arb_cvn \
             --sig-ver $sigver --key-hash-ver $keyhashver
     fi
     sign_bl2 -i $bl30 -o $TMP/bl30.bin.out \
         --bl2-hdr "$bl30hdr_i" \
         --bl2-key $bl30key \
-        --bl2-size 58368 \
+        --bl2-size $bl30finalsize \
         $( [ -n "$bl30aesiv" ] && echo -n "--iv $bl30aesiv" ) \
         --sig-ver $sigver --key-hash-ver $keyhashver
 
@@ -1856,12 +1857,12 @@ create_signed_bl() {
         #internal_encrypt $TMP/bl30.bin.out $TMP/bl30.bin.sig $bl2aeskey $TMP/zeroiv
         # scp needs to decrypt in 2KB chunks:
         if [ -f $TMP/bl30.bin.sig ]; then rm -f $TMP/bl30.bin.sig ; fi
-        for i in $(seq 0 $(( 58368 / 2048 )) ); do
+        for i in $(seq 0 $(( $bl30finalsize / 2048 )) ); do
             dd if=$TMP/bl30.bin.out of=$TMP/pt skip=$i bs=2048 count=1 >& /dev/null
             internal_encrypt $TMP/pt $TMP/ct $bl2aeskey $TMP/zeroiv
             cat $TMP/ct >> $TMP/bl30.bin.sig
         done
-        if [ $(wc -c < $TMP/bl30.bin.sig) -ne 58368 ]; then
+        if [ $(wc -c < $TMP/bl30.bin.sig) -ne $bl30finalsize ]; then
             echo Internal error, bl30.bin.sig size
             exit 1;
         fi

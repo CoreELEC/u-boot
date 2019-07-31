@@ -181,7 +181,7 @@ sign_bl2() {
     trace "BL2 size specified $bl2size"
     trace "Input BL2 payload size $bl2_payload_size"
     if [ $bl2size -ne $(($bl2_payload_size + 4096)) ]; then
-        echo Error: invalid bl2 input file size $bl2_payload_size
+        echo Error: invalid bl2/bl30 input file size $bl2_payload_size
         exit 1
     fi
 

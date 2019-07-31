@@ -868,7 +868,7 @@ create_unsigned_bl() {
     local bl2=""
     local bl2size=65536
     local bl30=""
-    local bl30size=58368
+    local bl30size=66560
     local bl31=""
     local bl32=""
     local bl33=""
@@ -954,7 +954,7 @@ create_unsigned_bl() {
     local bl30_payload_size=$(wc -c < ${bl30})
     trace "BL30 size specified $bl30size"
     trace "Input BL30 payload size $bl30_payload_size"
-    if [ $bl30size -ne $(($bl30_payload_size + 4096)) ]; then
+    if [ $bl30size -lt $(($bl30_payload_size + 4096)) ]; then
         echo Error: invalid bl30 payload size $bl30_payload_size
         exit 1
     fi

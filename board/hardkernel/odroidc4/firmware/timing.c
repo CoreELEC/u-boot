@@ -133,6 +133,7 @@ ddr_set_t __ddr_setting[] = {
 	.pll_ssc_mode			= 0,
 	.ddr_func			= DDR_FUNC,
 	.magic				= DRAM_CFG_MAGIC,
+	.fast_boot[0]			= 1,
 },
 {
 	/* odroid-c4 ddr4 : 8Gbitx2 */
@@ -191,6 +192,7 @@ ddr_set_t __ddr_setting[] = {
 	.pll_ssc_mode			= 0,
 	.ddr_func			= DDR_FUNC,
 	.magic				= DRAM_CFG_MAGIC,
+	.fast_boot[0]			= 1,
 },
 };
 

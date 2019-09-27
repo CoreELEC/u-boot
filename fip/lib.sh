@@ -109,6 +109,8 @@ function get_versions() {
 				echo "Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
 				#CUR_REV[$loop]=${SRC_REV[$loop]}
 				update_bin_path $loop "source"
+				CONFIG_DDR_FW=1
+				export CONFIG_DDR_FW
 			done
 		fi
 	else
@@ -118,6 +120,8 @@ function get_versions() {
 			if [ -d ${BLX_SRC_FOLDER[$loop]} ]; then
 				echo "No-Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
 				update_bin_path $loop "source"
+				CONFIG_DDR_FW=1
+				export CONFIG_DDR_FW
 			fi
 		done
 		# loop bin folder. (this will overwrite src version if both exist)

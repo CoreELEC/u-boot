@@ -87,8 +87,8 @@ ddr_set_t __ddr_setting[] = {
 	.ddr_rfc_type			= DDR_RFC_TYPE_DDR4_2Gbx8,
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
 	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	.imem_load_addr			= 0xFFFC0000,
-	.dmem_load_size			= 0x1000,
+	//.imem_load_addr			= 0xFFFC0000,
+	//.dmem_load_size			= 0x1000,
 
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming			= 1,
@@ -146,8 +146,8 @@ ddr_set_t __ddr_setting[] = {
 	.ddr_rfc_type			= DDR_RFC_TYPE_DDR4_2Gbx8,
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
 	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	.imem_load_addr			= 0xFFFC0000,
-	.dmem_load_size			= 0x1000,
+	//.imem_load_addr			= 0xFFFC0000,
+	//.dmem_load_size			= 0x1000,
 
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming			= 1,

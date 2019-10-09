@@ -19,11 +19,40 @@
 #ifndef __ARCH_G12B_GPIO_KEY_H__
 #define __ARCH_G12B_GPIO_KEY_H__
 
+#include <gpio.h>
+
 #ifdef CONFIG_GPIO_WAKEUP
+enum gpio_bank {
+	PERIPHS,
+	AOBUS,
+  UNKNOWN = 0xFF
+};
+
+#define BANK_PERIPHS(n, f, l, ir)							\
+{																							\
+	.name		= n,																\
+	.first	= f,																\
+	.last		= l,																\
+	.regs	= {																		\
+		[REG_IN]	= { (0xff634400 + (ir<<2)), 0 }	\
+	}																						\
+}
+
+#define BANK_AOBUS(n, f, l, ir)								\
+{																							\
+	.name		= n,																\
+	.first	= f,																\
+	.last		= l,																\
+	.regs	= {																		\
+		[REG_IN]	= { (0xff800000 + (ir<<2)), 0 }	\
+	}																						\
+}
+
 int gpio_detect_key(void);
 int init_gpio_key(void);
 
 unsigned int gpio_wakeup_keyno;
+unsigned int gpio_wakeup_bank;
 #endif
 
 #endif /* __ARCH_G12B_GPIO_KEY_H__ */

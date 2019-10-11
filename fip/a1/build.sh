@@ -17,6 +17,11 @@ function init_vari() {
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_AES}" ]; then
 		BOOT_SIG_FLAG="--aeskey enable"
+		EFUSE_GEN_FLAG="--aeskey enable"
+	fi
+
+	if [ "y" == "${CONFIG_AML_EFUSE_GEN_AES_ONLY}" ]; then
+		EFUSE_GEN_FLAG="--aeskey only"
 	fi
 
 	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
@@ -99,7 +104,8 @@ function encrypt() {
 		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
 			encrypt_step --bl3sig  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl32
 		fi
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
+		#encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
 	fi
 
 	encrypt_step --bl2sig  --input ${BUILD_PATH}/bl2_new.bin   --output ${BUILD_PATH}/bl2.n.bin.sig
@@ -112,6 +118,8 @@ function encrypt() {
 		--ddrfw5  ./${FIP_FOLDER}${CUR_SOC}/diag_lpddr4.fw --ddrfw6 ./${FIP_FOLDER}${CUR_SOC}/${DDR_FW_NAME}
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
+		encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+			--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG} ${EFUSE_GEN_FLAG}
 		encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
 		${BOOT_SIG_FLAG} --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
 	fi

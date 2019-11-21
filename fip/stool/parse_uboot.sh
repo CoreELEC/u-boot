@@ -7,13 +7,13 @@ soc=""
 uboot=""
 outdir=""
 
-#default g12a/g12b config
+#firmware size
 fipsize=16384       #fipsize(16k)(0x4000)
 bl2hdr_size=4096
-bl2bin_size=61440   #gxl/txlx is different from g12a/g12b/tl1/tm2
+bl2bin_size=
 bl2size=            #bl2hdr_size+bl2bin_size.
-bl30hdr_size=4096   #gxl/txlx is different from g12a/g12b/tl1/tm2
-bl30bin_size=54272  #tm2 is different from g12a/g12b/tl1/gxl/txlx
+bl30hdr_size=
+bl30bin_size=
 bl30size=           #bl30hdr_size+bl30bin_size
 bl3xhdr_size=656
 
@@ -75,7 +75,7 @@ ddr9_entry_size=""
 usage() {
 	echo "parse unsigned uboot.bin to firmwares"
 	echo "usage: $(basename $0) -s <soc> -i <uboot.bin> -o <outdir>"
-	echo "support soc: gxl/txlx/g12a/g12b/tl1/tm2"
+	echo "support soc: gxl/txlx/g12a/sm1/g12b/tl1/tm2"
 	exit 0
 }
 
@@ -218,22 +218,41 @@ while getopts "s:i:o:h" opt; do
 	esac
 done
 
-if [ $soc == "g12a" ] || [ $soc == "g12b" ] || [ $soc == "tl1" ] || [ $soc == "tm2" ]; then
-	bl2bin_size=61440
-	bl30hdr_size=4096
-	if [ $soc == "tm2" ]; then
+case $soc in
+	"g12a"|"sm1")
+		bl2hdr_size=4096
+		bl2bin_size=61440
+		bl30hdr_size=4096
+		bl30bin_size=60416
+		;;
+	"g12b"|"tl1")
+		bl2hdr_size=4096
+		bl2bin_size=61440
+		bl30hdr_size=4096
+		bl30bin_size=54272
+		;;
+	"tm2")
+		bl2hdr_size=4096
+		bl2bin_size=61440
+		bl30hdr_size=4096
 		bl30bin_size=62464
-	fi
-elif [ $soc == "txlx" ] || [ $soc == "gxl" ]; then
-	bl2bin_size=45056
-	bl30hdr_size=656
-else
-	echo "invalid soc <$soc>"
-	echo "only support gxl, txlx, g12a, g12b, tl1, tm2"
-	exit 1
-fi
-bl2size=$(expr $bl2hdr_size + $bl2bin_size)
-bl30size=$(expr $bl30hdr_size + $bl30bin_size)
+		;;
+	"txlx"|"gxl")
+		bl2hdr_size=4096
+		bl2bin_size=45056
+		bl30hdr_size=656
+		bl30bin_size=54272
+		;;
+	*)
+		echo "invalid soc <$soc>"
+		echo "only support gxl, txlx, g12a, sm1, g12b, tl1, tm2"
+		exit 1
+esac
+
+bl2size=$(($bl2hdr_size + $bl2bin_size))
+bl30size=$(($bl30hdr_size + $bl30bin_size))
+#echo "bl2size=$bl2size"
+#echo "bl30size=$bl30size"
 
 if [ ! -d $TMP ]; then mkdir $TMP; fi
 if [ ! -d $TMP ]; then exit 1; fi
@@ -261,7 +280,9 @@ if [ $ddrfw_count -gt "0" ]; then
 	done
 fi
 
-generate_bl3x "$uboot_no_bl2" "$outdir/$bl30" ""         "$bl30_bin" "$bl30_entry_offset" "$bl30_entry_size"
+if [[ "$bl30_entry_size" != 0 ]]; then
+	generate_bl3x "$uboot_no_bl2" "$outdir/$bl30" ""         "$bl30_bin" "$bl30_entry_offset" "$bl30_entry_size"
+fi
 generate_bl3x "$uboot_no_bl2" "$outdir/$bl31" "$bl31_hdr" "$bl31_bin" "$bl31_entry_offset" "$bl31_entry_size"
 if [[ "$bl32_entry_size" != 0 ]]; then
 	generate_bl3x "$uboot_no_bl2" "$outdir/$bl32" "$bl32_hdr" "$bl32_bin" "$bl32_entry_offset" "$bl32_entry_size"

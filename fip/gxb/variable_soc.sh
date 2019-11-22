@@ -9,6 +9,9 @@ declare -a BLX_BIN_NAME=("bl2.bin" "bl30.bin" "bl31.bin" "bl32.bin")
 declare -a BLX_IMG_NAME=("NULL" "NULL" "bl31.img" "bl32.img")
 declare -a BLX_NEEDFUL=("true" "true" "true" "false")
 
+declare -a BLX_SRC_GIT=("bootloader/spl" "firmware/scp" "ARM-software/arm-trusted-firmware" "OP-TEE/optee_os" "uboot")
+declare -a BLX_BIN_GIT=("firmware/bin/bl2" "firmware/bin/bl30" "firmware/bin/bl31" "firmware/bin/bl32")
+
 # blx priority. null: default, source: src code, others: bin path
 declare -a BIN_PATH=("null" "null" "null" "null")
 

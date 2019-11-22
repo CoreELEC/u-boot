@@ -17,9 +17,18 @@ function string_filter() {
 	local str_origin=$1
 	local str_filter=$2
 	local str_split=$3
-	str_origin=${str_origin#*${str_filter}} # filter
-	IFS=${str_split} read -ra DATA <<< "$str_origin"
-	str_use=${DATA[$4]}
+
+	if [[ "$str_origin" =~ "$str_filter" ]]; then
+		str_origin=${str_origin#*${str_filter}} # filter
+		IFS=${str_split} read -ra DATA <<< "$str_origin"
+		str_use=${DATA[$4]}
+
+		if [ -z ${str_use} ]; then
+			str_use="null"
+		fi
+	else
+		str_use="null"
+	fi
 }
 
 function get_versions() {
@@ -40,18 +49,18 @@ function get_versions() {
 			string_filter "${line}" "remote=" '"' 1
 			GIT_INFO[4]=${str_use}
 			# if this line doesn't contain any info, skip it
-			if [ "${GIT_INFO[2]}" == "" ]; then
+			if [ "${GIT_INFO[2]}" == "null" ]; then
 				continue
 			fi
 			#echo "${GIT_INFO[0]} ${GIT_INFO[1]} ${GIT_INFO[2]} ${GIT_INFO[3]} ${GIT_INFO[4]}"
 			#echo ${BLX_NAME[@]}
 			#echo ${BLX_SRC_FOLDER[@]}
 			for loop in ${!BLX_NAME[@]}; do
-				if [ "${GIT_INFO[1]}" == "${BLX_SRC_FOLDER[$loop]}" ]; then
+				if [[ "${GIT_INFO[1]}" =~ "${BLX_SRC_FOLDER[$loop]}" && "${GIT_INFO[3]}" == "${BLX_SRC_GIT[$loop]}" ]]; then
 					SRC_REV[$loop]=${GIT_INFO[2]}
 					#CUR_BIN_BRANCH[$loop]=${GIT_INFO[0]}
-					echo -n "name:${BLX_NAME[$loop]}, path:${BLX_SRC_FOLDER[$loop]}, "
-					if [ "${SRC_REV[$loop]}" == "${GIT_INFO[0]}" ]; then
+					echo -n "name:${BLX_NAME[$loop]}, path:${GIT_INFO[1]}, ${BLX_SRC_FOLDER[$loop]}, "
+					if [[ "${GIT_INFO[0]}" == "null" || "${SRC_REV[$loop]}" == "${GIT_INFO[0]}" ]]; then
 						# if only specify branch name, not version, use latest binaries under bin/ folders
 						# use bin.git revision, in case src code have local commits
 						if [ -d ${BLX_BIN_FOLDER[loop]} ]; then
@@ -69,11 +78,11 @@ function get_versions() {
 					fi
 					echo "@ ${GIT_INFO[0]}"
 				fi
-				if [ "${GIT_INFO[1]}" == "${BLX_BIN_FOLDER[$loop]}" ]; then
+				if [[ "${GIT_INFO[1]}" =~ "${BLX_BIN_FOLDER[$loop]}" && "${GIT_INFO[3]}" == "${BLX_BIN_GIT[$loop]}" ]]; then
 					BIN_REV[$loop]=${GIT_INFO[2]}
 					#CUR_BIN_BRANCH[$loop]=${GIT_INFO[0]}
-					echo -n "name:${BLX_NAME[$loop]}, path:${BLX_BIN_FOLDER[$loop]}, "
-					if [ "${BIN_REV[$loop]}" == "${GIT_INFO[0]}" ]; then
+					echo -n "name:${BLX_NAME[$loop]}, path:${GIT_INFO[1]}, ${BLX_BIN_FOLDER[$loop]}, "
+					if [[ "${GIT_INFO[0]}" == "null" || "${BIN_REV[$loop]}" == "${GIT_INFO[0]}" ]]; then
 						# if only specify branch name, not version, use latest binaries under bin/ folders
 						git_operate ${BLX_BIN_FOLDER[loop]} log --pretty=oneline -1
 					else
@@ -115,24 +124,21 @@ function get_versions() {
 		fi
 	else
 		for loop in ${!BLX_NAME[@]}; do
-			# merge into android/buildroot, can not get manifest.xml, get version by folder
-			# loop src folder
-			if [ -d ${BLX_SRC_FOLDER[$loop]} ]; then
-				echo "No-Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
-				update_bin_path $loop "source"
-				CONFIG_DDR_FW=1
-				export CONFIG_DDR_FW
-			fi
-		done
-		# loop bin folder. (this will overwrite src version if both exist)
-		for loop in ${!BLX_NAME[@]}; do
 			if [ -d ${BLX_BIN_FOLDER[$loop]} ]; then
+				# loop bin folder. (this will overwrite src version if both exist)
 				git_operate ${BLX_BIN_FOLDER[loop]} log --pretty=oneline -1
 				git_msg=${GIT_OPERATE_INFO}
 				IFS=' ' read -ra DATA <<< "$git_msg"
 				CUR_REV[$loop]=${DATA[2]}
 				echo -n "revL:${CUR_REV[$loop]} "
 				echo "@ ${BLX_BIN_FOLDER[$loop]}"
+			elif [ -d ${BLX_SRC_FOLDER[$loop]} ]; then
+				# merge into android/buildroot, can not get manifest.xml, get version by folder
+				# loop src folder
+				echo "No-Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
+				update_bin_path $loop "source"
+				CONFIG_DDR_FW=1
+				export CONFIG_DDR_FW
 			fi
 		done
 	fi

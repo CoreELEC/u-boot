@@ -149,8 +149,9 @@ copy_bootloader() {
 function update_bin_path() {
 	for loop in ${!BLX_NAME[@]}; do
 		if [ "${BLX_NAME[$loop]}" == "${BLX_NAME_GLB[$1]}" ]; then
-			dbg "Update BIN_PATH[$1]=$2"
+			dbg "Update BIN_PATH[$loop]=$2"
 			BIN_PATH[$loop]=$2
+			break
 		fi
 	done
 }

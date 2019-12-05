@@ -215,7 +215,24 @@ typedef struct ddr_set{
 	unsigned	char	lpddr4_dram_vout_voltage_1_3_2_5_setting;
 	//use for lpddr4 read vout voltage  setting 0 --->2/5VDDQ ,1--->1/3VDDQ
 	unsigned	char	lpddr4_x8_mode;
-	//system reserve,do not modify ,take care ,please follow SI
+	unsigned	char	slt_test_function[2];  //[0] slt test function enable,bit 0 enable 4 frequency scan,bit 1 enable force delay line offset ,bit 7 enable skip training function
+	//[1],slt test parameter ,use for force delay line offset
+	//system reserve,do not modify
+	unsigned	short	tdqs2dq;
+	unsigned	char	dram_data_wr_odt_ohm;
+	unsigned	char	bitTimeControl_2d;
+	//system reserve,do not modify
+	/* align8 */
+    unsigned	char	char_rev1;
+	unsigned	char	training_offset;//char_rev2;
+	unsigned	int		ddr_dmc_remap[5];
+	unsigned	int		dram_rtt_nom_wr_park[2];
+	//system reserve,do not modify
+	/* align8 */
+	unsigned	char	ddr_lpddr34_ca_remap[4];
+	////use for lpddr3 /lpddr4 ca training data byte lane remap
+	unsigned	char	ddr_lpddr34_dq_remap[32];
+	////use for lpddr3 /lpddr4 ca pinmux remap
 	unsigned	char	ac_pinmux[DWC_AC_PINMUX_TOTAL];
 	//use for lpddr3 /lpddr4 ca pinmux remap
 	unsigned	char	dfi_pinmux[DWC_DFI_PINMUX_TOTAL];

@@ -109,7 +109,6 @@ function build_blx_src() {
 
 function build_blx() {
 	# build each blx
-	mkdir -p ${FIP_BUILD_FOLDER}
 
 	# switch bl31 version
 	switch_bl31 ${CUR_SOC}
@@ -191,6 +190,9 @@ function build() {
 	# must source under main function, all sub function can use these variables
 	# but if source in sub-function, only sub-function(or sub-sub..) can use them
 	source ${FIP_FOLDER}${CUR_SOC}/variable_soc.sh
+
+	# compile fip tools for ddr_parse and map_tool
+	prepare_tools
 
 	# source soc package script
 	source ${FIP_FOLDER}${CUR_SOC}/build.sh

@@ -330,19 +330,17 @@ int main(int argc, char **argv)
 	}
 	FILE *file;
 	FILE *file_f;
-	char *buffer;
-	char *buffer_f="acs_new";
+	char *buffer = NULL;
+	char *buffer_f = NULL;
 	int finial_size=4096;
+
 	buffer_f=(char *)malloc(finial_size+1);
-
-
 	if (!buffer_f)
 	{
 		fprintf(stderr, "buffer_f Memory error!");
-		fclose(file);
 		exit(1);
 	}
-	memset(buffer_f,0,(finial_size+1));
+	memset(buffer_f, 0, (finial_size+1));
 	unsigned long fileLen;
 	char *file_path;
 	char file_path_f[256];
@@ -360,12 +358,10 @@ int main(int argc, char **argv)
 		fprintf(stderr, "can't open file %s", "acs.bin");
 		exit(1);
 	}
-	//*file_path_f=*file_path+"_new";
-	printf("\nfile_path==%s",file_path);
-	//file_path_f="acs.bin_new";
+	//printf("\nfile_path==%s",file_path);
 	sprintf(file_path_f, "%s_new", file_path);
 	sprintf(file_path_o, "%s_old", file_path);
-	printf("\nfile_path_f==%s",file_path_f);
+	//printf("\nfile_path_f==%s",file_path_f);
 	file_f = fopen(file_path_f, "wb+");
 	if (!file_f)
 	{
@@ -397,6 +393,7 @@ int main(int argc, char **argv)
 	fread(buffer, 1, fileLen+1, file);
 	// fclose(file);
 	//printf("value is %s \n", buffer);
+#if 0
 	for (i = 0; i < fileLen; i++)
 	{
 		temp_value=(char)(buffer[i]);
@@ -405,11 +402,10 @@ int main(int argc, char **argv)
 			printf("\n");
 		// if(i%4==3)printf("  ");
 	}
-
+#endif
 	fwrite(buffer , sizeof(char), fileLen, file_o);
 	fclose(file_o);
 
-	printf("\n");
 	unsigned int value_p;
 	unsigned int link_add=0;
 	value_p=*((unsigned int *)((buffer)+4));
@@ -508,10 +504,10 @@ int main(int argc, char **argv)
 		{
 			buffer_f[ddr_set_addr_offset_f+i]=(buffer[i+ddr_timming_array*(acs_set_p->ddr_struct_org_size)+ddr_set_addr_offset])&0xff;
 		}
-		printf("\nchange other timming ddr_set_p=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_p));
+		//printf("\nchange other timming ddr_set_p=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_p));
 		printf("\nddr_set_reduce_offset=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_reduce_offset));
 		*((unsigned int *)((buffer_f)+4))=*((unsigned int *)((buffer_f)+4))-ddr_set_reduce_offset;
-		printf("\nwrite back 000  \n");
+		//printf("\nwrite back 000  \n");
 		acs_set_p_f = (acs_set_t *)((unsigned long)(buffer_f) + \
 				(((unsigned int)(*((unsigned int *)((unsigned long)(buffer_f)+4))))-link_add));
 		printf("\n(buffer_f)=0x%0x,acs_set_p_f=0x%0x,acs_set_p_f_offset=0x%0x \n",
@@ -521,25 +517,26 @@ int main(int argc, char **argv)
 		printf("\nacs_set_p->ddr_reg_addr=0x%08x\n",(unsigned int )(unsigned long )(acs_set_p->ddr_reg_addr));
 		printf("\nacs_set_p_f->ddr_reg_addr=0x%08x\n",(unsigned int )(unsigned long )(acs_set_p_f->ddr_reg_addr));
 		acs_set_p_f->ddr_reg_addr=acs_set_p->ddr_reg_addr-ddr_set_reduce_offset;
-		printf("\nwrite back 002  \n");
+		//printf("\nwrite back 002  \n");
 		acs_set_p_f->pll_set_addr=acs_set_p->pll_set_addr-ddr_set_reduce_offset;
-		printf("\nwrite back 003  \n");
+		//printf("\nwrite back 003  \n");
 		acs_set_p_f->bl2_regs_addr=acs_set_p->bl2_regs_addr-ddr_set_reduce_offset;
-		printf("\nwrite back 004  \n");
+		//printf("\nwrite back 004  \n");
 		acs_set_p_f->sto_set_addr=acs_set_p->sto_set_addr-ddr_set_reduce_offset;
 		acs_set_p_f->rsv_set_addr=acs_set_p->rsv_set_addr-ddr_set_reduce_offset;
 		acs_set_p_f->ddr_set_addr=acs_set_p->ddr_set_addr;//-ddr_set_reduce_offset;
 		//unsigned long		sto_set_addr;
 
 		acs_set_p_f->ddr_set_length=acs_set_p->ddr_set_length-ddr_set_reduce_offset;
+		length_f = fileLen - ddr_set_reduce_offset;
+
 		printf("\nwrite back  \n");
-		for (i = 0; i < finial_size; i++)
+		for (i = 0; i < length_f; i++)
 		{
 			temp_value=(char)(buffer_f[i]);
 			printf("%02x ",temp_value&0xff);
 			if (i%16 == 15)	printf("\n");
 			// if(i%4==3)printf("  ");
-			length_f=fileLen-ddr_set_reduce_offset;
 		}
 	}
 	else

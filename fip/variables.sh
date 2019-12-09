@@ -35,6 +35,7 @@ declare BL33_TOOLCHAIN2="/opt/gcc-linaro-7.3.1-2018.05-i686_aarch64-elf/bin/aarc
 declare BL33_DEFCFG1="${UBOOT_FOLDER}/${UBOOT_VERSION1}/${DEFCFG_FOLDER}"
 declare BL33_DEFCFG2="${UBOOT_FOLDER}/${UBOOT_VERSION2}/${DEFCFG_FOLDER}"
 
+declare FIP_DDR_PARSE="${FIP_FOLDER}/tools/ddr_parse/"
 # current branch/path/rev/name/remote in xml
 declare -a GIT_INFO=("branch", "path", "rev", "name", "remote")
 

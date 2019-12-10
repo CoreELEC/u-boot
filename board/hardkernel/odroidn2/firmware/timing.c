@@ -75,7 +75,7 @@
 
 #define CONFIG_DDR4_DEFAULT_CLK		1320
 
-ddr_set_t __ddr_setting[] = {
+ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 {
 	/* odroid-n2 ddr4 : (4Gbitx2)x2, (8Gbitx2)x2 */
 	.board_id			= CONFIG_BOARD_ID_MASK,

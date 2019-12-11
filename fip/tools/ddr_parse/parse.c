@@ -347,17 +347,20 @@ int main(int argc, char **argv)
 	FILE *file_o;
 	char file_path_o[256];
 	char temp_value=0;
+
 	if (argc>1)
 		file_path=	argv[1];
 	else
 		file_path="acs.bin";
-	// int i;
+
 	file = fopen(file_path, "rb");
 	if (!file)
 	{
 		fprintf(stderr, "can't open file %s", "acs.bin");
+		free(buffer_f);
 		exit(1);
 	}
+
 	//printf("\nfile_path==%s",file_path);
 	sprintf(file_path_f, "%s_new", file_path);
 	sprintf(file_path_o, "%s_old", file_path);
@@ -366,34 +369,38 @@ int main(int argc, char **argv)
 	if (!file_f)
 	{
 		fprintf(stderr, "can't open file %s", "acs_new.bin");
+		fclose(file);
+		free(buffer_f);
 		exit(1);
 	}
 	file_o= fopen(file_path_o, "wb+");
 	if (!file_f)
 	{
 		fprintf(stderr, "can't open file %s", "acs_new.bin");
+		fclose(file);
+		fclose(file_f);
+		free(buffer_f);
 		exit(1);
 	}
 
 	fseek(file, 0, SEEK_END);
 	fileLen=ftell(file);
 	fseek(file, 0, SEEK_SET);
-	printf("\nfileLen==%ld\n",fileLen);
+	printf("\nfileLen==%ld\n", fileLen);
+
 	buffer=(char *)malloc(fileLen+1);
-
-
 	if (!buffer)
 	{
 		fprintf(stderr, "Memory error!");
 		fclose(file);
+		fclose(file_f);
+		fclose(file_o);
+		free(buffer_f);
 		exit(1);
 	}
 
-
 	fread(buffer, 1, fileLen+1, file);
-	// fclose(file);
-	//printf("value is %s \n", buffer);
-#if 0
+	#if 0
 	for (i = 0; i < fileLen; i++)
 	{
 		temp_value=(char)(buffer[i]);
@@ -402,33 +409,44 @@ int main(int argc, char **argv)
 			printf("\n");
 		// if(i%4==3)printf("  ");
 	}
-#endif
+	#endif
+
 	fwrite(buffer , sizeof(char), fileLen, file_o);
 	fclose(file_o);
 
-	unsigned int value_p;
-	unsigned int link_add=0;
-	value_p=*((unsigned int *)((buffer)+4));
-	link_add=((*((unsigned int *)((buffer)+12)))&0xfffff000);
+	unsigned int value_p = *((unsigned int *)(buffer + 4));
+	unsigned int ddr_setting_addr = *(unsigned int *)(buffer + 12);
+	unsigned int link_add = (*((unsigned int *)(buffer + 12)) & 0xfffff000);
+
 	acs_set_p=(acs_set_t  *)((buffer)+(((unsigned long)(value_p))-link_add));
 	pll_set_p=(pll_set_t  *)((buffer)+(((unsigned long)(acs_set_p->pll_set_addr))-link_add));
 	ddr_set_p=(ddr_set_t  *)((buffer)+(((unsigned long)(acs_set_p->ddr_set_addr))-link_add));
 	unsigned int ddr_timming_array=(acs_set_p->ddr_set_length/acs_set_p->ddr_struct_org_size);
+
+	if (ddr_setting_addr != (unsigned int)(acs_set_p->ddr_set_addr))
+	{
+		fprintf(stderr, "link_add not right or exceed 4K! __ddr_setting: 0x%08x, __acs_set: 0x%08x",
+			ddr_setting_addr, value_p);
+		fclose(file);
+		fclose(file_f);
+		free(buffer);
+		free(buffer_f);
+		exit(1);
+	}
+
 	#if 1
-	printf("\nvalue_p=0x%08x ",(unsigned int )(unsigned long)value_p);
-	printf("\nbuffer=0x%08x ",(unsigned int )(unsigned long)buffer);
-	printf("\nacs_set_p==0x%08x ",(unsigned int )(unsigned long)acs_set_p);
+	printf("\nvalue_p=0x%08x ", value_p);
 	printf("\nacs_set_p->ddr_struct_org_size==0x%08x ",(unsigned int )acs_set_p->ddr_struct_org_size);
 	printf("\nacs_set_p->ddr_set_addr==0x%08x ",(unsigned int )acs_set_p->ddr_set_addr);
 	printf("\nacs_set_p->ddr_set_length==0x%08x ",(unsigned int )acs_set_p->ddr_set_length);
-	printf("\nacs_set_p->ddr_array==0x%08x ",ddr_timming_array);
+	printf("\nacs_set_p->ddr_array==0x%08x ", ddr_timming_array);
+
 	printf("\nacs_set_p->pll_set_addr==0x%08x ",(unsigned int )acs_set_p->pll_set_addr);
-	printf("\npll_set_p->ddr_timming_save_mode==0x%08x ",(unsigned int )pll_set_p->ddr_timming_save_mode);
 	printf("\n");
 	#endif
-	if (pll_set_p->ddr_timming_save_mode == 0)
+	if (0 == pll_set_p->ddr_timming_save_mode)
 	{
-		printf("\nstart reduce timming  %d\n",pll_set_p->ddr_timming_save_mode);
+		printf("\nstart reduce timing for mode %d", pll_set_p->ddr_timming_save_mode);
 
 		for (i = 0; i < ((acs_set_p->ddr_set_addr) - link_add); i++)
 		{
@@ -444,13 +462,22 @@ int main(int argc, char **argv)
 			// if(i%4==3)printf("  ");
 		}
 		#endif
+
 		unsigned int ddr_set_addr_offset=0;
 		ddr_set_addr_offset = ((acs_set_p->ddr_set_addr)-link_add);
-		printf("\nlink_add=0x%08x\n",(unsigned int )(unsigned long )(link_add));
+		printf("\nlink_add=0x%08x", (unsigned int)(unsigned long)(link_add));
+	#ifndef NO_DDR_SETTINGS_LAYOUT_OPTIMIZATION
+		if (ddr_setting_addr > value_p)
+		{
+			acs_set_p = (acs_set_t *)((unsigned long)(buffer_f) + \
+				(*(unsigned int *)(buffer_f + 4) - link_add));
+			printf("\nupdate acs_set_p for layout optimized!");
+		}
+	#endif
+
 		for (i = 0; i < ddr_timming_array; i++)
 		{
-			printf("\nddr_set_p=0x%08x\n",(unsigned int)(unsigned long)(ddr_set_p));
-			printf("\nconfig %d  (ddr_set_p->board_id)=0x%08x\n",i,(unsigned int )(unsigned long )((ddr_set_p->board_id)));
+			printf("\nconfig %d  (ddr_set_p->board_id)=0x%08x",i,(unsigned int )(unsigned long )((ddr_set_p->board_id)));
 			if (ddr_set_p->board_id)
 			{
 				for (temp1 = (acs_set_p->ddr_struct_org_size); temp1 > 0; temp1--)
@@ -459,7 +486,7 @@ int main(int argc, char **argv)
 					{
 						acs_set_p->board_id[i]=(ddr_set_p->board_id);
 						acs_set_p->ddr_struct_size[i]=((temp1+3)/4)*4;
-						printf("\nacs_set_p->ddr_struct_size[i]=0x%08x\n",
+						printf("\nacs_set_p->ddr_struct_size[i]=0x%08x",
 								(unsigned int )(unsigned long )(acs_set_p->ddr_struct_size[i]));
 						break;
 					}
@@ -473,9 +500,10 @@ int main(int argc, char **argv)
 			}
 			ddr_set_p=ddr_set_p+1;
 		}
+
 		printf("\ncopy ddr timming ddr_set_p=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_p));
 		unsigned int ddr_set_addr_offset_f=0;
-		ddr_set_addr_offset_f=( (acs_set_p->ddr_set_addr)-link_add);
+		ddr_set_addr_offset_f=((acs_set_p->ddr_set_addr)-link_add);
 		for (i = 0; i < ddr_timming_array; i++)
 		{
 			if ((acs_set_p->board_id[i]) & 0xff)
@@ -489,8 +517,9 @@ int main(int argc, char **argv)
 			}
 		}
 		ddr_set_addr_offset_f=ddr_set_addr_offset_f+acs_set_p->ddr_struct_size[ddr_timming_array-1];
-		printf("\ncopy other timming ddr_set_p=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_p));
 		unsigned int ddr_set_reduce_offset=ddr_timming_array*(acs_set_p->ddr_struct_org_size)+ddr_set_addr_offset-ddr_set_addr_offset_f;
+
+	#ifdef NO_DDR_SETTINGS_LAYOUT_OPTIMIZATION
 		if ((ddr_set_reduce_offset/4)%2)  //align byte 8  for other data
 		{
 			ddr_set_reduce_offset=ddr_set_reduce_offset-4;
@@ -498,22 +527,34 @@ int main(int argc, char **argv)
 			buffer_f[ddr_set_addr_offset_f+1]=0;
 			buffer_f[ddr_set_addr_offset_f+2]=0;
 			buffer_f[ddr_set_addr_offset_f+3]=0;
+
+			acs_set_p->ddr_struct_size[ddr_timming_array-1] += 4;
 			ddr_set_addr_offset_f=ddr_set_addr_offset_f+4;
 		}
-		for (i = 0;i < (fileLen-ddr_timming_array*(acs_set_p->ddr_struct_org_size)-ddr_set_addr_offset); i++)
+	#endif
+
+		if (fileLen - ddr_timming_array*(acs_set_p->ddr_struct_org_size) - ddr_set_addr_offset)
 		{
-			buffer_f[ddr_set_addr_offset_f+i]=(buffer[i+ddr_timming_array*(acs_set_p->ddr_struct_org_size)+ddr_set_addr_offset])&0xff;
+			printf("\nError: __ddr_setting is not at end of acs firmware,no layout refine!\n");
+
+	#ifdef NO_DDR_SETTINGS_LAYOUT_OPTIMIZATION
+			for (i = 0;i < (fileLen-ddr_timming_array*(acs_set_p->ddr_struct_org_size)-ddr_set_addr_offset); i++)
+			{
+				buffer_f[ddr_set_addr_offset_f+i]=(buffer[i+ddr_timming_array*(acs_set_p->ddr_struct_org_size)+ddr_set_addr_offset])&0xff;
+			}
+
+			*((unsigned int *)((buffer_f)+4)) = *((unsigned int *)((buffer_f)+4)) - ddr_set_reduce_offset;
+	#endif
 		}
-		//printf("\nchange other timming ddr_set_p=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_p));
-		printf("\nddr_set_reduce_offset=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_reduce_offset));
-		*((unsigned int *)((buffer_f)+4))=*((unsigned int *)((buffer_f)+4))-ddr_set_reduce_offset;
-		//printf("\nwrite back 000  \n");
+
+		printf("\nddr_set_reduce_offset=0x%08x",(unsigned int )(unsigned long )(ddr_set_reduce_offset));
 		acs_set_p_f = (acs_set_t *)((unsigned long)(buffer_f) + \
 				(((unsigned int)(*((unsigned int *)((unsigned long)(buffer_f)+4))))-link_add));
 		printf("\n(buffer_f)=0x%0x,acs_set_p_f=0x%0x,acs_set_p_f_offset=0x%0x \n",
 				(unsigned int)(unsigned long)(buffer_f), (unsigned int)(unsigned long)acs_set_p_f,
 				(unsigned int)(*((unsigned int *)((unsigned long)(buffer_f)+4))) - link_add);
-		printf("\nddr_set_reduce_offset=0x%08x\n",(unsigned int )(unsigned long )(ddr_set_reduce_offset));
+
+	#ifdef NO_DDR_SETTINGS_LAYOUT_OPTIMIZATION
 		printf("\nacs_set_p->ddr_reg_addr=0x%08x\n",(unsigned int )(unsigned long )(acs_set_p->ddr_reg_addr));
 		printf("\nacs_set_p_f->ddr_reg_addr=0x%08x\n",(unsigned int )(unsigned long )(acs_set_p_f->ddr_reg_addr));
 		acs_set_p_f->ddr_reg_addr=acs_set_p->ddr_reg_addr-ddr_set_reduce_offset;
@@ -526,10 +567,12 @@ int main(int argc, char **argv)
 		acs_set_p_f->rsv_set_addr=acs_set_p->rsv_set_addr-ddr_set_reduce_offset;
 		acs_set_p_f->ddr_set_addr=acs_set_p->ddr_set_addr;//-ddr_set_reduce_offset;
 		//unsigned long		sto_set_addr;
+	#endif
 
 		acs_set_p_f->ddr_set_length=acs_set_p->ddr_set_length-ddr_set_reduce_offset;
 		length_f = fileLen - ddr_set_reduce_offset;
 
+	#if 1
 		printf("\nwrite back  \n");
 		for (i = 0; i < length_f; i++)
 		{
@@ -538,34 +581,36 @@ int main(int argc, char **argv)
 			if (i%16 == 15)	printf("\n");
 			// if(i%4==3)printf("  ");
 		}
+	#endif
+
 	}
 	else
 	{
 		length_f=fileLen;
 		for (i = 0; i < (fileLen); i++)
 		{
-			buffer_f[i]=((buffer[i])&0xff);
+			buffer_f[i] = ((buffer[i]) & 0xff);
 			//printf("\n 0x%0x  ,buffer[i] %02x, buffer_f[i] %02x",i,((buffer[i])&0xff),(buffer_f[i]&0xff));
 		}
 	}
 
-	//  for ( i = 0; i < length_f; i++)
-	printf("\nfinal  timming size ==%d bytes\n",length_f);
+	printf("\nfinal timing size:%dbytes, while original size:%dbytes\n", length_f, (unsigned int)fileLen);
 	if (length_f > 4096)
 		printf("\nwarning timming size over limmit");
 
-	fclose(file);
 	fwrite(buffer_f , sizeof(char), length_f, file_f);
+	fclose(file_f);
+	fclose(file);
+	free(buffer);
 
 	file = fopen(file_path, "wb+");
 	if (!file)
 	{
-		fprintf(stderr, "can't open file %s", "acs.bin");
+		fprintf(stderr, "can't open file %s", file_path);
+		free(buffer_f);
 		exit(1);
 	}
 	fwrite(buffer_f , sizeof(char), length_f, file);
-	fclose(file_f);
 	fclose(file);
-	free(buffer);
 	free(buffer_f);
 }

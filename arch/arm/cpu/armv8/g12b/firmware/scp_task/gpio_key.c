@@ -56,6 +56,10 @@ int init_gpio_key(void)
 
 	switch (gpio_wakeup_bank) {
 		case PERIPHS:
+			// remove offset because of virtual pin GPIOV_0 to match up kernel and hardware
+			if (gpio_wakeup_keyno > GPIOV_0)
+				gpio_wakeup_keyno--;
+
 			if (bank_match(GPIOV_0, GPIOV_0))
 				g_bankindex = 0;
 			else if (bank_match(GPIOZ_0, GPIOZ_15))

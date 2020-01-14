@@ -148,6 +148,13 @@ function build_fip() {
 		${BUILD_PATH}/bl2_new.bin \
 		bl2
 
+	if [ "y" == "${CONFIG_NEED_BL32}" ]; then
+		FIP_BL32="`find ${BUILD_PATH} -name "bl32.${BL3X_SUFFIX}"`"
+		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
+			FIP_BL32_PROCESS=" --bl32 ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc"
+		fi
+	fi
+
 	return
 }
 

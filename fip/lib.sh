@@ -190,9 +190,18 @@ function get_blx_bin() {
 					fi
 				fi
 			else
-				cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_NAME[index]} ${FIP_BUILD_FOLDER} -f
-				if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
-					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME[index]} ${FIP_BUILD_FOLDER} 2>/dev/null
+				if [ "${CONFIG_CAS}" == "irdeto" ]; then
+					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_NAME_IRDETO[index]} \
+						${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[index]} -f
+					if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
+						cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME_IRDETO[index]} \
+							${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[index]} 2>/dev/null
+					fi
+				else
+					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_NAME[index]} ${FIP_BUILD_FOLDER} -f
+					if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
+						cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME[index]} ${FIP_BUILD_FOLDER} 2>/dev/null
+					fi
 				fi
 				if [ -e ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/bl2.v3.bin ]; then
 					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/bl2.v3.bin ${FIP_BUILD_FOLDER} -f

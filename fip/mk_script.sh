@@ -388,6 +388,21 @@ function bin_path_parser() {
 				CONFIG_DDR_FW=1
 				export CONFIG_DDR_FW
 				continue ;;
+			--cas)
+				cas="${argv[$i]}"
+				#limit the "--cas xxx" only works for g12a
+				if [ "${CUR_SOC}" == "g12a" ]; then
+					CONFIG_CAS=${cas}
+				fi
+				if [[ "${CONFIG_CAS}" == "irdeto" || \
+					  "${CONFIG_CAS}" == "vmx" || \
+					  "${CONFIG_CAS}" == "nagra" ]]; then
+					CONFIG_AML_SIGNED_UBOOT=y
+					export CONFIG_AML_SIGNED_UBOOT
+				fi
+				echo "CAS: ${cas},${CONFIG_CAS}"
+				export CONFIG_CAS
+				continue ;;
 			--systemroot)
 				CONFIG_SYSTEM_AS_ROOT=systemroot
 				echo "export CONFIG_SYSTEM_AS_ROOT"

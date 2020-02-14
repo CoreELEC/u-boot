@@ -118,19 +118,42 @@ function build_blx() {
 
 	# build loop
 	for loop in ${!BLX_NAME[@]}; do
-		dbg "BIN_PATH[${loop}]: ${BIN_PATH[loop]}"
-		if [ "null" == ${BIN_PATH[loop]} ]; then
+		dbg "BIN_PATH[${loop}]: ${BIN_PATH[$loop]}"
+		if [ "null" == ${BIN_PATH[$loop]} ]; then
 			get_blx_bin ${loop}
-		elif [ "source" == ${BIN_PATH[loop]} ]; then
+		elif [ "source" == ${BIN_PATH[$loop]} ]; then
 			dbg "Build blx source code..."
-			build_blx_src ${BLX_NAME[loop]} ${BLX_SRC_FOLDER[loop]} ${FIP_BUILD_FOLDER} ${CUR_SOC}
+			build_blx_src ${BLX_NAME[$loop]} ${BLX_SRC_FOLDER[$loop]} ${FIP_BUILD_FOLDER} ${CUR_SOC}
 		else
-			if [ ! -e ${BIN_PATH[loop]} ]; then
-				echo "Error: ${BIN_PATH[loop]} doesn't exist... abort"
+			if [ ! -e ${BIN_PATH[$loop]} ]; then
+				echo "Error: ${BIN_PATH[$loop]} doesn't exist... abort"
 				exit -1
 			else
-				cp ${BIN_PATH[loop]} ${FIP_BUILD_FOLDER} -f
-				echo "Get ${BLX_NAME[$loop]} from ${BIN_PATH[loop]}... done"
+				cp ${BIN_PATH[$loop]} ${FIP_BUILD_FOLDER} -f
+				echo "Get ${BLX_NAME[$loop]} from ${BIN_PATH[$loop]}... done"
+			fi
+		fi
+
+		# start to check the blx firmware
+		if [ "bl32" == "${BLX_NAME[$loop]}" ]; then
+			# no bl32 are exported for users
+			check_bypass=y
+		else
+			check_bypass=n
+		fi
+
+		if [ "y" != "${check_bypass}" ]; then
+			if [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
+			   [ ! -f ${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[$loop]} ]; then
+				echo "Error Result: ${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[$loop]} doesn't exit... abort"
+				exit -1
+			fi
+			if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ] && \
+			   [ -n "${BLX_IMG_NAME[$loop]}" ] && \
+			   [ "NULL" != "${BLX_IMG_NAME[$loop]}" ] && \
+			   [ ! -f ${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[$loop]} ]; then
+				echo "Error Result: ${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[$loop]} doesn't exit... abort"
+				exit -1
 			fi
 		fi
 	done

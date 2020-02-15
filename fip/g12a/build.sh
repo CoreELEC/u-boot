@@ -197,12 +197,22 @@ function package() {
 		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
 		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
 
-		list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl30_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin"
+		list_pack="${BUILD_PATH}/bl2_new.bin ${BUILD_PATH}/bl30_new.bin ${BUILD_PATH}/bl31.img ${BUILD_PATH}/bl32.img ${BUILD_PATH}/bl33.bin ${BUILD_PATH}/bl40.bin"
 		list_pack="$list_pack ${FIP_FOLDER}/${CUR_SOC}/*.fw"
 		u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
 		zip -j $u_pack ${list_pack} >& /dev/null
 
-		${FIP_FOLDER}/stool/sign.sh -s ${CUR_SOC} -z $u_pack -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key
+		if [ -f ${BUILD_PATH}/bl40.bin ]; then
+			if [ $CONFIG_SIGN_BL40 ]; then
+				bl40_option="-m -d"
+			else
+				bl40_option="-m -m"
+			fi
+		else
+			bl40_option=
+		fi
+
+		${FIP_FOLDER}/stool/sign.sh -s ${CUR_SOC} -z $u_pack -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key $bl40_option
 
 		if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then
 				${FIP_FOLDER}/stool/sign.sh -s ${CUR_SOC} -p ${UBOOT_SRC_FOLDER}/${BOARD_DIR} -o ${BUILD_FOLDER} -r ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key -a ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/aml-key

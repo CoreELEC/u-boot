@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # static
-declare -a BLX_NAME=("bl2" "bl30" "bl31" "bl32")
+declare -a BLX_NAME=("bl2" "bl30" "bl31" "bl32" "bl40")
 
 declare -a BLX_SRC_FOLDER=("bl2/src" "bl30/src" "bl31/src" "bl32/src" "bl33")
 declare -a BLX_BIN_FOLDER=("bl2/bin" "bl30/bin" "bl31/bin" "bl32/bin")

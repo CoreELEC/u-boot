@@ -365,6 +365,13 @@ function bin_path_parser() {
 			--bl32)
 				update_bin_path 3 "${argv[@]:$((i))}"
 				continue ;;
+      --bl40)
+				update_bin_path 4 "${argv[@]:$((i))}"
+				continue ;;
+      --sign-bl40)
+				update_bin_path 4 "${argv[@]:$((i))}"
+				CONFIG_SIGN_BL40=1
+				continue ;;
 			--update-bl2)
 				update_bin_path 0 "source"
 				continue ;;

@@ -417,6 +417,11 @@ function bin_path_parser() {
 				echo "export CONFIG_AVB2"
 				export CONFIG_AVB2=avb2
 				continue ;;
+			--avb2-fipkey)
+				CONFIG_AVB2_KPUB_FROM_FIP=1
+				echo "export CONFIG_AVB2_KPUB_FROM_FIP"
+				export CONFIG_AVB2_KPUB_FROM_FIP=1
+				continue ;;
 				*)
 		esac
 	done

@@ -400,6 +400,10 @@ function bin_path_parser() {
 					CONFIG_AML_SIGNED_UBOOT=y
 					export CONFIG_AML_SIGNED_UBOOT
 				fi
+				if [ "${CONFIG_CAS}" == "vmx" ]; then
+					dbg "Loading CAS VMX config"
+					source fip/config_cas_vmx.sh
+				fi
 				echo "CAS: ${cas},${CONFIG_CAS}"
 				export CONFIG_CAS
 				continue ;;

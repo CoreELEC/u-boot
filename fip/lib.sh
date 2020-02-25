@@ -197,6 +197,19 @@ function get_blx_bin() {
 						cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME_IRDETO[index]} \
 							${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[index]} 2>/dev/null
 					fi
+				elif [ "${CONFIG_CAS}" == "vmx" ]; then
+					if [ "${BLX_BIN_NAME_VMX[index]}" != "NULL" ]; then
+						cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_NAME_VMX[index]} \
+							${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[index]} -f || \
+								BLX_READY[${index}]="false"
+					fi
+					if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
+						if [ "${BLX_IMG_NAME_VMX[index]}" != "NULL" ]; then
+							cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME_VMX[index]} \
+								${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[index]} || \
+									BLX_READY[${index}]="false"
+						fi
+					fi
 				else
 					cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_NAME[index]} ${FIP_BUILD_FOLDER} -f
 					if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then

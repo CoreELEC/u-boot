@@ -160,6 +160,12 @@ function git_operate2() {
 function get_blx_bin() {
 	# $1: current blx index
 	index=$1
+
+	# check for bl40, while only get bl40 from external path
+	if [ "${BLX_NAME[$index]}" == "bl40" ]; then
+		echo "skip to get bl40 from xml git"
+		return 0
+	fi
 	git_operate ${BLX_BIN_FOLDER[index]} log --pretty=oneline
 
 	git_msg=${GIT_OPERATE_INFO}

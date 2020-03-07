@@ -154,6 +154,7 @@ function build_blx() {
 		if [ "y" != "${check_bypass}" ]; then
 			if [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
 			   [ -n "${BLX_BIN_NAME[$loop]}" ] && \
+			   [ "NULL" == "${BLX_IMG_NAME[$loop]}" ] && \
 			   [ ! -f ${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[$loop]} ]; then
 				echo "Error ${BLX_NAME[$loop]}: ${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[$loop]} doesn't exit... abort"
 				exit -1

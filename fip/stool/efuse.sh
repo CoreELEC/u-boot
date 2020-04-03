@@ -16,6 +16,9 @@ Usage: $(basename $0) --help
                       [--enable-usb-password false]     \\
                       [--enable-anti-rollback false]    \\
                       -o pattern.efuse
+         $(basename $0) --audio-id audio_id_value \\
+                      --soc [axg | txhd | g12a | g12b | sm1 | tl1 | tm2 | a1 | c1 |c2 | t5 | t5d ] \\
+                      -o audio_id.efuse
 
 EOF
     exit 1
@@ -283,6 +286,90 @@ rm -f $rsa_root_hash
 
 }
 
+append_uint32_le() {
+    local input=$1
+    local output=$2
+    local v=
+    local vrev=
+    v=$(printf %08x $input)
+    # 00010001
+    vrev=${v:6:2}${v:4:2}${v:2:2}${v:0:2}
+
+    echo $vrev | xxd -r -p >> $output
+}
+
+generate_audio_id_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local audio_id_efuse=$(mktemp --tmpdir)
+    # default audio_id_offset 0x138 g12a/sm1/g12b/tl1/tm2/t5/t5d
+    local audio_id_offset=312
+    local audio_id_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --soc)
+                soc="${argv[$i]}" ;;
+            --audio-id)
+                audio_id_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    if [ -z $audio_id_value ]; then
+        echo Error: invalid audio_id_value
+        exit 1
+    fi
+
+    if [ "$soc" != "axg" ] && [ "$soc" != "txhd" ] && [ "$soc" != "g12a" ] \
+       && [ "$soc" != "sm1" ] && [ "$soc" != "g12b" ] && [ "$soc" != "tl1" ] && [ "$soc" != "tm2" ] \
+       && [ "$soc" != "a1" ] && [ "$soc" != "c1" ] && [ "$soc" != "c2" ] \
+       && [ "$soc" != "t5" ] && [ "$soc" != "t5d" ]; then
+        echo Error: invalid soc: \"$soc\"
+        exit 1
+    fi
+
+    if [ -z $output ]; then
+        echo Error: invalid output
+        exit 1
+    fi
+
+    if [ "$soc" == "axg" ] || [ "$soc" == "txhd" ]; then
+        # audio_id_offset 0xAC
+        audio_id_offset=172
+    elif [ "$soc" == "a1" ] || [ "$soc" == "c1" ]; then
+        # audio_id_offset 0x18
+        audio_id_offset=24
+    elif [ "$soc" == "c2" ]; then
+        # audio_id_offset 0xD8
+        audio_id_offset=216
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=512 bs=1 &> /dev/null
+
+    append_uint32_le $audio_id_value $audio_id_efuse
+    dd if=$audio_id_efuse of=$patt bs=1 seek=$audio_id_offset count=$audio_id_size \
+        conv=notrunc >& /dev/null
+
+    readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    "${tools_dir}/signing-tool-g12a-dev/aml_encrypt_g12a" --efsgen3 --input $patt --output $output
+    cp $patt $output.dec
+
+    rm -f $patt
+    rm -f $audio_id_efuse
+}
+
 parse_main() {
     case "$@" in
         --help)
@@ -290,6 +377,9 @@ parse_main() {
             ;;
         --version)
             echo "$(basename $0) version $VERSION"
+            ;;
+        *--audio-id*)
+            generate_audio_id_pattern "$@"
             ;;
         *-o*)
             generate_efuse_pattern "$@"

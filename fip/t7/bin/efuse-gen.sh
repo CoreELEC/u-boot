@@ -248,6 +248,8 @@ function generate_audio_id_pattern() {
     # default audio_id_offset 0xB8
     local audio_id_offset=184
     local audio_id_size=4
+    local wrlock=$(mktemp --tmpdir)
+    local efusebit=$(mktemp --tmpdir)
      # Parse args
     i=0
     while [ $i -lt $# ]; do
@@ -281,10 +283,25 @@ function generate_audio_id_pattern() {
     dd if=$audio_id_efuse of=$patt bs=1 seek=$audio_id_offset count=$audio_id_size \
         conv=notrunc >& /dev/null
 
+    dd if=$patt of=$wrlock bs=16 skip=29 count=1 &> /dev/null
+    b_1dd=$(xxd -ps -s13 -l1 $wrlock)
+    b_1dd="$(printf %02x $(( 0x$b_1dd | 0x04 )))"
+    echo $b_1dd | xxd -r -p > $efusebit
+    dd if=$efusebit of=$wrlock bs=1 seek=13 count=1 conv=notrunc >& /dev/null
+
+    filesize=$(wc -c < $wrlock)
+    if [ $filesize -ne 16 ]; then
+        echo Internal Error -- Invalid write-lock pattern length
+        exit 1
+    fi
+    dd if=$wrlock of=$patt bs=16 seek=29 count=1 conv=notrunc >& /dev/null
+
 	${BASEDIR_TOP}/aml_encrypt_t7 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
     rm -f $audio_id_efuse
+    rm -f $wrlock
+    rm -f $efusebit
 }
 
 parse_main() {

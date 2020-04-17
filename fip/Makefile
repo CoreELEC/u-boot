@@ -32,6 +32,12 @@ else
 V3_PROCESS_FLAG :=
 endif
 
+ifneq ("$(MACHINE_HARDWARE_NAME)","x86_64")
+FIP_DIR := qemu-x86_64 $(buildsrc)/fip
+else
+FIP_DIR := $(buildsrc)/fip
+endif
+
 # BL2 file size 41K, bl21 file size 3K (file size not equal runtime size) = total 44K
 # after encrypt process, bl2 add 4K header, cut off 4K tail
 # BL2 file size 56K, acs file size 4K = total 60K
@@ -66,7 +72,7 @@ define fix_blx
 endef
 
 define encrypt_step
-	$(Q)$(buildsrc)/fip/$(SOC)/aml_encrypt_$(SOC) $1
+	$(Q)$(FIP_DIR)/$(SOC)/aml_encrypt_$(SOC) $1
 endef
 
 FIP_ARGS := --bl30 $(buildtree)/fip/bl30_new.bin \

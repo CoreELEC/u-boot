@@ -861,6 +861,12 @@ FIP_ARGS += --bl32 $(FIP_FOLDER_SOC)/bl32.bin
 endif
 FIP_ARGS += --bl33 $(FIP_FOLDER_SOC)/bl33.bin
 
+ifneq ("$(MACHINE_HARDWARE_NAME)","x86_64")
+FIP_EXEC_FOLDER_SOC := qemu-x86_64 $(FIP_FOLDER_SOC)
+else
+FIP_EXEC_FOLDER_SOC := $(FIP_FOLDER_SOC)
+endif
+
 .PHONY: fip_create
 fip_create:
 	$(Q)echo "Build fip_create"
@@ -884,12 +890,12 @@ endif
 .PHONY : boot.bin
 boot.bin: fip.bin
 	$(Q)cat $(FIP_FOLDER_SOC)/bl2.package  $(FIP_FOLDER_SOC)/fip.bin > $(FIP_FOLDER_SOC)/boot_new.bin
-	$(Q)$(FIP_FOLDER_SOC)/aml_encrypt_$(SOC) --bootsig --input $(FIP_FOLDER_SOC)/boot_new.bin --output $(FIP_FOLDER_SOC)/u-boot.bin
+	$(Q)$(FIP_EXEC_FOLDER_SOC)/aml_encrypt_$(SOC) --bootsig --input $(FIP_FOLDER_SOC)/boot_new.bin --output $(FIP_FOLDER_SOC)/u-boot.bin
 ifeq ($(CONFIG_AML_CRYPTO_UBOOT), y)
-	$(Q)$(FIP_FOLDER_SOC)/aml_encrypt_$(SOC) --bootsig --input $(FIP_FOLDER_SOC)/boot_new.bin --amluserkey $(srctree)/board/$(BOARDDIR)/aml-user-key.sig --aeskey enable --output $(FIP_FOLDER_SOC)/u-boot.bin.encrypt
+	$(Q)$(FIP_EXEC_FOLDER_SOC)/aml_encrypt_$(SOC) --bootsig --input $(FIP_FOLDER_SOC)/boot_new.bin --amluserkey $(srctree)/board/$(BOARDDIR)/aml-user-key.sig --aeskey enable --output $(FIP_FOLDER_SOC)/u-boot.bin.encrypt
 endif
 ifeq ($(CONFIG_AML_CRYPTO_IMG), y)
-	$(Q)$(FIP_FOLDER_SOC)/aml_encrypt_$(SOC) --imgsig --input $(srctree)/board/$(BOARDDIR)/boot.img --amluserkey $(srctree)/board/$(BOARDDIR)/aml-user-key.sig --output $(FIP_FOLDER_SOC)/boot.img.encrypt
+	$(Q)$(FIP_EXEC_FOLDER_SOC)/aml_encrypt_$(SOC) --imgsig --input $(srctree)/board/$(BOARDDIR)/boot.img --amluserkey $(srctree)/board/$(BOARDDIR)/aml-user-key.sig --output $(FIP_FOLDER_SOC)/boot.img.encrypt
 	@cp -f $(FIP_FOLDER_SOC)/boot.img.encrypt $(FIP_FOLDER)/boot.img.encrypt
 endif
 	@cp -f $(FIP_FOLDER_SOC)/u-boot.* $(FIP_FOLDER)/

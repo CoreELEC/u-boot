@@ -70,8 +70,8 @@ static void power_off_at_24M(unsigned int suspend_from)
 {
 	if (!enable_5V_system_power)
 	{
-		/*set gpioH_8 low to power off vcc 5v*/
-		writel(readl(PREG_PAD_GPIO3_EN_N) & (~(1 << 8)), PREG_PAD_GPIO3_EN_N);
+		/*set gpioH_8 low/high to power off vcc 5v*/
+		writel(readl(PREG_PAD_GPIO3_EN_N) ^ (1 << 8), PREG_PAD_GPIO3_EN_N);
 		writel(readl(PERIPHS_PIN_MUX_C) & (~(0xf)), PERIPHS_PIN_MUX_C);
 	}
 
@@ -112,8 +112,8 @@ static void power_on_at_24M(unsigned int suspend_from)
 
 	if (!enable_5V_system_power)
 	{
-		/*set gpioH_8 low to power on vcc 5v*/
-		writel(readl(PREG_PAD_GPIO3_EN_N) | (1 << 8), PREG_PAD_GPIO3_EN_N);
+		/*set gpioH_8 high/low to power on vcc 5v*/
+		writel(readl(PREG_PAD_GPIO3_EN_N) ^ (1 << 8), PREG_PAD_GPIO3_EN_N);
 		writel(readl(PERIPHS_PIN_MUX_C) & (~(0xf)), PERIPHS_PIN_MUX_C);
 	}
 	_udelay(10000);

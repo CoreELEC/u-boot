@@ -11,3 +11,4 @@ export CONFIG_EFUSE_READ=1
 
 #bl2, bl31, bl32, bl33:
 export USE_GIT_DATE=1
+export CONFIG_AML_SECURE_BOOT_V3=1

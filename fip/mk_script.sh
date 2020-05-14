@@ -425,7 +425,8 @@ function bin_path_parser() {
 			--cas)
 				cas="${argv[$i]}"
 				#limit the "--cas xxx" only works for g12a
-				if [ "${CUR_SOC}" == "g12a" ]; then
+				if [ "${CUR_SOC}" == "g12a" ] ||
+					( [ "${cas}" == "vmx" ] && [ "${CUR_SOC}" == "gxl" ] ); then
 					CONFIG_CAS=${cas}
 				fi
 				if [[ "${CONFIG_CAS}" == "irdeto" || \

@@ -242,7 +242,10 @@ function build() {
 	if [ ! $CONFIG_AVB2 ]; then
 		CONFIG_AVB2=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2}
+	if [ ! $CONFIG_CMD_BOOTCTOL_R ]; then
+		CONFIG_CMD_BOOTCTOL_R=null
+	fi
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_R}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -451,6 +454,11 @@ function bin_path_parser() {
 				CONFIG_AVB2=avb2
 				echo "export CONFIG_AVB2"
 				export CONFIG_AVB2=avb2
+				continue ;;
+			--bootctrlR)
+				CONFIG_CMD_BOOTCTOL_R=1
+				echo "export CONFIG_CMD_BOOTCTOL_R"
+				export CONFIG_CMD_BOOTCTOL_R=1
 				continue ;;
 			--avb2-fipkey)
 				CONFIG_AVB2_KPUB_FROM_FIP=1

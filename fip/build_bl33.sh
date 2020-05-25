@@ -45,10 +45,10 @@ function pre_build_uboot() {
 }
 
 function build_uboot() {
-	echo "Build uboot...Please Wait...$1...$2..."
+	echo "Build uboot...Please Wait...$1...$2...$3..."
 	mkdir -p ${FIP_BUILD_FOLDER}
 	cd ${UBOOT_SRC_FOLDER}
-	make -j SYSTEMMODE=$1 AVBMODE=$2 # &> /dev/null
+	make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 # &> /dev/null
 	ret=$?
 	cd ${MAIN_FOLDER}
 	if [ 0 -ne $ret ]; then

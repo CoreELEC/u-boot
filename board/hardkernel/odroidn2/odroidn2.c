@@ -421,3 +421,37 @@ phys_size_t get_effective_memsize(void)
 
 	return size_aligned;
 }
+
+#ifdef CONFIG_MULTI_DTB
+int checkhw(char * name)
+{
+	/*
+	 * use rev id to identify revA/revB
+	 */
+	cpu_id_t cpu_id;
+	cpu_id = get_cpu_id();
+	char loc_name[64] = {0};
+
+	printf("cpu_id.chip_rev: %x\n", cpu_id.chip_rev);
+
+	switch (cpu_id.chip_rev) {
+		case 0xA:
+			/* revA */
+			strcpy(loc_name, "g12b_w400_a\0");
+			break;
+		case 0xB:
+			/* revB */
+			strcpy(loc_name, "g12b_w400_b\0");
+			break;
+		case 0xC:
+			/* revC */
+			strcpy(loc_name, "g12b_w400_c\0");
+			break;
+		default:
+			strcpy(loc_name, "g12b_w400_unsupport\0");
+			break;
+	}
+	strcpy(name, loc_name);
+	return 0;
+}
+#endif

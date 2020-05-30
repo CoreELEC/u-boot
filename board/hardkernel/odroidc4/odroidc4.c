@@ -426,3 +426,33 @@ phys_size_t get_effective_memsize(void)
 
 	return size_aligned;
 }
+
+#ifdef CONFIG_MULTI_DTB
+int checkhw(char * name)
+{
+	/*
+	 * set aml_dt according to chip and dram capacity
+	 */
+	phys_size_t ddr_size = get_effective_memsize();
+	char loc_name[64] = {0};
+	cpu_id_t cpu_id=get_cpu_id();
+
+	if (MESON_CPU_MAJOR_ID_SM1 == cpu_id.family_id) {
+		printf("cpu_id: sm1, ddr_size: %llx\n", (u64)ddr_size);
+		switch (ddr_size) {
+			case 0xd8000000:
+				strcpy(loc_name, "sm1_ac213_4g\0");
+				break;
+			default:
+				strcpy(loc_name, "sm1_ac213_unsupport");
+				break;
+		}
+	}
+	else {
+		printf("cpu_id: %x, ddr_size: %llx\n", cpu_id.family_id, (u64)ddr_size);
+		snprintf(loc_name, sizeof(loc_name), "%x_u202_unsupport", cpu_id.family_id);
+	}
+	strcpy(name, loc_name);
+	return 0;
+}
+#endif

@@ -106,6 +106,7 @@
         "loadaddr=1080000\0"\
 
 #define CONFIG_BOOTCOMMAND			"run boot_default"
+#define CONFIG_MULTI_DTB			1
 
 #define CONFIG_BOOTAREA_SIZE			(1 * SZ_1M)
 #define CONFIG_MBR_SIZE				512

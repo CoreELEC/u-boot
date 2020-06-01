@@ -23,6 +23,7 @@ bl30="bl30_new.bin"
 bl31="bl31.img"
 bl32="bl32.img"
 bl33="bl33.bin"
+bl40="bl40.bin"
 ddrfw=("ddr4_1d.fw" "ddr4_2d.fw" "ddr3_1d.fw" "piei.fw" "lpddr4_1d.fw"
 		"lpddr4_2d.fw" "diag_lpddr4.fw" "aml_ddr.fw" "lpddr3_1d.fw")
 
@@ -38,6 +39,7 @@ bl30_bin="$TMP/bl30.bin"
 bl31_bin="$TMP/bl31.bin"
 bl32_bin="$TMP/bl32.bin"
 bl33_bin="$TMP/bl33.bin"
+#bl40_bin="$TMP/bl40.bin"
 ddrhdr=("$TMP/ddr1.hdr" "$TMP/ddr2.hdr" "$TMP/ddr3.hdr" "$TMP/ddr4.hdr"
 		"$TMP/ddr5.hdr" "$TMP/ddr6.hdr" "$TMP/ddr7.hdr" "$TMP/ddr8.hdr"
 		"$TMP/ddr9.hdr")
@@ -53,6 +55,8 @@ bl32_entry_offset=""
 bl32_entry_size=""
 bl33_entry_offset=""
 bl33_entry_size=""
+bl40_entry_offset=""
+bl40_entry_size=""
 ddrfw_count=""
 ddr1_entry_offset=""
 ddr1_entry_size=""
@@ -198,6 +202,21 @@ generate_bl3x() {
 	echo "done"
 }
 
+generate_bl40() {
+	local input="$1"
+	local bl40="$2"
+	local offset="$3"
+	local size="$4"
+
+	echo -n "generate $bl40..."
+	check_file "input" $input
+	check_value "offset" $offset
+	check_value "size" $size
+
+	dd if=$input of=$bl40 bs=1 skip=$offset count=$size >& /dev/null
+	echo "done"
+}
+
 ##################################################################
 trap cleanup EXIT
 
@@ -219,7 +238,7 @@ case $soc in
 		bl2hdr_size=4096
 		bl2bin_size=61440
 		bl30hdr_size=4096
-		bl30bin_size=60416
+		bl30bin_size=54272
 		;;
 	"g12b"|"tl1")
 		bl2hdr_size=4096
@@ -284,6 +303,9 @@ if [[ "$bl32_entry_size" != 0 ]]; then
 	generate_bl3x "$uboot_no_bl2" "$outdir/$bl32" "$bl32_hdr" "$bl32_bin" "$bl32_entry_offset" "$bl32_entry_size"
 fi
 generate_bl3x "$uboot_no_bl2" "$outdir/$bl33" ""         "$bl33_bin" "$bl33_entry_offset" "$bl33_entry_size"
+if [[ "$bl40_entry_size" != 0 ]]; then
+	generate_bl40 "$uboot_no_bl2" "$outdir/$bl40" "$bl40_entry_offset" "$bl40_entry_size"
+fi
 
 echo "Parse uboot done"
 

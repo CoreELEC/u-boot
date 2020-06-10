@@ -65,6 +65,8 @@ uint8_t eclic_get_irq_lvl(uint32_t source);
 void eclic_set_irq_lvl_abs(uint32_t source, uint8_t lvl_abs);
 uint8_t eclic_get_irq_lvl_abs(uint32_t source);
 
+void eclic_set_irq_pri(uint32_t source, uint8_t pri);
+
 void eclic_mode_enable(void);
 
 void eclic_set_vmode(uint32_t source);
@@ -77,6 +79,12 @@ void wfe(void);
 uint64_t get_timer_value(void);
 uint32_t get_timer_freq(void);
 void print_eclic(void);
+void test_handler(void);
+
+void vEnableIrq(uint32_t ulIrq);
+void vDisableIrq(uint32_t ulIrq);
+void vSetIrqPriority(uint32_t ulIrq, uint32_t ulProi);
+void vClearPendingIrq(uint32_t ulIrq);
 
 __END_DECLS
 

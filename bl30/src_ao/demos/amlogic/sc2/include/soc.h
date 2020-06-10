@@ -3,6 +3,7 @@
 #ifndef __ASM
 #include "FreeRTOSConfig.h"
 #include "riscv_const.h"
+#include "irq.h"
 #endif
 
 #define SOC_ECLIC_NUM_INTERRUPTS 32

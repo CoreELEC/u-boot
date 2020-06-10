@@ -177,10 +177,10 @@
 	csrr	t0, CSR_MSTATUS	//pointer
 	STORE	t0, 32 * REGBYTES(sp)
 
-	csrr t0, CSR_MSUBM  
+	csrr t0, CSR_MSUBM
   	STORE t0,  34*REGBYTES(sp)
 
-	
+
 	/* Store current stackpointer in task control block (TCB) */
 	LOAD	t0, pxCurrentTCB	//pointer
 	STORE	sp, 0x0(t0)
@@ -268,7 +268,7 @@
 ###############################################
 
 ###############################################
-	
+
  /*restore mstatus/mepc and tcb	*/
 .macro portRESTORE_CONTEXT_EXCP
 	.global	pxCurrentTCB
@@ -277,11 +277,11 @@
 	LOAD	sp, 0x0(sp)
 	/* Load task program counter */
 	LOAD t0,  34*REGBYTES(sp)
-  	csrw CSR_MSUBM, t0   
+  	csrw CSR_MSUBM, t0
 	LOAD t0,  33*REGBYTES(sp)
-  	csrw CSR_MEPC, t0  
+  	csrw CSR_MEPC, t0
   	LOAD t0,  32*REGBYTES(sp)
-  	csrw CSR_MSTATUS, t0 
+  	csrw CSR_MSTATUS, t0
 .endm
 
 
@@ -290,13 +290,13 @@
 .macro portSAVE_CONTEXT_IRQ
 	.global	pxCurrentTCB
 	/* Store status */
-	csrr t0, CSR_MSTATUS  
+	csrr t0, CSR_MSTATUS
   	STORE t0,  32*REGBYTES(sp)
 	csrr t0,   CSR_MEPC
 	STORE t0,  33*REGBYTES(sp)
   	csrr t0,   CSR_MSUBM
   	STORE t0,  34*REGBYTES(sp)
-	csrr t0,  CSR_MCAUSE 
+	csrr t0,  CSR_MCAUSE
   	STORE t0,  35*REGBYTES(sp)
 
 	/* Store current stackpointer in task control block (TCB) */
@@ -313,24 +313,24 @@
 //	LOAD	sp, pxCurrentTCB
 //	LOAD	sp, 0x0(sp)
 	#---- Critical section with interrupts disabled -----------------------
-   	# Disable interrupts 
-	
- 	
+   	# Disable interrupts
+
+
 	LOAD t0,  35*REGBYTES(sp)
-  	csrw  CSR_MCAUSE, t0   
+  	csrw  CSR_MCAUSE, t0
 	LOAD t0,  34*REGBYTES(sp)
-  	csrw CSR_MSUBM, t0 
+  	csrw CSR_MSUBM, t0
 	LOAD t0,  33*REGBYTES(sp)
-  	csrw CSR_MEPC, t0  
+  	csrw CSR_MEPC, t0
   	LOAD t0,  32*REGBYTES(sp)
-  	csrw CSR_MSTATUS, t0 
-.endm  
+  	csrw CSR_MSTATUS, t0
+.endm
 
 ###############################################
 # Disable Interrupt
 #
 .macro DISABLE_MIE
-  	csrc CSR_MSTATUS, MSTATUS_MIE  
+  	csrc CSR_MSTATUS, MSTATUS_MIE
 .endm
 
 
@@ -367,74 +367,73 @@ trap_entry:
 irq_entry: // -------------> This label will be set to MTVT2 register
   	// Allocate the stack space
   	pushREGFILE
-	csrr	t0, CSR_MSTATUS	
-	STORE	t0, 32 * REGBYTES(sp)
-  	csrr t0,   CSR_MEPC
-  	STORE t0,  33*REGBYTES(sp)
-  	csrr t0,   CSR_MSUBM
-  	STORE t0,  34*REGBYTES(sp)
-	csrr t0,   CSR_MCAUSE
-  	STORE t0,  35*REGBYTES(sp)
-	
-	
+	portSAVE_CONTEXT_IRQ
+
 int_loop:             // 3 instructions in pending-interrupt service loop.
-  	csrrw ra, CSR_JALMNXTI, ra    
-        
-  	csrrsi a0, CSR_MNXTI, MSTATUS_MIE   // Claim any pending interrupt at level > mcause.pil 
-  	bnez a0, int_loop   // Loop to service any interrupt. 
+  	csrrw ra, CSR_JALMNXTI, ra
+
+  	csrrsi a0, CSR_MNXTI, MSTATUS_MIE   // Claim any pending interrupt at level > mcause.pil
+  	bnez a0, int_loop   // Loop to service any interrupt.
 
   	#---- Critical section with interrupts disabled -----------------------
   	DISABLE_MIE # Disable interrupts
-  
- 	
-	LOAD t0,  35*REGBYTES(sp)
-  	csrw CSR_MCAUSE, t0   
-	LOAD t0,  34*REGBYTES(sp)
-  	csrw CSR_MSUBM, t0 
-	LOAD t0,  33*REGBYTES(sp)
-  	csrw CSR_MEPC, t0  
-  	LOAD t0,  32*REGBYTES(sp)
- 	csrw CSR_MSTATUS, t0 
 
+	portRESTORE_CONTEXT_IRQ
   	popREGFILE
   	mret
 
 .align 2
 .globl MTIME_HANDLER
-MTIME_HANDLER:   
-  	pushREGFILE   
-	portSAVE_CONTEXT_IRQ  
-	
-	csrs CSR_MSTATUS, MSTATUS_MIE  
+MTIME_HANDLER:
+  	pushREGFILE
+	portSAVE_CONTEXT_IRQ
+
+	csrs CSR_MSTATUS, MSTATUS_MIE
 	jal		vPortSysTickHandler
-	csrc CSR_MSTATUS, MSTATUS_MIE  
+	csrc CSR_MSTATUS, MSTATUS_MIE
 
 	portRESTORE_CONTEXT_IRQ
 	popREGFILE
-	
+
 	mret
+
+#if 0
+.align 2
+.globl MSIP_HANDLER
+MSIP_HANDLER:
+	pushREGFILE
+	portSAVE_CONTEXT_IRQ
+
+	csrs CSR_MSTATUS, MSTATUS_MIE
+	jal 	test_handler
+	csrc CSR_MSTATUS, MSTATUS_MIE
+
+	portRESTORE_CONTEXT_IRQ
+	popREGFILE
+
+	mret
+#endif
 
 xPortStartScheduler:
 	jal		vPortSetup
-	portRESTORE_CONTEXT_EXCP 
-	
-	popREGFILE
-	
-	mret
+	portRESTORE_CONTEXT_EXCP
 
+	popREGFILE
+
+	mret
 
 
 .align 6
 vPortYield:
 	mv		sp,a0
-	
+
 	portSAVE_CONTEXT_EXCP
 
 	STORE	a1, 33 * REGBYTES(sp)
 	jal		vTaskSwitchContext
 
 	portRESTORE_CONTEXT_EXCP
-	popREGFILE  
+	popREGFILE
 
 	mret
 

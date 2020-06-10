@@ -138,6 +138,11 @@ static void stdout_putf(void *unused, char c)
 }
 */
 
+void hardware_init(void);
+void hardware_init()
+{
+	config_eclic_irqs();
+}
 // Test target board
 int main(void)
 {
@@ -145,11 +150,14 @@ int main(void)
 	char test[80];
 	//init_printf(NULL, stdout_putf);
 
+	hardware_init();
+
 	printf("\nStarting C2 RISCV FreeRTOS...\r\n");
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
-	config_eclic_irqs();
+
+	vEnableIrq(IRQ_NUM_MB);
 
 	// Delay
 	for (i = 0; i < 0xffff; ++i);
@@ -172,12 +180,19 @@ int main(void)
 	return 0;
 }
 
+void test_handler(void)
+{
+	printf("test_handler\r\n");
+	//REG32(TIMER_CTRL_ADDR + TIMER_MSIP) = 0x0;
+}
+DECLARE_IRQ(IRQ_NUM_MB, test_handler)
+
 void vApplicationIdleHook( void )
 {
-   //vPrintString("enter idle task\n");
+   //printf("enter idle task\n");
 
    //write_csr(mie, 1); // open mstatue.mie
-   //asm volatile ("wfi"); // enter low power mode
+   asm volatile ("wfi"); // enter low power mode
 }
 /*-----------------------------------------------------------*/
 

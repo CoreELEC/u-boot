@@ -295,6 +295,23 @@ uint8_t eclic_get_irq_lvl_abs(uint32_t source) {
   return lvl_abs;
 }
 
+void eclic_set_irq_pri(uint32_t source, uint8_t pri) {
+  //extract nlbits
+  uint8_t nlbits = eclic_get_nlbits();
+  if (nlbits > CLICINTCTLBITS) {
+    nlbits = CLICINTCTLBITS;
+  }
+
+  //write to clicintctrl
+  uint8_t current_intctrl = eclic_get_intctrl(source);
+  //shift intctrl left to mask off unused bits
+  current_intctrl = current_intctrl >> (8 - nlbits);
+  //shift intctrl into correct bit position
+  current_intctrl = current_intctrl << (8 - nlbits);
+
+  eclic_set_intctrl(source, (current_intctrl | pri));
+}
+
 void eclic_mode_enable(void) {
   uint32_t mtvec_value = read_csr(mtvec);
   mtvec_value = mtvec_value & 0xFFFFFFC0;
@@ -359,5 +376,37 @@ void eclic_set_negedge_trig(uint32_t source) {
 extern void core_wfe(void);
 void wfe(void) {
   core_wfe();
+}
+
+void vEnableIrq(uint32_t ulIrq)
+{
+	uint8_t val;
+
+	val = eclic_get_intattr (ulIrq);
+	val |= ECLIC_INT_ATTR_MACH_MODE;
+	/*Use edge trig interrupt default*/
+	val |= ECLIC_INT_ATTR_TRIG_EDGE;
+	/*vector mode*/
+	//val |= ECLIC_INT_ATTR_SHV;
+	eclic_set_intattr(ulIrq, val);
+
+	/*Need add SP_AOCPU_IRQ_SELx setting here*/
+
+	eclic_enable_interrupt(ulIrq);
+}
+
+void vDisableIrq(uint32_t ulIrq)
+{
+	eclic_disable_interrupt(ulIrq);
+}
+
+void vSetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
+{
+	eclic_set_irq_pri(ulIrq, ulProi);
+}
+
+void vClearPendingIrq(uint32_t ulIrq)
+{
+	eclic_clear_pending(ulIrq);
 }
 

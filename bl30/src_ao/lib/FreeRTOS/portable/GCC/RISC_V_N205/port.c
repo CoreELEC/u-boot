@@ -94,7 +94,7 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 
 			break;
 		default:
-                printf("In trap handler, the mcause is %ld\n",(mcause&0X00000fff) );
+                printf("In trap handler, the mcause is 0x%lx\n",(mcause&0X00000fff) );
                 printf("In trap handler, the mepc is 0x%lx\n", read_csr(mepc));
                 printf("In trap handler, the mtval is 0x%lx\n", read_csr(mbadaddr));
 			//_exit(mcause);
@@ -115,8 +115,8 @@ void vPortEnterCritical( void )
 	#if USER_MODE_TASKS
 		ECALL(IRQ_DISABLE);
 	#else
-	//	portDISABLE_INTERRUPTS();
-		eclic_set_mth ((configMAX_SYSCALL_INTERRUPT_PRIORITY)<<4);
+		portDISABLE_INTERRUPTS();
+		//eclic_set_mth ((configMAX_SYSCALL_INTERRUPT_PRIORITY)<<4);
 	#endif
 
 	uxCriticalNesting++;
@@ -132,8 +132,8 @@ void vPortExitCritical( void )
 		#if USER_MODE_TASKS
 			ECALL(IRQ_ENABLE);
 		#else
-			eclic_set_mth (0);
-	//	portENABLE_INTERRUPTS()	;
+			//eclic_set_mth (0);
+			portENABLE_INTERRUPTS()	;
 		#endif
 	}
 	return;

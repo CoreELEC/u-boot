@@ -52,22 +52,6 @@
 	.weak  eclic_irq48_handler
 	.weak  eclic_irq49_handler
 	.weak  eclic_irq50_handler
-	.weak  eclic_irq51_handler
-
-	.weak  eclic_irq52_handler
-	.weak  eclic_irq53_handler
-	.weak  eclic_irq54_handler
-	.weak  eclic_irq55_handler
-
-	.weak  eclic_irq56_handler
-	.weak  eclic_irq57_handler
-	.weak  eclic_irq58_handler
-	.weak  eclic_irq59_handler
-
-	.weak  eclic_irq60_handler
-	.weak  eclic_irq61_handler
-	.weak  eclic_irq62_handler
-	.weak  eclic_irq63_handler
 
     .globl vector_base
 vector_base:
@@ -134,21 +118,5 @@ vector_base:
 	.word  eclic_irq48_handler
 	.word  eclic_irq49_handler
 	.word  eclic_irq50_handler
-	.word  eclic_irq51_handler
-
-	.word  eclic_irq52_handler
-	.word  eclic_irq53_handler
-	.word  eclic_irq54_handler
-	.word  eclic_irq55_handler
-
-	.word  eclic_irq56_handler
-	.word  eclic_irq57_handler
-	.word  eclic_irq58_handler
-	.word  eclic_irq59_handler
-
-	.word  eclic_irq60_handler
-	.word  eclic_irq61_handler
-	.word  eclic_irq62_handler
-	.word  eclic_irq63_handler
 
 

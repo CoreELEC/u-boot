@@ -1,7 +1,7 @@
 #ifndef __IRQ_H_
 #define __IRQ_H_
 
-
+extern void eclic_irq50_handler(void);
 #define CONCAT_STAGE_1(w, x, y, z) w ## x ## y ## z
 #define CONCAT2(w, x) CONCAT_STAGE_1(w, x, , )
 #define CONCAT3(w, x, y) CONCAT_STAGE_1(w, x, y, )
@@ -21,7 +21,12 @@
 	}
 
 /*IRQ_NUM define list*/
-#define IRQ_NUM_MB  35
+#define IRQ_NUM_MB_0	50
+#define IRQ_NUM_MB_1	49
+#define IRQ_NUM_MB_2	48
+#define IRQ_NUM_MB_3	47
+
+/*You can add other interrupts num here 46~19*/
 
 
 #endif

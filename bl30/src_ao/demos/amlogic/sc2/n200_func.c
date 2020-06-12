@@ -7,6 +7,8 @@
 
 #include "riscv_encoding.h"
 #include "n200_func.h"
+#include "register.h"
+#include "common.h"
 
     // Configure PMP to make all the address space accesable and executable
 void pmp_open_all_space(void){
@@ -137,6 +139,8 @@ void eclic_init ( uint32_t num_irq )
   for (ptr = base; ptr < upper; ptr=ptr+4) {
     *ptr = 0;
   }
+
+  clean_int_src();
 }
 
 void print_eclic(void)
@@ -378,20 +382,51 @@ void wfe(void) {
   core_wfe();
 }
 
-void vEnableIrq(uint32_t ulIrq)
+void clean_int_src(void)
+{
+	for (uint32_t i=0; i<8; i++)
+		REG32(AOCPU_IRQ_SEL0 + i*4) = 0;
+}
+int int_src_sel(uint32_t ulIrq, uint32_t src)
+{
+	uint32_t index;
+
+	if (ulIrq <= ECLIC_INTERNAL_NUM_INTERRUPTS ||
+		ulIrq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	}
+
+	if (src > 0xff) {
+		printf("Error src!\n");
+		return -2;
+	}
+
+	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
+
+	index = ulIrq/4;
+	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
+	REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%4)*8;
+	return 0;
+}
+
+/*Just for external interrupt source.
+ *Because int_src_sel() just support external select
+ */
+void vEnableIrq(uint32_t ulIrq, uint32_t src)
 {
 	uint8_t val;
+
+	if (int_src_sel(ulIrq, src)) {
+		printf("Enable %ld irq, %ld src fail!\n", ulIrq, src);
+		return;
+	}
 
 	val = eclic_get_intattr (ulIrq);
 	val |= ECLIC_INT_ATTR_MACH_MODE;
 	/*Use edge trig interrupt default*/
 	val |= ECLIC_INT_ATTR_TRIG_EDGE;
-	/*vector mode*/
-	//val |= ECLIC_INT_ATTR_SHV;
 	eclic_set_intattr(ulIrq, val);
-
-	/*Need add SP_AOCPU_IRQ_SELx setting here*/
-
 	eclic_enable_interrupt(ulIrq);
 }
 

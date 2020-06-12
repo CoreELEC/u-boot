@@ -4,6 +4,7 @@
 #include "FreeRTOSConfig.h"
 #include "riscv_const.h"
 #include "irq.h"
+#include "register.h"
 #endif
 
 #define SOC_ECLIC_NUM_INTERRUPTS 32

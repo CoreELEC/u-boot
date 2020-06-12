@@ -147,7 +147,6 @@ void hardware_init()
 int main(void)
 {
 	uint32_t i;
-	char test[80];
 	//init_printf(NULL, stdout_putf);
 
 	hardware_init();
@@ -157,12 +156,12 @@ int main(void)
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 
-	vEnableIrq(IRQ_NUM_MB);
+	vEnableIrq(IRQ_NUM_MB_0, 147);
 
 	// Delay
-	for (i = 0; i < 0xffff; ++i);
-	sPrintf(test, 80, "test=%ld",i);
-	printf("%s", test);
+	for (i = 0; i < 4; ++i)
+		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
+
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);
 
@@ -183,9 +182,10 @@ int main(void)
 void test_handler(void)
 {
 	printf("test_handler\r\n");
-	//REG32(TIMER_CTRL_ADDR + TIMER_MSIP) = 0x0;
+	printf("state1=0x%x\n", REG32(MAILBOX_STS_MBOX01));
+	REG32(MAILBOX_CLR_MBOX01) = 0xffffffff;
 }
-DECLARE_IRQ(IRQ_NUM_MB, test_handler)
+DECLARE_IRQ(IRQ_NUM_MB_0, test_handler)
 
 void vApplicationIdleHook( void )
 {

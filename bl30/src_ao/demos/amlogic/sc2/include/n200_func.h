@@ -81,7 +81,9 @@ uint32_t get_timer_freq(void);
 void print_eclic(void);
 void test_handler(void);
 
-void vEnableIrq(uint32_t ulIrq);
+void clean_int_src(void);
+int int_src_sel(uint32_t ulIrq, uint32_t src);
+void vEnableIrq(uint32_t ulIrq, uint32_t src);
 void vDisableIrq(uint32_t ulIrq);
 void vSetIrqPriority(uint32_t ulIrq, uint32_t ulProi);
 void vClearPendingIrq(uint32_t ulIrq);

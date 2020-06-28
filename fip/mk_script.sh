@@ -82,6 +82,12 @@ function build_blx_src() {
 	if [ $name == ${BLX_NAME_GLB[0]} ]; then
 		# bl2
 		build_bl2 $src_folder $bin_folder $soc
+	elif [ $name == ${BLX_NAME_GLB[5]} ]; then
+		# bl2e
+		build_bl2e $src_folder $bin_folder $soc
+	elif [ $name == ${BLX_NAME_GLB[6]} ]; then
+		# bl2x
+		build_bl2x $src_folder $bin_folder $soc
 	elif [ $name == ${BLX_NAME_GLB[1]} ]; then
 		# bl30
 		build_bl30 $src_folder $bin_folder $soc
@@ -89,13 +95,13 @@ function build_blx_src() {
 		# bl31
 		# some soc use v1.3
 		check_bl31_ver $soc
-	if [ $? != 0 ]; then
-		echo "check bl31 ver: use v1.3"
-		build_bl31_v1_3 $src_folder $bin_folder $soc
-	else
-		echo "check bl31 ver: use v1.0"
-		build_bl31 $src_folder $bin_folder $soc
-	fi
+		if [ $? != 0 ]; then
+			echo "check bl31 ver: use v1.3"
+			build_bl31_v1_3 $src_folder $bin_folder $soc
+		else
+			echo "check bl31 ver: use v1.0"
+			build_bl31 $src_folder $bin_folder $soc
+		fi
 	elif [ $name == ${BLX_NAME_GLB[3]} ]; then
 		# control flow for jenkins patchbuild
 		if [ "$BUILD_TYPE" != "AOSP" ]; then
@@ -393,6 +399,12 @@ function bin_path_parser() {
 			--bl2)
 				update_bin_path 0 "${argv[@]:$((i))}"
 				continue ;;
+			--bl2e)
+				update_bin_path 5 "${argv[@]:$((i))}"
+				continue ;;
+			--bl2x)
+				update_bin_path 6 "${argv[@]:$((i))}"
+				continue ;;
 			--bl30)
 				update_bin_path 1 "${argv[@]:$((i))}"
 				continue ;;
@@ -402,15 +414,21 @@ function bin_path_parser() {
 			--bl32)
 				update_bin_path 3 "${argv[@]:$((i))}"
 				continue ;;
-      --bl40)
+			--bl40)
 				update_bin_path 4 "${argv[@]:$((i))}"
 				continue ;;
-      --sign-bl40)
+			--sign-bl40)
 				update_bin_path 4 "${argv[@]:$((i))}"
 				CONFIG_SIGN_BL40=1
 				continue ;;
 			--update-bl2)
 				update_bin_path 0 "source"
+				continue ;;
+			--update-bl2e)
+				update_bin_path 5 "source"
+				continue ;;
+			--update-bl2x)
+				update_bin_path 6 "source"
 				continue ;;
 			--update-bl30)
 				update_bin_path 1 "source"

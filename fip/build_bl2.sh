@@ -6,8 +6,14 @@ function build_bl2() {
 	local targetv3="$1/bl2.v3.bin"
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
-	export CROSS_COMPILE=${AARCH64_TOOL_CHAIN}
-	/bin/bash mk $3
+	if [ "$3" == "sc2" ]; then
+		echo "Storage with --bl2ex --dpre"
+		/bin/bash mk $3 --bl2ex --dpre
+		#echo -n "preloading with --pxp --bl2ex"
+		#/bin/bash mk $3 --pxp --bl2ex
+	else
+		/bin/bash mk $3
+	fi
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
 		echo "Error: Build bl2 failed... abort"
@@ -18,6 +24,46 @@ function build_bl2() {
 	if [ -e ${targetv3} ]; then
 		cp ${targetv3} $2 -f
 	fi
-	echo "done"
+	echo "...done"
+	return
+}
+
+function build_bl2e() {
+	echo -n "Build bl2e...Please wait..."
+	local target="$1/bl2e.bin"
+
+	# $1: src_folder, $2: bin_folder, $3: soc
+	cd $1
+	echo "Storage without --pxp"
+	/bin/bash mk $3
+	#echo "preloading with --pxp"
+	#/bin/bash mk $3 --pxp
+	if [ $? != 0 ]; then
+		cd ${MAIN_FOLDER}
+		echo "Error: Build bl2 failed... abort"
+		exit -1
+	fi
+	cd ${MAIN_FOLDER}
+	cp ${target} $2 -f
+	echo "...done"
+	return
+}
+
+function build_bl2x() {
+	echo -n "Build bl2...Please wait..."
+	local target="$1/bl2x.bin"
+
+	# $1: src_folder, $2: bin_folder, $3: soc
+	cd $1
+	echo "Storage/Preloading without --pxp"
+	/bin/bash mk $3
+	if [ $? != 0 ]; then
+		cd ${MAIN_FOLDER}
+		echo "Error: Build bl2x failed... abort"
+		exit -1
+	fi
+	cd ${MAIN_FOLDER}
+	cp ${target} $2 -f
+	echo "...done"
 	return
 }

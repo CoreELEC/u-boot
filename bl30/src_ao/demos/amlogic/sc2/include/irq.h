@@ -1,6 +1,11 @@
 #ifndef __IRQ_H_
 #define __IRQ_H_
 
+extern void eclic_irq20_handler(void);
+extern void eclic_irq21_handler(void);
+extern void eclic_irq22_handler(void);
+extern void eclic_irq23_handler(void);
+
 extern void eclic_irq50_handler(void);
 #define CONCAT_STAGE_1(w, x, y, z) w ## x ## y ## z
 #define CONCAT2(w, x) CONCAT_STAGE_1(w, x, , )
@@ -28,5 +33,10 @@ extern void eclic_irq50_handler(void);
 
 /*You can add other interrupts num here 46~19*/
 
+/* gpio key/blutooth or others gpio irq useage*/
+#define IRQ_NUM_GPIO3	23
+#define IRQ_NUM_GPIO2	22
+#define IRQ_NUM_GPIO1	21
+#define IRQ_NUM_GPIO0	20
 
 #endif

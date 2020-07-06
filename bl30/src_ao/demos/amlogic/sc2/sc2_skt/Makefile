@@ -56,6 +56,7 @@ $(info LDFLAGS = $(LDFLAGS))
 	-L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/lib/gcc/riscv-none-embed/7.2.0/rv32im/ilp32 -lgcc
 
 -include $(FREERTOS_VENDOR_DRIVER)/uart/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
 
 objs_from_dir=$(sort $(foreach obj, $($(2)-y), \
                 $(COMPILER)/$(1)/$(firstword $($(2)-mock-$(PROJECT)-$(obj)) $(obj))))

@@ -26,9 +26,10 @@
 include config.mk
 
 CUR_DIR := ${dir ${abspath ${lastword ${MAKEFILE_LIST}}}}
+driver_base=$(shell cd ../../;pwd)
 export FREERTOS_ROOT_DIR := ../../../..
 export FREERTOS_VENDOR :=$(FREERTOS_ROOT_DIR)/demos/amlogic
-export FREERTOS_VENDOR_DRIVER := $(FREERTOS_VENDOR)/driver
+export FREERTOS_VENDOR_DRIVER := $(driver_base)/driver
 export FREERTOS_VENDOR_COMMON := $(FREERTOS_VENDOR)/common
 export FREERTOS_LIB_DIR := $(FREERTOS_ROOT_DIR)/lib
 export FREERTOS_CORE_DIR := $(FREERTOS_LIB_DIR)/FreeRTOS/portable/GCC/$(ARCH_CPU)
@@ -53,8 +54,22 @@ LDFLAGS += -L$(CC_PATH)/../lib/gcc/riscv-none-embed/$(CC_VERSION)/rv32im/ilp32 -
 $(info LDFLAGS = $(LDFLAGS))
 #LDFLAGS += -L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/riscv-none-embed/lib/rv32im/ilp32 -lm -lc \
 	-L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/lib/gcc/riscv-none-embed/7.2.0/rv32im/ilp32 -lgcc
+
+-include $(FREERTOS_VENDOR_DRIVER)/uart/build.mk
+
+objs_from_dir=$(sort $(foreach obj, $($(2)-y), \
+                $(COMPILER)/$(1)/$(firstword $($(2)-mock-$(PROJECT)-$(obj)) $(obj))))
+
+dirs+=$(shell find $(FREERTOS_VENDOR_DRIVER) -type d)
+_dir_create := $(foreach d,$(dirs),$(shell [ -d $(COMPILER)/$(d) ] || \
+	mkdir -p $(COMPILER)/$(d)))
+
+dirs=$(dir $(shell find $(FREERTOS_VENDOR_DRIVER) -name "build.mk"))
+all-y +=  $(foreach d,$(dirs), $(call objs_from_dir,$(d),$(lastword $(subst /, ,$(d)))))
+OBJS += $(all-y)
+
 $(info SOC=${SOC} BOARD_DIR=$(BOARD_DIR) FREERTOS_ROOT_DIR=${FREERTOS_ROOT_DIR} RTOS_SOURCE_DIR=${RTOS_SOURCE_DIR})
-VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/sc2:$(FREERTOS_VENDOR_DRIVER)
+VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/sc2
 
 OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/list.o    \
@@ -68,7 +83,6 @@ OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/handlers.o \
 		$(COMPILER)/util.o  \
 		$(COMPILER)/myprintf.o \
-		$(COMPILER)/uart.o  \
 		$(COMPILER)/start.o \
 		$(COMPILER)/vtable.o
 

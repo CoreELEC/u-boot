@@ -275,6 +275,8 @@ function mk_uboot() {
 		exit -1
 	fi
 
+	file_info_cfg="${output_images}/aml-payload.cfg"
+	file_info_cfg_temp=${temp_cfg}.temp
 	bootloader="${output_images}/u-boot.bin"
 	sdcard_image="${output_images}/u-boot.bin.sd.bin"
 
@@ -301,21 +303,61 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
+	dateStamp=SC2-`date +%Y%m%d%H%M%S`
+
+	echo @AMLBOOT > ${file_info_cfg_temp}
+	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null
+	nItemNum=5
+	nSizeHDR=$[64+nItemNum*16]
+	printf "01 %02x %02x %02x 00 00 00 00" $[(nItemNum)&0xFF] $[(nSizeHDR)&0xFF] $[((nSizeHDR)>>8)&0xFF] \
+		| xxd -r -ps > ${file_info_cfg_temp}
+	cat ${file_info_cfg_temp} >> ${file_info_cfg}
+
+	echo ${dateStamp} > ${file_info_cfg_temp}
+	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=16 oflag=append conv=notrunc &> /dev/null
+
+	index=0
+	arrPayload=("BBST" "BL2E" "BL2X" "DDRF" "DEVF");
+	nPayloadOffset=0
+	nPayloadSize=0
 	for file in ${bb1st} ${bl2e} ${bl2x} ${ddr_fip} ${device_fip}; do
 		size=`stat -c "%s" ${file}`
 		size_sector=$[(size+align_base-1)/align_base*align_base]
+		nPayloadSize=$[size_sector]
 		size_sector=$[size_sector/sector]
 		seek_sector=$[seek/sector+seek_sector]
+		#nPayloadOffset=$[sector*(seek_sector+1)]
+		nPayloadOffset=$[sector*(seek_sector)]
 		echo ${file} ${seek_sector} ${size_sector}
 		dd if=${file} of=${bootloader} bs=${sector} seek=${seek_sector} conv=notrunc status=none
+
+		echo ${arrPayload[$index]} > ${file_info_cfg_temp}.x
+		index=$((index+1))
+		dd if=${file_info_cfg_temp}.x of=${file_info_cfg_temp} bs=1 count=4 &> /dev/null
+		rm -f ${file_info_cfg_temp}.x
+		printf "%02x %02x %02x %02x %02x %02x %02x %02x 00 00 00 00" $[(nPayloadOffset)&0xFF] $[((nPayloadOffset)>>8)&0xFF] $[((nPayloadOffset)>>16)&0xFF] $[((nPayloadOffset)>>24)&0xFF] \
+		$[(nPayloadSize)&0xFF] $[((nPayloadSize)>>8)&0xFF] $[((nPayloadSize)>>16)&0xFF] $[((nPayloadSize)>>24)&0xFF] | xxd -r -ps >> ${file_info_cfg_temp}
+		dd if=${file_info_cfg_temp} of=${file_info_cfg} oflag=append conv=notrunc &> /dev/null
+		rm -f ${file_info_cfg_temp}
 		seek=$[(size+align_base-1)/align_base*align_base]
 	done
+
+	openssl dgst -sha256 -binary ${file_info_cfg} > ${file_info_cfg}.sha256
+	cat ${file_info_cfg} >> ${file_info_cfg}.sha256
+	#cat ${file_info_cfg}.sha256 >> ${file_info_cfg}
+	rm -f ${file_info_cfg}
+	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
+
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=508 conv=notrunc status=none
 
 	echo "Image SDCARD"
 	total_size=$[total_size+512]
 	rm -f ${sdcard_image}
 	dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
+	dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
 	dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
+
+	rm -f ${file_info_cfg}
 }
 
 function cleanup() {

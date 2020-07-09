@@ -58,6 +58,16 @@
  */
 #define DIV_ROUND_UP(x, y) (((x) + ((y) - 1)) / (y))
 #define DIV_ROUND_NEAREST(x, y) (((x) + ((y) / 2)) / (y))
+#define DIV_ROUND_CLOSEST(x, divisor)(                  \
+{                                                       \
+        typeof(x) __x = x;                              \
+        typeof(divisor) __d = divisor;                  \
+        (((typeof(x))-1) > 0 ||                         \
+         ((typeof(divisor))-1) > 0 || (__x) > 0) ?      \
+                (((__x) + ((__d) / 2)) / (__d)) :       \
+                (((__x) - ((__d) / 2)) / (__d));        \
+}                                                       \
+)
 
 /* Standard library functions */
 int atoi(const char *nptr);

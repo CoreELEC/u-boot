@@ -31,6 +31,8 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_MB_1	49
 #define IRQ_NUM_MB_2	48
 #define IRQ_NUM_MB_3	47
+#define IRQ_NUM_MB_4	46
+
 
 /*You can add other interrupts num here 46~19*/
 

@@ -46,6 +46,8 @@
 
 #include "hdmi_cec.h"
 #include "suspend.h"
+#include "mailbox-api.h"
+
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -184,6 +186,7 @@ void hardware_init()
 {
 	config_eclic_irqs();
 }
+
 // Test target board
 int main(void)
 {
@@ -202,6 +205,9 @@ int main(void)
 	// Delay
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
+
+	vMbInit();
+
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);

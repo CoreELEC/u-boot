@@ -6,7 +6,7 @@ declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32")
 declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32/src" "bl33")
 declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32/bin")
 declare -a BLX_BIN_NAME=("bl2.bin" "bl2e.bin" "bl2x.bin" "bl31.bin" "bl32.bin")
-declare -a BLX_IMG_NAME=("NULL" "NULL" "NULL" "bl31.img" "bl32.img")
+declare -a BLX_IMG_NAME=("NULL" "NULL" "NULL" "NULL" "NULL")
 declare -a BLX_NEEDFUL=("true" "true" "true" "true" "false")
 
 declare -a BLX_SRC_GIT=("bootloader/amlogic-advanced-bootloader/core" \

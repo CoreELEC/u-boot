@@ -45,4 +45,8 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_GPIO1	21
 #define IRQ_NUM_GPIO0	20
 
+/* cec */
+#define IRQ_NUM_CECA	40
+#define IRQ_NUM_CECB	41
+
 #endif

@@ -41,6 +41,8 @@
 #include "suspend.h"
 #include "power.h"
 
+#include "hdmi_cec.h"
+
 void wakeup_ap(void);
 void clear_wakeup_trigger(void);
 void system_resume(void);
@@ -69,6 +71,35 @@ WakeUp_Reason vWakeupReason[] = {
 	[CECB_WAKEUP] = { .name = "cecb" },
 };
 
+void vCEC_task(void *pvParameters)
+{
+	u32 ret;
+	u32 buf[4] = {0};
+
+	buf[0] = CEC_WAKEUP;
+
+	pvParameters = pvParameters;
+	ret = cec_init_config();
+	if (!ret)
+		goto idle;
+
+	cec_delay(100);
+	while (1) {
+		//printf("%s 01\n", __func__);
+		vTaskDelay(pdMS_TO_TICKS(20));
+		cec_suspend_handle();
+		if (cec_get_wakup_flag()) {
+			STR_Wakeup_src_Queue_Send(buf);
+			break;
+		}
+	}
+
+idle:
+	for ( ;; ) {
+		vTaskDelay(pdMS_TO_TICKS(2000));
+		printf("%s idle\n", __func__);
+	}
+}
 
 /*use timerB to wakeup AP FSM*/
 void wakeup_ap(void)
@@ -145,8 +176,7 @@ static void vSuspendTest(TimerHandle_t xTimer) {
 	STR_Wakeup_src_Queue_Send(buf);
 	xSemaphoreGive( xSTRSemaphore );
 	taskEXIT_CRITICAL();
- }
-
+}
 
 static void vSTRTask( void *pvParameters )
 {

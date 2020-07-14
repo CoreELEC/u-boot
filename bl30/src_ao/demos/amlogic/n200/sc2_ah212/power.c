@@ -28,6 +28,11 @@
 #include "gpio.h"
 #include "ir.h"
 #include "suspend.h"
+#include "task.h"
+
+#include "hdmi_cec.h"
+
+static TaskHandle_t cecTask = NULL;
 
 static uint32_t power_key_list[] =                                                                                                            {
 
@@ -47,7 +52,6 @@ static void vIRHandler(void)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-
 void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(void);
@@ -57,13 +61,19 @@ void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, power_key_list, ARRAY_SIZE(power_key_list), vIRHandler);
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
 }
-
 
 void str_hw_disable(void)
 {
 	/*disable wakeup source interrupt*/
 	vIRDeint();
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+		/*printf("del cec task\n");*/
+	}
 }
 
 void str_power_on(void)

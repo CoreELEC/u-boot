@@ -154,25 +154,6 @@ static void vPrintTask2( void *pvParameters )
 	}
 }
 
-void vCEC_task(void *pvParameters)
-{
-	u32 ret;
-
-	pvParameters = pvParameters;
-
-	ret = cec_init_config();
-
-	if (!ret)
-		return;
-
-	for ( ;; ) {
-		cec_suspend_handle();
-		if (cec_get_wakup_flag())
-			return;
-		vTaskDelay(pdMS_TO_TICKS(5));/*500:0.5s*/
-	}
-}
-
 /*
 static void stdout_putf(void *unused, char c)
 {
@@ -217,7 +198,6 @@ int main(void)
 
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
-	/*xTaskCreate( vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, 3, NULL );*/
 
 	create_str_task();
 

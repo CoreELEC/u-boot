@@ -45,15 +45,12 @@
 #include "riscv_encoding.h"
 
 #include "hdmi_cec.h"
-
+#include "suspend.h"
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
 #define INT_TEST_TASK_DELAY  50 // ms
 #define TASK_TEST_STACK_DEPTH  200
-
-#define TASK_TEST_QUEUE_NUM  2
-#define TASK_TEST_QUEUE_LENGTH  3
 
 //#define GPIO_INT_SOURCE(x) (SOC_PIC_INT_GPIO_BASE + x)
 
@@ -85,10 +82,9 @@ void config_eclic_irqs ( void );
 void vApplicationIdleHook( void );
 void vApplicationMallocFailedHook( void );
 void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName );
+void power_on_off_cpu(void);
 
-/* Binary Semaphore */
-QueueHandle_t xGPIOSemaphore[INT_TEST_NEST_DEPTH];
-QueueHandle_t xMessageQueue[TASK_TEST_QUEUE_NUM];
+extern void create_str_task(void);
 
 /* Timer handle */
 TimerHandle_t xSoftTimer = NULL;
@@ -109,6 +105,27 @@ static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	taskEXIT_CRITICAL();
 }
 
+void power_on_off_cpu(void)
+{
+	static int state=0;
+	//char source;
+	//printf("\nKKKKKKKKKKKKK val=0x%x\r\n", REG32(SYSCTRL_STATUS_REG0));
+	if (REG32(SYSCTRL_STATUS_REG0) == 0x12345678)
+	{
+		STR_Start_Sem_Give();
+		REG32(SYSCTRL_STATUS_REG0) = 0;
+		printf("\nPower off\r\n");
+		state ++;
+	} else if (state == 1)
+	{
+		vTaskDelay(pdMS_TO_TICKS(5000));
+		//printf("\nPower on\r\n");
+		//source = RTC_WAKEUP;
+		//STR_Wakeup_src_Queue_Send(&source);
+		state = 0;
+	}
+}
+
 static void vPrintTask1( void *pvParameters )
 {
     /*make compiler happy*/
@@ -116,8 +133,10 @@ static void vPrintTask1( void *pvParameters )
 
 	for ( ;; )
 	{
-	//	printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
-		vTaskDelay(pdMS_TO_TICKS(500));
+		//printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
+		vTaskDelay(pdMS_TO_TICKS(1000));
+		//dump_fsm();
+		power_on_off_cpu();
 	}
 }
 
@@ -193,6 +212,8 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	/*xTaskCreate( vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, 3, NULL );*/
+
+	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

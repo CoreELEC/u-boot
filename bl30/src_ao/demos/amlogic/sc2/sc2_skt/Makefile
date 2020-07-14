@@ -60,6 +60,7 @@ $(info LDFLAGS = $(LDFLAGS))
 -include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
 
 objs_from_dir=$(sort $(foreach obj, $($(2)-y), \
                 $(COMPILER)/$(1)/$(firstword $($(2)-mock-$(PROJECT)-$(obj)) $(obj))))
@@ -76,6 +77,7 @@ $(info SOC=${SOC} BOARD_DIR=$(BOARD_DIR) FREERTOS_ROOT_DIR=${FREERTOS_ROOT_DIR} 
 VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/sc2
 
 OBJS += ${COMPILER}/main.o	\
+		${COMPILER}/power.o	\
 		$(COMPILER)/list.o    \
 		$(COMPILER)/queue.o   \
 		$(COMPILER)/tasks.o   \

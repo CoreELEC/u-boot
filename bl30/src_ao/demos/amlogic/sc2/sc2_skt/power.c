@@ -23,6 +23,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "FreeRTOS.h"
+#include "common.h"
+#include "gpio.h"
+#include "ir.h"
+#include "suspend.h"
+
+static uint32_t power_key_list[] =                                                                                                            {
+
+        0xef10fe01, /* ref tv pwr */
+        0xba45bd02, /* small ir pwr */
+        0xef10fb04, /* old ref tv pwr */
+        0xf20dfe01,
+        0xe51afb04
+        /* add more */
+};
+static void vIRHandler(void)
+{
+	uint32_t buf[4] = {0};
+	buf[0] = REMOTE_WAKEUP;
+        printf("ir wakeup\n");
+        /* do sth below  to wakeup*/
+	STR_Wakeup_src_Queue_Send_FromISR(buf);
+};
+
 
 void str_hw_init(void);
 void str_hw_disable(void);
@@ -32,12 +56,14 @@ void str_power_off(void);
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
+	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, power_key_list, ARRAY_SIZE(power_key_list), vIRHandler);
 }
 
 
 void str_hw_disable(void)
 {
 	/*disable wakeup source interrupt*/
+	vIRDeint();
 }
 
 void str_power_on(void)

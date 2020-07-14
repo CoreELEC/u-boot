@@ -260,11 +260,12 @@ function mk_devfip() {
 function mk_uboot() {
 	output_images=$1
 	input_payloads=$2
+	postfix=$3
 
-	device_fip="${input_payloads}/test-device-fip.bin"
-	bb1st="${input_payloads}/test-bb1st.bin"
-	bl2e="${input_payloads}/test-blob-bl2e.bin"
-	bl2x="${input_payloads}/test-blob-bl2x.bin"
+	device_fip="${input_payloads}/device-fip.bin${postfix}"
+	bb1st="${input_payloads}/bb1st.bin${postfix}"
+	bl2e="${input_payloads}/blob-bl2e.bin${postfix}"
+	bl2x="${input_payloads}/blob-bl2x.bin${postfix}"
 
 	if [ ! -f ${device_fip} ] || \
 	   [ ! -f ${bb1st} ] || \
@@ -277,8 +278,9 @@ function mk_uboot() {
 
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
-	bootloader="${output_images}/u-boot.bin"
-	sdcard_image="${output_images}/u-boot.bin.sd.bin"
+
+	bootloader="${output_images}/u-boot.bin${postfix}"
+	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
@@ -361,7 +363,7 @@ function mk_uboot() {
 }
 
 function cleanup() {
-	cp ${FIP_BUILD_FOLDER}/test-* ${BUILD_FOLDER} -f
+	#cp ${FIP_BUILD_FOLDER}/test-* ${BUILD_FOLDER} -f
 	echo "output file are generated in ${BUILD_FOLDER} folder"
 	#rm -f ${BUILD_PATH}/test-*
 	#rm -rf ${BUILD_PAYLOAD}
@@ -403,6 +405,48 @@ function build_fip() {
 	return
 }
 
+
+function build_signed() {
+	# fix size for BL30 128KB
+	if [ -f ${BUILD_PATH}/bl30.bin ]; then
+		#blx_size=`du -b ${BUILD_PATH}/bl30.bin | awk '{print int(${BUILD_PATH}/bl30.bin)}'`
+		blx_size=`stat -c %s ${BUILD_PATH}/bl30.bin`
+		if [ $blx_size -gt 131072 ]; then
+			echo "Error: bl30 size exceed limit 131072"
+			exit -1
+		fi
+	else
+		echo "Warning: local bl30"
+		#dd if=/dev/random of=${BUILD_PATH}/bl30.bin bs=4096 count=1
+		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin
+	fi
+	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=131072 count=1
+	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=131072 count=1
+
+	# fix size for BL33 1024KB
+	if [ ! -f ${BUILD_PATH}/bl33.bin ]; then
+		echo "Error: ${BUILD_PATH}/bl33.bin does not exist... abort"
+		exit -1
+	fi
+	#blx_size=`du -b ${BUILD_PATH}/bl33.bin | awk '{print int(${BUILD_PATH}/bl33.bin)}'`
+	blx_size=`stat -c %s ${BUILD_PATH}/bl33.bin`
+	if [ $blx_size -gt 1572864 ]; then
+		echo "Error: bl33 size exceed limit 0x180000"
+		exit -1
+	fi
+	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=1572864 count=1
+	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc
+
+	postfix=.signed
+	cp ./${FIP_FOLDER}${CUR_SOC}/templates/blob-bl40.bin.signed ${BUILD_PATH}
+	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
+
+	# build final bootloader
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+
+	return
+}
+
 function copy_other_soc() {
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH}/device_acs.bin -f
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/chip_acs.bin ${BUILD_PATH} -f
@@ -419,8 +463,8 @@ function package() {
 	fi
 
 	init_vari $@
-	build_fip $@
-
+	#build_fip $@
+	build_signed $@
 	#copy_file
 	cleanup
 	echo "Bootloader build done!"

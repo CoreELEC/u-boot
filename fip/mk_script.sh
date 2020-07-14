@@ -139,7 +139,7 @@ function build_blx() {
 				   [ -n "${BLX_IMG_NAME[$loop]}" ] && \
 				   [ "NULL" != "${BLX_IMG_NAME[$loop]}" ]; then
 					cp ${BIN_PATH[$loop]} ${FIP_BUILD_FOLDER}/${BLX_IMG_NAME[$loop]} -f
-				elif [[ -n "${BLX_IMG_NAME[$loop]}" && "NULL" != "${BLX_BIN_NAME[$loop]}" ]]; then
+				elif [[ -n "${BLX_IMG_NAME[$loop]}" && "NULL" != "${BLX_BIN_NAME[$loop]}" && "${CUR_SOC}" != "sc2" ]]; then
 					cp ${BIN_PATH[$loop]} ${FIP_BUILD_FOLDER}/${BLX_BIN_NAME[$loop]} -f
 				else
 					cp ${BIN_PATH[$loop]} ${FIP_BUILD_FOLDER} -f
@@ -155,6 +155,10 @@ function build_blx() {
 			check_bypass=y
 		else
 			check_bypass=n
+		fi
+
+		if [ "${CUR_SOC}" == "sc2" ]; then
+			check_bypass=y
 		fi
 
 		if [ "y" != "${check_bypass}" ]; then

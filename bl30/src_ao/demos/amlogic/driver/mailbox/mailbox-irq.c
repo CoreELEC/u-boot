@@ -58,17 +58,11 @@ void vDisableMbInterrupt(unsigned int xMask)
 
 void vClrMbInterrupt(unsigned int xMask)
 {
-	unsigned int val = 0;
-
-	val = aml_readl32(MAILBOX_IRQ_CLR) & (~xMask);
-	aml_writel32(val, MAILBOX_IRQ_CLR);
+	aml_writel32(xMask, MAILBOX_IRQ_CLR);
 }
 
 unsigned int xGetMbIrqStats(void)
 {
-	unsigned int val = 0;
-
-	val = aml_readl32(MAILBOX_IRQ_STS);
-	return val;
+	return aml_readl32(MAILBOX_IRQ_STS);
 }
 

@@ -37,7 +37,7 @@
 
 #include "mailbox-htbl.h"
 
-#define PRINT(...)	printf(__VA_ARGS__)
+#define PRINT(...)	//printf(__VA_ARGS__)
 #define PRINT_ERR(...) printf(__VA_ARGS__)
 #define TAG "\n arm "
 

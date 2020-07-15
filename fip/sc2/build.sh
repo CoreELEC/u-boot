@@ -421,7 +421,7 @@ function build_signed() {
 		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin
 	fi
 	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=131072 count=1
-	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=131072 count=1
+	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc
 
 	# fix size for BL33 1024KB
 	if [ ! -f ${BUILD_PATH}/bl33.bin ]; then

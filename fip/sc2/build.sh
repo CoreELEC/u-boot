@@ -411,8 +411,8 @@ function build_signed() {
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
 		#blx_size=`du -b ${BUILD_PATH}/bl30.bin | awk '{print int(${BUILD_PATH}/bl30.bin)}'`
 		blx_size=`stat -c %s ${BUILD_PATH}/bl30.bin`
-		if [ $blx_size -gt 131072 ]; then
-			echo "Error: bl30 size exceed limit 131072"
+		if [ $blx_size -gt 65536 ]; then
+			echo "Error: bl30 size exceed limit 65536"
 			exit -1
 		fi
 	else
@@ -420,7 +420,7 @@ function build_signed() {
 		#dd if=/dev/random of=${BUILD_PATH}/bl30.bin bs=4096 count=1
 		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin
 	fi
-	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=131072 count=1
+	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=65536 count=1
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc
 
 	# fix size for BL33 1024KB

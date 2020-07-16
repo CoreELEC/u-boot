@@ -63,7 +63,7 @@ typedef struct __attribute__((__packed__)) {
     configASSERT(cmd <= MAILBOX_CMD_MAX && size <= MAILBOX_BUFFER_SIZE)
 
 #define VALID_CHANNEL(chan) \
-    configASSERT(chan == AOREE_CHANNEL)
+    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL)
 
 #define VALID_BUFFER_SIZE(size) \
     configASSERT(size <= MAILBOX_BUFFER_SIZE)
@@ -95,6 +95,8 @@ uint32_t xGetChan(uint32_t mbox)
 	switch (mbox) {
 	case MAILBOX_ARMREE2AO:
 		return AOREE_CHANNEL;
+	case MAILBOX_ARMTEE2AO:
+		return AOTEE_CHANNEL;
 	default:
 		configASSERT(0);
 	}
@@ -106,6 +108,8 @@ uint32_t xGetRevMbox(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 		return MAILBOX_ARMREE2AO;
+	case AOTEE_CHANNEL:
+		return MAILBOX_ARMTEE2AO;
 	default:
 		configASSERT(0);
 	}
@@ -117,6 +121,8 @@ uint32_t xGetSendMbox(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 		return NULL;
+	case AOTEE_CHANNEL:
+		return NULL;
 	default:
 		configASSERT(0);
 	}
@@ -127,6 +133,7 @@ static inline uint32_t xDspRevAddr(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
+	case AOTEE_CHANNEL:
 		return PAYLOAD_RD_BASE(xGetRevMbox(ulChan));
 	default:
 		configASSERT(0);
@@ -138,6 +145,7 @@ static inline uint32_t xDspSendAddr(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
+	case AOTEE_CHANNEL:
 		return PAYLOAD_WR_BASE(xGetSendMbox(ulChan));
 	default:
 		configASSERT(0);
@@ -149,6 +157,7 @@ static inline uint32_t xDspSendAddrBack(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
+	case AOTEE_CHANNEL:
 		return PAYLOAD_RD_BASE(xGetSendMbox(ulChan));
 	default:
 		configASSERT(0);

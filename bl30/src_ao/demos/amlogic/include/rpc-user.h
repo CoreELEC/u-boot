@@ -23,11 +23,13 @@
  ******************************************************************************/
 	 /*SYSTEM*/
 #define CMD_UNDEFINE		0x0
-#define CMD_RPCUINT_TEST	0x6
+#define CMD_RPCUINTREE_TEST	0x6
+#define CMD_RPCUINTTEE_TEST	0x7
 
 /*******************************************************************************
  * Mssage Comopsition
  ******************************************************************************/
-#define MBX_CMD_RPCUINT_TEST	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_RPCUINT_TEST)
+#define MBX_CMD_RPCUINTREE_TEST	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_RPCUINTREE_TEST)
+#define MBX_CMD_RPCUINTTEE_TEST	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_RPCUINTTEE_TEST)
 
 #endif

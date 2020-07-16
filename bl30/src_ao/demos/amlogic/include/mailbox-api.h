@@ -17,13 +17,10 @@ extern "C" {
 #define MBOX_BUF_LEN			MHU_DATA_SIZE
 
 /*use by mailbox driver*/
-#define AOREE_CHANNEL			2
-#define AOTEE_CHANNEL			4
+#define AOREE_CHANNEL			3
+#define AOTEE_CHANNEL			5
 
-/*if call mbox api, use this define CHANNEL*/
-#define MAILBOX_CHANNEL			AOREE_CHANNEL
-
-
+/*note: aoree channel support feedback, aotee channel no support feedback*/
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(handler) (void *),
 						 uint8_t needFdBak);

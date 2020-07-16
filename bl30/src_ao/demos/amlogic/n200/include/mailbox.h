@@ -21,6 +21,9 @@
 #define MAILBOX_ARMREE2AO	0x3		/*mailbox1*/
 #define MAILBOX_AO2ARMREE	0x2		/*mailbox1*/
 
+#define MAILBOX_ARMTEE2AO	0x5		/*mailbox1*/
+#define MAILBOX_AO2ARMTEE	0x4		/*mailbox1*/
+
 #define MAILBOX_IRQ_MASK	MAILBOX_IRQB_MASK
 #define MAILBOX_IRQ_CLR		MAILBOX_IRQB_CLR
 #define MAILBOX_IRQ_STS		MAILBOX_IRQB_STS
@@ -31,7 +34,7 @@
 #define IRQ_REV_NUM(mbox)	(mbox*2)
 #define IRQ_SENDACK_NUM(mbox)	(mbox*2 + 1)
 
-#define IRQ_MASK		(IRQ_REV_BIT(MAILBOX_ARMREE2AO))
+#define IRQ_MASK		(IRQ_REV_BIT(MAILBOX_ARMREE2AO) | IRQ_REV_BIT(MAILBOX_ARMTEE2AO))
 
 
 #define MAILBOX_STAT(MBOX)	(MAILBOX_STS_MBOX00 + 0x4 * MBOX)  /*mailbox4 rev*/

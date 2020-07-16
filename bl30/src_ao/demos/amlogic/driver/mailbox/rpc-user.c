@@ -26,7 +26,7 @@
 #include "mailbox-api.h"
 
 #define TAG "AOCPU"
-#define PRINT_DBG	printf
+#define PRINT_DBG	//printf
 #define PRINT_ERR	printf
 #define PRINT		printf
 
@@ -36,7 +36,7 @@ struct Uintcase {
 	uint32_t ulTaskDelay;
 };
 
-void xMboxUintCase(void *msg)
+void xMboxUintReeTestCase(void *msg)
 {
 	struct Uintcase *pdata = msg;
 	char back[20] = "Response AOCPU\n";
@@ -50,10 +50,20 @@ void xMboxUintCase(void *msg)
 
 }
 
+void xMboxUintTeeTestCase(void *msg)
+{
+	char *s = msg;
+
+	PRINT("[%s]: from tee: %s\n", TAG, s);
+
+}
+
 void vRegisterRpcCallBack(void)
 {
-	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINT_TEST,
-						 xMboxUintCase, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
+					      xMboxUintReeTestCase, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
+					      xMboxUintTeeTestCase, 0);
 }
 
 void vRpcUserCmdInit(void)

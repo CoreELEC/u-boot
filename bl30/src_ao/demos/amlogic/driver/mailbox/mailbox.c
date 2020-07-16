@@ -40,12 +40,12 @@
 
 #define AO_MBOX_ONLY_SYNC	1
 
-void *g_tbl_aoree;
+void *g_tbl_ao;
 
-TaskHandle_t mbReeHandler;
+TaskHandle_t mbHandler;
 TaskHandle_t mbAsyncHandler;
 static uint32_t ulSyncTaskWake;
-mbPackInfo syncReeMbInfo;
+mbPackInfo syncMbInfo;
 
 extern xHandlerTableEntry xMbHandlerTable[IRQ_MAX];
 extern void vRpcUserCmdInit(void);
@@ -130,8 +130,9 @@ static void vAoRevMbHandler(void *vArg)
 		ulSyncTaskWake = 1;
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
-		syncReeMbInfo = mbInfo;
-		vTaskNotifyGiveFromISR(mbReeHandler, &xYieldRequired);
+		mbInfo.ulChan = xGetChan(mbox);
+		syncMbInfo = mbInfo;
+		vTaskNotifyGiveFromISR(mbHandler, &xYieldRequired);
 		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
@@ -154,10 +155,11 @@ static void vAoRevMbHandler(void *vArg)
 	}
 }
 
-void vReeSyncTask(void *pvParameters)
+void vSyncTask(void *pvParameters)
 {
-	uint32_t mbox = pvParameters;
-	uint32_t addr = xDspSendAddrMbox(mbox);
+	uint32_t rev = pvParameters;
+	uint32_t addr = 0;
+	uint32_t mbox = 0;
 	UBaseType_t uxSaveIsr;
 	int index = 0;
 
@@ -166,20 +168,23 @@ void vReeSyncTask(void *pvParameters)
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 		PRINT_DBG("[%s]:ReeSyncTask mbox:%d\n", TAG, mbox);
 
-		index = mailbox_htbl_invokeCmd(g_tbl_aoree, syncReeMbInfo.ulCmd,
-					       syncReeMbInfo.mbdata.data);
+		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncMbInfo.ulCmd,
+					       syncMbInfo.mbdata.data);
+		mbox = xGetRevMbox(syncMbInfo.ulChan);
+		addr = xDspSendAddrMbox(mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				memset(&syncReeMbInfo.mbdata.data, 0, sizeof(syncReeMbInfo.mbdata.data));
-				syncReeMbInfo.mbdata.status = ACK_FAIL;
-				vBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
+				memset(&syncMbInfo.mbdata.data, 0, sizeof(syncMbInfo.mbdata.data));
+				syncMbInfo.mbdata.status = ACK_FAIL;
+				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
 				PRINT_ERR("[%s]: undefine cmd or no callback\n", TAG);
 			} else {
-				PRINT_DBG("[%s]:ReeSyncTask re len:%d\n", TAG, sizeof(syncReeMbInfo.mbdata));
-				syncReeMbInfo.mbdata.status = ACK_OK;
-				vBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
+				PRINT_DBG("[%s]:ReeSyncTask re len:%d\n", TAG, sizeof(syncMbInfo.mbdata));
+				syncMbInfo.mbdata.status = ACK_OK;
+				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
 			}
 		}
+
 		vEnterCritical(&uxSaveIsr);
 		PRINT_DBG("[%s]:Ree Sync clear mbox:%d\n", TAG, mbox);
 		ulSyncTaskWake = 0;
@@ -196,18 +201,21 @@ void vMbInit(void)
 	uint32_t mbox;
 
 	PRINT("[%s]: mailbox init start\n", TAG);
-	mailbox_htbl_init(&g_tbl_aoree);
+	mailbox_htbl_init(&g_tbl_ao);
 
 	/* Set MBOX IRQ Handler and Priority */
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMREE2AO), vAoRevMbHandler, MAILBOX_ARMREE2AO, 10);
+
+	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, MAILBOX_ARMTEE2AO, 10);
+
 	vEnableIrq(IRQ_NUM_MB_4, 249);
 
-	xTaskCreate(vReeSyncTask,
+	xTaskCreate(vSyncTask,
 		    "AOReeSyncTask",
 		    configMINIMAL_STACK_SIZE,
-		    MAILBOX_ARMREE2AO,
+		    0,
 		    TASK_PRIORITY,
-		    (TaskHandle_t *)&mbReeHandler);
+		    (TaskHandle_t *)&mbHandler);
 
 	vRpcUserCmdInit();
 	PRINT("[%s]: mailbox init end\n", TAG);
@@ -219,11 +227,11 @@ BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 {
 	VALID_CHANNEL(ulChan);
 	UNUSED(ulChan);
-	return mailbox_htbl_reg_feedback(g_tbl_aoree, cmd, handler, needFdBak);
+	return mailbox_htbl_reg_feedback(g_tbl_ao, cmd, handler, needFdBak);
 }
 
 BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
 {
 	UNUSED(ulChan);
-	return mailbox_htbl_unreg(g_tbl_aoree, cmd);
+	return mailbox_htbl_unreg(g_tbl_ao, cmd);
 }

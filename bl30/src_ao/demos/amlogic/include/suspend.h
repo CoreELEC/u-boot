@@ -40,20 +40,12 @@
 #define CECB_WAKEUP		11
 #define ETH_PHY_GPIO    12
 
-
-
 #define STR_QUEUE_LENGTH    32
 #define STR_QUEUE_ITEM_SIZE 4
 
 typedef struct {
-	u32 id;
 	char* name;
 } WakeUp_Reason;
-
-typedef struct {
-	WakeUp_Reason *vReason;
-	u32 vNum;
-} WakeUp_Reason_Array;
 
 extern void create_str_task(void);
 extern void STR_Start_Sem_Give_FromISR(void);

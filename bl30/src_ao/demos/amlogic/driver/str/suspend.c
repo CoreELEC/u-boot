@@ -55,23 +55,18 @@ TimerHandle_t xSuspendTimer = NULL;
 
 
 WakeUp_Reason vWakeupReason[] = {
-	{.id = UDEFINED_WAKEUP, .name = "undefine" },
-	{.id = CHARGING_WAKEUP, .name = "charging" },
-	{.id = REMOTE_WAKEUP, .name = "remote" },
-	{.id = RTC_WAKEUP, .name = "rtc" },
-	{.id = BT_WAKEUP, .name = "bt" },
-	{.id = WIFI_WAKEUP, .name = "wifi" },
-	{.id = POWER_KEY_WAKEUP, .name = "powerkey" },
-	{.id = AUTO_WAKEUP, .name = "auto" },
-	{.id = CEC_WAKEUP, .name = "cec" },
-	{.id = REMOTE_CUS_WAKEUP, .name = "remote_cus" },
-	{.id = ETH_PMT_WAKEUP, .name = "eth" },
-	{.id = CECB_WAKEUP, .name = "cecb" },
-};
-
-WakeUp_Reason_Array vWakeupReasonArray = {
-	.vReason = vWakeupReason,
-	.vNum = sizeof(vWakeupReason)/sizeof(WakeUp_Reason),
+	[UDEFINED_WAKEUP] = { .name = "undefine" },
+	[CHARGING_WAKEUP] = { .name = "charging" },
+	[REMOTE_WAKEUP] = { .name = "remote" },
+	[RTC_WAKEUP] = { .name = "rtc" },
+	[BT_WAKEUP] = { .name = "bt" },
+	[WIFI_WAKEUP] = { .name = "wifi" },
+	[POWER_KEY_WAKEUP] = { .name = "powerkey" },
+	[AUTO_WAKEUP] = { .name = "auto" },
+	[CEC_WAKEUP] = { .name = "cec" },
+	[REMOTE_CUS_WAKEUP] = { .name = "remote_cus" },
+	[ETH_PMT_WAKEUP] = { .name = "eth" },
+	[CECB_WAKEUP] = { .name = "cecb" },
 };
 
 
@@ -145,7 +140,7 @@ static void vSuspendTest(TimerHandle_t xTimer) {
 	buf[0] = RTC_WAKEUP;
 	xTimer = xTimer;
 	taskENTER_CRITICAL();
-	printf("\r\nlzq: vSuspendTest timer ...\r\n");
+	printf("\r\nvSuspendTest timer ...\r\n");
 
 	STR_Wakeup_src_Queue_Send(buf);
 	xSemaphoreGive( xSTRSemaphore );
@@ -158,7 +153,6 @@ static void vSTRTask( void *pvParameters )
     /*make compiler happy*/
 	char buffer[STR_QUEUE_ITEM_SIZE];
 	char exit_reason = 0;
-	u32 i;
 
 	pvParameters = pvParameters;
     xSTRQueue = xQueueCreate(STR_QUEUE_LENGTH, STR_QUEUE_ITEM_SIZE);
@@ -191,17 +185,11 @@ static void vSTRTask( void *pvParameters )
 				default:
 					break;
 			}
-			if (exit_reason) {
-				for (i = 0;i < vWakeupReasonArray.vNum;i++) {
-					if (exit_reason == vWakeupReasonArray.vReason[i].id) {
-						printf("exit_reason=%d %s\n",exit_reason, vWakeupReasonArray.vReason[i].name);
-						break;
-					}
-				}
-				set_reason_flag(exit_reason);
-				system_resume();
-				goto loop;
-			}
+			if (exit_reason)
+				printf("exit_reason=%d, %s\n",exit_reason, vWakeupReason[exit_reason].name);
+			set_reason_flag(exit_reason);
+			system_resume();
+			goto loop;
 		}
 		loop: continue;
 	}

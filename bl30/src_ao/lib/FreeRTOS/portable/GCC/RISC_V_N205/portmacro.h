@@ -104,7 +104,7 @@ extern void vPortClearInterruptMask( int uxSavedStatusValue ); //in port.c
 
 #define portYIELD() ECALL(PORT_YIELD);
 
-#define portYIELD_FROM_ISR(x)  if(x!=0)  {portYIELD();   printf("portYIELD \n");}
+#define portYIELD_FROM_ISR(x)  if(x!=0)  {portYIELD();}
 
 
 

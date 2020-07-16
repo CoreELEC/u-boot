@@ -1,8 +1,10 @@
 #!/bin/bash
 
+declare -x BL30_SELECT=""
+
 function select_uboot() {
 	local cfg_name=$1
-
+	export BL30_SELECT=$1
 	cd ${MAIN_FOLDER}
 
 	for file in `ls -d ${BL33_DEFCFG1}/* ${BL33_DEFCFG2}/*`; do

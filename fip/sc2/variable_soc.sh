@@ -2,32 +2,34 @@
 
 # static
 BLX_BIN_SUB_FOLDER="S905X4/"
-declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32")
+declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
 
-declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32/src" "bl33")
-declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32/bin")
-declare -a BLX_BIN_NAME=("${BLX_BIN_SUB_FOLDER}bb1st.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2e.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2x.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl31.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl32.bin.signed")
+declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32/src" "bl30/src" "bl33")
+declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32/bin" "bl30/bin")
+declare -a BLX_BIN_NAME=("${BLX_BIN_SUB_FOLDER}bb1st.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2e.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2x.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl31.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl32.bin.signed" "bl30.bin")
 declare -a BLX_IMG_NAME=("NULL" "NULL" "NULL" "NULL" "NULL")
-declare -a BLX_NEEDFUL=("true" "true" "true" "true" "false")
+declare -a BLX_NEEDFUL=("true" "true" "true" "ture" "true" "true")
 
 declare -a BLX_SRC_GIT=("bootloader/amlogic-advanced-bootloader/core" \
 					"bootloader/amlogic-advanced-bootloader/ree" \
 					"bootloader/amlogic-advanced-bootloader/tee" \
 					"ARM-software/arm-trusted-firmware" \
 					"OP-TEE/optee_os" \
-					"uboot")
+					"uboot" \
+					"firmware/aocpu")
 declare -a BLX_BIN_GIT=("firmware/bin/bl2" \
 					"firmware/bin/bl2" \
 					"firmware/bin/bl2" \
 					"firmware/bin/bl31" \
-					"firmware/bin/bl32")
+					"firmware/bin/bl32" \
+					"firmware/bin/bl30")
 
 # blx priority. null: default, source: src code, others: bin path
-declare -a BIN_PATH=("null" "null" "null" "null" "null")
+declare -a BIN_PATH=("null" "null" "null" "null" "null" "source")
 
 # variables
 declare -a CUR_REV # current version of each blx
-declare -a BLX_READY=("false", "false", "false", "false", "false") # blx build/get flag
+declare -a BLX_READY=("false", "false", "false", "false", "false", "false") # blx build/get flag
 
 # package variables
 declare BL33_COMPRESS_FLAG=""

@@ -75,7 +75,7 @@ all-y +=  $(foreach d,$(dirs), $(call objs_from_dir,$(d),$(lastword $(subst /, ,
 OBJS += $(all-y)
 
 $(info SOC=${SOC} BOARD_DIR=$(BOARD_DIR) FREERTOS_ROOT_DIR=${FREERTOS_ROOT_DIR} RTOS_SOURCE_DIR=${RTOS_SOURCE_DIR})
-VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/sc2
+VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/n200
 
 OBJS += ${COMPILER}/main.o	\
 		${COMPILER}/power.o	\

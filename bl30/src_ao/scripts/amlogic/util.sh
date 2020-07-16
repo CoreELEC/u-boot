@@ -1,4 +1,4 @@
-ARCH_DIRS="sc2"
+ARCH_DIRS="n200"
 
 function list_boards()
 {

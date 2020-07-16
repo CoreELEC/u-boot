@@ -25,4 +25,4 @@
 #
 SOC=sc2
 ARCH_CPU=RISC_V_N205
-BOARD=sc2_skt
+BOARD=sc2_ah219

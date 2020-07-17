@@ -1,12 +1,17 @@
 #!/bin/bash
 
 # static
-BLX_BIN_SUB_FOLDER="S905X4/"
+BLX_BIN_SUB_FOLDER="S905X4"
 declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32/src" "bl30/src" "bl33")
 declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32/bin" "bl30/bin")
-declare -a BLX_BIN_NAME=("${BLX_BIN_SUB_FOLDER}bb1st.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2e.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl2x.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl31.bin.signed" "${BLX_BIN_SUB_FOLDER}blob-bl32.bin.signed" "bl30.bin")
+declare -a BLX_BIN_NAME=("bb1st.bin.signed" "blob-bl2e.bin.signed" "blob-bl2x.bin.signed" "blob-bl31.bin.signed" "blob-bl32.bin.signed" "bl30.bin")
+declare -a BLX_BIN_SIZE=("260096" "74864" "66672" "266240" "528384" "NULL")
+declare BL30_BIN_SIZE="65536"
+declare BL33_BIN_SIZE="1572864"
+declare DEV_ACS_BIN_SIZE="28672"
+declare -a BLX_RAWBIN_NAME=("bl2.bin" "bl2e.bin" "bl2x.bin" "bl31.bin" "bl32.bin" "NULL")
 declare -a BLX_IMG_NAME=("NULL" "NULL" "NULL" "NULL" "NULL")
 declare -a BLX_NEEDFUL=("true" "true" "true" "ture" "true" "true")
 

@@ -405,14 +405,54 @@ function build_fip() {
 	return
 }
 
+function process_blx() {
 
-function build_signed() {
+
+	# process loop
+	for loop in ${!BLX_NAME[@]}; do
+		if [ "NULL" != "${BLX_RAWBIN_NAME[$loop]}" ] && \
+			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
+			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
+			if [ ${BLX_NAME[$loop]} == "bl2"  ]; then
+				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ddr4"
+			fi
+			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH} ${option_args}
+		fi
+		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
+		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
+			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
+			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
+			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
+			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
+				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
+				exit -1
+			fi
+		fi
+	done
+
+	if [ ! -f ${BUILD_PATH}/device_acs.bin ]; then
+		echo "dev acs params not exist !"
+		exit -1
+	fi
+
+	dev_acs_size=`stat -c %s ${BUILD_PATH}/device_acs.bin`
+
+	if [ $dev_acs_size -gt ${DEV_ACS_BIN_SIZE} ]; then
+		echo "chip acs size exceed limit ${DEV_ACS_BIN_SIZE}, $dev_acs_size"
+		exit -1
+	else
+		dd if=/dev/zero of=${BUILD_PATH}/dvinit-params.bin bs=${DEV_ACS_BIN_SIZE} count=1
+		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc
+	fi
+
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
+
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
 		#blx_size=`du -b ${BUILD_PATH}/bl30.bin | awk '{print int(${BUILD_PATH}/bl30.bin)}'`
 		blx_size=`stat -c %s ${BUILD_PATH}/bl30.bin`
-		if [ $blx_size -gt 65536 ]; then
-			echo "Error: bl30 size exceed limit 65536"
+		if [ $blx_size -gt ${BL30_BIN_SIZE} ]; then
+			echo "Error: bl30 size exceed limit ${BL30_BIN_SIZE}"
 			exit -1
 		fi
 	else
@@ -420,7 +460,7 @@ function build_signed() {
 		#dd if=/dev/random of=${BUILD_PATH}/bl30.bin bs=4096 count=1
 		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin
 	fi
-	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=65536 count=1
+	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc
 
 	# fix size for BL33 1024KB
@@ -430,17 +470,24 @@ function build_signed() {
 	fi
 	#blx_size=`du -b ${BUILD_PATH}/bl33.bin | awk '{print int(${BUILD_PATH}/bl33.bin)}'`
 	blx_size=`stat -c %s ${BUILD_PATH}/bl33.bin`
-	if [ $blx_size -gt 1572864 ]; then
-		echo "Error: bl33 size exceed limit 0x180000"
+	if [ $blx_size -gt ${BL33_BIN_SIZE} ]; then
+		echo "Error: bl33 size exceed limit ${BL33_BIN_SIZE}"
 		exit -1
 	fi
-	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=1572864 count=1
+	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1
 	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc
 
-	postfix=.signed
 	cp ./${FIP_FOLDER}${CUR_SOC}/templates/blob-bl40.bin.signed ${BUILD_PATH}
 	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
 
+	return
+}
+
+function build_signed() {
+
+	process_blx $@
+
+	postfix=.signed
 	# build final bootloader
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
 

@@ -112,6 +112,14 @@ extern xPwmMesondevice_t *xPwmMesonChannelApply(uint32_t chip_id, uint32_t chann
  */
 extern int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv);
 
+/**
+ * vPwmMesongetvoltage() - Get voltage
+ * @voltage_id: voltage select
+ *
+ * Returns voltage.
+ */
+extern int32_t vPwmMesongetvoltage(uint32_t voltage_id);
+
 #ifdef __cplusplus
 }
 #endif

@@ -57,7 +57,7 @@ static xPwmMesonRegs_t *prvDeviceToRegs(xPwmMesondevice_t *pwm)
 	return (xPwmMesonRegs_t *) pwm->chip->addr;
 }
 
-static uint32_t vPwmMesonGetDuty(xPwmMesonVoltage_t *vtable,
+static uint32_t vPwmMesonVolttoDuty(xPwmMesonVoltage_t *vtable,
 				 uint32_t vtable_size,
 				 uint32_t voltage_mv)
 {
@@ -76,6 +76,19 @@ static uint32_t vPwmMesonGetDuty(xPwmMesonVoltage_t *vtable,
 			return vtable[i].Duty_reg;
 
 	return 0;
+}
+
+static int32_t vPwmMesonDutytoVolt(xPwmMesonVoltage_t *vtable,
+				 uint32_t vtable_size,
+				 uint32_t duty)
+{
+	uint32_t i;
+
+	for (i = 0; i < vtable_size; i++)
+		if (duty == vtable[i].Duty_reg)
+			return vtable[i].Voltage_mv;
+
+	return -1;
 }
 
 void vPwmMesonPwmDebug(xPwmMesondevice_t *pwm)
@@ -629,7 +642,7 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 		return -1;
 	}
 
-	duty = vPwmMesonGetDuty(vtable, vtable_size, voltage_mv);
+	duty = vPwmMesonVolttoDuty(vtable, vtable_size, voltage_mv);
 	if (!duty) {
 		iprintf("volt id: %d, volt: %d get duty fail!\n", voltage_id, voltage_mv);
 		return -1;
@@ -657,5 +670,60 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 	vPwmMesonChannelFree(pwm);
 
 	return 0;
+}
+
+int32_t vPwmMesongetvoltage(uint32_t voltage_id)
+{
+	xPwmMesondevice_t *pwm;
+	xPwmMesonVoltage_t *vtable;
+	xPwmMesonRegs_t *reg;
+	uint32_t chip_id, channel_id, duty, vtable_size;
+	int32_t voltage_mv;
+
+	chip_id = prvMesonVoltToPwmchip(voltage_id);
+	if (chip_id >= PWM_MUX) {
+		iprintf("volt id:%d get chip id fail!\n", voltage_id);
+		return -1;
+	}
+
+	channel_id = prvMesonVoltToPwmchannel(voltage_id);
+	if (channel_id >= MESON_PWM_2) {
+		iprintf("volt id:%d get channel id fail!\n", voltage_id);
+		return -1;
+	}
+
+	vtable = vPwmMesonGetVoltTable(voltage_id);
+	if (!vtable) {
+		iprintf("volt id:%d pwm get volt table fail!\n", voltage_id);
+		return -1;
+	}
+
+	vtable_size = vPwmMesonGetVoltTableSize(voltage_id);
+	if (!vtable_size) {
+		iprintf("volt id:%d pwm get volt table size fail!\n", voltage_id);
+		return -1;
+	}
+
+	pwm = xPwmMesonChannelApply(chip_id, channel_id);
+	if (!pwm) {
+		iprintf("volt id:%d pwm device apply fail!\n", voltage_id);
+		return -1;
+	}
+
+	reg = prvDeviceToRegs(pwm);
+	if (channel_id == MESON_PWM_0)
+		duty = pwm_readl(&reg->dar);
+	else
+		duty = pwm_readl(&reg->dbr);
+
+	vPwmMesonChannelFree(pwm);
+
+	voltage_mv = vPwmMesonDutytoVolt(vtable, vtable_size, duty);
+	if (voltage_mv < 0) {
+		iprintf("volt id: %d, duty: 0x%x get voltage fail!\n", voltage_id, duty);
+		return -1;
+	}
+
+	return voltage_mv;
 }
 

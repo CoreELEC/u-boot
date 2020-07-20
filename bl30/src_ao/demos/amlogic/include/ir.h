@@ -38,6 +38,25 @@ extern "C" {
 #define MODE_HARD_LEAGCY_NEC	0xff
 
 /**
+ * Other protocol used by customer, due to size of firmware will not enabled
+ * by default
+ */
+
+/*
+#define MODE_HARD_DUOKAN	0x02
+#define MODE_HARD_XMP_1		0x03
+#define MODE_HARD_RC5		0x04
+#define MODE_HARD_RC6		0x05
+#define MODE_HARD_TOSHIBA	0x06
+#define MODE_HARD_RCA		0x08
+#define MODE_HARD_RCMM		0x09
+*/
+
+
+/* sample for multi-protocol */
+/* #define MODE_HARD_RCA_NEC	(MODE_HARD_RCA | MODE_HARD_LEAGCY_NEC << 8) */
+
+/**
  *  xIRInit() - IR hardware initialize.
  *  @usWorkMode: supported protocol.
  *  @usGpio: which gpio is used as input.

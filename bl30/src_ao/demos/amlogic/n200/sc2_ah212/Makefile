@@ -43,7 +43,7 @@ include $(FREERTOS_VENDOR)/makedefs
 RTOS_SOURCE_DIR = ${FREERTOS_LIB_DIR}/FreeRTOS
 OUTPUT := ./out_sc2
 
-CFLAGS += $(WARNINGS) -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
+CFLAGS += $(WARNINGS) -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ../include/sc2 -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
 
 AFLAGS = $(CFLAGS) -D__ASM
 

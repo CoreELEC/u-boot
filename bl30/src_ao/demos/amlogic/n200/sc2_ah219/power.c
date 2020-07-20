@@ -29,10 +29,14 @@
 #include "ir.h"
 #include "suspend.h"
 #include "task.h"
+#include "gpio.h"
+#include "pwm.h"
+#include "pwm_plat.h"
 
 #include "hdmi_cec.h"
 
 static TaskHandle_t cecTask = NULL;
+static int vdd_ee;
 
 static uint32_t power_key_list[] = {
 
@@ -80,11 +84,59 @@ void str_hw_disable(void)
 
 void str_power_on(void)
 {
+	int ret;
 
+	/***set vdd_ee val***/
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
+	if (ret < 0) {
+		printf("vdd_EE pwm set fail\n");
+		return;
+	}
+#if 0
+    /***power on vdd_cpu***/
+	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio val fail\n");
+		return;
+	}
+#endif
 }
 
 void str_power_off(void)
 {
+	int ret;
 
+	/***set vdd_ee val***/
+	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
+	if (vdd_ee < 0) {
+		printf("vdd_EE pwm get fail\n");
+		return;
+	}
+
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT,771);
+	if (ret < 0) {
+		printf("vdd_EE pwm set fail\n");
+		return;
+	}
+#if 0
+	/***power off vdd_cpu***/
+	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio val fail\n");
+		return;
+	}
+#endif
 }
 

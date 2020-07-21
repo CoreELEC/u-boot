@@ -34,7 +34,7 @@
 
 static TaskHandle_t cecTask = NULL;
 
-static uint32_t power_key_list[] =                                                                                                            {
+static uint32_t power_key_list[] = {
 
         0xef10fe01, /* ref tv pwr */
         0xba45bd02, /* small ir pwr */
@@ -43,6 +43,7 @@ static uint32_t power_key_list[] =                                              
         0xe51afb04
         /* add more */
 };
+
 static void vIRHandler(void)
 {
 	uint32_t buf[4] = {0};

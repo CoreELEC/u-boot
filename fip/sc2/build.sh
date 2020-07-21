@@ -496,7 +496,6 @@ function build_signed() {
 
 function copy_other_soc() {
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH}/device_acs.bin -f
-	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/chip_acs.bin ${BUILD_PATH} -f
 
 	# device acs params parse for ddr timing
 	#./${FIP_FOLDER}parse ${BUILD_PATH}/device_acs.bin

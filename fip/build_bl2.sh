@@ -7,10 +7,9 @@ function build_bl2() {
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
 	if [ "$3" == "sc2" ]; then
-		echo "Storage with --bl2ex --dpre"
-		/bin/bash mk $3 --bl2ex --dpre
-		#echo -n "preloading with --pxp --bl2ex"
-		#/bin/bash mk $3 --pxp --bl2ex
+		#echo "Storage with --bl2ex --dpre"
+		/bin/bash mk $3
+		targetv3="$1/chip_acs.bin"
 	else
 		/bin/bash mk $3
 	fi
@@ -34,10 +33,8 @@ function build_bl2e() {
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
-	echo "Storage without --pxp"
+	#echo "Storage without --pxp"
 	/bin/bash mk $3
-	#echo "preloading with --pxp"
-	#/bin/bash mk $3 --pxp
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
 		echo "Error: Build bl2 failed... abort"
@@ -55,7 +52,7 @@ function build_bl2x() {
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
-	echo "Storage/Preloading without --pxp"
+	#echo "Storage/Preloading without --pxp"
 	/bin/bash mk $3
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}

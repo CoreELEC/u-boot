@@ -17,8 +17,9 @@
 #include "n200_func.h"
 #include "projdefs.h"
 #include "portmacro.h"
-
-
+#include "suspend.h"
+#include "mailbox-api.h"
+#include "rpc-user.h"
 
 #define CONFIG_CEC_WAKEUP
 
@@ -88,11 +89,34 @@ void cec_delay(u32 cnt)
 	}
 }
 
-static u32 set_cec_val1(unsigned int cec_val)
+static u32 set_cec_val0(unsigned int cec_val)
 {
-	printf("%s warning: is empty\n", __func__);
+	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
 	cec_val = cec_val;
 	return 0;
+}
+
+static u32 set_cec_val1(unsigned int cec_val)
+{
+	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
+	cec_val = cec_val;
+	return 0;
+}
+
+static void cec_get_portinfo(void *msg)
+{
+	u32 val;
+
+	val = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
+		(cec_wakup.wk_port_id << 24);
+	*(u32 *)msg = val;
+	printf("[%s]: info=0x%x\n", __func__, val);
+}
+
+static void cec_register_mailbox_callback(void)
+{
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
+							cec_get_portinfo, 1);
 }
 
 static int cec_strlen(char *p)
@@ -254,12 +278,14 @@ static void cec_clear_int_sts(void)
 	REG32(CECB_INTR_CLR) = reg;
 }
 
+#if 0
 static void cec_sts_check(void)
 {
 	printf("CECB_INTR_STAT=0x%x\n", REG32(CECB_INTR_STAT));
 	printf("DWC_CECB_LOCK_BUF=0x%x\n", cecb_rd_reg(DWC_CECB_LOCK_BUF));
 	printf("DWC_CECB_CTRL=0x%x\n", cecb_rd_reg(DWC_CECB_CTRL));
 }
+#endif
 
 static u32 cec_hw_reset(void)
 {
@@ -473,11 +499,9 @@ static int cec_check_irq_sts(void)
 
 static int ping_cec_ll_tx(unsigned char *msg, unsigned char len)
 {
-	unsigned int reg, ret = 0;
-	unsigned int cnt = 0;
+	unsigned int ret = 0;
 
 	ret = remote_cec_ll_tx(msg, len);
-	//ret = cec_check_irq_sts();
 	return ret;
 }
 
@@ -952,7 +976,7 @@ static unsigned int idle_cnt = 0;
 static void cec_node_init(void)
 {
 	static unsigned int retry = 0;
-	static unsigned int regist_devs = 0;
+	/*static unsigned int regist_devs = 0;*/
 	static unsigned char idx = 0, sub_idx = 0;
 	unsigned int log_addr;
 	int tx_stat = TX_ERROR;
@@ -988,7 +1012,7 @@ static void cec_node_init(void)
 		cec_tx_buf_init();
 		cec_buf_clear();
 		retry = 0;
-		regist_devs = 0;
+		/*regist_devs = 0;*/
 		idx = 0;
 		/*_udelay(100);*/
 		/*
@@ -1007,7 +1031,7 @@ static void cec_node_init(void)
 			       cec_msg.log_addr,
 			       cec_get_log_addr());
 			probe = NULL;
-			regist_devs = 0;
+			/*regist_devs = 0;*/
 			idx = 0;
 			retry = 0;
 			/*check_standby();*/
@@ -1061,7 +1085,7 @@ static void cec_node_init(void)
 				printf("TX_NACK Set log_addr:0x%x,addr0:0x%x\n",
 				       cec_msg.log_addr, cec_get_log_addr());
 				probe = NULL;
-				regist_devs = 0;
+				/*regist_devs = 0;*/
 				idx = 0;
 				retry = 0;
 				ping_state = 0;
@@ -1122,6 +1146,7 @@ static u32 cec_suspend_wakeup_chk(void)
 
 	if (timeout_flag) {
 		cec_wakup_flag = 1;
+		set_cec_val0(CEC_WAKEUP);
 		return 1;
 	} else {
 		return 0;
@@ -1173,19 +1198,21 @@ void cec_req_irq(u32 onoff)
 #if CEC_FW_DEBUG
 	printf("%s %d\n", __func__, onoff);
 #endif
+#else
+	onoff = onoff;
 #endif
 }
 
+#if CEC_USE_IRQ
 static void cec_handler(void)
 {
-#if CEC_USE_IRQ
 	u32 irq;
 
 	printf("%s\n");
 
 	cec_clear_int_sts();
-#endif
 }
+#endif
 
 u32 cec_init_config(void)
 {
@@ -1200,6 +1227,7 @@ u32 cec_init_config(void)
 	printf("%s\n", CEC_VERSION);
 	printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
 	printf("cec cfg2:0x%x\n", REG32(SYSCTRL_STATUS_REG1));
+	cec_register_mailbox_callback();
 	if (hdmi_cec_func_config & 0x1) {
 		cec_req_irq(1);
 		probe = NULL;
@@ -1224,7 +1252,9 @@ u32 cec_get_wakup_flag(void)
 	return cec_wakup_flag;
 }
 
+#if CEC_USE_IRQ
 DECLARE_IRQ(IRQ_NUM_CECB, cec_handler)
+#endif
 
 #endif
 

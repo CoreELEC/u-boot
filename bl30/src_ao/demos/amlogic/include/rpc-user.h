@@ -29,6 +29,7 @@
 #define CMD_GET_RTC             0x12
 #define CMD_RPCUINTREE_TEST     0x6
 #define CMD_RPCUINTTEE_TEST     0x7
+#define CMD_GET_CEC_INFO        0xB4
 
 /*******************************************************************************
  * Mssage Comopsition
@@ -38,5 +39,6 @@
 #define MBX_CMD_SUSPEND	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SUSPEND)
 #define MBX_CMD_SET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_RTC)
 #define MBX_CMD_GET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_RTC)
+#define MBX_CMD_GET_CEC_INFO __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_CEC_INFO)
 
 #endif

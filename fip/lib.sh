@@ -117,9 +117,12 @@ function get_versions() {
 			for loop in ${!SRC_REV[@]}; do
 				echo "Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
 				#CUR_REV[$loop]=${SRC_REV[$loop]}
-				update_bin_path $loop "source"
-				CONFIG_DDR_FW=1
-				export CONFIG_DDR_FW
+				#update_bin_path $loop "source"
+				BIN_PATH[$loop]="source"
+				if [ BLX_NAME[$loop] == ${BLX_NAME_GLB[0]} ]; then
+					CONFIG_DDR_FW=1
+					export CONFIG_DDR_FW
+				fi
 			done
 		fi
 	else
@@ -136,9 +139,12 @@ function get_versions() {
 				# merge into android/buildroot, can not get manifest.xml, get version by folder
 				# loop src folder
 				echo "No-Manifest: Src code only. build with --update-${BLX_NAME[$loop]}"
-				update_bin_path $loop "source"
-				CONFIG_DDR_FW=1
-				export CONFIG_DDR_FW
+				#update_bin_path $loop "source"
+				BIN_PATH[$loop]="source"
+				if [ BLX_NAME[$loop] == ${BLX_NAME_GLB[0]} ]; then
+					CONFIG_DDR_FW=1
+					export CONFIG_DDR_FW
+				fi
 			fi
 		done
 	fi

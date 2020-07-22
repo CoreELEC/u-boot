@@ -26,8 +26,7 @@ declare -a BLX_BIN_GIT=("firmware/bin/bl2" \
 					"firmware/bin/bl2" \
 					"firmware/bin/bl2" \
 					"firmware/bin/bl31" \
-					"firmware/bin/bl32" \
-					"firmware/bin/bl30")
+					"firmware/bin/bl32")
 
 # blx priority. null: default, source: src code, others: bin path
 declare -a BIN_PATH=("null" "null" "null" "null" "null" "source")

@@ -7,7 +7,10 @@ extern void eclic_irq22_handler(void);
 extern void eclic_irq23_handler(void);
 extern void eclic_irq24_handler(void);
 
+extern void eclic_irq25_handler(void);
+
 extern void eclic_irq50_handler(void);
+
 #define CONCAT_STAGE_1(w, x, y, z) w ## x ## y ## z
 #define CONCAT2(w, x) CONCAT_STAGE_1(w, x, , )
 #define CONCAT3(w, x, y) CONCAT_STAGE_1(w, x, y, )
@@ -44,6 +47,9 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_GPIO2	22
 #define IRQ_NUM_GPIO1	21
 #define IRQ_NUM_GPIO0	20
+
+/* saradc */
+#define IRQ_NUM_SARADC	25
 
 /* cec */
 #define IRQ_NUM_CECA	40

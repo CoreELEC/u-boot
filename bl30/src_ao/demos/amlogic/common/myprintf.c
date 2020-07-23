@@ -386,10 +386,11 @@ int iprintf(const char *fmt, ...)
 {
 	va_list args;
 	int i;
+	UBaseType_t uxSavedInterruptStatus;
 
 	//char buf[20] = {0};
 
-	taskENTER_CRITICAL();
+	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
 
 	va_start(args, fmt);
 
@@ -405,7 +406,7 @@ int iprintf(const char *fmt, ...)
 		//vSerialPutString(ConsoleSerial, printbuffer);
 		vUartPuts(printbuffer);
 	}
-	taskEXIT_CRITICAL();
+	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
 	return i;
 }
 

@@ -107,27 +107,6 @@ static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	taskEXIT_CRITICAL();
 }
 
-void power_on_off_cpu(void)
-{
-	static int state=0;
-	//char source;
-	//printf("\nKKKKKKKKKKKKK val=0x%x\r\n", REG32(SYSCTRL_STATUS_REG0));
-	if (REG32(SYSCTRL_STATUS_REG0) == 0x12345678)
-	{
-		STR_Start_Sem_Give();
-		REG32(SYSCTRL_STATUS_REG0) = 0;
-		printf("\nPower off\r\n");
-		state ++;
-	} else if (state == 1)
-	{
-		vTaskDelay(pdMS_TO_TICKS(5000));
-		//printf("\nPower on\r\n");
-		//source = RTC_WAKEUP;
-		//STR_Wakeup_src_Queue_Send(&source);
-		state = 0;
-	}
-}
-
 static void vPrintTask1( void *pvParameters )
 {
     /*make compiler happy*/
@@ -138,7 +117,6 @@ static void vPrintTask1( void *pvParameters )
 		//printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
 		vTaskDelay(pdMS_TO_TICKS(1000));
 		//dump_fsm();
-		power_on_off_cpu();
 	}
 }
 
@@ -153,14 +131,6 @@ static void vPrintTask2( void *pvParameters )
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
-
-/*
-static void stdout_putf(void *unused, char c)
-{
-  unused = unused;
-  vUartPutc(c);
-}
-*/
 
 void hardware_init(void);
 void hardware_init()
@@ -180,8 +150,6 @@ int main(void)
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
-
-	vEnableIrq(IRQ_NUM_MB_0, 147);
 
 	// Delay
 	for (i = 0; i < 4; ++i)
@@ -208,14 +176,6 @@ int main(void)
 
 	return 0;
 }
-
-void test_handler(void)
-{
-	printf("test_handler\r\n");
-	printf("state1=0x%x\n", REG32(MAILBOX_STS_MBOX01));
-	REG32(MAILBOX_CLR_MBOX01) = 0xffffffff;
-}
-DECLARE_IRQ(IRQ_NUM_MB_0, test_handler)
 
 void vApplicationIdleHook( void )
 {

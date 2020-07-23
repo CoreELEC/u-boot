@@ -116,7 +116,7 @@ static void vAoRevMbHandler(void *vArg)
 	if (ulSize != 0)
 		vGetPayload(addr, &mbInfo.mbdata, ulSize);
 	else
-		PRINT("[%s] mbox size is 0,no need to get payload\n");
+		PRINT("mbox size is 0,no need to get payload\n");
 
 	PRINT_DBG("%s taskid: 0x%llx\n", TAG, mbInfo.mbdata.taskid);
 	PRINT_DBG("%s complete: 0x%llx\n", TAG, mbInfo.mbdata.complete);

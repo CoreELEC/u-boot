@@ -58,12 +58,37 @@ void xMboxUintTeeTestCase(void *msg)
 
 }
 
+void xMboxSuspend_Sem(void *msg)
+{
+	char *s = msg;
+	PRINT_ERR("xMboxSuspend_Sem!!!\n");
+	STR_Start_Sem_Give();
+}
+
+void xMboxSetRTC(void *msg)
+{
+	char *s = msg;
+	PRINT_ERR("[%s]: from tlpm: %s\n", TAG, s);
+}
+
+void xMboxGetRTC(void *msg)
+{
+	char *s = msg;
+	PRINT_ERR("[%s]: from tlpm: %s\n", TAG, s);
+}
+
 void vRegisterRpcCallBack(void)
 {
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
 					      xMboxUintReeTestCase, 1);
 	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
 					      xMboxUintTeeTestCase, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
+						xMboxSuspend_Sem, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
+						xMboxSetRTC, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
+						xMboxGetRTC, 0);
 }
 
 void vRpcUserCmdInit(void)

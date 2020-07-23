@@ -368,7 +368,6 @@ irq_entry: // -------------> This label will be set to MTVT2 register
   	// Allocate the stack space
   	pushREGFILE
 	portSAVE_CONTEXT_IRQ
-
 int_loop:             // 3 instructions in pending-interrupt service loop.
   	csrrw ra, CSR_JALMNXTI, ra
 
@@ -377,6 +376,9 @@ int_loop:             // 3 instructions in pending-interrupt service loop.
 
   	#---- Critical section with interrupts disabled -----------------------
   	DISABLE_MIE # Disable interrupts
+	/*ECALL to switch context*/
+	li	a2,40
+	ecall
 
 	portRESTORE_CONTEXT_IRQ
   	popREGFILE

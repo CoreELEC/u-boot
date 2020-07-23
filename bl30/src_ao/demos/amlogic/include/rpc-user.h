@@ -22,14 +22,21 @@
  * Define function here, 10bits valid
  ******************************************************************************/
 	 /*SYSTEM*/
-#define CMD_UNDEFINE		0x0
-#define CMD_RPCUINTREE_TEST	0x6
-#define CMD_RPCUINTTEE_TEST	0x7
+#define CMD_UNDEFINE            0x0
+#define CMD_SUSPEND             0x4
+#define CMD_SYSTEM_POWER_STATE  0x8
+#define CMD_SET_RTC             0x11
+#define CMD_GET_RTC             0x12
+#define CMD_RPCUINTREE_TEST     0x6
+#define CMD_RPCUINTTEE_TEST     0x7
 
 /*******************************************************************************
  * Mssage Comopsition
  ******************************************************************************/
 #define MBX_CMD_RPCUINTREE_TEST	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_RPCUINTREE_TEST)
 #define MBX_CMD_RPCUINTTEE_TEST	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_RPCUINTTEE_TEST)
+#define MBX_CMD_SUSPEND	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SUSPEND)
+#define MBX_CMD_SET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_RTC)
+#define MBX_CMD_GET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_RTC)
 
 #endif

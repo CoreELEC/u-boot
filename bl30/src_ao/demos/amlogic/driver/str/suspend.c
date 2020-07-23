@@ -42,6 +42,7 @@
 #include "power.h"
 
 #include "hdmi_cec.h"
+#include "vrtc.h"
 
 void wakeup_ap(void);
 void clear_wakeup_trigger(void);
@@ -126,6 +127,7 @@ void system_resume(void)
 {
 	str_power_on();
 	str_hw_disable();
+	vRTC_update();
 	wakeup_ap();
 }
 
@@ -133,8 +135,6 @@ void system_suspend(void)
 {
 	str_hw_init();
 	str_power_off();
-//	if (xSTRSemaphore)
-//		xSemaphoreGive(xSTRSemaphore);
 }
 
 void set_reason_flag(char exit_reason)
@@ -182,7 +182,7 @@ static void vSTRTask( void *pvParameters )
 {
     /*make compiler happy*/
 	char buffer[STR_QUEUE_ITEM_SIZE];
-	char exit_reason = 0;
+	uint32_t exit_reason = 0;
 
 	pvParameters = pvParameters;
     xSTRQueue = xQueueCreate(STR_QUEUE_LENGTH, STR_QUEUE_ITEM_SIZE);
@@ -215,11 +215,12 @@ static void vSTRTask( void *pvParameters )
 				default:
 					break;
 			}
-			if (exit_reason)
+			if (exit_reason) {
 				printf("exit_reason=%d, %s\n",exit_reason, vWakeupReason[exit_reason].name);
-			set_reason_flag(exit_reason);
-			system_resume();
-			goto loop;
+				set_reason_flag((char)exit_reason);
+				system_resume();
+				goto loop;
+			}
 		}
 		loop: continue;
 	}

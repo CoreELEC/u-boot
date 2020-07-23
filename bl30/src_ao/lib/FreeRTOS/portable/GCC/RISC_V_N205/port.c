@@ -211,20 +211,14 @@ void prvTaskExitError( void )
 
 /*Entry Point for Machine Timer Interrupt Handler*/
 //Bob: add the function argument int_num
-
 void vPortSysTickHandler(void){
-	static uint64_t then = 0;
+	uint64_t then = 0;
     volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
     volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
+    uint64_t now = *mtime;
 
-	if (then != 0)  {
-		//next timer irq is 1 second from previous
-		then += (configRTC_CLOCK_HZ / configTICK_RATE_HZ);
-	} else{ //first time setting the timer
-		uint64_t now = *mtime;
-		then = now + (configRTC_CLOCK_HZ / configTICK_RATE_HZ);
-	}
-	*mtimecmp = then;
+    then = now + (configRTC_CLOCK_HZ / configTICK_RATE_HZ);
+    *mtimecmp = then;
 
 	/* Increment the RTOS tick. */
 	if ( xTaskIncrementTick() != pdFALSE )
@@ -251,6 +245,7 @@ void vPortSetupTimer(void)	{
     mtime_intattr|= ECLIC_INT_ATTR_TRIG_EDGE;
     eclic_set_intattr(ECLIC_INT_MTIP,mtime_intattr);
     eclic_enable_interrupt (ECLIC_INT_MTIP);
+
     //eclic_set_nlbits(4);
     //eclic_set_irq_lvl_abs(ECLIC_INT_MTIP,1);
 	eclic_set_intctrl(ECLIC_INT_MTIP, 10 << 4);

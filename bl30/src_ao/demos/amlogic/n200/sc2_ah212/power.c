@@ -32,6 +32,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "pwm_plat.h"
+#include "keypad.h"
 
 #include "hdmi_cec.h"
 
@@ -72,6 +73,10 @@ void str_hw_init(void)
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
+
+	vBackupAndClearGpioIrqReg();
+	vGpioKeyEnable();
+	vGpioIRQInit();
 }
 
 void str_hw_disable(void)
@@ -83,6 +88,9 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 		/*printf("del cec task\n");*/
 	}
+
+	vGpioKeyDisable();
+	vRestoreGpioIrqReg();
 }
 
 void str_power_on(void)

@@ -50,6 +50,8 @@
 #include "mailbox-api.h"
 #include "version.h"
 
+#include "keypad.h"
+
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -138,6 +140,7 @@ void hardware_init(void);
 void hardware_init()
 {
 	config_eclic_irqs();
+	vKeyPadInit();
 }
 
 // Test target board

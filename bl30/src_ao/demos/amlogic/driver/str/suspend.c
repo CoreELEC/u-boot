@@ -270,6 +270,9 @@ static void vSTRTask( void *pvParameters )
 				case REMOTE_CUS_WAKEUP:
 					exit_reason = REMOTE_CUS_WAKEUP;
 					break;
+				case POWER_KEY_WAKEUP:
+					exit_reason = POWER_KEY_WAKEUP;
+					break;
 				default:
 					break;
 			}

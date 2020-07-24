@@ -37,17 +37,17 @@ typedef union {
 } MbStat_in_t;
 
 typedef struct __attribute__((__packed__)) {
+	uint32_t status;
 	uint64_t taskid;
 	uint64_t complete;
 	uint64_t ullclt;
-	uint32_t status;
 }mbHeadInfo;
 
 typedef struct __attribute__((__packed__)) {
+	uint32_t status;
 	uint64_t taskid;
 	uint64_t complete;
 	uint64_t ullclt;
-	uint32_t status;
 	uint8_t data[MHU_DATA_SIZE];
 }mboxData;
 
@@ -90,7 +90,7 @@ static inline void vClrMboxStats(uint32_t reg)
 	aml_writel32(0xFFFFFFFF, reg);
 }
 
-uint32_t xGetChan(uint32_t mbox)
+static inline uint32_t xGetChan(uint32_t mbox)
 {
 	switch (mbox) {
 	case MAILBOX_ARMREE2AO:
@@ -103,7 +103,7 @@ uint32_t xGetChan(uint32_t mbox)
 	return NULL;
 }
 
-uint32_t xGetRevMbox(uint32_t ulChan)
+static inline uint32_t xGetRevMbox(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
@@ -116,7 +116,7 @@ uint32_t xGetRevMbox(uint32_t ulChan)
 	return NULL;
 }
 
-uint32_t xGetSendMbox(uint32_t ulChan)
+static inline uint32_t xGetSendMbox(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
@@ -141,7 +141,7 @@ static inline uint32_t xDspRevAddr(uint32_t ulChan)
 	return NULL;
 }
 
-static inline uint32_t xDspSendAddr(uint32_t ulChan)
+static inline uint32_t xSendAddr(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
@@ -153,7 +153,7 @@ static inline uint32_t xDspSendAddr(uint32_t ulChan)
 	return NULL;
 }
 /*send back for sync api*/
-static inline uint32_t xDspSendAddrBack(uint32_t ulChan)
+static inline uint32_t xSendAddrBack(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
@@ -166,12 +166,12 @@ static inline uint32_t xDspSendAddrBack(uint32_t ulChan)
 }
 
 
-static inline uint32_t xDspRevAddrMbox(uint32_t mbox)
+static inline uint32_t xRevAddrMbox(uint32_t mbox)
 {
 	return PAYLOAD_RD_BASE(mbox);
 }
 
-static inline uint32_t xDspSendAddrMbox(uint32_t mbox)
+static inline uint32_t xSendAddrMbox(uint32_t mbox)
 {
 	return PAYLOAD_WR_BASE(mbox);
 }
@@ -179,7 +179,7 @@ static inline uint32_t xDspSendAddrMbox(uint32_t mbox)
 static inline void *MbWrite(uint32_t to, void *from, long count)
 {
         int i = 0;
-	int len = count / 4 + (count % 4);
+	int len = count / 4 + ((count % 4) ? 1 : 0);
 	uint32_t *p = from;
 
         PRINT_DBG("vMbWrite Count: 0x%x, len: 0x%x\n", count, len);
@@ -194,7 +194,7 @@ static inline void *MbWrite(uint32_t to, void *from, long count)
 static inline void *MbRead(void *to, uint32_t from, long count)
 {
 	int i = 0;
-	int len = count / 4 + (count % 4);
+	int len = count / 4 + ((count % 4) ? 1 : 0);
 	uint32_t *p = to;
 
 	PRINT_DBG("vMbRead Count:0x%x, len: 0x%x\n", count, len);
@@ -210,19 +210,19 @@ static inline void xGetPayloadHead(uint32_t addr, void *head)
 {
 	mbHeadInfo *phead = head;
 
-	MbRead(&phead->taskid, addr, 0x2);
-	MbRead(&phead->complete, addr + 0x8, 0x2);
-	MbRead(&phead->ullclt, addr + 0x10, 0x2);
-	MbRead(&phead->status, addr + 0x18, 0x1);
+	MbRead(&phead->status, addr, 0x4);
+	MbRead(&phead->taskid, addr + 0x4, 0x8);
+	MbRead(&phead->complete, addr + 0xc, 0x8);
+	MbRead(&phead->ullclt, addr + 0x14, 0x8);
 }
 static inline void xBuildPayloadHead(uint32_t addr, void *head)
 {
 	mbHeadInfo *phead = head;
 
-	MbWrite(addr, &phead->taskid, 0x2);
-	MbWrite(addr + 0x8, &phead->complete, 0x2);
-	MbWrite(addr + 0x10, &phead->ullclt, 0x2);
-	MbWrite(addr + 0x18, &phead->status,  0x1);
+	MbWrite(addr, &phead->status,  0x4);
+	MbWrite(addr + 0x4, &phead->taskid, 0x8);
+	MbWrite(addr + 0xc, &phead->complete, 0x8);
+	MbWrite(addr + 0x14, &phead->ullclt, 0x8);
 }
 
 static inline void vGetPayload(uint32_t addr, void *data, size_t size)

@@ -99,12 +99,12 @@ static void vAoRevMbHandler(void *vArg)
 	uint32_t addr, ulMbCmd, ulSize, ulSync;
 
 	st = xGetMboxStats(MAILBOX_STAT(mbox));
-	addr = xDspRevAddrMbox(mbox);
+	addr = xRevAddrMbox(mbox);
 	ulMbCmd = st.cmd;
 	ulSize = st.size;
 	ulSync = st.sync;
 
-	PRINT_DBG("[%s]: prvDspRevMbHandler 0x%x, 0x%x, 0x%x\n", TAG, ulMbCmd, ulSize, ulSync);
+	PRINT_DBG("[%s]: prvRevMbHandler 0x%x, 0x%x, 0x%x\n", TAG, ulMbCmd, ulSize, ulSync);
 
 	if (ulMbCmd == 0) {
 		PRINT("[%s] mbox cmd is 0, cannot match\n");
@@ -151,6 +151,9 @@ static void vAoRevMbHandler(void *vArg)
 #endif
 		break;
 	default:
+		PRINT_ERR("[%s]: Not SYNC or ASYNC, Fail\n", TAG);
+		vClrMboxStats(MAILBOX_CLR(mbox));
+		vClrMbInterrupt(IRQ_REV_BIT(mbox));
 		break;
 	}
 }
@@ -171,7 +174,7 @@ void vSyncTask(void *pvParameters)
 		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncMbInfo.ulCmd,
 					       syncMbInfo.mbdata.data);
 		mbox = xGetRevMbox(syncMbInfo.ulChan);
-		addr = xDspSendAddrMbox(mbox);
+		addr = xSendAddrMbox(mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
 				memset(&syncMbInfo.mbdata.data, 0, sizeof(syncMbInfo.mbdata.data));
@@ -208,7 +211,7 @@ void vMbInit(void)
 
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, MAILBOX_ARMTEE2AO, 10);
 
-	vEnableIrq(IRQ_NUM_MB_4, 249);
+	vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
 
 	xTaskCreate(vSyncTask,
 		    "AOReeSyncTask",

@@ -46,8 +46,8 @@
 
 void wakeup_ap(void);
 void clear_wakeup_trigger(void);
-void system_resume(void);
-void system_suspend(void);
+void system_resume(uint32_t pm);
+void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
 void create_str_task(void);
 
@@ -56,6 +56,7 @@ QueueHandle_t xSTRQueue = NULL;
 
 TimerHandle_t xSuspendTimer = NULL;
 
+uint32_t power_mode;
 
 WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
@@ -123,7 +124,7 @@ void clear_wakeup_trigger(void)
 	REG32(SYSCTRL_TIMERB_CTRL) = 0;
 }
 
-void system_resume(void)
+void system_resume(uint32_t pm)
 {
 	str_power_on();
 	str_hw_disable();
@@ -131,7 +132,7 @@ void system_resume(void)
 	wakeup_ap();
 }
 
-void system_suspend(void)
+void system_suspend(uint32_t pm)
 {
 	str_hw_init();
 	str_power_off();
@@ -166,6 +167,14 @@ void STR_Wakeup_src_Queue_Send(uint32_t *src)
 	xQueueSend(xSTRQueue, src, portMAX_DELAY);
 }
 
+void xMboxSuspend_Sem(void *msg)
+{
+	power_mode = *(uint32_t *)msg;
+
+	printf("power_mode=0x%x\n",power_mode);
+	STR_Start_Sem_Give();
+}
+
 static void vSuspendTest(TimerHandle_t xTimer) {
 	uint32_t buf[4] = {0};
 	buf[0] = RTC_WAKEUP;
@@ -195,7 +204,7 @@ static void vSTRTask( void *pvParameters )
 
 	while (1) {
 		xSemaphoreTake(xSTRSemaphore, portMAX_DELAY);
-		system_suspend();
+		system_suspend(power_mode);
 		while (xQueueReceive(xSTRQueue, buffer, portMAX_DELAY))
 		{
 			switch (buffer[0])
@@ -218,7 +227,7 @@ static void vSTRTask( void *pvParameters )
 			if (exit_reason) {
 				printf("exit_reason=%d, %s\n",exit_reason, vWakeupReason[exit_reason].name);
 				set_reason_flag((char)exit_reason);
-				system_resume();
+				system_resume(power_mode);
 				goto loop;
 			}
 		}

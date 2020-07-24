@@ -24,6 +24,7 @@
 #include "riscv_encoding.h"
 
 #include "mailbox-api.h"
+#include "suspend.h"
 
 #define TAG "AOCPU"
 #define PRINT_DBG	//printf
@@ -56,13 +57,6 @@ void xMboxUintTeeTestCase(void *msg)
 
 	PRINT("[%s]: from tee: %s\n", TAG, s);
 
-}
-
-void xMboxSuspend_Sem(void *msg)
-{
-	char *s = msg;
-	PRINT_ERR("xMboxSuspend_Sem!!!\n");
-	STR_Start_Sem_Give();
 }
 
 void xMboxSetRTC(void *msg)

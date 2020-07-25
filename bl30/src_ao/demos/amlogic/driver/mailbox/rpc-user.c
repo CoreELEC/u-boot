@@ -25,6 +25,7 @@
 
 #include "mailbox-api.h"
 #include "suspend.h"
+#include "vrtc.h"
 
 #define TAG "AOCPU"
 #define PRINT_DBG	//printf
@@ -59,18 +60,6 @@ void xMboxUintTeeTestCase(void *msg)
 
 }
 
-void xMboxSetRTC(void *msg)
-{
-	char *s = msg;
-	PRINT_ERR("[%s]: from tlpm: %s\n", TAG, s);
-}
-
-void xMboxGetRTC(void *msg)
-{
-	char *s = msg;
-	PRINT_ERR("[%s]: from tlpm: %s\n", TAG, s);
-}
-
 void vRegisterRpcCallBack(void)
 {
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
@@ -82,7 +71,7 @@ void vRegisterRpcCallBack(void)
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
 						xMboxSetRTC, 0);
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
-						xMboxGetRTC, 0);
+						xMboxGetRTC, 1);
 }
 
 void vRpcUserCmdInit(void)

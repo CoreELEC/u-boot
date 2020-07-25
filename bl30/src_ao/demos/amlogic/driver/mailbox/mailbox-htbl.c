@@ -151,7 +151,7 @@ uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg)
 	uint32_t tabLen = p[0].tabLen;
 
 	for (i = 0; i != tabLen; i++) {
-		PRINT(TAG "input_cmd=%x i=%ld cmd=%lx\n", cmd, i, p[i].cmd);
+		PRINT("input_cmd=%x i=%ld cmd=%lx\n", cmd, i, p[i].cmd);
 		if (p[i].cmd == cmd) {
 			PRINT("idx=%d cmd=%lx handler=%p arg=%p\n", i,
 			      p[i].cmd, p[i].handler, arg);

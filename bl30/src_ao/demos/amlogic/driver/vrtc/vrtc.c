@@ -51,7 +51,10 @@
 #include "vrtc.h"
 #include "timer_source.h"
 #include "register.h"
+#include "FreeRTOS.h"
+#include "mailbox-api.h"
 
+#define TAG "VRTC"
 /* Timer handle */
 //TimerHandle_t xRTCTimer = NULL;
 static uint32_t last_time;
@@ -82,6 +85,25 @@ void vRTC_update(void)
 		set_rtc(val);
 	}
 }
+
+void xMboxSetRTC(void *msg)
+{
+	unsigned int val = *(uint32_t *)msg;
+	printf("[%s] xMboxSetRTC val=0x%x \n", TAG, val);
+	set_rtc(val);
+}
+
+void xMboxGetRTC(void *msg)
+{
+	uint32_t val = 0;
+
+	get_rtc(&val);
+	memset(msg, 0, MBOX_BUF_LEN);
+	*(uint32_t *)msg = val;
+
+	printf("[%s]: xMboxGetRTC val=0x%x\n", TAG, val);
+}
+
 
 /*
 void vCreat_rtc_timer(void)

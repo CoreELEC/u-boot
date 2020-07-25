@@ -25,6 +25,23 @@
 #include <mpc8xx.h>
 #endif
 
+#include <linux/ctype.h>
+#include <errno.h>
+
+static
+int check_bootini_script(ulong addr, char *product)
+{
+	char *buf;
+	char magic[32];
+	int size = snprintf(magic, sizeof(magic), "%s-uboot-config\n", product);
+
+	buf = map_sysmem(addr, 0);
+	if (strncasecmp(magic, buf, size))
+		return -EINVAL;
+
+	return size;
+}
+
 int
 source (ulong addr, const char *fit_uname)
 {
@@ -41,6 +58,8 @@ source (ulong addr, const char *fit_uname)
 	const void	*fit_data;
 	size_t		fit_len;
 #endif
+
+	int size;
 
 	verify = getenv_yesno ("verify");
 
@@ -132,8 +151,14 @@ source (ulong addr, const char *fit_uname)
 		break;
 #endif
 	default:
-		puts ("Wrong image format for \"source\" command\n");
-		return 1;
+		size = check_bootini_script(addr, CONFIG_DEVICE_PRODUCT);
+		if (size > 0) {
+			data = (u32*)(addr + size);
+			len = simple_strtoul(getenv("filesize"), NULL, 16) - size;
+		} else {
+			puts ("Wrong image format for \"source\" command\n");
+			return 1;
+		}
 	}
 
 	debug ("** Script length: %ld\n", len);

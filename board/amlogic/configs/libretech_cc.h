@@ -46,7 +46,6 @@
 #define CONFIG_CEC_WAKEUP
 
 #define CONFIG_INSTABOOT
-#define CONFIG_CMD_CFGLOAD
 /* configs for dtb in boot.img */
 //#define DTB_BIND_KERNEL
 
@@ -149,9 +148,20 @@
             "fi;fi;fi;fi;"\
             "\0" \
         "storeboot="\
-            "if imgread kernel ${boot_part} ${loadaddr}; then bootm ${loadaddr}; fi;"\
-            "run update;"\
-            "\0"\
+        "if usb start 0; then "\
+            "for mmc_dev in 0 1 2; do "\
+                "if fatload usb ${mmc_dev}:1 ${loadaddr} boot.ini; then "\
+                    "setenv device usb;"\
+                    "source ${loadaddr}; "\
+                "fi; " \
+            "done;"\
+        "fi;"\
+        "for mmc_dev in 0 1 2; do "\
+            "if fatload mmc ${mmc_dev}:1 ${loadaddr} boot.ini; then "\
+                "setenv device mmc;"\
+                "source ${loadaddr}; "\
+            "fi; "\
+        "done;\0"\
         "factory_reset_poweroff_protect="\
             "echo wipe_data=${wipe_data}; echo wipe_cache=${wipe_cache};"\
             "if test ${wipe_data} = failed; then "\
@@ -397,7 +407,7 @@
 #define CONFIG_USB_GADGET 1
 #define CONFIG_USBDOWNLOAD_GADGET 1
 #define CONFIG_SYS_CACHELINE_SIZE 64
-#define CONFIG_DEVICE_PRODUCT	"libretech-cc"
+#define CONFIG_DEVICE_PRODUCT	"LIBRETECH"
 
 //UBOOT Facotry usb/sdcard burning config
 #define CONFIG_AML_V2_FACTORY_BURN              1       //support facotry usb burning
@@ -472,6 +482,8 @@
 #define CONFIG_CMD_CPU_TEMP 1
 #define CONFIG_SYS_MEM_TOP_HIDE 0x08000000 //hide 128MB for kernel reserve
 #define CONFIG_MULTI_DTB	1
+
+#define CONFIG_CMD_SOURCE	1
 
 #define CONFIG_CMD_CHIPID 1
 /* debug mode defines */

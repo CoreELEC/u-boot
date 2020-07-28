@@ -24,8 +24,6 @@
 #include "riscv_encoding.h"
 
 #include "mailbox-api.h"
-#include "suspend.h"
-#include "vrtc.h"
 
 #define TAG "AOCPU"
 #define PRINT_DBG	//printf
@@ -62,16 +60,17 @@ void xMboxUintTeeTestCase(void *msg)
 
 void vRegisterRpcCallBack(void)
 {
-	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
+	int ret;
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
 					      xMboxUintReeTestCase, 1);
-	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
+	if (ret == MBOX_CALL_MAX)
+		PRINT("[%s]: mbox cmd 0x%x register fail\n",TAG, MBX_CMD_RPCUINTREE_TEST);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
 					      xMboxUintTeeTestCase, 0);
-	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
-						xMboxSuspend_Sem, 0);
-	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
-						xMboxSetRTC, 0);
-	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
-						xMboxGetRTC, 1);
+	if (ret == MBOX_CALL_MAX)
+		PRINT("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_RPCUINTTEE_TEST);
 }
 
 void vRpcUserCmdInit(void)

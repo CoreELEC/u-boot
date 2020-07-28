@@ -43,6 +43,7 @@
 
 #include "hdmi_cec.h"
 #include "vrtc.h"
+#include "mailbox-api.h"
 
 void wakeup_ap(void);
 void clear_wakeup_trigger(void);
@@ -237,7 +238,14 @@ static void vSTRTask( void *pvParameters )
 
 void create_str_task(void)
 {
+	int ret;
+
 	if (xTaskCreate( vSTRTask, "STR_task", configMINIMAL_STACK_SIZE, NULL, 3, NULL ) < 0)
 		printf("STR_task create fail!!\n");
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
+						xMboxSuspend_Sem, 0);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SUSPEND);
 }
 

@@ -20,6 +20,7 @@ extern "C" {
 #define AOREE_CHANNEL			3
 #define AOTEE_CHANNEL			5
 
+#define MBOX_CALL_MAX			MAX_ENTRY_NUM
 /*note: aoree channel support feedback, aotee channel no support feedback*/
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(handler) (void *),

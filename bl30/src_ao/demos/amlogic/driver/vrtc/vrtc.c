@@ -104,7 +104,20 @@ void xMboxGetRTC(void *msg)
 	printf("[%s]: xMboxGetRTC val=0x%x\n", TAG, val);
 }
 
+void vRtcInit(void)
+{
+	int ret;
 
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
+						xMboxSetRTC, 0);
+	if (ret == MBOX_CALL_MAX)
+		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_SET_RTC);
+
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
+						xMboxGetRTC, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
+}
 /*
 void vCreat_rtc_timer(void)
 {

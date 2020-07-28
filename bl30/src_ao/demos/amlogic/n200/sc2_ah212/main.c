@@ -46,6 +46,7 @@
 
 #include "hdmi_cec.h"
 #include "suspend.h"
+#include "vrtc.h"
 #include "mailbox-api.h"
 #include "version.h"
 
@@ -169,6 +170,8 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
+	vCecCallbackInit();
+	vRtcInit();
 	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");

@@ -113,12 +113,6 @@ static void cec_get_portinfo(void *msg)
 	printf("[%s]: info=0x%x\n", __func__, val);
 }
 
-static void cec_register_mailbox_callback(void)
-{
-	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
-							cec_get_portinfo, 1);
-}
-
 static int cec_strlen(char *p)
 {
 	int i = 0;
@@ -1227,7 +1221,6 @@ u32 cec_init_config(void)
 	printf("%s\n", CEC_VERSION);
 	printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
 	printf("cec cfg2:0x%x\n", REG32(SYSCTRL_STATUS_REG1));
-	cec_register_mailbox_callback();
 	if (hdmi_cec_func_config & 0x1) {
 		cec_req_irq(1);
 		probe = NULL;
@@ -1250,6 +1243,17 @@ u32 cec_init_config(void)
 u32 cec_get_wakup_flag(void)
 {
 	return cec_wakup_flag;
+}
+
+void vCecCallbackInit(void)
+{
+	int ret;
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
+						    cec_get_portinfo, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO);
+
 }
 
 #if CEC_USE_IRQ

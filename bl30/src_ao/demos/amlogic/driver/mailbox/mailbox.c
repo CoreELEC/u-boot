@@ -169,11 +169,12 @@ void vSyncTask(void *pvParameters)
 	pvParameters = pvParameters;
 	while (1) {
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		PRINT_DBG("[%s]:ReeSyncTask mbox:%d\n", TAG, mbox);
+		PRINT_DBG("[%s]:SyncTask\n", TAG);
 
 		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncMbInfo.ulCmd,
 					       syncMbInfo.mbdata.data);
 		mbox = xGetRevMbox(syncMbInfo.ulChan);
+		PRINT_DBG("[%s]:SyncTask mbox:%d\n", TAG, mbox);
 		addr = xSendAddrMbox(mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
@@ -182,14 +183,14 @@ void vSyncTask(void *pvParameters)
 				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
 				PRINT_ERR("[%s]: undefine cmd or no callback\n", TAG);
 			} else {
-				PRINT_DBG("[%s]:ReeSyncTask re len:%d\n", TAG, sizeof(syncMbInfo.mbdata));
+				PRINT_DBG("[%s]:SyncTask re len:%d\n", TAG, sizeof(syncMbInfo.mbdata));
 				syncMbInfo.mbdata.status = ACK_OK;
 				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
 			}
 		}
 
 		vEnterCritical(&uxSaveIsr);
-		PRINT_DBG("[%s]:Ree Sync clear mbox:%d\n", TAG, mbox);
+		PRINT_DBG("[%s]:Sync clear mbox:%d\n", TAG, mbox);
 		ulSyncTaskWake = 0;
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));

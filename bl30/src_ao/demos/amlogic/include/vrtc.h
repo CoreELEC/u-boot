@@ -54,4 +54,5 @@ int get_rtc(uint32_t *val);
 void vRTC_update(void);
 void xMboxSetRTC(void *msg);
 void xMboxGetRTC(void *msg);
+void vRtcInit(void);
 #endif //__VRTC_H__

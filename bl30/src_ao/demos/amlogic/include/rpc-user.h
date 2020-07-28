@@ -1,6 +1,8 @@
 #ifndef __RPC_USER_H__
 #define __RPC_USER_H__
 
+/*only support max num cmd*/
+#define MAX_ENTRY_NUM		128
 /*Define Message Type Here*/
 /*******************************************************************************
  * Message composition
@@ -40,5 +42,4 @@
 #define MBX_CMD_SET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_RTC)
 #define MBX_CMD_GET_RTC	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_RTC)
 #define MBX_CMD_GET_CEC_INFO __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_CEC_INFO)
-
 #endif

@@ -22,5 +22,5 @@ u32 cec_get_wakup_flag(void);
 
 void cec_req_irq(u32 onoff);
 void cec_delay(u32 cnt);
-
+void vCecCallbackInit(void);
 #endif

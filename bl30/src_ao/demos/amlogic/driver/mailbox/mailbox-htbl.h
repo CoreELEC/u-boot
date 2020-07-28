@@ -36,8 +36,8 @@
 #define _MAILBOX_HTBL_H_
 
 #include <stdint.h>
+#include "mailbox-api.h"
 
-#define MAX_ENTRY_NUM       128
 /** handler table
  * 0, mailbox init one htbl
  * 1, user could register it's handler on specific cmd to htbl

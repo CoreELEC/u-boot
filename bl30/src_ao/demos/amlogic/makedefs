@@ -91,6 +91,17 @@ ifdef ENABLE_STACKTRACE
 CFLAGS += -DENABLE_STACKTRACE=1
 endif
 
+GET_DATE:=$(shell date +%F)
+GET_TIME:=$(shell date +%H:%M:%S)
+COMMIT_ID:=$(word 2, $(shell git log -1 2>/dev/null | head -n 1))
+BRANCH:=$(word 2, $(shell git branch 2>/dev/null | grep "\*"))
+ifeq ("${COMMIT_ID}", "")
+COMMIT_ID:=
+BRANCH:=
+endif
+
+CFLAGS += -D VERSION="\"${BRANCH} ${COMMIT_ID} ${GET_TIME} ${GET_DATE}\""
+
 #******************************************************************************
 #
 # The rule for building the object file from each C source file.

@@ -47,6 +47,7 @@
 #include "hdmi_cec.h"
 #include "suspend.h"
 #include "mailbox-api.h"
+#include "version.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -147,6 +148,7 @@ int main(void)
 	hardware_init();
 
 	printf("\nStarting C2 RISCV FreeRTOS...\r\n");
+	version();
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();

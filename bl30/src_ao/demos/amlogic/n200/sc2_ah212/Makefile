@@ -64,6 +64,7 @@ $(info LDFLAGS = $(LDFLAGS))
 -include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/timer_source/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/get_version/build.mk
 
 objs_from_dir=$(sort $(foreach obj, $($(2)-y), \
                 $(COMPILER)/$(1)/$(firstword $($(2)-mock-$(PROJECT)-$(obj)) $(obj))))

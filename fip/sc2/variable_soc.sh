@@ -4,8 +4,8 @@
 BLX_BIN_SUB_FOLDER="S905X4"
 declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
 
-declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32/src" "bl30/src" "bl33")
-declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32/bin" "bl30/bin")
+declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32_3.8/src" "bl30/src_ao" "bl33")
+declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32_3.8/bin" "bl30/bin_ao")
 declare -a BLX_BIN_NAME=("bb1st.bin.signed" "blob-bl2e.bin.signed" "blob-bl2x.bin.signed" "blob-bl31.bin.signed" "blob-bl32.bin.signed" "bl30.bin")
 declare -a BLX_BIN_SIZE=("260096" "74864" "66672" "266240" "528384" "NULL")
 declare BL30_BIN_SIZE="65536"

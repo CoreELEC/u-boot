@@ -3,6 +3,7 @@
 function build_bl32() {
 	echo -n "Build bl32...Please wait... "
 	local target="$1/bl32.img"
+	local target2="$1/bl32.bin"
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
 	/bin/bash build.sh $3 ${CONFIG_CAS}
@@ -13,6 +14,9 @@ function build_bl32() {
 	fi
 	cd ${MAIN_FOLDER}
 	cp ${target} $2 -f
+	if [ "$3" == "sc2" ]; then
+		cp ${target2} $2 -f
+	fi
 	echo "done"
 	return
 }

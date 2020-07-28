@@ -36,7 +36,7 @@ function get_versions() {
 	declare -a SRC_REV
 	declare -a BIN_REV
 	# read manifest, get each blx information
-	if [ -f $MANIFEST ]; then
+	if [ -f $MANIFEST ] && [ -L $MANIFEST ]; then
 		while read -r line || [[ -n $line ]]; do
 			string_filter "${line}" "dest-branch=" '"' 1
 			GIT_INFO[0]=${str_use}

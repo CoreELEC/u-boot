@@ -20,8 +20,8 @@ declare -a BLX_SRC_GIT=("bootloader/amlogic-advanced-bootloader/core" \
 					"bootloader/amlogic-advanced-bootloader/tee" \
 					"ARM-software/arm-trusted-firmware" \
 					"OP-TEE/optee_os" \
-					"uboot" \
-					"firmware/aocpu")
+					"firmware/aocpu" \
+					"uboot")
 declare -a BLX_BIN_GIT=("firmware/bin/bl2" \
 					"firmware/bin/bl2" \
 					"firmware/bin/bl2" \

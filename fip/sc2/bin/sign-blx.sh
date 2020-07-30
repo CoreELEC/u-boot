@@ -107,7 +107,7 @@ function sign_blx() {
 		exit 1
 	fi
 
-	${EXEC_BASEDIR}/download-keys.sh
+	${EXEC_BASEDIR}/download-keys.sh chipset
 
 	if [ ${blxname} == "bl2" ]; then
 		if [ -z ${chip_acs} ] || [ ! -f ${chip_acs} ]; then

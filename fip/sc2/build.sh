@@ -363,7 +363,7 @@ function mk_uboot() {
 }
 
 function cleanup() {
-	#cp ${FIP_BUILD_FOLDER}/test-* ${BUILD_FOLDER} -f
+	cp ${FIP_BUILD_FOLDER}u-boot.bin* ${BUILD_FOLDER}
 	echo "output file are generated in ${BUILD_FOLDER} folder"
 	#rm -f ${BUILD_PATH}/test-*
 	#rm -rf ${BUILD_PAYLOAD}
@@ -478,7 +478,7 @@ function process_blx() {
 	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc
 
 	cp ./${FIP_FOLDER}${CUR_SOC}/templates/blob-bl40.bin.signed ${BUILD_PATH}
-	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
+	#./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
 
 	return
 }
@@ -487,9 +487,23 @@ function build_signed() {
 
 	process_blx $@
 
+	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
 	postfix=.signed
-	# build final bootloader
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+
+	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
+		if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
+			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
+		fi
+
+		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
+		export DEVICE_BUILD_PATH=$(pwd)/${BUILD_PATH}
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-sign
+		postfix=.device.signed
+
+		# build final bootloader
+		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+	fi
 
 	return
 }

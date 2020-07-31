@@ -20,6 +20,7 @@
 #include "suspend.h"
 #include "mailbox-api.h"
 #include "rpc-user.h"
+#include "gpio.h"
 
 #define CONFIG_CEC_WAKEUP
 
@@ -328,9 +329,10 @@ static u32 cec_hw_reset(void)
 	reg |= (2 << 0);/*rise_del_max*/
 	cecb_wr_reg(DWC_CECB_CTRL2, reg);
 
-	data32 = REG32(PADCTRL_PIN_MUX_REGH) & (~(0xF << 12));
-	data32 |= (0x5 << 12);/*GPIOH_3 4:ceca, 5:cecb*/
-	REG32(PADCTRL_PIN_MUX_REGB) = data32;
+	/*data32 = REG32(PADCTRL_PIN_MUX_REGH) & (~(0xF << 12));*/
+	/*data32 |= (0x5 << 12);*//*GPIOH_3 FUNC4:ceca, FUNC5:cecb*/
+	/*REG32(PADCTRL_PIN_MUX_REGH) = data32;*/
+	xPinmuxSet(GPIOH_3, PIN_FUNC5);/*GPIOH_3 FUNC4:ceca, FUNC5:cecb*/
 	#if CEC_REG_DEBUG
 	printf("pinmux addr:0x%8X 0x%x\n", PADCTRL_PIN_MUX_REGB, data32);
 	#endif
@@ -1003,6 +1005,7 @@ static void cec_node_init(void)
 		cec_msg.cec_power = 0;
 		cec_tx_msgs.send_idx = 0;
 		cec_tx_msgs.queue_idx = 0;
+		cec_msg.log_addr = 0;
 		cec_tx_buf_init();
 		cec_buf_clear();
 		retry = 0;
@@ -1224,6 +1227,8 @@ u32 cec_init_config(void)
 	if (hdmi_cec_func_config & 0x1) {
 		cec_req_irq(1);
 		probe = NULL;
+		ping_state = 0;
+		idle_cnt = 0;
 		cec_hw_reset();
 		cec_node_init();
 	} else {

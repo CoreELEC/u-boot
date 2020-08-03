@@ -53,6 +53,8 @@
 #include "register.h"
 #include "FreeRTOS.h"
 #include "mailbox-api.h"
+#include "timers.h"
+#include "suspend.h"
 
 #define TAG "VRTC"
 /* Timer handle */
@@ -118,12 +120,42 @@ void vRtcInit(void)
 	if (ret == MBOX_CALL_MAX)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
 }
-/*
-void vCreat_rtc_timer(void)
-{
-	xRTCTimer = xTimerCreate("Timer", pdMS_TO_TICKS(1000), pdTRUE, NULL, vRTC_update);
 
-	xTimerStart(xRTCTimer, 0);
+static TimerHandle_t xRTCTimer = NULL;
+static uint32_t time_start;
+
+void alarm_set(void)
+{
+	uint32_t val;
+
+	val = REG32(SYSCTRL_STATUS_REG2);
+
+	if (val) {
+		time_start = timere_read();
+		if (xRTCTimer)
+			xTimerStart(xRTCTimer, 0);
+	}
 }
-*/
+
+static void valarm_update(TimerHandle_t xTimer) {
+	uint32_t val;
+
+	val = REG32(SYSCTRL_STATUS_REG2);
+	xTimer = xTimer;
+
+	if (time_start && (timere_read() - time_start > val)) {
+		uint32_t buf[4] = {0};
+		buf[0] = RTC_WAKEUP;
+
+		xTimerStop(xRTCTimer, 0);
+		time_start = 0;
+		REG32(SYSCTRL_STATUS_REG2) = 0;
+		STR_Wakeup_src_Queue_Send(buf);
+	}
+}
+
+void vCreat_alarm_timer(void)
+{
+	xRTCTimer = xTimerCreate("Timer", pdMS_TO_TICKS(1000), pdTRUE, NULL, valarm_update);
+}
 

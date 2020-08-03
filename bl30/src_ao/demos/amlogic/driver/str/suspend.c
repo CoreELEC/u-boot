@@ -135,6 +135,7 @@ void system_resume(uint32_t pm)
 
 void system_suspend(uint32_t pm)
 {
+	alarm_set();
 	str_hw_init();
 	str_power_off();
 }
@@ -242,6 +243,8 @@ void create_str_task(void)
 
 	if (xTaskCreate( vSTRTask, "STR_task", configMINIMAL_STACK_SIZE, NULL, 3, NULL ) < 0)
 		printf("STR_task create fail!!\n");
+
+	vCreat_alarm_timer();
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
 						xMboxSuspend_Sem, 0);

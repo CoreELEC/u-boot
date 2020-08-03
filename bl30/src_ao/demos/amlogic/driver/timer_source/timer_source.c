@@ -65,6 +65,6 @@ uint32_t timere_read(void)
 	te += (temp << 32);
 	te = te/1000000;
 	time = (uint32_t)te;
-	printf("----------time_e: %us\n", time);
+	//printf("----------time_e: %us\n", time);
 	return time;
 }

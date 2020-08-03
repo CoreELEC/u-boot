@@ -55,4 +55,6 @@ void vRTC_update(void);
 void xMboxSetRTC(void *msg);
 void xMboxGetRTC(void *msg);
 void vRtcInit(void);
+void alarm_set(void);
+void vCreat_alarm_timer(void);
 #endif //__VRTC_H__

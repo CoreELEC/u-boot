@@ -89,6 +89,13 @@ task.h is included from an application file. */
 /* Assumes 8bit bytes! */
 #define heapBITS_PER_BYTE		( ( size_t ) 8 )
 
+/* Allocate the memory for the heap */
+static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
+static HeapRegion_t xDefRegion[2] = {
+	{ucHeap, configTOTAL_HEAP_SIZE},
+	{0, 0}
+};
+
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
 typedef struct A_BLOCK_LINK
@@ -133,6 +140,14 @@ void *pvPortMalloc( size_t xWantedSize )
 {
 BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 void *pvReturn = NULL;
+
+/* If this is the first call to malloc then the heap will require initialsation
+   to setup the list of free blocks. */
+	if (pxEnd == NULL) {
+		vPortDefineHeapRegions(NULL);
+	} else {
+		mtCOVERAGE_TEST_MARKER();
+	}
 
 	/* The heap must be initialised before the first call to
 	prvPortMalloc(). */
@@ -390,7 +405,7 @@ uint8_t *puc;
 }
 /*-----------------------------------------------------------*/
 
-void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions )
+void vPortDefineHeapRegions( const HeapRegion_t * const pRegions )
 {
 BlockLink_t *pxFirstFreeBlockInRegion = NULL, *pxPreviousFreeBlock;
 size_t xAlignedHeap;
@@ -398,9 +413,13 @@ size_t xTotalRegionSize, xTotalHeapSize = 0;
 BaseType_t xDefinedRegions = 0;
 size_t xAddress;
 const HeapRegion_t *pxHeapRegion;
+const HeapRegion_t *pxHeapRegions = pRegions;
 
 	/* Can only call once! */
 	configASSERT( pxEnd == NULL );
+
+	if (!pxHeapRegions)
+		pxHeapRegions = xDefRegion;
 
 	pxHeapRegion = &( pxHeapRegions[ xDefinedRegions ] );
 

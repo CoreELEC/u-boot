@@ -88,7 +88,7 @@ OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/timers.o  \
 		$(COMPILER)/port.o    \
 		$(COMPILER)/portasm.o \
-		$(COMPILER)/heap_4.o \
+		$(COMPILER)/heap_5.o \
 		$(COMPILER)/n200_func.o \
 		$(COMPILER)/handlers.o \
 		$(COMPILER)/util.o  \

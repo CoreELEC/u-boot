@@ -86,6 +86,8 @@ your application. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    6
 #define configMAX_API_CALL_INTERRUPT_PRIORITY   6
 
+#define configDEFAULT_HEAP_ADDR			0x10000000
+#define configDEFAULT_HEAP_SIZE			32 * 1024
 
 //#define portCRITICAL_NESTING_IN_TCB				1
 //#include "uart.h"

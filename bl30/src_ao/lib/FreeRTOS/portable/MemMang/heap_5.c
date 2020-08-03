@@ -90,9 +90,9 @@ task.h is included from an application file. */
 #define heapBITS_PER_BYTE		( ( size_t ) 8 )
 
 /* Allocate the memory for the heap */
-static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
+//static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 static HeapRegion_t xDefRegion[2] = {
-	{ucHeap, configTOTAL_HEAP_SIZE},
+	{configDEFAULT_HEAP_ADDR, configDEFAULT_HEAP_SIZE},
 	{0, 0}
 };
 

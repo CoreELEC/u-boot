@@ -92,7 +92,7 @@ task.h is included from an application file. */
 /* Allocate the memory for the heap */
 //static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 static HeapRegion_t xDefRegion[2] = {
-	{configDEFAULT_HEAP_ADDR, configDEFAULT_HEAP_SIZE},
+	{(uint8_t *)configDEFAULT_HEAP_ADDR, configDEFAULT_HEAP_SIZE},
 	{0, 0}
 };
 

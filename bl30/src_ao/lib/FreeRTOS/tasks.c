@@ -278,6 +278,7 @@ typedef struct tskTaskControlBlock
 	ListItem_t			xEventListItem;		/*< Used to reference a task from an event list. */
 	UBaseType_t			uxPriority;			/*< The priority of the task.  0 is the lowest priority. */
 	StackType_t			*pxStack;			/*< Points to the start of the stack. */
+	StackType_t			uStackDepth;
 	char				pcTaskName[ configMAX_TASK_NAME_LEN ];/*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
 	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
@@ -846,6 +847,7 @@ UBaseType_t x;
 		uxPriority &= ~portPRIVILEGE_BIT;
 	#endif /* portUSING_MPU_WRAPPERS == 1 */
 
+	pxNewTCB->uStackDepth = ulStackDepth;
 	/* Avoid dependency on memset() if it is not required. */
 	#if( tskSET_NEW_STACKS_TO_KNOWN_VALUE == 1 )
 	{
@@ -5018,6 +5020,25 @@ const TickType_t xConstTickCount = xTickCount;
 		( void ) xCanBlockIndefinitely;
 	}
 	#endif /* INCLUDE_vTaskSuspend */
+}
+
+void vTaskDumpStack(TaskHandle_t xTask)
+{
+	TCB_t *pxTCB;
+	StackType_t *p;
+	int i;
+
+	pxTCB = prvGetTCBFromHandle( xTask );
+	if (!pxTCB)
+		return;
+	p = pxTCB->pxStack+pxTCB->uStackDepth-1;
+	printf("Dump Stack:\n");
+	while (p >= pxTCB->pxStack) {
+		printf("%08p:",(unsigned long)p);
+		for (i = 0; i < 8 && p >= pxTCB->pxStack; i++)
+			printf(" %08x",*p--);
+		printf("\n");
+	}
 }
 
 /* Code below here allows additional code to be inserted into this source file,

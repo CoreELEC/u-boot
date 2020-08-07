@@ -498,6 +498,11 @@ function build_signed() {
 
 		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
 		export DEVICE_BUILD_PATH=$(pwd)/${BUILD_PATH}
+		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
+			export DEVICE_ROOTRSA_INDEX=1
+		elif [ -n "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
+			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
+		fi
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-sign
 		postfix=.device.signed
 

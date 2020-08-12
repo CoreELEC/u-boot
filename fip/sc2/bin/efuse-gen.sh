@@ -6,7 +6,7 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #
 # Settings
 #
-VERSION=0.1
+VERSION=0.2
 
 # Check file
 check_file() {
@@ -45,6 +45,8 @@ Usage: $(basename $0) --help
                       [--device-roothash device_roothash.bin] \\
                       [--dvgk dvgk.bin] \\
                       -o pattern.efuse
+       $(basename $0) --audio-id audio_id_value \\
+                      -o audio_id.efuse
 EOF
     exit 1
 }
@@ -140,6 +142,65 @@ function generate_efuse_device_pattern() {
 	rm -f $wrlock1
 }
 
+function append_uint32_le() {
+    local input=$1
+    local output=$2
+    local v=
+    local vrev=
+    v=$(printf %08x $input)
+    # 00010001
+    vrev=${v:6:2}${v:4:2}${v:2:2}${v:0:2}
+
+    echo $vrev | xxd -r -p >> $output
+}
+
+function generate_audio_id_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local audio_id_efuse=$(mktemp --tmpdir)
+    # default audio_id_offset 0xB8
+    local audio_id_offset=184
+    local audio_id_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --audio-id)
+                audio_id_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    # Verify args
+    if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
+
+    if [ -z $audio_id_value ]; then
+        echo Error: invalid audio_id_value
+        exit 1
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+
+    append_uint32_le $audio_id_value $audio_id_efuse
+    dd if=$audio_id_efuse of=$patt bs=1 seek=$audio_id_offset count=$audio_id_size \
+        conv=notrunc >& /dev/null
+
+	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+
+    rm -f $patt
+    rm -f $audio_id_efuse
+}
+
 parse_main() {
     case "$@" in
         --help)
@@ -147,6 +208,9 @@ parse_main() {
             ;;
         --version)
             echo "$(basename $0) version $VERSION"
+            ;;
+        *--audio-id*)
+            generate_audio_id_pattern "$@"
             ;;
         *-o*)
             generate_efuse_device_pattern "$@"

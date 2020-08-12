@@ -31,6 +31,15 @@ function init_vari() {
 	if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
 		BL3X_SUFFIX="img"
 	fi
+
+	if [ -n "${CONFIG_DDRFW_TYPE}" ]; then
+		DDRFW_TYPE="${CONFIG_DDRFW_TYPE}"
+	else
+		DDRFW_TYPE="ddr4"
+	fi
+	echo "------------------------------------------------------"
+	echo "DDRFW_TYPE: ${DDRFW_TYPE}"
+	echo "------------------------------------------------------"
 }
 
 function mk_bl2ex() {
@@ -393,7 +402,7 @@ function build_fip() {
 	mkdir -p ${BUILD_PAYLOAD}/
 
 	# make boot blobs
-	mk_bl2ex ${BUILD_PATH} ${BUILD_PAYLOAD} ddr4
+	mk_bl2ex ${BUILD_PATH} ${BUILD_PAYLOAD} ${DDRFW_TYPE}
 
 	# make devicefip
 	mk_devfip ${BUILD_PATH} ${BUILD_PAYLOAD}
@@ -414,7 +423,7 @@ function process_blx() {
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
 			if [ ${BLX_NAME[$loop]} == "bl2"  ]; then
-				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ddr4"
+				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}"
 			fi
 			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH} ${option_args}
 		fi

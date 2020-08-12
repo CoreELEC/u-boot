@@ -23,6 +23,8 @@ declare -a BLX_NAME_GLB=("bl2" "bl30" "bl31" "bl32" "bl40" "bl2e" "bl2x")
 declare BOARD_DIR=""
 declare CUR_SOC=""
 
+declare -x BL30_SELECT=""
+
 declare DEFCFG_FOLDER="board/amlogic/defconfigs"
 
 # for make clean

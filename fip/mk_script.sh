@@ -28,6 +28,7 @@ function init_variable_early() {
 	fi
 
 	CUR_SOC=${CONFIG_SYS_SOC}
+	BL30_SELECT=${CONFIG_BL30_SELECT}
 
 	if [ "y" == "${CONFIG_NEED_BL32}" ]; then
 		BLX_NEEDFUL[3]="true"

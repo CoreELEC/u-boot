@@ -45,6 +45,7 @@ declare AML_KEY_BLOB_NANE=""
 declare FIP_BL32_PROCESS=""
 declare BOOT_SIG_FLAG=""
 declare EFUSE_GEN_FLAG=""
+declare DDRFW_TYPE="ddr4"
 
 BUILD_PATH=${FIP_BUILD_FOLDER}
 BUILD_PAYLOAD=${FIP_BUILD_FOLDER}/payload

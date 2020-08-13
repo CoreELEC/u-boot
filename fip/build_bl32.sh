@@ -15,6 +15,16 @@ function build_bl32() {
 	cd ${MAIN_FOLDER}
 	cp ${target} $2 -f
 	if [ "$3" == "sc2" ]; then
+		$1/tools/scripts/pack_dtb.py \
+			--rsk fip/sc2/keys/dev-keys/$3/chipset/bl32/rsa/s905x4/bl32-rsk-rsa-priv.pem \
+			--rek $1/tools/keys/root_aes_key.bin \
+			--pcpk $1/tools/keys/pcpk.bin \
+			--arb $1/tools/configs/default_arbt.txt \
+			--perm $1/tools/configs/default_perm.txt \
+			--tvp-pool-start 0x10000000 \
+			--tvp-pool-size 0xb0000000 \
+			--in ${target2}
+
 		cp ${target2} $2 -f
 	fi
 	echo "done"

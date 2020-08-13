@@ -51,6 +51,9 @@ void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
 void create_str_task(void);
+uint32_t get_reason_flag(void);
+void xMboxGetWakeupReason(void *msg);
+void xMboxClrWakeupReason(void *msg);
 
 SemaphoreHandle_t xSTRSemaphore = NULL;
 QueueHandle_t xSTRQueue = NULL;
@@ -142,8 +145,30 @@ void system_suspend(uint32_t pm)
 
 void set_reason_flag(char exit_reason)
 {
+	/*we need remove SYSCTRL_STATUS_REG7 in bl31/dts.
+	 *And instead it by SYSCTRL_STICKY_REG7
+	 */
 	REG32(SYSCTRL_STATUS_REG7) &= ~0xf;
 	REG32(SYSCTRL_STATUS_REG7) |= exit_reason;
+
+	REG32(SYSCTRL_STICKY_REG7) &= ~0xf;
+	REG32(SYSCTRL_STICKY_REG7) |= exit_reason;
+}
+
+uint32_t get_reason_flag(void)
+{
+	return REG32(SYSCTRL_STICKY_REG7) & 0xf;
+}
+
+void xMboxGetWakeupReason(void *msg)
+{
+	*(uint32_t *)msg = get_reason_flag();
+}
+
+void xMboxClrWakeupReason(void *msg)
+{
+	msg = msg;
+	//set_reason_flag(0);
 }
 
 void STR_Start_Sem_Give_FromISR(void)
@@ -253,5 +278,15 @@ void create_str_task(void)
 						xMboxSuspend_Sem, 0);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SUSPEND);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_REASON,
+					xMboxGetWakeupReason, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_REASON);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_REASON,
+					xMboxClrWakeupReason, 0);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
 }
 

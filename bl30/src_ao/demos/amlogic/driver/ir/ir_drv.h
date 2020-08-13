@@ -126,8 +126,8 @@ struct xIRDrvData {
 	uint8_t ucPowerKeyNum;
 	uint16_t ucCurWorkMode;
 	uint32_t ulFrameCode;
-	uint32_t *ulPowerKeyList;
-	void (*vIRHandler)(void);
+	IRPowerKey_t *ulPowerKeyList;
+	void (*vIRHandler)(IRPowerKey_t *pkey);
 };
 
 const xRegProtocolMethod **pGetSupportProtocol(void);

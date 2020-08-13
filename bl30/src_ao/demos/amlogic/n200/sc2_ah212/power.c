@@ -38,21 +38,25 @@
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
 
-static uint32_t power_key_list[] = {
-
-        0xef10fe01, /* ref tv pwr */
-        0xba45bd02, /* small ir pwr */
-        0xef10fb04, /* old ref tv pwr */
-        0xf20dfe01,
-        0xe51afb04
+static IRPowerKey_t prvPowerKeyList[] = {
+	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
+	{ 0xba45bd02, IR_NORMAL}, /* small ir pwr */
+	{ 0xef10fb04, IR_NORMAL}, /* old ref tv pwr */
+	{ 0xf20dfe01, IR_NORMAL},
+	{ 0xe51afb04, IR_NORMAL},
+	{ 0x3ac5bd02, IR_CUSTOM},
+	{}
         /* add more */
 };
 
-static void vIRHandler(void)
+static void vIRHandler(IRPowerKey_t *pkey)
 {
 	uint32_t buf[4] = {0};
-	buf[0] = REMOTE_WAKEUP;
-        printf("ir wakeup\n");
+	if (pkey->type == IR_NORMAL)
+		buf[0] = REMOTE_WAKEUP;
+	else if (pkey->type == IR_CUSTOM)
+		buf[0] = REMOTE_CUS_WAKEUP;
+
         /* do sth below  to wakeup*/
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
@@ -65,7 +69,7 @@ void str_power_off(void);
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, power_key_list, ARRAY_SIZE(power_key_list), vIRHandler);
+	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
 }
@@ -164,4 +168,3 @@ void str_power_off(void)
 	}
 #endif
 }
-

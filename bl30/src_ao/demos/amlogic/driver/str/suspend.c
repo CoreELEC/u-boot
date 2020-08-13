@@ -223,6 +223,9 @@ static void vSTRTask( void *pvParameters )
 				case CECB_WAKEUP:
 					exit_reason = CECB_WAKEUP;
 					break;
+				case REMOTE_CUS_WAKEUP:
+					exit_reason = REMOTE_CUS_WAKEUP;
+					break;
 				default:
 					break;
 			}

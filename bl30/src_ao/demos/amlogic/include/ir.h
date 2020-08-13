@@ -32,6 +32,16 @@ extern "C" {
 
 #include "gpio.h"
 
+typedef struct IRPowerKey {
+	uint32_t code;
+	uint8_t  type;
+} IRPowerKey_t;
+
+enum PowerKeyType {
+	IR_NORMAL,
+	IR_CUSTOM
+};
+
 /*supported protocol*/
 #define MODE_SOFT		0x0
 #define MODE_HARD_NEC		0x1
@@ -63,8 +73,8 @@ extern "C" {
  *  @func: function number of gpio use as ir input.
  */
 	extern void vIRInit(uint16_t usWorkMode, uint16_t usGpio,
-			    enum PinMuxType func, uint32_t *ulPowerKeyList,
-			    uint8_t ucPowerKeyNum, void (*vIRHandler)(void));
+			    enum PinMuxType func, IRPowerKey_t *ulPowerKeyList,
+			    uint8_t ucPowerKeyNum, void (*vIRHandler)(IRPowerKey_t *pkey));
 
 /**
  *  vInitIRWorkMode() - change ir protocol.

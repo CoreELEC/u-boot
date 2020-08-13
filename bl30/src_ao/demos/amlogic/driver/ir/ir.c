@@ -144,7 +144,7 @@ void vInitIRWorkMode(uint16_t usWorkMode)
 static void prvCheckPowerKey(void)
 {
 	struct xIRDrvData *xDrvData;
-	uint32_t *ulPowerKeyList;
+	IRPowerKey_t *ulPowerKeyList;
 	uint8_t ucIndex = 0;
 
 	xDrvData = pGetIRDrvData();
@@ -157,12 +157,12 @@ static void prvCheckPowerKey(void)
 	IRDebug("receive key code :0x%x\n", xDrvData->ulFrameCode);
 	/* search power key list */
 	for ( ;ucIndex < xDrvData->ucPowerKeyNum; ucIndex++)
-		if (ulPowerKeyList[ucIndex] == xDrvData->ulFrameCode) {
+		if (ulPowerKeyList[ucIndex].code == xDrvData->ulFrameCode) {
 			iprintf("receive the right power key:0x%x\n",
 				xDrvData->ulFrameCode);
 			if (xDrvData->vIRHandler)
-				xDrvData->vIRHandler();
-	}
+				xDrvData->vIRHandler(&ulPowerKeyList[ucIndex]);
+		}
 }
 
 static void vIRIntteruptHandler(void)
@@ -210,8 +210,8 @@ int8_t ucIsIRInit(void)
 }
 
 void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
-	     uint32_t *ulPowerKeyList, uint8_t ucPowerKeyNum,
-	     void (*vIRHandler)(void))
+	     IRPowerKey_t *ulPowerKeyList, uint8_t ucPowerKeyNum,
+	     void (*vIRHandler)(IRPowerKey_t *pkey))
 {
 	struct xIRDrvData *xDrvData;
 

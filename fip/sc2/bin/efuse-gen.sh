@@ -2,7 +2,7 @@
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
-
+VENDOR_KEYTOOL=${EXEC_BASEDIR}/../binary-tool/vendor-keytool
 #
 # Settings
 #
@@ -99,7 +99,7 @@ function generate_efuse_device_pattern() {
     b_1fc="00"
 
     if [ "$dvgk" != "" ]; then
-		${EXEC_BASEDIR}/vendor-keytool gen-mrk-chknum --chipset=SC2 --mrk-file="$dvgk" --mrk-name=DVGK | grep 'Long checknum: ' | \
+		${VENDOR_KEYTOOL} gen-mrk-chknum --chipset=SC2 --mrk-file="$dvgk" --mrk-name=DVGK | grep 'Long checknum: ' | \
             grep "Long checknum:" | sed 's/Long checknum: //' | sed 's/ (.*//' | xxd -r -p > $hmac
 
 		dd if="$dvgk" of="$patt" bs=16 seek=226 count=1 \

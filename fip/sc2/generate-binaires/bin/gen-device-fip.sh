@@ -8,7 +8,7 @@ set -e
 #
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
-ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../acpu-imagetool
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
 
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 

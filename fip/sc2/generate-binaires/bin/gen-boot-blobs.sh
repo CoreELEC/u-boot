@@ -79,6 +79,12 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RS
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --switch-keep-device-lvl2-pubrsa=1"
 
+# arb info
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-vers=${DEVICE_SCS_VERS}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
+
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st.bin${output_postfix}"
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-blob-bl2e=${BASEDIR_OUTPUT_BLOB}/blob-bl2e.bin${output_postfix}"

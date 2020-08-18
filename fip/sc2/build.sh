@@ -505,6 +505,15 @@ function build_signed() {
 			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
 		fi
 
+		fw_arb_cfg=${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg
+		if [ -s "${fw_arb_cfg}" ]; then
+			source ${fw_arb_cfg}
+			export DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
+			export DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
+			export DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
+			export DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
+			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
+		fi
 		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
 		export DEVICE_BUILD_PATH=$(pwd)/${BUILD_PATH}
 		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then

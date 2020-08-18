@@ -3,7 +3,7 @@
 set -e
 #set -x
 
-version=1.1
+version=1.2
 
 #
 # Utilities
@@ -80,6 +80,18 @@ parse_main() {
                 rootkey_index="${argv[$i]}"
 		check_value $rootkey_index 0 3
 		;;
+            --device-scs-segid)
+                device_scs_segid="${argv[$i]}"
+		;;
+            --device-vendor-segid)
+                device_vendor_segid="${argv[$i]}"
+		;;
+            --device-scs-vers)
+                device_scs_vers="${argv[$i]}"
+		;;
+            --device-tee-vers)
+                device_tee_vers="${argv[$i]}"
+		;;
             --output-dir)
                 output_dir="${argv[$i]}"
 		;;
@@ -103,6 +115,10 @@ template_dir=""
 rootkey_index=0
 output_dir=""
 project=""
+device_scs_segid=0x0
+device_vendor_segid=0x0
+device_scs_vers=0x0
+device_tee_vers=0x0
 
 parse_main "$@"
 
@@ -113,11 +129,20 @@ fi
 #
 # Settings
 #
-
 BASEDIR_ROOT=${key_dir}
 BASEDIR_TEMPLATE="${template_dir}"
 
 DEVICE_ROOTRSA_INDEX=${rootkey_index}
+
+DEVICE_SCS_SEGID=${device_scs_segid}
+DEVICE_VENDOR_SEGID=${device_vendor_segid}
+DEVICE_SCS_VERS=${device_scs_vers}
+DEVICE_TEE_VERS=${device_tee_vers}
+
+echo DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
+echo DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
+echo DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
+echo DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
 
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
@@ -235,6 +260,12 @@ BB1ST_ARGS="${BB1ST_ARGS} --feature-enable-device-lvlx-pubrsa-prot"
 BB1ST_ARGS="${BB1ST_ARGS} --feature-device-root-pubrsa-prot-mrk"
 
 BB1ST_ARGS="${BB1ST_ARGS} --switch-device-sign-blob=0"
+
+# arb info
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-vers=${DEVICE_SCS_VERS}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st.bin"

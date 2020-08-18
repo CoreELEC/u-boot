@@ -6,7 +6,7 @@
 # file 'LICENSE' which is part of this source code package.
 
 #set -x
-version=1.0
+version=1.2
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
@@ -43,6 +43,7 @@ Usage: $(basename $0) --help | --version
 		{--project <project-name>} \\
 		--template-dir  <template-dir> \\
 		--rootkey-index [0 | 1 | 2 | 3] \\
+		--arb-config <arb-config-file> \\
 		--out-dir <output-dir>
 EOF
     exit 1
@@ -54,6 +55,8 @@ size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
+boot_blobs_arb_args=
+device_fip_arb_args=
 
 parse_main() {
     local i=0
@@ -91,6 +94,9 @@ parse_main() {
                 rootkey_index="${argv[$i]}"
 		check_value "$rootkey_index" 0 3
 		;;
+		    --arb-config)
+                arb_config="${argv[$i]}"
+        ;;
 		    --out-dir)
                 output_dir="${argv[$i]}"
 		;;
@@ -127,9 +133,15 @@ if [ -z "$output_dir" ]; then
 	usage
 fi
 
-${EXEC_BASEDIR}/bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}"
+if [ -s "${arb_config}" ]; then
+    source ${arb_config}
+    boot_blobs_arb_args="--device-scs-segid ${DEVICE_SCS_SEGID} --device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-scs-vers ${DEVICE_SCS_VERS} --device-tee-vers ${DEVICE_TEE_VERS}"
+    device_fip_arb_args="--device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-tee-vers ${DEVICE_TEE_VERS} --device-ree-vers ${DEVICE_REE_VERS}"
+fi
 
-${EXEC_BASEDIR}/bin/gen_device_root_hash.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}"
+${EXEC_BASEDIR}/bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}" ${device_fip_arb_args}
+
+${EXEC_BASEDIR}/bin/gen_device_root_hash.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}" ${boot_blobs_arb_args}
 
 ${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part"
 

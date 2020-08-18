@@ -3,7 +3,7 @@
 set -e
 #set -x
 
-version=1.1
+version=1.2
 
 #
 # Utilities
@@ -80,6 +80,15 @@ parse_main() {
                 rootkey_index="${argv[$i]}"
 		check_value $rootkey_index 0 3
 		;;
+            --device-vendor-segid)
+                device_vendor_segid="${argv[$i]}"
+		;;
+            --device-tee-vers)
+                device_tee_vers="${argv[$i]}"
+		;;
+            --device-ree-vers)
+                device_ree_vers="${argv[$i]}"
+		;;
             --output-dir)
                 output_dir="${argv[$i]}"
 		;;
@@ -103,6 +112,9 @@ template_dir=""
 rootkey_index=0
 output_dir=""
 project=""
+device_vendor_segid=0x0
+device_tee_vers=0x0
+device_ree_vers=0x0
 
 parse_main "$@"
 
@@ -120,6 +132,13 @@ BASEDIR_OUTPUT="${output_dir}"
 
 DEVICE_ROOTRSA_INDEX=${rootkey_index}
 
+DEVICE_VENDOR_SEGID=${device_vendor_segid}
+DEVICE_TEE_VERS=${device_tee_vers}
+DEVICE_REE_VERS=${device_ree_vers}
+
+echo DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
+echo DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
+echo DEVICE_REE_VERS=${DEVICE_REE_VERS}
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
 	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/"
@@ -236,6 +255,11 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-device-rootkey-1=${BASEDIR_AESKEY_ROOT
 
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --feature-enable-device-lvlx-pubrsa-prot"
+
+# arb info
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
+BB1ST_ARGS="${BB1ST_ARGS} --val-device-ree-vers=${DEVICE_REE_VERS}"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-device-fip-header=${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin"

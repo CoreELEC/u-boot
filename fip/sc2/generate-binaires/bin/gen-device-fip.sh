@@ -93,6 +93,11 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32
 
 ### Features, flags and switches ###
 
+# arb info
+EXEC_ARGS="${EXEC_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
+EXEC_ARGS="${EXEC_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
+EXEC_ARGS="${EXEC_ARGS} --val-device-ree-vers=${DEVICE_REE_VERS}"
+
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin${output_postfix}"
 

@@ -131,11 +131,21 @@ void alarm_set(void)
 	val = REG32(SYSCTRL_STATUS_REG2);
 
 	if (val) {
+		printf("alarm val=%d S\n",val);
 		time_start = timere_read();
 		if (xRTCTimer)
 			xTimerStart(xRTCTimer, 0);
 	}
 }
+
+void alarm_clr(void)
+{
+	uint32_t val;
+
+	time_start = 0;
+	xTimerStop(xRTCTimer, 0);
+}
+
 
 static void valarm_update(TimerHandle_t xTimer) {
 	uint32_t val;
@@ -147,8 +157,8 @@ static void valarm_update(TimerHandle_t xTimer) {
 		uint32_t buf[4] = {0};
 		buf[0] = RTC_WAKEUP;
 
-		xTimerStop(xRTCTimer, 0);
-		time_start = 0;
+		printf("alarm fired\n");
+
 		REG32(SYSCTRL_STATUS_REG2) = 0;
 		STR_Wakeup_src_Queue_Send(buf);
 	}

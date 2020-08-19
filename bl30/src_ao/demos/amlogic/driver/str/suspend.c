@@ -130,6 +130,8 @@ void clear_wakeup_trigger(void)
 
 void system_resume(uint32_t pm)
 {
+	/*Need clr alarm ASAP*/
+	alarm_clr();
 	str_power_on();
 	str_hw_disable();
 	vRTC_update();
@@ -138,6 +140,7 @@ void system_resume(uint32_t pm)
 
 void system_suspend(uint32_t pm)
 {
+	/*Need set alarm ASAP*/
 	alarm_set();
 	str_hw_init();
 	str_power_off();

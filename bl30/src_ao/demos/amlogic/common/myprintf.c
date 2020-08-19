@@ -190,10 +190,13 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 
 			/* Handle length */
 			if (c == 'l') {
-				flags |= PF_64BIT;
+				if (sizeof(long) == 8)
+					flags |= PF_64BIT;
 				c = *format++;
-				if (c == 'l')
+				if (c == 'l') {
+					flags |= PF_64BIT;
 					c = *format++;	// long long is 64bit at LP64
+				}
 			}
 
 			/* Special-case: %T = current time */

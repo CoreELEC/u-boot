@@ -22,6 +22,7 @@ declare -a BLX_NAME_GLB=("bl2" "bl30" "bl31" "bl32" "bl40" "bl2e" "bl2x")
 # variables
 declare BOARD_DIR=""
 declare CUR_SOC=""
+declare BLX_BIN_SUB_FOLDER=""
 
 declare -x BL30_SELECT=""
 

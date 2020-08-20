@@ -172,6 +172,18 @@ function get_blx_bin() {
 		echo "skip to get bl40 from xml git"
 		return 0
 	fi
+
+	# special case for SC2
+	if [ "${CUR_SOC}" == "sc2" ]; then
+		if [ "${BLX_NAME[$index]}" == "bl2" ]; then
+			BLX_BIN_SUB_FOLDER="${BLX_BIN_SUB_CHIP}/${DDRFW_TYPE}"
+		else
+			BLX_BIN_SUB_FOLDER="${BLX_BIN_SUB_CHIP}"
+		fi
+	else
+		BLX_BIN_SUB_FOLDER=""
+	fi
+
 	git_operate ${BLX_BIN_FOLDER[index]} log --pretty=oneline
 
 	git_msg=${GIT_OPERATE_INFO}

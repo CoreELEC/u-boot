@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # static
-BLX_BIN_SUB_FOLDER="S905X4"
+declare BLX_BIN_SUB_CHIP="S905X4"
 declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32_3.8/src" "bl30/src_ao" "bl33")
@@ -45,7 +45,7 @@ declare AML_KEY_BLOB_NANE=""
 declare FIP_BL32_PROCESS=""
 declare BOOT_SIG_FLAG=""
 declare EFUSE_GEN_FLAG=""
-declare DDRFW_TYPE="ddr4"
+declare DDRFW_TYPE="${CONFIG_DDRFW_TYPE}"
 
 BUILD_PATH=${FIP_BUILD_FOLDER}
 BUILD_PAYLOAD=${FIP_BUILD_FOLDER}/payload

@@ -47,6 +47,15 @@
 #define IRQ_GPIO6_NUM 16
 #define IRQ_GPIO7_NUM 17
 
+#define REG_PIN_SC2_SEL			0x04
+#define REG_EDGE_POL_EXTR		0x1c
+#define REG_EDGE_POL_MASK_SC2(x)			\
+	({typeof(x) _x = (x); BIT(_x) | BIT(12 + (_x)); })
+#define GPIO_IRQ_FILTER_SHIFT(x)	(((x) % 2 == 0) ? 8 : 24)
+#define GPIO_IRQ_POL_SHIFT(x)		(BIT(0 + (x)))
+#define GPIO_IRQ_EDGE_SHIFT(x)		(BIT(12 + (x)))
+#define GPIO_IRQ_BOTH_SHIFT(x)		(BIT(0 + (x)))
+
 static const GpioDomain_t eeDomain = {
 	.name = "EE",
 	.rPullen = PADCTRL_GPIOZ_I,
@@ -55,9 +64,9 @@ static const GpioDomain_t eeDomain = {
 	.rMux = PADCTRL_PIN_MUX_REG0,
 	.rDrv = PADCTRL_GPIOZ_I,
 };
-				 /* 9 */
+
 static const GpioBank_t gpioBanks[BANK_NUM_MAX] = {
-			    /*pullen  pull	dir      out     in       mux */
+			  /* pullen    pull	 dir       out       in        mux */
 	BANK("A", &eeDomain, 0x73, 14, 0x74, 14, 0x72, 14, 0x71, 14, 0x70, 14, 0x0e,
 		/* drv */
 	     24, 0x77, 28),
@@ -111,3 +120,45 @@ const GpioIRQBank_t *pGetGpioIrqBank(void)
 {
 	return irqBanks;
 }
+
+void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags)
+{
+	uint32_t val = 0;
+	uint32_t reg_offset = 0;
+	uint16_t bit_offset = 0;
+
+	bit_offset = ((line % 2) == 0) ? 0 : 16;
+	reg_offset = REG_PIN_SC2_SEL + ((line / 2) << 2);
+
+	/* clear both edge */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
+			  GPIO_IRQ_BOTH_SHIFT(line), 0);
+
+	/* set filter */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0x7 << GPIO_IRQ_FILTER_SHIFT(line),
+			  0x7 << GPIO_IRQ_FILTER_SHIFT(line));
+
+	/* select trigger pin */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0x7f << bit_offset, irqNum << bit_offset);
+
+	/* set trigger both type */
+	if (flags & IRQF_TRIGGER_BOTH) {
+		val |= GPIO_IRQ_BOTH_SHIFT(line);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
+				  GPIO_IRQ_BOTH_SHIFT(line), val);
+		return;
+	}
+
+	/* set trigger single edge or level  type */
+	if (flags & (IRQF_TRIGGER_LOW | IRQF_TRIGGER_FALLING))
+		val |= GPIO_IRQ_POL_SHIFT(line);
+
+	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
+		val |= GPIO_IRQ_EDGE_SHIFT(line);
+
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE, REG_EDGE_POL_MASK_SC2(line), val);
+
+}
+

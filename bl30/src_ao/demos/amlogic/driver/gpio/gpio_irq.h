@@ -46,6 +46,13 @@ enum GpioEEIRQLineType {
 	GPIO_EE_IRQ_LINE_INVALID,
 };
 
+enum GPioAOIRQLineType {
+	GPIO_AO_IRQ_L0 = 0x0,
+	GPIO_AO_IRQ_L1,
+	GPIO_AO_IRQ_LINE_INVALID,
+};
+
+
 typedef struct ParentIRQDesc {
 	GpioIRQHandler_t phandler;
 	uint32_t flags;
@@ -62,13 +69,11 @@ typedef struct GpioIRQBank {
 
 #define LEN_NAME		32
 
-#define GPIO_EE_IRQ_BASE  PADCTRL_GPIO_IRQ_CTRL0
-
-#define REG_PIN_SC2_SEL			0x04
-#define REG_EDGE_POL_EXTR		0x1c
-#define REG_EDGE_POL_MASK_SC2(x)			\
-	({typeof(x) _x = (x); BIT(_x) | BIT(12 + (_x)); })
-#define GPIO_IRQ_FILTER_SHIFT(x)	(((x) % 2 == 0) ? 8 : 24)
+#ifdef PADCTRL_GPIO_IRQ_CTRL0
+#define GPIO_EE_IRQ_BASE	PADCTRL_GPIO_IRQ_CTRL0
+#else
+#define GPIO_EE_IRQ_BASE	(0xffd00000 + (0x3c20  << 2))
+#endif
 
 #define PARENT_IRQ_BK(p, f, o, n)					\
 {									\
@@ -87,4 +92,5 @@ typedef struct GpioIRQBank {
 }
 
 const GpioIRQBank_t *pGetGpioIrqBank(void);
+void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags);
 #endif

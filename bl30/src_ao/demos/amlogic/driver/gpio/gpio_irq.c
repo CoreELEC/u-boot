@@ -35,18 +35,17 @@
 #include "semphr.h"
 
 #include <unistd.h>
-#include "n200_eclic.h"
 #include "n200_func.h"
 #include "common.h"
 
 #define  DRIVER_NAME  "gpio_irq"
 
-struct vGpioHandler {
-	void (*vhandler)(void);
-	uint8_t ucIrqNum;
-};
-
 static uint32_t GpioIrqRegBackup[IRQ_REG_NUM] = {0};
+
+/* old platform like t5/t5d */
+#ifdef GPIO_AO_IRQ_BASE
+static uint32_t GpioIrqRegAOBackup;
+#endif
 
 void vGpioIRQInit(void)
 {
@@ -58,45 +57,7 @@ void vGpioIRQInit(void)
  * */
 static void prvGpioSetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
 {
-	uint32_t val = 0;
-	uint32_t reg_offset = 0;
-	uint16_t bit_offset = 0;
-
-	bit_offset = ((line % 2) == 0) ? 0 : 16;
-	reg_offset = REG_PIN_SC2_SEL + ((line / 2) << 2);
-
-	/* clear both edge */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
-			  BIT(0 + (line)), 0);
-
-	/* set filter */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
-			  0x7 << GPIO_IRQ_FILTER_SHIFT(line),
-			  0x7 << GPIO_IRQ_FILTER_SHIFT(line));
-
-	/* select trigger pin */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
-			  0x7f << bit_offset, irqNum << bit_offset);
-
-	/* set trigger both type */
-	if (flags & IRQF_TRIGGER_BOTH) {
-		val |= BIT(0 + (line));
-		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
-				  BIT(0 + (line)), val);
-		return;
-	}
-
-	/* set trigger single edge or level  type */
-	if (flags & (IRQF_TRIGGER_LOW | IRQF_TRIGGER_FALLING))
-		val |= BIT(0 + (line));
-
-	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
-		val |= BIT(12 + (line));
-
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE, REG_EDGE_POL_MASK_SC2(line), val);
-
-	return;
-
+	prvGpioPlatIrqSetup(irqNum, line, flags);
 }
 
 static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler,
@@ -106,7 +67,6 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler,
 	uint8_t offset = gpio % 32;
 	uint16_t irq;
 	uint8_t i;
-	uint8_t ucCurIrqNum;
 
 	irq = bk->gpioIRQBase + offset;
 
@@ -208,6 +168,12 @@ void vRestoreGpioIrqReg(void)
 	for (ucIndex = 0; ucIndex < IRQ_REG_NUM; ucIndex++)
 		REG32((unsigned long)(GPIO_EE_IRQ_BASE + 0x04 * ucIndex))
 		= GpioIrqRegBackup[ucIndex];
+
+/* old platform like t5/t5d */
+#ifdef GPIO_AO_IRQ_BASE
+	REG32((unsigned long)GPIO_AO_IRQ_BASE) = GpioIrqRegAOBackup;
+#endif
+
 }
 
 /* when come into suspend before request gpio irq*/
@@ -222,5 +188,11 @@ void vBackupAndClearGpioIrqReg(void)
 
 	for (ucIndex = 0; ucIndex < IRQ_REG_NUM; ucIndex++)
 		REG32((unsigned long)(GPIO_EE_IRQ_BASE + 0x04 * ucIndex)) = 0;
+
+/* old platform like t5/t5d */
+#ifdef GPIO_AO_IRQ_BASE
+	GpioIrqRegAOBackup = REG32((unsigned long)GPIO_AO_IRQ_BASE);
+	REG32((unsigned long)GPIO_AO_IRQ_BASE) = 0;
+#endif
 
 }

@@ -6,7 +6,7 @@ VENDOR_KEYTOOL=${EXEC_BASEDIR}/../binary-tool/vendor-keytool
 #
 # Settings
 #
-VERSION=0.3
+VERSION=0.4
 
 # Check file
 check_file() {
@@ -55,6 +55,7 @@ Usage: $(basename $0) --help
                       [--dvgk dvgk.bin] \\
                       [--dvuk dvuk.bin] \\
                       [--enable-usb-password true] \\
+                      [--enable-dif-password true] \\
                       [--enable-dvuk-derive-with-cid true] \\
                       -o pattern.efuse
        $(basename $0) --audio-id audio_id_value \\
@@ -93,6 +94,8 @@ function generate_efuse_device_pattern() {
                 device_roothash="${argv[$i]}" ;;
             --enable-usb-password)
                 enable_usb_password="${argv[$i]}" ;;
+            --enable-dif-password)
+                enable_dif_password="${argv[$i]}" ;;
             --enable-dvuk-derive-with-cid)
                 enable_dvuk_derive_with_cid="${argv[$i]}" ;;
             *)
@@ -111,6 +114,7 @@ function generate_efuse_device_pattern() {
     check_opt_file device_roothash 32 "$device_roothash"
 
     check_opt_boolean enable-usb-password "$enable_usb_password"
+    check_opt_boolean enable-dif-password "$enable_dif_password"
     check_opt_boolean enable-dvuk-derive-with-cid "$enable_dvuk_derive_with_cid"
 
     # Generate empty eFUSE pattern data
@@ -196,6 +200,13 @@ function generate_efuse_device_pattern() {
     dd if=$license0 of=$patt bs=16 seek=0 count=1 conv=notrunc >& /dev/null
 
     dd if=$patt of=$license1 bs=16 skip=1 count=1 &> /dev/null
+    b_010=$(xxd -ps -s0 -l1 $license1)
+    if [ "$enable_dif_password" == "true" ]; then
+        b_010="$(printf %02x $(( 0x$b_010 | 0x01 )))"
+    fi
+    echo $b_010 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$license1 bs=1 seek=0 count=1 conv=notrunc >& /dev/null
+
     b_015=$(xxd -ps -s5 -l1 $license1)
     if [ "$enable_dvuk_derive_with_cid" == "true" ]; then
         b_015="$(printf %02x $(( 0x$b_015 | 0x02 )))"

@@ -26,8 +26,6 @@
 #define CONFIG_CEC_OSD_NAME "AML_TV"
 #endif
 
-#define CEC_VERSION "sc2 cec:2020/07/31"
-
 /* FOR AO_CECB */
 #define DWC_CECB_CTRL                0x00
 #define DWC_CECB_CTRL2               0x01/*tl1 later*/

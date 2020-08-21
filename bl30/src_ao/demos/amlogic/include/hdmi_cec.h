@@ -1,6 +1,7 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
+#define CEC_VERSION "sc2 cec:2020/08/27"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
@@ -10,6 +11,13 @@ u32 cec_suspend_handle(void);
 
 #define CEC_TASK_PRI			5
 #define CEC_TASK_STACK_SIZE		1024
+
+#define CEC_CFG_FUNC_EN			0x01
+#define CEC_CFG_OTP_EN			0x02
+#define CEC_CFG_PW_OFF_EN		0x04
+#define CEC_CFG_PW_ON_EN		0x08
+#define CEC_CFG_DBG_EN			0x80000000
+
 /*
  * when power down, create the cec task
  */
@@ -23,4 +31,8 @@ u32 cec_get_wakup_flag(void);
 void cec_req_irq(u32 onoff);
 void cec_delay(u32 cnt);
 void vCecCallbackInit(void);
+void cec_update_config_data(void *data);
+void cec_update_phyaddress(unsigned int phyaddr);
+void cec_update_func_cfg(unsigned int cfg);
+
 #endif

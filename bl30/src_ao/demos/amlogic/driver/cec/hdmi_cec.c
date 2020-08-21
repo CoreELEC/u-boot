@@ -55,11 +55,19 @@ typedef struct {
 	unsigned int wk_port_id:8;
 }cec_wakeup_t;
 
+struct st_cec_mailbox_data {
+	unsigned int cec_config;
+	unsigned int phy_addr;
+	unsigned int vendor_id;
+	unsigned char osd_name[16];
+} __packed;
+
 static unsigned int cec_wait_addr;
 static cec_wakeup_t cec_wakup;
 static unsigned char hdmi_cec_func_config;
 static cec_msg_t cec_msg;
 static u32 cec_wakup_flag;
+struct st_cec_mailbox_data cec_mailbox;
 
 struct cec_tx_msg_t {
 	unsigned char buf[16];
@@ -133,6 +141,40 @@ static void *cec_memcpy(void *memto, const void *memfrom, unsigned int size)
 	while (size -- > 0)
 		*tempto++ = *tempfrom++;
 	return memto;
+}
+
+void cec_update_config_data(void *data)
+{
+	unsigned int i;
+
+	memcpy((void *)&cec_mailbox, data, sizeof(struct st_cec_mailbox_data));
+
+	if (cec_mailbox.cec_config & CEC_CFG_DBG_EN) {
+		printf("cec_config:0x%x\n", cec_mailbox.cec_config);
+		printf("phy_addr:0x%x\n", cec_mailbox.phy_addr);
+		printf("vendor_id:0x%x\n", cec_mailbox.vendor_id);
+		printf("osd_name:");
+		for (i = 0; i < 16; i++) {
+			printf(" 0x%x", cec_mailbox.osd_name[i]);
+		}
+		printf("\n");
+	}
+}
+
+void cec_update_phyaddress(unsigned int phyaddr)
+{
+	cec_mailbox.phy_addr = cec_mailbox.phy_addr & 0xffff0000;
+	cec_mailbox.phy_addr |= phyaddr & 0xffff;
+	printf("update phyaddr:0x%x\n", phyaddr);
+}
+
+void cec_update_func_cfg(unsigned int cfg)
+{
+	cec_mailbox.cec_config = cfg;
+
+	if (hdmi_cec_func_config & CEC_CFG_DBG_EN) {
+		printf("cec_config:0x%x\n", cfg);
+	}
 }
 
 static unsigned long cecb_rd_reg(unsigned long addr)
@@ -287,7 +329,7 @@ static u32 cec_hw_reset(void)
 	unsigned int reg;
 	unsigned int data32;
 
-	printf("sc2 cec b reset\n");
+	/*printf("sc2 cec b reset\n");*/
 
 	reg =   (0 << 31) |
 		(0 << 30) |
@@ -526,13 +568,13 @@ static unsigned char log_addr_to_devtye(unsigned int addr)
 static void cec_report_physical_address(void)
 {
 	unsigned char msg[5];
-	unsigned char phy_addr_ab = (REG32(SYSCTRL_STATUS_REG1) >> 8) & 0xff;
-	unsigned char phy_addr_cd = REG32(SYSCTRL_STATUS_REG1) & 0xff;
+	/*unsigned char phy_addr_ab = (readl(AO_DEBUG_REG1) >> 8) & 0xff;*/
+	/*unsigned char phy_addr_cd = readl(AO_DEBUG_REG1) & 0xff;*/
 
 	msg[0] = ((cec_msg.log_addr & 0xf) << 4)| CEC_BROADCAST_ADDR;
 	msg[1] = CEC_OC_REPORT_PHYSICAL_ADDRESS;
-	msg[2] = phy_addr_ab;
-	msg[3] = phy_addr_cd;
+	msg[2] = (cec_mailbox.phy_addr >> 8) & 0xff;
+	msg[3] = cec_mailbox.phy_addr & 0xff;
 	msg[4] = log_addr_to_devtye(cec_msg.log_addr);
 
 	remote_cec_ll_tx(msg, 5);
@@ -551,14 +593,15 @@ static void cec_report_device_power_status(int dst)
 
 static void cec_set_stream_path(void)
 {
-	unsigned char phy_addr_ab = (REG32(SYSCTRL_STATUS_REG1) >> 8) & 0xff;
-	unsigned char phy_addr_cd = REG32(SYSCTRL_STATUS_REG1) & 0xff;
+	unsigned char phy_addr_ab = (cec_mailbox.phy_addr >> 8) & 0xff;
+	unsigned char phy_addr_cd = cec_mailbox.phy_addr & 0xff;
 
 	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
 		if ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) {
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[3]))  {
 				cec_msg.cec_power = 0x1;
+				cec_msg.active_source = 1;
 				printf("%s power on\n", __func__);
 			}
 		}
@@ -567,8 +610,8 @@ static void cec_set_stream_path(void)
 
 static int cec_routing_change(void)
 {
-	unsigned char phy_addr_ab = (REG32(SYSCTRL_STATUS_REG1) >> 8) & 0xff;
-	unsigned char phy_addr_cd = REG32(SYSCTRL_STATUS_REG1) & 0xff;
+	unsigned char phy_addr_ab = (cec_mailbox.phy_addr >> 8) & 0xff;
+	unsigned char phy_addr_cd = cec_mailbox.phy_addr & 0xff;
 
 	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
 		if ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) {
@@ -576,6 +619,7 @@ static int cec_routing_change(void)
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[4]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[5])) {
 				cec_msg.cec_power = 0x1;
+				cec_msg.active_source = 1;
 				printf("%s power on\n", __func__);
 			}
 		}
@@ -586,12 +630,13 @@ static int cec_routing_change(void)
 static void cec_device_vendor_id(void)
 {
 	unsigned char msg[5];
+	unsigned int vendor_id = cec_mailbox.vendor_id;
 
 	msg[0] = ((cec_msg.log_addr & 0xf) << 4)| CEC_BROADCAST_ADDR;
 	msg[1] = CEC_OC_DEVICE_VENDOR_ID;
-	msg[2] = 0x00;
-	msg[3] = 0x00;
-	msg[4] = 0x00;
+	msg[2] = (vendor_id >> 16) & 0xff;
+	msg[3] = (vendor_id >> 8) & 0xff;
+	msg[4] = (vendor_id >> 0) & 0xff;
 
 	remote_cec_ll_tx(msg, 5);
 }
@@ -631,11 +676,16 @@ static void cec_give_deck_status(int dst)
 static void cec_set_osd_name(int dst)
 {
 	unsigned char msg[16];
-	unsigned char osd_len = cec_strlen(CONFIG_CEC_OSD_NAME);
+	unsigned char osd_len = cec_mailbox.osd_name[15];
 
 	msg[0] = ((cec_msg.log_addr & 0xf) << 4) | (dst & 0xf);
 	msg[1] = CEC_OC_SET_OSD_NAME;
-	cec_memcpy(&msg[2], CONFIG_CEC_OSD_NAME, osd_len);
+	if (osd_len > 0 && osd_len <= 14) {
+		cec_memcpy(&msg[2], cec_mailbox.osd_name, osd_len);
+	} else {
+		osd_len = cec_strlen(CONFIG_CEC_OSD_NAME);
+		cec_memcpy(&msg[2], CONFIG_CEC_OSD_NAME, osd_len);
+	}
 
 	remote_cec_ll_tx(msg, osd_len + 2);
 }
@@ -655,7 +705,7 @@ static void cec_get_version(int dst)
 
 static int check_addr(int phy_addr)
 {
-	unsigned int local_addr = (REG32(SYSCTRL_STATUS_REG1)) & 0xffff;
+	unsigned int local_addr = (cec_mailbox.phy_addr) & 0xffff;
 	unsigned int i, mask = 0xf000, a, b;
 
 	for (i = 0; i < 4; i++) {
@@ -743,7 +793,7 @@ static u32 cec_handle_message(void)
 	u32 data;
 
 	source = (cec_msg.buf[cec_msg.rx_read_pos].msg[0] >> 4) & 0xf;
-	if (((hdmi_cec_func_config>>CEC_FUNC_MASK) & 0x1) &&
+	if ((hdmi_cec_func_config & CEC_CFG_FUNC_EN) &&
 		(cec_msg.buf[cec_msg.rx_read_pos].msg_len > 1)) {
 		opcode = cec_msg.buf[cec_msg.rx_read_pos].msg[1];
 #if CEC_FW_DEBUG
@@ -1127,7 +1177,7 @@ static u32 cec_suspend_wakeup_chk(void)
 	u32 timeout_flag = 0;
 
 	if ((cec_msg.cec_power == 0x1) &&
-		(hdmi_cec_func_config & 0x1)) {
+		(hdmi_cec_func_config & CEC_CFG_FUNC_EN)) {
 		if (cec_wait_addr++ < 40) {
 			if (cec_msg.active_source) {
 				cec_save_port_id();
@@ -1157,7 +1207,7 @@ u32 cec_suspend_handle(void)
 	/*cec_sts_check();*/
 	cec_suspend_wakeup_chk();
 	if (cec_msg.log_addr) {
-		if (hdmi_cec_func_config & 0x1) {
+		if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
 			cec_irq_handler();
 			if (cec_msg.cec_power == 0x1) {
 				if (cec_msg.active_source) {
@@ -1168,7 +1218,7 @@ u32 cec_suspend_handle(void)
 				}
 			}
 		}
-	} else if (hdmi_cec_func_config & 0x1) {
+	} else if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
 		cec_node_init();
 	}
 
@@ -1213,18 +1263,17 @@ static void cec_handler(void)
 
 u32 cec_init_config(void)
 {
-#if CEC_CFG_DEBUG
-	/*set a default config*/
-	/*REG32(SYSCTRL_STATUS_REG0) = 0x2f;*/
-	//REG32(SYSCTRL_STATUS_REG1) = 0x43000;
-	hdmi_cec_func_config = 0x2f;
-#else
-	hdmi_cec_func_config = REG32(SYSCTRL_STATUS_REG0) & 0xff;
-#endif
-	printf("%s\n", CEC_VERSION);
-	printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
-	printf("cec cfg2:0x%x\n", REG32(SYSCTRL_STATUS_REG1));
-	if (hdmi_cec_func_config & 0x1) {
+	hdmi_cec_func_config = REG32(SYSCTRL_STATUS_REG0);
+	/*cec_mailbox.cec_config = hdmi_cec_func_config;*/
+	cec_mailbox.phy_addr = REG32(SYSCTRL_STATUS_REG1);
+
+	if (cec_mailbox.cec_config & CEC_CFG_DBG_EN) {
+		printf("%s\n", CEC_VERSION);
+		printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
+		printf("cec cfg2:0x%x\n", REG32(SYSCTRL_STATUS_REG1));
+	}
+
+	if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
 		cec_req_irq(1);
 		probe = NULL;
 		ping_state = 0;
@@ -1239,7 +1288,7 @@ u32 cec_init_config(void)
 	dump_cecb_reg();
 #endif
 	/*cec enable*/
-	if (hdmi_cec_func_config & 0x1) {
+	if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
 		return 1;
 	} else
 		return 0;
@@ -1254,11 +1303,19 @@ void vCecCallbackInit(void)
 {
 	int ret;
 
+	/*initial bl30 start call*/
+	cec_mailbox.cec_config = CEC_CFG_FUNC_EN | CEC_CFG_OTP_EN | CEC_CFG_PW_ON_EN;
+	cec_mailbox.phy_addr = 0x1000;
+
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
 						    cec_get_portinfo, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO);
 
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_CEC_DATA,
+						    cec_update_config_data, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
 }
 
 #if CEC_USE_IRQ

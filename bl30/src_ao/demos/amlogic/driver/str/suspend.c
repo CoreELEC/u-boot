@@ -57,9 +57,8 @@ void xMboxClrWakeupReason(void *msg);
 
 SemaphoreHandle_t xSTRSemaphore = NULL;
 QueueHandle_t xSTRQueue = NULL;
-
-TimerHandle_t xSuspendTimer = NULL;
-
+SemaphoreHandle_t xSTRFlagSem = NULL;
+uint32_t suspend_flag;
 uint32_t power_mode;
 
 WakeUp_Reason vWakeupReason[] = {
@@ -76,6 +75,13 @@ WakeUp_Reason vWakeupReason[] = {
 	[ETH_PMT_WAKEUP] = { .name = "eth" },
 	[CECB_WAKEUP] = { .name = "cecb" },
 };
+
+void set_suspend_flag(void)
+{
+	taskENTER_CRITICAL();
+	suspend_flag = 1;
+	taskEXIT_CRITICAL();
+}
 
 void vCEC_task(void *pvParameters)
 {
@@ -143,6 +149,10 @@ void system_suspend(uint32_t pm)
 	/*Need set alarm ASAP*/
 	alarm_set();
 	str_hw_init();
+	/*Set flag befor delay. It can be wakeup during delay*/
+	set_suspend_flag();
+	/*Delay 500ms for FSM switch to off*/
+	vTaskDelay(pdMS_TO_TICKS(500));
 	str_power_off();
 }
 
@@ -189,12 +199,33 @@ void STR_Start_Sem_Give(void)
 void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src)
 {
 	BaseType_t xHigherPriorityTaskWoken;
-	xQueueSendFromISR(xSTRQueue, src, &xHigherPriorityTaskWoken);
+	uint32_t flag = 0;
+	UBaseType_t uxSavedInterruptStatus;
+
+	uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR();
+	if (suspend_flag) {
+		suspend_flag = 0;
+		flag = 1;
+	}
+	taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+
+	if (flag)
+		xQueueSendFromISR(xSTRQueue, src, &xHigherPriorityTaskWoken);
 }
 
 void STR_Wakeup_src_Queue_Send(uint32_t *src)
 {
-	xQueueSend(xSTRQueue, src, portMAX_DELAY);
+	uint32_t flag = 0;
+
+	taskENTER_CRITICAL();
+	if (suspend_flag) {
+		suspend_flag = 0;
+		flag = 1;
+	}
+	taskEXIT_CRITICAL();
+
+	if (flag)
+		xQueueSend(xSTRQueue, src, portMAX_DELAY);
 }
 
 void xMboxSuspend_Sem(void *msg)
@@ -203,18 +234,6 @@ void xMboxSuspend_Sem(void *msg)
 
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();
-}
-
-static void vSuspendTest(TimerHandle_t xTimer) {
-	uint32_t buf[4] = {0};
-	buf[0] = RTC_WAKEUP;
-	xTimer = xTimer;
-	taskENTER_CRITICAL();
-	printf("\r\nvSuspendTest timer ...\r\n");
-
-	STR_Wakeup_src_Queue_Send(buf);
-	xSemaphoreGive( xSTRSemaphore );
-	taskEXIT_CRITICAL();
 }
 
 static void vSTRTask( void *pvParameters )
@@ -228,9 +247,6 @@ static void vSTRTask( void *pvParameters )
 	configASSERT(xSTRQueue);
     xSTRSemaphore = xSemaphoreCreateBinary();
 	configASSERT(xSTRSemaphore);
-
-	xSuspendTimer = xTimerCreate("SuspendTest", pdMS_TO_TICKS(5000), pdTRUE, NULL, vSuspendTest);
-	//xTimerStart(xSuspendTimer, 0);
 
 	while (1) {
 		xSemaphoreTake(xSTRSemaphore, portMAX_DELAY);

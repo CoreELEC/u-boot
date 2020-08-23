@@ -96,7 +96,7 @@ void str_power_on(void)
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
-#if 0
+
     /***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -109,7 +109,9 @@ void str_power_on(void)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
-#endif
+	/*Wait 200ms for VDDCPU statble*/
+	vTaskDelay(pdMS_TO_TICKS(200));
+	printf("vdd_cpu on\n");
 }
 
 void str_power_off(void)
@@ -128,7 +130,7 @@ void str_power_off(void)
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
-#if 0
+
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -141,5 +143,5 @@ void str_power_off(void)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
-#endif
+	printf("vdd_cpu off\n");
 }

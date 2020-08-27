@@ -1,27 +1,23 @@
 /*
- * Copyright (C) 2014-2018 Amlogic, Inc. All rights reserved.
+ * IntTest.c
  *
- * All information contained herein is Amlogic confidential.
+ *  Created on: 2018Äê10ÔÂ17ÈÕ
+ *      Author: danialxie
  *
- * This software is provided to you pursuant to Software License Agreement
- * (SLA) with Amlogic Inc ("Amlogic"). This software may be used
- * only in accordance with the terms of this agreement.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification is strictly prohibited without prior written permission from
- * Amlogic.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *        This is an PIC interrupt nesting test for N200 SOC, NUCLEI, Inc.
+ *      Attention:
+ *         This test need hardware board supporting.
+ * 	       A GPIO interrupt is stimulated by another GPIO using wire connection.
+ * 	       Wire connection:
+ * 	          Source  --> Target
+ * 	          GPIO 0  --> GPIO 8
+ * 	          GPIO 1  --> GPIO 9
+ * 	          GPIO 2  --> GPIO 10
+ * 	          GPIO 3  --> GPIO 11
+ * 	          GPIO 4  --> GPIO 12
+ * 	          GPIO 5  --> GPIO 13
+ * 	          GPIO 6  --> GPIO 14
+ * 	          GPIO 7  --> GPIO 15
  */
 
 /* Kernel includes. */
@@ -30,20 +26,17 @@
 #include "queue.h"    /* RTOS queue related API prototypes. */
 #include "timers.h"   /* Software timer related API prototypes. */
 #include "semphr.h"   /* Semaphore related API prototypes. */
-#include "myprintf.h"
 
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-#include "n200_eclic.h"
+#include "n200_pic_tmr.h"
 #include "n200_func.h"
 #include "uart.h"
 #include "common.h"
 
-#include "riscv_encoding.h"
-//#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
 #define INT_TEST_TASK_DELAY  50 // ms
@@ -76,12 +69,9 @@
 
 /* Interrupt handler */
 void DefaultInterruptHandler(void);
-void GPIOInterruptHandler( uint32_t num, uint32_t priority );
+void GPIOInterruptHandler(uint32_t num, uint32_t priority);
 void vApplicationIdleHook( void );
-void config_eclic_irqs ( void );
-void vApplicationIdleHook( void );
-void vApplicationMallocFailedHook( void );
-void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName );
+
 
 /* Binary Semaphore */
 QueueHandle_t xGPIOSemaphore[INT_TEST_NEST_DEPTH];
@@ -89,82 +79,111 @@ QueueHandle_t xMessageQueue[TASK_TEST_QUEUE_NUM];
 
 /* Timer handle */
 TimerHandle_t xSoftTimer = NULL;
-
-void config_eclic_irqs (void)
+/*
+static void vPrintString(const char* msg)
 {
-	eclic_init (ECLIC_NUM_INTERRUPTS);
-	//time_init   in port.c
-	eclic_set_nlbits(0);
+	taskENTER_CRITICAL();
+
+	taskEXIT_CRITICAL();
+}
+*/
+//enables interrupt and assigns handler
+void enable_interrupt(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
+    pic_interrupt_handlers[int_num] = handler;
+    pic_set_priority(int_num, int_priority);
+    pic_enable_interrupt (int_num);
+}
+
+/* function: vPICInit */
+static void vPICInit(void) {
+
+	// Disable global interrupter
+	clear_csr(mstatus, MSTATUS_MIE);
+
+	// Initialize interrupter handler
+	for (int i = 0; i < PIC_NUM_INTERRUPTS; i ++) {
+		pic_interrupt_handlers[i] = DefaultInterruptHandler;
+	}
+#if 0
+#if !(SIGNAL_BOARD_ENABLE)
+
+   // Enable GPIO interrupter
+	enable_interrupt(GPIO_INT_SOURCE(8),  1, GPIOInterruptHandler8);
+	enable_interrupt(GPIO_INT_SOURCE(9),  2, GPIOInterruptHandler9);
+	enable_interrupt(GPIO_INT_SOURCE(10),  3, GPIOInterruptHandler10);
+	enable_interrupt(GPIO_INT_SOURCE(11),  4, GPIOInterruptHandler11);
+	enable_interrupt(GPIO_INT_SOURCE(12),  5, GPIOInterruptHandler12);
+	enable_interrupt(GPIO_INT_SOURCE(13),  6, GPIOInterruptHandler13);
+	//enable_interrupt(GPIO_INT_SOURCE(14),  7, GPIOInterruptHandler14);
+	//enable_interrupt(GPIO_INT_SOURCE(15),  7, GPIOInterruptHandler15);
+
+#endif
+#endif
+	// Enable global interrupt
+	set_csr(mstatus, MSTATUS_MIE);
 }
 
 void DefaultInterruptHandler(void){}
 
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
-	xTimer = xTimer;
 	taskENTER_CRITICAL();
-	//printf("\nTimer ...\r\n");
+
+	vUartPuts("\nTimer ...\n");
 	taskEXIT_CRITICAL();
 }
 
 static void vPrintTask1( void *pvParameters )
 {
     /*make compiler happy*/
-	pvParameters = pvParameters;
+    pvParameters = pvParameters;
 
 	for ( ;; )
 	{
-	//	printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
+		vUartPuts("\nvPTask1 %d\n");
+
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
 
 static void vPrintTask2( void *pvParameters )
 {
+	unsigned int time;
     /*make compiler happy*/
     pvParameters = pvParameters;
 	vTaskDelay(pdMS_TO_TICKS(500));
 	for ( ;; )
 	{
-	//	printf("\nvPTask2 tick=%d\n",(unsigned int)xTaskGetTickCount());
+		vUartPuts("\nvPTask2 %d\n");
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
 
-/*
-static void stdout_putf(void *unused, char c)
-{
-  unused = unused;
-  vUartPutc(c);
-}
-*/
 
 // Test target board
 int main(void)
 {
-	uint32_t i;
-	char test[80];
-	//init_printf(NULL, stdout_putf);
+	uint32_t gpio_index[] = {8, 9, 10, 11, 12, 13, 14, 15};
+	uint32_t queue_index[] = {0, 1, 2, 3};
 
-	printf("\nStarting C2 RISCV FreeRTOS...\r\n");
+	vUartPuts("Starting N205 FreeRTOS\n");
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
-	config_eclic_irqs();
+	vPICInit();
 
 	// Delay
-	for (i = 0; i < 0xffff; ++i);
-	sPrintf(test, 80, "test=%ld",i);
-	printf("%s", test);
-	// Create timer
-	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);
+	for (uint32_t i = 0; i < 0xffff; ++i);
 
-	printf("Starting timer ...\r\n");
+	// Create timer
+	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
+
+	vUartPuts("Starting timer ...\n");
 	xTimerStart(xSoftTimer, 0);
 
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
-	printf("Starting task scheduler ...\r\n");
+	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();
 
 	for (;;)
@@ -193,7 +212,7 @@ void vApplicationMallocFailedHook( void )
     configTOTAL_HEAP_SIZE configuration constant in FreeRTOSConfig.h. */
 	//write(1,"malloc failed\n", 14);
 
-	printf("vApplicationMallocFailedHook\n");
+	vUartPuts("vApplicationMallocFailedHook\n");
     for ( ;; );
 }
 /*-----------------------------------------------------------*/
@@ -209,7 +228,6 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName 
     inspected in the debugger if the task name passed into this function is
     corrupt. */
     //write(1, "Stack Overflow\n", 15);
-	printf("vApplicationStackOverflowHook\n");
     for ( ;; );
 }
 /*-----------------------------------------------------------*/

@@ -52,7 +52,7 @@ ifeq (${COMPILER}, gcc)
 #
 # The command for calling the compiler.
 #
-ifeq ($(ARCH_CPU), RISC_V_N205)
+#ifeq ($(ARCH_CPU), RISC_V_N205)
 CC=$(CROSS_COMPILE_PATH)riscv-none-embed-gcc
 CPP=$(CROSS_COMPILE_PATH)riscv-none-embed-g++
 
@@ -73,7 +73,7 @@ LD=$(CROSS_COMPILE_PATH)riscv-none-embed-ld
 OBJCOPY=$(CROSS_COMPILE_PATH)riscv-none-embed-objcopy
 NM=$(CROSS_COMPILE_PATH)riscv-none-embed-nm
 OBJDUMP=$(CROSS_COMPILE_PATH)riscv-none-embed-objdump
-endif
+#endif
 endif
 
 

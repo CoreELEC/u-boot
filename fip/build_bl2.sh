@@ -8,7 +8,7 @@ function build_bl2() {
 	cd $1
 	if [ "$3" == "sc2" ]; then
 		#echo "Storage with --bl2ex --dpre"
-		/bin/bash mk $3
+		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE}
 		targetv3="$1/chip_acs.bin"
 	else
 		/bin/bash mk $3

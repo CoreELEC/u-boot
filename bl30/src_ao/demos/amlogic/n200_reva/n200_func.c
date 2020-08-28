@@ -30,13 +30,13 @@ void switch_m2u_mode(void){
 
 uint32_t mtime_lo(void)
 {
-  return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME);
+  return *(volatile uint32_t *)(TMR_CTRL_ADDR + TMR_MTIME);
 }
 
 
 uint32_t mtime_hi(void)
 {
-  return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME + 4);
+  return *(volatile uint32_t *)(TMR_CTRL_ADDR + TMR_MTIME + 4);
 }
 
 uint64_t get_timer_value(void)
@@ -48,12 +48,12 @@ uint64_t get_timer_value(void)
       return ((uint64_t)hi << 32) | lo;
   }
 }
-
-uint32_t get_timer_freq(void)
+/*
+uint32_t get_timer_freq()
 {
-  return TIMER_FREQ;
+  return TMR_FREQ;
 }
-
+*/
 uint64_t get_instret_value(void)
 {
   while (1) {
@@ -73,7 +73,7 @@ uint64_t get_cycle_value(void)
       return ((uint64_t)hi << 32) | lo;
   }
 }
-
+/*
 uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n)
 {
   uint32_t start_mtime, delta_mtime;
@@ -97,7 +97,7 @@ uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n)
          + ((delta_mcycle % delta_mtime) * mtime_freq) / delta_mtime;
 }
 
-uint32_t get_cpu_freq(void)
+uint32_t get_cpu_freq()
 {
   uint32_t cpu_freq;
 
@@ -108,256 +108,82 @@ uint32_t get_cpu_freq(void)
 
   return cpu_freq;
 }
-
+*/
 
 
 // Note that there are no assertions or bounds checking on these
 // parameter values.
 
+void pic_set_threshold (
+			 uint32_t threshold){
 
+  volatile uint32_t* threshold_ptr = (uint32_t*) (PIC_CTRL_ADDR +
+                                                              PIC_THRESHOLD_OFFSET
+                                                              );
 
+  *threshold_ptr = threshold;
 
-void eclic_init ( uint32_t num_irq )
-{
+}
 
-  typedef volatile uint32_t vuint32_t;
+void pic_enable_interrupt (uint32_t source){
 
-  //clear cfg register
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET) = 0;
+  volatile uint32_t * current_ptr = (volatile uint32_t *)(PIC_CTRL_ADDR +
+                                                        PIC_ENABLE_OFFSET +
+                                                        ((source >> 3) & (~0x3))//Source number divide 32 and then multip 4 (bytes)
+                                                        );
+  uint32_t current = *current_ptr;
+  current = current | ( 1 << (source & 0x1f));// Only check the least 5 bits
+  *current_ptr = current;
 
-  //clear minthresh register
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET) = 0;
+}
 
-  //clear all IP/IE/ATTR/CTRL bits for all interrupt sources
-  vuint32_t * ptr;
+void pic_disable_interrupt (uint32_t source){
 
-  vuint32_t * base = (vuint32_t*)(ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET);
-  vuint32_t * upper = (vuint32_t*)(base + num_irq*4);
+  volatile uint32_t * current_ptr = (volatile uint32_t *) (PIC_CTRL_ADDR +
+                                                         PIC_ENABLE_OFFSET +
+                                                         ((source >> 3) & (~0x3))//Source number divide 32 and then multip 4 (bytes)
+                                                          );
+  uint32_t current = *current_ptr;
+  current = current & ~(( 1 << (source & 0x1f)));// Only check the least 5 bits
+  *current_ptr = current;
+}
 
-  for (ptr = base; ptr < upper; ptr=ptr+4) {
-    *ptr = 0;
+void pic_set_priority (uint32_t source, uint32_t priority){
+
+  if (PIC_NUM_PRIORITIES > 0) {
+    volatile uint32_t * priority_ptr = (volatile uint32_t *)
+      (PIC_CTRL_ADDR +
+       PIC_PRIORITY_OFFSET +
+       (source << PIC_PRIORITY_SHIFT_PER_SOURCE));// Each priority reg occupy a word, so multiple 2
+    *priority_ptr = priority;
   }
 }
 
-void print_eclic(void)
-{
-	typedef volatile uint32_t vuint32_t;
+uint32_t pic_claim_interrupt(void){
 
-	vuint32_t * ptr = (vuint32_t*)(ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET + 7*4);
+  volatile uint32_t * claim_addr = (volatile uint32_t * )
+    (PIC_CTRL_ADDR +
+     PIC_CLAIM_OFFSET
+     );
 
-	printf("\nTIME=0x%lx\n",*ptr);
+  return  *claim_addr;
 }
 
+uint32_t pic_check_eip(void){
 
-void eclic_enable_interrupt (uint32_t source) {
-    *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_IE_OFFSET+source*4) = 1;
+  volatile uint32_t * eip_addr = (volatile uint32_t * )
+    (PIC_CTRL_ADDR +
+     PIC_EIP_OFFSET
+     );
+
+  return  *eip_addr;
 }
 
-void eclic_disable_interrupt (uint32_t source){
-    *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_IE_OFFSET+source*4) = 0;
-}
+void pic_complete_interrupt(uint32_t source){
 
-void eclic_set_pending(uint32_t source){
-    *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_IP_OFFSET+source*4) = 1;
-}
-
-void eclic_clear_pending(uint32_t source){
-    *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_IP_OFFSET+source*4) = 0;
-}
-
-void eclic_set_intctrl (uint32_t source, uint8_t intctrl){
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_CTRL_OFFSET+source*4) = intctrl;
-}
-
-uint8_t eclic_get_intctrl  (uint32_t source){
-  return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_CTRL_OFFSET+source*4);
-}
-
-void eclic_set_intattr (uint32_t source, uint8_t intattr){
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_ATTR_OFFSET+source*4) = intattr;
-}
-
-uint8_t eclic_get_intattr  (uint32_t source){
-  return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_ATTR_OFFSET+source*4);
-}
-
-void eclic_set_cliccfg (uint8_t cliccfg){
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET) = cliccfg;
-}
-
-uint8_t eclic_get_cliccfg (void){
-  return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET);
-}
-
-void eclic_set_mth (uint8_t mth){
-  *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET) = mth;
-}
-
-uint8_t eclic_get_mth  (void){
-  return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET);
-}
-
-//sets nlbits
-void eclic_set_nlbits(uint8_t nlbits) {
-  //shift nlbits to correct position
-  uint8_t nlbits_shifted = nlbits << ECLIC_CFG_NLBITS_LSB;
-
-  //read the current cliccfg
-  uint8_t old_cliccfg = eclic_get_cliccfg();
-  uint8_t new_cliccfg = (old_cliccfg & (~ECLIC_CFG_NLBITS_MASK)) | (ECLIC_CFG_NLBITS_MASK & nlbits_shifted);
-
-  eclic_set_cliccfg(new_cliccfg);
-}
-
-//get nlbits
-uint8_t eclic_get_nlbits(void) {
-  //extract nlbits
-  uint8_t nlbits = eclic_get_cliccfg();
-  nlbits = (nlbits & ECLIC_CFG_NLBITS_MASK) >> ECLIC_CFG_NLBITS_LSB;
-  return nlbits;
-}
-
-//sets an interrupt level based encoding of nlbits and CLICINTCTLBITS
-void eclic_set_irq_lvl(uint32_t source, uint8_t lvl) {
-  //extract nlbits
-  uint8_t nlbits = eclic_get_nlbits();
-  if (nlbits > CLICINTCTLBITS) {
-    nlbits = CLICINTCTLBITS;
-  }
-
-  //shift lvl right to mask off unused bits
-  lvl = lvl >> (8-nlbits);
-  //shift lvl into correct bit position
-  lvl = lvl << (8-nlbits);
-
-  //write to clicintctrl
-  uint8_t current_intctrl = eclic_get_intctrl(source);
-  //shift intctrl left to mask off unused bits
-  current_intctrl = current_intctrl << nlbits;
-  //shift intctrl into correct bit position
-  current_intctrl = current_intctrl >> nlbits;
-
-  eclic_set_intctrl(source, (current_intctrl | lvl));
-}
-
-//gets an interrupt level based encoding of nlbits
-uint8_t eclic_get_irq_lvl(uint32_t source) {
-  //extract nlbits
-  uint8_t nlbits = eclic_get_nlbits();
-  if (nlbits > CLICINTCTLBITS) {
-    nlbits = CLICINTCTLBITS;
-  }
-
-  uint8_t intctrl = eclic_get_intctrl(source);
-
-  //shift intctrl
-  intctrl = intctrl >> (8-nlbits);
-  //shift intctrl
-  uint8_t lvl = intctrl << (8-nlbits);
-
-  return lvl;
-}
-
-void eclic_set_irq_lvl_abs(uint32_t source, uint8_t lvl_abs) {
-  //extract nlbits
-  uint8_t nlbits = eclic_get_nlbits();
-  if (nlbits > CLICINTCTLBITS) {
-    nlbits = CLICINTCTLBITS;
-  }
-
-  //shift lvl_abs into correct bit position
-  uint8_t lvl = lvl_abs << (8-nlbits);
-
-  //write to clicintctrl
-  uint8_t current_intctrl = eclic_get_intctrl(source);
-  //shift intctrl left to mask off unused bits
-  current_intctrl = current_intctrl << nlbits;
-  //shift intctrl into correct bit position
-  current_intctrl = current_intctrl >> nlbits;
-
-  eclic_set_intctrl(source, (current_intctrl | lvl));
-}
-
-uint8_t eclic_get_irq_lvl_abs(uint32_t source) {
-  //extract nlbits
-  uint8_t nlbits = eclic_get_nlbits();
-  if (nlbits > CLICINTCTLBITS) {
-    nlbits = CLICINTCTLBITS;
-  }
-
-  uint8_t intctrl = eclic_get_intctrl(source);
-
-  //shift intctrl
-  intctrl = intctrl >> (8-nlbits);
-  //shift intctrl
-  uint8_t lvl_abs = intctrl;
-
-  return lvl_abs;
-}
-
-void eclic_mode_enable(void) {
-  uint32_t mtvec_value = read_csr(mtvec);
-  mtvec_value = mtvec_value & 0xFFFFFFC0;
-  mtvec_value = mtvec_value | 0x00000003;
-  write_csr(mtvec,mtvec_value);
-}
-
-//sets vector-mode or non-vector mode
-void eclic_set_vmode(uint32_t source) {
-  //read the current attr
-  uint8_t old_intattr = eclic_get_intattr(source);
-      // Keep other bits unchanged and only set the LSB bit
-  uint8_t new_intattr = (old_intattr | 0x1);
-
-  eclic_set_intattr(source,new_intattr);
-}
-
-void eclic_set_nonvmode(uint32_t source) {
-  //read the current attr
-  uint8_t old_intattr = eclic_get_intattr(source);
-      // Keep other bits unchanged and only clear the LSB bit
-  uint8_t new_intattr = (old_intattr & (~0x1));
-
-  eclic_set_intattr(source,new_intattr);
-}
-
-//sets interrupt as level sensitive
-//Bit 1, trig[0], is defined as "edge-triggered" (0: level-triggered, 1: edge-triggered);
-//Bit 2, trig[1], is defined as "negative-edge" (0: positive-edge, 1: negative-edge).
-
-void eclic_set_level_trig(uint32_t source) {
-  //read the current attr
-  uint8_t old_intattr = eclic_get_intattr(source);
-      // Keep other bits unchanged and only clear the bit 1
-  uint8_t new_intattr = (old_intattr & (~0x2));
-
-  eclic_set_intattr(source,new_intattr);
-}
-
-void eclic_set_posedge_trig(uint32_t source) {
-  //read the current attr
-  uint8_t old_intattr = eclic_get_intattr(source);
-      // Keep other bits unchanged and only set the bit 1
-  uint8_t new_intattr = (old_intattr | 0x2);
-      // Keep other bits unchanged and only clear the bit 2
-  new_intattr = (new_intattr & (~0x4));
-
-  eclic_set_intattr(source,new_intattr);
-}
-
-void eclic_set_negedge_trig(uint32_t source) {
-  //read the current attr
-  uint8_t old_intattr = eclic_get_intattr(source);
-      // Keep other bits unchanged and only set the bit 1
-  uint8_t new_intattr = (old_intattr | 0x2);
-      // Keep other bits unchanged and only set the bit 2
-  new_intattr = (new_intattr | 0x4);
-
-  eclic_set_intattr(source,new_intattr);
-}
-
-extern void core_wfe(void);
-void wfe(void) {
-  core_wfe();
+  volatile uint32_t * claim_addr = (volatile uint32_t *) (PIC_CTRL_ADDR +
+                                                                PIC_CLAIM_OFFSET
+                                                                );
+  *claim_addr = source;
 }
 

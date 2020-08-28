@@ -4747,7 +4747,7 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe07a000
 // -----------------------------------------------
-#define UART_B_WFIFO                               ((0x0000  << 2) + 0xfe07a000)
+#define UART_B_WFIFO                               ((0x0000  << 2) + 0xffd23000)
 #define UART_B_RFIFO                               ((0x0001  << 2) + 0xfe07a000)
 #define UART_B_CONTROL                             ((0x0002  << 2) + 0xfe07a000)
 #define UART_B_STATUS                              ((0x0003  << 2) + 0xfe07a000)

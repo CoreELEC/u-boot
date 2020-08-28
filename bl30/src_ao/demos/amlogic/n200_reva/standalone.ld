@@ -25,7 +25,6 @@
  * This is part of revision 1049 of the Stellaris Driver Library.
  *
  *****************************************************************************/
-
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
               "elf32-littleriscv")
 OUTPUT_ARCH("riscv")
@@ -34,9 +33,9 @@ ENTRY( _start )
 
 MEMORY
 {
-/*    ram (rw) : ORIGIN = 0x10000000 + 16*1024, LENGTH = (80 * 1024)*/
-    ram (rw) : ORIGIN = 0xf7028000, LENGTH = (80 * 1024)
+    ram (rw) : ORIGIN = 0xfffb0000, LENGTH = (64 * 1024)
 }
+
 
 SECTIONS
 {
@@ -44,7 +43,7 @@ SECTIONS
 
     .text :
     {
-	*(.vtable)
+	KEEP (*(SORT_NONE(.init)))
         . = ALIGN(4);
         *(.text)
         *(.rodata*)
@@ -70,17 +69,12 @@ SECTIONS
         _ebss = .;
     } > ram
 
-/*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size - 45*1204:*/
+/*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size :*/
     .stack :
     {
         PROVIDE( _heap_end = . );
 	. = ALIGN(1024);
         . += __stack_size;
         PROVIDE( _sp = . );
-    } >ram
-
-    .init :
-    {
-        KEEP (*(SORT_NONE(.init)))
     } >ram
 }

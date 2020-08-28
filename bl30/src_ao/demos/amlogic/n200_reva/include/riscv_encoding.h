@@ -154,6 +154,12 @@
 #define PTE_D     0x080 // Dirty
 #define PTE_SOFT  0x300 // Reserved for Software
 
+#define PMP_R     0x01
+#define PMP_W     0x02
+#define PMP_X     0x04
+#define PMP_NA4   0x10
+#define PMP_NAPOT 0x18
+
 #define PTE_PPN_SHIFT 10
 
 #define PTE_TABLE(PTE) (((PTE) & (PTE_V | PTE_R | PTE_W | PTE_X)) == PTE_V)
@@ -175,17 +181,6 @@
 #ifndef __ASSEMBLER__
 
 #ifdef __GNUC__
-
-#define read_fpu(reg) ({ unsigned long __tmp; \
-  asm volatile ("fmv.x.w %0, " #reg : "=r"(__tmp)); \
-  __tmp; })
-
-#define write_fpu(reg, val) ({ \
-  if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
-    asm volatile ("fmv.w.x " #reg ", %0" :: "i"(val)); \
-  else \
-    asm volatile ("fmv.w.x " #reg ", %0" :: "r"(val)); })
-
 
 #define read_csr(reg) ({ unsigned long __tmp; \
   asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
@@ -888,26 +883,113 @@
 #define CSR_MHPMCOUNTER30H 0xb9e
 #define CSR_MHPMCOUNTER31H 0xb9f
 
+// N200 added CSR
+#define CSR_MCOUNTERSTOP 0xBFF
+#define CSR_ISTATUS      0x310
+#define CSR_NSTATUS      0x311
+#define CSR_MIVEC        0x312
+#define CSR_MNVEC        0x313
+#define CSR_MSUBMODE     0x314
+#define CSR_MSCRATCH1    0x350
+#define CSR_MNPC         0x351
+#define CSR_MIPC         0x352
+#define CSR_DBGSTOP      0xBFC
+#define CSR_WFIMODE      0xBFB
+#define CSR_TXEVT        0xBFA
+#define CSR_WFE          0xBF9
 
-#define CSR_MTVT               0x307
-#define CSR_MNXTI              0x345
+#define MSTATUS_MPS         0x00000600
+   // MSTATUS_MPS_LSB is to indicate the least bit of MPS field
+#define MSTATUS_MPS_LSB     9
 
-#define CSR_MCOUNTINHIBIT      0x320
+   // To indicate the submode encoding
+#define MSUBMODE_RGLR    0x0
+#define MSUBMODE_EXCP    0x1
+#define MSUBMODE_NMI     0x2
+#define MSUBMODE_IRQ     0x3
 
-#define CSR_MNVEC              0x7C3
+#define read_csr_mcounterstop read_csr(0xBFF)
+#define read_csr_istatus      read_csr(0x310)
+#define read_csr_nstatus      read_csr(0x311)
+#define read_csr_mivec        read_csr(0x312)
+#define read_csr_mnvec        read_csr(0x313)
+#define read_csr_msubmode     read_csr(0x314)
+#define read_csr_mscratch1    read_csr(0x350)
+#define read_csr_mnpc         read_csr(0x351)
+#define read_csr_mipc         read_csr(0x352)
+#define read_csr_pmpcfg0      read_csr(0x3A0)
+#define read_csr_pmpaddr0     read_csr(0x3B0)
+#define read_csr_pmpaddr1     read_csr(0x3B1)
+#define read_csr_pmpaddr2     read_csr(0x3B2)
+#define read_csr_pmpaddr3     read_csr(0x3B3)
 
-#define CSR_MTVT2             0x7EC
-#define CSR_JALMNXTI          0x7ED
-#define CSR_PUSHMCAUSE        0x7EE
-#define CSR_PUSHMEPC          0x7EF
-#define CSR_PUSHMSUBM         0x7EB
+#define read_csr_dbgstop      read_csr(0xBFC)
+#define read_csr_wfimode      read_csr(0xBFB)
+#define read_csr_txevt        read_csr(0xBFA)
+#define read_csr_wfe          read_csr(0xBF9)
 
-#define CSR_WFE            0x810
-#define CSR_SLEEPVALUE     0x811
-#define CSR_TXEVT          0x812
+#define write_csr_mcounterstop(x) write_csr(0xBFF,x)
+#define write_csr_istatus(x)      write_csr(0x310,x)
+#define write_csr_nstatus(x)      write_csr(0x311,x)
+#define write_csr_mivec(x)        write_csr(0x312,x)
+#define write_csr_mnvec(x)        write_csr(0x313,x)
+#define write_csr_msubmode(x)     write_csr(0x314,x)
+#define write_csr_mscratch1(x)    write_csr(0x350,x)
+#define write_csr_mnpc(x)         write_csr(0x351,x)
+#define write_csr_mipc(x)         write_csr(0x352,x)
+#define write_csr_pmpcfg0(x)         write_csr(0x3A0,x)
+#define write_csr_pmpaddr0(x)        write_csr(0x3B0,x)
+#define write_csr_pmpaddr1(x)        write_csr(0x3B1,x)
+#define write_csr_pmpaddr2(x)        write_csr(0x3B2,x)
+#define write_csr_pmpaddr3(x)        write_csr(0x3B3,x)
 
-#define CSR_MMISC_CTL      0x7d0
-#define CSR_MSUBM          0x7c4
+#define write_csr_dbgstop(x)      write_csr(0xBFC,x)
+#define write_csr_wfimode(x)      write_csr(0xBFB,x)
+#define write_csr_txevt(x)        write_csr(0xBFA,x)
+#define write_csr_wfe(x)          write_csr(0xBF9,x)
+
+#define swap_csr_mcounterstop(x) swap_csr(0xBFF,x)
+#define swap_csr_istatus(x)      swap_csr(0x310,x)
+#define swap_csr_nstatus(x)      swap_csr(0x311,x)
+#define swap_csr_mivec(x)        swap_csr(0x312,x)
+#define swap_csr_mnvec(x)        swap_csr(0x313,x)
+#define swap_csr_msubmode(x)     swap_csr(0x314,x)
+#define swap_csr_mscratch1(x)    swap_csr(0x350,x)
+#define swap_csr_mnpc(x)         swap_csr(0x351,x)
+#define swap_csr_mipc(x)         swap_csr(0x352,x)
+#define swap_csr_dbgstop(x)      swap_csr(0xBFC,x)
+#define swap_csr_wfimode(x)      swap_csr(0xBFB,x)
+#define swap_csr_txevt(x)        swap_csr(0xBFA,x)
+#define swap_csr_wfe(x)          swap_csr(0xBF9,x)
+
+#define set_csr_mcounterstop(x) set_csr(0xBFF,x)
+#define set_csr_istatus(x)      set_csr(0x310,x)
+#define set_csr_nstatus(x)      set_csr(0x311,x)
+#define set_csr_mivec(x)        set_csr(0x312,x)
+#define set_csr_mnvec(x)        set_csr(0x313,x)
+#define set_csr_msubmode(x)     set_csr(0x314,x)
+#define set_csr_mscratch1(x)    set_csr(0x350,x)
+#define set_csr_mnpc(x)         set_csr(0x351,x)
+#define set_csr_mipc(x)         set_csr(0x352,x)
+#define set_csr_dbgstop(x)      set_csr(0xBFC,x)
+#define set_csr_wfimode(x)      set_csr(0xBFB,x)
+#define set_csr_txevt(x)        set_csr(0xBFA,x)
+#define set_csr_wfe(x)          set_csr(0xBF9,x)
+
+#define clear_csr_mcounterstop(x) clear_csr(0xBFF,x)
+#define clear_csr_istatus(x)      clear_csr(0x310,x)
+#define clear_csr_nstatus(x)      clear_csr(0x311,x)
+#define clear_csr_mivec(x)        clear_csr(0x312,x)
+#define clear_csr_mnvec(x)        clear_csr(0x313,x)
+#define clear_csr_msubmode(x)     clear_csr(0x314,x)
+#define clear_csr_mscratch1(x)    clear_csr(0x350,x)
+#define clear_csr_mnpc(x)         clear_csr(0x351,x)
+#define clear_csr_mipc(x)         clear_csr(0x352,x)
+#define clear_csr_dbgstop(x)      clear_csr(0xBFC,x)
+#define clear_csr_wfimode(x)      clear_csr(0xBFB,x)
+#define clear_csr_txevt(x)        clear_csr(0xBFA,x)
+#define clear_csr_wfe(x)          clear_csr(0xBF9,x)
+
 
 
 #define CAUSE_MISALIGNED_FETCH 0x0

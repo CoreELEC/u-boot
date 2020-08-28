@@ -37,9 +37,15 @@
 #include "n200_func.h"
 #include "soc.h"
 #include "riscv_encoding.h"
-#include "n200_timer.h"
+#ifdef N200_REVA
+//#include "riscv_encoding.h"
+#include "n200_pic_tmr.h"
+#else
 #include "n200_eclic.h"
+#endif
+#include "n200_timer.h"
 #include <riscv_bits.h>
+
 
 /* Standard Includes */
 #include <stdlib.h>
@@ -62,7 +68,11 @@ UBaseType_t uxCriticalNesting = 0xaaaaaaaa;
  */
 static void prvTaskExitError( void );
 unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1);
+#ifdef N200_REVA
+uint32_t vPortSysTickHandler(uint32_t int_num);
+#else
 void vPortSysTickHandler(void);
+#endif
 void vPortSetupTimer(void);
 void vPortSetup(void);
 
@@ -154,9 +164,11 @@ void vPortExitCritical( void )
 /* Clear current interrupt mask and set given mask */
 void vPortClearInterruptMask(int int_mask)
 {
+#ifdef N200_REVA
+	write_csr(mie,int_mask);
+#else
 	eclic_set_mth (int_mask);
-
-
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -164,9 +176,13 @@ void vPortClearInterruptMask(int int_mask)
 int xPortSetInterruptMask()
 {
 	int int_mask=0;
+#ifdef N200_REVA
+	int_mask = read_csr(mie);
+	write_csr(mie,0);
+#else
 	int_mask=eclic_get_mth();
-
 	eclic_set_mth ((configMAX_SYSCALL_INTERRUPT_PRIORITY)<<4);
+#endif
 	return int_mask;
 }
 
@@ -219,8 +235,15 @@ void prvTaskExitError( void )
 
 /*Entry Point for Machine Timer Interrupt Handler*/
 //Bob: add the function argument int_num
+#ifdef N200_REVA
+uint32_t vPortSysTickHandler(uint32_t int_num){
+#else
 void vPortSysTickHandler(void){
+#endif
 	uint64_t then = 0;
+#ifdef N200_REVA
+	pic_disable_interrupt(PIC_INT_TMR);
+#endif
     volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
     volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
     uint64_t now = *mtime;
@@ -234,6 +257,11 @@ void vPortSysTickHandler(void){
 		portYIELD();
 		//vTaskSwitchContext();
 	}
+#ifdef N200_REVA
+	pic_enable_interrupt(PIC_INT_TMR);
+	return int_num;
+#endif
+
 }
 /*-----------------------------------------------------------*/
 
@@ -248,6 +276,10 @@ void vPortSetupTimer(void)	{
     uint64_t then = now + (configRTC_CLOCK_HZ / configTICK_RATE_HZ);
     *mtimecmp = then;
 	//print_eclic();
+#ifdef N200_REVA
+    pic_enable_interrupt(PIC_INT_TMR);
+    pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
+#else
     mtime_intattr=eclic_get_intattr (ECLIC_INT_MTIP);
     mtime_intattr|=ECLIC_INT_ATTR_SHV | ECLIC_INT_ATTR_MACH_MODE;
     mtime_intattr|= ECLIC_INT_ATTR_TRIG_EDGE;
@@ -259,9 +291,9 @@ void vPortSetupTimer(void)	{
 	eclic_set_intctrl(ECLIC_INT_MTIP, 10 << 4);
 
     set_csr(mstatus, MSTATUS_MIE);
+#endif
 }
 /*-----------------------------------------------------------*/
-
 
 void vPortSetup(void)	{
 	vPortSetupTimer();

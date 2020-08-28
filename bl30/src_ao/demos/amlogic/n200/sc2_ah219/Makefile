@@ -34,7 +34,8 @@ export FREERTOS_VENDOR_COMMON := $(FREERTOS_VENDOR)/common
 export FREERTOS_LIB_DIR := $(FREERTOS_ROOT_DIR)/lib
 export FREERTOS_CORE_DIR := $(FREERTOS_LIB_DIR)/FreeRTOS/portable/GCC/$(ARCH_CPU)
 #export FREERTOS_LIB_THIRD_PARTY := $(FREERTOS_LIB_DIR)/third_party/amlogic/$(COMPILER)/libdrivers.a
-SCATTER_RTOSDemo=../standalone.ld
+#SCATTER_RTOSDemo=../standalone.ld
+SCATTER_RTOSDemo=$(COMPILER)/lscript
 BINNAME=RTOSDemo
 
 #$(info $(FREERTOS_CORE_DIR) $(CUR_DIR) $(__GNUC__))
@@ -119,7 +120,10 @@ clean:
 ${COMPILER}:
 	@mkdir ${COMPILER}
 
-${COMPILER}/$(BINNAME).axf: ${OBJS}
+${SCATTER_RTOSDemo}: ../standalone.ld
+	@${CC} -E -xc -P ${CFLAGS} -o ${@} ${<}
+
+${COMPILER}/$(BINNAME).axf: ${OBJS} $(SCATTER_RTOSDemo)
 	$(LD) $(OBJS) $(LDFLAGS) -T $(SCATTER_RTOSDemo) -Map $(COMPILER)/RTOSDemo.map -o $@
 	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
 	@$(OBJDUMP) -D ${@} > ${@:.axf=.dis}

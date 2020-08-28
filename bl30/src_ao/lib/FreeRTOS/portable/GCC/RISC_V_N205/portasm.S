@@ -28,7 +28,12 @@
 #include "soc.h"
 #include "riscv_encoding.h"
 #include "n200_timer.h"
+#ifndef N200_REVA
 #include "n200_eclic.h"
+#else
+#include "n200_pic_tmr.h"
+//#include "riscv_bits.h"
+#endif
 
 //#include "portmacro.h"
 
@@ -363,6 +368,7 @@ trap_entry:
 //Bob: Rename this to irq_entry to make it override the weak symbol from BSPs entry.S
 //interrupt:
 .align 2
+#ifndef N200_REVA
 .global irq_entry
 irq_entry: // -------------> This label will be set to MTVT2 register
   	// Allocate the stack space
@@ -383,6 +389,114 @@ int_loop:             // 3 instructions in pending-interrupt service loop.
 	portRESTORE_CONTEXT_IRQ
   	popREGFILE
   	mret
+#else
+###############################################
+###############################################
+# Save the mipc and istatus
+#
+.macro SAVE_MIPC_ISTATUS
+  csrr t0, CSR_MIPC
+  STORE t0,  32*REGBYTES(sp)
+  csrr t0, CSR_ISTATUS
+  STORE t0,  33*REGBYTES(sp)
+.endm
+
+###############################################
+###############################################
+# Restore the mipc and istatus
+#
+.macro RESTORE_MIPC_ISTATUS
+  LOAD t0,  32*REGBYTES(sp)
+  csrw CSR_MIPC, t0
+  LOAD t0,  33*REGBYTES(sp)
+  csrw CSR_ISTATUS, t0
+.endm
+
+.macro portSAVE_EPC
+	csrr    t0, mepc
+	STORE   t0, 33 * REGBYTES(sp)
+.endm
+
+.macro portSAVE_IPC
+	csrr	t0, CSR_MIPC
+	STORE	t0, 33 * REGBYTES(sp)
+
+.endm
+/* async interrupt, this function is called */
+//Bob: Rename this to irq_entry to make it override the weak symbol from BSP's entry.S
+//interrupt:
+.global irq_entry
+irq_entry:
+        //Bob: only save the caller
+	pushREGFILE_Caller
+
+//Bob: Update to support interrupt nesting to save MIPC and IStatus
+  // Save the MIPC/IStatus reg
+    SAVE_MIPC_ISTATUS
+
+//Bob: Update the way to check the MTIME
+	//li      t0,INT_MASK
+	//and     a0,a0,t0
+	//li      t0, 0x7
+	//beq     a0,t0, MTIME_IRQ
+call_irq:
+//Bob: Claim the IRQ
+    li t0, (PIC_CTRL_ADDR + PIC_CLAIM_OFFSET)
+    lw a0, 0(t0)
+	/* Bob: Interupt m-time interrupt */
+    li t0, PIC_INT_TMR
+	beq a0,t0, MTIME_IRQ
+
+	/* Interupt not m-time interrupt */
+	/* pass the exception code in a0 */
+	//jal 	handle_interrupt
+
+    //Bob: change to jump to handle_irq
+  // a0 as the function argument
+	jal 	handle_irq
+//Bob: Update the rest of code
+	//portRESTORE_X2
+
+  //Complete the IRQ
+  // a0 as the return value
+  li t0, (PIC_CTRL_ADDR + PIC_CLAIM_OFFSET)
+  sw a0, 0(t0)
+
+
+  // Check if there is pending irq to support interrupt tailing
+  li t0, (PIC_CTRL_ADDR + PIC_EIP_OFFSET)// Use t0(x5) as the address register
+  lw t0, 0(t0)// Read the value from PIC EIP reg
+  bnez t0, call_irq // If the EIP reg is not zero, means there is a pending register
+
+  // Restore the MIPC/IStatus reg
+  RESTORE_MIPC_ISTATUS
+
+	popREGFILE_Caller
+	mret
+
+//Bob: MTIME_IRQ is special which need to used to switch context, hence need to use special macro
+	/* Interupt is m-time  */
+MTIME_IRQ:
+        //Bob: We need to save the callee before switching the context
+	pushREGFILE_Callee
+	portSAVE_CONTEXT_IRQ
+    // Bob: change the MEPC to MIPC
+	//portSAVE_EPC
+	portSAVE_IPC
+    // a0 as the function argument
+	jal		vPortSysTickHandler
+
+  //Complete the IRQ
+  // a0 as the return value
+  li t0, (PIC_CTRL_ADDR + PIC_CLAIM_OFFSET)
+  sw a0, 0(t0)
+
+    // Bob: change the MEPC to MIPC
+	//portRESTORE_CONTEXT
+	portRESTORE_CONTEXT_IRQ
+	popREGFILE
+	mret
+#endif
 
 .align 2
 .globl MTIME_HANDLER
@@ -428,7 +542,9 @@ xPortStartScheduler:
 .align 6
 vPortYield:
 	mv		sp,a0
-
+#ifdef N200_REVA
+	portSAVE_EPC
+#endif
 	portSAVE_CONTEXT_EXCP
 
 	STORE	a1, 33 * REGBYTES(sp)

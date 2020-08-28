@@ -73,6 +73,10 @@ void GPIOInterruptHandler(uint32_t num, uint32_t priority);
 void vApplicationIdleHook( void );
 
 
+extern void trap_entry(void);
+extern void irq_entry(void);
+
+
 /* Binary Semaphore */
 QueueHandle_t xGPIOSemaphore[INT_TEST_NEST_DEPTH];
 QueueHandle_t xMessageQueue[TASK_TEST_QUEUE_NUM];
@@ -141,7 +145,7 @@ static void vPrintTask1( void *pvParameters )
 	{
 		vUartPuts("\nvPTask1 %d\n");
 
-		vTaskDelay(pdMS_TO_TICKS(500));
+		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
 
@@ -150,14 +154,13 @@ static void vPrintTask2( void *pvParameters )
 	unsigned int time;
     /*make compiler happy*/
     pvParameters = pvParameters;
-	vTaskDelay(pdMS_TO_TICKS(500));
+	vTaskDelay(pdMS_TO_TICKS(50));
 	for ( ;; )
 	{
 		vUartPuts("\nvPTask2 %d\n");
-		vTaskDelay(pdMS_TO_TICKS(500));
+		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
-
 
 // Test target board
 int main(void)
@@ -182,6 +185,9 @@ int main(void)
 
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
+
+	write_csr(mtvec, &trap_entry);
+	write_csr_mivec(&irq_entry);
 
 	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();

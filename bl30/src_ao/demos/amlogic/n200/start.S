@@ -9,6 +9,7 @@
 	.type _start,@function
 _start:
 	csrc CSR_MSTATUS, MSTATUS_MIE
+#ifndef N200_REVA
 	/* Set the the NMI base to share with mtvec by setting CSR_MMISC_CTL */
 	li t0, (0x1 << 9);
 	csrs CSR_MMISC_CTL, t0
@@ -49,7 +50,7 @@ _start:
 	csrs mstatus, t0
 	csrw fcsr, x0
 #endif
-
+#endif
 	.option push
 	.option norelax
 	.option pop
@@ -78,6 +79,7 @@ _bss_end:
 _bss_start:
 .long _bss
 
+#ifndef N200_REVA
 	.global disable_mcycle_minstret
 disable_mcycle_minstret:
         csrsi CSR_MCOUNTINHIBIT, 0x5
@@ -96,3 +98,4 @@ core_wfe:
     	csrc CSR_WFE, 0x1
     	csrs CSR_MSTATUS, MSTATUS_MIE
 	ret
+#endif

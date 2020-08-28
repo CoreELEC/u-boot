@@ -9,6 +9,7 @@
 #include "n200_func.h"
 #include "register.h"
 #include "common.h"
+#include "n200_timer.h"
 
     // Configure PMP to make all the address space accesable and executable
 void pmp_open_all_space(void){
@@ -76,6 +77,8 @@ uint64_t get_cycle_value(void)
   }
 }
 
+#ifndef N200_REVA
+
 uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n)
 {
   uint32_t start_mtime, delta_mtime;
@@ -115,8 +118,6 @@ uint32_t get_cpu_freq(void)
 
 // Note that there are no assertions or bounds checking on these
 // parameter values.
-
-
 
 
 void eclic_init ( uint32_t num_irq )
@@ -445,3 +446,80 @@ void vClearPendingIrq(uint32_t ulIrq)
 	eclic_clear_pending(ulIrq);
 }
 
+#else
+// Note that there are no assertions or bounds checking on these
+// parameter values.
+
+void pic_set_threshold (
+			 uint32_t threshold){
+
+  volatile uint32_t* threshold_ptr = (uint32_t*) (PIC_CTRL_ADDR +
+                                                              PIC_THRESHOLD_OFFSET
+                                                              );
+
+  *threshold_ptr = threshold;
+
+}
+
+void pic_enable_interrupt (uint32_t source){
+
+  volatile uint32_t * current_ptr = (volatile uint32_t *)(PIC_CTRL_ADDR +
+                                                        PIC_ENABLE_OFFSET +
+                                                        ((source >> 3) & (~0x3))//Source number divide 32 and then multip 4 (bytes)
+                                                        );
+  uint32_t current = *current_ptr;
+  current = current | ( 1 << (source & 0x1f));// Only check the least 5 bits
+  *current_ptr = current;
+
+}
+
+void pic_disable_interrupt (uint32_t source){
+
+  volatile uint32_t * current_ptr = (volatile uint32_t *) (PIC_CTRL_ADDR +
+                                                         PIC_ENABLE_OFFSET +
+                                                         ((source >> 3) & (~0x3))//Source number divide 32 and then multip 4 (bytes)
+                                                          );
+  uint32_t current = *current_ptr;
+  current = current & ~(( 1 << (source & 0x1f)));// Only check the least 5 bits
+  *current_ptr = current;
+}
+
+void pic_set_priority (uint32_t source, uint32_t priority){
+
+  if (PIC_NUM_PRIORITIES > 0) {
+    volatile uint32_t * priority_ptr = (volatile uint32_t *)
+      (PIC_CTRL_ADDR +
+       PIC_PRIORITY_OFFSET +
+       (source << PIC_PRIORITY_SHIFT_PER_SOURCE));// Each priority reg occupy a word, so multiple 2
+    *priority_ptr = priority;
+  }
+}
+
+uint32_t pic_claim_interrupt(void){
+
+  volatile uint32_t * claim_addr = (volatile uint32_t * )
+    (PIC_CTRL_ADDR +
+     PIC_CLAIM_OFFSET
+     );
+
+  return  *claim_addr;
+}
+
+uint32_t pic_check_eip(void){
+
+  volatile uint32_t * eip_addr = (volatile uint32_t * )
+    (PIC_CTRL_ADDR +
+     PIC_EIP_OFFSET
+     );
+
+  return  *eip_addr;
+}
+
+void pic_complete_interrupt(uint32_t source){
+
+  volatile uint32_t * claim_addr = (volatile uint32_t *) (PIC_CTRL_ADDR +
+                                                                PIC_CLAIM_OFFSET
+                                                                );
+  *claim_addr = source;
+}
+#endif

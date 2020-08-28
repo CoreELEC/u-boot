@@ -890,6 +890,7 @@
 #define CSR_MIVEC        0x312
 #define CSR_MNVEC        0x313
 #define CSR_MSUBMODE     0x314
+#define CSR_MSUBM     0x314
 #define CSR_MSCRATCH1    0x350
 #define CSR_MNPC         0x351
 #define CSR_MIPC         0x352

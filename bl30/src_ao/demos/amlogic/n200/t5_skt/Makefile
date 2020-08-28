@@ -33,7 +33,8 @@ export FREERTOS_VENDOR_COMMON := $(FREERTOS_VENDOR)/common
 export FREERTOS_LIB_DIR := $(FREERTOS_ROOT_DIR)/lib
 export FREERTOS_CORE_DIR := $(FREERTOS_LIB_DIR)/FreeRTOS/portable/GCC/$(ARCH_CPU)
 #export FREERTOS_LIB_THIRD_PARTY := $(FREERTOS_LIB_DIR)/third_party/amlogic/$(COMPILER)/libdrivers.a
-SCATTER_RTOSDemo=../standalone.ld
+#SCATTER_RTOSDemo=../standalone.ld
+SCATTER_RTOSDemo=$(COMPILER)/lscript
 BINNAME=RTOSDemo
 
 #$(info $(FREERTOS_CORE_DIR) $(CUR_DIR) $(__GNUC__))
@@ -42,7 +43,7 @@ include $(FREERTOS_VENDOR)/makedefs
 RTOS_SOURCE_DIR = ${FREERTOS_LIB_DIR}/FreeRTOS
 OUTPUT := ./out_t5
 
-CFLAGS += $(WARNINGS) -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ../include/t5 -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
+CFLAGS += $(WARNINGS) -DN200_REVA=1 -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ../include/t5 -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
 
 AFLAGS = $(CFLAGS) -D__ASM
 
@@ -54,7 +55,7 @@ $(info LDFLAGS = $(LDFLAGS))
 #LDFLAGS += -L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/riscv-none-embed/lib/rv32im/ilp32 -lm -lc \
 	-L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/lib/gcc/riscv-none-embed/7.2.0/rv32im/ilp32 -lgcc
 $(info SOC=${SOC} BOARD_DIR=$(BOARD_DIR) FREERTOS_ROOT_DIR=${FREERTOS_ROOT_DIR} RTOS_SOURCE_DIR=${RTOS_SOURCE_DIR})
-VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/n200_reva:$(FREERTOS_VENDOR_DRIVER)/uart
+VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/n200:$(FREERTOS_VENDOR_DRIVER)/uart
 
 OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/list.o    \
@@ -92,7 +93,10 @@ clean:
 ${COMPILER}:
 	@mkdir ${COMPILER}
 
-${COMPILER}/$(BINNAME).axf: ${OBJS}
+${SCATTER_RTOSDemo}: ../standalone.ld
+	@${CC} -E -xc -P ${CFLAGS} -o ${@} ${<}
+
+${COMPILER}/$(BINNAME).axf: ${OBJS} $(SCATTER_RTOSDemo)
 	$(LD) $(OBJS) $(LDFLAGS) -T $(SCATTER_RTOSDemo) -Map $(COMPILER)/RTOSDemo.map -o $@
 	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
 	@$(OBJDUMP) -D ${@} > ${@:.axf=.dis}

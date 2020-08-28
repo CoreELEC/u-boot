@@ -1,5 +1,6 @@
 #ifndef __SOC_H
 #define __SOC_H
+/*
 #ifndef __ASM
 #include "FreeRTOSConfig.h"
 #include "riscv_const.h"
@@ -20,7 +21,11 @@
 #define IO_SIZE                  0x00100000
 #define IO_BEGIN                 (IO_BASE)
 #define IO_END                   (IO_BASE + IO_SIZE)
+*/
 
+#define SOC_PIC_NUM_INTERRUPTS 112
+#define SOC_PIC_CTRL_ADDR 0x03000000
+#define SOC_TMR_CTRL_ADDR 0x02000000
 /*
 #define SOC_LOCAL_SRAM_LENGTH    64*1024
 #define SECPU_LOADER_ENTRY_ZONE_BEGIN \

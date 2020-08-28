@@ -25,6 +25,7 @@
  * This is part of revision 1049 of the Stellaris Driver Library.
  *
  *****************************************************************************/
+#include "lscript.h"
 
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
               "elf32-littleriscv")
@@ -34,9 +35,9 @@ ENTRY( _start )
 
 MEMORY
 {
-/*    ram (rw) : ORIGIN = 0x10000000 + 16*1024, LENGTH = (80 * 1024)*/
-    ram (rw) : ORIGIN = 0xf7028000, LENGTH = (80 * 1024)
+    ram (rw) : ORIGIN = configMEM_START, LENGTH = configMEM_LEN
 }
+
 
 SECTIONS
 {
@@ -44,7 +45,11 @@ SECTIONS
 
     .text :
     {
+#if N200_REVA
+	KEEP (*(SORT_NONE(.init)))
+#else
 	*(.vtable)
+#endif
         . = ALIGN(4);
         *(.text)
         *(.rodata*)
@@ -70,7 +75,7 @@ SECTIONS
         _ebss = .;
     } > ram
 
-/*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size - 45*1204:*/
+/*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size :*/
     .stack :
     {
         PROVIDE( _heap_end = . );
@@ -78,9 +83,10 @@ SECTIONS
         . += __stack_size;
         PROVIDE( _sp = . );
     } >ram
-
+#if N200_REVA
     .init :
     {
-        KEEP (*(SORT_NONE(.init)))
+    	KEEP (*(SORT_NONE(.init)))
     } >ram
+#endif
 }

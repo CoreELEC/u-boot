@@ -33,6 +33,7 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
+#include "btwake.h"
 
 #include "hdmi_cec.h"
 
@@ -77,6 +78,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vGpioKeyEnable();
 	vGpioIRQInit();
+	bt_task_start();
 }
 
 void str_hw_disable(void)
@@ -88,8 +90,10 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 		/*printf("del cec task\n");*/
 	}
-
+	bt_task_disable();
+	printf("bt task disable\n");
 	vGpioKeyDisable();
+	printf("vGpioKeyDisable\n");
 	vRestoreGpioIrqReg();
 }
 

@@ -148,8 +148,9 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler,
 	iprintf("bk->parentIRQs[i].irq is %d\n", bk->parentIRQs[i].irq);
 	if (ucCurIrqNum) {
 		vGpioHandlerGroup[i].vhandler = handler;
-		vClearPendingIrq(ucCurIrqNum);
-		vEnableIrq(ucCurIrqNum, bk->parentIRQs[i].irq);
+		ClearPendingIrq(ucCurIrqNum);
+		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
+		//vEnableIrq(ucCurIrqNum, bk->parentIRQs[i].irq);
 	}
 
 	return 0;
@@ -162,7 +163,7 @@ static void prvFreeParentIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			vDisableIrq(vGpioHandlerGroup[i].ucIrqNum);
+			DisableIrq(vGpioHandlerGroup[i].ucIrqNum);
 			vGpioHandlerGroup[i].vhandler = NULL;
 			bk->parentIRQs[i].owner = GPIO_INVALID;
 			bk->parentIRQs[i].flags = 0;
@@ -197,9 +198,10 @@ void vEnableGpioIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			vClearPendingIrq(vGpioHandlerGroup[i].ucIrqNum);
-			vEnableIrq(vGpioHandlerGroup[i].ucIrqNum,
-				   bk->parentIRQs[i].irq);
+			ClearPendingIrq(vGpioHandlerGroup[i].ucIrqNum);
+		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
+			//vEnableIrq(vGpioHandlerGroup[i].ucIrqNum,
+			//	   bk->parentIRQs[i].irq);
 		}
 	}
 }
@@ -211,7 +213,7 @@ void vDisableGpioIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			vDisableIrq(vGpioHandlerGroup[i].ucIrqNum);
+			DisableIrq(vGpioHandlerGroup[i].ucIrqNum);
 		}
 	}
 }

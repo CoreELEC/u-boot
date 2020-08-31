@@ -22,12 +22,15 @@ extern void eclic_irq50_handler(void);
  * Macro to connect the interrupt handler "routine" to the irq number "irq" and
  * ensure it is enabled in the interrupt controller with the right priority.
  */
+#if 0
 #define DECLARE_IRQ(irq, routine) DECLARE_IRQ_(irq, routine)
 #define DECLARE_IRQ_(irq, routine)                    \
 	void IRQ_HANDLER(irq)(void)				\
 	{							\
 		routine();				\
 	}
+#endif
+#define DECLARE_IRQ(irq, routine)
 
 /*IRQ_NUM define list*/
 #define IRQ_NUM_MB_0	50

@@ -388,11 +388,12 @@ void clean_int_src(void)
 	for (uint32_t i=0; i<8; i++)
 		REG32(AOCPU_IRQ_SEL0 + i*4) = 0;
 }
+
 int int_src_sel(uint32_t ulIrq, uint32_t src)
 {
 	uint32_t index;
 
-	if (ulIrq <= ECLIC_INTERNAL_NUM_INTERRUPTS ||
+	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS ||
 		ulIrq > ECLIC_NUM_INTERRUPTS) {
 		printf("Error ulIrq!\n");
 		return -1;
@@ -411,16 +412,33 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 	return 0;
 }
 
+int int_src_clean(uint32_t ulIrq)
+{
+	uint32_t index;
+
+	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS ||
+		ulIrq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	}
+
+	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
+
+	index = ulIrq/4;
+	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
+	return 0;
+}
+
 /*Just for external interrupt source.
  *Because int_src_sel() just support external select
  */
-void vEnableIrq(uint32_t ulIrq, uint32_t src)
+int eclic_map_interrupt(uint32_t ulIrq, uint32_t src)
 {
 	uint8_t val;
 
 	if (int_src_sel(ulIrq, src)) {
 		printf("Enable %ld irq, %ld src fail!\n", ulIrq, src);
-		return;
+		return -1;
 	}
 
 	val = eclic_get_intattr (ulIrq);
@@ -428,41 +446,130 @@ void vEnableIrq(uint32_t ulIrq, uint32_t src)
 	/*Use edge trig interrupt default*/
 	val |= ECLIC_INT_ATTR_TRIG_EDGE;
 	eclic_set_intattr(ulIrq, val);
-	eclic_enable_interrupt(ulIrq);
+	//eclic_enable_interrupt(ulIrq);
+	return 0;
 }
 
-void vDisableIrq(uint32_t ulIrq)
+int eclic_interrupt_inner[SOC_ECLIC_NUM_INTERRUPTS] = {0};
+extern uint32_t vector_base;
+
+int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
+	int irq = 0;
+
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == 0)
+			break;
+	}
+	if (eclic_map_interrupt(irq, int_num) < 0) {
+		printf("eclic map error.\n");
+		return -1;
+	}
+	eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = int_num;
+
+	*(&vector_base + irq) = handler;
+	eclic_set_irq_pri(irq, int_priority);
+
+	return 0;
+}
+
+int UnRegisterIrq(uint32_t ulIrq)
 {
-	eclic_disable_interrupt(ulIrq);
+	int irq = 0;
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			break;
+	}
+	if (irq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	} else {
+		if (int_src_clean(irq)) {
+			printf("unregister %ld irq, %ld src fail!\n", ulIrq, irq);
+			return -1;
+		}
+		eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = 0;
+		*(&vector_base + irq) = 0;
+	}
+	return 0;
 }
 
-void vSetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
+int EnableIrq(uint32_t ulIrq)
 {
-	eclic_set_irq_pri(ulIrq, ulProi);
+	int irq = 0;
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			break;
+	}
+	if (irq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	} else {
+		eclic_enable_interrupt(irq);
+	}
+	return 0;
 }
 
-void vClearPendingIrq(uint32_t ulIrq)
+int DisableIrq(uint32_t ulIrq)
 {
-	eclic_clear_pending(ulIrq);
+	int irq = 0;
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			break;
+	}
+	if (irq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	} else {
+		eclic_disable_interrupt(irq);
+	}
+	return 0;
 }
 
+int SetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
+{
+	int irq = 0;
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			break;
+	}
+	if (irq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	} else {
+		eclic_set_irq_pri(irq, ulProi);
+	}
+	return 0;
+}
+
+int ClearPendingIrq(uint32_t ulIrq)
+{
+	int irq = 0;
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			break;
+	}
+	if (irq > ECLIC_NUM_INTERRUPTS) {
+		printf("Error ulIrq!\n");
+		return -1;
+	} else {
+		eclic_clear_pending(irq);
+	}
+	return 0;
+}
 #else
 // Note that there are no assertions or bounds checking on these
 // parameter values.
 
-void pic_set_threshold (
-			 uint32_t threshold){
-
+void pic_set_threshold(uint32_t threshold)
+{
   volatile uint32_t* threshold_ptr = (uint32_t*) (PIC_CTRL_ADDR +
-                                                              PIC_THRESHOLD_OFFSET
-                                                              );
+						  PIC_THRESHOLD_OFFSET);
 
   *threshold_ptr = threshold;
-
 }
 
-void pic_enable_interrupt (uint32_t source){
-
+void pic_enable_interrupt(uint32_t source)
+{
   volatile uint32_t * current_ptr = (volatile uint32_t *)(PIC_CTRL_ADDR +
                                                         PIC_ENABLE_OFFSET +
                                                         ((source >> 3) & (~0x3))//Source number divide 32 and then multip 4 (bytes)
@@ -470,7 +577,6 @@ void pic_enable_interrupt (uint32_t source){
   uint32_t current = *current_ptr;
   current = current | ( 1 << (source & 0x1f));// Only check the least 5 bits
   *current_ptr = current;
-
 }
 
 void pic_disable_interrupt (uint32_t source){
@@ -521,5 +627,47 @@ void pic_complete_interrupt(uint32_t source){
                                                                 PIC_CLAIM_OFFSET
                                                                 );
   *claim_addr = source;
+}
+
+void DefaultInterruptHandler(void)
+{
+}
+
+int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
+    pic_interrupt_handlers[int_num] = handler;
+    pic_set_priority(int_num, int_priority);
+   // pic_enable_interrupt (int_num);
+    return 0;
+}
+
+int UnRegisterIrq(uint32_t int_num)
+{
+    pic_interrupt_handlers[int_num] = DefaultInterruptHandler;
+    pic_set_priority(int_num, 0);
+
+    return 0;
+}
+
+int EnableIrq(uint32_t ulIrq)
+{
+    pic_enable_interrupt(ulIrq);
+    return 0;
+}
+
+int DisableIrq(uint32_t ulIrq)
+{
+    pic_disable_interrupt(ulIrq);
+    return 0;
+}
+
+int SetIrqPriority(uint32_t ulIrq, uint32_t ulPri)
+{
+    pic_set_priority(ulIrq, ulPri);
+    return 0;
+}
+
+int ClearPendingIrq(uint32_t ulIrq)
+{
+    return 0;
 }
 #endif

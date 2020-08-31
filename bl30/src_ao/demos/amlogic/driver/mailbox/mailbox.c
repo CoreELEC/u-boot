@@ -86,7 +86,7 @@ void vMbHandleIsr(void)
 		val = (val | ulPreVal) ^ ulPreVal;
 	}
 }
-DECLARE_IRQ(IRQ_NUM_MB_4, vMbHandleIsr)
+//DECLARE_IRQ(IRQ_NUM_MB_4, vMbHandleIsr)
 
 /*Ree 2 AOCPU mailbox*/
 static void vAoRevMbHandler(void *vArg)
@@ -212,7 +212,10 @@ void vMbInit(void)
 
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, MAILBOX_ARMTEE2AO, 10);
 
-	vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
+	//vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
+	RegisterIrq(MAILBOX_AOCPU_IRQ, 1, vMbHandleIsr);
+	//printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
+	EnableIrq(MAILBOX_AOCPU_IRQ);
 
 	xTaskCreate(vSyncTask,
 		    "AOReeSyncTask",

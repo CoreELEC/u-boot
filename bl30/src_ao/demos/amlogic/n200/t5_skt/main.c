@@ -68,7 +68,6 @@
 #define INT_TEST_MUTE_TIMER_PERIOD	200 // ms
 
 /* Interrupt handler */
-void DefaultInterruptHandler(void);
 void GPIOInterruptHandler(uint32_t num, uint32_t priority);
 void vApplicationIdleHook( void );
 
@@ -91,13 +90,6 @@ static void vPrintString(const char* msg)
 	taskEXIT_CRITICAL();
 }
 */
-//enables interrupt and assigns handler
-void enable_interrupt(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
-    pic_interrupt_handlers[int_num] = handler;
-    pic_set_priority(int_num, int_priority);
-    pic_enable_interrupt (int_num);
-}
-
 /* function: vPICInit */
 static void vPICInit(void) {
 
@@ -126,8 +118,6 @@ static void vPICInit(void) {
 	// Enable global interrupt
 	set_csr(mstatus, MSTATUS_MIE);
 }
-
-void DefaultInterruptHandler(void){}
 
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	taskENTER_CRITICAL();

@@ -1237,7 +1237,8 @@ void cec_req_irq(u32 onoff)
 {
 #if CEC_USE_IRQ
 	if (onoff) {
-		vEnableIrq(IRQ_NUM_CECB, 180);/*B:180,A:179*/
+		//vEnableIrq(IRQ_NUM_CECB, 180);/*B:180,A:179*/
+		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
 		vClearPendingIrq(IRQ_NUM_CECB);
 	} else {
 		vDisableIrq(IRQ_NUM_CECB);/*B:180,A:179*/

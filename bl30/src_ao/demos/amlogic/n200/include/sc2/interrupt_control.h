@@ -1,34 +1,7 @@
-// See LICENSE file for licence details
+#ifndef INTERRUPT_CONTROL_H_
+#define INTERRUPT_CONTROL_H_
 
-#ifndef N200_FUNC_H
-#define N200_FUNC_H
-
-__BEGIN_DECLS
-
-#include "n200_timer.h"
 #include "n200_eclic.h"
-
-void pmp_open_all_space(void);
-
-void switch_m2u_mode(void);
-
-uint32_t get_mtime_freq(void);
-
-uint32_t mtime_lo(void);
-
-uint32_t mtime_hi(void);
-
-uint64_t get_mtime_value(void);
-
-uint64_t get_instret_value(void);
-
-uint64_t get_cycle_value(void);
-
-uint32_t get_cpu_freq(void);
-
-uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n);
-
-
 ///////////////////////////////////////////////////////////////////
 /////// ECLIC relevant functions
 ///////
@@ -75,19 +48,15 @@ void eclic_set_nonvmode(uint32_t source);
 void eclic_set_level_trig(uint32_t source);
 void eclic_set_posedge_trig(uint32_t source);
 void eclic_set_negedge_trig(uint32_t source);
-void wfe(void);
-uint64_t get_timer_value(void);
-uint32_t get_timer_freq(void);
+
+int eclic_map_interrupt(uint32_t ulIrq, uint32_t src);
+
 void print_eclic(void);
-void test_handler(void);
 
 void clean_int_src(void);
 int int_src_sel(uint32_t ulIrq, uint32_t src);
-void vEnableIrq(uint32_t ulIrq, uint32_t src);
-void vDisableIrq(uint32_t ulIrq);
-void vSetIrqPriority(uint32_t ulIrq, uint32_t ulProi);
-void vClearPendingIrq(uint32_t ulIrq);
+int int_src_clean(uint32_t ulIrq);
 
-__END_DECLS
+typedef void (*function_ptr_t) (void);
 
 #endif

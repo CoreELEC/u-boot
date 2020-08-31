@@ -172,8 +172,9 @@ void vAdcInit(void)
 			  0x13 << SAR_CLK_DIV_SHIFT);
 
 	/* interrupt initialization */
-	vClearPendingIrq(IRQ_NUM_SARADC);
-	vEnableIrq(IRQ_NUM_SARADC, SARADC_INTERRUPT_NUM);
+	ClearPendingIrq(IRQ_NUM_SARADC);
+	//vEnableIrq(IRQ_NUM_SARADC, SARADC_INTERRUPT_NUM);
+	printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
 
 	/* create mutex semaphore */
 	adcSemaphoreMutex = xSemaphoreCreateMutex();
@@ -186,7 +187,7 @@ void vAdcInit(void)
 
 void vAdcDeinit(void)
 {
-	vDisableIrq(IRQ_NUM_SARADC);
+	DisableIrq(IRQ_NUM_SARADC);
 }
 
 void vAdcHwEnable(void)

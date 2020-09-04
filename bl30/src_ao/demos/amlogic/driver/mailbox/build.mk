@@ -23,4 +23,13 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-mailbox-y = mailbox.o mailbox-irq.o mailbox-htbl.o rpc-user.o
+
+ifeq ("$(SOC)","sc2")
+MAILBOX=y
+endif
+ifeq ("$(SOC)","t5")
+MAILBOX_PL=y
+endif
+
+mailbox-$(MAILBOX) = mailbox.o mailbox-irq.o mailbox-htbl.o rpc-user.o
+mailbox-$(MAILBOX_PL) = mailbox-pl.o mailbox-htbl.o rpc-user.o

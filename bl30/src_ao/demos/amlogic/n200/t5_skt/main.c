@@ -36,6 +36,7 @@
 #include "n200_func.h"
 #include "uart.h"
 #include "common.h"
+#include "mailbox-api.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -151,7 +152,7 @@ static void vPrintTask2( void *pvParameters )
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
-
+extern void vMbInit(void);
 // Test target board
 int main(void)
 {
@@ -167,6 +168,7 @@ int main(void)
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i);
 
+	vMbInit();
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
 

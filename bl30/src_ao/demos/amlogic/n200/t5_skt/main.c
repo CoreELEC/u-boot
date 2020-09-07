@@ -37,6 +37,7 @@
 #include "uart.h"
 #include "common.h"
 #include "mailbox-api.h"
+#include "version.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -160,6 +161,7 @@ int main(void)
 	uint32_t queue_index[] = {0, 1, 2, 3};
 
 	vUartPuts("Starting N205 FreeRTOS\n");
+	version();
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();

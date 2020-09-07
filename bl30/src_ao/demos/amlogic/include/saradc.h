@@ -36,9 +36,6 @@ extern "C" {
 #endif
 #include <saradc-data.h>
 
-/* sc2 saradc interrupt num */
-#define SARADC_INTERRUPT_NUM	181
-
 /**
  * enum AdcChannelType - type of ADC Channel
  */

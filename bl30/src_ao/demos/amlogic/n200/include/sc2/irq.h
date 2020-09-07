@@ -7,8 +7,6 @@ extern void eclic_irq22_handler(void);
 extern void eclic_irq23_handler(void);
 extern void eclic_irq24_handler(void);
 
-extern void eclic_irq25_handler(void);
-
 extern void eclic_irq50_handler(void);
 
 #define CONCAT_STAGE_1(w, x, y, z) w ## x ## y ## z
@@ -44,9 +42,6 @@ extern void eclic_irq50_handler(void);
 
 /* use for ir */
 #define IRQ_NUM_IRIN	22
-
-/* saradc */
-#define IRQ_NUM_SARADC	25
 
 /* cec */
 #define IRQ_NUM_CECA	40

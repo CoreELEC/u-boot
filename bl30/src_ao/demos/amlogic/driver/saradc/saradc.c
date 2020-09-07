@@ -132,6 +132,8 @@
 
 #define SARADC_REG13					0x34
 
+static void vAdcHandlerISR(void);
+
 const char *const ch7Vol[] = {
 	"gnd",
 	"vdd/4",
@@ -172,9 +174,9 @@ void vAdcInit(void)
 			  0x13 << SAR_CLK_DIV_SHIFT);
 
 	/* interrupt initialization */
-	ClearPendingIrq(IRQ_NUM_SARADC);
-	//vEnableIrq(IRQ_NUM_SARADC, SARADC_INTERRUPT_NUM);
-	printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
+	RegisterIrq(SARADC_INTERRUPT_NUM, 1, vAdcHandlerISR);
+	ClearPendingIrq(SARADC_INTERRUPT_NUM);
+	EnableIrq(SARADC_INTERRUPT_NUM);
 
 	/* create mutex semaphore */
 	adcSemaphoreMutex = xSemaphoreCreateMutex();
@@ -187,7 +189,8 @@ void vAdcInit(void)
 
 void vAdcDeinit(void)
 {
-	DisableIrq(IRQ_NUM_SARADC);
+	DisableIrq(SARADC_INTERRUPT_NUM);
+	UnRegisterIrq(SARADC_INTERRUPT_NUM);
 }
 
 void vAdcHwEnable(void)
@@ -352,7 +355,6 @@ static void vAdcHandlerISR(void)
 
 	portYIELD_FROM_ISR(reschedule);
 }
-DECLARE_IRQ(IRQ_NUM_SARADC, vAdcHandlerISR)
 
 int32_t xAdcGetSample(uint16_t *data, uint16_t datNum,
 		      AdcInstanceConfig_t *conf)

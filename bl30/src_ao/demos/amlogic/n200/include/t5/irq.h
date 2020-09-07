@@ -37,7 +37,7 @@ extern void eclic_irq50_handler(void);
 /*You can add other interrupts num here 46~19*/
 
 /* use for ir */
-#define IRQ_NUM_IRIN	24
+#define IRQ_NUM_IRIN	7
 
 /* gpio key/blutooth or others gpio irq useage*/
 #define IRQ_NUM_GPIO3	23

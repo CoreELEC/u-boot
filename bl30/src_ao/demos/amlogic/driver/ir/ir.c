@@ -243,9 +243,9 @@ void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 	xDrvData->ucCurWorkMode = usWorkMode;
 	xDrvData->vIRHandler = vIRHandler;
 
+	RegisterIrq(IRQ_NUM_IRIN, 2, vIRIntteruptHandler);
 	ClearPendingIrq(IRQ_NUM_IRIN);
-	printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
-//	vEnableIrq(IRQ_NUM_IRIN, IR_INTERRUPT_NUM);
+	EnableIrq(IRQ_NUM_IRIN);
 
 	xDrvData->ucIsInit = 1;
 }
@@ -260,6 +260,5 @@ void vIRDeint(void)
 	xDrvData->vIRHandler = NULL;
 
 	DisableIrq(IRQ_NUM_IRIN);
+	UnRegisterIrq(IRQ_NUM_IRIN);
 }
-
-DECLARE_IRQ(IRQ_NUM_IRIN, vIRIntteruptHandler)

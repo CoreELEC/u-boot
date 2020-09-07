@@ -46,18 +46,6 @@ struct vGpioHandler {
 	uint8_t ucIrqNum;
 };
 
-static struct vGpioHandler vGpioHandlerGroup[] = {
-	{NULL, IRQ_NUM_GPIO0},
-	{NULL, IRQ_NUM_GPIO1},
-	{NULL, IRQ_NUM_GPIO2},
-	{NULL, IRQ_NUM_GPIO3},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-};
-
-
 static uint32_t GpioIrqRegBackup[IRQ_REG_NUM] = {0};
 
 void vGpioIRQInit(void)
@@ -144,14 +132,11 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler,
 
 	prvGpioSetupIRQ(irq, i, flags);
 
-	ucCurIrqNum = vGpioHandlerGroup[i].ucIrqNum;
 	iprintf("bk->parentIRQs[i].irq is %d\n", bk->parentIRQs[i].irq);
-	if (ucCurIrqNum) {
-		vGpioHandlerGroup[i].vhandler = handler;
-		ClearPendingIrq(ucCurIrqNum);
-		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
-		//vEnableIrq(ucCurIrqNum, bk->parentIRQs[i].irq);
-	}
+
+	RegisterIrq(bk->parentIRQs[i].irq, 2, handler);
+	ClearPendingIrq(bk->parentIRQs[i].irq);
+	EnableIrq(bk->parentIRQs[i].irq);
 
 	return 0;
 }
@@ -163,10 +148,10 @@ static void prvFreeParentIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			DisableIrq(vGpioHandlerGroup[i].ucIrqNum);
-			vGpioHandlerGroup[i].vhandler = NULL;
+			DisableIrq(bk->parentIRQs[i].irq);
 			bk->parentIRQs[i].owner = GPIO_INVALID;
 			bk->parentIRQs[i].flags = 0;
+			UnRegisterIrq(bk->parentIRQs[i].irq);
 		}
 	}
 }
@@ -198,10 +183,8 @@ void vEnableGpioIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			ClearPendingIrq(vGpioHandlerGroup[i].ucIrqNum);
-		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
-			//vEnableIrq(vGpioHandlerGroup[i].ucIrqNum,
-			//	   bk->parentIRQs[i].irq);
+			ClearPendingIrq(bk->parentIRQs[i].irq);
+			EnableIrq(bk->parentIRQs[i].irq);
 		}
 	}
 }
@@ -213,7 +196,7 @@ void vDisableGpioIRQ(uint16_t gpio)
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio) {
-			DisableIrq(vGpioHandlerGroup[i].ucIrqNum);
+			DisableIrq(bk->parentIRQs[i].irq);
 		}
 	}
 }
@@ -241,33 +224,3 @@ void vBackupAndClearGpioIrqReg(void)
 		REG32((unsigned long)(GPIO_EE_IRQ_BASE + 0x04 * ucIndex)) = 0;
 
 }
-
-/* add more if necessary */
-static void GPIO_IRQ_Handler0(void)
-{
-	if (vGpioHandlerGroup[0].vhandler)
-		vGpioHandlerGroup[0].vhandler();
-}
-
-static void GPIO_IRQ_Handler1(void)
-{
-	if (vGpioHandlerGroup[1].vhandler)
-		vGpioHandlerGroup[1].vhandler();
-}
-
-static void GPIO_IRQ_Handler2(void)
-{
-	if (vGpioHandlerGroup[2].vhandler)
-		vGpioHandlerGroup[2].vhandler();
-}
-
-static void GPIO_IRQ_Handler3(void)
-{
-	if (vGpioHandlerGroup[3].vhandler)
-		vGpioHandlerGroup[3].vhandler();
-}
-
-DECLARE_IRQ(IRQ_NUM_GPIO0, GPIO_IRQ_Handler0)
-DECLARE_IRQ(IRQ_NUM_GPIO1, GPIO_IRQ_Handler1)
-DECLARE_IRQ(IRQ_NUM_GPIO2, GPIO_IRQ_Handler2)
-DECLARE_IRQ(IRQ_NUM_GPIO3, GPIO_IRQ_Handler3)

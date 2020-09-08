@@ -24,7 +24,12 @@ function build_bl2() {
 		#echo "Storage with --bl2ex --dpre"
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dsto
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dusb
+		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE}
 		target="$1/bl2.bin*"
+		targetv3="$1/chip_acs.bin"
+	elif [ "$3" == "t7" ]; then
+		#echo "Storage with --pxp --dpre"
+		/bin/bash mk $3 --pxp
 		targetv3="$1/chip_acs.bin"
 	else
 		/bin/bash mk $3
@@ -49,8 +54,14 @@ function build_bl2e() {
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
-	#echo "Storage without --pxp"
-	/bin/bash mk $3
+	if [ "$3" == "t7" ]; then
+		#echo "Storage with --pxp --dpre"
+		/bin/bash mk $3 --pxp
+	else
+		#echo "Storage without --pxp"
+		/bin/bash mk $3
+	fi
+
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
 		echo "Error: Build bl2 failed... abort"
@@ -68,8 +79,14 @@ function build_bl2x() {
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
-	#echo "Storage/Preloading without --pxp"
-	/bin/bash mk $3
+	if [ "$3" == "t7" ]; then
+		#echo "Storage with --pxp --dpre"
+		/bin/bash mk $3 --pxp
+	else
+		#echo "Storage/Preloading without --pxp"
+		/bin/bash mk $3
+	fi
+
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}
 		echo "Error: Build bl2x failed... abort"

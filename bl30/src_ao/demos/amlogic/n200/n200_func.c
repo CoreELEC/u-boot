@@ -77,6 +77,21 @@ uint64_t get_cycle_value(void)
   }
 }
 
+unsigned long interrupt_status_get(void)
+{
+	return read_csr(mstatus) >> 0x3;
+}
+
+void interrupt_disable(void)
+{
+	clear_csr(mstatus, MSTATUS_MIE);
+}
+
+void interrupt_enable(void)
+{
+	set_csr(mstatus, MSTATUS_MIE);
+}
+
 #ifndef N200_REVA
 
 uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n)
@@ -666,8 +681,50 @@ int SetIrqPriority(uint32_t ulIrq, uint32_t ulPri)
     return 0;
 }
 
+static unsigned int irq_setting[IRQ_EN_REG_NUM];
+/*N205 does not support clear pending irq.*
+ *Need use work around to clear pending:  *
+ *1. disable irq (MIE)                    *
+ *2. store and disable current enable irq *
+ *3. enable target irq                    *
+ *4. claim and complete target irq        *
+ *5. disable target irq                   *
+ *6. restore current irq enable setting   *
+ *7. enable irq (MIE)
+*/
 int ClearPendingIrq(uint32_t ulIrq)
 {
-    return 0;
+	unsigned int i;
+	volatile uint32_t * current_ptr;
+	unsigned long irq_status;
+
+	irq_status = interrupt_status_get();
+	if (irq_status)
+		interrupt_disable();
+
+	for (i = 0; i < IRQ_EN_REG_NUM; i++)
+	{
+		current_ptr =
+			(volatile uint32_t *)(PIC_CTRL_ADDR + PIC_ENABLE_OFFSET + i*4);
+		irq_setting[i] =
+			REG32(current_ptr);
+		REG32(current_ptr) = 0;
+	}
+	pic_enable_interrupt(ulIrq);
+	i = pic_claim_interrupt();
+	if (i)
+		pic_complete_interrupt(i);
+	pic_disable_interrupt(ulIrq);
+
+	for (i = 0; i < IRQ_EN_REG_NUM; i++)
+	{
+		current_ptr =
+			(volatile uint32_t *)(PIC_CTRL_ADDR + PIC_ENABLE_OFFSET + i*4);
+		REG32(current_ptr) = irq_setting[i];
+	}
+
+	if (irq_status)
+		interrupt_enable();
 }
+
 #endif

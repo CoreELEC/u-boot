@@ -57,8 +57,8 @@ _start:
 	la sp, _sp
 
 	/* Clear bss section */
-	la a0, _bss_start
-	la a1, _bss_end
+	lw a0, _bss_start
+	lw a1, _bss_end
 	bgeu a0, a1, 2f
 1:
 	sw zero, (a0)

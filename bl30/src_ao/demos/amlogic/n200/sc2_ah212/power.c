@@ -76,7 +76,7 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
-	vGpioKeyEnable();
+	vAdcKeyEnable();
 	vGpioIRQInit();
 	bt_task_start();
 }
@@ -92,7 +92,7 @@ void str_hw_disable(void)
 	}
 	bt_task_disable();
 	printf("bt task disable\n");
-	vGpioKeyDisable();
+	vAdcKeyDisable();
 	printf("vGpioKeyDisable\n");
 	vRestoreGpioIrqReg();
 }

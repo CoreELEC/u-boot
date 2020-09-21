@@ -49,7 +49,7 @@ function fix_blx() {
 		blx_bin_limit=49152   # SWPL-8468 2019-05-16 update, 40960->49152
 		blx01_bin_limit=13312 # PD#132613 2016-10-31 update, 12288->13312
 	elif [ "$7" = "bl2" ]; then
-		blx_bin_limit=77824 #76KB 
+		blx_bin_limit=73728 #72KB
 		blx01_bin_limit=4096
 	else
 		echo "blx_fix name flag not supported!"

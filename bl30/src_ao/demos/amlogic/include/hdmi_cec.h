@@ -6,6 +6,14 @@
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
 
+/* cec chip version
+ * freeRTOS after TM2 support cec function
+ */
+enum cec_chip_ver {
+	CEC_CHIP_SC2,
+	CEC_CHIP_T5,
+};
+
 /*cec API for suspend*/
 
 
@@ -30,9 +38,9 @@ u32 cec_get_wakup_flag(void);
 
 void cec_req_irq(u32 onoff);
 void cec_delay(u32 cnt);
-void vCecCallbackInit(void);
 void cec_update_config_data(void *data);
 void cec_update_phyaddress(unsigned int phyaddr);
 void cec_update_func_cfg(unsigned int cfg);
 
+void vCecCallbackInit(enum cec_chip_ver chip_mode);
 #endif

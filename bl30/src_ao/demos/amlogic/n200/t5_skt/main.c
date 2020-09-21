@@ -38,6 +38,7 @@
 #include "common.h"
 #include "mailbox-api.h"
 #include "version.h"
+#include "hdmi_cec.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -180,6 +181,7 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
+	vCecCallbackInit(CEC_CHIP_T5);
 	write_csr(mtvec, &trap_entry);
 	write_csr_mivec(&irq_entry);
 

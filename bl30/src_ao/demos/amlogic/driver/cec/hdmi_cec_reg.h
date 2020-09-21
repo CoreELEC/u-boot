@@ -26,6 +26,34 @@
 #define CONFIG_CEC_OSD_NAME "AML_TV"
 #endif
 
+#define CEC_VERSION "freeRTOS cec:2020/0923"
+
+enum cec_reg_idx {
+	CECA_REG_CLK_CNTL_REG0 = 0,
+	CECA_REG_CLK_CNTL_REG1,	/*1*/
+	CECA_REG_GEN_CNTL,	/*2*/
+	CECA_REG_RW_REG,
+	CECA_REG_INTR_MASKN,
+	CECA_REG_INTR_CLR,
+	CECA_REG_INTR_STAT,
+
+	CECB_REG_CLK_CNTL_REG0,	/*7*/
+	CECB_REG_CLK_CNTL_REG1,	/*8*/
+	CECB_REG_GEN_CNTL,	/*9*/
+	CECB_REG_RW_REG, 	/*0xa*/
+	CECB_REG_INTR_MASKN,	/*0xb*/
+	CECB_REG_INTR_CLR,	/*0xc*/
+	CECB_REG_INTR_STAT,	/*0xd*/
+
+	CEC_REG_STS0,
+	CEC_REG_STS1,
+
+	CEC_REG_DEF_END
+};
+
+#define REG_MASK_ADDR	0x00ffffff
+//#define REG_MASK_PR	0x01000000/*periphs register*/
+
 /* FOR AO_CECB */
 #define DWC_CECB_CTRL                0x00
 #define DWC_CECB_CTRL2               0x01/*tl1 later*/

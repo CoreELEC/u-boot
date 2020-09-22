@@ -109,12 +109,7 @@ function encrypt() {
 
 	encrypt_step --bootmk  --output ${BUILD_PATH}/u-boot.bin \
 		--bl2   ${BUILD_PATH}/bl2.n.bin.sig  \
-		--bl31  ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${FIP_BL32_PROCESS} --bl33  ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} \
-		--ddrfw1  ./${FIP_FOLDER}${CUR_SOC}/ddr4_1d.fw --ddrfw2  ./${FIP_FOLDER}${CUR_SOC}/ddr4_2d.fw \
-		--ddrfw3  ./${FIP_FOLDER}${CUR_SOC}/ddr3_1d.fw --ddrfw4  ./${FIP_FOLDER}${CUR_SOC}/piei.fw \
-		--ddrfw5  ./${FIP_FOLDER}${CUR_SOC}/lpddr4_1d.fw --ddrfw6  ./${FIP_FOLDER}${CUR_SOC}/lpddr4_2d.fw \
-		--ddrfw7  ./${FIP_FOLDER}${CUR_SOC}/diag_lpddr4.fw --ddrfw8 ./${FIP_FOLDER}${CUR_SOC}/${DDR_FW_NAME} \
-		--ddrfw9  ./${FIP_FOLDER}${CUR_SOC}/lpddr3_1d.fw
+		--bl31  ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${FIP_BL32_PROCESS} --bl33  ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} 
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
 		echo "no action!"

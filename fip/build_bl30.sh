@@ -13,7 +13,7 @@ function build_bl30() {
 	fi
 	#make clean BOARD=$soc &> /dev/null
 	#make BOARD=$soc &> /dev/null
-	if [ "sc2" == "$soc" ]; then
+	if [[ "sc2" == "$soc" || "t5" == "$soc" ]]; then
 		/bin/bash mk ${BL30_SELECT}
 	else
 		/bin/bash mk $soc

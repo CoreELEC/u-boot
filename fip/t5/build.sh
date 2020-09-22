@@ -46,8 +46,8 @@ function fix_blx() {
 
 	#$7:name flag
 	if [ "$7" = "bl30" ]; then
-		blx_bin_limit=49152   # SWPL-8468 2019-05-16 update, 40960->49152
-		blx01_bin_limit=13312 # PD#132613 2016-10-31 update, 12288->13312
+		blx_bin_limit=65536 # 64KB ao for T5
+		blx01_bin_limit=0   # no bl301 for T5
 	elif [ "$7" = "bl2" ]; then
 		blx_bin_limit=73728 #72KB
 		blx01_bin_limit=4096
@@ -68,14 +68,16 @@ function fix_blx() {
 	cat $1 $2 > $3
 	rm $2
 
-	blx_size=`du -b $4 | awk '{print int($1)}'`
-	zero_size=$blx01_bin_limit-$blx_size
-	dd if=/dev/zero of=$2 bs=1 count=$zero_size
-	cat $4 $2 > $5
+	if [ "$7" = "bl2" ]; then
+		blx_size=`du -b $4 | awk '{print int($1)}'`
+		zero_size=$blx01_bin_limit-$blx_size
+		dd if=/dev/zero of=$2 bs=1 count=$zero_size
+		cat $4 $2 > $5
 
-	cat $3 $5 > $6
+		cat $3 $5 > $6
 
-	rm $2
+		rm $2
+	fi
 }
 
 function cleanup() {
@@ -97,7 +99,7 @@ function encrypt() {
 	#u-boot.bin generate
 	if [ "y" == "${CONFIG_AML_SECURE_BOOT_V3}" ]; then
 		#encrypt_step --bl30sig --input ${BUILD_PATH}/bl30_new.bin         --output ${BUILD_PATH}/bl30_new.bin.g12.enc ${V3_PROCESS_FLAG}
-		#encrypt_step --bl3sig  --input ${BUILD_PATH}/bl30_new.bin.g12.enc --output ${BUILD_PATH}/bl30_new.bin.enc     ${V3_PROCESS_FLAG} --type bl30
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl30_new.bin --output ${BUILD_PATH}/bl30_new.bin.enc ${V3_PROCESS_FLAG} --type bl30
 		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl31.${BL3X_SUFFIX}  --output ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl31
 		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
 			encrypt_step --bl3sig  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl32
@@ -109,6 +111,7 @@ function encrypt() {
 
 	encrypt_step --bootmk  --output ${BUILD_PATH}/u-boot.bin \
 		--bl2   ${BUILD_PATH}/bl2.n.bin.sig  \
+		--bl30  ${BUILD_PATH}/bl30_new.bin.enc \
 		--bl31  ${BUILD_PATH}/bl31.${BL3X_SUFFIX}.enc ${FIP_BL32_PROCESS} --bl33  ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} 
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
@@ -127,14 +130,14 @@ function encrypt() {
 }
 
 function build_fip() {
-	#fix_blx \
-	#	${BUILD_PATH}/bl30.bin \
-	#	${BUILD_PATH}/zero_tmp \
-	#	${BUILD_PATH}/bl30_zero.bin \
-	#	${BUILD_PATH}/bl301.bin \
-	#	${BUILD_PATH}/bl301_zero.bin \
-	#	${BUILD_PATH}/bl30_new.bin \
-	#	bl30
+	fix_blx \
+		${BUILD_PATH}/bl30.bin \
+		${BUILD_PATH}/zero_tmp \
+		${BUILD_PATH}/bl30_new.bin \
+		${BUILD_PATH}/zero_tmp \
+		${BUILD_PATH}/zero_tmp \
+		${BUILD_PATH}/zero_tmp \
+		bl30
 
 	# acs_tool process ddr timing and configurable parameters
 	#python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0

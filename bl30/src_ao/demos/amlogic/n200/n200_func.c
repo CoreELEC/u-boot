@@ -725,6 +725,8 @@ int ClearPendingIrq(uint32_t ulIrq)
 
 	if (irq_status)
 		interrupt_enable();
+
+	return 0;
 }
 
 #endif

@@ -267,7 +267,6 @@ void vPortSysTickHandler(void){
 
 
 void vPortSetupTimer(void)	{
-    uint8_t mtime_intattr;
     // Set the machine timer
     //Bob: update it to TMR
     volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
@@ -280,6 +279,7 @@ void vPortSetupTimer(void)	{
     pic_enable_interrupt(PIC_INT_TMR);
     pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
 #else
+    uint8_t mtime_intattr;
     mtime_intattr=eclic_get_intattr (ECLIC_INT_MTIP);
     mtime_intattr|=ECLIC_INT_ATTR_SHV | ECLIC_INT_ATTR_MACH_MODE;
     mtime_intattr|= ECLIC_INT_ATTR_TRIG_EDGE;

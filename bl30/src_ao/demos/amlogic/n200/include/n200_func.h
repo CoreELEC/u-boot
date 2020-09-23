@@ -48,6 +48,12 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 
 int UnRegisterIrq(uint32_t ulIrq);
 
+unsigned long interrupt_status_get(void);
+
+void interrupt_disable(void);
+
+void interrupt_enable(void);
+
 __END_DECLS
 
 #endif

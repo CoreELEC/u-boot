@@ -123,9 +123,10 @@ static void vPICInit(void) {
 }
 
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
+	xTimer = xTimer;
 	taskENTER_CRITICAL();
 
-//	vUartPuts("\nTimer ...\n");
+	vUartPuts("\nTimer ...\n");
 	taskEXIT_CRITICAL();
 }
 
@@ -144,7 +145,6 @@ static void vPrintTask1( void *pvParameters )
 
 static void vPrintTask2( void *pvParameters )
 {
-	unsigned int time;
     /*make compiler happy*/
     pvParameters = pvParameters;
 	vTaskDelay(pdMS_TO_TICKS(50));
@@ -158,9 +158,6 @@ extern void vMbInit(void);
 // Test target board
 int main(void)
 {
-	uint32_t gpio_index[] = {8, 9, 10, 11, 12, 13, 14, 15};
-	uint32_t queue_index[] = {0, 1, 2, 3};
-
 	vUartPuts("Starting N205 FreeRTOS\n");
 	version();
 
@@ -201,6 +198,7 @@ void vApplicationIdleHook( void )
    //asm volatile ("wfi"); // enter low power mode
 }
 /*-----------------------------------------------------------*/
+void vApplicationMallocFailedHook( void );
 
 void vApplicationMallocFailedHook( void )
 {
@@ -219,6 +217,8 @@ void vApplicationMallocFailedHook( void )
     for ( ;; );
 }
 /*-----------------------------------------------------------*/
+
+void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName );
 
 void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName )
 {

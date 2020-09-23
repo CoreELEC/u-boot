@@ -42,6 +42,7 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "myprintf.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -434,3 +435,17 @@ uint8_t *puc;
 	}
 }
 
+int vPrintFreeListAfterMallocFail(void)
+{
+	BlockLink_t *pxIterator;
+	int total_free_size = 0;
+
+	for( pxIterator = &xStart; pxIterator != pxEnd; pxIterator = pxIterator->pxNextFreeBlock )
+	{
+		printf("the address: %p, len: 0x%x\n", pxIterator, (int)(pxIterator->xBlockSize));
+		total_free_size += (pxIterator->xBlockSize);
+	}
+	printf("the total free size: %d\n", total_free_size);
+
+	return 0;
+}

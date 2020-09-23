@@ -213,6 +213,7 @@ void vApplicationMallocFailedHook( void )
 	//write(1,"malloc failed\n", 14);
 
 	vUartPuts("vApplicationMallocFailedHook\n");
+	vPrintFreeListAfterMallocFail();
     for ( ;; );
 }
 /*-----------------------------------------------------------*/

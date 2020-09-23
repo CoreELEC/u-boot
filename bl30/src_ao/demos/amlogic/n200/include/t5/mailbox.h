@@ -13,7 +13,7 @@
 #define MHU_DATA_SIZE		(MHU_MAX_SIZE - MHU_HEAD_SIZE - MHU_RESEV_SIZE)
 #define MHU_DATA_OFFSET		(MHU_HEAD_SIZE / 4) /*inclule status 0x4 task id 0x8, completion 0x8*/
 
-#define MAILBOX_AOCPU_REE_IRQ		89//MBOX_IRQ3
+#define MAILBOX_AOCPU_REE_IRQ		90//MBOX_IRQ3
 #define MAILBOX_AOCPU_REEACK_IRQ	85//MBOX_IRQ2
 #define MAILBOX_AOCPU_TEE_IRQ		88 //MBOX_IRQ1
 #define MAILBOX_AOCPU_TEEACK_IRQ	83 //MBOX_IRQ1
@@ -28,8 +28,8 @@
 #define MAILBOX_CLR(MBOX)	MAILBOX_BASE + ((0x3 + (0x3 * (MBOX))) << 2) /*mailbox4 rev*/
 #define MAILBOX_SET(MBOX)	MAILBOX_BASE + ((0x1 + (0x3 * (MBOX))) << 2) /*mailbox4 send*/
 
-#define MAILBOX_AO2REE	0xFFFC7600
-#define MAILBOX_REE2AO	0xFFFC7400
+#define MAILBOX_AO2REE	0xFFFC7400
+#define MAILBOX_REE2AO	0xFFFC7600
 #define MAILBOX_AO2TEE	0xFFFC7A00
 #define MAILBOX_TEE2AO	0xFFFC7800
 #define SIZE_SHIFT	20	/* Bit position for size value in MHU header */

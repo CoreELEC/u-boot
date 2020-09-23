@@ -116,10 +116,10 @@ function encrypt() {
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_UBOOT}" ]; then
 		echo "no action!"
-		#encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-		#	--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG}
-		#encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
-		#	--aeskey enable --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
+		encrypt_step --efsgen --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+			--output ${BUILD_PATH}/u-boot.bin.encrypt.efuse ${V3_PROCESS_FLAG}
+		encrypt_step --bootsig --input ${BUILD_PATH}/u-boot.bin --amluserkey ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/${AML_KEY_BLOB_NANE} \
+			--aeskey enable --output ${BUILD_PATH}/u-boot.bin.encrypt ${V3_PROCESS_FLAG}
 	fi
 
 	if [ "y" == "${CONFIG_AML_CRYPTO_IMG}" ]; then

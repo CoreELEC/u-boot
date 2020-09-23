@@ -124,7 +124,7 @@ static void vPICInit(void) {
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	taskENTER_CRITICAL();
 
-	vUartPuts("\nTimer ...\n");
+//	vUartPuts("\nTimer ...\n");
 	taskEXIT_CRITICAL();
 }
 
@@ -135,7 +135,7 @@ static void vPrintTask1( void *pvParameters )
 
 	for ( ;; )
 	{
-		vUartPuts("\nvPTask1 %d\n");
+//		vUartPuts("\nvPTask1 %d\n");
 
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
@@ -149,7 +149,7 @@ static void vPrintTask2( void *pvParameters )
 	vTaskDelay(pdMS_TO_TICKS(50));
 	for ( ;; )
 	{
-		vUartPuts("\nvPTask2 %d\n");
+//		vUartPuts("\nvPTask2 %d\n");
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }

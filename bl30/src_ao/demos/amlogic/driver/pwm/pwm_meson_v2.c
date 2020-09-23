@@ -257,18 +257,33 @@ static void prvMesonConfig(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 		/*set div and clock enable */
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
-		pwm_setbits_le32(pwm->chip->clk_addr,
-			     (pwm->pwm_pre_div << 0 | 1 << 8));
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dar);	/*set duty */
+		if (pwm->chip->clk_addr) {
+			/* If using clktree */
+			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
+			pwm_setbits_le32(pwm->chip->clk_addr,
+				     (pwm->pwm_pre_div << 0 | 1 << 8));
+		} else {
+			pwm_clrbits_le32(&reg->miscr, ((0x3 << 4) | (0x7f << 8)));
+			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 8)) | (1 << 15));
+		}
+
+		/*set duty */
+		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dar);
 		break;
 
 	case MESON_PWM_1:
 		/*set div and clock enable */
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
-		pwm_setbits_le32(pwm->chip->clk_addr,
-			     (pwm->pwm_pre_div << 16 | 1 << 24));
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dbr);	/*set duty */
+		if (pwm->chip->clk_addr) {
+			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
+			pwm_setbits_le32(pwm->chip->clk_addr,
+				     (pwm->pwm_pre_div << 16 | 1 << 24));
+		} else {
+			pwm_clrbits_le32(&reg->miscr, ((0x3 << 6) | (0x7f << 16)));
+			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 16)) | (1 << 23));
+		}
+
+		/*set duty */
+		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dbr);
 		break;
 
 	default:
@@ -284,18 +299,30 @@ static void prvMesonConfigExt(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_2:
 		/*set div and clock enable */
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
-		pwm_setbits_le32(pwm->chip->clk_addr,
-			     (pwm->pwm_pre_div << 0 | 1 << 8));
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->da2r);	/*set duty */
+		if (pwm->chip->clk_addr) {
+			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
+			pwm_setbits_le32(pwm->chip->clk_addr,
+				     (pwm->pwm_pre_div << 0 | 1 << 8));
+		} else {
+			pwm_clrbits_le32(&reg->miscr, ((0x3 << 4) | (0x7f << 8)));
+			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 8)) | (1 << 15));
+		}
+		/*set duty */
+		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->da2r);
 		break;
 
 	case MESON_PWM_3:
 		/*set div and clock enable */
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
-		pwm_setbits_le32(pwm->chip->clk_addr,
-			     (pwm->pwm_pre_div << 16 | 1 << 24));
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->db2r);	/*set duty */
+		if (pwm->chip->clk_addr) {
+			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
+			pwm_setbits_le32(pwm->chip->clk_addr,
+				     (pwm->pwm_pre_div << 16 | 1 << 24));
+		} else {
+			pwm_clrbits_le32(&reg->miscr, ((0x3 << 6) | (0x7f << 16)));
+			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 16)) | (1 << 23));
+		}
+		/*set duty */
+		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->db2r);
 		break;
 	default:
 		iprintf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
@@ -313,7 +340,9 @@ int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns,
 		return -1;
 	}
 
-	prvPwmMesonClockSet(pwm);
+	/* If using clktree */
+	if (pwm->chip->clk_addr)
+		prvPwmMesonClockSet(pwm);
 
 	tmp = prvPwmCalc(pwm, duty_ns, period_ns);
 	if (tmp != 0) {

@@ -24,56 +24,56 @@
 
 #include "mailbox-api.h"
 
-#define TAG "AOCPU"
-#define PRINT_DBG	//printf
-#define PRINT_ERR	printf
-#define PRINT		printf
+#define MBTAG "AOCPU"
+#define PRINT_DBG(...)  printf(__VA_ARGS__)
+#define PRINT_ERR(...)  printf(__VA_ARGS__)
+#define PRINT(...)	printf(__VA_ARGS__)
 
+/*ARM 2 AOCPU mailbox*/
+void vRpcUserCmdInit(void);
 
 struct Uintcase {
 	char data[20];
 	uint32_t ulTaskDelay;
 };
 
-void xMboxUintReeTestCase(void *msg)
+static void xMboxUintReeTestCase(void *msg)
 {
 	struct Uintcase *pdata = msg;
 	char back[20] = "Response AOCPU\n";
 
-	PRINT("[%s]: scpi %s\n", TAG, pdata->data);
+	PRINT("[%s]: scpi %s\n", MBTAG, pdata->data);
 	memset(msg, 0, MBOX_BUF_LEN);
 	memcpy(msg, back, sizeof(back));
 
-//	vTaskDelay(pdata->ulTaskDelay);
-	PRINT("[%s]: delay after %d\n", TAG, pdata->ulTaskDelay);
+	PRINT("[%s]: delay after %ld\n", MBTAG, pdata->ulTaskDelay);
 
 }
 
-void xMboxUintTeeTestCase(void *msg)
+static void xMboxUintTeeTestCase(void *msg)
 {
 	char *s = msg;
 
-	PRINT("[%s]: from tee: %s\n", TAG, s);
+	PRINT("[%s]: from tee: %s\n", MBTAG, s);
 
 }
 
-void vRegisterRpcCallBack(void)
+static void vRegisterRpcCallBack(void)
 {
 	int ret;
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
-					      xMboxUintReeTestCase, 1);
+						    (void *)xMboxUintReeTestCase, 1);
 	if (ret == MBOX_CALL_MAX)
-		PRINT("[%s]: mbox cmd 0x%x register fail\n",TAG, MBX_CMD_RPCUINTREE_TEST);
+		PRINT("[%s]: mbox cmd 0x%x register fail\n",MBTAG, MBX_CMD_RPCUINTREE_TEST);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
-					      xMboxUintTeeTestCase, 0);
+						    (void *)xMboxUintTeeTestCase, 0);
 	if (ret == MBOX_CALL_MAX)
-		PRINT("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_RPCUINTTEE_TEST);
+		PRINT("[%s]: mbox cmd 0x%x register fail\n", MBTAG, MBX_CMD_RPCUINTTEE_TEST);
 }
 
 void vRpcUserCmdInit(void)
 {
         vRegisterRpcCallBack();
 }
-

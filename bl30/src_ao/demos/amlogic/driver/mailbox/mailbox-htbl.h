@@ -46,6 +46,7 @@
  * For now, ARM and DSP have only one htbl at each side.
  */
 void mailbox_htbl_init(void **pHTbl);
+void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen);
 uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, void *(handler)(void *));
 uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd,
                               void *(handler)(void *), uint8_t needFdBak);

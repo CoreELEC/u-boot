@@ -38,8 +38,7 @@
 #include "mailbox-htbl.h"
 
 #define PRINT(...)	//printf(__VA_ARGS__)
-#define PRINT_ERR(...) printf(__VA_ARGS__)
-#define TAG "\n arm "
+#define PRINT_ERR(...)	printf(__VA_ARGS__)
 
 #define malloc pvPortMalloc
 #define free vPortFree
@@ -93,7 +92,7 @@ uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, void *(handler) (void *))
 			p[i].cmd = cmd;
 			p[i].handler = handler;
 			p[i].needFdBak = 0;
-			PRINT_ERR(TAG "reg cmd=%lx handler=%p\n", cmd, handler);
+			PRINT_ERR("AOCPU reg cmd=%lx handler=%p\n", cmd, handler);
 			return i;
 		}
 	}
@@ -117,7 +116,7 @@ uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd,
 			p[i].cmd = cmd;
 			p[i].handler = handler;
 			p[i].needFdBak = needFdBak;
-			PRINT_ERR("reg idx=%d cmd=%lx handler=%p\n", i, cmd, handler);
+			PRINT_ERR("reg idx=%ld cmd=%lx handler=%p\n", i, cmd, handler);
 			return i;
 		}
 	}
@@ -144,16 +143,16 @@ uint32_t mailbox_htbl_unreg(void *pHTbl, uint32_t cmd)
 
 uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg)
 {
-	PRINT(TAG "search in cmd handler table pHTbl=%p cmd=%lx arg=%p\n", pHTbl,
+	PRINT("AOCPU search in cmd handler table pHTbl=%p cmd=%lx arg=%p\n", pHTbl,
 	      cmd, arg);
 	struct entry *p = pHTbl;
 	uint32_t i;
 	uint32_t tabLen = p[0].tabLen;
 
 	for (i = 0; i != tabLen; i++) {
-		PRINT("input_cmd=%x i=%ld cmd=%lx\n", cmd, i, p[i].cmd);
+		PRINT("AOCPU input_cmd=%x i=%ld cmd=%lx\n", cmd, i, p[i].cmd);
 		if (p[i].cmd == cmd) {
-			PRINT("idx=%d cmd=%lx handler=%p arg=%p\n", i,
+			PRINT("AOCPU idx=%ld cmd=%lx handler=%p arg=%p\n", i,
 			      p[i].cmd, p[i].handler, arg);
 			if (p[i].handler == NULL) {
 				return tabLen;
@@ -162,6 +161,6 @@ uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg)
 			return p[i].needFdBak;
 		}
 	}
-	PRINT_ERR("unknown cmd=%lx\n", cmd);
+	PRINT_ERR("AOCPU unknown cmd=%lx\n", cmd);
 	return tabLen;
 }

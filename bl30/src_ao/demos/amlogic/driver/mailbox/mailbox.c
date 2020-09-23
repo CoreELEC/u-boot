@@ -29,10 +29,10 @@
 #include "mailbox-htbl.h"
 #include "mailbox-api.h"
 
-#define TAG "AOCPU"
-#define PRINT_DBG	//printf
-#define PRINT_ERR	printf
-#define PRINT		printf
+#define MBTAG "AOCPU"
+#define PRINT_DBG(...)  //printf(__VA_ARGS__)
+#define PRINT_ERR(...)  printf(__VA_ARGS__)
+#define PRINT(...)	printf(__VA_ARGS__)
 
 #define MHU_MB_STK_SIZE		2048
 #define MB_DATA_SHR_SIZE	240
@@ -70,7 +70,7 @@ void vMbHandleIsr(void)
 	int i = 0;
 
 	val = xGetMbIrqStats();
-	PRINT_DBG("[%s]: mb isr: 0x%x\n", TAG, val);
+	PRINT_DBG("[%s]: mb isr: 0x%x\n", MBTAG, val);
 	val &= ulIrqMask;
 	while (val) {
 		for (i = 0; i <= IRQ_MAX; i++) {
@@ -104,7 +104,7 @@ static void vAoRevMbHandler(void *vArg)
 	ulSize = st.size;
 	ulSync = st.sync;
 
-	PRINT_DBG("[%s]: prvRevMbHandler 0x%x, 0x%x, 0x%x\n", TAG, ulMbCmd, ulSize, ulSync);
+	PRINT_DBG("[%s]: prvRevMbHandler 0x%x, 0x%x, 0x%x\n", MBTAG, ulMbCmd, ulSize, ulSync);
 
 	if (ulMbCmd == 0) {
 		PRINT("[%s] mbox cmd is 0, cannot match\n");
@@ -118,15 +118,15 @@ static void vAoRevMbHandler(void *vArg)
 	else
 		PRINT("mbox size is 0,no need to get payload\n");
 
-	PRINT_DBG("%s taskid: 0x%llx\n", TAG, mbInfo.mbdata.taskid);
-	PRINT_DBG("%s complete: 0x%llx\n", TAG, mbInfo.mbdata.complete);
-	PRINT_DBG("%s ullclt: 0x%llx\n", TAG, mbInfo.mbdata.ullclt);
+	PRINT_DBG("%s taskid: 0x%llx\n", MBTAG, mbInfo.mbdata.taskid);
+	PRINT_DBG("%s complete: 0x%llx\n", MBTAG, mbInfo.mbdata.complete);
+	PRINT_DBG("%s ullclt: 0x%llx\n", MBTAG, mbInfo.mbdata.ullclt);
 
 	switch (ulSync) {
 	case MB_SYNC:
 		if (ulSyncTaskWake)
 			break;
-		PRINT_DBG("[%s]: SYNC\n", TAG);
+		PRINT_DBG("[%s]: SYNC\n", MBTAG);
 		ulSyncTaskWake = 1;
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
@@ -137,7 +137,7 @@ static void vAoRevMbHandler(void *vArg)
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC
-		PRINT_DBG("[%s]: ASYNC no support\n", TAG);
+		PRINT_DBG("[%s]: ASYNC no support\n", MBTAG);
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
 #else
@@ -151,7 +151,7 @@ static void vAoRevMbHandler(void *vArg)
 #endif
 		break;
 	default:
-		PRINT_ERR("[%s]: Not SYNC or ASYNC, Fail\n", TAG);
+		PRINT_ERR("[%s]: Not SYNC or ASYNC, Fail\n", MBTAG);
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
 		break;
@@ -169,28 +169,28 @@ void vSyncTask(void *pvParameters)
 	pvParameters = pvParameters;
 	while (1) {
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		PRINT_DBG("[%s]:SyncTask\n", TAG);
+		PRINT_DBG("[%s]:SyncTask\n", MBTAG);
 
 		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncMbInfo.ulCmd,
 					       syncMbInfo.mbdata.data);
 		mbox = xGetRevMbox(syncMbInfo.ulChan);
-		PRINT_DBG("[%s]:SyncTask mbox:%d\n", TAG, mbox);
+		PRINT_DBG("[%s]:SyncTask mbox:%d\n", MBTAG, mbox);
 		addr = xSendAddrMbox(mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
 				memset(&syncMbInfo.mbdata.data, 0, sizeof(syncMbInfo.mbdata.data));
 				syncMbInfo.mbdata.status = ACK_FAIL;
 				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
-				PRINT_ERR("[%s]: undefine cmd or no callback\n", TAG);
+				PRINT_ERR("[%s]: undefine cmd or no callback\n", MBTAG);
 			} else {
-				PRINT_DBG("[%s]:SyncTask re len:%d\n", TAG, sizeof(syncMbInfo.mbdata));
+				PRINT_DBG("[%s]:SyncTask re len:%d\n", MBTAG, sizeof(syncMbInfo.mbdata));
 				syncMbInfo.mbdata.status = ACK_OK;
 				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
 			}
 		}
 
 		vEnterCritical(&uxSaveIsr);
-		PRINT_DBG("[%s]:Sync clear mbox:%d\n", TAG, mbox);
+		PRINT_DBG("[%s]:Sync clear mbox:%d\n", MBTAG, mbox);
 		ulSyncTaskWake = 0;
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
@@ -204,7 +204,7 @@ void vMbInit(void)
 	char name[15];
 	uint32_t mbox;
 
-	PRINT("[%s]: mailbox init start\n", TAG);
+	PRINT("[%s]: mailbox init start\n", MBTAG);
 	mailbox_htbl_init(&g_tbl_ao);
 
 	/* Set MBOX IRQ Handler and Priority */
@@ -225,7 +225,7 @@ void vMbInit(void)
 		    (TaskHandle_t *)&mbHandler);
 
 	vRpcUserCmdInit();
-	PRINT("[%s]: mailbox init end\n", TAG);
+	PRINT("[%s]: mailbox init end\n", MBTAG);
 }
 
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,

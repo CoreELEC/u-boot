@@ -130,7 +130,7 @@ const GpioIRQBank_t *pGetGpioIrqBank(void)
 	return irqBanks;
 }
 
-static prvGpioEEsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
+static void prvGpioEEsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
 {
 
 	uint32_t val = 0;
@@ -163,7 +163,7 @@ out:
 
 }
 
-static prvGpioAOsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
+static void prvGpioAOsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
 {
 	uint32_t val = 0;
 

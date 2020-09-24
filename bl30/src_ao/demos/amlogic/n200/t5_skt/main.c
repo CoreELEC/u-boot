@@ -126,7 +126,7 @@ static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	xTimer = xTimer;
 	taskENTER_CRITICAL();
 
-	vUartPuts("\nTimer ...\n");
+//	vUartPuts("\nTimer ...\n");
 	taskEXIT_CRITICAL();
 }
 

@@ -48,6 +48,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+#include "soc.h"
 uint32_t timere_read(void);
 

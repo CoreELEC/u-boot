@@ -60,8 +60,8 @@ uint32_t timere_read(void)
 	unsigned long long te = 0, temp = 0;
 
 	/*timeE high+low, first read low, second read high*/
-	te = REG32(SYSCTRL_TIMERE);
-	temp =  REG32(SYSCTRL_TIMERE_HI);
+	te = REG32(TIMERE_LOW_REG);
+	temp =  REG32(TIMERE_HIG_REG);
 	te += (temp << 32);
 	te = te/1000000;
 	time = (uint32_t)te;

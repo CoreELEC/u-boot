@@ -34,7 +34,6 @@
 
 #include <unistd.h>
 
-#include "n200_eclic.h"
 #include "n200_func.h"
 #include "common.h"
 #include "riscv_encoding.h"
@@ -120,18 +119,18 @@ void wakeup_ap(void)
 	//uint32_t time_out = 20;
 
 	/*set alarm timer*/
-	REG32(SYSCTRL_TIMERB) = 1000;/*1ms*/
+	REG32(FSM_TRIGER_SRC) = 1000;/*1ms*/
 
-	value = REG32(SYSCTRL_TIMERB_CTRL);
+	value = REG32(FSM_TRIGER_CTRL);
 	value &= ~((1 << 7) | (0x3) | (1 << 6));
 	value |= ((1 << 7) | (0 << 6) | (0x3));
-	REG32(SYSCTRL_TIMERB_CTRL) = value;
+	REG32(FSM_TRIGER_CTRL) = value;
 }
 
 void clear_wakeup_trigger(void)
 {
-	REG32(SYSCTRL_TIMERB) = 0;
-	REG32(SYSCTRL_TIMERB_CTRL) = 0;
+	REG32(FSM_TRIGER_SRC) = 0;
+	REG32(FSM_TRIGER_CTRL) = 0;
 }
 
 void system_resume(uint32_t pm)
@@ -158,19 +157,13 @@ void system_suspend(uint32_t pm)
 
 void set_reason_flag(char exit_reason)
 {
-	/*we need remove SYSCTRL_STATUS_REG7 in bl31/dts.
-	 *And instead it by SYSCTRL_STICKY_REG7
-	 */
-	REG32(SYSCTRL_STATUS_REG7) &= ~0xf;
-	REG32(SYSCTRL_STATUS_REG7) |= exit_reason;
-
-	REG32(SYSCTRL_STICKY_REG7) &= ~0xf;
-	REG32(SYSCTRL_STICKY_REG7) |= exit_reason;
+	REG32(WAKEUP_REASON_STICK_REG) &= ~0xf;
+	REG32(WAKEUP_REASON_STICK_REG) |= exit_reason;
 }
 
 uint32_t get_reason_flag(void)
 {
-	return REG32(SYSCTRL_STICKY_REG7) & 0xf;
+	return REG32(WAKEUP_REASON_STICK_REG) & 0xf;
 }
 
 void xMboxGetWakeupReason(void *msg)

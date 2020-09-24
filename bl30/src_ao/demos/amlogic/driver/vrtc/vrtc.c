@@ -55,6 +55,7 @@
 #include "mailbox-api.h"
 #include "timers.h"
 #include "suspend.h"
+#include "soc.h"
 
 #define TAG "VRTC"
 /* Timer handle */
@@ -63,17 +64,17 @@ static uint32_t last_time;
 
 void set_rtc(uint32_t val)
 {
-	REG32(SYSCTRL_STICKY_REG2) = val;
+	REG32(VRTC_STICKY_REG) = val;
 	/*The last time update RTC*/
 	last_time = timere_read();
 }
 
 int get_rtc(uint32_t *val)
 {
-	if (!REG32(SYSCTRL_STICKY_REG2))
+	if (!REG32(VRTC_STICKY_REG))
 		return -1;
 	else
-		*(val) = REG32(SYSCTRL_STICKY_REG2);
+		*(val) = REG32(VRTC_STICKY_REG);
 
 	return 0;
 }
@@ -128,7 +129,7 @@ void alarm_set(void)
 {
 	uint32_t val;
 
-	val = REG32(SYSCTRL_STATUS_REG2);
+	val = REG32(VRTC_PARA_REG);
 
 	if (val) {
 		printf("alarm val=%d S\n",val);
@@ -150,7 +151,7 @@ void alarm_clr(void)
 static void valarm_update(TimerHandle_t xTimer) {
 	uint32_t val;
 
-	val = REG32(SYSCTRL_STATUS_REG2);
+	val = REG32(VRTC_PARA_REG);
 	xTimer = xTimer;
 
 	if (time_start && (timere_read() - time_start > val)) {
@@ -159,7 +160,7 @@ static void valarm_update(TimerHandle_t xTimer) {
 
 		printf("alarm fired\n");
 
-		REG32(SYSCTRL_STATUS_REG2) = 0;
+		REG32(VRTC_PARA_REG) = 0;
 		STR_Wakeup_src_Queue_Send(buf);
 	}
 }

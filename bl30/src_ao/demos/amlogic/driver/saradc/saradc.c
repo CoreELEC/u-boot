@@ -36,7 +36,6 @@
 #include "saradc.h"
 
 #include <unistd.h>
-#include "n200_eclic.h"
 #include "n200_func.h"
 #include "common.h"
 

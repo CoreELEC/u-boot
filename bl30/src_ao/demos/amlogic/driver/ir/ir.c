@@ -31,7 +31,6 @@
 #include "portmacro.h"
 
 #include <unistd.h>
-#include "n200_eclic.h"
 #include "n200_func.h"
 #include "common.h"
 
@@ -244,7 +243,6 @@ void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 	xDrvData->vIRHandler = vIRHandler;
 
 	RegisterIrq(IRQ_NUM_IRIN, 2, vIRIntteruptHandler);
-	ClearPendingIrq(IRQ_NUM_IRIN);
 	EnableIrq(IRQ_NUM_IRIN);
 
 	xDrvData->ucIsInit = 1;

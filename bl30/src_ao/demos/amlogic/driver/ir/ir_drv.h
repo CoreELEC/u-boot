@@ -45,13 +45,21 @@
 #ifdef IRCTRL_IR_DEC_LDR_ACTIVE
 #define	IR_BASE_ADDR_OLD	IRCTRL_IR_DEC_LDR_ACTIVE
 #else
+#ifdef AO_IR_DEC_LDR_ACTIVE
+#define	IR_BASE_ADDR_OLD	AO_IR_DEC_LDR_ACTIVE
+#else
 #define	IR_BASE_ADDR_OLD	0
+#endif
 #endif
 
 #ifdef IRCTRL_MF_IR_DEC_LDR_ACTIVE
 #define	IR_BASE_ADDR		IRCTRL_MF_IR_DEC_LDR_ACTIVE
 #else
+#ifdef AO_MF_IR_DEC_LDR_ACTIVE
+#define	IR_BASE_ADDR		AO_MF_IR_DEC_LDR_ACTIVE
+#else
 #define	IR_BASE_ADDR		0
+#endif
 #endif
 
 #define	IS_LEGACY_CTRL(x)	((x) ? (IR_BASE_ADDR_OLD) : (IR_BASE_ADDR))

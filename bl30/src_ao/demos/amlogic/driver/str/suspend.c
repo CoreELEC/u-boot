@@ -43,9 +43,8 @@
 #include "hdmi_cec.h"
 #include "vrtc.h"
 #include "mailbox-api.h"
+#include "wakeup.h"
 
-void wakeup_ap(void);
-void clear_wakeup_trigger(void);
 void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
@@ -112,27 +111,6 @@ idle:
 	}
 }
 
-/*use timerB to wakeup AP FSM*/
-void wakeup_ap(void)
-{
-	uint32_t value;
-	//uint32_t time_out = 20;
-
-	/*set alarm timer*/
-	REG32(FSM_TRIGER_SRC) = 1000;/*1ms*/
-
-	value = REG32(FSM_TRIGER_CTRL);
-	value &= ~((1 << 7) | (0x3) | (1 << 6));
-	value |= ((1 << 7) | (0 << 6) | (0x3));
-	REG32(FSM_TRIGER_CTRL) = value;
-}
-
-void clear_wakeup_trigger(void)
-{
-	REG32(FSM_TRIGER_SRC) = 0;
-	REG32(FSM_TRIGER_CTRL) = 0;
-}
-
 void system_resume(uint32_t pm)
 {
 	/*Need clr alarm ASAP*/
@@ -141,6 +119,7 @@ void system_resume(uint32_t pm)
 	str_hw_disable();
 	vRTC_update();
 	wakeup_ap();
+	clear_wakeup_trigger();
 }
 
 void system_suspend(uint32_t pm)

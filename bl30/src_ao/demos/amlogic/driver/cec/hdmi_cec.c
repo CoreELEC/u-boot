@@ -1026,12 +1026,12 @@ static u32 cec_irq_handler(void)
 	if (irq & CECB_IRQ_TX_NACK) {
 		printf("@TX_NACK\n");
 		s_idx = cec_tx_msgs.send_idx;
-		if (cec_tx_msgs.msg[s_idx].retry < 5) {
+		if (cec_tx_msgs.msg[s_idx].retry < 2) {
 			cec_tx_msgs.msg[s_idx].retry++;
 			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		} else {
-			printf("TX retry too much, abort msg\n");
+			/*printf("TX retry too much, abort msg\n");*/
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
 		}
 		busy_count = 0;

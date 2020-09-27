@@ -70,12 +70,11 @@ void str_power_off(void);
 
 void str_hw_init(void)
 {
-	return;
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
-
+	return;
 	vBackupAndClearGpioIrqReg();
 	vGpioKeyEnable();
 	vGpioIRQInit();
@@ -84,14 +83,13 @@ void str_hw_init(void)
 
 void str_hw_disable(void)
 {
-	return;
 	/*disable wakeup source interrupt*/
 	vIRDeint();
 	if (cecTask) {
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-
+	return;
 	vGpioKeyDisable();
 	vRestoreGpioIrqReg();
 }

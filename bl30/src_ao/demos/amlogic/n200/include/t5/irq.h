@@ -49,4 +49,9 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_CECA	40
 #define IRQ_NUM_CECB	41
 
+/* APCore GIC_OUTx */
+#define IRQ_NUM_OUT_3            (28+13+3)
+#define IRQ_NUM_OUT_2            (28+12+3)
+#define IRQ_NUM_OUT_1            (28+11+3)
+#define IRQ_NUM_OUT_0            (28+10+3)
 #endif

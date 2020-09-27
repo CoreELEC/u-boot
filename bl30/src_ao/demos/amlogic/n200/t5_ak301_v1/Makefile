@@ -83,6 +83,7 @@ VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_
 
 OBJS += ${COMPILER}/main.o	\
 		${COMPILER}/power.o     \
+		$(COMPILER)/fsm.o    \
 		$(COMPILER)/list.o    \
 		$(COMPILER)/queue.o   \
 		$(COMPILER)/tasks.o   \

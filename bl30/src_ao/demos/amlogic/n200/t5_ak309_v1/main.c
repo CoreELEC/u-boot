@@ -155,6 +155,7 @@ static void vPrintTask2( void *pvParameters )
 	}
 }
 extern void vMbInit(void);
+extern vCoreFsmIdleInit(void);
 // Test target board
 int main(void)
 {
@@ -169,6 +170,7 @@ int main(void)
 	for (uint32_t i = 0; i < 0xffff; ++i);
 
 	vMbInit();
+	vCoreFsmIdleInit();
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
 

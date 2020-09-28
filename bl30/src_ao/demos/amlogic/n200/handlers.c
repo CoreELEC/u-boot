@@ -44,10 +44,12 @@ __attribute__((weak)) uint32_t handle_irq(uint32_t int_num);
 
 __attribute__((weak)) uint32_t handle_irq(uint32_t int_num){
     // Enable interrupts to allow interrupt preempt based on priority
-    set_csr(mstatus, MSTATUS_MIE);
+    //set_csr(mstatus, MSTATUS_MIE);
+
   pic_interrupt_handlers[int_num]();
+  pic_complete_interrupt(int_num);
     // Disable interrupts
-    clear_csr(mstatus, MSTATUS_MIE);
+    //clear_csr(mstatus, MSTATUS_MIE);
   return int_num;
 }
 #endif

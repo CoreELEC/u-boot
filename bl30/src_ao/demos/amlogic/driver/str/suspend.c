@@ -120,6 +120,9 @@ void system_resume(uint32_t pm)
 	vRTC_update();
 	wakeup_ap();
 	clear_wakeup_trigger();
+	/*Shutdown*/
+	if (pm == 0xf)
+		watchdog_reset_system();
 }
 
 void system_suspend(uint32_t pm)

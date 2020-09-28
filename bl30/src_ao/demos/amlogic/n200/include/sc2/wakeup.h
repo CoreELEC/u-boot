@@ -24,4 +24,7 @@ inline void clear_wakeup_trigger(void)
 	REG32(FSM_TRIGER_CTRL) = 0;
 }
 
+inline void watchdog_reset_system(void)
+{
+}
 #endif

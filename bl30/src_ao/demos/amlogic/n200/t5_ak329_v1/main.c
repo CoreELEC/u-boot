@@ -159,7 +159,7 @@ extern vCoreFsmIdleInit(void);
 // Test target board
 int main(void)
 {
-	vUartPuts("Starting N205 FreeRTOS\n");
+	vUartPuts("Starting AOCPU FreeRTOS\n");
 	version();
 
 	// Initialize GPIOs, PIC and timer

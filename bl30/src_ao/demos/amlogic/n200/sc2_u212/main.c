@@ -148,7 +148,7 @@ int main(void)
 
 	hardware_init();
 
-	printf("\nStarting AOCPU RISCV FreeRTOS...\r\n");
+	printf("\nStarting AOCPU FreeRTOS...\r\n");
 	version();
 
 	// Initialize GPIOs, PIC and timer

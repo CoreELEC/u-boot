@@ -922,6 +922,9 @@
 #define CAUSE_SUPERVISOR_ECALL 0x9
 #define CAUSE_HYPERVISOR_ECALL 0xa
 #define CAUSE_MACHINE_ECALL 0xb
+
+
+#define read_csr_msubmode     read_csr(0x7c4)
 #endif
 #ifdef DECLARE_INSN
 DECLARE_INSN(beq, MATCH_BEQ, MASK_BEQ)

@@ -129,7 +129,10 @@ uint32_t get_cpu_freq(void)
   return cpu_freq;
 }
 
-
+unsigned int xPortIsIsrContext(void)
+{
+	return (read_csr_msubmode & 0xff);
+}
 
 // Note that there are no assertions or bounds checking on these
 // parameter values.
@@ -727,6 +730,11 @@ int ClearPendingIrq(uint32_t ulIrq)
 		interrupt_enable();
 
 	return 0;
+}
+
+unsigned int xPortIsIsrContext(void)
+{
+	return read_csr_msubmode;
 }
 
 #endif

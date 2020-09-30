@@ -39,10 +39,34 @@
 
 #define DRIVER_NAME "gpio"
 
+static void prvEnterCritical(UBaseType_t *uxIsr)
+{
+	if (xPortIsIsrContext())
+		*uxIsr = taskENTER_CRITICAL_FROM_ISR();
+	else {
+		taskENTER_CRITICAL();
+		*uxIsr = 0;
+	}
+};
+
+static void prvExitCritical(UBaseType_t uxSaveIsr)
+{
+	if (xPortIsIsrContext())
+		taskEXIT_CRITICAL_FROM_ISR(uxSaveIsr);
+	else {
+		taskEXIT_CRITICAL();
+		uxSaveIsr = 0;
+	}
+};
+
 static inline void prvGpioRegWrite(uint32_t addr,
 				   uint32_t mask, uint32_t val)
 {
+	UBaseType_t uxSavedIsr;
+
+	prvEnterCritical(&uxSavedIsr);
 	REG32_UPDATE_BITS(addr, mask, val);
+	prvExitCritical(uxSavedIsr);
 }
 
 static inline void prvGpioCalcRegAndBit(const GpioBank_t *bk,

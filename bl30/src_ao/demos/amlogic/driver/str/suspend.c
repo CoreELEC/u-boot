@@ -90,9 +90,10 @@ void vCEC_task(void *pvParameters)
 
 	pvParameters = pvParameters;
 	ret = cec_init_config();
-	if (!ret)
+	if (!ret) {
+		printf("cec not enable\n");
 		goto idle;
-
+	}
 	cec_delay(100);
 	while (1) {
 		//printf("%s 01\n", __func__);
@@ -107,7 +108,7 @@ void vCEC_task(void *pvParameters)
 idle:
 	for ( ;; ) {
 		vTaskDelay(pdMS_TO_TICKS(2000));
-		printf("%s idle\n", __func__);
+		//printf("%s idle\n", __func__);
 	}
 }
 

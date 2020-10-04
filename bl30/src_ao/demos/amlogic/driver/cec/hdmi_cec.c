@@ -98,30 +98,6 @@ void cec_delay(u32 cnt)
 	}
 }
 
-static u32 set_cec_val0(unsigned int cec_val)
-{
-	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
-	cec_val = cec_val;
-	return 0;
-}
-
-static u32 set_cec_val1(unsigned int cec_val)
-{
-	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
-	cec_val = cec_val;
-	return 0;
-}
-
-static void cec_get_portinfo(void *msg)
-{
-	u32 val;
-
-	val = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
-		(cec_wakup.wk_port_id << 24);
-	*(u32 *)msg = val;
-	printf("[%s]: info=0x%x\n", __func__, val);
-}
-
 static int cec_strlen(char *p)
 {
 	int i = 0;
@@ -177,7 +153,7 @@ void cec_update_func_cfg(unsigned int cfg)
 	}
 }
 
-static void write_ao(unsigned int addr, unsigned int data)
+static void write_ao(enum cec_reg_idx addr, unsigned int data)
 {
 	unsigned int real_addr;
 
@@ -193,7 +169,7 @@ static void write_ao(unsigned int addr, unsigned int data)
 	REG32(real_addr) = data;
 }
 
-static unsigned int read_ao(unsigned int addr)
+static unsigned int read_ao(enum cec_reg_idx addr)
 {
 	unsigned int real_addr;
 	unsigned int data;
@@ -334,6 +310,31 @@ static void dump_cecb_reg(void)
 	printf("\n");
 }
 #endif
+
+/*static u32 set_cec_val0(unsigned int cec_val)*/
+/*{
+/*	cec_val = cec_val;*/
+/*	return 0;*/
+/*}*/
+
+static u32 set_cec_wakeup_port_info(unsigned int port_info)
+{
+	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
+	/*cec_val = cec_val;*/
+	write_ao(CEC_REG_STICK_DATA1, port_info);
+	return 0;
+}
+
+static void cec_get_portinfo(void *msg)
+{
+	u32 val;
+
+	/*val = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |*/
+	/*	(cec_wakup.wk_port_id << 24);*/
+	val = read_ao(CEC_REG_STICK_DATA1);
+	*(u32 *)msg = val;
+	printf("[%s]: info=0x%x\n", __func__, val);
+}
 
 static void cec_enable_irq(u32 onoff)
 {
@@ -816,7 +817,7 @@ static u32 cec_save_port_id(void)
 		cec_wakup.wk_port_id = 0xFF;
 		data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 			(cec_wakup.wk_port_id << 24);
-		set_cec_val1(data);
+		set_cec_wakeup_port_info(data);
 		return 0;
 	}
 
@@ -830,7 +831,7 @@ static u32 cec_save_port_id(void)
 	cec_wakup.wk_port_id = port_id;
 	data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 		(cec_wakup.wk_port_id << 24);
-	set_cec_val1(data);
+	set_cec_wakeup_port_info(data);
 	return 0;
 }
 
@@ -901,7 +902,7 @@ static u32 cec_handle_message(void)
 				cec_wakup.wk_phy_addr = phy_addr;
 				data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 					(cec_wakup.wk_port_id << 24);
-				set_cec_val1(data);
+				set_cec_wakeup_port_info(data);
 				printf("otp power on\n");
 			}
 			break;
@@ -919,7 +920,7 @@ static u32 cec_handle_message(void)
 				cec_wakup.wk_phy_addr = phy_addr;
 				data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 					(cec_wakup.wk_port_id << 24);
-				set_cec_val1(data);
+				set_cec_wakeup_port_info(data);
 				printf("active src power on:0x%x\n", data);
 			}
 			break;
@@ -1237,7 +1238,7 @@ static u32 cec_suspend_wakeup_chk(void)
 
 	if ((cec_msg.cec_power == 0x1) &&
 		(hdmi_cec_func_config & CEC_CFG_FUNC_EN)) {
-		if (cec_wait_addr++ < 40) {
+		if (cec_wait_addr++ < 80) {
 			if (cec_msg.active_source) {
 				cec_save_port_id();
 				timeout_flag = 1;
@@ -1252,7 +1253,7 @@ static u32 cec_suspend_wakeup_chk(void)
 
 	if (timeout_flag) {
 		cec_wakup_flag = 1;
-		set_cec_val0(CEC_WAKEUP);
+		/*set_cec_val0(CEC_WAKEUP);*/
 		return 1;
 	} else {
 		return 0;
@@ -1284,7 +1285,7 @@ u32 cec_suspend_handle(void)
 
 	if (active_src_flag) {
 		printf("active source:0x%x\n", cec_msg.active_source);
-		printf("wk_logic_addr:0x%x\n", cec_wakup.wk_phy_addr);
+		printf("wk_logic_addr:0x%x\n", cec_wakup.wk_logic_addr);
 		printf("wk_phy_addr:0x%x\n", cec_wakup.wk_phy_addr);
 		printf("wk_port_id:0x%x\n", cec_wakup.wk_port_id);
 		return 1;

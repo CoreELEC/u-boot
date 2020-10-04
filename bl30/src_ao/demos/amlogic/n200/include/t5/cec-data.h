@@ -26,6 +26,15 @@ unsigned int cec_reg_tab[] ={
 
 	AO_DEBUG_REG0,
 	AO_DEBUG_REG1,
+
+	AO_CEC_STICKY_DATA0,
+	AO_CEC_STICKY_DATA1,/*port info return val to kernel*/
+	AO_CEC_STICKY_DATA2,/*not use*/
+	AO_CEC_STICKY_DATA3,/*not use*/
+	AO_CEC_STICKY_DATA4,/*not use*/
+	AO_CEC_STICKY_DATA5,/*not use*/
+	AO_CEC_STICKY_DATA6,/*not use*/
+	AO_CEC_STICKY_DATA7,/*not use*/
 };
 
 #define CEC_PIN_MX	GPIOW_12

@@ -26,6 +26,15 @@ unsigned int cec_reg_tab[] = {
 
 	SYSCTRL_STATUS_REG0,
 	SYSCTRL_STATUS_REG1,
+
+	0xffff,//AO_CEC_STICKY_DATA0,
+	0xffff,//AO_CEC_STICKY_DATA1,
+	0xffff,//AO_CEC_STICKY_DATA2,
+	0xffff,//AO_CEC_STICKY_DATA3,
+	0xffff,//AO_CEC_STICKY_DATA4,
+	0xffff,//AO_CEC_STICKY_DATA5,
+	0xffff,//AO_CEC_STICKY_DATA6,
+	0xffff,//AO_CEC_STICKY_DATA7,
 };
 
 /*GPIOH_3 FUNC4:ceca, FUNC5:cecb*/

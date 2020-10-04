@@ -1,7 +1,7 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
-#define CEC_VERSION "sc2 cec:2020/08/27"
+#define CEC_VERSION "sc2 cec:2020/10/04"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);

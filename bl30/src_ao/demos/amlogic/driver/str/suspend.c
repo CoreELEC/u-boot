@@ -209,7 +209,7 @@ void xMboxSuspend_Sem(void *msg)
 	power_mode = *(uint32_t *)msg;
 
 	printf("power_mode=0x%x\n",power_mode);
-	STR_Start_Sem_Give();
+	STR_Start_Sem_Give_FromISR();
 }
 
 static void vSTRTask( void *pvParameters )

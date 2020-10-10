@@ -16,7 +16,7 @@
 #define MAILBOX_BUFFER_SIZE             MHU_MAX_SIZE
 #define MAILBOX_CMD_MAX                 0xFFFF
 
-#define PRINT_DBG			//printf
+#define PRINT_DBG(...)			//printf(__VA_ARGS__)
 #define aml_writel32(val, reg)		(REG32(reg) = val)
 #define aml_readl32(reg)		(REG32(reg))
 

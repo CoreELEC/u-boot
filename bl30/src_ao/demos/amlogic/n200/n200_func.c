@@ -10,6 +10,8 @@
 #include "register.h"
 #include "common.h"
 #include "n200_timer.h"
+#include "FreeRTOS.h"
+#include "task.h"     /* RTOS task related API prototypes. */
 
     // Configure PMP to make all the address space accesable and executable
 void pmp_open_all_space(void){
@@ -668,13 +670,21 @@ int UnRegisterIrq(uint32_t int_num)
 
 int EnableIrq(uint32_t ulIrq)
 {
+    UBaseType_t uxSavedInterruptStatus;
+
+    uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
     pic_enable_interrupt(ulIrq);
+    portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
     return 0;
 }
 
 int DisableIrq(uint32_t ulIrq)
 {
+    UBaseType_t uxSavedInterruptStatus;
+
+    uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
     pic_disable_interrupt(ulIrq);
+    portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
     return 0;
 }
 

@@ -80,6 +80,7 @@ void vPortSetup(void);
 //ECALL macro stores argument in a2
 unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1)	{
 	int i = 0;
+	uint32_t mstatus_mps_bits;
 
 	switch (mcause&0X00000fff)	{
 		//on User and Machine ECALL, handler the request
@@ -106,15 +107,30 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 
 			break;
 		default:
-                printf("In trap handler, the mcause is 0x%lx\n",(mcause&0X00000fff) );
-                printf("In trap handler, the mepc is 0x%lx\n", read_csr(mepc));
-                printf("In trap handler, the mtval is 0x%lx\n", read_csr(mbadaddr));
-		for (i = 1; i < 31; i += 2) {
-			printf("x%-2d: %08x, x%-2d: %08x\n", i, *(unsigned *)(sp + i * REGBYTES),
-			       i + 1, *(unsigned *)(sp + (i + 1) * REGBYTES));
-		}
-		printf("Dump Stack: \n");
-		vTaskDumpStack(NULL);
+			mstatus_mps_bits = ((read_csr(mstatus) & 0x00000600) >> 9);
+			printf("In trap handler, the msubmode is 0x%x\n", read_csr_msubmode);
+			printf("In trap handler, the mstatus.MPS is 0x%x\n", mstatus_mps_bits);
+			printf("In trap handler, the mcause is %d\n", mcause);
+			printf("In trap handler, the mepc is 0x%x\n", read_csr(mepc));
+			printf("In trap handler, the mtval is 0x%x\n", read_csr(mbadaddr));
+			if (mstatus_mps_bits == 0x1) {
+			    printf("The exception is happened from previous Exception mode, hence is Double-Exception-fault!\n");
+			} else if (mstatus_mps_bits == 0x2){
+			    printf("The exception is happened from previous NMI mode!\n");
+			} else if (mstatus_mps_bits == 0x3){
+			    printf("The exception is happened from previous IRQ mode!\n");
+			}
+			for (i = 1; i < 31; i += 2) {
+				printf("x%-2d: %08x, x%-2d: %08x\n", i, *(unsigned *)(sp + i * REGBYTES),
+				       i + 1, *(unsigned *)(sp + (i + 1) * REGBYTES));
+			}
+
+			for (i = 0; i < 31; i += 2)
+				printf("0x%x: %08x, %08x\n", ((read_csr(mepc)/4) *4 + i * REGBYTES -16),
+					*(unsigned *)((read_csr(mepc)/4) *4 + i * REGBYTES -16),
+				       *(unsigned *)((read_csr(mepc)/4) *4 + (i + 1) * REGBYTES -16));
+			printf("Dump Stack: \n");
+			vTaskDumpStack(NULL);
 			//_exit(mcause);
 			do {}while(1);
 	}
@@ -254,14 +270,13 @@ void vPortSysTickHandler(void){
 	/* Increment the RTOS tick. */
 	if ( xTaskIncrementTick() != pdFALSE )
 	{
-		portYIELD();
-		//vTaskSwitchContext();
+		//portYIELD();
+		vTaskSwitchContext();
 	}
 #ifdef N200_REVA
-	pic_enable_interrupt(PIC_INT_TMR);
-	return int_num;
+       pic_enable_interrupt(PIC_INT_TMR);
+       return int_num;
 #endif
-
 }
 /*-----------------------------------------------------------*/
 

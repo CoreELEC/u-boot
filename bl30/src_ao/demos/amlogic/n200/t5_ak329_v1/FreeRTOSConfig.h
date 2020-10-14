@@ -87,7 +87,7 @@ your application. */
 #define configMAX_API_CALL_INTERRUPT_PRIORITY   6
 
 
-//#define portCRITICAL_NESTING_IN_TCB				1
+#define portCRITICAL_NESTING_IN_TCB				1
 //#include "uart.h"
 #include "myprintf.h"
 

@@ -89,7 +89,7 @@ your application. */
 #define configDEFAULT_HEAP_ADDR			0x10000000
 #define configDEFAULT_HEAP_SIZE			32 * 1024
 
-//#define portCRITICAL_NESTING_IN_TCB				1
+#define portCRITICAL_NESTING_IN_TCB				1
 //#include "uart.h"
 #include "myprintf.h"
 

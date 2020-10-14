@@ -115,8 +115,8 @@ extern void vPortExitCritical( void );
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue )       vPortClearInterruptMask( uxSavedStatusValue )
 #define portDISABLE_INTERRUPTS()	        clear_csr(mstatus,MSTATUS_MIE);
 #define portENABLE_INTERRUPTS()			set_csr(mstatus, MSTATUS_MIE);
-#define portENTER_CRITICAL()			vPortEnterCritical()
-#define portEXIT_CRITICAL()			vPortExitCritical()
+#define portENTER_CRITICAL()			vTaskEnterCritical()
+#define portEXIT_CRITICAL()			vTaskExitCritical()
 
 /*-----------------------------------------------------------*/
 

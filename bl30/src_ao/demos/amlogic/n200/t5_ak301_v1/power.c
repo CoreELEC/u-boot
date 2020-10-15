@@ -29,12 +29,12 @@
 #include "ir.h"
 #include "suspend.h"
 #include "task.h"
-#include "gpio.h"
 #include "pwm.h"
 #include "pwm_plat.h"
-//#include "keypad.h"
+#include "keypad.h"
 
 #include "hdmi_cec.h"
+#include "btwake.h"
 
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
@@ -68,6 +68,8 @@ void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(void);
 void str_power_off(void);
+void Bt_GpioIRQRegister(void);
+void Bt_GpioIRQFree(void);
 
 void str_hw_init(void)
 {
@@ -75,10 +77,10 @@ void str_hw_init(void)
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
-	return;
 	vBackupAndClearGpioIrqReg();
-	vGpioKeyEnable();
+	vAdcKeyEnable();
 	vGpioIRQInit();
+	Bt_GpioIRQRegister();
 }
 
 
@@ -90,8 +92,8 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	return;
-	vGpioKeyDisable();
+	Bt_GpioIRQFree();
+	vAdcKeyDisable();
 	vRestoreGpioIrqReg();
 }
 

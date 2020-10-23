@@ -46,7 +46,7 @@ function fix_blx() {
 
 	#$7:name flag
 	if [ "$7" = "bl30" ]; then
-		blx_bin_limit=65536 # 64KB ao for T5
+		blx_bin_limit=64512 # 63KB + 1KB header ao cpu for T5
 		blx01_bin_limit=0   # no bl301 for T5
 	elif [ "$7" = "bl2" ]; then
 		blx_bin_limit=73728 #72KB

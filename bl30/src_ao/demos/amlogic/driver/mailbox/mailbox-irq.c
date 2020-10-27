@@ -8,7 +8,7 @@
 #define TAG "AOCPU"
 #define PRINT_DBG	//printf
 #define PRINT_ERR	printf
-
+#define NO_DISABLE_IRQ	1
 
 #define aml_writel32(val, reg)		(REG32(reg) = val)
 #define aml_readl32(reg)		(REG32(reg))
@@ -42,18 +42,22 @@ void vMbSetIrqPriority(unsigned int xNum, unsigned int xPriority)
 
 void vEnableMbInterrupt(unsigned int xMask)
 {
+#ifndef NO_DISABLE_IRQ
 	unsigned int val = 0;
 
 	val = aml_readl32(MAILBOX_IRQ_MASK) | xMask;
 	aml_writel32(val, MAILBOX_IRQ_MASK);
+#endif
 }
 
 void vDisableMbInterrupt(unsigned int xMask)
 {
+#ifndef NO_DISABLE_IRQ
 	unsigned int val = 0;
 
 	val = aml_readl32(MAILBOX_IRQ_MASK) & (~xMask);
 	aml_writel32(val, MAILBOX_IRQ_MASK);
+#endif
 }
 
 void vClrMbInterrupt(unsigned int xMask)

@@ -42,10 +42,12 @@
 
 void *g_tbl_ao;
 
-TaskHandle_t mbHandler;
-TaskHandle_t mbAsyncHandler;
-static uint32_t ulSyncTaskWake;
-mbPackInfo syncMbInfo;
+TaskHandle_t ReembHandler;
+TaskHandle_t TeembHandler;
+static uint32_t ulReeSyncTaskWake;
+static uint32_t ulTeeSyncTaskWake;
+mbPackInfo syncReeMbInfo;
+mbPackInfo syncTeeMbInfo;
 
 extern xHandlerTableEntry xMbHandlerTable[IRQ_MAX];
 extern void vRpcUserCmdInit(void);
@@ -84,6 +86,7 @@ void vMbHandleIsr(void)
 		val = xGetMbIrqStats();
 		val &= ulIrqMask;
 		val = (val | ulPreVal) ^ ulPreVal;
+		PRINT_DBG("[%s]: mb isr: 0x%x\n", MBTAG, val);
 	}
 }
 //DECLARE_IRQ(IRQ_NUM_MB_4, vMbHandleIsr)
@@ -98,6 +101,7 @@ static void vAoRevMbHandler(void *vArg)
 	MbStat_t st;
 	uint32_t addr, ulMbCmd, ulSize, ulSync;
 
+	vDisableMbInterrupt(IRQ_REV_BIT(mbox));
 	st = xGetMboxStats(MAILBOX_STAT(mbox));
 	addr = xRevAddrMbox(mbox);
 	ulMbCmd = st.cmd;
@@ -107,16 +111,15 @@ static void vAoRevMbHandler(void *vArg)
 	PRINT_DBG("[%s]: prvRevMbHandler 0x%x, 0x%x, 0x%x\n", MBTAG, ulMbCmd, ulSize, ulSync);
 
 	if (ulMbCmd == 0) {
-		PRINT("[%s] mbox cmd is 0, cannot match\n");
+		PRINT_DBG("[%s] mbox cmd is 0, cannot match\n");
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
 		return;
 	}
 
 	if (ulSize != 0)
 		vGetPayload(addr, &mbInfo.mbdata, ulSize);
-	else
-		PRINT("mbox size is 0,no need to get payload\n");
 
 	PRINT_DBG("%s taskid: 0x%llx\n", MBTAG, mbInfo.mbdata.taskid);
 	PRINT_DBG("%s complete: 0x%llx\n", MBTAG, mbInfo.mbdata.complete);
@@ -124,15 +127,28 @@ static void vAoRevMbHandler(void *vArg)
 
 	switch (ulSync) {
 	case MB_SYNC:
-		if (ulSyncTaskWake)
+		if (ulReeSyncTaskWake && (MAILBOX_ARMREE2AO == xGetChan(mbox))) {
+			PRINT("ulReeSyncTaskWake Busy\n");
 			break;
+		}
+		if (ulTeeSyncTaskWake && (MAILBOX_ARMTEE2AO == xGetChan(mbox))) {
+			PRINT("ulTeeSyncTaskWake Busy\n");
+			break;
+		}
 		PRINT_DBG("[%s]: SYNC\n", MBTAG);
-		ulSyncTaskWake = 1;
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
-		syncMbInfo = mbInfo;
-		vTaskNotifyGiveFromISR(mbHandler, &xYieldRequired);
+		if (MAILBOX_ARMREE2AO == xGetChan(mbox)) {
+			syncReeMbInfo = mbInfo;
+			ulReeSyncTaskWake = 1;
+			vTaskNotifyGiveFromISR(ReembHandler, &xYieldRequired);
+		}
+		if (MAILBOX_ARMTEE2AO == xGetChan(mbox)) {
+			syncTeeMbInfo = mbInfo;
+			ulTeeSyncTaskWake = 1;
+			vTaskNotifyGiveFromISR(TeembHandler, &xYieldRequired);
+		}
 		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
@@ -140,25 +156,19 @@ static void vAoRevMbHandler(void *vArg)
 		PRINT_DBG("[%s]: ASYNC no support\n", MBTAG);
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
-#else
-		mbInfo.ulCmd = ulMbCmd;
-		mbInfo.ulSize = ulSize;
-		 xQueueSendToBackFromISR(xRevAsyncQueue, (const void *)&mbInfo,
-                                        &xYieldRequired);
-		vClrMboxStats(MAILBOX_CLR(mbox));
-		vClrMbInterrupt(IRQ_REV_BIT(mbox));
-		portYIELD_FROM_ISR(xYieldRequired);
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
 #endif
 		break;
 	default:
 		PRINT_ERR("[%s]: Not SYNC or ASYNC, Fail\n", MBTAG);
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
 		break;
 	}
 }
 
-void vSyncTask(void *pvParameters)
+void vReeSyncTask(void *pvParameters)
 {
 	uint32_t rev = pvParameters;
 	uint32_t addr = 0;
@@ -169,31 +179,73 @@ void vSyncTask(void *pvParameters)
 	pvParameters = pvParameters;
 	while (1) {
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		PRINT_DBG("[%s]:SyncTask\n", MBTAG);
+		PRINT_DBG("[%s]:ReeSyncTask\n", MBTAG);
 
-		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncMbInfo.ulCmd,
-					       syncMbInfo.mbdata.data);
-		mbox = xGetRevMbox(syncMbInfo.ulChan);
-		PRINT_DBG("[%s]:SyncTask mbox:%d\n", MBTAG, mbox);
+		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncReeMbInfo.ulCmd,
+					       syncReeMbInfo.mbdata.data);
+		mbox = xGetRevMbox(syncReeMbInfo.ulChan);
+		PRINT_DBG("[%s]:ReeSyncTask mbox:%d\n", MBTAG, mbox);
 		addr = xSendAddrMbox(mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				memset(&syncMbInfo.mbdata.data, 0, sizeof(syncMbInfo.mbdata.data));
-				syncMbInfo.mbdata.status = ACK_FAIL;
-				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
-				PRINT_ERR("[%s]: undefine cmd or no callback\n", MBTAG);
+				memset(&syncReeMbInfo.mbdata.data, 0, sizeof(syncReeMbInfo.mbdata.data));
+				syncReeMbInfo.mbdata.status = ACK_FAIL;
+				vBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
+				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
 			} else {
-				PRINT_DBG("[%s]:SyncTask re len:%d\n", MBTAG, sizeof(syncMbInfo.mbdata));
-				syncMbInfo.mbdata.status = ACK_OK;
-				vBuildPayload(addr, &syncMbInfo.mbdata, sizeof(syncMbInfo.mbdata));
+				PRINT_DBG("[%s]:SyncTask re len:%d\n", MBTAG, sizeof(syncReeMbInfo.mbdata));
+				syncReeMbInfo.mbdata.status = ACK_OK;
+				vBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
 			}
 		}
 
 		vEnterCritical(&uxSaveIsr);
-		PRINT_DBG("[%s]:Sync clear mbox:%d\n", MBTAG, mbox);
-		ulSyncTaskWake = 0;
+		PRINT_DBG("[%s]:Ree Sync clear mbox:%d\n", MBTAG, mbox);
+		ulReeSyncTaskWake = 0;
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
+		vExitCritical(uxSaveIsr);
+	}
+}
+
+void vTeeSyncTask(void *pvParameters)
+{
+	uint32_t rev = pvParameters;
+	uint32_t addr = 0;
+	uint32_t mbox = 0;
+	UBaseType_t uxSaveIsr;
+	int index = 0;
+
+	pvParameters = pvParameters;
+	while (1) {
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		PRINT_DBG("[%s]:TeeSyncTask\n", MBTAG);
+
+		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncTeeMbInfo.ulCmd,
+					       syncTeeMbInfo.mbdata.data);
+		mbox = xGetRevMbox(syncTeeMbInfo.ulChan);
+		PRINT_DBG("[%s]:TeeSyncTask mbox:%d\n", MBTAG, mbox);
+		addr = xSendAddrMbox(mbox);
+		if (index != 0) {
+			if (index == MAX_ENTRY_NUM) {
+				memset(&syncTeeMbInfo.mbdata.data, 0, sizeof(syncTeeMbInfo.mbdata.data));
+				syncTeeMbInfo.mbdata.status = ACK_FAIL;
+				vBuildPayload(addr, &syncTeeMbInfo.mbdata, sizeof(syncTeeMbInfo.mbdata));
+				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
+			} else {
+				PRINT_DBG("[%s]:SyncTask re len:%d\n", MBTAG, sizeof(syncTeeMbInfo.mbdata));
+				syncTeeMbInfo.mbdata.status = ACK_OK;
+				vBuildPayload(addr, &syncTeeMbInfo.mbdata, sizeof(syncTeeMbInfo.mbdata));
+			}
+		}
+
+		vEnterCritical(&uxSaveIsr);
+		PRINT_DBG("[%s]:Tee Sync clear mbox:%d\n", MBTAG, mbox);
+		ulTeeSyncTaskWake = 0;
+		vClrMboxStats(MAILBOX_CLR(mbox));
+		vClrMbInterrupt(IRQ_REV_BIT(mbox));
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
 		vExitCritical(uxSaveIsr);
 	}
 }
@@ -217,12 +269,18 @@ void vMbInit(void)
 	//printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
 	EnableIrq(MAILBOX_AOCPU_IRQ);
 
-	xTaskCreate(vSyncTask,
+	xTaskCreate(vReeSyncTask,
 		    "AOReeSyncTask",
 		    configMINIMAL_STACK_SIZE,
 		    0,
 		    TASK_PRIORITY,
-		    (TaskHandle_t *)&mbHandler);
+		    (TaskHandle_t *)&ReembHandler);
+	xTaskCreate(vTeeSyncTask,
+		    "AOTeeSyncTask",
+		    configMINIMAL_STACK_SIZE,
+		    0,
+		    TASK_PRIORITY,
+		    (TaskHandle_t *)&TeembHandler);
 
 	vRpcUserCmdInit();
 	PRINT("[%s]: mailbox init end\n", MBTAG);

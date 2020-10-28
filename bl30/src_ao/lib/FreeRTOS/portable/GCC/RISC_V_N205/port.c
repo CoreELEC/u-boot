@@ -96,6 +96,10 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 
 			} else if(arg1 == PORT_YIELD)		{
 				//always yield from machine mode
+				unsigned long submode = read_csr_msubmode;
+				if ((submode & 0x300) == 0x100)
+					break;
+
 				//fix up mepc on sync trap
 				unsigned long epc = read_csr(mepc);
 				vPortYield(sp,epc+4); //never returns
@@ -110,7 +114,7 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 			mstatus_mps_bits = ((read_csr(mstatus) & 0x00000600) >> 9);
 			printf("In trap handler, the msubmode is 0x%x\n", read_csr_msubmode);
 			printf("In trap handler, the mstatus.MPS is 0x%x\n", mstatus_mps_bits);
-			printf("In trap handler, the mcause is %d\n", mcause);
+			printf("In trap handler, the mcause is %x\n", mcause);
 			printf("In trap handler, the mepc is 0x%x\n", read_csr(mepc));
 			printf("In trap handler, the mtval is 0x%x\n", read_csr(mbadaddr));
 			if (mstatus_mps_bits == 0x1) {
@@ -211,8 +215,9 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 	/* Simulate the stack frame as it would be created by a context switch
 	interrupt. */
 
+	memset(pxTopOfStack - 35,0,36*4);
 	//register int *tp asm("x3");
-	pxTopOfStack--;
+	pxTopOfStack -= 3;
 	*pxTopOfStack = (portSTACK_TYPE)pxCode;			/* Start address */
 
 	//set the initial mstatus value

@@ -36,7 +36,7 @@ your application. */
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE                 0
 #define configRTC_CLOCK_HZ						24000000//32768
-#define configTICK_RATE_HZ                      250
+#define configTICK_RATE_HZ                      50
 #define configMAX_PRIORITIES                    4
 #define configMINIMAL_STACK_SIZE                450
 #define configMAX_TASK_NAME_LEN                 16

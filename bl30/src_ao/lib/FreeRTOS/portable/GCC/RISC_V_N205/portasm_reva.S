@@ -266,8 +266,8 @@
 	csrr	t0, mepc	//pointer
 	STORE	t0, 33 * REGBYTES(sp)
 
-	//csrr t0,   CSR_MSUBM
-	//STORE t0,  34*REGBYTES(sp)
+	csrr t0,   CSR_MSUBM
+	STORE t0,  34*REGBYTES(sp)
 	//csrr t0,  CSR_MCAUSE
 	//STORE t0,  35*REGBYTES(sp)
 
@@ -292,8 +292,8 @@
 
 	//LOAD t0,  35*REGBYTES(sp)
 	//csrw  CSR_MCAUSE, t0
-	//LOAD t0,  34*REGBYTES(sp)
-	//csrw CSR_MSUBM, t0
+	LOAD t0,  34*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
 .endm
 
 
@@ -310,8 +310,8 @@
 	LOAD	t0, 32 * REGBYTES(sp)
 	csrw	mstatus, t0
 
-	//LOAD t0,  34*REGBYTES(sp)
-	//csrw CSR_MSUBM, t0
+	LOAD t0,  34*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
 .endm
 
 
@@ -319,8 +319,8 @@
 .macro portSAVE_CONTEXT_IRQ
 	.global pxCurrentTCB
 
-	//csrr t0,   CSR_MSUBM
-	//STORE t0,  34*REGBYTES(sp)
+	csrr t0,   CSR_MSUBM
+	STORE t0,  34*REGBYTES(sp)
 	//csrr t0,  CSR_MCAUSE
 	//STORE t0,  35*REGBYTES(sp)
 
@@ -338,8 +338,8 @@
 
 	//LOAD t0,  35*REGBYTES(sp)
  	//csrw  CSR_MCAUSE, t0
-//	LOAD t0,  34*REGBYTES(sp)
-//	csrw CSR_MSUBM, t0
+	LOAD t0,  34*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
 .endm
 
 

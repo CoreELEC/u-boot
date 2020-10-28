@@ -223,6 +223,7 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName 
     corrupt. */
     //write(1, "Stack Overflow\n", 15);
 	printf("vApplicationStackOverflowHook\n");
+	vTaskDumpStack(NULL);
     for ( ;; );
 }
 /*-----------------------------------------------------------*/

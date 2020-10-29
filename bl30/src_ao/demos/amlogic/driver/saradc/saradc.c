@@ -174,7 +174,6 @@ void vAdcInit(void)
 
 	/* interrupt initialization */
 	RegisterIrq(SARADC_INTERRUPT_NUM, 1, vAdcHandlerISR);
-	ClearPendingIrq(SARADC_INTERRUPT_NUM);
 	EnableIrq(SARADC_INTERRUPT_NUM);
 
 	/* create mutex semaphore */

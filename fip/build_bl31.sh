@@ -56,6 +56,9 @@ function build_bl31_v1_3() {
 	if [ "$soc" == "txhd" ]; then
 		soc="axg"
 	fi
+	if [ "$soc" == "t5d" ]; then
+		soc="t5"
+	fi
 	/bin/bash mk $soc
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}

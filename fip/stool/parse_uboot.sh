@@ -80,7 +80,7 @@ ddr9_entry_size=""
 usage() {
 	echo "parse unsigned uboot.bin to firmwares"
 	echo "usage: $(basename $0) -s <soc> -i <uboot.bin> -o <outdir>"
-	echo "support soc: gxl/txlx/g12a/sm1/g12b/tl1/tm2"
+	echo "support soc: gxl/txlx/g12a/sm1/g12b/tl1/tm2/t5/t5d"
 	exit 0
 }
 
@@ -258,9 +258,15 @@ case $soc in
 		bl30hdr_size=656
 		bl30bin_size=54272
 		;;
+	"t5"|"t5d")
+		bl2hdr_size=4096
+		bl2bin_size=77824
+		bl30hdr_size=656
+		bl30bin_size=64512
+		;;
 	*)
 		echo "invalid soc <$soc>"
-		echo "only support gxl, txlx, g12a, sm1, g12b, tl1, tm2"
+		echo "only support gxl, txlx, g12a, sm1, g12b, tl1, tm2, t5, t5d"
 		exit 1
 esac
 

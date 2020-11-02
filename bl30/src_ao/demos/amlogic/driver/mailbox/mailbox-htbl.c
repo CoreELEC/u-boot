@@ -50,13 +50,34 @@ struct entry {
 	uint32_t tabLen;
 };
 
+static inline void *mbmemset(void *dst, int val, size_t count)
+{
+	char *ptr = dst;
+
+	while (count--)
+		*ptr++ = val;
+
+	return dst;
+}
+
+static inline void *mbmemcpy(void *dst, const void *src, size_t len)
+{
+	const char *s = src;
+	char *d = dst;
+
+	while (len--)
+		*d++ = *s++;
+
+	return dst;
+}
+
 void mailbox_htbl_init(void **pHTbl)
 {
 	size_t size = sizeof(struct entry) * MAX_ENTRY_NUM;
 	struct entry *p = NULL;
 
 	p = malloc(size);
-	memset(p, 0x00, size);
+	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = MAX_ENTRY_NUM;
 }
@@ -72,7 +93,7 @@ void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen)
 		PRINT_ERR("tabLen == 0\n");
 		return;
 	}
-	memset(p, 0x00, size);
+	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = tabLen;
 }

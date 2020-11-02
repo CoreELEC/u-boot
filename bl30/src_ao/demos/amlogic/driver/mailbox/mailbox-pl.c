@@ -100,7 +100,7 @@ static void vAoRevTeeMbHandler(uint32_t inmbox)
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
-		syncTeeMbInfo = mbInfo;
+		mbmemcpy(&syncTeeMbInfo, &mbInfo, sizeof(syncTeeMbInfo));;
 		vTaskNotifyGiveFromISR(mbTeeHandler, &xYieldRequired);
 		portYIELD_FROM_ISR(xYieldRequired);
 		break;
@@ -139,7 +139,7 @@ static void vTeeSyncTask(void *pvParameters)
 		PRINT_DBG("[%s]:MbSyncTask mbox:%d\n", MBTAG, mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				memset(&syncTeeMbInfo.mbdata.data, 0, sizeof(syncTeeMbInfo.mbdata.data));
+				mbmemset(&syncTeeMbInfo.mbdata.data, 0, sizeof(syncTeeMbInfo.mbdata.data));
 				syncTeeMbInfo.mbdata.status = ACK_FAIL;
 				vReBuildPayload(addr, &syncTeeMbInfo.mbdata, sizeof(syncTeeMbInfo.mbdata));
 				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
@@ -206,7 +206,7 @@ static void vAoRevReeMbHandler(uint32_t inmbox)
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
-		syncReeMbInfo = mbInfo;
+		mbmemcpy(&syncReeMbInfo, &mbInfo, sizeof(syncReeMbInfo));;
 		vTaskNotifyGiveFromISR(mbReeHandler, &xYieldRequired);
 		portYIELD_FROM_ISR(xYieldRequired);
 		break;
@@ -245,7 +245,7 @@ static void vReeSyncTask(void *pvParameters)
 		PRINT_DBG("[%s]:MbSyncTask mbox:%d\n", MBTAG, mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				memset(&syncReeMbInfo.mbdata.data, 0, sizeof(syncReeMbInfo.mbdata.data));
+				mbmemset(&syncReeMbInfo.mbdata.data, 0, sizeof(syncReeMbInfo.mbdata.data));
 				syncReeMbInfo.mbdata.status = ACK_FAIL;
 				vReBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
 				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);

@@ -169,13 +169,34 @@ static inline uint32_t *xSendAddrBack(uint32_t ulChan)
 	return NULL;
 }
 
+static inline void *mbmemset(void *dst, int val, size_t count)
+{
+	char *ptr = dst;
+
+	while (count--)
+		*ptr++ = val;
+
+	return dst;
+}
+
+static inline void *mbmemcpy(void *dst, const void *src, size_t len)
+{
+	const char *s = src;
+	char *d = dst;
+
+	while (len--)
+		*d++ = *s++;
+
+	return dst;
+}
+
 static inline void vGetPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
 	PRINT_DBG("get payload: addr:0x%x, 0x%x\n", addr, size);
 	if (data != NULL) {
-		memcpy(data, addr, size);
+		mbmemcpy(data, addr, size);
 	}
 
 }
@@ -186,7 +207,7 @@ static inline void vBuildPayload(void *addr, void *data, size_t size)
 
 	PRINT_DBG("vBuildPayload: addr:0x%x\n", addr);
 	if (data != NULL) {
-		memcpy(addr, data, size);
+		mbmemcpy(addr, data, size);
 	}
 }
 
@@ -196,8 +217,8 @@ static inline void vReBuildPayload(void *addr, void *data, size_t size)
 
 	PRINT_DBG("vBuildPayload: addr:0x%x\n", addr);
 	if (data != NULL) {
-		memset(addr, 0, MAILBOX_BUFFER_SIZE);
-		memcpy(addr, data, size);
+		mbmemset(addr, 0, MAILBOX_BUFFER_SIZE);
+		mbmemcpy(addr, data, size);
 	}
 }
 #endif

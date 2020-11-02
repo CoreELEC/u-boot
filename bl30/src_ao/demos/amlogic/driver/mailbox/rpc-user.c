@@ -37,14 +37,35 @@ struct Uintcase {
 	uint32_t ulTaskDelay;
 };
 
+static inline void *mbmemset(void *dst, int val, size_t count)
+{
+	char *ptr = dst;
+
+	while (count--)
+		*ptr++ = val;
+
+	return dst;
+}
+
+static inline void *mbmemcpy(void *dst, const void *src, size_t len)
+{
+	const char *s = src;
+	char *d = dst;
+
+	while (len--)
+		*d++ = *s++;
+
+	return dst;
+}
+
 static void xMboxUintReeTestCase(void *msg)
 {
 	struct Uintcase *pdata = msg;
 	char back[20] = "Response AOCPU\n";
 
 	PRINT("[%s]: scpi %s\n", MBTAG, pdata->data);
-	memset(msg, 0, MBOX_BUF_LEN);
-	memcpy(msg, back, sizeof(back));
+	mbmemset(msg, 0, MBOX_BUF_LEN);
+	mbmemcpy(msg, back, sizeof(back));
 
 	PRINT("[%s]: delay after %ld\n", MBTAG, pdata->ulTaskDelay);
 

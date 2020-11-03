@@ -39,7 +39,6 @@
 #include "mailbox-api.h"
 #include "version.h"
 #include "hdmi_cec.h"
-#include "keypad.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -172,7 +171,6 @@ int main(void)
 
 	vMbInit();
 	vCoreFsmIdleInit();
-	vKeyPadInit();
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
 

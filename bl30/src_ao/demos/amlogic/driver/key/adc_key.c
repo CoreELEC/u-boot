@@ -149,6 +149,20 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 	}
 }
 
+void vDestoryAdcKey(void)
+{
+	struct xOneAdcKeyInfo *xPassBtn, *xTmpBtn;
+
+	for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
+		xTmpBtn = xPassBtn;
+		xPassBtn = xPassBtn->xNext;
+
+		vPortFree(xTmpBtn);
+	}
+
+	xHeadKey = NULL;
+}
+
 void vAdcKeyEnable(void)
 {
 	vAdcInit();

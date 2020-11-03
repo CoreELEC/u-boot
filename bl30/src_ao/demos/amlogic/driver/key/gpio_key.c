@@ -161,6 +161,20 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 	}
 }
 
+void vDestoryGpioKey(void)
+{
+	struct xOneGpioKeyInfo *xPassBtn, *xTmpBtn;
+
+	for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
+		xTmpBtn = xPassBtn;
+		xPassBtn = xPassBtn->xNext;
+
+		vPortFree(xTmpBtn);
+	}
+
+	xHeadKey = NULL;
+}
+
 void vGpioKeyEnable(void)
 {
 	struct xOneGpioKeyInfo *xPassBtn = xHeadKey;

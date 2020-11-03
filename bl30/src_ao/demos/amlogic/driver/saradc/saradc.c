@@ -189,6 +189,9 @@ void vAdcDeinit(void)
 {
 	DisableIrq(SARADC_INTERRUPT_NUM);
 	UnRegisterIrq(SARADC_INTERRUPT_NUM);
+
+	vSemaphoreDelete(adcSemaphoreMutex);
+	vSemaphoreDelete(adcSemaphoreBinary);
 }
 
 void vAdcHwEnable(void)

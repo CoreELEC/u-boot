@@ -51,5 +51,11 @@ void vKeyPadInit(void)
 {
 	vCreateAdcKey(adcKeyInfo,
 			sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
+	vAdcKeyEnable();
 }
 
+void vKeyPadDeinit(void)
+{
+	vAdcKeyDisable();
+	vDestoryAdcKey();
+}

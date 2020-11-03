@@ -65,5 +65,11 @@ void vKeyPadInit(void)
 {
 	vCreateGpioKey(gpioKeyInfo,
 			sizeof(gpioKeyInfo)/sizeof(struct xGpioKeyInfo));
+	vGpioKeyEnable();
 }
 
+void vKeyPadDeinit(void)
+{
+	vGpioKeyDisable();
+	vDestoryGpioKey();
+}

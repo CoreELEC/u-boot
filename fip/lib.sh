@@ -173,11 +173,6 @@ function get_blx_bin() {
 		return 0
 	fi
 
-	# special case for T5D
-	if [ "${CUR_SOC}" == "t5d" ] && [ "${BLX_NAME[$index]}" == "bl31" ]; then
-        	CUR_SOC="t5"
-        fi
-
 	# special case for SC2
 	if [ "${CUR_SOC}" == "sc2" ]; then
 		if [ "${BLX_NAME[$index]}" == "bl2" ]; then

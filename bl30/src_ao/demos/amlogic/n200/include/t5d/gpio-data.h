@@ -35,8 +35,8 @@
 extern "C" {
 #endif
 #include "register.h"
-#define	GPIO_NUM_MAX	71 /*actual numbers of pins*/
-#define	BANK_NUM_MAX	6   /*numbers of gpio bank*/
+#define	GPIO_NUM_MAX	113 /*actual numbers of pins*/
+#define	BANK_NUM_MAX	8   /*numbers of gpio bank*/
 #define	IRQ_REG_NUM	4  /* numbers of irq relative reg*/
 #define	GPIO_INVALID	0xffff
 #ifdef AO_IRQ_GPIO_REG
@@ -104,29 +104,75 @@ extern "C" {
 #define	GPIOZ_4		100
 #define	GPIOZ_5		101
 #define	GPIOZ_6		102
+#define	GPIOZ_7		103
 
 /*128-159 */
-#define	GPIOW_0		128
-#define	GPIOW_1		129
-#define	GPIOW_2		130
-#define	GPIOW_3		131
-#define	GPIOW_4		132
-#define	GPIOW_5		133
-#define	GPIOW_6		134
-#define	GPIOW_7		135
-#define	GPIOW_8		136
-#define	GPIOW_9		137
-#define	GPIOW_10	138
-#define	GPIOW_11	139
-#define	GPIOW_12	140
+#define	GPIOZ_8 	128
+#define	GPIOZ_9 	129
+#define	GPIOZ_10	130
+#define	GPIOZ_11	131
+#define	GPIOZ_12	132
+#define	GPIOZ_13	133
+#define	GPIOZ_14	134
+#define	GPIOZ_15	135
+#define	GPIOZ_16	136
+#define	GPIOZ_17	137
+#define	GPIOZ_18	138
+#define	GPIOZ_19	139
 
 /* 160-191 */
-#define	GPIOE_0		160
-#define	GPIOE_1		161
-#define	GPIOE_2		162
+#define	GPIOW_0		160
+#define	GPIOW_1		161
+#define	GPIOW_2		162
+#define	GPIOW_3		163
+#define	GPIOW_4		164
+#define	GPIOW_5		165
+#define	GPIOW_6		166
+#define	GPIOW_7		167
+#define	GPIOW_8		168
+#define	GPIOW_9		169
+#define	GPIOW_10	170
+#define	GPIOW_11	171
+#define	GPIOW_12	172
 
 /* 192 */
-#define	GPIO_TEST_N	192
+#define	GPIOE_0		192
+#define	GPIOE_1		193
+#define	GPIOE_2		194
+
+/* 224 */
+#define	GPIOM_0 	224
+#define	GPIOM_1 	225
+#define	GPIOM_2 	226
+#define	GPIOM_3 	227
+#define	GPIOM_4 	228
+#define	GPIOM_5 	229
+#define	GPIOM_6 	230
+#define	GPIOM_7 	231
+#define	GPIOM_8 	232
+#define	GPIOM_9 	233
+#define	GPIOM_10	234
+#define	GPIOM_11	235
+#define	GPIOM_12	236
+#define	GPIOM_13	237
+#define	GPIOM_14	238
+#define	GPIOM_15	239
+#define	GPIOM_16	240
+#define	GPIOM_17	241
+#define	GPIOM_18	242
+#define	GPIOM_19	243
+#define	GPIOM_20	244
+#define	GPIOM_21	245
+#define	GPIOM_22	246
+#define	GPIOM_23	247
+#define	GPIOM_24	248
+#define	GPIOM_25	249
+#define	GPIOM_26	250
+#define	GPIOM_27	251
+#define	GPIOM_28	252
+#define	GPIOM_29	253
+
+#define GPIO_TEST_N	256
 
 #ifdef __cplusplus
 }

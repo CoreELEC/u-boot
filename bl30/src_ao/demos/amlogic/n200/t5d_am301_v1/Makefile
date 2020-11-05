@@ -57,16 +57,16 @@ $(info LDFLAGS = $(LDFLAGS))
 	-L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/lib/gcc/riscv-none-embed/7.2.0/rv32im/ilp32 -lgcc
 
 -include $(FREERTOS_VENDOR_DRIVER)/uart/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/get_version/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/timer_source/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/saradc/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/saradc/build.mk
 
 objs_from_dir=$(sort $(foreach obj, $($(2)-y), \
                 $(COMPILER)/$(1)/$(firstword $($(2)-mock-$(PROJECT)-$(obj)) $(obj))))

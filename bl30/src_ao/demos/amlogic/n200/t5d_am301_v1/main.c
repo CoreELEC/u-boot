@@ -169,8 +169,8 @@ int main(void)
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i);
 
-//	vMbInit();
-//	vCoreFsmIdleInit();
+	vMbInit();
+	vCoreFsmIdleInit();
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
 
@@ -181,8 +181,8 @@ int main(void)
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
 //	vCecCallbackInit(CEC_CHIP_T5);
-//	write_csr(mtvec, &trap_entry);
-//	write_csr_mivec(&irq_entry);
+	write_csr(mtvec, &trap_entry);
+	write_csr_mivec(&irq_entry);
 
 //	vRtcInit();
 //	create_str_task();

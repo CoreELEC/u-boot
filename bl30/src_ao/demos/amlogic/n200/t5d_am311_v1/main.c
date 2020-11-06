@@ -180,11 +180,11 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
-//	vCecCallbackInit(CEC_CHIP_T5);
+	vCecCallbackInit(CEC_CHIP_T5);
 	write_csr(mtvec, &trap_entry);
 	write_csr_mivec(&irq_entry);
 
-//	vRtcInit();
+	vRtcInit();
 //	create_str_task();
 
 	vUartPuts("Starting task scheduler ...\n");

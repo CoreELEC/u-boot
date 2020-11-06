@@ -26,7 +26,7 @@
 #define CONFIG_CEC_OSD_NAME "AML_TV"
 #endif
 
-#define CEC_VERSION "freeRTOS cec:2020/0923"
+/*#define CEC_VERSION "freeRTOS cec:2020/0923"*/
 
 enum cec_reg_idx {
 	CECA_REG_CLK_CNTL_REG0 = 0,

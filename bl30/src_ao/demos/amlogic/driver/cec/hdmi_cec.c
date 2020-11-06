@@ -311,12 +311,6 @@ static void dump_cecb_reg(void)
 }
 #endif
 
-/*static u32 set_cec_val0(unsigned int cec_val)*/
-/*{
-/*	cec_val = cec_val;*/
-/*	return 0;*/
-/*}*/
-
 static u32 set_cec_wakeup_port_info(unsigned int port_info)
 {
 	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
@@ -372,7 +366,11 @@ static void cec_sts_check(void)
 
 static u32 cec_set_pin_mux(u32 chip)
 {
+	enum cec_chip_ver chip_type = chip;
+
 	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
+
+	return chip_type;
 }
 
 static u32 cec_hw_reset(void)
@@ -1324,6 +1322,12 @@ static void cec_handler(void)
 
 u32 cec_init_config(void)
 {
+#if CEC_CFG_DEBUG
+	write_ao(CEC_REG_STS0, 0x8000002f);
+	write_ao(CEC_REG_STS1, 0x000000);
+	//write_ao(CEC_REG_STS1, 0x441000);
+#endif
+
 	hdmi_cec_func_config = read_ao(CEC_REG_STS0);
 	/*cec_mailbox.cec_config = hdmi_cec_func_config;*/
 	cec_mailbox.phy_addr = read_ao(CEC_REG_STS1);

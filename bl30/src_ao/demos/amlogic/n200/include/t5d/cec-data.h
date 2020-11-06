@@ -1,12 +1,12 @@
-#ifndef __T5_CEC_DATA_H__
-#define __T5_CEC_DATA_H__
+#ifndef __T5D_CEC_DATA_H__
+#define __T5D_CEC_DATA_H__
 
 #include "secure_apb.h"
 #include "gpio.h"
 
-/*T5 data define*/
+/*T5D data define, same as T5*/
 
-/*T5 register table enum cec_reg_idx*/
+/*T5D register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] ={
 	0xffff,/*AO_CEC_CLK_CNTL_REG0*/
 	0xffff,/*AO_CEC_CLK_CNTL_REG1*/

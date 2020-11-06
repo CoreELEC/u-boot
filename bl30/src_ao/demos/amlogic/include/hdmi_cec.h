@@ -1,7 +1,7 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
-#define CEC_VERSION "sc2 cec:2020/10/04"
+#define CEC_VERSION "t5d cec:2020/11/6"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
@@ -11,7 +11,7 @@ u32 cec_suspend_handle(void);
  */
 enum cec_chip_ver {
 	CEC_CHIP_SC2,
-	CEC_CHIP_T5,
+	CEC_CHIP_T5,	/*same as t5d*/
 };
 
 /*cec API for suspend*/

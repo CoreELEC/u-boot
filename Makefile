@@ -937,9 +937,9 @@ endif
 .PHONY : boot.bin
 boot.bin: fip.bin 
 ifeq ($(CONFIG_AML_UBOOT_AUTO_TEST), y)
-	$(Q)python $(FIP_FOLDER)/acs_tool.pyc $(FIP_FOLDER_SOC)/bl2_utst.bin $(FIP_FOLDER_SOC)/bl2_acs.bin $(FIP_FOLDER_SOC)/acs.bin 0
+	$(Q)$(PYTHON) $(FIP_FOLDER)/acs_tool.py $(FIP_FOLDER_SOC)/bl2_utst.bin $(FIP_FOLDER_SOC)/bl2_acs.bin $(FIP_FOLDER_SOC)/acs.bin 0
 else
-	$(Q)python $(FIP_FOLDER)/acs_tool.pyc $(FIP_FOLDER_SOC)/bl2.bin $(FIP_FOLDER_SOC)/bl2_acs.bin $(FIP_FOLDER_SOC)/acs.bin 0
+	$(Q)$(PYTHON) $(FIP_FOLDER)/acs_tool.py $(FIP_FOLDER_SOC)/bl2.bin $(FIP_FOLDER_SOC)/bl2_acs.bin $(FIP_FOLDER_SOC)/acs.bin 0
 endif
 	$(Q)$(FIP_FOLDER)/blx_fix.sh \
 		$(FIP_FOLDER_SOC)/bl2_acs.bin \

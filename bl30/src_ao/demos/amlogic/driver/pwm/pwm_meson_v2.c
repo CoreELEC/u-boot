@@ -31,6 +31,12 @@
 #include <common.h>
 #include <pwm.h>
 #include <util.h>
+#include <register.h>
+#include <task.h>
+
+#define pwm_readl(reg)				(*((volatile uint32_t *)(reg)))
+#define CLK_24M					24000000UL
+#define USEC_PER_SEC				1000000000ULL
 
 /*pwm register att*/
 typedef struct xPwmMesonRegs {
@@ -44,13 +50,34 @@ typedef struct xPwmMesonRegs {
 	uint32_t  br; /*Blink Register*/
 } xPwmMesonRegs_t;
 
-#define pwm_setbits_le32(reg, val)		(*((volatile uint32_t *)(reg))) |= (val)
-#define pwm_clrbits_le32(reg, val)		(*((volatile uint32_t *)(reg))) &= (~(val))
-#define pwm_writel(val, reg)			(*((volatile uint32_t *)(reg)))  = (val)
-#define pwm_readl(reg)				(*((volatile uint32_t *)(reg)))
+extern unsigned int xPortIsIsrContext(void);
+static void prvPwmEnterCritical(UBaseType_t *uxIsr)
+{
+	if (xPortIsIsrContext())
+		*uxIsr = taskENTER_CRITICAL_FROM_ISR();
+	else {
+		taskENTER_CRITICAL();
+		*uxIsr = 0;
+	}
+};
 
-#define CLK_24M					24000000UL
-#define USEC_PER_SEC				1000000000ULL
+static void prvPwmExitCritical(UBaseType_t uxSaveIsr)
+{
+	if (xPortIsIsrContext())
+		taskEXIT_CRITICAL_FROM_ISR(uxSaveIsr);
+	else {
+		taskEXIT_CRITICAL();
+		uxSaveIsr = 0;
+	}
+};
+
+static void prvPwmRegWrite(uint32_t addr, uint32_t mask, uint32_t val)
+{
+	UBaseType_t uxSavedIsr;
+	prvPwmEnterCritical(&uxSavedIsr);
+	REG32_UPDATE_BITS(addr, mask, val);
+	prvPwmExitCritical(uxSavedIsr);
+}
 
 static xPwmMesonRegs_t *prvDeviceToRegs(xPwmMesondevice_t *pwm)
 {
@@ -113,12 +140,12 @@ static void prvPwmConstantDisable(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 	case MESON_PWM_2:
-		pwm_clrbits_le32(&reg->miscr, 1 << 28);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 28), 0);
 		break;
 
 	case MESON_PWM_1:
 	case MESON_PWM_3:
-		pwm_clrbits_le32(&reg->miscr, 1 << 29);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 29), 0);
 		break;
 
 	default:
@@ -134,12 +161,12 @@ static void prvPwmConstantEnable(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 	case MESON_PWM_2:
-		pwm_setbits_le32(&reg->miscr, 1 << 28);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 28), (1 << 28));
 		break;
 
 	case MESON_PWM_1:
 	case MESON_PWM_3:
-		pwm_setbits_le32(&reg->miscr, 1 << 29);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 29), (1 << 29));
 		break;
 
 	default:
@@ -182,14 +209,12 @@ static void prvPwmMesonClockSet(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 	case MESON_PWM_2:
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0x3 << 9);
-		pwm_setbits_le32(pwm->chip->clk_addr, 0x1 << 8);
+		prvPwmRegWrite(pwm->chip->clk_addr, ((0x3 << 9) | (0x1 << 8)), (0x1 << 8));
 		break;
 
 	case MESON_PWM_1:
 	case MESON_PWM_3:
-		pwm_clrbits_le32(pwm->chip->clk_addr, 0x3 << 25);
-		pwm_setbits_le32(pwm->chip->clk_addr, 0x1 << 24);
+		prvPwmRegWrite(pwm->chip->clk_addr, ((0x3 << 25) | (0x1 << 24)), (0x1 << 24));
 		break;
 
 	default:
@@ -259,31 +284,25 @@ static void prvMesonConfig(xPwmMesondevice_t *pwm)
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr) {
 			/* If using clktree */
-			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
-			pwm_setbits_le32(pwm->chip->clk_addr,
-				     (pwm->pwm_pre_div << 0 | 1 << 8));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)), ((pwm->pwm_pre_div << 0) | (1 << 8)));
 		} else {
-			pwm_clrbits_le32(&reg->miscr, ((0x3 << 4) | (0x7f << 8)));
-			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 8)) | (1 << 15));
+			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 4) | (0x7f << 8) | (1 << 15)), (((pwm->pwm_pre_div << 8)) | (1 << 15)));
 		}
 
 		/*set duty */
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dar);
+		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	case MESON_PWM_1:
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr) {
-			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
-			pwm_setbits_le32(pwm->chip->clk_addr,
-				     (pwm->pwm_pre_div << 16 | 1 << 24));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)), ((pwm->pwm_pre_div << 16) | (1 << 24)));
 		} else {
-			pwm_clrbits_le32(&reg->miscr, ((0x3 << 6) | (0x7f << 16)));
-			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 16)) | (1 << 23));
+			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 6) | (0x7f << 16) | (1 << 23)),  ((pwm->pwm_pre_div << 16) | (1 << 23)));
 		}
 
 		/*set duty */
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->dbr);
+		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	default:
@@ -299,30 +318,22 @@ static void prvMesonConfigExt(xPwmMesondevice_t *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_2:
 		/*set div and clock enable */
-		if (pwm->chip->clk_addr) {
-			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 0);
-			pwm_setbits_le32(pwm->chip->clk_addr,
-				     (pwm->pwm_pre_div << 0 | 1 << 8));
-		} else {
-			pwm_clrbits_le32(&reg->miscr, ((0x3 << 4) | (0x7f << 8)));
-			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 8)) | (1 << 15));
-		}
+		if (pwm->chip->clk_addr)
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)), ((pwm->pwm_pre_div) | (1 << 8)));
+		else
+			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 4) | (0x7f << 8) | (1 << 15)), ((pwm->pwm_pre_div << 8) | (1 << 15)));
 		/*set duty */
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->da2r);
+		prvPwmRegWrite((uint32_t)&reg->da2r, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	case MESON_PWM_3:
 		/*set div and clock enable */
-		if (pwm->chip->clk_addr) {
-			pwm_clrbits_le32(pwm->chip->clk_addr, 0xff << 16);
-			pwm_setbits_le32(pwm->chip->clk_addr,
-				     (pwm->pwm_pre_div << 16 | 1 << 24));
-		} else {
-			pwm_clrbits_le32(&reg->miscr, ((0x3 << 6) | (0x7f << 16)));
-			pwm_setbits_le32(&reg->miscr, ((pwm->pwm_pre_div << 16)) | (1 << 23));
-		}
+		if (pwm->chip->clk_addr)
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)), ((pwm->pwm_pre_div << 16) | (1 << 24)));
+		else
+			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 6) | (0x7f << 16) | (1 << 23)), ((pwm->pwm_pre_div << 16) | (1 << 23)));
 		/*set duty */
-		pwm_writel((pwm->pwm_hi << 16 | pwm->pwm_lo), &reg->db2r);
+		prvPwmRegWrite((uint32_t)&reg->db2r, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 	default:
 		iprintf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
@@ -374,19 +385,19 @@ void vPwmMesonDisable(xPwmMesondevice_t *pwm)
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_clrbits_le32(&reg->miscr, 1 << 0);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 0), 0);
 		break;
 
 	case MESON_PWM_1:
-		pwm_clrbits_le32(&reg->miscr, 1 << 1);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 1), 0);
 		break;
 
 	case MESON_PWM_2:
-		pwm_clrbits_le32(&reg->miscr, 1 << 25);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 25), 0);
 		break;
 
 	case MESON_PWM_3:
-		pwm_clrbits_le32(&reg->miscr, 1 << 24);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 24), 0);
 		break;
 
 	default:
@@ -406,19 +417,19 @@ void vPwmMesonEnable(xPwmMesondevice_t *pwm)
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_setbits_le32(&reg->miscr, 1 << 0);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 0), (1 << 0));
 		break;
 
 	case MESON_PWM_1:
-		pwm_setbits_le32(&reg->miscr, 1 << 1);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 1), (1 << 1));
 		break;
 
 	case MESON_PWM_2:
-		pwm_setbits_le32(&reg->miscr, 1 << 25);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 25), (1 << 25));
 		break;
 
 	case MESON_PWM_3:
-		pwm_setbits_le32(&reg->miscr, 1 << 24);
+		prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 24), (1 << 24));
 		break;
 
 	default:
@@ -434,23 +445,19 @@ void vPwmMesonSetTimes(xPwmMesondevice_t *pwm, uint32_t times)
 	times--;
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_clrbits_le32(&reg->tr, 0xff << 24);
-		pwm_setbits_le32(&reg->tr, times << 24);
+		prvPwmRegWrite((uint32_t)&reg->tr, (0xff << 24), (times << 24));
 		break;
 
 	case MESON_PWM_1:
-		pwm_clrbits_le32(&reg->tr, 0xff << 8);
-		pwm_setbits_le32(&reg->tr, times << 8);
+		prvPwmRegWrite((uint32_t)&reg->tr, (0xff << 8), (times << 8));
 		break;
 
 	case MESON_PWM_2:
-		pwm_clrbits_le32(&reg->tr, 0xff << 16);
-		pwm_setbits_le32(&reg->tr, times << 16);
+		prvPwmRegWrite((uint32_t)&reg->tr, (0xff << 16), (times << 16));
 		break;
 
 	case MESON_PWM_3:
-		pwm_clrbits_le32(&reg->tr, 0xff << 0);
-		pwm_setbits_le32(&reg->tr, times << 0);
+		prvPwmRegWrite((uint32_t)&reg->tr, (0xff << 0), (times << 0));
 		break;
 
 	default:
@@ -466,13 +473,11 @@ void vPwmMesonSetBlinkTimes(xPwmMesondevice_t *pwm, uint32_t times)
 	times--;
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_clrbits_le32(&reg->br, 0xf);
-		pwm_setbits_le32(&reg->br, times);
+		prvPwmRegWrite((uint32_t)&reg->br, 0xf, times);
 		break;
 
 	case MESON_PWM_1:
-		pwm_clrbits_le32(&reg->br, 0xf << 4);
-		pwm_setbits_le32(&reg->br, times << 4);
+		prvPwmRegWrite((uint32_t)&reg->br, (0xf << 4), (times << 4));
 		break;
 
 	default:
@@ -489,11 +494,11 @@ void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm)
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_setbits_le32(&reg->br, 1 << 8);
+		prvPwmRegWrite((uint32_t)&reg->br, (1 << 8), (1 << 8));
 		break;
 
 	case MESON_PWM_1:
-		pwm_setbits_le32(&reg->br, 1 << 9);
+		prvPwmRegWrite((uint32_t)&reg->br, (1 << 9), (1 << 9));
 		break;
 
 	default:
@@ -536,16 +541,16 @@ void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 		if (val)
-			pwm_setbits_le32(&reg->miscr, 0x01 << 26);
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 26), (1 << 26));
 		else
-			pwm_clrbits_le32(&reg->miscr, 0x01 << 26);
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 26), 0);
 		break;
 
 	case MESON_PWM_1:
 		if (val)
-			pwm_setbits_le32(&reg->miscr, 0x01 << 27);
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 27), (1 << 27));
 		else
-			pwm_clrbits_le32(&reg->miscr, 0x01 << 27);
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 27), 0);
 		break;
 
 	default:
@@ -560,13 +565,13 @@ void vPwmMesonClear(xPwmMesondevice_t *pwm)
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
-		pwm_clrbits_le32(&reg->miscr, (0xff << 8) | (1 << 25) | 0x3 << 4);
-		pwm_clrbits_le32(&reg->br, (0xf) | (1 << 8));	/* clear blink register */
+		prvPwmRegWrite((uint32_t)&reg->miscr, ((0xff << 8) | (1 << 25) | (3 << 4)), 0);
+		prvPwmRegWrite((uint32_t)&reg->br, ((0xf) | (1 << 8)), 0);
 		break;
 
 	case MESON_PWM_1:
-		pwm_clrbits_le32(&reg->miscr, (0xff << 16) | (1 << 24) | 0x3 << 6);
-		pwm_clrbits_le32(&reg->br, (0xf << 4) | (1 << 9));	/* clear blink register */
+		prvPwmRegWrite((uint32_t)&reg->miscr, ((0xff << 16) | (1 << 24) | (0x3 << 6)), 0);
+		prvPwmRegWrite((uint32_t)&reg->br, ((0xf << 4) | (1 << 9)), 0);
 		break;
 
 	default:
@@ -687,9 +692,9 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 	/* only update duty reg */
 	reg = prvDeviceToRegs(pwm);
 	if (channel_id == MESON_PWM_0)
-		pwm_writel(duty, &reg->dar);
+		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff, duty);
 	else
-		pwm_writel(duty, &reg->dbr);
+		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff, duty);
 #else
 	pwm->pwm_hi = duty >> 16;
 	pwm->pwm_lo = duty & 0xFFFF;

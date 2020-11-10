@@ -185,7 +185,7 @@ int main(void)
 	write_csr_mivec(&irq_entry);
 
 	vRtcInit();
-//	create_str_task();
+	create_str_task();
 
 	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();

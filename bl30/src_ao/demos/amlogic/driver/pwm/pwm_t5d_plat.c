@@ -25,7 +25,7 @@
  */
 
 /*
- * pwm t5 plat driver
+ * pwm t5d plat driver
  */
 #include "FreeRTOS.h"
 #include <common.h>

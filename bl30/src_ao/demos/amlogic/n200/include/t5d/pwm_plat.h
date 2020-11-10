@@ -38,7 +38,7 @@ extern "C" {
 
 #define PwmMesonVolt_Duty	1
 
-/* There are 3 pwm controllers in t5 */
+/* There are 3 pwm controllers in t5d */
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
@@ -46,7 +46,7 @@ enum pwm_chip_id {
 	PWM_MUX,
 };
 
-/* VDDEE VDDCPU in t5 */
+/* VDDEE VDDCPU in t5d */
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
 	VDDCPU_VOLT,

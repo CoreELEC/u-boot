@@ -27,13 +27,13 @@ BASEDIR_OUTPUT_BLOB=$3
 BB1ST_ARGS="${BB1ST_ARGS}"
 
 ### Input: template ###
-BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}/bb1st.bin.signed"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}"
 
 ### Input: payloads ###
-BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}/dvinit-params.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}"
 
 ### Output: blobs ###
-BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st.bin.signed"
+BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}"
 
 #
 # Main

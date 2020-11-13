@@ -44,18 +44,14 @@ postfix=.signed
 #
 # Arguments
 #
-
+#stage 2
 BB1ST_ARGS="${BB1ST_ARGS}"
 
 ### Input: template ###
 
-BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_PAYLOAD}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin.bl2-only"
 
 ### Input: payloads ###
-BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2-payload=${BASEDIR_PAYLOAD}/bl2-payload.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2e-payload=${BASEDIR_PAYLOAD}/bl2e-payload.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2x-payload=${BASEDIR_PAYLOAD}/bl2x-payload.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}/dvinit-params.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-csinit-params=${BASEDIR_PAYLOAD}/csinit-params.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
 
@@ -64,35 +60,15 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-chipset-lvl1=${BASEDIR_RSAKEY_LVLX_BL2}/level-1-rsa-priv.pem"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-chipset-lvl2=${BASEDIR_RSAKEY_LVLX_BL2}/level-2-rsa-priv.pem"
 
-### Input: nonce for binary protection ###
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-csinit-params=${BASEDIR_NONCE}/chipset/blob/csinit-params-nonce.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-ddr-fwdata=${BASEDIR_NONCE}/chipset/blob/ddr-fwdata-nonce.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-blob-bl2=${BASEDIR_NONCE}/chipset/blob/blob-bl2-nonce.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-blob-bl2e=${BASEDIR_NONCE}/chipset/blob/blob-bl2e-nonce.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-blob-bl2x=${BASEDIR_NONCE}/chipset/blob/blob-bl2x-nonce.bin"
-
-
 ### Input: pre-generated ProtKey for payloads
 BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-csinit-params=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-csinit-params.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-ddr-fwdata=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-ddr-fwdata.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-bl2-payload=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-bl2.bin"
-if [ "x${FEAT_BL2E_SIGPROT_MODE}" == "x0" ]; then
-	BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-bl2e-payload=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-bl2e.bin"
-fi
-BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-bl2x-payload=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-bl2x.bin"
 
 ### Features, flags and switches ###
-
-if [ "x${FEAT_BL2E_SIGPROT_MODE}" != "x0" ]; then
-	BB1ST_ARGS="${BB1ST_ARGS} --feature-bl2e-sigprot-mode"
-fi
+BB1ST_ARGS="${BB1ST_ARGS} --switch-chipset-sign-bl2=0"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin${postfix}"
-BB1ST_ARGS="${BB1ST_ARGS} --outfile-blob-bl2e=${BASEDIR_OUTPUT_BLOB}/blob-bl2e.bin${postfix}"
-BB1ST_ARGS="${BB1ST_ARGS} --outfile-blob-bl2x=${BASEDIR_OUTPUT_BLOB}/blob-bl2x.bin${postfix}"
-
-echo ${TOOLS_ARGS}
 
 #
 # Main

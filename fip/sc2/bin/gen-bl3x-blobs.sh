@@ -22,17 +22,21 @@ BASEDIR_PAYLOAD=$2
 
 BASEDIR_NONCE="./nonce"
 
-BASEDIR_AESKEY_PROT_BL2="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl2/aes/s905x4"
-BASEDIR_RSAKEY_LVLX_BL2="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl2/rsa/s905x4"
+CHIPSET_NAME=$4
+KEY_TYPE=$5
+SOC=$6
 
-BASEDIR_AESKEY_PROT_BL31="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl31/aes/s905x4"
-BASEDIR_RSAKEY_LVLX_BL31="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl31/rsa/s905x4"
+BASEDIR_AESKEY_PROT_BL2="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl2/aes/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL2="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl2/rsa/${CHIPSET_NAME}"
 
-BASEDIR_AESKEY_PROT_BL32="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl32/aes/s905x4"
-BASEDIR_RSAKEY_LVLX_BL32="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl32/rsa/s905x4"
+BASEDIR_AESKEY_PROT_BL31="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl31/aes/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL31="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl31/rsa/${CHIPSET_NAME}"
 
-BASEDIR_AESKEY_PROT_BL40="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl40/aes/s905x4"
-BASEDIR_RSAKEY_LVLX_BL40="${BASEDIR_TOP}/keys/dev-keys/sc2/chipset/bl40/rsa/s905x4"
+BASEDIR_AESKEY_PROT_BL32="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl32/aes/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL32="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl32/rsa/${CHIPSET_NAME}"
+
+BASEDIR_AESKEY_PROT_BL40="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl40/aes/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL40="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl40/rsa/${CHIPSET_NAME}"
 
 BASEDIR_OUTPUT_BLOB=$3
 postfix=.signed

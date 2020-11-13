@@ -362,6 +362,12 @@ function parser() {
 			--config)
 				print_config
 				return ;;
+			# SCRIPT_ARG_CHIPSET_VARIANT is used in source variable
+			# soc, so should add first
+			--chip-varient)
+				SCRIPT_ARG_CHIPSET_VARIANT="${argv[$i]}"
+				export SCRIPT_ARG_CHIPSET_VARIANT
+				continue ;;
 			--check-compile)
 				check_compile "${argv[@]:$((i))}"
 				exit ;;

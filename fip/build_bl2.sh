@@ -1,14 +1,30 @@
 #!/bin/bash
 
+advanced_bootloader_soc="sc2 t7 s4"
+# check if soc is using advanced boot loader
+function is_abs() {
+	local t=$(echo $advanced_bootloader_soc | grep -w "$1")
+	if [ "$t" == "" ]; then
+		ADVANCED_BOOTLOADER=0
+	else
+		ADVANCED_BOOTLOADER=1
+	fi
+	export ADVANCED_BOOTLOADER
+}
+
+
 function build_bl2() {
 	echo -n "Build bl2...Please wait..."
 	local target="$1/bl2.bin"
 	local targetv3="$1/bl2.v3.bin"
 	# $1: src_folder, $2: bin_folder, $3: soc
+	is_abs $3
 	cd $1
-	if [ "$3" == "sc2" ]; then
+	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		#echo "Storage with --bl2ex --dpre"
-		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE}
+		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dsto
+		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dusb
+		target="$1/bl2.bin*"
 		targetv3="$1/chip_acs.bin"
 	else
 		/bin/bash mk $3
@@ -29,7 +45,7 @@ function build_bl2() {
 
 function build_bl2e() {
 	echo -n "Build bl2e...Please wait..."
-	local target="$1/bl2e.bin"
+	local target="$1/bl2e.bin*"
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1

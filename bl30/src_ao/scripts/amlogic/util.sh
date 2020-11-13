@@ -1,4 +1,4 @@
-ARCH_DIRS="n200"
+ARCH_DIRS="n200 customer"
 
 function list_boards()
 {

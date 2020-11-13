@@ -252,6 +252,9 @@ static void vSTRTask( void *pvParameters )
 				case POWER_KEY_WAKEUP:
 					exit_reason = POWER_KEY_WAKEUP;
 					break;
+				case ETH_PMT_WAKEUP:
+					exit_reason = ETH_PMT_WAKEUP;
+					break;
 				default:
 					break;
 			}
@@ -291,4 +294,3 @@ void create_str_task(void)
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
 }
-

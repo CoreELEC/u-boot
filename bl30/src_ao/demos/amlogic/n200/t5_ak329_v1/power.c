@@ -36,6 +36,13 @@
 
 #include "hdmi_cec.h"
 
+/*#define CONFIG_ETH_WAKEUP*/
+
+#ifdef CONFIG_ETH_WAKEUP
+#include "interrupt_control.h"
+#define IRQ_ETH_PMT_NUM 73
+#endif
+
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
 
@@ -62,7 +69,11 @@ static void vIRHandler(IRPowerKey_t *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-
+#ifdef CONFIG_ETH_WAKEUP
+void vETHInit(uint32_t ulIrq,function_ptr_t handler);
+void vETHDeint(uint32_t ulIrq);
+void eth_handler(void);
+#endif
 void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(void);
@@ -72,6 +83,9 @@ void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+#ifdef CONFIG_ETH_WAKEUP
+	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
+#endif
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
 	return;
@@ -85,6 +99,9 @@ void str_hw_disable(void)
 {
 	/*disable wakeup source interrupt*/
 	vIRDeint();
+#ifdef CONFIG_ETH_WAKEUP
+	vETHDeint(IRQ_ETH_PMT_NUM);
+#endif
 	if (cecTask) {
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
@@ -142,11 +159,13 @@ void str_power_off(void)
 		return;
 	}
 
+#ifndef CONFIG_ETH_WAKEUP
 	ret= xGpioSetValue(GPIOD_10,GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+#endif
 	printf("vdd_cpu off\n");
 
 	/***set vdd_ee val***/
@@ -162,3 +181,25 @@ void str_power_off(void)
 		return;
 	}
 }
+
+#ifdef CONFIG_ETH_WAKEUP
+void eth_handler(void)
+{
+	uint32_t buf[4] = {0};
+	buf[0] = ETH_PMT_WAKEUP;
+	STR_Wakeup_src_Queue_Send_FromISR(buf);
+	DisableIrq(IRQ_ETH_PMT_NUM);
+}
+
+void vETHInit(uint32_t ulIrq,function_ptr_t handler)
+{
+	RegisterIrq(ulIrq, 2, handler);
+	EnableIrq(ulIrq);
+}
+
+void vETHDeint(uint32_t ulIrq)
+{
+	DisableIrq(ulIrq);
+	UnRegisterIrq(ulIrq);
+}
+#endif

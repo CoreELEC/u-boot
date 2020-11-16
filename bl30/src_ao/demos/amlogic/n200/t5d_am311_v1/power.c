@@ -214,10 +214,8 @@ void eth_handler(void)
 
 void vETHInit(uint32_t ulIrq,function_ptr_t handler)
 {
-	printf("wol_value1 = 0x%x\n",REG32(0xff3f002c));
 	RegisterIrq(ulIrq, 2, handler);
 	EnableIrq(ulIrq);
-	printf("wol_value2 = 0x%x\n",REG32(0xff3f002c));
 }
 
 void vETHDeint(uint32_t ulIrq)

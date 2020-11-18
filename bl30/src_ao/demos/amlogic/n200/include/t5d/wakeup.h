@@ -5,28 +5,25 @@
 
 inline void wakeup_ap(void)
 {
-	REG32(ISA_SOFT_IRQ) = 1;
-#if 0
 	uint32_t value;
-	//uint32_t time_out = 20;
 
 	/*set alarm timer*/
-	REG32(FSM_TRIGER_SRC) = 1000;/*1ms*/
-
-	value = REG32(FSM_TRIGER_CTRL);
-	value &= ~((1 << 7) | (0x3) | (1 << 6));
-	value |= ((1 << 7) | (0 << 6) | (0x3));
-	REG32(FSM_TRIGER_CTRL) = value;
-#endif
+	REG32(ISA_TIMERB) = 1;
+	value = REG32(ISA_TIMER_MUX);
+	value &= ~((1 << 17) |(1 << 13)| (0x3 << 2));
+	value |= ((1 << 17) |(0 << 13)| (0x3 << 2));
+	REG32(ISA_TIMER_MUX) = value;
+	vTaskDelay(1);
 }
 
 inline void clear_wakeup_trigger(void)
 {
-	REG32(ISA_SOFT_IRQ) = 0;
-/*
-	REG32(FSM_TRIGER_SRC) = 0;
-	REG32(FSM_TRIGER_CTRL) = 0;
-*/
+	uint32_t value;
+
+	value = REG32(ISA_TIMER_MUX);
+	value &= ~((1 << 17) |(1 << 13)| (0x3 << 2));
+	REG32(ISA_TIMER_MUX) = value;
+
 }
 
 void watchdog_reset_system(void)

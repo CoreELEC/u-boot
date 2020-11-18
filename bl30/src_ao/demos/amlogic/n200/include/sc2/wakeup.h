@@ -16,6 +16,7 @@ inline void wakeup_ap(void)
 	value &= ~((1 << 7) | (0x3) | (1 << 6));
 	value |= ((1 << 7) | (0 << 6) | (0x3));
 	REG32(FSM_TRIGER_CTRL) = value;
+	vTaskDelay(1);
 }
 
 inline void clear_wakeup_trigger(void)

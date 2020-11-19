@@ -42,9 +42,9 @@ BINNAME=RTOSDemo
 include $(FREERTOS_VENDOR)/makedefs
 
 RTOS_SOURCE_DIR = ${FREERTOS_LIB_DIR}/FreeRTOS
-OUTPUT := ./out_sc2
+OUTPUT := ./out_t7
 
-CFLAGS += $(WARNINGS) -DMPU_INIT=1 -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ../include/sc2 -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
+CFLAGS += $(WARNINGS) -I . -I./$(FREERTOS_VENDOR)/include -I ../include -I ../include/t7 -I ${FREERTOS_CORE_DIR} -I $(FREERTOS_ROOT_DIR)/lib/include -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include/drivers -I $(FREERTOS_ROOT_DIR)/lib/third_party/amlogic/include -I ${FREERTOS_LIB_DIR}/include/private
 
 AFLAGS = $(CFLAGS) -D__ASM
 
@@ -57,14 +57,13 @@ $(info LDFLAGS = $(LDFLAGS))
 	-L/opt/riscv-none-gcc/7.2.0-4-20180606-1631/lib/gcc/riscv-none-embed/7.2.0/rv32im/ilp32 -lgcc
 
 -include $(FREERTOS_VENDOR_DRIVER)/uart/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/leds/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
--include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
+#-include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/timer_source/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/get_version/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/saradc/build.mk

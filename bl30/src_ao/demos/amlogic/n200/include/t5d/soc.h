@@ -43,4 +43,5 @@
 #define FSM_TRIGER_CTRL		AO_TIMER_CTRL
 #define FSM_TRIGER_SRC		AO_DEBUG_REG2  //Just for run happy. Need fix it!!!!
 
+#define UART_PORT_CONS UART1_WFIFO
 #endif

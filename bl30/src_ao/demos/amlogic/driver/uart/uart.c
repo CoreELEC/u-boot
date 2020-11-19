@@ -31,8 +31,9 @@
 #include "common.h"
 #include "uart.h"
 #include "register.h"
+#include "soc.h"
 
-#define UART_PORT_CONS UART_B_WFIFO
+//#define UART_PORT_CONS UART_B_WFIFO
 
 #define UART_STP_BIT UART_MODE_MASK_STP_1BIT
 #define UART_PRTY_BIT 0

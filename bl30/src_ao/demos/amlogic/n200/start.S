@@ -29,6 +29,7 @@ _start:
 	or t0, t0, t1
 	csrw CSR_MTVEC, t0
 
+#ifdef MPU_INIT
 /* Setup MPU */
 	li t0, SOC_PMP_BASE
 	/* Enable SRAM full range rwx */
@@ -43,6 +44,7 @@ _start:
 	add t1, t1, 0x0d
 	sw t2, 20(t0)
 	sw t1, 16(t0)
+#endif
 
 #ifdef __riscv_flen
 	/* Enable FPU */

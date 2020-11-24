@@ -31,7 +31,7 @@ Usage: $(basename $0) --help
        Combine binaries into an unsigned bootloader:
 
        $(basename $0) --create-unsigned-bl \\
-                      [--soc      (g12a|g12b|sm1|a1|c1)] \\
+                      [--soc      (g12a|g12b|sm1|a1|c1|t5)] \\
                       --bl2 <bl2_new.bin> \\
                       --bl30 <bl30_new.bin> \\
                       --bl31 <bl31.img> \\
@@ -68,6 +68,7 @@ EOF
 current_soc=""
 bl30_required=true
 keyhashver_min=2
+bl30_ao=false
 
 set_soc() {
     if [ "$current_soc" != "" ]; then
@@ -80,6 +81,10 @@ set_soc() {
         g12a|g12b|sm1) ;;
         a1|c1)
             bl30_required=false
+            keyhashver_min=3
+            ;;
+        t5)
+            bl30_ao=true
             keyhashver_min=3
             ;;
         *)
@@ -1083,13 +1088,15 @@ create_unsigned_bl() {
         exit 1
     fi
 
-    if $bl30_required || [ "$bl30" != "" ]; then
-        local bl30_payload_size=$(wc -c < ${bl30})
-        trace "BL30 size specified $bl30size"
-        trace "Input BL30 payload size $bl30_payload_size"
-        if [ $bl30size -ne $(($bl30_payload_size + 4096)) ]; then
-            echo Error: invalid bl30 payload size $bl30_payload_size
-            exit 1
+    if [ ! $bl30_ao ]; then
+        if [ $bl30_required || [ "$bl30" != "" ]; then
+            local bl30_payload_size=$(wc -c < ${bl30})
+            trace "BL30 size specified $bl30size"
+            trace "Input BL30 payload size $bl30_payload_size"
+            if [ $bl30size -ne $(($bl30_payload_size + 4096)) ]; then
+                echo Error: invalid bl30 payload size $bl30_payload_size
+                exit 1
+            fi
         fi
     fi
 
@@ -1115,6 +1122,8 @@ create_unsigned_bl() {
 
     if [ "$bl30" == "" ]; then
         touch $TMP/bl30.bin.img
+    elif $bl30_ao; then
+        pack_bl3x -i $bl30 -o $TMP/bl30.bin.img
     else
         pack_bl2 -i $bl30 -o $TMP/bl30.bin.img -s $bl30size
     fi

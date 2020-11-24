@@ -30,33 +30,39 @@ while getopts "s:h:z:p:r:a:um:no:" opt; do
 done
 
 tool_type=gxl
-
-if [ ${soc} == "g12a" ]; then
-tool_type=g12a
-fi
-
-if [ ${soc} == "g12b" ]; then
-tool_type=g12a
-fi
-
-if [ ${soc} == "tl1" ]; then
-tool_type=tl1
-fi
-
-if [ ${soc} == "tm2" ]; then
-tool_type=tl1
-fi
-
-if [ $soc == "gxl" ]; then
+if [ ${soc} == "gxl" ]; then
 hash_ver=1
 fi
 
+if [ ${soc} == "gxl" ] || [ ${soc} == "txlx" ]; then
+soc_type=gxl
+tool_type=gxl
+fi
+
+if [ ${soc} == "g12a" ] || [ ${soc} == "g12b" ]; then
+soc_type=g12a
+tool_type=g12a
+fi
+
+if [ ${soc} == "tl1" ] || [ ${soc} == "tm2" ]; then
+soc_type=tl1
+tool_type=tl1
+fi
+
 if [ ${soc} == "c1" ]; then
+soc_type=c1
 tool_type=c1
 hash_ver=3
 fi
+
+if [ ${soc} == "t5" ] || [ ${soc} == "t5d" ]; then
+soc_type=t5
+tool_type=c1
+hash_ver=3
+fi
+
 readonly tools_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-uboot_encrypt_signed="${tools_dir}/amlogic-sign-${tool_type}.sh"
+uboot_encrypt_signed="${tools_dir}/amlogic-sign-${soc_type}.sh"
 kernel_encrypt_signed="${tools_dir}/signing-tool-${tool_type}/sign-boot-${tool_type}.sh"
 uimage_encrypt_signed="${tools_dir}/signing-tool-${tool_type}/sign-boot-${tool_type}.sh"
 ARBCONFIG="${tools_dir}/fw_arb.txt"

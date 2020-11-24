@@ -36,7 +36,7 @@ Usage: $(basename $0) --help
        All-in-one command to create a signed bootloader:
 
        $(basename $0) --create-signed-bl	\\
-                [--soc      (g12a|g12b|sm1|a1|c1)] \\
+                [--soc      (g12a|g12b|sm1|a1|c1|t5)] \\
                 --bl2		bl2.bin		\\
                 --bl30		bl30.bin	\\
                 --bl30-key	bl30key.pem	\\
@@ -85,6 +85,7 @@ current_soc=""
 bl30_required=true
 separate_fip_aes=false
 keyhashver_min=2
+bl30_ao=false
 
 set_soc() {
     if [ "$current_soc" != "" ]; then
@@ -98,6 +99,10 @@ set_soc() {
         a1|c1)
             bl30_required=false
             separate_fip_aes=true
+            keyhashver_min=3
+            ;;
+        t5)
+            bl30_ao=true
             keyhashver_min=3
             ;;
         *)
@@ -508,6 +513,207 @@ append_uint64_le() {
     echo $vrev | xxd -r -p >> $output
 }
 
+# function: add control block for upgrade check/defnedkey
+# $1: input/output
+# $2: rsakey
+# $3: aeskey
+# $4: rsakeysha
+# typedef struct{
+#		unsigned char szPad0[16]; //fixed to 0
+#		unsigned char szIMGCHK[32];
+#		unsigned char szRTKCHK[32];
+#		unsigned char szAESCHK[32];
+#		unsigned char szPad1[16];
+#
+#		unsigned char szPad2[4];  //fixed to 0
+#		unsigned char szPad3[12]; //random is perfect for RSA
+#		unsigned int  nARBMagic; //magic for ARB magic, ARBU, ARBI...
+#		unsigned int  nBL2CVN;
+#		unsigned int  nFIPCVN;
+#		unsigned int  nBL30CVN;
+#		unsigned int  nBL31CVN;
+#		unsigned int  nBL32CVN;
+#		unsigned int  nBL33CVN;
+#		unsigned int  nIMGCVN;
+#		unsigned char szPad31[80];
+#
+#		unsigned char szPad4[4];  //fixed to 0
+#		unsigned char szPad5[124];//random is perfect for RSA
+#
+#		unsigned char szPad6[4];  //fixed to 0
+#		unsigned char szPad7[124];//random is perfect for RSA
+#	}st_upg_chk_blk;//128x4=512Bytes
+add_upgrade_check() {
+	local arb_magic="0000"  #arb_magic: "ARBU", "ARBI"
+	local bl2_cvn="0"
+	local fip_cvn="0"
+	local bl30_cvn="0"
+	local bl31_cvn="0"
+	local bl32_cvn="0"
+	local bl33_cvn="0"
+	local img_cvn="0"
+	local argv=("$@")
+	local i=0
+
+    if [ $# -lt 4 ]; then
+        echo Invalid args for $FUNCNAME
+        echo "args: input/output rsakey aeskey"
+        exit 1
+    fi
+
+	# Parse args
+	i=0
+	while [ $i -lt $# ]; do
+		arg="${argv[$i]}"
+		i=$((i + 1))
+		case "$arg" in
+			--arb-magic)
+				arb_magic="${argv[$i]}" ;;
+			--bl2-cvn)
+				bl2_cvn="${argv[$i]}" ;;
+			--fip-cvn)
+				fip_cvn="${argv[$i]}" ;;
+			--bl30-cvn)
+				bl30_cvn="${argv[$i]}" ;;
+			--bl31-cvn)
+				bl31_cvn="${argv[$i]}" ;;
+			--bl32-cvn)
+				bl32_cvn="${argv[$i]}" ;;
+			--bl33-cvn)
+				bl33_cvn="${argv[$i]}" ;;
+			--img-cvn)
+				img_cvn="${argv[$i]}" ;;
+		esac
+		i=$((i + 1))
+	done
+
+    local sig="$TMP/sig"
+		dd if=/dev/zero of=${sig} bs=1 count=12 &> /dev/null         #szPad0[12]
+		echo -n 'SCPT' >> ${sig}                                     #szPad0[4]
+		openssl dgst -sha256 -binary -out $TMP/$(basename $1).sha $1
+		cat $TMP/$(basename $1).sha >> ${sig}                        #szIMGCHK[32]
+		rm -f $TMP/$(basename $1).sha
+		if [ -e $3 ]; then
+		  cat $3 >> ${sig}                                           #szRTKCHK[32]
+		else
+		  echo "Warning... Invalid RSA key SHA -- $3"
+		  dd if=/dev/zero of=${sig} bs=1 count=32 oflag=append conv=notrunc &> /dev/null  #szRTKCHK[32]
+		fi
+
+		if [ -e $4 ]; then
+		  cat "$4" >> ${sig}                                          #szAESCHK[32]
+		else
+		  #echo "Warning... Invalid AES key -- $4"
+		  dd if=/dev/zero of=${sig} bs=1 count=32 oflag=append conv=notrunc &> /dev/null  #szAESCHK[32]
+		fi
+
+		dd if=/dev/zero of=${sig} bs=1 count=20 oflag=append conv=notrunc &> /dev/null		 #szPad1[16],szPad2[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null	 #szPad3[12]
+
+		# Add arb cvn
+		echo $arb_magic > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nARBMagic
+		printf "%02x %02x %02x %02x" $bl2_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nBL2CVN
+		printf "%02x %02x %02x %02x" $fip_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nFIPCVN
+		printf "%02x %02x %02x %02x" $bl30_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nBL30CVN
+		printf "%02x %02x %02x %02x" $bl31_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nBL31CVN
+		printf "%02x %02x %02x %02x" $bl32_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nBL32CVN
+		printf "%02x %02x %02x %02x" $bl33_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nBL33CVN
+		printf "%02x %02x %02x %02x" $img_cvn 0 0 0 | xxd -r -ps > $TMP/upg_chk_cvn
+		dd if=$TMP/upg_chk_cvn of=${sig} bs=1 count=4 oflag=append conv=notrunc &> /dev/null    #nIMGCVN
+
+		dd if=/dev/zero of=${sig} bs=1 count=84 oflag=append conv=notrunc &> /dev/null     #szPad31[80],szPad4[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad5[12]
+		dd if=/dev/zero of=${sig} bs=1 count=116 oflag=append conv=notrunc &> /dev/null    #szPad5[112],szPad6[4]
+		dd if=/dev/urandom of=${sig} bs=1 count=12 oflag=append conv=notrunc &> /dev/null  #szPad7[12]
+		dd if=/dev/zero of=${sig} bs=1 count=112 oflag=append conv=notrunc &> /dev/null    #szPad7[112]
+
+		modulus=`openssl rsa -in $2  -modulus -noout`
+		declare -i ikeylen=${#modulus}
+	  ikeylen=$[ (ikeylen -8) / 2]
+		declare -i iIndex
+		declare -i iTotal
+		iIndex=$[512%ikeylen]
+		if [ $iIndex -ne 0 ]; then
+			echo "invalid RSA key len $2\n"
+			exit 1
+		fi
+
+		iTotal=$[512/ikeylen]
+		#dd if=/dev/zero of=${sig}.dec bs=1 count=0 &> /dev/null
+		while [ $iIndex -lt $iTotal ]; do
+			local step=${sig}.$iIndex
+			dd if=${sig} of=${step} bs=1 skip=$[ikeylen*iIndex] count=${ikeylen} &> /dev/null
+			openssl rsautl -decrypt -raw -in ${step}     -inkey $2 -out ${step}.enc &> /dev/null
+			cat ${step}.enc >> $1
+			#openssl rsautl -encrypt -raw -in ${step}.enc -inkey $2 -out ${step}.enc.dec &> /dev/null
+			#cat ${step}.enc.dec >> ${sig}.dec
+			iIndex+=1
+    done
+
+    rm -f ${sig}*
+}
+
+# Check input is android 9.0 format or not
+# 1: input
+# returns True or False
+# android 9.0 file format: 2KB header + kernel/ramdisk/dtb
+# file header as following
+# 9.0 will use the unused[2] field like unused[0] = 1
+# define ANDR_BOOT_MAGIC "ANDROID!"  //414e44524f494421
+# define ANDR_BOOT_MAGIC_SIZE 8
+# define ANDR_BOOT_NAME_SIZE 16
+# define ANDR_BOOT_ARGS_SIZE 512
+# struct andr_img_hdr {
+#   char magic[ANDR_BOOT_MAGIC_SIZE];
+#   unsigned int kernel_size;	/* size in bytes */
+#   unsigned int kernel_addr;	/* physical load addr */
+#   unsigned int ramdisk_size;	/* size in bytes */
+#   unsigned int ramdisk_addr;	/* physical load addr */
+#   unsigned int second_size;	/* size in bytes */
+#   unsigned int second_addr;	/* physical load addr */
+#   unsigned int tags_addr;		/* physical addr for kernel tags */
+#   unsigned int page_size;		/* flash page size we assume */
+#   unsigned int unused[2];		/* future expansion: should be 0 */
+#   char name[ANDR_BOOT_NAME_SIZE]; /* asciiz product name */
+#   char cmdline[ANDR_BOOT_ARGS_SIZE];
+#   unsigned int id[8]; /* timestamp / checksum / sha1 / etc */
+#   };
+
+
+is_android9_img() {
+    local input=$1
+    if [ ! -f "$1" ]; then
+        echo "Argument error, \"$1\""
+        exit 1
+    fi
+    local insize=$(wc -c < $input)
+    if [ $insize -le 2048 ]; then
+        # less than size of img header
+        echo False
+        return
+    fi
+
+    local inmagic=$(xxd -p -l 8 $input)
+
+    if [ "$inmagic" == "414e44524f494421" ]; then
+      inmagic=$(xxd -p -seek 40 -l 4 $input)
+      if [ "$inmagic" == "01000000" ] || [ "$inmagic" == "02000000" ]; then
+        echo True
+      else
+        echo False
+      fi
+    else
+      echo False
+    fi
+}
+
 # Encrypt/sign kernel
 #typedef struct {
 #	uint32_t magic;
@@ -533,6 +739,7 @@ sign_kernel() {
     local encrypt=false
     local stage="kernel"
     local i=0
+    local keyhashver=3
 
     # Parse args
     i=0
@@ -552,6 +759,8 @@ sign_kernel() {
                 aesiv="${argv[$i]}" ;;
             -v)
                 arb_cvn="${argv[$i]}" ;;
+            -h)
+                keyhashver="${argv[$i]}" ;;
             *)
                 echo "Unknown option $arg"; exit 1
                 ;;
@@ -625,6 +834,76 @@ sign_kernel() {
 
     echo
     echo Created signed kernel $output successfully
+
+    #......
+    #android 9.0 special process
+    #file format: 2KB android 9.0 file header + AML block header + Image
+    if [ "$(is_android9_img ${input})" == "True" ]; then
+            local tempfile=${output}.`date +%Y%m%d%H%M%S`
+            dd if=${input} of=${tempfile} bs=512 count=4 &> /dev/null
+            cat ${output} >> ${tempfile}
+            mv -f ${tempfile} ${output}
+    fi
+    #add_upgrade_check ${output} bl2key r-key.e bl2aeskey
+    local keypath=$(dirname $key)
+    local temp_folder=$SCRIPT_PATH/`date +%Y%m%d%H%M%S`
+
+    local rootkey0=$keypath/root0.pem
+    local rootkey1=$keypath/root1.pem
+    local rootkey2=$keypath/root2.pem
+    local rootkey3=$keypath/root3.pem
+    local bl2key=$keypath/bl2.pem
+    local bl2aeskey=$keypath/bl2aeskey
+
+    check_file bl2key   "$bl2key"
+    check_file rootkey0 "$rootkey0"
+    check_file rootkey1 "$rootkey1"
+    check_file rootkey2 "$rootkey2"
+    check_file rootkey3 "$rootkey3"
+
+	mkdir -p $temp_folder
+
+    if [ "$keyhashver" == "3" ]; then
+        enable_n0inv128=True
+    else
+        enable_n0inv128=False
+    fi
+
+    if [ -d $temp_folder ]; then
+	    pem_to_pub $rootkey0 $temp_folder/rootkey0.pub
+	    pem_to_pub $rootkey1 $temp_folder/rootkey1.pub
+	    pem_to_pub $rootkey2 $temp_folder/rootkey2.pub
+	    pem_to_pub $rootkey3 $temp_folder/rootkey3.pub
+
+	    # Convert PEM key to rsa_public_key_t (precomputed RSA public key)
+
+	    pem_to_bin $temp_folder/rootkey0.pub $temp_folder/rootkey0.bin $enable_n0inv128
+	    pem_to_bin $temp_folder/rootkey1.pub $temp_folder/rootkey1.bin $enable_n0inv128
+	    pem_to_bin $temp_folder/rootkey2.pub $temp_folder/rootkey2.bin $enable_n0inv128
+	    pem_to_bin $temp_folder/rootkey3.pub $temp_folder/rootkey3.bin $enable_n0inv128
+
+	    # hash of keys
+	    declare -i keylen=$(get_pem_key_len $rootkey0)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey0.bin $keylen $temp_folder/rootkey0.sha
+	    keylen=$(get_pem_key_len $rootkey1)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey1.bin $keylen $temp_folder/rootkey1.sha
+	    keylen=$(get_pem_key_len $rootkey2)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey2.bin $keylen $temp_folder/rootkey2.sha
+	    keylen=$(get_pem_key_len $rootkey3)
+	    keylen=$[keylen*8]
+	    hash_rsa_bin $keyhashver $temp_folder/rootkey3.bin $keylen $temp_folder/rootkey3.sha
+
+	    cat $temp_folder/rootkey0.sha $temp_folder/rootkey1.sha $temp_folder/rootkey2.sha $temp_folder/rootkey3.sha > $temp_folder/r-key.4
+	    openssl dgst -sha256 -binary $temp_folder/r-key.4 > $temp_folder/r-key.e
+	    add_upgrade_check ${output} $bl2key $temp_folder/r-key.e ${bl2aeskey}\
+			--arb-magic "ARBI" \
+			--img-cvn $arb_cvn
+
+	    rm -fr $temp_folder
+    fi
 }
 
 # Encrypt/sign rtos/NBG
@@ -1440,6 +1719,10 @@ sign_bl2_hdr() {
             --bl2-size $bl2size \
             -o "$TMP/bl2.hdr"
 
+    cat $TMP/rootkey0.sha $TMP/rootkey1.sha $TMP/rootkey2.sha $TMP/rootkey3.sha > $TMP/r-key.4
+    openssl dgst -sha256 -binary $TMP/r-key.4 > $TMP/r-key.e
+    rm -f $TMP/r-key.4
+
     # Add arb cvn
     if [ ! -z "$arb_cvn" ]; then
         printf %02x $arb_cvn | xxd -r -p > "$TMP/bl2cvn"
@@ -1548,6 +1831,7 @@ create_signed_bl() {
     local size=0
     local ddrfwalignment=16384
     local soc="g12a"
+    local bl2size=65536
 
     touch $TMP/ddr.fw.bin
 
@@ -1689,6 +1973,8 @@ create_signed_bl() {
                 keyhashver="${argv[$i]}" ;;
             --marketid)
                 marketid="${argv[$i]}" ;;
+            --bl2-size)
+                bl2size="${argv[$i]}" ;;
             -o)
                 output="${argv[$i]}" ;;
             *)
@@ -1855,7 +2141,7 @@ create_signed_bl() {
             --bl2-key-0 "$bl2key0" --bl2-key-1 "$bl2key1" \
             --bl2-key-2 "$bl2key2" --bl2-key-3 "$bl2key3" \
             --bl2-key "$bl2key" \
-            --bl2-size 65536 \
+            --bl2-size $bl2size \
             --marketid $marketid \
             --arb-cvn $bl2_arb_cvn \
             --sig-ver $sigver --key-hash-ver $keyhashver
@@ -1865,7 +2151,7 @@ create_signed_bl() {
     sign_bl2 -i "$bl2" -o "$TMP/bl2.bin.out" \
         --bl2-hdr "$bl2hdr_i" \
         --bl2-key "$bl2key" \
-        --bl2-size 65536 \
+        --bl2-size $bl2size \
         $( [ -n "$bl2aesiv" ] && echo -n "--iv $bl2aesiv" ) \
         --sig-ver $sigver --key-hash-ver $keyhashver
 
@@ -1879,6 +2165,9 @@ create_signed_bl() {
     # Sign/encrypt BL30 payload using bl2 functions
     if ! $bl30_required && [ "$bl30" == "" ]; then
         touch "$TMP/bl30.bin.sig"
+    elif $bl30_ao; then
+        sign_bl3x -i $bl30 -o $TMP/bl30.bin.sig -k $bl30key --stage bl30 -v $bl30_arb_cvn \
+        $( $encryptFIPbl3x && echo -n "-a $bl30aeskey --iv $bl30aesiv" )
     else
         local bl30hdr_i="$bl30hdr"
         if [ "$bl30hdr" == "" ]; then
@@ -2091,6 +2380,15 @@ create_signed_bl() {
 
     echo
     echo Created signed bootloader $output successfully
+
+    add_upgrade_check ${output} $bl2key $TMP/r-key.e ${bl2aeskey}\
+		--arb-magic "ARBU" \
+		--bl2-cvn $bl2_arb_cvn \
+		--fip-cvn $fip_arb_cvn \
+		--bl30-cvn $bl30_arb_cvn \
+		--bl31-cvn $bl31_arb_cvn \
+		--bl32-cvn $bl32_arb_cvn \
+		--bl33-cvn $bl33_arb_cvn
 }
 
 create_signed_bl40() {

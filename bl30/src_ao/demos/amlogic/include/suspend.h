@@ -52,5 +52,5 @@ extern void STR_Start_Sem_Give_FromISR(void);
 extern void STR_Start_Sem_Give(void);
 extern void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src);
 extern void STR_Wakeup_src_Queue_Send(uint32_t *src);
-extern void xMboxSuspend_Sem(void *msg);
+extern void *xMboxSuspend_Sem(void *msg);
 

@@ -50,8 +50,9 @@ void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
 void create_str_task(void);
 uint32_t get_reason_flag(void);
-void xMboxGetWakeupReason(void *msg);
-void xMboxClrWakeupReason(void *msg);
+void *xMboxGetWakeupReason(void *msg);
+void *xMboxClrWakeupReason(void *msg);
+void set_suspend_flag(void);
 
 SemaphoreHandle_t xSTRSemaphore = NULL;
 QueueHandle_t xSTRQueue = NULL;
@@ -112,22 +113,42 @@ idle:
 	}
 }
 
+__attribute__((weak)) void vDDR_suspend(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void vDDR_resume(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
 void system_resume(uint32_t pm)
 {
+	uint32_t shutdown_flag = 0;
+
+	if (pm == 0xf)
+		shutdown_flag = 1;
 	/*Need clr alarm ASAP*/
 	alarm_clr();
 	str_power_on();
+	vDDR_resume(shutdown_flag);
 	str_hw_disable();
 	vRTC_update();
 	wakeup_ap();
 	clear_wakeup_trigger();
 	/*Shutdown*/
-	if (pm == 0xf)
+	if (shutdown_flag)
 		watchdog_reset_system();
 }
 
 void system_suspend(uint32_t pm)
 {
+	uint32_t shutdown_flag = 0;
+
+	if (pm == 0xf)
+		shutdown_flag = 1;
+
 	/*Need set alarm ASAP*/
 	alarm_set();
 	str_hw_init();
@@ -135,6 +156,7 @@ void system_suspend(uint32_t pm)
 	set_suspend_flag();
 	/*Delay 500ms for FSM switch to off*/
 	vTaskDelay(pdMS_TO_TICKS(500));
+	vDDR_suspend(shutdown_flag);
 	str_power_off();
 }
 
@@ -149,15 +171,16 @@ uint32_t get_reason_flag(void)
 	return REG32(WAKEUP_REASON_STICK_REG) & 0xf;
 }
 
-void xMboxGetWakeupReason(void *msg)
+void *xMboxGetWakeupReason(void *msg)
 {
 	*(uint32_t *)msg = get_reason_flag();
+	return NULL;
 }
 
-void xMboxClrWakeupReason(void *msg)
+void *xMboxClrWakeupReason(void *msg)
 {
 	msg = msg;
-	//set_reason_flag(0);
+	return NULL;
 }
 
 void STR_Start_Sem_Give_FromISR(void)
@@ -204,12 +227,13 @@ void STR_Wakeup_src_Queue_Send(uint32_t *src)
 		xQueueSend(xSTRQueue, src, portMAX_DELAY);
 }
 
-void xMboxSuspend_Sem(void *msg)
+void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();
+	return NULL;
 }
 
 static void vSTRTask( void *pvParameters )

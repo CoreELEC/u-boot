@@ -53,6 +53,16 @@ do {							\
 	REG32((unsigned long)addr) = _v;		\
 } while(0)
 
+#ifndef FIELD_PREP
+#define FIELD_PREP(_mask, _val) \
+	(((typeof(_mask))(_val) << (ffs(_mask) - 1)) & (_mask))
+#endif
+
+#ifndef FIELD_GET
+#define FIELD_GET(_mask, _reg) \
+	((typeof(_mask))(((_reg) & (_mask)) >> (ffs(_mask) - 1)))
+#endif
+
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 #define BITS_PER_LONG (sizeof(unsigned long) == 8 ? 64 : 32)

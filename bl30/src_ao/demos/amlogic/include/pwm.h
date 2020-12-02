@@ -48,11 +48,30 @@ extern void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val);
 extern int32_t xPwmMesonIsBlinkComplete(xPwmMesondevice_t *pwm);
 
 /**
+ * prvPwmConstantDisable() - Disable constant function
+ * @pwm: pwm channel
+ *
+ */
+extern void  vPwmConstantDisable(xPwmMesondevice_t *pwm);
+
+/**
+ * prvPwmConstantEnable() - Enable constant function
+ * @pwm: pwm channel
+ *
+ */
+extern void vPwmConstantEnable(xPwmMesondevice_t *pwm);
+
+/**
  * vPwmMesonBlinkEnable() - Enable blink function
  * @pwm: pwm channel
  */
 extern void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm);
 
+/**
+ * vPwmMesonBlinkDisable() - Disabled blink function
+ * @pwm: pwm channel
+ */
+extern void vPwmMesonBlinkDisable(xPwmMesondevice_t *pwm);
 
 /**
  * vPwmMesonSetBlinkTimes() - Set blink times

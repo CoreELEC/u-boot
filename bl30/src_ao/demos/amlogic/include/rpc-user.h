@@ -36,6 +36,9 @@
 #define CMD_SET_CEC_DATA	0xB6
 #define CMD_GET_WAKEUP_REASON   0x30
 #define CMD_CLR_WAKEUP_REASON   0x31
+#define CMD_GET_LED_INFO        0xF7
+
+
 
 /*******************************************************************************
  * Mssage Comopsition
@@ -50,4 +53,5 @@
 #define MBX_CMD_GET_WAKEUP_REASON	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_WAKEUP_REASON)
 #define MBX_CMD_CLR_WAKEUP_REASON	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_CLR_WAKEUP_REASON)
 #define MBX_CMD_CPU_FSM_IDLE   __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_CPU_FSM_IDLE)
+#define MBX_CMD_GET_LED_INFO __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_LED_INFO)
 #endif

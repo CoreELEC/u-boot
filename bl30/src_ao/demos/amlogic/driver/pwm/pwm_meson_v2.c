@@ -74,6 +74,7 @@ static void prvPwmExitCritical(UBaseType_t uxSaveIsr)
 static void prvPwmRegWrite(uint32_t addr, uint32_t mask, uint32_t val)
 {
 	UBaseType_t uxSavedIsr;
+
 	prvPwmEnterCritical(&uxSavedIsr);
 	REG32_UPDATE_BITS(addr, mask, val);
 	prvPwmExitCritical(uxSavedIsr);
@@ -133,7 +134,7 @@ void vPwmMesonPwmDebug(xPwmMesondevice_t *pwm)
 	}
 }
 
-static void prvPwmConstantDisable(xPwmMesondevice_t *pwm)
+void vPwmConstantDisable(xPwmMesondevice_t *pwm)
 {
 	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
 
@@ -154,7 +155,7 @@ static void prvPwmConstantDisable(xPwmMesondevice_t *pwm)
 	}
 }
 
-static void prvPwmConstantEnable(xPwmMesondevice_t *pwm)
+void vPwmConstantEnable(xPwmMesondevice_t *pwm)
 {
 	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
 
@@ -252,12 +253,12 @@ static int32_t prvPwmCalc(xPwmMesondevice_t *pwm, uint32_t duty, uint32_t period
 		pwm->pwm_pre_div = pre_div;
 		pwm->pwm_hi = cnt - 2;
 		pwm->pwm_lo = 0;
-		prvPwmConstantEnable(pwm);
+		vPwmConstantEnable(pwm);
 	} else if (duty == 0) {
 		pwm->pwm_pre_div = pre_div;
 		pwm->pwm_hi = 0;
 		pwm->pwm_lo = cnt - 2;
-		prvPwmConstantEnable(pwm);
+		vPwmConstantEnable(pwm);
 	} else {
 		/* Then check is we can have the duty with the same pre_div */
 		duty_cnt = DIV_ROUND_CLOSEST(duty, fin_ns * (pre_div + 1));
@@ -269,7 +270,7 @@ static int32_t prvPwmCalc(xPwmMesondevice_t *pwm, uint32_t duty, uint32_t period
 		pwm->pwm_pre_div = pre_div;
 		pwm->pwm_hi = duty_cnt - 1;
 		pwm->pwm_lo = cnt - duty_cnt - 1;
-		prvPwmConstantDisable(pwm);
+		vPwmConstantDisable(pwm);
 	}
 
 	return 0;
@@ -354,7 +355,6 @@ int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns,
 	/* If using clktree */
 	if (pwm->chip->clk_addr)
 		prvPwmMesonClockSet(pwm);
-
 	tmp = prvPwmCalc(pwm, duty_ns, period_ns);
 	if (tmp != 0) {
 		iprintf("calc pwm freq err error");
@@ -484,8 +484,6 @@ void vPwmMesonSetBlinkTimes(xPwmMesondevice_t *pwm, uint32_t times)
 		iprintf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
 		break;
 	}
-
-	iprintf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
 }
 
 void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm)
@@ -499,6 +497,25 @@ void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm)
 
 	case MESON_PWM_1:
 		prvPwmRegWrite((uint32_t)&reg->br, (1 << 9), (1 << 9));
+		break;
+
+	default:
+		iprintf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
+		break;
+	}
+}
+
+void vPwmMesonBlinkDisable(xPwmMesondevice_t *pwm)
+{
+	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+
+	switch (pwm->hwpwm) {
+	case MESON_PWM_0:
+		prvPwmRegWrite((uint32_t)&reg->br, (1 << 8), (0 << 8));
+		break;
+
+	case MESON_PWM_1:
+		prvPwmRegWrite((uint32_t)&reg->br, (1 << 9), (0 << 9));
 		break;
 
 	default:

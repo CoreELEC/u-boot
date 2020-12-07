@@ -32,7 +32,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "pwm_plat.h"
-//#include "keypad.h"
+#include "keypad.h"
 
 #include "hdmi_cec.h"
 
@@ -89,9 +89,8 @@ void str_hw_init(void)
 #endif
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
-	return;
 	vBackupAndClearGpioIrqReg();
-	vGpioKeyEnable();
+	vKeyPadInit();
 	vGpioIRQInit();
 }
 
@@ -107,8 +106,7 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	return;
-	vGpioKeyDisable();
+	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
 

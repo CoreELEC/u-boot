@@ -472,6 +472,10 @@ function bin_path_parser() {
 			--update-bl32)
 				update_bin_path 3 "source"
 				continue ;;
+			--bl2-branch)
+				BL2_BRANCH_ARG="${argv[i]}"
+				export BL2_BRANCH_ARG
+				continue ;;
 			--ddrfw)
 				CONFIG_DDR_FW=1
 				export CONFIG_DDR_FW

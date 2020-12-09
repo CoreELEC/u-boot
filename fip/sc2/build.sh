@@ -555,17 +555,26 @@ function build_signed() {
 			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
 		fi
 		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
-		export DEVICE_BUILD_PATH=$(pwd)/${BUILD_PATH}
+		export DEVICE_INPUT_PATH=$(pwd)/${BUILD_PATH}
+		export DEVICE_OUTPUT_PATH=$(pwd)/${BUILD_PATH}
+		export PROJECT=${CHIPSET_NAME}
 		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
 			export DEVICE_ROOTRSA_INDEX=1
 		elif [ -n "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
 			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
 		fi
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-sign
-		postfix=.device.signed
+		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
 
+		export DEVICE_STORAGE_SUFFIX=.sto
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
+		export DEVICE_STORAGE_SUFFIX=.usb
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
+
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-device-fip
 		# build final bootloader
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+		postfix=.device.signed
+		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
+		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 	fi
 
 	return

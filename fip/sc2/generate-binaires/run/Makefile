@@ -17,6 +17,12 @@ build:
 	make -C rootrsa-0/boot-blobs $(ARGS)
 	make -C rootrsa-0/device-fip $(ARGS)
 
+build-boot-blobs:
+	make -C rootrsa-0/boot-blobs $(ARGS)
+
+build-device-fip:
+	make -C rootrsa-0/device-fip $(ARGS)
+
 clean:
 	make clean -C rootrsa-0/boot-blobs
 	make clean -C rootrsa-0/device-fip

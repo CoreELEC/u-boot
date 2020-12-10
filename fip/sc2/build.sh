@@ -316,7 +316,7 @@ function mk_uboot() {
 	file_info_cfg_temp=${temp_cfg}.temp
 
 	bootloader="${output_images}/u-boot.bin${storage_type_suffix}${postfix}"
-    sdcard_image="${output_images}/u-boot.bin.sd.bin${storage_type_suffix}${postfix}"
+	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
@@ -395,6 +395,8 @@ function mk_uboot() {
 		dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
 		dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
 		dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
+
+		mv ${bootloader} ${output_images}/u-boot.bin${postfix}
 	fi
 
 	rm -f ${file_info_cfg}

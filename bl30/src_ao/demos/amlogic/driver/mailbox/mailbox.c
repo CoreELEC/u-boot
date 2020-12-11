@@ -66,9 +66,9 @@ void vExitCritical(UBaseType_t uxSaveIsr)
 
 void vMbHandleIsr(void)
 {
-	unsigned int val = 0;
-	unsigned int ulPreVal = 0;
-	unsigned int ulIrqMask = IRQ_MASK;
+	uint64_t val = 0;
+	uint64_t ulPreVal = 0;
+	uint64_t ulIrqMask = IRQ_MASK;
 	int i = 0;
 
 	val = xGetMbIrqStats();

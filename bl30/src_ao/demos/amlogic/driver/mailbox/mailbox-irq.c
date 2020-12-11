@@ -60,13 +60,32 @@ void vDisableMbInterrupt(unsigned int xMask)
 #endif
 }
 
-void vClrMbInterrupt(unsigned int xMask)
+void vClrMbInterrupt(uint64_t xMask)
 {
-	aml_writel32(xMask, MAILBOX_IRQ_CLR);
+#ifdef IRQ_MORE
+        uint32_t lval = 0, hval = 0;
+
+        lval = xMask & 0xffffffff;
+        hval = (xMask >> 32) & 0xffffffff;
+        aml_writel32(lval, MAILBOX_IRQ_CLR);
+        aml_writel32(hval, MAILBOX_IRQ_CLR1);
+#else
+        aml_writel32(xMask, MAILBOX_IRQ_CLR);
+#endif
 }
 
-unsigned int xGetMbIrqStats(void)
+uint64_t xGetMbIrqStats(void)
 {
-	return aml_readl32(MAILBOX_IRQ_STS);
-}
+#ifdef IRQ_MORE
+        uint64_t val = 0;
+        uint32_t lval = 0, hval = 0;
 
+        lval = aml_readl32(MAILBOX_IRQ_STS);
+        hval = aml_readl32(MAILBOX_IRQ_STS1);
+        val = hval;
+        val = ((val & 0xffffffff) << 32) | lval;
+        return val;
+#else
+        return aml_readl32(MAILBOX_IRQ_STS);
+#endif
+}

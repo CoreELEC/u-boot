@@ -24,6 +24,9 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+ifeq ("$(SOC)","t7")
+MAILBOX=y
+endif
 ifeq ("$(SOC)","sc2")
 MAILBOX=y
 endif

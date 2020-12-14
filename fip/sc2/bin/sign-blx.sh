@@ -127,6 +127,10 @@ function sign_blx() {
 			fi
 		elif [[ "${input}" =~ ".usb" ]]; then
 			FEAT_BL2_TEMPLATE_TYPE=".usb"
+		else
+			# for BL2X, it need a default value if chipset_variant
+			# is set
+			FEAT_BL2_TEMPLATE_TYPE=".sto"
 		fi
 	fi
 	export FEAT_BL2_TEMPLATE_TYPE

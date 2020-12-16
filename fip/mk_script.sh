@@ -16,6 +16,23 @@ source fip/build_bl32.sh
 source fip/build_bl33.sh
 source fip/build_bl40.sh
 
+function parse_bl33_global_config() {
+	local oldifs="$IFS"
+	IFS=$'\n'
+
+	BL33_GLOBAL_CONFIG=
+	for line in `cat ${SOURCE_FILE}`; do
+		# add any global configs which define in BL33 and need
+	        # to used under bl2/bl2x/bl2e/bl31/....
+		if [[ "${line}" == "CONFIG_PXP_"* ]]; then
+			tmp=${line%=*}	# delete =y
+			BL33_GLOBAL_CONFIG="${BL33_GLOBAL_CONFIG}"" -D""${tmp}"
+		fi
+	done
+	export BL33_GLOBAL_CONFIG
+	echo "==== BL33 GLOBAL CONFIG: ${BL33_GLOBAL_CONFIG} ==="
+	IFS="$oldifs"
+}
 
 function init_variable_early() {
 	# source uboot pre-build configs
@@ -80,6 +97,7 @@ function build_blx_src() {
 	local bin_folder=$3
 	local soc=$4
 	#dbg "compile - name: ${name}, src_folder: ${src_folder}, bin_folder: ${bin_folder}, soc: ${soc}"
+
 	if [ $name == ${BLX_NAME_GLB[0]} ]; then
 		# bl2
 		build_bl2 $src_folder $bin_folder $soc
@@ -122,6 +140,10 @@ function build_blx() {
 
 	# get version of each blx
 	get_versions
+
+	# parse bl33 global configs, so BL33 config in .config/config.h
+	# can be used for BL2/2e/2x/31...
+	parse_bl33_global_config $@
 
 	# build loop
 	for loop in ${!BLX_NAME[@]}; do

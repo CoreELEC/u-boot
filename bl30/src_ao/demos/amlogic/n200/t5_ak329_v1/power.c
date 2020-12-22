@@ -76,8 +76,8 @@ void eth_handler(void);
 #endif
 void str_hw_init(void);
 void str_hw_disable(void);
-void str_power_on(void);
-void str_power_off(void);
+void str_power_on(int shutdown_flag);
+void str_power_off(int shutdown_flag);
 
 void str_hw_init(void)
 {
@@ -111,7 +111,7 @@ void str_hw_disable(void)
 	vRestoreGpioIrqReg();
 }
 
-void str_power_on(void)
+void str_power_on(int shutdown_flag)
 {
 	int ret;
 
@@ -143,7 +143,7 @@ void str_power_on(void)
 
 }
 
-void str_power_off(void)
+void str_power_off(int shutdown_flag)
 {
 	int ret;
 

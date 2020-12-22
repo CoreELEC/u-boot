@@ -131,7 +131,7 @@ void system_resume(uint32_t pm)
 		shutdown_flag = 1;
 	/*Need clr alarm ASAP*/
 	alarm_clr();
-	str_power_on();
+	str_power_on(shutdown_flag);
 	vDDR_resume(shutdown_flag);
 	str_hw_disable();
 	vRTC_update();
@@ -157,7 +157,7 @@ void system_suspend(uint32_t pm)
 	/*Delay 500ms for FSM switch to off*/
 	vTaskDelay(pdMS_TO_TICKS(500));
 	vDDR_suspend(shutdown_flag);
-	str_power_off();
+	str_power_off(shutdown_flag);
 }
 
 void set_reason_flag(char exit_reason)

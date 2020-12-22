@@ -77,8 +77,8 @@ void eth_handler(void);
 #endif
 void str_hw_init(void);
 void str_hw_disable(void);
-void str_power_on(void);
-void str_power_off(void);
+void str_power_on(int shutdown_flag);
+void str_power_off(int shutdown_flag);
 
 void str_hw_init(void)
 {
@@ -110,7 +110,7 @@ void str_hw_disable(void)
 	vRestoreGpioIrqReg();
 }
 
-void str_power_on(void)
+void str_power_on(int shutdown_flag)
 {
 	int ret;
 
@@ -141,15 +141,28 @@ void str_power_on(void)
 		return;
 	}
 
-	/*Wait 200ms for VDDCPU statble*/
-	vTaskDelay(pdMS_TO_TICKS(200));
-	//printf("vdd_cpu on\n");
+	if (shutdown_flag) {
+		/***power on VDDQ/VDDCPU***/
+		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("VDDCPU/VDDQ set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("VDDCPU/VDDQ set gpio val fail\n");
+			return;
+		}
+		/*Wait 200ms for VDDCPU statble*/
+		vTaskDelay(pdMS_TO_TICKS(200));
+	}
 
 	/***power on 5v***/
 	REG32(AO_GPIO_TEST_N) = REG32(AO_GPIO_TEST_N) | (1 << 31);
 }
 
-void str_power_off(void)
+void str_power_off(int shutdown_flag)
 {
 	int ret;
 
@@ -157,6 +170,21 @@ void str_power_off(void)
 	printf("0x%x\n", REG32(AO_GPIO_TEST_N));
 
 	REG32(AO_GPIO_TEST_N) = (REG32(AO_GPIO_TEST_N) << 1) >> 1;
+
+	if (shutdown_flag) {
+		/***power off VDDQ/VDDCPU***/
+		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("VDDCPU/VDDQ set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("VDDCPU/VDDQ set gpio val fail\n");
+			return;
+		}
+	}
 
 	/***power off vcc3.3***/
 	ret = xGpioSetDir(GPIOD_10,GPIO_DIR_OUT);

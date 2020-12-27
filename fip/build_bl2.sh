@@ -10,7 +10,6 @@ function build_bl2() {
 	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dsto
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dusb
-		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE}
 		target="$1/bl2.bin*"
 		targetv3="$1/chip_acs.bin"
 	else

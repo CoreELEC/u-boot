@@ -6,7 +6,6 @@ function build_bl2() {
 	local targetv3="$1/bl2.v3.bin"
 	# $1: src_folder, $2: bin_folder, $3: soc
 
-	is_abs $3
 	cd $1
 	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dsto

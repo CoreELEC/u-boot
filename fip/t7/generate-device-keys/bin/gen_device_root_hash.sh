@@ -190,7 +190,7 @@ check_dir "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}"
 check_dir "${BASEDIR_FIP_RSAKEY_ROOT}"
 check_dir "${BASEDIR_TEMPLATE}"
 
-check_file "${BASEDIR_TEMPLATE}/chipset/bb1st.bin"
+check_file "${BASEDIR_TEMPLATE}/${project}/bb1st.bin"
 check_file "${BASEDIR_RSAKEY_ROOT}/key/rootrsa-0-pub.pem"
 check_file "${BASEDIR_RSAKEY_ROOT}/key/rootrsa-1-pub.pem"
 check_file "${BASEDIR_RSAKEY_ROOT}/key/rootrsa-2-pub.pem"
@@ -216,7 +216,7 @@ check_file "${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-3.bin"
 BB1ST_ARGS="${BB1ST_ARGS}"
 
 ### Input: template ###
-BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}/chipset/bb1st.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}/${project}/bb1st.bin"
 
 ### Input: Device RootCert ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-rootrsa-0=${BASEDIR_RSAKEY_ROOT}/key/rootrsa-0-pub.pem"

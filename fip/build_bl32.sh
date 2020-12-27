@@ -14,9 +14,9 @@ function build_bl32() {
 	fi
 	cd ${MAIN_FOLDER}
 	cp ${target} $2 -f
-	if [ "$3" == "sc2" ]; then
+	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		$1/tools/scripts/pack_dtb.py \
-			--dev-rsk fip/sc2/keys/dev-keys/$3/chipset/bl32/rsa/s905x4/bl32-rsk-rsa-priv.pem \
+			--dev-rsk fip/$3/keys/dev-keys/$3/chipset/bl32/rsa/${CONFIG_CHIPSET_NAME}/bl32-rsk-rsa-priv.pem \
 			--in ${target2}
 
 		cp ${target2} $2 -f

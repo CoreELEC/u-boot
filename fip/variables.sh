@@ -25,6 +25,7 @@ declare CUR_SOC=""
 declare BLX_BIN_SUB_FOLDER=""
 
 declare -x BL30_SELECT=""
+declare ADVANCED_BOOTLOADER=""
 
 declare DEFCFG_FOLDER="board/amlogic/defconfigs"
 

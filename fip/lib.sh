@@ -174,7 +174,7 @@ function get_blx_bin() {
 	fi
 
 	# special case for SC2
-	if [ "${CUR_SOC}" == "sc2" ]; then
+	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		if [ "${BLX_NAME[$index]}" == "bl2" ]; then
 			BLX_BIN_SUB_FOLDER="${BLX_BIN_SUB_CHIP}/${DDRFW_TYPE}"
 		else

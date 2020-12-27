@@ -37,8 +37,29 @@ function init_vari() {
 	else
 		DDRFW_TYPE="ddr4"
 	fi
+
+	if [ -n "${BLX_BIN_SUB_CHIP}" ]; then
+		CHIPSET_NAME=`echo ${BLX_BIN_SUB_CHIP} | tr 'A-Z' 'a-z'`
+	fi
+
+	# script can use chipset varient to override config varient
+	if [ -n "${SCRIPT_ARG_CHIPSET_VARIANT}" ]; then
+		CHIPSET_VARIANT="${SCRIPT_ARG_CHIPSET_VARIANT}"
+		CHIPSET_VARIANT_SUFFIX=".${CHIPSET_VARIANT}"
+	elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
+		CHIPSET_VARIANT="${CONFIG_CHIPSET_VARIANT}"
+		CHIPSET_VARIANT_SUFFIX=".${CHIPSET_VARIANT}"
+	else
+		CHIPSET_VARIANT="no_variant"
+		CHIPSET_VARIANT_SUFFIX=""
+	fi
+
+	if [ -n "${CONFIG_AMLOGIC_KEY_TYPE}" ]; then
+		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
+	fi
+
 	echo "------------------------------------------------------"
-	echo "DDRFW_TYPE: ${DDRFW_TYPE}"
+	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE}"
 	echo "------------------------------------------------------"
 }
 
@@ -265,16 +286,22 @@ function mk_uboot() {
 	output_images=$1
 	input_payloads=$2
 	postfix=$3
+	storage_type_suffix=$4
+	chipset_variant_suffix=$5
 
 	device_fip="${input_payloads}/device-fip.bin${postfix}"
-	bb1st="${input_payloads}/bb1st.bin${postfix}"
-	bl2e="${input_payloads}/blob-bl2e.bin${postfix}"
+	bb1st="${input_payloads}/bb1st${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
+	bl2e="${input_payloads}/blob-bl2e${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
 	bl2x="${input_payloads}/blob-bl2x.bin${postfix}"
 
 	if [ ! -f ${device_fip} ] || \
 	   [ ! -f ${bb1st} ] || \
 	   [ ! -f ${bl2e} ] || \
 	   [ ! -f ${bl2x} ]; then
+		echo fip:${device_fip}
+		echo bb1st:${bb1st}
+		echo bl2e:${bl2e}
+		echo bl2x:${bl2x}
 		echo "Error: ${input_payloads}/ bootblob does not all exist... abort"
 		ls -la ${input_payloads}/
 		exit -1
@@ -283,7 +310,7 @@ function mk_uboot() {
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
 
-	bootloader="${output_images}/u-boot.bin${postfix}"
+	bootloader="${output_images}/u-boot.bin${storage_type_suffix}${postfix}"
 	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
@@ -356,22 +383,27 @@ function mk_uboot() {
 
 	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=508 conv=notrunc status=none
 
-	echo "Image SDCARD"
-	total_size=$[total_size+512]
-	rm -f ${sdcard_image}
-	dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
-	dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
-	dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
+	if [ ${storage_type_suffix} == ".sto" ]; then
+		echo "Image SDCARD"
+		total_size=$[total_size+512]
+		rm -f ${sdcard_image}
+		dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
+		dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
+		dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
+
+		mv ${bootloader} ${output_images}/u-boot.bin${postfix}
+	fi
 
 	rm -f ${file_info_cfg}
 }
 
+
 function cleanup() {
 	cp ${FIP_BUILD_FOLDER}u-boot.bin* ${BUILD_FOLDER}
 	# cp bootblobs for PXP
-	cp ${FIP_BUILD_FOLDER}device-fip.bin ${BUILD_FOLDER} -f
-	cp ${FIP_BUILD_FOLDER}bb1st.bin ${BUILD_FOLDER} -f
-	cp ${FIP_BUILD_FOLDER}blob-bl* ${BUILD_FOLDER} -f
+	#cp ${FIP_BUILD_FOLDER}device-fip.bin ${BUILD_FOLDER} -f
+	#cp ${FIP_BUILD_FOLDER}bb1st.bin ${BUILD_FOLDER} -f
+	#cp ${FIP_BUILD_FOLDER}blob-bl* ${BUILD_FOLDER} -f
 	echo "output file are generated in ${BUILD_FOLDER} folder"
 	#rm -f ${BUILD_PATH}/test-*
 	#rm -rf ${BUILD_PAYLOAD}
@@ -424,7 +456,8 @@ function process_blx() {
 			if [ ${BLX_NAME[$loop]} == "bl2"  ]; then
 				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}"
 			fi
-			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH} ${option_args}
+			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} \
+			                                          --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} --key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} ${option_args}
 		fi
 		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
@@ -449,11 +482,12 @@ function process_blx() {
 		echo "chip acs size exceed limit ${DEV_ACS_BIN_SIZE}, $dev_acs_size"
 		exit -1
 	else
-		dd if=/dev/zero of=${BUILD_PATH}/dvinit-params.bin bs=${DEV_ACS_BIN_SIZE} count=1
-		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc
+		dd if=/dev/zero of=${BUILD_PATH}/dvinit-params.bin bs=${DEV_ACS_BIN_SIZE} count=1 &> /dev/null
+		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed
 
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
@@ -466,10 +500,10 @@ function process_blx() {
 	else
 		echo "Warning: local bl30"
 		#dd if=/dev/random of=${BUILD_PATH}/bl30.bin bs=4096 count=1
-		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin
+		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin &> /dev/null
 	fi
-	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1
-	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc
+	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1 &> /dev/null
+	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc &> /dev/null
 
 	# fix size for BL33 1024KB
 	if [ ! -f ${BUILD_PATH}/bl33.bin ]; then
@@ -482,10 +516,18 @@ function process_blx() {
 		echo "Error: bl33 size exceed limit ${BL33_BIN_SIZE}"
 		exit -1
 	fi
-	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1
-	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc
+	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1 &> /dev/null
+	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc &> /dev/null
 
-	cp ./${FIP_FOLDER}${CUR_SOC}/templates/blob-bl40.bin.signed ${BUILD_PATH}
+	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
+		echo "Warning: local bl40"
+		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
+	fi
+	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
+		echo "Warning: local device fip header templates"
+		cp ${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/device-fip-header.bin ${BUILD_PATH}
+	fi
+
 	#./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
 
 	return
@@ -495,13 +537,14 @@ function build_signed() {
 
 	process_blx $@
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
+	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
 	postfix=.signed
-	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
 		if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
-			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
+			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
 		fi
 
 		fw_arb_cfg=${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg
@@ -514,17 +557,26 @@ function build_signed() {
 			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
 		fi
 		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
-		export DEVICE_BUILD_PATH=$(pwd)/${BUILD_PATH}
+		export DEVICE_INPUT_PATH=$(pwd)/${BUILD_PATH}
+		export DEVICE_OUTPUT_PATH=$(pwd)/${BUILD_PATH}
+		export PROJECT=${CHIPSET_NAME}
 		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
 			export DEVICE_ROOTRSA_INDEX=1
 		elif [ -n "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
 			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
 		fi
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-sign
-		postfix=.device.signed
+		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
 
+		export DEVICE_STORAGE_SUFFIX=.sto
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
+		export DEVICE_STORAGE_SUFFIX=.usb
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
+
+		make -C ./${FIP_FOLDER}${CUR_SOC} dv-device-fip
 		# build final bootloader
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix}
+		postfix=.device.signed
+		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
+		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 	fi
 
 	return
@@ -549,9 +601,9 @@ function package() {
 
 	init_vari $@
 	# Enable Clear Image Packing for PXP
-	build_fip $@
+	#build_fip $@
 	# Bypass Sign Process for PXP
-	#build_signed $@
+	build_signed $@
 	#copy_file
 	cleanup
 	echo "Bootloader build done!"

@@ -180,7 +180,7 @@ function build_blx() {
 			check_bypass=n
 		fi
 
-		if [ "${CUR_SOC}" == "sc2" ]; then
+		if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 			check_bypass=y
 		fi
 

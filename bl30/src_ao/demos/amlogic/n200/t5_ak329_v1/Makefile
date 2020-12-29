@@ -62,6 +62,7 @@ $(info LDFLAGS = $(LDFLAGS))
 -include $(FREERTOS_VENDOR_DRIVER)/gpio/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/cec/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/pwm/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/leds/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/timer_source/build.mk

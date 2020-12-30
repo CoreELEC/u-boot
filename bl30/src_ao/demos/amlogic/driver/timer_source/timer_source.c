@@ -68,3 +68,22 @@ uint32_t timere_read(void)
 	//printf("----------time_e: %us\n", time);
 	return time;
 }
+
+void udelay(uint32_t uS)
+{
+	uint32_t t0;
+
+	if (uS == 0)
+		return;
+	t0 = timere_read();
+	while (timere_read() - t0 < uS);
+}
+
+void mdelay(uint32_t mS)
+{
+	if (mS == 0)
+		return;
+	while (mS--) {
+		vUdelay(1000);
+	}
+}

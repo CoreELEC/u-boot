@@ -57,6 +57,7 @@ Usage: $(basename $0) --help
                       [--enable-usb-password true] \\
                       [--enable-dif-password true] \\
                       [--enable-dvuk-derive-with-cid true] \\
+                      [--enable-device-vendor-scs true] \\
                       -o pattern.efuse
        $(basename $0) --audio-id audio_id_value \\
                       -o audio_id.efuse
@@ -69,9 +70,7 @@ function generate_efuse_device_pattern() {
     local i=0
 
     local patt=$(mktemp --tmpdir)
-    local wrlock0=$(mktemp --tmpdir)
-    local wrlock1=$(mktemp --tmpdir)
-    local hmac=$(mktemp --tmpdir)
+    local wrlock=$(mktemp --tmpdir)
     local license0=$(mktemp --tmpdir)
     local license1=$(mktemp --tmpdir)
     local efusebit=$(mktemp --tmpdir)
@@ -98,6 +97,8 @@ function generate_efuse_device_pattern() {
                 enable_dif_password="${argv[$i]}" ;;
             --enable-dvuk-derive-with-cid)
                 enable_dvuk_derive_with_cid="${argv[$i]}" ;;
+            --enable-device-vendor-scs)
+                enable_device_vendor_scs="${argv[$i]}" ;;
             *)
                 echo "Unknown option $arg"; exit 1
                 ;;
@@ -108,7 +109,7 @@ function generate_efuse_device_pattern() {
     # Verify args
     if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
 
-    check_opt_file input 4096 "$input"
+    check_opt_file input 1024 "$input"
     check_opt_file dvgk 16 "$dvgk"
     check_opt_file dvuk 16 "$dvuk"
     check_opt_file device_roothash 32 "$device_roothash"
@@ -116,41 +117,31 @@ function generate_efuse_device_pattern() {
     check_opt_boolean enable-usb-password "$enable_usb_password"
     check_opt_boolean enable-dif-password "$enable_dif_password"
     check_opt_boolean enable-dvuk-derive-with-cid "$enable_dvuk_derive_with_cid"
+    check_opt_boolean enable-device-vendor-scs "$enable_device_vendor_scs"
 
     # Generate empty eFUSE pattern data
     if [ -n "$input" ]; then
-        dd if="$input" of=$patt count=4096 bs=1 &> /dev/null
+        dd if="$input" of=$patt count=1024 bs=1 &> /dev/null
     else
-        dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+        dd if=/dev/zero of=$patt count=1024 bs=1 &> /dev/null
     fi
 
     # Construct wrlock bits
-    dd if=$patt of=$wrlock0 bs=16 skip=30 count=1 &> /dev/null
-    dd if=$patt of=$wrlock1 bs=16 skip=31 count=1 &> /dev/null
-    b_1e2=$(xxd -ps -s2 -l1 $wrlock0)
-    b_1e3=$(xxd -ps -s3 -l1 $wrlock0)
-    b_1fc=$(xxd -ps -s12 -l1 $wrlock1)
+    dd if=$patt of=$wrlock bs=16 skip=29 count=1 &> /dev/null
+    b_1d2=$(xxd -ps -s2 -l1 $wrlock)
+    b_1d3=$(xxd -ps -s3 -l1 $wrlock)
+    b_1d6=$(xxd -ps -s6 -l1 $wrlock)
 
     if [ "$dvgk" != "" ]; then
-		${VENDOR_KEYTOOL} gen-mrk-chknum --chipset=SC2 --mrk-file="$dvgk" --mrk-name=DVGK | grep 'Long checknum: ' | \
-            grep "Long checknum:" | sed 's/Long checknum: //' | sed 's/ (.*//' | xxd -r -p > $hmac
-
-        dd if="$dvgk" of="$patt" bs=16 seek=226 count=1 \
+        dd if="$dvgk" of="$patt" bs=16 seek=50 count=1 \
             conv=notrunc >& /dev/null
-        dd if="$hmac" of="$patt" bs=16 seek=194 count=1 \
-            conv=notrunc >& /dev/null
-        b_1fc="$(printf %02x $(( 0x$b_1fc | 0x04 )))"
+        b_1d6="$(printf %02x $(( 0x$b_1d6 | 0x04 )))"
     fi
 
     if [ "$dvuk" != "" ]; then
-        ${VENDOR_KEYTOOL} gen-mrk-chknum --chipset=SC2 --mrk-file="$dvuk" --mrk-name=DVUK | grep 'Long checknum: ' | \
-            grep "Long checknum:" | sed 's/Long checknum: //' | sed 's/ (.*//' | xxd -r -p > $hmac
-
-        dd if="$dvuk" of="$patt" bs=16 seek=227 count=1 \
+        dd if="$dvuk" of="$patt" bs=16 seek=51 count=1 \
             conv=notrunc >& /dev/null
-        dd if="$hmac" of="$patt" bs=16 seek=195 count=1 \
-            conv=notrunc >& /dev/null
-        b_1fc="$(printf %02x $(( 0x$b_1fc | 0x08 )))"
+        b_1d6="$(printf %02x $(( 0x$b_1d6 | 0x08 )))"
     fi
 
     if [ "$device_roothash" != "" ]; then
@@ -158,33 +149,40 @@ function generate_efuse_device_pattern() {
             conv=notrunc >& /dev/null
 	    dd if="$device_roothash" of="$patt" bs=16 seek=25 count=2 \
             conv=notrunc >& /dev/null
-		b_1e2="$(printf %02x $(( 0x$b_1e2 | 0x80 )))"
-		b_1e3="$(printf %02x $(( 0x$b_1e3 | 0x07 )))"
+		b_1d2="$(printf %02x $(( 0x$b_1d2 | 0x80 )))"
+		b_1d3="$(printf %02x $(( 0x$b_1d3 | 0x07 )))"
     fi
 
-    echo $b_1e2 | xxd -r -p > $efusebit
-    dd if=$efusebit of=$wrlock0 bs=1 seek=2 count=1 conv=notrunc >& /dev/null
-    echo $b_1e3 | xxd -r -p > $efusebit
-    dd if=$efusebit of=$wrlock0 bs=1 seek=3 count=1 conv=notrunc >& /dev/null
-    echo $b_1fc | xxd -r -p > $efusebit
-    dd if=$efusebit of=$wrlock1 bs=1 seek=12 count=1 conv=notrunc >& /dev/null
+    echo $b_1d2 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$wrlock bs=1 seek=2 count=1 conv=notrunc >& /dev/null
+    echo $b_1d3 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$wrlock bs=1 seek=3 count=1 conv=notrunc >& /dev/null
+    echo $b_1d6 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$wrlock bs=1 seek=6 count=1 conv=notrunc >& /dev/null
 
-    filesize=$(wc -c < $wrlock0)
+    filesize=$(wc -c < $wrlock)
     if [ $filesize -ne 16 ]; then
-        echo Internal Error -- Invalid write-lock0 pattern length
+        echo Internal Error -- Invalid write-lock pattern length
         exit 1
     fi
-    dd if=$wrlock0 of=$patt bs=16 seek=30 count=1 conv=notrunc >& /dev/null
-
-    filesize=$(wc -c < $wrlock1)
-    if [ $filesize -ne 16 ]; then
-        echo Internal Error -- Invalid write-lock1 pattern length
-        exit 1
-    fi
-    dd if=$wrlock1 of=$patt bs=16 seek=31 count=1 conv=notrunc >& /dev/null
-
+    dd if=$wrlock of=$patt bs=16 seek=29 count=1 conv=notrunc >& /dev/null
 
     dd if=$patt of=$license0 bs=16 skip=0 count=1 &> /dev/null
+    b_001=$(xxd -ps -s1 -l1 $license0)
+    b_002=$(xxd -ps -s2 -l1 $license0)
+    b_003=$(xxd -ps -s3 -l1 $license0)
+    if [ "$enable_device_vendor_scs" == "true" ]; then
+        b_001="$(printf %02x $(( 0x$b_001 | 0x0C )))"
+        b_002="$(printf %02x $(( 0x$b_002 | 0xFF )))"
+        b_003="$(printf %02x $(( 0x$b_003 | 0x03 )))"
+    fi
+    echo $b_001 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$license0 bs=1 seek=1 count=1 conv=notrunc >& /dev/null
+    echo $b_002 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$license0 bs=1 seek=2 count=1 conv=notrunc >& /dev/null
+    echo $b_003 | xxd -r -p > $efusebit
+    dd if=$efusebit of=$license0 bs=1 seek=3 count=1 conv=notrunc >& /dev/null
+
     b_007=$(xxd -ps -s7 -l1 $license0)
     if [ "$enable_usb_password" == "true" ]; then
         b_007="$(printf %02x $(( 0x$b_007 | 0x80 )))"
@@ -194,7 +192,7 @@ function generate_efuse_device_pattern() {
 
     filesize=$(wc -c < $license0)
     if [ $filesize -ne 16 ]; then
-        echo Internal Error -- Invalid write-lock0 pattern length
+        echo Internal Error -- Invalid license0 pattern length
         exit 1
     fi
     dd if=$license0 of=$patt bs=16 seek=0 count=1 conv=notrunc >& /dev/null
@@ -216,17 +214,15 @@ function generate_efuse_device_pattern() {
 
     filesize=$(wc -c < $license1)
     if [ $filesize -ne 16 ]; then
-        echo Internal Error -- Invalid write-lock0 pattern length
+        echo Internal Error -- Invalid license1 pattern length
         exit 1
     fi
     dd if=$license1 of=$patt bs=16 seek=1 count=1 conv=notrunc >& /dev/null
 
-    ${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+    ${BASEDIR_TOP}/aml_encrypt_t7 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
-    rm -f $wrlock0
-    rm -f $wrlock1
-    rm -f $hmac
+    rm -f $wrlock
     rm -f $license0
     rm -f $license1
     rm -f $efusebit
@@ -279,13 +275,13 @@ function generate_audio_id_pattern() {
     fi
 
     # Generate empty eFUSE pattern data
-    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+    dd if=/dev/zero of=$patt count=1024 bs=1 &> /dev/null
 
     append_uint32_le $audio_id_value $audio_id_efuse
     dd if=$audio_id_efuse of=$patt bs=1 seek=$audio_id_offset count=$audio_id_size \
         conv=notrunc >& /dev/null
 
-	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+	${BASEDIR_TOP}/aml_encrypt_t7 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
     rm -f $audio_id_efuse

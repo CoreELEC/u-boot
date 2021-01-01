@@ -38,20 +38,26 @@ extern "C" {
 
 #define PwmMesonVolt_Duty	1
 
-/* There are 5 pwm controllers in sc2 */
+/* There are 7 pwm controllers in T7 */
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
-	PWM_GH,
-	PWM_IJ,
-	PWM_MUX,
+	PWMAO_AB,
+	PWMAO_CD,
+	PWMAO_EF,
+	PWMAO_GH,
+	PWM_MUX
 };
 
-/* VDDEE VDDCPU in sc2 */
+/* VDDEE VDDCPUA VDDCPUB VDDGPU VDDNPU VDDDDR in T7 */
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
-	VDDCPU_VOLT,
+	VDDCPUA_VOLT,
+	VDDCPUB_VOLT,
+	VDDGPU_VOLT,
+	VDDNPU_VOLT,
+	VDDDDR_VOLT
 };
 
 typedef struct xPwmMesonVoltage {

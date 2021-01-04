@@ -84,7 +84,9 @@ QueueHandle_t xGPIOSemaphore[INT_TEST_NEST_DEPTH];
 QueueHandle_t xMessageQueue[TASK_TEST_QUEUE_NUM];
 
 /* Timer handle */
+#if BRINGUP_TEST
 TimerHandle_t xSoftTimer = NULL;
+#endif
 /*
 static void vPrintString(const char* msg)
 {
@@ -122,6 +124,7 @@ static void vPICInit(void) {
 	set_csr(mstatus, MSTATUS_MIE);
 }
 
+#if BRINGUP_TEST
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	xTimer = xTimer;
 	taskENTER_CRITICAL();
@@ -154,6 +157,7 @@ static void vPrintTask2( void *pvParameters )
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
+#endif
 extern void vMbInit(void);
 extern vCoreFsmIdleInit(void);
 // Test target board
@@ -172,6 +176,7 @@ int main(void)
 	vMbInit();
 	vCoreFsmIdleInit();
 	// Create timer
+#if BRINGUP_TEST
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(INT_TEST_TIMER_PERIOD), pdTRUE, NULL, vPrintSystemStatus);
 
 	vUartPuts("Starting timer ...\n");
@@ -179,6 +184,7 @@ int main(void)
 
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
+#endif
 
 	vCecCallbackInit(CEC_CHIP_T5);
 	write_csr(mtvec, &trap_entry);

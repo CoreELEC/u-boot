@@ -282,6 +282,136 @@ function mk_devfip() {
 	echo "done to genenrate device-fip.bin"
 }
 
+# due to size limit of BL2, only one type of DDR firmware is
+# built into bl2 code package. For support other ddr types, we
+# need bind them to ddr_fip.bin and let bl2 fw to try it.
+#
+# Note: No piei fw in following arry because it have build into
+# bl2
+# Total ddr-fip.bin size: 256KB, 4KB for header, 252(36*7)KB for fw
+# so max 7 ddr fw support
+declare -a DDR_FW_NAME=("aml_ddr.fw"		\
+			"ddr4_1d.fw"		\
+			"ddr4_2d.fw"		\
+			"lpddr4_1d.fw"		\
+			"lpddr4_2d.fw")
+declare -a DDR_FW_MAGIC=("AML0"			\
+			 "d444"			\
+			 "d422"			\
+			 "dl44"			\
+			 "dl42")
+function mk_ddr_fip()
+{
+	local outpath=$1
+	local out_hdr=$1/ddr-hdr.bin
+	local out_fip=$1/ddr-fip.bin
+	local offset=4096	# start offset inside ddr-fip.bin
+	local fw_size=
+	local rem_val=
+	local fw_cnt=0
+	local hdr_size=64
+	local input_dir=./${FIP_FOLDER}${CUR_SOC}
+
+	# first: make a empty ddr-fip.bin and ddr-fip-hdr.bin
+	rm -rf ${out_hdr}
+	rm -rf ${out_fip}
+	touch ${out_fip}
+	touch ${out_hdr}
+
+	# count firmware number we need package
+	for i in ${!DDR_FW_NAME[@]}; do
+		if [[ "${DDR_FW_NAME[${i}]}" == "${DDRFW_TYPE}"* ]]; then
+			echo "==== skip ${DDR_FW_NAME[${i}]} ===="
+			continue
+		fi
+		fw_cnt=`expr ${fw_cnt} + 1`
+	done
+
+	# build header for ddr-hdr.bin
+	# dwMagic
+	printf "%s" "@DFM" >> ${out_hdr}
+	# nCount of firmware
+	printf "%02x%02x" $[(fw_cnt) & 0xff] $[((fw_cnt) >> 8) & 0xff] | xxd -r -ps >> ${out_hdr}
+	# padding nVersion/szReserved to 0
+	printf "\0\0\0\0\0\0\0\0\0\0" >> ${out_hdr}
+
+	# build ddr-fip.bin and ddr-hdr.bin
+	for i in ${!DDR_FW_NAME[@]}; do
+		if [[ "${DDR_FW_NAME[${i}]}" == "${DDRFW_TYPE}"* ]]; then
+			continue
+		fi
+
+		# ============= package ddr-fip.bin =============
+		# get size of fw and align up to 4KB for
+		# some strage device such as nand
+		fw_size=`stat -c %s ${input_dir}/${DDR_FW_NAME[${i}]}`
+		fw_size=`expr ${fw_size} + 4095`
+		rem_val=`expr ${fw_size} % 4096`
+		fw_size=`expr ${fw_size} - ${rem_val}`
+
+		# 1. make sure we only copy 36KB, 32KB IMEM + 4KB DMEM
+		# 2. make a empty bin with fw_size
+		# 3. copy from fw to empty bin
+		# 4. padding this bin to finnal output
+		if [ ${fw_size} -gt "36864" ]; then
+			fw_size="36864"
+		fi
+		dd if=/dev/zero of=${outpath}/_tmp.bin bs=1 count=${fw_size} &> /dev/null
+		dd if=${input_dir}/${DDR_FW_NAME[${i}]} of=${outpath}/_tmp.bin skip=96 bs=1 count=${fw_size} conv=notrunc &> /dev/null
+		cat ${outpath}/_tmp.bin >> ${out_fip}
+
+		# ============= make ddr-hdr.bin =============
+		# dwMagic
+		printf "%s" "@DFM" >> ${out_hdr}
+		# nVersion, fix to 0
+		printf "\0\0"  >> ${out_hdr}
+		# nSize, fix to 64 bytes
+		printf "%02x%02x" $[(hdr_size) & 0xff] $[((hdr_size) >> 8) & 0xff] | xxd -r -ps >> ${out_hdr}
+		# nIMGOffset
+		printf "%02x%02x%02x%02x" $[(offset) & 0xff] $[((offset) >> 8) & 0xff] \
+		       $[((offset) >> 16) & 0xff] $[((offset) >> 24) & 0xff] | xxd -r -ps >> ${out_hdr}
+		# nIMGSize
+		printf "%02x%02x%02x%02x" $[(fw_size) & 0xff] $[((fw_size) >> 8) & 0xff] \
+		       $[((fw_size) >> 16) & 0xff] $[((fw_size) >> 24) & 0xff] | xxd -r -ps >> ${out_hdr}
+		# fw_ver, fix to 0
+		printf "\0\0\0\0"  >> ${out_hdr}
+		# fw_magic
+		printf "%s" ${DDR_FW_MAGIC[${i}]} >> ${out_hdr}
+		# szRerved2
+		printf "\0\0\0\0\0\0\0\0" >> ${out_hdr}
+		# szIMGSHA2
+		openssl dgst -sha256 -binary ${outpath}/_tmp.bin >> ${out_hdr}
+
+		offset=`expr ${offset} + ${fw_size}`
+	done;
+	rm ${outpath}/_tmp.bin
+
+	# generate ddr-fip.bin
+	fw_size=`stat -c "%s" ${out_fip}`
+	if [ ${fw_size} -gt "258048" ]; then
+		echo "==== size of ${out_fip}:${fw_size}, over limit ===="
+		exit -1
+	else
+		dd if=/dev/zero of=${out_fip}.tmp bs=1024 count=252 status=none
+		dd if=${out_fip} of=${out_fip}.tmp bs=1 count=${fw_size} conv=notrunc
+	fi
+
+	# bind to final ddr-fip.bin
+	fw_size=`stat -c "%s" ${out_hdr}`
+	if [ ${fw_size} -gt "4096" ]; then
+		echo "==== size of ${ot_hdr}:${fw_size}, over limit ===="
+		exit -1
+	else
+		dd if=/dev/zero of=${out_hdr}.tmp bs=1 count=4096 status=none
+		dd if=${out_hdr} of=${out_hdr}.tmp bs=1 count=${fw_size} conv=notrunc
+	fi
+	cat ${out_hdr}.tmp > ${out_fip}
+	cat ${out_fip}.tmp >> ${out_fip}
+	rm -rf ${out_fip}.tmp
+	rm -rf ${out_hdr}.tmp
+}
+
+
 function mk_uboot() {
 	output_images=$1
 	input_payloads=$2
@@ -316,6 +446,7 @@ function mk_uboot() {
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
 	if [ ! -f ${ddr_fip} ]; then
+		echo "==== use empty ddr-fip ===="
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	fi
 
@@ -536,6 +667,11 @@ function process_blx() {
 function build_signed() {
 
 	process_blx $@
+
+	# package ddr-fip.bin
+	if [ "y" == ${CONFIG_DDR_FULL_FW} ]; then
+		mk_ddr_fip ${BUILD_PATH}
+	fi
 
 	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
 	postfix=.signed

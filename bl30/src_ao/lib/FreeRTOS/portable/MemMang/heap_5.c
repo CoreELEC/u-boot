@@ -502,3 +502,17 @@ const HeapRegion_t *pxHeapRegions = pRegions;
 	xBlockAllocatedBit = ( ( size_t ) 1 ) << ( ( sizeof( size_t ) * heapBITS_PER_BYTE ) - 1 );
 }
 
+int vPrintFreeListAfterMallocFail(void)
+{
+	BlockLink_t *pxIterator;
+	int total_free_size = 0;
+
+	for ( pxIterator = &xStart; pxIterator != pxEnd; pxIterator = pxIterator->pxNextFreeBlock )
+	{
+		printf("the address: %p, len: 0x%x\n", pxIterator, (int)(pxIterator->xBlockSize));
+		total_free_size += (pxIterator->xBlockSize);
+	}
+	printf("the total free size: %d\n", total_free_size);
+
+	return 0;
+}

@@ -57,42 +57,42 @@ function process_ddrfw() {
 }
 
 function sign_blx() {
-    local argv=("$@")
-    local i=0
+	local argv=("$@")
+	local i=0
 
-     # Parse args
+	# Parse args
 
-    while [ $i -lt $# ]; do
-        arg="${argv[$i]}"
+	while [ $i -lt $# ]; do
+		arg="${argv[$i]}"
 				#echo "i=$i argv[$i]=${argv[$i]}"
-        i=$((i + 1))
-        case "$arg" in
-            --blxname)
-               blxname="${argv[$i]}" ;;
-            --input)
-               input="${argv[$i]}" ;;
-            --output)
-                output="${argv[$i]}" ;;
-			--ddr_type)
-                ddr_type="${argv[$i]}" ;;
-			--chip_acs)
-                chip_acs="${argv[$i]}" ;;
-            --chipset_name)
-                chipset_name="${argv[$i]}" ;;
-             --chipset_variant)
-                chipset_variant="${argv[$i]}" ;;
-            --key_type)
-                key_type="${argv[$i]}" ;;
-            --soc)
-                soc="${argv[$i]}" ;;
-            --build_type)
-                build_type="${argv[$i]}" ;;
-            *)
-                echo "Unknown option $arg"; exit 1
-                ;;
-        esac
-        i=$((i + 1))
-    done
+		i=$((i + 1))
+		case "$arg" in
+		--blxname)
+			blxname="${argv[$i]}" ;;
+		--input)
+			input="${argv[$i]}" ;;
+		--output)
+			output="${argv[$i]}" ;;
+		--ddr_type)
+			ddr_type="${argv[$i]}" ;;
+		--chip_acs)
+			chip_acs="${argv[$i]}" ;;
+		--chipset_name)
+			chipset_name="${argv[$i]}" ;;
+		--chipset_variant)
+			chipset_variant="${argv[$i]}" ;;
+		--key_type)
+			key_type="${argv[$i]}" ;;
+		--soc)
+			soc="${argv[$i]}" ;;
+		--build_type)
+			build_type="${argv[$i]}" ;;
+		*)
+			echo "Unknown option $arg"; exit 1
+			;;
+		esac
+		i=$((i + 1))
+	done
 
 	if [ -z ${input} ] || [ ! -f ${input} ]; then
 		echo "input ${input} invalid"
@@ -145,8 +145,8 @@ function sign_blx() {
 	fi
 
 	if [ -z ${build_type} ]; then
-        build_type=normal
-    fi
+		build_type=normal
+	fi
 
 	mkdir ${BASEDIR_BUILD}
 

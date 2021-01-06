@@ -319,8 +319,9 @@ function mk_uboot() {
 	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
-	ddr_fip="${input_payloads}/ddr-fip.bin"
+	ddr_fip="${input_payloads}/${DDR_FIP_NAME}"
 	if [ ! -f ${ddr_fip} ]; then
+		echo "==== WARNING: use empty ddr-fip ===="
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	fi
 
@@ -535,6 +536,22 @@ function process_blx() {
 
 function build_signed() {
 
+	# package DDR_FIP_NAME
+	if [ "y" == ${CONFIG_DDR_FULL_FW} ]; then
+		export CONFIG_DDR_FULL_FW
+		if [[ "1" == ${GENERATE_DDR_FIP} ]]; then
+			./${FIP_FOLDER}${CUR_SOC}/bin/gen-ddr-fip.sh ${AMLOGIC_KEY_TYPE} ${CHIPSET_NAME} ${BUILD_PATH} ${DDR_FIP_NAME}
+		else
+			if [ ! -n "${DDR_FIP_EXTERN_PATH}" ]; then
+				echo copy pre-build ddr fip
+				cp -f ${DDR_FIP_BIN_PATH}/${CUR_SOC}/${CHIPSET_NAME}/${DDR_FIP_NAME} ${BUILD_PATH}/${DDR_FIP_NAME}
+			else
+				echo copy extern ddr fip
+				cp -f ${DDR_FIP_EXTERN_PATH} ${BUILD_PATH}/${DDR_FIP_NAME}
+			fi
+		fi
+	fi
+
 	process_blx $@
 
 	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
@@ -546,8 +563,8 @@ function build_signed() {
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2x.bin.signed ${BUILD_PATH}/blob-bl31.bin.signed ${BUILD_PATH}/blob-bl32.bin.signed ${BUILD_PATH}/blob-bl40.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/bl30-payload.bin ${BUILD_PATH}/bl33-payload.bin ${BUILD_PATH}/dvinit-params.bin"
-	if [ -f ${BUILD_PATH}/ddr-fip.bin ]; then
-		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"
+	if [ -f ${BUILD_PATH}/${DDR_FIP_NAME} ]; then
+		list_pack="$list_pack ${BUILD_PATH}/${DDR_FIP_NAME}"
 	fi
 	u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
 	zip -j $u_pack ${list_pack} >& /dev/null

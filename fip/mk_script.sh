@@ -28,6 +28,10 @@ function parse_bl33_global_config() {
 			tmp=${line%=*}	# delete =y
 			BL33_GLOBAL_CONFIG="${BL33_GLOBAL_CONFIG}"" -D""${tmp}"
 		fi
+		if [[ "${line}" == "CONFIG_DDR_FULL_FW"* ]]; then
+			tmp=${line%=*}	# delete =y
+			BL33_GLOBAL_CONFIG="${BL33_GLOBAL_CONFIG}"" -D""${tmp}"
+		fi
 	done
 	export BL33_GLOBAL_CONFIG
 	echo "==== BL33 GLOBAL CONFIG: ${BL33_GLOBAL_CONFIG} ==="
@@ -450,6 +454,10 @@ function bin_path_parser() {
 			--bl40)
 				update_bin_path 4 "${argv[@]:$((i))}"
 				continue ;;
+			--ddr-fip)
+				DDR_FIP_EXTERN_PATH="${argv[@]:$((i))}"
+				export DDR_FIP_EXTERN_PATH
+				continue ;;
 			--sign-bl40)
 				update_bin_path 4 "${argv[@]:$((i))}"
 				CONFIG_SIGN_BL40=1
@@ -462,6 +470,10 @@ function bin_path_parser() {
 				continue ;;
 			--update-bl2x)
 				update_bin_path 6 "source"
+				continue ;;
+			--update-ddr-fip)
+				GENERATE_DDR_FIP=1
+				export GENERATE_DDR_FIP
 				continue ;;
 			--update-bl30)
 				update_bin_path 1 "source"

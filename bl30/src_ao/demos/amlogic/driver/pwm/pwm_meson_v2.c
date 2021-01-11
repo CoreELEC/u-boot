@@ -268,8 +268,19 @@ static int32_t prvPwmCalc(xPwmMesondevice_t *pwm, uint32_t duty, uint32_t period
 		}
 
 		pwm->pwm_pre_div = pre_div;
-		pwm->pwm_hi = duty_cnt - 1;
-		pwm->pwm_lo = cnt - duty_cnt - 1;
+
+		if (duty_cnt == 0) {
+			cnt = (cnt < 2 ? 2 : cnt);
+			pwm->pwm_hi = 0;
+			pwm->pwm_lo = cnt - 2;
+		} else if (cnt == duty_cnt) {
+			duty_cnt = (duty_cnt < 2 ? 2 : duty_cnt);
+			pwm->pwm_hi = duty_cnt - 2;
+			pwm->pwm_lo = 0;
+		} else {
+			pwm->pwm_hi = duty_cnt - 1;
+			pwm->pwm_lo = cnt - duty_cnt - 1;
+		}
 		vPwmConstantDisable(pwm);
 	}
 

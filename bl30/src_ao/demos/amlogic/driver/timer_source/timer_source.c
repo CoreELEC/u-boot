@@ -69,14 +69,26 @@ uint32_t timere_read(void)
 	return time;
 }
 
+unsigned long long timere_read_us(void)
+{
+	unsigned long long te = 0, temp = 0;
+
+	/*timeE high+low, first read low, second read high*/
+	te = REG32(TIMERE_LOW_REG);
+	temp =  REG32(TIMERE_HIG_REG);
+	te += (temp << 32);
+
+	return te;
+}
+
 void udelay(uint32_t uS)
 {
-	uint32_t t0;
+	unsigned long long t0;
 
 	if (uS == 0)
 		return;
-	t0 = timere_read();
-	while (timere_read() - t0 < uS);
+	t0 = timere_read_us();
+	while (timere_read_us() - t0 < uS);
 }
 
 void mdelay(uint32_t mS)
@@ -84,6 +96,6 @@ void mdelay(uint32_t mS)
 	if (mS == 0)
 		return;
 	while (mS--) {
-		vUdelay(1000);
+		udelay(1000);
 	}
 }

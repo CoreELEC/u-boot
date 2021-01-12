@@ -49,6 +49,10 @@
 #include "vrtc.h"
 #include "mailbox-api.h"
 #include "version.h"
+#include "bd71837.h"
+#include "meson_i2c.h"
+#include "gpio-data.h"
+#include "gpio.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -92,6 +96,9 @@ extern void create_str_task(void);
 
 /* Timer handle */
 TimerHandle_t xSoftTimer = NULL;
+
+/* pmic_bd71837 dev_id */
+int pmic_bd71837_id = -1;
 
 void config_eclic_irqs (void)
 {
@@ -140,6 +147,23 @@ void hardware_init()
 	config_eclic_irqs();
 }
 
+void set_i2c0_pinmux(void)
+{
+	   // set pinmux
+	   iprintf("set i2c0 pinmux\n");
+	   xPinmuxSet(GPIOD_2, PIN_FUNC1);
+	   xPinmuxSet(GPIOD_3, PIN_FUNC1);
+	   //set ds and pull up
+	   xPinconfSet(GPIOD_2, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
+	   xPinconfSet(GPIOD_3, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
+}
+
+void BD71837_PMIC_INIT(void){
+	set_i2c0_pinmux();
+	xI2cMesonPortInit(I2C_AO_A);
+
+}
+
 // Test target board
 int main(void)
 {
@@ -159,7 +183,9 @@ int main(void)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
 	vMbInit();
+	BD71837_PMIC_INIT();
 
+	pmic_regulators_register(&BD71837_PMIC,&pmic_bd71837_id);
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);

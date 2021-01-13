@@ -249,10 +249,34 @@ int bd71837_regulator_set_voltage(struct regulator_desc *rdev, unsigned int sel)
 	return ret;
 }
 
+int bd71837_osc_ctrl(struct regulator_desc *rdev, int status)
+{
+	unsigned char ctrl_reg = 0;
+	int ret = 0;
+	ret = xI2cMesonRead(bd718x7_slave_address,BD718XX_REG_OUT32K,&ctrl_reg,1);
+	if (ret < 0) {
+		printf("i2c osc read failed\n");
+		return ret;
+	}
+	if (status) {
+		ctrl_reg &= (~0x1);
+		ctrl_reg |= 0x1;
+	} else {
+		ctrl_reg &= (~0x1);
+		ctrl_reg |= 0x0;
+	}
+	ret = xI2cMesonWrite(bd718x7_slave_address,BD718XX_REG_OUT32K,&ctrl_reg,1);
+	if (ret < 0) {
+		printf("i2c osc write failed\n");
+		return ret;
+	}
+	return ret;
+}
+
 static const struct regulator_ops bd718xx_dvs_buck_regulator_ops = {
 	.ctrl = bd71837_regulator_ctrl,
-	.set_voltage = bd71837_regulator_set_voltage
-
+	.set_voltage = bd71837_regulator_set_voltage,
+	.osc_ctrl = bd71837_osc_ctrl,
 };
 
 struct regulator_desc bd71837_desc[15] = {

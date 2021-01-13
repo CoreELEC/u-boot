@@ -41,15 +41,21 @@ int pmic_regulators_register(struct pmic_regulator *PmicRegulator, int *dev_id)
 	return -1;
 }
 
-int pmic_regulator_ctrl(struct pmic_regulator *PmicRegulator, int dev_id, int id, int status){
-	struct regulator_desc pmic_desc = (PmicRegulator->rdev)[id];
+int pmic_regulator_ctrl(int dev_id, int id, int status){
+	struct regulator_desc pmic_desc = ((pmic_regulators[dev_id])->rdev)[id];
 	pmic_desc.ops->ctrl(&pmic_desc, status);
 	return 0;
 }
 
-int pmic_regulator_set_voltage(struct pmic_regulator *PmicRegulator, int dev_id, int id,int sel){
-	struct regulator_desc pmic_desc = (PmicRegulator->rdev)[id];
+int pmic_regulator_set_voltage(int dev_id, int id,int sel){
+	struct regulator_desc pmic_desc = ((pmic_regulators[dev_id])->rdev)[id];
 	pmic_desc.ops->set_voltage(&pmic_desc, sel);
+	return 0;
+}
+
+int pmic_osc(int dev_id, int id, int status){
+	struct regulator_desc pmic_desc = ((pmic_regulators[dev_id])->rdev)[id];
+	pmic_desc.ops->osc_ctrl(&pmic_desc, status);
 	return 0;
 }
 

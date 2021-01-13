@@ -11,6 +11,8 @@
 
 #define PMIC_ENBALE   1
 #define PMIC_DISABLE  0
+#define PMIC_OSC_ENABLE 1
+#define PMIC_OSC_DISENABLE 0
 #define PMIC_MAXNUM 5
 
 #define REGULATOR_LINEAR_RANGE(_min_uV, _min_sel, _max_sel, _step_uV)	\
@@ -34,6 +36,8 @@ struct regulator_ops {
 	int (*ctrl) (struct regulator_desc *rdev,int status);
 	/* get/set regulator voltage */
 	int (*set_voltage) (struct regulator_desc *rdev,unsigned int sel);
+	/* set pmic enable/disable */
+	int (*osc_ctrl) (struct regulator_desc *rdev, int status);
 
 };
 
@@ -80,22 +84,31 @@ struct pmic_regulator {
  */
 extern int pmic_regulators_register(struct pmic_regulator *PmicRegulator, int *dev_id);
 
+
 /**
  * pmic_regulator_ctrl() - Pmic regulators enable/disable
- * @PmicRegulator: regulator device
  * @dev_id: regulator dev_id
  * @id: buck/ldo id
  * @status: regulators status, enable/disable
  */
-extern int pmic_regulator_ctrl(struct pmic_regulator *PmicRegulator, int dev_id, int id, int status);
+
+extern int pmic_regulator_ctrl(int dev_id, int id, int status);
+
 
 /**
  * pmic_regulator_set_voltage() - Pmic regulators set voltage
- * @PmicRegulator: regulator device
  * @dev_id: regulator dev_id
  * @id: buck/ldo id
  * @sel: buck/ldo voltage(uv)
  */
-extern int pmic_regulator_set_voltage(struct pmic_regulator *PmicRegulator, int dev_id, int id,int sel);
+extern int pmic_regulator_set_voltage(int dev_id, int id,int sel);
+
+/**
+ * pmic_osc() - Pmic Crystal oscillator
+ * @dev_id: regulator dev_id
+ * @id: buck/ldo id
+ * @status: regulators status, enable/disable
+ */
+extern int pmic_osc(int dev_id, int id, int status);
 
 #endif /* __PMIC_H__ */

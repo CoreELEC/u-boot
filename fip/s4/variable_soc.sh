@@ -2,8 +2,8 @@
 
 # static
 #declare BLX_BIN_SUB_CHIP="S905X4"
-declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31")
-#declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
+#declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31")
+declare -a BLX_NAME=("bl2" "bl2e" "bl2x" "bl31" "bl32" "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core" "bl2/ree" "bl2/tee" "bl31_1.3/src" "bl32_3.8/src" "bl30/src_ao" "bl33")
 declare -a BLX_BIN_FOLDER=("bl2/bin" "bl2/bin" "bl2/bin" "bl31_1.3/bin" "bl32_3.8/bin" "bl30/bin_ao")

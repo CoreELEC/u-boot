@@ -28,22 +28,21 @@
  * platform related header file
  */
 
-#ifndef _MESON_SC2_GPIO_H_
-#define _MESON_SC2_GPIO_H_
+#ifndef _MESON_S4_GPIO_H_
+#define _MESON_S4_GPIO_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#define	GPIO_NUM_MAX	87 /*actual numbers of pins*/
-#define	BANK_NUM_MAX	9   /*numbers of gpio bank*/
+#define	GPIO_NUM_MAX	82 /*actual numbers of pins*/
+#define	BANK_NUM_MAX	8   /*numbers of gpio bank*/
 #define	IRQ_REG_NUM	8  /* numbers of irq relative reg*/
 
 #define	GPIO_INVALID	0xffff
 
 /*0-31*/
-#define	GPIOA_14	0
-#define	GPIOA_15	1
-
+#define	GPIOE_0		0
+#define	GPIOE_1		1
 
 /*32-63*/
 #define	GPIOB_0		32
@@ -60,8 +59,6 @@ extern "C" {
 #define	GPIOB_11	43
 #define	GPIOB_12	44
 #define	GPIOB_13	45
-#define	GPIOB_14	46
-#define	GPIOB_15	47
 
 /*64-95*/
 #define	GPIOC_0		64
@@ -74,78 +71,74 @@ extern "C" {
 #define	GPIOC_7		71
 
 /*96-127 */
-#define	GPIOE_0		96
-#define	GPIOE_1		97
-#define	GPIOE_2		98
+#define	GPIOD_0		96
+#define	GPIOD_1		97
+#define	GPIOD_2		98
+#define	GPIOD_3		99
+#define	GPIOD_4		100
+#define	GPIOD_5		101
+#define	GPIOD_6		102
+#define	GPIOD_7		103
+#define	GPIOD_8		104
+#define	GPIOD_9		105
+#define	GPIOD_10	106
+#define	GPIOD_11	107
 
 /*128-159 */
-#define	GPIOD_0		128
-#define	GPIOD_1		129
-#define	GPIOD_2		130
-#define	GPIOD_3		131
-#define	GPIOD_4		132
-#define	GPIOD_5		133
-#define	GPIOD_6		134
-#define	GPIOD_7		135
-#define	GPIOD_8		136
-#define	GPIOD_9		137
-#define	GPIOD_10	138
-#define	GPIOD_11	139
+#define	GPIOH_0		128
+#define	GPIOH_1		129
+#define	GPIOH_2		130
+#define	GPIOH_3		131
+#define	GPIOH_4		132
+#define	GPIOH_5		133
+#define	GPIOH_6		134
+#define	GPIOH_7		135
+#define	GPIOH_8		136
+#define	GPIOH_9		137
+#define	GPIOH_10	138
+#define	GPIOH_11	139
 
 /* 160-191 */
-#define	GPIOH_0		160
-#define	GPIOH_1		161
-#define	GPIOH_2		162
-#define	GPIOH_3		163
-#define	GPIOH_4		164
-#define	GPIOH_5		165
-#define	GPIOH_6		166
-#define	GPIOH_7		167
-#define	GPIOH_8		168
+#define	GPIOX_0		160
+#define	GPIOX_1		161
+#define	GPIOX_2		162
+#define	GPIOX_3		163
+#define	GPIOX_4		164
+#define	GPIOX_5		165
+#define	GPIOX_6		166
+#define	GPIOX_7		167
+#define	GPIOX_8		168
+#define	GPIOX_9		169
+#define	GPIOX_10	170
+#define	GPIOX_11	171
+#define	GPIOX_12	172
+#define	GPIOX_13	173
+#define	GPIOX_14	174
+#define	GPIOX_15	175
+#define	GPIOX_16	176
+#define	GPIOX_17	177
+#define	GPIOX_18	178
+#define	GPIOX_19	179
 
 /* 192- 223 */
-#define	GPIOX_0		192
-#define	GPIOX_1		193
-#define	GPIOX_2		194
-#define	GPIOX_3		195
-#define	GPIOX_4		196
-#define	GPIOX_5		197
-#define	GPIOX_6		198
-#define	GPIOX_7		199
-#define	GPIOX_8		200
-#define	GPIOX_9		201
-#define	GPIOX_10	202
-#define	GPIOX_11	203
-#define	GPIOX_12	204
-#define	GPIOX_13	205
-#define	GPIOX_14	206
-#define	GPIOX_15	207
-#define	GPIOX_16	208
-#define	GPIOX_17	209
-#define	GPIOX_18	210
-#define	GPIOX_19	211
+#define	GPIOZ_0		192
+#define	GPIOZ_1		193
+#define	GPIOZ_2		194
+#define	GPIOZ_3		195
+#define	GPIOZ_4		196
+#define	GPIOZ_5		197
+#define	GPIOZ_6		198
+#define	GPIOZ_7		199
+#define	GPIOZ_8		200
+#define	GPIOZ_9		201
+#define	GPIOZ_10	202
+#define	GPIOZ_11	203
+#define	GPIOZ_12	204
 
 /* 224- 255*/
-#define	GPIOZ_0		224
-#define	GPIOZ_1		225
-#define	GPIOZ_2		226
-#define	GPIOZ_3		227
-#define	GPIOZ_4		228
-#define	GPIOZ_5		229
-#define	GPIOZ_6		230
-#define	GPIOZ_7		231
-#define	GPIOZ_8		232
-#define	GPIOZ_9		233
-#define	GPIOZ_10	234
-#define	GPIOZ_11	235
-#define	GPIOZ_12	236
-#define	GPIOZ_13	237
-#define	GPIOZ_14	238
-#define	GPIOZ_15	239
-
-#define	GPIO_TEST_N	256
+#define	GPIO_TEST_N	224
 
 #ifdef __cplusplus
 }
 #endif
-#endif	/* _MESON_SC2_GPIO_H_ */
+#endif	/* _MESON_S4_GPIO_H_ */

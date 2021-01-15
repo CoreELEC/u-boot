@@ -28,6 +28,7 @@
 #include "meson_i2c.h"
 #include "uart.h"
 #include "myprintf.h"
+#include "gpio.h"
 
 static const struct regulator_linear_range bd718xx_dvs_buck_volts[] = {
 	REGULATOR_LINEAR_RANGE(700000, 0x00, 0x3C, 10000),
@@ -107,6 +108,22 @@ static int find_index_struct(struct regulator_desc *rdev,unsigned int sel, int i
 	b = min_sel1 + b;
 	return b;
 
+}
+
+void set_pmic_bd71837_pinmux(struct pmic_i2c *bd71837_i2c_config1)
+{
+	   // set pinmux
+	   iprintf("set %s pinmux\n",bd71837_i2c_config1->name);
+	   xPinmuxSet(bd71837_i2c_config1->scl, bd71837_i2c_config1->scl_value);
+	   xPinmuxSet(bd71837_i2c_config1->sda, bd71837_i2c_config1->sda_value);
+	   //set ds and pull up
+	   xPinconfSet(bd71837_i2c_config1->scl, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
+	   xPinconfSet(bd71837_i2c_config1->sda, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
+}
+
+void BD71837_PMIC_I2C_INIT(struct pmic_i2c *bd71837_i2c_config) {
+	set_pmic_bd71837_pinmux(bd71837_i2c_config);
+	xI2cMesonPortInit(bd71837_i2c_config->port);
 }
 
 int bd71837_regulator_ctrl(struct regulator_desc *rdev,int status)
@@ -249,7 +266,7 @@ int bd71837_regulator_set_voltage(struct regulator_desc *rdev, unsigned int sel)
 	return ret;
 }
 
-int bd71837_osc_ctrl(struct regulator_desc *rdev, int status)
+void bd71837_osc_ctrl(int status)
 {
 	unsigned char ctrl_reg = 0;
 	int ret = 0;
@@ -276,7 +293,6 @@ int bd71837_osc_ctrl(struct regulator_desc *rdev, int status)
 static const struct regulator_ops bd718xx_dvs_buck_regulator_ops = {
 	.ctrl = bd71837_regulator_ctrl,
 	.set_voltage = bd71837_regulator_set_voltage,
-	.osc_ctrl = bd71837_osc_ctrl,
 };
 
 struct regulator_desc bd71837_desc[15] = {
@@ -479,6 +495,8 @@ struct regulator_desc bd71837_desc[15] = {
 };
 
 struct pmic_regulator BD71837_PMIC = {
+	.pmic_i2c_config = BD71837_PMIC_I2C_INIT,
+	.osc_ctrl = bd71837_osc_ctrl,
 	.rdev = bd71837_desc,
 	.num = ARRAY_SIZE(bd71837_desc),
 };

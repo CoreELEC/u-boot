@@ -5,6 +5,7 @@
 
 #define __PMIC_H__
 
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #define NULL1 ((void *)0)
@@ -36,9 +37,6 @@ struct regulator_ops {
 	int (*ctrl) (struct regulator_desc *rdev,int status);
 	/* get/set regulator voltage */
 	int (*set_voltage) (struct regulator_desc *rdev,unsigned int sel);
-	/* set pmic enable/disable */
-	int (*osc_ctrl) (struct regulator_desc *rdev, int status);
-
 };
 
 struct regulator_linear_range {
@@ -52,6 +50,7 @@ struct regulator_desc {
 	const char *name;
 	int id;
 	const struct regulator_ops *ops;
+
 /* buck ctrl reg */
 	unsigned int enable_reg;
 	unsigned int enable_mask;
@@ -72,10 +71,28 @@ struct regulator_desc {
 	unsigned int n_voltages;
 };
 
+struct pmic_i2c {
+	char *name;
+	int scl;
+	int scl_value;
+	int sda;
+	int sda_value;
+	int port;
+};
+
 struct pmic_regulator {
+	void (*pmic_i2c_config)(struct pmic_i2c *pmic_i2c);
+	/* set pmic enable/disable */
+	void (*osc_ctrl)(int status);
 	struct regulator_desc *rdev;
 	unsigned int num;
 };
+
+/**
+ *@ pmic_regulators_register() - Pmic i2c config and enable
+ *@ dev_id: regulator dev_id
+ */
+extern void pmic_i2c_init(int dev_id,struct pmic_i2c *pmic_i2c);
 
 /**
  * pmic_regulators_register() - Pmic regulators register
@@ -106,9 +123,8 @@ extern int pmic_regulator_set_voltage(int dev_id, int id,int sel);
 /**
  * pmic_osc() - Pmic Crystal oscillator
  * @dev_id: regulator dev_id
- * @id: buck/ldo id
  * @status: regulators status, enable/disable
  */
-extern int pmic_osc(int dev_id, int id, int status);
+extern void pmic_osc(int dev_id, int status);
 
 #endif /* __PMIC_H__ */

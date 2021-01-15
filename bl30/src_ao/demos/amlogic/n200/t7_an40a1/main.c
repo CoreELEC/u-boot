@@ -100,6 +100,15 @@ TimerHandle_t xSoftTimer = NULL;
 /* pmic_bd71837 dev_id */
 int pmic_bd71837_id = -1;
 
+struct pmic_i2c bd71837_i2c = {
+	.name = 'i2c_ao_a',
+	.scl = GPIOD_2,
+	.scl_value = PIN_FUNC1,
+	.sda = GPIOD_3,
+	.sda_value = PIN_FUNC1,
+	.port = I2C_AO_A,
+};
+
 void config_eclic_irqs (void)
 {
 	eclic_init (ECLIC_NUM_INTERRUPTS);
@@ -145,23 +154,8 @@ void hardware_init(void);
 void hardware_init()
 {
 	config_eclic_irqs();
-}
-
-void set_i2c0_pinmux(void)
-{
-	   // set pinmux
-	   iprintf("set i2c0 pinmux\n");
-	   xPinmuxSet(GPIOD_2, PIN_FUNC1);
-	   xPinmuxSet(GPIOD_3, PIN_FUNC1);
-	   //set ds and pull up
-	   xPinconfSet(GPIOD_2, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
-	   xPinconfSet(GPIOD_3, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
-}
-
-void BD71837_PMIC_INIT(void){
-	set_i2c0_pinmux();
-	xI2cMesonPortInit(I2C_AO_A);
-
+	pmic_regulators_register(&BD71837_PMIC,&pmic_bd71837_id);
+	pmic_i2c_init(pmic_bd71837_id,&bd71837_i2c);
 }
 
 // Test target board
@@ -183,9 +177,6 @@ int main(void)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
 	vMbInit();
-	BD71837_PMIC_INIT();
-
-	pmic_regulators_register(&BD71837_PMIC,&pmic_bd71837_id);
 
 
 	// Create timer

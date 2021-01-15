@@ -41,6 +41,10 @@ int pmic_regulators_register(struct pmic_regulator *PmicRegulator, int *dev_id)
 	return -1;
 }
 
+void pmic_i2c_init(int dev_id,struct pmic_i2c *pmic_i2c) {
+	((pmic_regulators[dev_id])->pmic_i2c_config)(pmic_i2c);
+}
+
 int pmic_regulator_ctrl(int dev_id, int id, int status){
 	struct regulator_desc pmic_desc = ((pmic_regulators[dev_id])->rdev)[id];
 	pmic_desc.ops->ctrl(&pmic_desc, status);
@@ -53,10 +57,8 @@ int pmic_regulator_set_voltage(int dev_id, int id,int sel){
 	return 0;
 }
 
-int pmic_osc(int dev_id, int id, int status){
-	struct regulator_desc pmic_desc = ((pmic_regulators[dev_id])->rdev)[id];
-	pmic_desc.ops->osc_ctrl(&pmic_desc, status);
-	return 0;
+void pmic_osc(int dev_id, int status){
+	((pmic_regulators[dev_id])->osc_ctrl)(status);
 }
 
 

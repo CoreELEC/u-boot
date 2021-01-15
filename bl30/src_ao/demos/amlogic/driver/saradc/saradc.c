@@ -133,6 +133,8 @@
 
 static void vAdcHandlerISR(void);
 
+static uint32_t SaradcRegBackup[SARADC_REG_NUM] = {0};
+
 const char *const ch7Vol[] = {
 	"gnd",
 	"vdd/4",
@@ -144,8 +146,34 @@ const char *const ch7Vol[] = {
 static SemaphoreHandle_t adcSemaphoreMutex;
 static SemaphoreHandle_t adcSemaphoreBinary;
 
+void vBackupSaradcReg(void)
+{
+	uint8_t ucIndex;
+	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++) {
+		SaradcRegBackup[ucIndex] =
+			REG32((unsigned long)P_SARADC(SARADC_REG0)
+						+ 0x04 * ucIndex);
+	}
+
+	/* saradc clock reg */
+	SaradcRegBackup[SARADC_REG_NUM - 1] = REG32((unsigned long)SAR_CLK_BASE);
+}
+
+void vRestoreSaradcReg(void)
+{
+	uint8_t ucIndex;
+	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++)
+		REG32((unsigned long)(P_SARADC(SARADC_REG0) + 0x04 * ucIndex))
+						= SaradcRegBackup[ucIndex];
+
+	/* saradc clock reg */
+	REG32((unsigned long)SAR_CLK_BASE) = SaradcRegBackup[SARADC_REG_NUM - 1];
+}
+
 void vAdcInit(void)
 {
+	vBackupSaradcReg();
+
 	/* create association between logic and physical channel */
 	REG32(P_SARADC(SARADC_AUX_SW)) = 0x03eb1a0c;
 	REG32(P_SARADC(SARADC_CHAN_10_SW)) = 0x008c000c;
@@ -192,6 +220,8 @@ void vAdcDeinit(void)
 
 	vSemaphoreDelete(adcSemaphoreMutex);
 	vSemaphoreDelete(adcSemaphoreBinary);
+
+	vRestoreSaradcReg();
 }
 
 void vAdcHwEnable(void)

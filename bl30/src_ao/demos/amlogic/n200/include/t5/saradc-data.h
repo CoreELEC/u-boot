@@ -39,4 +39,6 @@
 /* t5 saradc interrupt num */
 #define SARADC_INTERRUPT_NUM	11
 
+#define SARADC_REG_NUM		(18 + 1)
+
 #endif

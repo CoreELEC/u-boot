@@ -110,7 +110,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${chipset_name} ]; then
-		chipset_name="s905x4"
+		chipset_name="a311d2"
 	fi
 
 	# select bl2/bl2e sign template
@@ -141,7 +141,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${soc} ]; then
-		soc="sc2"
+		soc="t7"
 	fi
 
 	if [ -z ${build_type} ]; then

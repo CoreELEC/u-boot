@@ -279,6 +279,9 @@ static void vSTRTask( void *pvParameters )
 				case ETH_PMT_WAKEUP:
 					exit_reason = ETH_PMT_WAKEUP;
 					break;
+				case WIFI_WAKEUP:
+					exit_reason = WIFI_WAKEUP;
+					break;
 				default:
 					break;
 			}

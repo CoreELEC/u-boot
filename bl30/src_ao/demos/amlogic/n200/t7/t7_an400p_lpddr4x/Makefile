@@ -84,7 +84,7 @@ all-y +=  $(foreach d,$(dirs), $(call objs_from_dir,$(d),$(lastword $(subst /, ,
 OBJS += $(all-y)
 
 $(info SOC=${SOC} BOARD_DIR=$(BOARD_DIR) FREERTOS_ROOT_DIR=${FREERTOS_ROOT_DIR} RTOS_SOURCE_DIR=${RTOS_SOURCE_DIR})
-VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/n200
+VPATH += ${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${FREERTOS_CORE_DIR}:$(FREERTOS_VENDOR_COMMON):$(FREERTOS_VENDOR)/n200:$(FREERTOS_VENDOR)/n200/${SOC}
 
 OBJS += ${COMPILER}/main.o	\
 		${COMPILER}/power.o	\
@@ -97,6 +97,7 @@ OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/heap_5.o \
 		$(COMPILER)/n200_func.o \
 		$(COMPILER)/handlers.o \
+		$(COMPILER)/interrupt_control.o \
 		$(COMPILER)/util.o  \
 		$(COMPILER)/myprintf.o \
 		$(COMPILER)/start.o \

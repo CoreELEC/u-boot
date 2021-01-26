@@ -6,9 +6,9 @@ function move_output_to_top_dir() {
 		rm bl30.bin
 	fi
 
-	if [ -f demos/amlogic/${arch_dir}/${board}/gcc/RTOSDemo.bin ]
+	if [ -f demos/amlogic/${arch_dir}/${soc_dir}/${board}/gcc/RTOSDemo.bin ]
 	then
-		cp demos/amlogic/${arch_dir}/${board}/gcc/RTOSDemo.bin ./bl30.bin
+		cp demos/amlogic/${arch_dir}/${soc_dir}/${board}/gcc/RTOSDemo.bin ./bl30.bin
 	fi
 }
 

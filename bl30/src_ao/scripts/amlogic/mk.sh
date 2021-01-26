@@ -25,8 +25,9 @@ if [ "${other_args}" == "" ]; then
 	other_args=all
 fi
 arch_dir=`get_arch "${board}"`
+soc_dir=`get_soc "${board}"`
 
-echo "arch_dir: ${arch_dir}"
+echo "arch_dir: ${arch_dir}, soc_dir: ${soc_dir}"
 
 if [ "${arch_dir}" == "" ]; then
 echo "invalid board ${board}"
@@ -41,7 +42,7 @@ fi
 cpu=1
 
 function build_subpath() {
-    sub="$1/${arch_dir}/${board}"
+    sub="$1/${arch_dir}/${soc_dir}/${board}"
     pushd "$sub"
 
     [[ "$clean" == "yes" ]] && make clean

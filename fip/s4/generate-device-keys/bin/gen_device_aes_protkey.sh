@@ -189,7 +189,7 @@ check_dir "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}"
 check_dir "${BASEDIR_FIP_RSAKEY_ROOT}"
 check_dir "${BASEDIR_TEMPLATE}"
 
-check_file "${BASEDIR_TEMPLATE}/chipset/device-fip-header.bin"
+check_file "${BASEDIR_TEMPLATE}/${project}/device-fip-header.bin"
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-priv.pem"
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/lvl2cert-epks.bin"
 check_file "${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-rsa-pub.pem"
@@ -219,7 +219,7 @@ check_file "${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-1.bin"
 BB1ST_ARGS="${BB1ST_ARGS}"
 
 ### Input: template
-BB1ST_ARGS="${BB1ST_ARGS} --infile-template-chipset-fip-header=${BASEDIR_TEMPLATE}/chipset/device-fip-header.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-template-chipset-fip-header=${BASEDIR_TEMPLATE}/${project}/device-fip-header.bin"
 
 ### Input: Device Level-2 private RSA Key ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-priv.pem"

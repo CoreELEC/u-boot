@@ -158,7 +158,7 @@ int main(void)
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
-//	vMbInit();
+	vMbInit();
 
 
 	// Create timer

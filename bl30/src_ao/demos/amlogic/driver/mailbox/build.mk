@@ -27,6 +27,9 @@
 ifeq ("$(SOC)","t7")
 MAILBOX=y
 endif
+ifeq ("$(SOC)","s4")
+MAILBOX=y
+endif
 ifeq ("$(SOC)","sc2")
 MAILBOX=y
 endif

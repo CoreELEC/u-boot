@@ -26,6 +26,9 @@ function init_vari() {
 
 	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
 		BL33_COMPRESS_FLAG="--compress lz4"
+		echo "BL33_COMPRESS enabled"
+	else
+		echo "BL33_COMPRESS disabled"
 	fi
 
 	if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
@@ -103,8 +106,7 @@ function encrypt() {
 		if [ "${FIP_BL32}" == "${BUILD_PATH}/bl32.${BL3X_SUFFIX}" ]; then
 			encrypt_step --bl3sig  --input ${BUILD_PATH}/bl32.${BL3X_SUFFIX} --output ${BUILD_PATH}/bl32.${BL3X_SUFFIX}.enc ${V3_PROCESS_FLAG} --type bl32
 		fi
-		#encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin ${BL33_COMPRESS_FLAG} --output ${BUILD_PATH}/bl33.bin.enc ${V3_PROCESS_FLAG} --type bl33
 	fi
 
 	encrypt_step --bl2sig  --input ${BUILD_PATH}/bl2_new.bin   --output ${BUILD_PATH}/bl2.n.bin.sig

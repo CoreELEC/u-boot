@@ -96,6 +96,7 @@ void str_hw_disable(void)
 
 void str_power_on(int shutdown_flag)
 {
+#if 0
 	int ret;
 
 	/***set vdd_ee val***/
@@ -117,6 +118,7 @@ void str_power_on(int shutdown_flag)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+#endif
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
 	printf("vdd_cpu on\n");
@@ -124,6 +126,7 @@ void str_power_on(int shutdown_flag)
 
 void str_power_off(int shutdown_flag)
 {
+#if 0
 	int ret;
 
 	/***set vdd_ee val***/
@@ -151,5 +154,6 @@ void str_power_off(int shutdown_flag)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+#endif
 	printf("vdd_cpu off\n");
 }

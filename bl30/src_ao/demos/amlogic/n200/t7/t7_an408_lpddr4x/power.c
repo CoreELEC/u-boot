@@ -97,26 +97,41 @@ void str_hw_disable(void)
 void str_power_on(int shutdown_flag)
 {
 	int ret;
-
+#if 0
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
+#endif
 
-    /***power on vdd_cpu***/
+	/***power on vdd_cpu***/
+	ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu_a set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(GPIOD_2,GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vdd_cpu_a set gpio val fail\n");
+		return;
+	}
+
+	/***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
+		printf("vdd_cpu_b set gpio dir fail\n");
 		return;
 	}
 
 	ret = xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_HIGH);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
+		printf("vdd_cpu_b set gpio val fail\n");
 		return;
 	}
+
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
 	printf("vdd_cpu on\n");
@@ -125,31 +140,40 @@ void str_power_on(int shutdown_flag)
 void str_power_off(int shutdown_flag)
 {
 	int ret;
-
+#if 0
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 	if (vdd_ee < 0) {
 		printf("vdd_EE pwm get fail\n");
 		return;
 	}
-
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
-	}
+#endif
 
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
+		printf("vdd_cpu_b set gpio dir fail\n");
 		return;
 	}
 
 	ret= xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_LOW);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
+		printf("vdd_cpu_b set gpio val fail\n");
 		return;
 	}
+
+	/***power off vdd_cpu***/
+	ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu_a set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIOD_2,GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vdd_cpu_a set gpio val fail\n");
+		return;
+	}
+
 	printf("vdd_cpu off\n");
 }

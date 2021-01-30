@@ -48,7 +48,7 @@ enum pwm_chip_id {
 	PWM_MUX,
 };
 
-/* VDDEE VDDCPU in sc2 */
+/* VDDEE VDDCPU in s4 */
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
 	VDDCPU_VOLT,

@@ -22,7 +22,7 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 	switch (event.ulCode) {
 	case GPIO_KEY_ID_POWER:
 		buf[0] = POWER_KEY_WAKEUP;
-		STR_Wakeup_src_Queue_Send_FromISR(buf);
+		STR_Wakeup_src_Queue_Send(buf);
 		break;
 	default:
 		break;

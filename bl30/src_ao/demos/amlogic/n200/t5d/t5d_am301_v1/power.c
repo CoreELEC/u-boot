@@ -40,6 +40,7 @@
 
 #ifdef CONFIG_ETH_WAKEUP
 #include "interrupt_control.h"
+int eth_deinit = 0;
 #define IRQ_ETH_PMT_NUM 73
 #endif
 
@@ -234,9 +235,13 @@ void str_power_off(int shutdown_flag)
 void eth_handler(void)
 {
 	uint32_t buf[4] = {0};
-	buf[0] = ETH_PMT_WAKEUP;
-	STR_Wakeup_src_Queue_Send_FromISR(buf);
-	DisableIrq(IRQ_ETH_PMT_NUM);
+	if (eth_deinit == 0) {
+		buf[0] = ETH_PMT_WAKEUP;
+		STR_Wakeup_src_Queue_Send_FromISR(buf);
+		DisableIrq(IRQ_ETH_PMT_NUM);
+	} else {
+		eth_deinit = 0;
+	}
 }
 
 void vETHInit(uint32_t ulIrq,function_ptr_t handler)
@@ -247,6 +252,7 @@ void vETHInit(uint32_t ulIrq,function_ptr_t handler)
 
 void vETHDeint(uint32_t ulIrq)
 {
+	eth_deinit = 1;
 	DisableIrq(ulIrq);
 	UnRegisterIrq(ulIrq);
 }

@@ -123,6 +123,106 @@ enum cec_reg_idx {
 #define TX_DONE                 2  // Message has been successfully transmitted
 #define TX_ERROR                3  // Message has been transmitted with error
 
+/*
+ * AOCEC_A internal register
+ * read/write tx register list
+ */
+#define CECA_TX_MSG_0_HEADER        0x00
+#define CECA_TX_MSG_1_OPCODE        0x01
+#define CECA_TX_MSG_2_OP1           0x02
+#define CECA_TX_MSG_3_OP2           0x03
+#define CECA_TX_MSG_4_OP3           0x04
+#define CECA_TX_MSG_5_OP4           0x05
+#define CECA_TX_MSG_6_OP5           0x06
+#define CECA_TX_MSG_7_OP6           0x07
+#define CECA_TX_MSG_8_OP7           0x08
+#define CECA_TX_MSG_9_OP8           0x09
+#define CECA_TX_MSG_A_OP9           0x0A
+#define CECA_TX_MSG_B_OP10          0x0B
+#define CECA_TX_MSG_C_OP11          0x0C
+#define CECA_TX_MSG_D_OP12          0x0D
+#define CECA_TX_MSG_E_OP13          0x0E
+#define CECA_TX_MSG_F_OP14          0x0F
+#define CECA_TX_MSG_LENGTH          0x10
+#define CECA_TX_MSG_CMD             0x11
+#define CECA_TX_WRITE_BUF           0x12
+#define CECA_TX_CLEAR_BUF           0x13
+#define CECA_RX_MSG_CMD             0x14
+#define CECA_RX_CLEAR_BUF           0x15
+#define CECA_LOGICAL_ADDR0          0x16
+#define CECA_LOGICAL_ADDR1          0x17/*ADDR L tm2 later*/
+#define CECA_LOGICAL_ADDR2          0x18/*ADDR H tm2 later*/
+#define CECA_LOGICAL_ADDR3          0x19
+#define CECA_LOGICAL_ADDR4          0x1A
+#define CECA_CLOCK_DIV_H            0x1B
+#define CECA_CLOCK_DIV_L            0x1C
+
+/*
+ * AOCEC_A internal register
+ * read only register list
+ */
+#define CECA_RX_MSG_0_HEADER        0x80
+#define CECA_RX_MSG_1_OPCODE        0x81
+#define CECA_RX_MSG_2_OP1           0x82
+#define CECA_RX_MSG_3_OP2           0x83
+#define CECA_RX_MSG_4_OP3           0x84
+#define CECA_RX_MSG_5_OP4           0x85
+#define CECA_RX_MSG_6_OP5           0x86
+#define CECA_RX_MSG_7_OP6           0x87
+#define CECA_RX_MSG_8_OP7           0x88
+#define CECA_RX_MSG_9_OP8           0x89
+#define CECA_RX_MSG_A_OP9           0x8A
+#define CECA_RX_MSG_B_OP10          0x8B
+#define CECA_RX_MSG_C_OP11          0x8C
+#define CECA_RX_MSG_D_OP12          0x8D
+#define CECA_RX_MSG_E_OP13          0x8E
+#define CECA_RX_MSG_F_OP14          0x8F
+#define CECA_RX_MSG_LENGTH          0x90
+#define CECA_RX_MSG_STATUS          0x91
+#define CECA_RX_NUM_MSG             0x92
+#define CECA_TX_MSG_STATUS          0x93
+#define CECA_TX_NUM_MSG             0x94
+/*
+ * AOCEC_A internal register
+ * read only (tl1 later)
+ */
+#define CECA_STAT_0_0				0xA0
+#define CECA_STAT_0_1				0xA1
+#define CECA_STAT_0_2				0xA2
+#define CECA_STAT_0_3				0xA3
+#define CECA_STAT_1_0				0xA4
+#define CECA_STAT_1_1				0xA5
+#define CECA_STAT_1_2				0xA6
+
+
+// tx_msg_cmd definition
+#define TX_NO_OP                0  // No transaction
+#define TX_REQ_CURRENT          1  // Transmit earliest message in buffer
+#define TX_ABORT                2  // Abort transmitting earliest message
+#define TX_REQ_NEXT             3  // Overwrite earliest message in buffer and transmit next message
+
+// tx_msg_status definition
+#define TX_IDLE                 0  // No transaction
+#define TX_BUSY                 1  // Transmitter is busy
+#define TX_DONE                 2  // Message has been successfully transmitted
+#define TX_ERROR                3  // Message has been transmitted with error
+
+// rx_msg_cmd
+#define RX_NO_OP                0  // No transaction
+#define RX_ACK_CURRENT          1  // Read earliest message in buffer
+#define RX_DISABLE              2  // Disable receiving latest message
+#define RX_ACK_NEXT             3  // Clear earliest message from buffer and read next message
+
+// rx_msg_status
+#define RX_IDLE                 0  // No transaction
+#define RX_BUSY                 1  // Receiver is busy
+#define RX_DONE                 2  // Message has been received successfully
+#define RX_ERROR                3  // Message has been received with error
+
+#define CECA_HOST_INT	0x1
+#define CECA_TX_INT	0x2
+#define CECA_RX_INT	0x4
+
 /* wakeup mask */
 #define WAKEUP_OP_86_EN			BIT(7)
 #define WAKEUP_OP_82_EN			BIT(6)

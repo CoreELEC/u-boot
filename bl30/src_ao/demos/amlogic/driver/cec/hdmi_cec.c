@@ -35,7 +35,6 @@
 #define CEC_REG_DEBUG		0
 #define CEC_CFG_DEBUG		0
 #define CEC_FW_DEBUG		0
-#define CEC_USE_IRQ		0/*not work*/
 
 #define PHY_ADDR_LEN		4 /*16bit/4bit*/
 
@@ -68,6 +67,8 @@ static cec_msg_t cec_msg;
 static u32 cec_wakup_flag;
 struct st_cec_mailbox_data cec_mailbox;
 static enum cec_chip_ver cec_chip = CEC_CHIP_SC2;
+static u32 cec_ip;
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 struct cec_tx_msg_t {
 	unsigned char buf[16];
@@ -85,9 +86,43 @@ struct cec_tx_msg {
 };
 
 struct cec_tx_msg cec_tx_msgs = {};
-
-
 static void cec_reset_addr(void);
+
+#if CEC_REG_DEBUG
+static const char * const ceca_reg_name1[] = {
+	"CEC_TX_MSG_LENGTH",
+	"CEC_TX_MSG_CMD",
+	"CEC_TX_WRITE_BUF",
+	"CEC_TX_CLEAR_BUF",
+	"CEC_RX_MSG_CMD",
+	"CEC_RX_CLEAR_BUF",
+	"CEC_LOGICAL_ADDR0",
+	"CEC_LOGICAL_ADDR1",
+	"CEC_LOGICAL_ADDR2",
+	"CEC_LOGICAL_ADDR3",
+	"CEC_LOGICAL_ADDR4",
+	"CEC_CLOCK_DIV_H",
+	"CEC_CLOCK_DIV_L"
+};
+
+static const char * const ceca_reg_name2[] = {
+	"CEC_RX_MSG_LENGTH",
+	"CEC_RX_MSG_STATUS",
+	"CEC_RX_NUM_MSG",
+	"CEC_TX_MSG_STATUS",
+	"CEC_TX_NUM_MSG"
+};
+
+static const char * const ceca_reg_name3[] = {
+	"STAT_0_0",
+	"STAT_0_1",
+	"STAT_0_2",
+	"STAT_0_3",
+	"STAT_1_0",
+	"STAT_1_1",
+	"STAT_1_2"
+};
+#endif
 
 void cec_delay(u32 cnt)
 {
@@ -160,7 +195,7 @@ static void write_ao(enum cec_reg_idx addr, unsigned int data)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("w ao no exist reg:0x%x", real_addr);
+		printf("%s no exist reg:0x%x", __func__, addr);
 		return;
 	}
 #if CEC_FW_DEBUG
@@ -177,7 +212,7 @@ static unsigned int read_ao(enum cec_reg_idx addr)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("r ao no exist reg:0x%x", real_addr);
+		printf("%s no exist reg:0x%x\n", __func__, addr);
 		return 0x0;
 	}
 
@@ -188,6 +223,7 @@ static unsigned int read_ao(enum cec_reg_idx addr)
 	return data;
 }
 
+#if 1
 static unsigned long cecb_rd_reg(unsigned long addr)
 {
 	unsigned long data32;
@@ -197,7 +233,6 @@ static unsigned long cecb_rd_reg(unsigned long addr)
 	data32 |= 0    << 16;  // [16]   cec_reg_wr
 	data32 |= 0    << 8;   // [15:8] cec_reg_wrdata
 	data32 |= addr << 0;   // [7:0]  cec_reg_addr
-	//REG32(CECB_RW_REG) = data32;
 	write_ao(CECB_REG_RW_REG, data32);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 500) {
@@ -216,7 +251,6 @@ static void cecb_wr_reg (unsigned long addr, unsigned long data)
 	unsigned long data32;
 	unsigned int timeout = 0;
 
-	//data32 = REG32(CECB_RW_REG);
 	data32 = read_ao(CECB_REG_RW_REG);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 200) {
@@ -232,11 +266,10 @@ static void cecb_wr_reg (unsigned long addr, unsigned long data)
 	data32 |= 1 << 16;  // [16]   cec_reg_wr
 	data32 |= data << 8;   // [15:8] cec_reg_wrdata
 	data32 |= addr << 0;   // [7:0]  cec_reg_addr
-	//REG32(CECB_RW_REG) = data32;
 	write_ao(CECB_REG_RW_REG, data32);
 } /* aocec_wr_only_reg */
 
-static inline void cec_set_bits_dwc(uint32_t reg, uint32_t bits,
+static inline void cecb_set_bits(uint32_t reg, uint32_t bits,
 				       uint32_t start, uint32_t len)
 {
 	unsigned int tmp;
@@ -245,6 +278,64 @@ static inline void cec_set_bits_dwc(uint32_t reg, uint32_t bits,
 	tmp |=  (bits << start);
 	cecb_wr_reg(reg, tmp);
 }
+#endif
+
+#if 1
+static unsigned long ceca_rd_reg(unsigned long addr)
+{
+	unsigned long data32;
+	unsigned int timeout = 0;
+
+	data32  = 0;
+	data32 |= 0    << 16;  // [16]   cec_reg_wr
+	data32 |= 0    << 8;   // [15:8] cec_reg_wrdata
+	data32 |= addr << 0;   // [7:0]  cec_reg_addr
+	write_ao(CECA_REG_RW_REG, data32);
+	while (data32 & (1 << 23)) {
+		if (timeout++ > 500) {
+			printf("cecb r reg 0x%x fail\n",
+				(unsigned int)addr);
+			break;
+		}
+		data32 = read_ao(CECA_REG_RW_REG);
+	}
+	data32 = ((read_ao(CECA_REG_RW_REG)) >> 24) & 0xff;
+	return (data32);
+} /* cecb_rd_reg */
+
+static void ceca_wr_reg (unsigned long addr, unsigned long data)
+{
+	unsigned long data32;
+	unsigned int timeout = 0;
+
+	data32 = read_ao(CECA_REG_RW_REG);
+	while (data32 & (1 << 23)) {
+		if (timeout++ > 200) {
+			printf("cecb w reg 0x%x fail\n",
+				(unsigned int)addr);
+			break;
+		}
+		data32 = read_ao(CECA_REG_RW_REG);
+	}
+
+	data32  = 0;
+	data32 |= 1 << 16;  // [16]   cec_reg_wr
+	data32 |= data << 8;   // [15:8] cec_reg_wrdata
+	data32 |= addr << 0;   // [7:0]  cec_reg_addr
+	write_ao(CECA_REG_RW_REG, data32);
+} /* aocec_wr_only_reg */
+
+static inline void ceca_set_bits(uint32_t reg, uint32_t bits,
+				       uint32_t start, uint32_t len)
+{
+	unsigned int tmp;
+
+	tmp = ceca_rd_reg(reg);
+	tmp &= ~(((1 << len) - 1) << start);
+	tmp |=  (bits << start);
+	ceca_wr_reg(reg, tmp);
+}
+#endif
 
 static void cec_set_reg_bits(unsigned long addr, unsigned int value,
 	unsigned int offset, unsigned int len)
@@ -266,46 +357,70 @@ static void cec_rx_read_pos_plus(void)
 }
 
 #if CEC_REG_DEBUG
-static void dump_cecb_reg(void)
+static void dump_cec_reg(void)
 {
-	int i = 0;
+	u32 i = 0;
 	unsigned char reg;
 	unsigned int reg32;
 
-	reg32 = read_ao(CECB_REG_CLK_CNTL_REG0);
-	printf("CECB_CLK_CNTL0:0x%x\n", reg32);
-	reg32 = read_ao(CECB_REG_CLK_CNTL_REG1);
-	printf("CECB_CLK_CNTL1:0x%x\n", reg32);
-	reg32 = read_ao(CECB_REG_GEN_CNTL);
-	printf("CECB_GEN_CNTL:0x%x\n", reg32);
-	reg32 = read_ao(CECB_REG_RW_REG);
-	printf("CECB_RW:0x%x\n", reg32);
-	reg32 = read_ao(CECB_REG_INTR_MASKN);
-	printf("CECB_INT_MASKN:0x%x\n", reg32);
-	reg32 = read_ao(CECB_REG_INTR_STAT);
-	printf("CECB_INT_STAT:0x%x\n", reg32);
+	if (cec_ip == CEC_B) {
+		reg32 = read_ao(CECB_REG_CLK_CNTL_REG0);
+		printf("CECB_CLK_CNTL0:0x%x\n", reg32);
+		reg32 = read_ao(CECB_REG_CLK_CNTL_REG1);
+		printf("CECB_CLK_CNTL1:0x%x\n", reg32);
+		reg32 = read_ao(CECB_REG_GEN_CNTL);
+		printf("CECB_GEN_CNTL:0x%x\n", reg32);
+		reg32 = read_ao(CECB_REG_RW_REG);
+		printf("CECB_RW:0x%x\n", reg32);
+		reg32 = read_ao(CECB_REG_INTR_MASKN);
+		printf("CECB_INT_MASKN:0x%x\n", reg32);
+		reg32 = read_ao(CECB_REG_INTR_STAT);
+		printf("CECB_INT_STAT:0x%x\n", reg32);
 
-	printf("CECB_CTRL:0x%x\n", cecb_rd_reg(DWC_CECB_CTRL));
-	printf("CECB_CTRL2:0x%x\n", cecb_rd_reg(DWC_CECB_CTRL2));
-	printf("CECB_MASK:0x%x\n", cecb_rd_reg(DWC_CECB_INTR_MASK));
-	printf("CECB_ADDR_L:0x%x\n", cecb_rd_reg(DWC_CECB_LADD_LOW));
-	printf("CECB_ADDR_H:0x%x\n", cecb_rd_reg(DWC_CECB_LADD_HIGH));
-	printf("CECB_TX_CNT:0x%x\n", cecb_rd_reg(DWC_CECB_TX_CNT));
-	printf("CECB_RX_CNT:0x%x\n", cecb_rd_reg(DWC_CECB_RX_CNT));
-	printf("CECB_STAT0:0x%x\n", cecb_rd_reg(DWC_CECB_STAT0));
-	printf("CECB_LOCK:0x%x\n", cecb_rd_reg(DWC_CECB_LOCK_BUF));
-	printf("CECB_WKUPCTRL:0x%x\n", cecb_rd_reg(DWC_CECB_WAKEUPCTRL));
+		printf("CECB_CTRL:0x%x\n", cecb_rd_reg(DWC_CECB_CTRL));
+		printf("CECB_CTRL2:0x%x\n", cecb_rd_reg(DWC_CECB_CTRL2));
+		printf("CECB_MASK:0x%x\n", cecb_rd_reg(DWC_CECB_INTR_MASK));
+		printf("CECB_ADDR_L:0x%x\n", cecb_rd_reg(DWC_CECB_LADD_LOW));
+		printf("CECB_ADDR_H:0x%x\n", cecb_rd_reg(DWC_CECB_LADD_HIGH));
+		printf("CECB_TX_CNT:0x%x\n", cecb_rd_reg(DWC_CECB_TX_CNT));
+		printf("CECB_RX_CNT:0x%x\n", cecb_rd_reg(DWC_CECB_RX_CNT));
+		printf("CECB_STAT0:0x%x\n", cecb_rd_reg(DWC_CECB_STAT0));
+		printf("CECB_LOCK:0x%x\n", cecb_rd_reg(DWC_CECB_LOCK_BUF));
+		printf("CECB_WKUPCTRL:0x%x\n", cecb_rd_reg(DWC_CECB_WAKEUPCTRL));
 
-	printf("CECB_RX buffer:");
-	for (i = 0; i < 16; i++) {
-		reg = cecb_rd_reg(DWC_CECB_RX_DATA00 + i);
-		printf(" 0x%x", reg);
-	}
-	printf("\n");
-	printf("CECB_TX buffer:");
-	for (i = 0; i < 16; i++) {
-		reg = cecb_rd_reg(DWC_CECB_TX_DATA00 + i);
-		printf(" 0x%x", reg);
+		printf("CECB_RX buffer:");
+		for (i = 0; i < 16; i++) {
+			reg = cecb_rd_reg(DWC_CECB_RX_DATA00 + i);
+			printf(" 0x%x", reg);
+		}
+		printf("\n");
+		printf("CECB_TX buffer:");
+		for (i = 0; i < 16; i++) {
+			reg = cecb_rd_reg(DWC_CECB_TX_DATA00 + i);
+			printf(" 0x%x", reg);
+		}
+	} else {
+		reg32 = read_ao(CECA_REG_CLK_CNTL_REG0);
+		printf("CECA_CLK_CNTL0:0x%x\n", reg32);
+		reg32 = read_ao(CECA_REG_CLK_CNTL_REG1);
+		printf("CECA_CLK_CNTL1:0x%x\n", reg32);
+		reg32 = read_ao(CECA_REG_GEN_CNTL);
+		printf("CECA_GEN_CNTL:0x%x\n", reg32);
+		reg32 = read_ao(CECA_REG_RW_REG);
+		printf("CECA_RW:0x%x\n", reg32);
+		reg32 = read_ao(CECA_REG_INTR_MASKN);
+		printf("CECA_INT_MASKN:0x%x\n", reg32);
+		reg32 = read_ao(CECA_REG_INTR_STAT);
+		printf("CECA_INT_STAT:0x%x\n", reg32);
+
+		for (i = 0; i < ARRAY_SIZE(ceca_reg_name1); i++)
+			printf("%s:0x%x\n", ceca_reg_name1[i], ceca_rd_reg(i + 0x10));
+
+		for (i = 0; i < ARRAY_SIZE(ceca_reg_name2); i++)
+			printf("%s:0x%x\n", ceca_reg_name2[i], ceca_rd_reg(i + 0x90));
+
+		for (i = 0; i < ARRAY_SIZE(ceca_reg_name3); i++)
+			printf("%s:0x%x\n", ceca_reg_name3[i], ceca_rd_reg(i + 0xa0));
 	}
 	printf("\n");
 }
@@ -332,27 +447,39 @@ static void cec_get_portinfo(void *msg)
 
 static void cec_enable_irq(u32 onoff)
 {
-	if (onoff) {
-		/*enable the interrupt*/
-		/*REG32(CECB_INTR_MASKN) = CECB_IRQ_EN_MASK;*/
-		write_ao(CECB_REG_INTR_MASKN, CECB_IRQ_EN_MASK);
-		cecb_wr_reg(DWC_CECB_WAKEUPCTRL, WAKEUP_DIS_MASK);
+	if (cec_ip == CEC_B) {
+		if (onoff) {
+			/*enable the interrupt*/
+			/*REG32(CECB_INTR_MASKN) = CECB_IRQ_EN_MASK;*/
+			write_ao(CECB_REG_INTR_MASKN, CECB_IRQ_EN_MASK);
+			cecb_wr_reg(DWC_CECB_WAKEUPCTRL, WAKEUP_DIS_MASK);
+		} else {
+			/*REG32(CECB_INTR_MASKN) = 0;*/
+			write_ao(CECB_REG_INTR_MASKN, 0);
+			cecb_wr_reg(DWC_CECB_WAKEUPCTRL, WAKEUP_DIS_MASK);
+		}
 	} else {
-		/*REG32(CECB_INTR_MASKN) = 0;*/
-		write_ao(CECB_REG_INTR_MASKN, 0);
-		cecb_wr_reg(DWC_CECB_WAKEUPCTRL, WAKEUP_DIS_MASK);
+		if (onoff)
+			cec_set_reg_bits(CECA_REG_INTR_MASKN, 0x6, 0, 3);
+		else
+			cec_set_reg_bits(CECA_REG_INTR_MASKN, 0x0, 0, 3);
 	}
+	/*printf("%s cec_ip:%d\n", __func__);*/
 }
 
 static void cec_clear_int_sts(void)
 {
 	unsigned int reg;
 
-	/*reg = REG32(CECB_INTR_STAT);*/
-	/*REG32(CECB_INTR_CLR) = reg;*/
-	reg = read_ao(CECB_REG_INTR_STAT);
-	if (reg)
-		write_ao(CECB_REG_INTR_STAT, reg);
+	if (cec_ip == CEC_B) {
+		reg = read_ao(CECB_REG_INTR_STAT);
+		if (reg)
+			write_ao(CECB_REG_INTR_STAT, reg);
+	} else {
+		reg = read_ao(CECA_REG_INTR_STAT);
+		if (reg)
+			write_ao(CECA_REG_INTR_STAT, reg);
+	}
 }
 
 #if 0
@@ -369,15 +496,17 @@ static u32 cec_set_pin_mux(u32 chip)
 	enum cec_chip_ver chip_type = chip;
 
 	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
-
+	printf("%s pin mux:0x%x func:0x%x\n", CEC_PIN_MX, CEC_PIN_FUNC);
 	return chip_type;
 }
 
-static u32 cec_hw_reset(void)
+static u32 cecb_hw_reset(void)
 {
+#if (CEC_IP == CEC_B)
 	unsigned int reg;
 	unsigned int data32;
 
+	printf("cecb reset\n");
 	reg =   (0 << 31) |
 		(0 << 30) |
 		(1 << 28) |		/* clk_div0/clk_div1 in turn */
@@ -422,6 +551,56 @@ static u32 cec_hw_reset(void)
 	reg |= (0 << 5);/*en_chk_sbitlow*/
 	reg |= (2 << 0);/*rise_del_max*/
 	cecb_wr_reg(DWC_CECB_CTRL2, reg);
+	cec_set_pin_mux(cec_chip);
+
+	cec_clear_int_sts();
+	/*enable the interrupt*/
+	cec_enable_irq(1);
+	cec_delay(200);
+#endif
+	return 0;
+}
+
+static u32 ceca_hw_reset(void)
+{
+#if (CEC_IP == CEC_A)
+	unsigned int reg;
+	unsigned int data32;
+
+	printf("ceca reset\n");
+	reg =	(0 << 31) |
+		(0 << 30) |
+		(1 << 28) |		/* clk_div0/clk_div1 in turn */
+		((732-1) << 12) |	/* Div_tcnt1 */
+		((733-1) << 0); 	/* Div_tcnt0 */
+	write_ao(CECA_REG_CLK_CNTL_REG0, reg);
+	reg =	(0 << 13) |
+		((11-1)  << 12) |
+		((8-1)	<<  0);
+	write_ao(CECA_REG_CLK_CNTL_REG1, reg);
+
+	reg = read_ao(CECA_REG_CLK_CNTL_REG0);
+	reg |= (1 << 31);
+	write_ao(CECA_REG_CLK_CNTL_REG0, reg);
+
+	cec_delay(200);
+	reg |= (1 << 30);
+	write_ao(CECA_REG_CLK_CNTL_REG0, reg);
+
+	data32	= 0;
+	data32 |= (7 << 12);	/* filter_del */
+	data32 |= (1 <<  8);	/* filter_tick: 1us */
+	data32 |= (1 <<  3);	/* enable system clock */
+	data32 |= 0 << 1;	/* [2:1]	cntl_clk: */
+				/* 0=Disable clk (Power-off mode); */
+				/* 1=Enable gated clock (Normal mode); */
+				/* 2=Enable free-run clk (Debug mode). */
+	data32 |= 1 << 0;	/* [0]	  sw_reset: 1=Reset */
+	write_ao(CECA_REG_GEN_CNTL, data32);
+	/* Enable gated clock (Normal mode). */
+	cec_set_reg_bits(CECA_REG_GEN_CNTL, 1, 1, 1);
+	/* Release SW reset */
+	cec_set_reg_bits(CECA_REG_GEN_CNTL, 0, 0, 1);
 
 	cec_set_pin_mux(cec_chip);
 
@@ -429,10 +608,22 @@ static u32 cec_hw_reset(void)
 	/*enable the interrupt*/
 	cec_enable_irq(1);
 	cec_delay(200);
+#endif
 	return 0;
 }
 
-static unsigned char remote_cec_ll_rx(void)
+static u32 cec_hw_reset(void)
+{
+#if (CEC_IP == CEC_B)
+	cecb_hw_reset();
+#else
+	ceca_hw_reset();
+#endif
+
+	return 0;
+}
+
+static unsigned char remote_cecb_ll_rx(void)
 {
 	int i;
 	int len;
@@ -449,6 +640,46 @@ static unsigned char remote_cec_ll_rx(void)
 	printf("\n");
 	return 0;
 }
+
+u32 ceca_rx_buf_clear(void)
+{
+	ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x1);
+	ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x0);
+
+	return 0;
+}
+
+static unsigned char remote_ceca_ll_rx(void)
+{
+	int i;
+	int len;
+
+	len = ceca_rd_reg(CECA_RX_MSG_LENGTH) + 1;
+	printf("cec R:");
+	for (i = 0; i < len; i++) {
+		cec_msg.buf[cec_msg.rx_write_pos].msg[i] = ceca_rd_reg(CECA_RX_MSG_0_HEADER + i);
+		printf(" 0x%02x", cec_msg.buf[cec_msg.rx_write_pos].msg[i]);
+	}
+
+	write_ao(CECA_REG_INTR_CLR, (1 << 2));
+	ceca_wr_reg(CECA_RX_MSG_CMD, RX_ACK_CURRENT);
+	ceca_wr_reg(CECA_RX_MSG_CMD, RX_NO_OP);
+	ceca_rx_buf_clear();
+	cec_msg.buf[cec_msg.rx_write_pos].msg_len = len;
+	printf("\n");
+	return 0;
+}
+
+static unsigned char remote_cec_ll_rx(void)
+{
+	if (cec_ip == CEC_B)
+		remote_cecb_ll_rx();
+	else
+		remote_ceca_ll_rx();
+
+	return 0;
+}
+
 static void cec_buf_clear(void)
 {
 	int i;
@@ -488,7 +719,7 @@ static int cec_queue_tx_msg(unsigned char *msg, unsigned char len)
 	return 0;
 }
 
-static int cec_triggle_tx(unsigned char *msg, unsigned char len)
+static int cecb_triggle_tx(unsigned char *msg, unsigned char len)
 {
 	int i = 0, lock;
 
@@ -519,8 +750,63 @@ static int cec_triggle_tx(unsigned char *msg, unsigned char len)
 
 	/* start send */
 	cecb_wr_reg(DWC_CECB_TX_CNT, len);
-	cec_set_bits_dwc(DWC_CECB_CTRL, 3, 0, 3);
+	cecb_set_bits(DWC_CECB_CTRL, 3, 0, 3);
 	return 0;
+}
+
+static int ceca_triggle_tx(unsigned char *msg, unsigned char len)
+{
+	int i = 0/*, lock*/;
+	unsigned int j = 40;
+	unsigned int tx_stat;
+	static int cec_timeout_cnt = 1;
+
+	while (1) {
+		/*check idle*/
+		tx_stat = ceca_rd_reg(CECA_TX_MSG_STATUS);
+		if (tx_stat != TX_BUSY)
+			break;
+
+		if (!(j--)) {
+			printf("ceca waiting busy timeout\n");
+			ceca_wr_reg(CECA_TX_MSG_CMD, TX_ABORT);
+			cec_timeout_cnt++;
+			if (cec_timeout_cnt > 0x08)
+				cec_hw_reset();
+			break;
+		}
+
+		cec_delay(50);
+	}
+
+	tx_stat = ceca_rd_reg(CECA_TX_MSG_STATUS);
+	if (tx_stat == TX_IDLE || tx_stat == TX_DONE) {
+		printf("cec T:");
+		for (i = 0; i < len; i++) {
+			ceca_wr_reg(CECA_TX_MSG_0_HEADER + i, msg[i]);
+			printf(" 0x%02x", msg[i]);
+		}
+		printf("\n");
+
+		ceca_wr_reg(CECA_TX_MSG_LENGTH, len - 1);
+		ceca_wr_reg(CECA_TX_MSG_CMD, TX_REQ_CURRENT);
+	} else {
+		printf("err tx state 0x%x\n", tx_stat);
+	}
+
+	return 0;
+}
+
+static int cec_triggle_tx(unsigned char *msg, unsigned char len)
+{
+	int ret;
+
+	if (cec_ip == CEC_B)
+		ret = cecb_triggle_tx(msg, len);
+	else
+		ret = ceca_triggle_tx(msg, len);
+
+	return ret;
 }
 
 static int remote_cec_ll_tx(unsigned char *msg, unsigned char len)
@@ -533,16 +819,13 @@ static int remote_cec_ll_tx(unsigned char *msg, unsigned char len)
 	return ret;
 }
 
-
-static int cec_check_irq_sts(void)
+static int cecb_check_irq_sts(void)
 {
 	unsigned int reg;
 	unsigned int ret = TX_IDLE;
 	unsigned int cnt = 0;
 
 	while (cec_tx_msgs.queue_idx != cec_tx_msgs.send_idx) {
-		/*reg = REG32(CECB_INTR_STAT);*/
-		/*REG32(CECB_INTR_CLR) = reg;*/
 		reg = read_ao(CECB_REG_INTR_STAT);
 		if (reg)
 			write_ao(CECB_REG_INTR_CLR, reg);
@@ -580,6 +863,64 @@ static int cec_check_irq_sts(void)
 		}
 		cec_delay(200);
 	}
+
+	return ret;
+}
+
+static int ceca_check_irq_sts(void)
+{
+	unsigned int reg;
+	unsigned int ret = TX_IDLE;
+	unsigned int cnt = 0;
+	unsigned int int_st;
+
+	while (cec_tx_msgs.queue_idx != cec_tx_msgs.send_idx) {
+		int_st = read_ao(CECA_REG_INTR_STAT);
+		if (int_st)
+			write_ao(CECA_REG_INTR_CLR, int_st);
+		else
+
+		reg = ceca_rd_reg(CECA_TX_MSG_STATUS);
+		if ( reg == TX_DONE ) {
+			ret = TX_DONE;
+			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
+			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
+			printf("ping_cec_ll_tx:TX_DONE\n");
+			break;
+		}
+
+		if (reg == TX_ERROR) {
+			ret = TX_ERROR;
+			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
+			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
+			printf("ping_cec_ll_tx:TX_ERROR\n");
+			break;
+		}
+
+		if (reg != TX_BUSY) {
+			break;
+		}
+
+		if (cnt++ >= 200) {
+			printf("%s time out %d\n", __func__, cnt);
+			cnt = 0;
+			break;
+		}
+		cec_delay(200);
+	}
+
+	return ret;
+}
+
+
+static int cec_check_irq_sts(void)
+{
+	unsigned int ret;
+
+	if (cec_ip == CEC_B)
+		ret = cecb_check_irq_sts();
+	else
+		ret = ceca_check_irq_sts();
 
 	return ret;
 }
@@ -933,15 +1274,25 @@ static u32 cec_handle_message(void)
 
 static void cec_set_log_addr(int addr)
 {
-	cecb_wr_reg(DWC_CECB_LADD_LOW, 0);
-	cecb_wr_reg(DWC_CECB_LADD_HIGH, 0x00);
-	if (addr > 15)
-		return ;
-	if ((addr & 0x0f) < 8)
-		cecb_wr_reg(DWC_CECB_LADD_LOW, 1 << addr);
-	else
-		cecb_wr_reg(DWC_CECB_LADD_HIGH, (1 << (addr - 8))/* | 0x80*/);
-
+	if (cec_ip == CEC_B) {
+		cecb_wr_reg(DWC_CECB_LADD_LOW, 0);
+		cecb_wr_reg(DWC_CECB_LADD_HIGH, 0x00);
+		if (addr > 15)
+			return ;
+		if ((addr & 0x0f) < 8)
+			cecb_wr_reg(DWC_CECB_LADD_LOW, 1 << addr);
+		else
+			cecb_wr_reg(DWC_CECB_LADD_HIGH, (1 << (addr - 8))/* | 0x80*/);
+	} else {
+		ceca_wr_reg(CECA_LOGICAL_ADDR0, 0);
+		ceca_wr_reg(CECA_LOGICAL_ADDR1, 0x00);
+		if (addr > 15)
+			return ;
+		if ((addr & 0x0f) < 8)
+			ceca_wr_reg(CECA_LOGICAL_ADDR0, 1 << addr);
+		else
+			ceca_wr_reg(CECA_LOGICAL_ADDR1, (1 << (addr - 8))/* | 0x80*/);
+	}
 	cec_delay(100);
 }
 
@@ -957,27 +1308,39 @@ static unsigned char cec_get_log_addr(void)
 {
 	int i, reg;
 
-	reg = cecb_rd_reg(DWC_CECB_LADD_LOW);
-	reg = (cecb_rd_reg(DWC_CECB_LADD_HIGH) << 8) | reg;
-	for (i = 0; i < 16; i++) {
-		if (reg & (1 << i))
-			break;
+	if (cec_ip == CEC_B) {
+		reg = cecb_rd_reg(DWC_CECB_LADD_LOW);
+		reg = (cecb_rd_reg(DWC_CECB_LADD_HIGH) << 8) | reg;
+		for (i = 0; i < 16; i++) {
+			if (reg & (1 << i))
+				break;
+		}
+		if (reg & 0x8000 && i < 16)
+			return i + 16;
+		else if (i < 16)
+			return i;
+	} else {
+		reg = ceca_rd_reg(CECA_LOGICAL_ADDR0);
+		reg = (ceca_rd_reg(CECA_LOGICAL_ADDR1) << 8) | reg;
+		for (i = 0; i < 16; i++) {
+			if (reg & (1 << i))
+				break;
+		}
+		if (reg & 0x8000 && i < 16)
+			return i + 16;
+		else if (i < 16)
+			return i;
 	}
-	if (reg & 0x8000 && i < 16)
-		return i + 16;
-	else if (i < 16)
-		return i;
+
 	return 0xff;
 }
 
-static u32 cec_irq_handler(void)
+static u32 cecb_irq_handler(void)
 {
 	unsigned char s_idx;
 	static int busy_count = 0;
 	int irq;
 
-	/*irq = REG32(CECB_INTR_STAT);*/
-	/*REG32(CECB_INTR_CLR) = irq;*/
 	irq = read_ao(CECB_REG_INTR_STAT);
 	if (irq)
 		write_ao(CECB_REG_INTR_CLR, irq);
@@ -987,7 +1350,7 @@ static u32 cec_irq_handler(void)
 #if CEC_REG_DEBUG
 	if (irq) {
 		printf("irq sts:0x%x\n", irq);
-		dump_cecb_reg();
+		dump_cec_reg();
 	}
 #endif
 	if (irq & CECB_IRQ_RX_EOM) {
@@ -1060,6 +1423,134 @@ static u32 cec_irq_handler(void)
 	}
 
 	return 0;
+}
+
+static u32 ceca_irq_handler(void)
+{
+	unsigned char s_idx;
+	static int busy_count = 0;
+	int irq;
+
+	irq = read_ao(CECA_REG_INTR_STAT);
+	if (irq)
+		write_ao(CECA_REG_INTR_CLR, irq);
+	else
+		return 0;
+#if CEC_REG_DEBUG
+	if (irq) {
+		printf("cec a irq sts:0x%x\n", irq);
+		//dump_cec_reg();
+	}
+#endif
+
+	if (0xf == ceca_rd_reg(CECA_RX_NUM_MSG)) {
+		ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x1);
+		ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x0);
+		ceca_wr_reg(CECA_RX_MSG_CMD,  RX_ACK_CURRENT);
+		ceca_wr_reg(CECA_RX_MSG_CMD, RX_NO_OP);
+		printf("error:hw_buf overflow\n");
+	}
+
+	switch (ceca_rd_reg(CECA_RX_MSG_STATUS)) {
+	case RX_DONE:
+		if (1 == ceca_rd_reg(CECA_RX_NUM_MSG)) {
+			remote_cec_ll_rx();
+			(cec_msg.rx_write_pos == cec_msg.rx_buf_size - 1) ? (cec_msg.rx_write_pos = 0) : (cec_msg.rx_write_pos++);
+		}
+		ceca_wr_reg(CECA_RX_MSG_CMD, RX_ACK_CURRENT);
+		ceca_wr_reg(CECA_RX_MSG_CMD, RX_NO_OP);
+		printf("RX_OK\n");
+		break;
+	case RX_ERROR:
+		printf("RX_ERROR\n");
+		if (TX_ERROR == ceca_rd_reg(CECA_TX_MSG_STATUS)) {
+			printf("TX_ERROR\n");
+			cec_reset_addr();
+		} else {
+			printf("TX_other\n");
+			ceca_wr_reg(CECA_RX_MSG_CMD,  RX_ACK_CURRENT);
+			ceca_wr_reg(CECA_RX_MSG_CMD, RX_NO_OP);
+		}
+		break;
+	default:
+		break;
+	}
+
+	switch (ceca_rd_reg(CECA_TX_MSG_STATUS)) {
+	case TX_DONE:
+		ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
+		cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
+		s_idx = cec_tx_msgs.send_idx;
+		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
+			printf("TX_OK\n");
+			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+				       cec_tx_msgs.msg[s_idx].len);
+		} else {
+			printf("TX_END\n");
+		}
+		busy_count = 0;
+		break;
+
+	case TX_ERROR:
+		printf("@TX_NACK\n");
+		if (RX_ERROR == ceca_rd_reg(CECA_RX_MSG_STATUS)) {
+			printf("@RX_ERROR\n");
+			cec_reset_addr();
+		} else {
+			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
+			s_idx = cec_tx_msgs.send_idx;
+			if (cec_tx_msgs.msg[s_idx].retry < 3) {
+				cec_tx_msgs.msg[s_idx].retry++;
+				cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+					       cec_tx_msgs.msg[s_idx].len);
+			} else {
+				printf("TX retry too much, abort msg\n");
+				cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
+			}
+		}
+		busy_count = 0;
+		break;
+
+	 case TX_IDLE:
+		s_idx = cec_tx_msgs.send_idx;
+		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
+			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+				       cec_tx_msgs.msg[s_idx].len);
+		}
+		busy_count = 0;
+		break;
+
+	case TX_BUSY:
+		busy_count++;
+		if (busy_count >= 2000) {
+			printf("busy too long, reset hw\n");
+			cec_reset_addr();
+			busy_count = 0;
+		}
+		break;
+
+	 default:
+		break;
+	}
+
+	if (cec_msg.rx_read_pos != cec_msg.rx_write_pos) {
+		cec_handle_message();
+	}
+
+	return 0;
+}
+
+static u32 cec_irq_handler(void)
+{
+	u32 ret;
+
+#if (CEC_IP == CEC_A)
+	ret = cecb_irq_handler();
+#else
+	ret = ceca_irq_handler();
+#endif
+
+	return ret;
 }
 
 /*static void check_standby(void)
@@ -1240,17 +1731,17 @@ static u32 cec_suspend_wakeup_chk(void)
 			if (cec_msg.active_source) {
 				cec_save_port_id();
 				timeout_flag = 1;
-				printf("check wakeup\n");
+				printf("active src cmd in, wakeup\n");
 			}
 			printf(".");
 		} else {
 			timeout_flag = 1;
-			printf("wakeup\n");
 		}
 	}
 
 	if (timeout_flag) {
 		cec_wakup_flag = 1;
+		printf("wakeup\n");
 		/*set_cec_val0(CEC_WAKEUP);*/
 		return 1;
 	} else {
@@ -1280,7 +1771,6 @@ u32 cec_suspend_handle(void)
 		cec_node_init();
 	}
 
-
 	if (active_src_flag) {
 		printf("active source:0x%x\n", cec_msg.active_source);
 		printf("wk_logic_addr:0x%x\n", cec_wakup.wk_logic_addr);
@@ -1291,47 +1781,20 @@ u32 cec_suspend_handle(void)
 		return 0;
 }
 
-void cec_req_irq(u32 onoff)
-{
-#if CEC_USE_IRQ
-	if (onoff) {
-		//vEnableIrq(IRQ_NUM_CECB, 180);/*B:180,A:179*/
-		printf("%s: TODO: please use new vEnableIiq function.\n", __func__);
-		vClearPendingIrq(IRQ_NUM_CECB);
-	} else {
-		vDisableIrq(IRQ_NUM_CECB);/*B:180,A:179*/
-	}
-#if CEC_FW_DEBUG
-	printf("%s %d\n", __func__, onoff);
-#endif
-#else
-	onoff = onoff;
-#endif
-}
-
-#if CEC_USE_IRQ
-static void cec_handler(void)
-{
-	u32 irq;
-
-	printf("%s\n");
-
-	cec_clear_int_sts();
-}
-#endif
-
 u32 cec_init_config(void)
 {
 #if CEC_CFG_DEBUG
 	write_ao(CEC_REG_STS0, 0x8000002f);
 	write_ao(CEC_REG_STS1, 0x000000);
 	//write_ao(CEC_REG_STS1, 0x441000);
+	cec_mailbox.cec_config |= CEC_CFG_DBG_EN;
 #endif
 
 	hdmi_cec_func_config = read_ao(CEC_REG_STS0);
 	/*cec_mailbox.cec_config = hdmi_cec_func_config;*/
 	cec_mailbox.phy_addr = read_ao(CEC_REG_STS1);
-
+	cec_ip = CEC_IP;
+	printf("cec_ip %d\n", cec_ip);
 	if (cec_mailbox.cec_config & CEC_CFG_DBG_EN) {
 		printf("%s\n", CEC_VERSION);
 		printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
@@ -1339,7 +1802,6 @@ u32 cec_init_config(void)
 	}
 
 	if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
-		cec_req_irq(1);
 		probe = NULL;
 		ping_state = 0;
 		idle_cnt = 0;
@@ -1351,7 +1813,7 @@ u32 cec_init_config(void)
 	}
 
 #if CEC_REG_DEBUG
-	dump_cecb_reg();
+	dump_cec_reg();
 #endif
 	/*cec enable*/
 	if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
@@ -1373,6 +1835,11 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	cec_mailbox.cec_config = CEC_CFG_FUNC_EN | CEC_CFG_OTP_EN | CEC_CFG_PW_ON_EN;
 	cec_mailbox.phy_addr = 0x1000;
 
+	cec_mailbox.osd_name[0] = 'a';
+	cec_mailbox.osd_name[1] = 'm';
+	cec_mailbox.osd_name[2] = 'l';
+	cec_mailbox.osd_name[14] = 3;
+
 	cec_chip = chip_mode;
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
 						    cec_get_portinfo, 1);
@@ -1385,9 +1852,10 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
 }
 
-#if CEC_USE_IRQ
-DECLARE_IRQ(IRQ_NUM_CECB, cec_handler)
-#endif
+void cec_req_irq(u32 onoff)
+{
+	onoff = onoff;
+}
 
 #endif
 

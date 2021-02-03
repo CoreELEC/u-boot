@@ -39,6 +39,7 @@ unsigned int cec_reg_tab[] ={
 
 #define CEC_PIN_MX	GPIOW_12
 #define CEC_PIN_FUNC	PIN_FUNC1
+#define CEC_IP		1	/* 0: cec a, 1: cecb*/
 
 #endif
 

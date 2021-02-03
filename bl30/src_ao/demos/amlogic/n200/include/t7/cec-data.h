@@ -6,7 +6,7 @@
 /*SC2 data define*/
 
 
-/*SC2 register enum cec_reg_idx */
+/*T7 same with SC2 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
 	CLKCTRL_CECA_CTRL1,
@@ -38,8 +38,9 @@ unsigned int cec_reg_tab[] = {
 };
 
 /*GPIOH_3 FUNC4:ceca, FUNC5:cecb*/
-#define CEC_PIN_MX	GPIOH_3
-#define CEC_PIN_FUNC	PIN_FUNC5
+#define CEC_PIN_MX	GPIOW_12
+#define CEC_PIN_FUNC	PIN_FUNC1
+#define CEC_IP		0	/* 0: cec a, 1: cecb*/
 
 #endif
 

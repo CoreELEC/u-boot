@@ -129,10 +129,17 @@ static void vPrintTask2( void *pvParameters )
 	vTaskDelay(pdMS_TO_TICKS(500));
 	for ( ;; )
 	{
-	//	printf("\nvPTask2 tick=%d\n",(unsigned int)xTaskGetTickCount());
+		//printf("\nvPTask2 tick=%d\n",(unsigned int)xTaskGetTickCount());
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
+
+/*static TaskHandle_t test_cecTask = NULL;*/
+/*void test_cec_task(void)*/
+/*{*/
+/*	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &test_cecTask);*/
+/*	printf("%s --------------\n", __func__);*/
+/*}*/
 
 void hardware_init(void);
 void hardware_init()
@@ -170,7 +177,7 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
-//	vCecCallbackInit(CEC_CHIP_SC2);
+	vCecCallbackInit(CEC_CHIP_T7);
 	vRtcInit();
 	create_str_task();
 

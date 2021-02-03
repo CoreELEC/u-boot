@@ -170,7 +170,7 @@ int main(void)
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
-//	vCecCallbackInit(CEC_CHIP_SC2);
+	//vCecCallbackInit(CEC_CHIP_T7);
 //	vRtcInit();
 //	create_str_task();
 

@@ -88,7 +88,6 @@ void vCEC_task(void *pvParameters)
 	u32 buf[4] = {0};
 
 	buf[0] = CEC_WAKEUP;
-
 	pvParameters = pvParameters;
 	ret = cec_init_config();
 	if (!ret) {
@@ -101,6 +100,7 @@ void vCEC_task(void *pvParameters)
 		vTaskDelay(pdMS_TO_TICKS(20));
 		cec_suspend_handle();
 		if (cec_get_wakup_flag()) {
+			printf("%s wakeup\n", __func__);
 			STR_Wakeup_src_Queue_Send(buf);
 			break;
 		}

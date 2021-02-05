@@ -445,6 +445,7 @@ int32_t xI2cMesonWrite(uint32_t addr, uint8_t offset,
 	return 0;
 }
 
+extern uint32_t suspend_flag;
 /*
  *i2c master platform data init
  */
@@ -460,8 +461,19 @@ int32_t xI2cMesonPortInit(uint32_t id)
 	i2cs[id].div_factor = cur_plat->div_factor;
 	i2cs[id].delay_ajust = cur_plat->delay_ajust;
 	i2cs[id].clock_frequency = cur_plat->clock_frequency;
-	i2cs[id].clkin_rate = cur_plat->clkin_rate;
 
+	if (suspend_flag) {
+#if I2C_DEBUG
+		iprintf("meson i2c: clkin is 24M\n");
+#endif
+		i2cs[id].clkin_rate = 24000000;
+	}
+	else {
+#if I2C_DEBUG
+		iprintf("meson i2c: clkin is 166M\n");
+#endif
+		i2cs[id].clkin_rate = cur_plat->clkin_rate;
+	}
 	current_id = id;
 
 #if I2C_DEBUG

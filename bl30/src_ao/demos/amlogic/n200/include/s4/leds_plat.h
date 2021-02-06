@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 /*
- * pwm SC2 leds config
+ * pwm S4 leds config
  */
 #include <leds_state.h>
 

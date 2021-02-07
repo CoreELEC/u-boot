@@ -195,7 +195,7 @@ static void write_ao(enum cec_reg_idx addr, unsigned int data)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("%s no exist reg:0x%x", __func__, addr);
+		printf("%s no reg:0x%x", __func__, addr);
 		return;
 	}
 #if CEC_FW_DEBUG
@@ -212,7 +212,7 @@ static unsigned int read_ao(enum cec_reg_idx addr)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("%s no exist reg:0x%x\n", __func__, addr);
+		printf("%s no reg:0x%x\n", __func__, addr);
 		return 0x0;
 	}
 
@@ -1544,7 +1544,7 @@ static u32 cec_irq_handler(void)
 {
 	u32 ret;
 
-#if (CEC_IP == CEC_A)
+#if (CEC_IP == CEC_B)
 	ret = cecb_irq_handler();
 #else
 	ret = ceca_irq_handler();

@@ -25,6 +25,7 @@
  */
 
 #include "pmic.h"
+#include "myprintf.h"
 
 struct pmic_regulator *pmic_regulators[PMIC_MAXNUM] = {NULL1,NULL1,NULL1,NULL1,NULL1};
 

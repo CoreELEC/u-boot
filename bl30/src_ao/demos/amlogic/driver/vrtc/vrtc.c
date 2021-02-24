@@ -56,7 +56,9 @@
 #include "timers.h"
 #include "suspend.h"
 #include "soc.h"
+#include "util.h"
 
+#undef TAG
 #define TAG "VRTC"
 /* Timer handle */
 //TimerHandle_t xRTCTimer = NULL;
@@ -89,14 +91,16 @@ void vRTC_update(void)
 	}
 }
 
-void xMboxSetRTC(void *msg)
+void *xMboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
 	printf("[%s] xMboxSetRTC val=0x%x \n", TAG, val);
 	set_rtc(val);
+
+	return NULL;
 }
 
-void xMboxGetRTC(void *msg)
+void *xMboxGetRTC(void *msg)
 {
 	uint32_t val = 0;
 
@@ -105,6 +109,8 @@ void xMboxGetRTC(void *msg)
 	*(uint32_t *)msg = val;
 
 	printf("[%s]: xMboxGetRTC val=0x%x\n", TAG, val);
+
+	return NULL;
 }
 
 void vRtcInit(void)
@@ -141,8 +147,6 @@ void alarm_set(void)
 
 void alarm_clr(void)
 {
-	uint32_t val;
-
 	time_start = 0;
 	xTimerStop(xRTCTimer, 0);
 }

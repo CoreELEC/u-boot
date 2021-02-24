@@ -5,8 +5,7 @@
 
 #define __PMIC_H__
 
-
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+//#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #define NULL1 ((void *)0)
 
@@ -32,20 +31,6 @@ enum regulator_type {
 	REGULATOR_CURRENT,
 };
 
-struct regulator_ops {
-	/* enable/disable regulator */
-	int (*ctrl) (struct regulator_desc *rdev,int status);
-	/* get/set regulator voltage */
-	int (*set_voltage) (struct regulator_desc *rdev,unsigned int sel);
-};
-
-struct regulator_linear_range {
-	unsigned int min_uV;
-	unsigned int min_sel;
-	unsigned int max_sel;
-	unsigned int uV_step;
-};
-
 struct regulator_desc {
 	const char *name;
 	int id;
@@ -69,6 +54,20 @@ struct regulator_desc {
 	const struct regulator_linear_range *linear_ranges;
 	const unsigned int *volt_table;
 	unsigned int n_voltages;
+};
+
+struct regulator_ops {
+	/* enable/disable regulator */
+	int (*ctrl) (struct regulator_desc *rdev,int status);
+	/* get/set regulator voltage */
+	int (*set_voltage) (struct regulator_desc *rdev,unsigned int sel);
+};
+
+struct regulator_linear_range {
+	unsigned int min_uV;
+	unsigned int min_sel;
+	unsigned int max_sel;
+	unsigned int uV_step;
 };
 
 struct pmic_i2c {

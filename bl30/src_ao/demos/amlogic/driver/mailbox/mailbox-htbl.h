@@ -49,7 +49,7 @@ void mailbox_htbl_init(void **pHTbl);
 void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen);
 uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, void *(handler)(void *));
 uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd,
-                              void *(handler)(void *), uint8_t needFdBak);
+                              void *(*handler)(void *), uint8_t needFdBak);
 uint32_t mailbox_htbl_unreg(void *pHTbl, uint32_t cmd);
 uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg);
 

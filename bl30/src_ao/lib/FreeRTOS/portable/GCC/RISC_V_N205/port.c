@@ -112,11 +112,11 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 			break;
 		default:
 			mstatus_mps_bits = ((read_csr(mstatus) & 0x00000600) >> 9);
-			printf("In trap handler, the msubmode is 0x%x\n", read_csr_msubmode);
-			printf("In trap handler, the mstatus.MPS is 0x%x\n", mstatus_mps_bits);
-			printf("In trap handler, the mcause is %x\n", mcause);
-			printf("In trap handler, the mepc is 0x%x\n", read_csr(mepc));
-			printf("In trap handler, the mtval is 0x%x\n", read_csr(mbadaddr));
+			printf("In trap handler, the msubmode is 0x%lx\n", read_csr_msubmode);
+			printf("In trap handler, the mstatus.MPS is 0x%lx\n", mstatus_mps_bits);
+			printf("In trap handler, the mcause is %lx\n", mcause);
+			printf("In trap handler, the mepc is 0x%lx\n", read_csr(mepc));
+			printf("In trap handler, the mtval is 0x%lx\n", read_csr(mbadaddr));
 			if (mstatus_mps_bits == 0x1) {
 			    printf("The exception is happened from previous Exception mode, hence is Double-Exception-fault!\n");
 			} else if (mstatus_mps_bits == 0x2){
@@ -130,7 +130,7 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 			}
 
 			for (i = 0; i < 31; i += 2)
-				printf("0x%x: %08x, %08x\n", ((read_csr(mepc)/4) *4 + i * REGBYTES -16),
+				printf("0x%lx: %08x, %08x\n", ((read_csr(mepc)/4) *4 + i * REGBYTES -16),
 					*(unsigned *)((read_csr(mepc)/4) *4 + i * REGBYTES -16),
 				       *(unsigned *)((read_csr(mepc)/4) *4 + (i + 1) * REGBYTES -16));
 			printf("Dump Stack: \n");
@@ -146,7 +146,7 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 	return sp;
 }
 
-
+void vPortEnterCritical( void );
 void vPortEnterCritical( void )
 {
 	//printf("vPortEnterCritical\n");
@@ -161,6 +161,7 @@ void vPortEnterCritical( void )
 }
 /*-----------------------------------------------------------*/
 
+void vPortExitCritical( void );
 void vPortExitCritical( void )
 {
 	configASSERT( uxCriticalNesting );
@@ -210,6 +211,8 @@ int xPortSetInterruptMask()
 /*
  * See header file for description.
  */
+extern void *memset(void *dest, int c, size_t len);
+
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
 {
 	/* Simulate the stack frame as it would be created by a context switch

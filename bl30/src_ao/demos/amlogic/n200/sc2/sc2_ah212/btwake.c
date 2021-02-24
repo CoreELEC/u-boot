@@ -68,8 +68,6 @@ static void bt_wakeup_Task(void *args)
 
 static void vBTWakeup(void)
 {
-
-	BaseType_t status = pdFALSE;
 	//printf("btwakeup task Resume!\n");
 	xTaskResumeFromISR(btTask);
 	vDisableGpioIRQ(GPIOX_18);

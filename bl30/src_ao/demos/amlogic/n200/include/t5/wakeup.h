@@ -29,11 +29,11 @@ inline void clear_wakeup_trigger(void)
 */
 }
 
-void watchdog_reset_system(void)
+inline void watchdog_reset_system(void)
 {
 	while (1) {
 		REG32(SEC_AO_WATCHDOG_CNTL) = 1 << 26 | 0 << 18;
-		pdMS_TO_TICKS(2);
+		//pdMS_TO_TICKS(2);
 	}
 }
 

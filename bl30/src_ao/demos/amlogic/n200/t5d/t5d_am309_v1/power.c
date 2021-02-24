@@ -32,7 +32,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "pwm_plat.h"
-//#include "keypad.h"
+#include "keypad.h"
 
 #include "hdmi_cec.h"
 

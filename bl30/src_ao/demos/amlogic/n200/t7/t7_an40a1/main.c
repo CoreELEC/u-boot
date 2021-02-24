@@ -101,7 +101,7 @@ TimerHandle_t xSoftTimer = NULL;
 int pmic_bd71837_id = -1;
 
 struct pmic_i2c bd71837_i2c = {
-	.name = 'i2c_ao_a',
+	.name = "i2c_ao_a",
 	.scl = GPIOD_2,
 	.scl_value = PIN_FUNC1,
 	.sda = GPIOD_3,

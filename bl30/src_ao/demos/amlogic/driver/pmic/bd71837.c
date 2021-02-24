@@ -85,9 +85,9 @@ static const struct regulator_linear_range bd71837_ldo7_volts[] = {
 	REGULATOR_LINEAR_RANGE(1800000, 0x00, 0x0F, 100000),
 };
 
-static int find_index(unsigned int *p,unsigned int len,unsigned int sel)
+static int find_index(const unsigned int *p,unsigned int len,unsigned int sel)
 {
-	for (int i = 0; i < len; i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
 		if (sel == p[i])
 			return i;
@@ -110,7 +110,7 @@ static int find_index_struct(struct regulator_desc *rdev,unsigned int sel, int i
 
 }
 
-void set_pmic_bd71837_pinmux(struct pmic_i2c *bd71837_i2c_config1)
+static void set_pmic_bd71837_pinmux(struct pmic_i2c *bd71837_i2c_config1)
 {
 	   // set pinmux
 	   iprintf("set %s pinmux\n",bd71837_i2c_config1->name);
@@ -121,12 +121,12 @@ void set_pmic_bd71837_pinmux(struct pmic_i2c *bd71837_i2c_config1)
 	   xPinconfSet(bd71837_i2c_config1->sda, PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_DRV_STRENGTH_3);
 }
 
-void BD71837_PMIC_I2C_INIT(struct pmic_i2c *bd71837_i2c_config) {
+static void BD71837_PMIC_I2C_INIT(struct pmic_i2c *bd71837_i2c_config) {
 	set_pmic_bd71837_pinmux(bd71837_i2c_config);
 	xI2cMesonPortInit(bd71837_i2c_config->port);
 }
 
-int bd71837_regulator_ctrl(struct regulator_desc *rdev,int status)
+static int bd71837_regulator_ctrl(struct regulator_desc *rdev,int status)
 {
 	int ret = 0;
 	unsigned char ctrl_reg = 0x0;
@@ -170,7 +170,7 @@ int bd71837_regulator_ctrl(struct regulator_desc *rdev,int status)
 	return ret;
 }
 
-int bd71837_regulator_set_voltage(struct regulator_desc *rdev, unsigned int sel)
+static int bd71837_regulator_set_voltage(struct regulator_desc *rdev, unsigned int sel)
 {
 	int a = 0;
 	int ret = 0;
@@ -266,14 +266,14 @@ int bd71837_regulator_set_voltage(struct regulator_desc *rdev, unsigned int sel)
 	return ret;
 }
 
-void bd71837_osc_ctrl(int status)
+static void bd71837_osc_ctrl(int status)
 {
 	unsigned char ctrl_reg = 0;
 	int ret = 0;
 	ret = xI2cMesonRead(bd718x7_slave_address,BD718XX_REG_OUT32K,&ctrl_reg,1);
 	if (ret < 0) {
 		printf("i2c osc read failed\n");
-		return ret;
+		return;
 	}
 	if (status) {
 		ctrl_reg &= (~0x1);
@@ -285,9 +285,9 @@ void bd71837_osc_ctrl(int status)
 	ret = xI2cMesonWrite(bd718x7_slave_address,BD718XX_REG_OUT32K,&ctrl_reg,1);
 	if (ret < 0) {
 		printf("i2c osc write failed\n");
-		return ret;
+		return;
 	}
-	return ret;
+	return;
 }
 
 static const struct regulator_ops bd718xx_dvs_buck_regulator_ops = {

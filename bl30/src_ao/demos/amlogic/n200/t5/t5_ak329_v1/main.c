@@ -159,7 +159,9 @@ static void vPrintTask2( void *pvParameters )
 }
 #endif
 extern void vMbInit(void);
-extern vCoreFsmIdleInit(void);
+extern void vCoreFsmIdleInit(void);
+extern void vRtcInit(void);
+extern void create_str_task(void);
 // Test target board
 int main(void)
 {

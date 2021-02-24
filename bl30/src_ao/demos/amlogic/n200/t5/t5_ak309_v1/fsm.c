@@ -48,7 +48,7 @@ typedef enum a {
     PM_CPU_CORE3,
 } PM_E;
 
-void xMboxCoreFsmIdle(void *msg)
+static void *xMboxCoreFsmIdle(void *msg)
 {
 	PM_E domain = *(uint32_t *)msg;
 
@@ -72,32 +72,32 @@ void xMboxCoreFsmIdle(void *msg)
 		default:
 			break;
 	}
-
+	return NULL;
 }
 
-static xSetCoreFsmAwakeIrq(int cpuid)
+static void xSetCoreFsmAwakeIrq(int cpuid)
 {
 	REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << cpuid), (1 << cpuid));
 }
-void xCore0FsmIdleHandleIsr(void)
+static void xCore0FsmIdleHandleIsr(void)
 {
 	xSetCoreFsmAwakeIrq(0);
 	DisableIrq(IRQ_NUM_OUT_0);
 }
 
-void xCore1FsmIdleHandleIsr(void)
+static void xCore1FsmIdleHandleIsr(void)
 {
 	xSetCoreFsmAwakeIrq(1);
 	DisableIrq(IRQ_NUM_OUT_1);
 }
 
-void xCore2FsmIdleHandleIsr(void)
+static void xCore2FsmIdleHandleIsr(void)
 {
 	xSetCoreFsmAwakeIrq(2);
 	DisableIrq(IRQ_NUM_OUT_2);
 }
 
-void xCore3FsmIdleHandleIsr(void)
+static void xCore3FsmIdleHandleIsr(void)
 {
 	xSetCoreFsmAwakeIrq(3);
 	DisableIrq(IRQ_NUM_OUT_3);
@@ -132,6 +132,7 @@ void checkstatus(void)
 }
 #endif
 
+void vCoreFsmIdleInit(void);
 void vCoreFsmIdleInit(void)
 {
 	int ret;

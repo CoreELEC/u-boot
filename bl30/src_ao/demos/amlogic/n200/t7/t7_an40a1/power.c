@@ -37,7 +37,7 @@
 #include "hdmi_cec.h"
 
 static TaskHandle_t cecTask = NULL;
-static int vdd_ee;
+//static int vdd_ee;
 
 static IRPowerKey_t prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
@@ -96,6 +96,7 @@ void str_hw_disable(void)
 
 void str_power_on(int shutdown_flag)
 {
+	shutdown_flag = shutdown_flag;
 #if 0
 	int ret;
 
@@ -126,6 +127,7 @@ void str_power_on(int shutdown_flag)
 
 void str_power_off(int shutdown_flag)
 {
+	shutdown_flag = shutdown_flag;
 #if 0
 	int ret;
 

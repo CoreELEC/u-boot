@@ -36,6 +36,8 @@
 
 #define MHU_MB_STK_SIZE		2048
 #define MB_DATA_SHR_SIZE	240
+
+#undef TASK_PRIORITY
 #define TASK_PRIORITY		0x2
 
 #define AO_MBOX_ONLY_SYNC	1
@@ -169,7 +171,6 @@ static void vReeSyncTask(void *pvParameters)
 {
 	uint32_t addr = 0;
 	uint32_t mbox = 0;
-	UBaseType_t uxSaveIsr;
 	int index = 0;
 
 	pvParameters = pvParameters;
@@ -277,7 +278,7 @@ void vMbInit(void)
 }
 
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
-						 void *(handler) (void *),
+						 void *(*handler) (void *),
 						 uint8_t needFdBak)
 {
 	VALID_CHANNEL(ulChan);

@@ -52,8 +52,8 @@
 void set_rtc(uint32_t val);
 int get_rtc(uint32_t *val);
 void vRTC_update(void);
-void xMboxSetRTC(void *msg);
-void xMboxGetRTC(void *msg);
+void *xMboxSetRTC(void *msg);
+void *xMboxGetRTC(void *msg);
 void vRtcInit(void);
 void alarm_set(void);
 void alarm_clr(void);

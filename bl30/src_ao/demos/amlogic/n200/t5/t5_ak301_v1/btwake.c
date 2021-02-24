@@ -13,7 +13,7 @@
 #define BTGPIO GPIOB_13  //bt_wake_host pin
 #define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
 
-void Bt_IRQHandle(void)
+static void Bt_IRQHandle(void)
 {
 	uint32_t buf[4] = {0};
 

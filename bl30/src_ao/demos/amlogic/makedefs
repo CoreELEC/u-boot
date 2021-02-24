@@ -60,7 +60,7 @@ AFLAGS+=-march=rv32imc -mabi=ilp32 -mcmodel=medany \
 	--specs=nano.specs --specs=nosys.specs -ffunction-sections \
 	-fdata-sections -fno-common -fgnu89-inline
 
-WARNINGS=-Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wsign-compare \
+WARNINGS=-Werror -Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wsign-compare \
 	-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wunused
 CFLAGS+= -g -march=rv32imc -mabi=ilp32 -mcmodel=medany -O2 \
 	--specs=nano.specs --specs=nosys.specs -ffunction-sections \

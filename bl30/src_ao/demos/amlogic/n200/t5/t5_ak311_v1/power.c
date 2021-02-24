@@ -119,6 +119,7 @@ void str_power_on(int shutdown_flag)
 {
 	int ret;
 
+	shutdown_flag = shutdown_flag;
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
 	if (ret < 0) {

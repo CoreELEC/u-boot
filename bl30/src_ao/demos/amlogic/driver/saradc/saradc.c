@@ -146,7 +146,7 @@ const char *const ch7Vol[] = {
 static SemaphoreHandle_t adcSemaphoreMutex;
 static SemaphoreHandle_t adcSemaphoreBinary;
 
-void vBackupSaradcReg(void)
+static void vBackupSaradcReg(void)
 {
 	uint8_t ucIndex;
 	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++) {
@@ -159,7 +159,7 @@ void vBackupSaradcReg(void)
 	SaradcRegBackup[SARADC_REG_NUM - 1] = REG32((unsigned long)SAR_CLK_BASE);
 }
 
-void vRestoreSaradcReg(void)
+static void vRestoreSaradcReg(void)
 {
 	uint8_t ucIndex;
 	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++)

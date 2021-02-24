@@ -154,7 +154,7 @@ static void *cec_memcpy(void *memto, const void *memfrom, unsigned int size)
 	return memto;
 }
 
-void cec_update_config_data(void *data)
+void *cec_update_config_data(void *data)
 {
 	unsigned int i;
 
@@ -170,6 +170,8 @@ void cec_update_config_data(void *data)
 		}
 		printf("\n");
 	}
+
+	return NULL;
 }
 
 void cec_update_phyaddress(unsigned int phyaddr)
@@ -434,7 +436,7 @@ static u32 set_cec_wakeup_port_info(unsigned int port_info)
 	return 0;
 }
 
-static void cec_get_portinfo(void *msg)
+static void *cec_get_portinfo(void *msg)
 {
 	u32 val;
 
@@ -443,6 +445,8 @@ static void cec_get_portinfo(void *msg)
 	val = read_ao(CEC_REG_STICK_DATA1);
 	*(u32 *)msg = val;
 	printf("[%s]: info=0x%x\n", __func__, val);
+
+	return NULL;
 }
 
 static void cec_enable_irq(u32 onoff)
@@ -500,6 +504,7 @@ static u32 cec_set_pin_mux(u32 chip)
 	return chip_type;
 }
 
+#if (CEC_IP == CEC_B)
 static u32 cecb_hw_reset(void)
 {
 #if (CEC_IP == CEC_B)
@@ -560,7 +565,9 @@ static u32 cecb_hw_reset(void)
 #endif
 	return 0;
 }
+#endif
 
+#if (CEC_IP != CEC_B)
 static u32 ceca_hw_reset(void)
 {
 #if (CEC_IP == CEC_A)
@@ -611,6 +618,7 @@ static u32 ceca_hw_reset(void)
 #endif
 	return 0;
 }
+#endif
 
 static u32 cec_hw_reset(void)
 {
@@ -641,7 +649,7 @@ static unsigned char remote_cecb_ll_rx(void)
 	return 0;
 }
 
-u32 ceca_rx_buf_clear(void)
+static u32 ceca_rx_buf_clear(void)
 {
 	ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x1);
 	ceca_wr_reg(CECA_RX_CLEAR_BUF, 0x0);
@@ -1335,6 +1343,7 @@ static unsigned char cec_get_log_addr(void)
 	return 0xff;
 }
 
+#if (CEC_IP == CEC_B)
 static u32 cecb_irq_handler(void)
 {
 	unsigned char s_idx;
@@ -1424,7 +1433,9 @@ static u32 cecb_irq_handler(void)
 
 	return 0;
 }
+#endif
 
+#if (CEC_IP != CEC_B)
 static u32 ceca_irq_handler(void)
 {
 	unsigned char s_idx;
@@ -1539,6 +1550,7 @@ static u32 ceca_irq_handler(void)
 
 	return 0;
 }
+#endif
 
 static u32 cec_irq_handler(void)
 {
@@ -1636,7 +1648,7 @@ static void cec_node_init(void)
 		for (idx = 0; idx < 3; idx++) {
 			if (kern_log_addr == player_dev[idx][0]) {
 				sub_idx = 0;
-				probe = &player_dev[idx];
+				probe = (unsigned int *)&player_dev[idx];
 				break;
 			}
 		}

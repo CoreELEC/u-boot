@@ -2,6 +2,7 @@
 #define INTERRUPT_CONTROL_H_
 
 #include "n200_eclic.h"
+#include "interrupt.h"
 ///////////////////////////////////////////////////////////////////
 /////// ECLIC relevant functions
 ///////
@@ -57,6 +58,6 @@ void clean_int_src(void);
 int int_src_sel(uint32_t ulIrq, uint32_t src);
 int int_src_clean(uint32_t ulIrq);
 
-typedef void (*function_ptr_t) (void);
+//typedef void (*function_ptr_t) (void);
 
 #endif

@@ -50,7 +50,9 @@
 #include "common.h"
 #include "register.h"
 #include "FreeRTOS.h"
+#include "task.h"
 #include "soc.h"
+#include "suspend.h"
 
 
 /* io defines */
@@ -218,13 +220,14 @@ unsigned int cpu_ddr_test_init_pattern_generater(uint32_t martix_x_select, uint3
 	return pattern_value;
 }
 */
-unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enable, unsigned int read_enable, unsigned int read_compare, unsigned int test_end_add, unsigned int pattern, unsigned int seed)
+#if 0
+static unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enable, unsigned int read_enable, unsigned int read_compare, unsigned int test_end_add, unsigned int pattern, unsigned int seed)
 {
 	seed=2;
 #define DATA_LOOP_PATTERN_INDEX  4 + 32        //0xff
 	unsigned int dmc_test_sts = 0;
 	unsigned int dmc_error = 0;
-	unsigned int pattern_select = 0;
+	//unsigned int pattern_select = 0;
 	unsigned int pattern_value = 0;
 	unsigned int pattern_inv_value = 0;
 
@@ -272,7 +275,7 @@ unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enable, uns
 			wr_reg(DMC_TEST_WD7, ((4 << (pattern - 1)) + 0x01010101));
 		}
 	} else {
-		pattern_select = pattern - 33;
+		//pattern_select = pattern - 33;
 		pattern_value =1;// cpu_ddr_test_init_pattern_generater(pattern_select, 0);
 		pattern_inv_value = ~pattern_value;
 		for (char counter = 0; counter < 32; ) {
@@ -318,7 +321,7 @@ unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enable, uns
 	wr_reg(DMC_TEST_STS, 0x8000001f); //must clear watchdog and done flag jiaxing debug 2016_12_07
 
 	if (dmc_error) {
-		for (int counter1 = 0; counter1 < (DMC_TEST_RDRSP_ADDR+4-DMC_TEST_STA); )
+		for (unsigned int counter1 = 0; counter1 < (DMC_TEST_RDRSP_ADDR+4-DMC_TEST_STA); )
 		{
 		printf( "\ncounter %08x %08x",counter1,(rd_reg(DMC_TEST_STA+(counter1))));
 		counter1=counter1+4;
@@ -333,13 +336,14 @@ unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enable, uns
 
 unsigned int apb_sec_ctrl = 0;
 #define DDR_APB_SEC_CTRL                           ((0x00f0  << 2) + 0xff639000)
-
-#if 1 //def CFG_ENABLE_DDR_SUSPEND_TEST
-void ddr_suspend_resume_test(uint32_t test_size, uint32_t test_delay_time_ms, uint32_t test_write_loops, uint32_t test_read_loops, uint32_t test_skip_suspend, uint32_t p_dev)
+#endif
+#if 0 //def CFG_ENABLE_DDR_SUSPEND_TEST
+static void ddr_suspend_resume_test(uint32_t test_size, uint32_t test_delay_time_ms, uint32_t test_write_loops, uint32_t test_read_loops, uint32_t test_skip_suspend, uint32_t p_dev)
 {
 	//return;
 	uint32_t lock_cnt = 100;
 	uint32_t apd_value = 0;
+	p_dev = p_dev;
 	printf( "enter suspend_n_debug\n");
 	apd_value = rd_reg(DMC_DRAM_APD_CTRL);
 	wr_reg(DMC_DRAM_APD_CTRL, 0);
@@ -440,6 +444,7 @@ void vDDR_suspend(uint32_t st_f)
 	//printf("aml log : DDR suspend...dummy\n");
 	//return;
 
+	st_f = st_f;
 	//unsigned int time_start, time_end;
 	printf("Enter ddr suspend\n");
 
@@ -497,7 +502,7 @@ void vDDR_suspend(uint32_t st_f)
 	//ddr_suspend_resume_test((80<<20), 10000000, 0, 3, 0, 0);
 }
 
-unsigned int pll_lock(void) {
+static unsigned int pll_lock(void) {
 	unsigned int lock_cnt = 100;
 	do {
 		wr_reg(AM_DDR_PLL_CNTL0, (rd_reg(AM_DDR_PLL_CNTL0) & (~(0xf<<28))) | (1<<29));
@@ -513,7 +518,7 @@ void vDDR_resume(uint32_t st_f)
 	//unsigned int time_start, time_end;
 	unsigned int ret = 0;
 
-
+	st_f = st_f;
 	printf("Enter ddr resume\n");
 
 

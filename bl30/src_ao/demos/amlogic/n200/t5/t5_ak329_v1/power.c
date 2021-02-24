@@ -32,7 +32,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "pwm_plat.h"
-//#include "keypad.h"
+#include "keypad.h"
 
 #include "hdmi_cec.h"
 
@@ -116,6 +116,7 @@ void str_power_on(int shutdown_flag)
 {
 	int ret;
 
+	shutdown_flag = shutdown_flag;
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
 	if (ret < 0) {
@@ -148,6 +149,7 @@ void str_power_off(int shutdown_flag)
 {
 	int ret;
 
+	shutdown_flag = shutdown_flag;
 	printf("poweroff 5v\n");
 	printf("0x%x\n", REG32(AO_GPIO_TEST_N));
 

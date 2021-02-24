@@ -2,6 +2,7 @@
 #define INTERRUPT_CONTROL_H_
 
 #include "n200_pic_tmr.h"
+#include "interrupt.h"
 ///////////////////////////////////////////////////////////////////
 /////// PIC relevant functions
 ///////
@@ -25,7 +26,7 @@ void DefaultInterruptHandler(void);
 
 // Structures for registering different interrupt handlers
 // for different parts of the application.
-typedef void (*function_ptr_t) (void);
+//typedef void (*function_ptr_t) (void);
 
 // The interrupt 0 is empty
 __attribute__((weak)) function_ptr_t pic_interrupt_handlers[PIC_NUM_INTERRUPTS];

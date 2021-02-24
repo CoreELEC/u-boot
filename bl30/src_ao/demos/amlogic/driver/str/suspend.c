@@ -233,6 +233,7 @@ void *xMboxSuspend_Sem(void *msg)
 
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();
+
 	return NULL;
 }
 

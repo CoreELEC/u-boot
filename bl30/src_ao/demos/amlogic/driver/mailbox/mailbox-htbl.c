@@ -121,7 +121,7 @@ uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, void *(handler) (void *))
 }
 
 uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd,
-				   void *(handler) (void *), uint8_t needFdBak)
+				   void *(*handler) (void *), uint8_t needFdBak)
 {
 	struct entry *p = pHTbl;
 	uint32_t i;

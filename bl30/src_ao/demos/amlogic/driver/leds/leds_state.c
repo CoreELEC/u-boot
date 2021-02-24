@@ -356,7 +356,7 @@ static void prvLedStateMachine(enum LedState state, uint32_t id)
 
 }
 
-static void prvLedGetInfo(void *msg)
+static void *prvLedGetInfo(void *msg)
 {
 	uint32_t state, id, brightness, breath, blink_times, blink_high, blink_low;
 
@@ -411,6 +411,8 @@ static void prvLedGetInfo(void *msg)
 			case LED_STATE_DEFAULT:
 				break;
 		} /* end swith */
+
+	return NULL;
 }
 
 static void vPrintLedsStatus(TimerHandle_t xTimer)

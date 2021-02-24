@@ -37,7 +37,7 @@
 #include "hdmi_cec.h"
 
 static TaskHandle_t cecTask = NULL;
-static int vdd_ee;
+//static int vdd_ee;
 
 static IRPowerKey_t prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
@@ -106,6 +106,7 @@ void str_power_on(int shutdown_flag)
 	}
 #endif
 
+	shutdown_flag = shutdown_flag;
 	/***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -149,6 +150,7 @@ void str_power_off(int shutdown_flag)
 	}
 #endif
 
+	shutdown_flag = shutdown_flag;
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {

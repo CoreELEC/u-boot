@@ -42,7 +42,7 @@ u32 cec_get_wakup_flag(void);
 
 void cec_req_irq(u32 onoff);
 void cec_delay(u32 cnt);
-void cec_update_config_data(void *data);
+void *cec_update_config_data(void *data);
 void cec_update_phyaddress(unsigned int phyaddr);
 void cec_update_func_cfg(unsigned int cfg);
 

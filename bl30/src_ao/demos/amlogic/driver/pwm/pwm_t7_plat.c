@@ -44,6 +44,7 @@ xPwmMesonChip_t meson_pwm_chip[] = {
 
 /* VDDEE voltage table  volt must ascending */
 xPwmMesonVoltage_t vddee_table[] = {
+		{701, 0x140000},
 		{711, 0x120000},
 		{721, 0x110001},
 		{731, 0x100002},
@@ -63,6 +64,7 @@ xPwmMesonVoltage_t vddee_table[] = {
 		{871, 0x020010},
 		{881, 0x010011},
 		{891, 0x12},
+		{901, 0x14},
 };
 
 /* VDDCPU voltage table  volt must ascending */

@@ -678,7 +678,7 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 #if PwmMesonVolt_Duty
 	xPwmMesonRegs_t *reg;
 #endif
-	uint32_t chip_id, channel_id, duty, vtable_size;
+	uint32_t chip_id, channel_id, duty, vtable_size, max_value, min_value;
 
 	chip_id = prvMesonVoltToPwmchip(voltage_id);
 	if (chip_id >= PWM_MUX) {
@@ -710,6 +710,9 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 		return -1;
 	}
 
+	min_value = vtable[0].Voltage_mv;
+	max_value = vtable[vtable_size-1].Voltage_mv;
+
 	pwm = xPwmMesonChannelApply(chip_id, channel_id);
 	if (!pwm) {
 		iprintf("volt id:%d pwm device apply fail!\n", voltage_id);
@@ -719,10 +722,21 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 #if PwmMesonVolt_Duty
 	/* only update duty reg */
 	reg = prvDeviceToRegs(pwm);
-	if (channel_id == MESON_PWM_0)
+	if (channel_id == MESON_PWM_0) {
 		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff, duty);
-	else
+		/*Vddee outputs the maximum or minimum voltage, pwm outputs all high or all low, the
+		 corresponding register should be cleared*/
+		if ((voltage_mv == max_value) || (voltage_mv == min_value))
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<28), (1<<28));
+		else
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<28), (0<<28));
+	} else {
 		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff, duty);
+		if ((voltage_mv == max_value) || (voltage_mv == min_value))
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<29), (1<<29));
+		else
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<29), (0<<29));
+	}
 #else
 	pwm->pwm_hi = duty >> 16;
 	pwm->pwm_lo = duty & 0xFFFF;

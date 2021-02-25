@@ -100,7 +100,6 @@ static inline uint32_t xGetChan(uint32_t mbox)
 	default:
 		configASSERT(0);
 	}
-	return NULL;
 }
 
 static inline uint32_t xGetRevMbox(uint32_t ulChan)
@@ -113,20 +112,18 @@ static inline uint32_t xGetRevMbox(uint32_t ulChan)
 	default:
 		configASSERT(0);
 	}
-	return NULL;
 }
 
 static inline uint32_t xGetSendMbox(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AOREE_CHANNEL:
-		return NULL;
 	case AOTEE_CHANNEL:
-		return NULL;
+		configASSERT(0);
 	default:
 		configASSERT(0);
 	}
-	return NULL;
+	return 0;
 }
 
 static inline uint32_t xDspRevAddr(uint32_t ulChan)
@@ -138,7 +135,6 @@ static inline uint32_t xDspRevAddr(uint32_t ulChan)
 	default:
 		configASSERT(0);
 	}
-	return NULL;
 }
 
 static inline uint32_t xSendAddr(uint32_t ulChan)
@@ -150,7 +146,6 @@ static inline uint32_t xSendAddr(uint32_t ulChan)
 	default:
 		configASSERT(0);
 	}
-	return NULL;
 }
 /*send back for sync api*/
 static inline uint32_t xSendAddrBack(uint32_t ulChan)
@@ -162,7 +157,6 @@ static inline uint32_t xSendAddrBack(uint32_t ulChan)
 	default:
 		configASSERT(0);
 	}
-	return NULL;
 }
 
 
@@ -176,7 +170,7 @@ static inline uint32_t xSendAddrMbox(uint32_t mbox)
 	return PAYLOAD_WR_BASE(mbox);
 }
 
-static inline void *MbWrite(uint32_t to, void *from, long count)
+static inline void MbWrite(uint32_t to, void *from, long count)
 {
         int i = 0;
 	int len = count / 4 + ((count % 4) ? 1 : 0);
@@ -191,7 +185,7 @@ static inline void *MbWrite(uint32_t to, void *from, long count)
         }
 }
 
-static inline void *MbRead(void *to, uint32_t from, long count)
+static inline void MbRead(void *to, uint32_t from, long count)
 {
 	int i = 0;
 	int len = count / 4 + ((count % 4) ? 1 : 0);

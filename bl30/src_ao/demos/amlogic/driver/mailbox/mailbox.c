@@ -52,19 +52,17 @@ mbPackInfo syncTeeMbInfo;
 extern xHandlerTableEntry xMbHandlerTable[IRQ_MAX];
 extern void vRpcUserCmdInit(void);
 
-void vEnterCritical(UBaseType_t *uxIsr)
+static void vEnterCritical(void)
 {
         taskENTER_CRITICAL();
-        *uxIsr = 0;
 }
 
-void vExitCritical(UBaseType_t uxSaveIsr)
+static void vExitCritical(void)
 {
         taskEXIT_CRITICAL();
-        uxSaveIsr = 0;
 }
 
-void vMbHandleIsr(void)
+static void vMbHandleIsr(void)
 {
 	uint64_t val = 0;
 	uint64_t ulPreVal = 0;
@@ -95,8 +93,7 @@ void vMbHandleIsr(void)
 static void vAoRevMbHandler(void *vArg)
 {
 	BaseType_t xYieldRequired = pdFALSE;
-	UBaseType_t uxSaveIsr;
-	uint32_t mbox = vArg;
+	uint32_t mbox = (uint32_t)vArg;
 	mbPackInfo mbInfo;
 	MbStat_t st;
 	uint32_t addr, ulMbCmd, ulSize, ulSync;
@@ -168,9 +165,8 @@ static void vAoRevMbHandler(void *vArg)
 	}
 }
 
-void vReeSyncTask(void *pvParameters)
+static void vReeSyncTask(void *pvParameters)
 {
-	uint32_t rev = pvParameters;
 	uint32_t addr = 0;
 	uint32_t mbox = 0;
 	UBaseType_t uxSaveIsr;
@@ -199,22 +195,20 @@ void vReeSyncTask(void *pvParameters)
 			}
 		}
 
-		vEnterCritical(&uxSaveIsr);
+		vEnterCritical();
 		PRINT_DBG("[%s]:Ree Sync clear mbox:%d\n", MBTAG, mbox);
 		ulReeSyncTaskWake = 0;
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
 		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
-		vExitCritical(uxSaveIsr);
+		vExitCritical();
 	}
 }
 
-void vTeeSyncTask(void *pvParameters)
+static void vTeeSyncTask(void *pvParameters)
 {
-	uint32_t rev = pvParameters;
 	uint32_t addr = 0;
 	uint32_t mbox = 0;
-	UBaseType_t uxSaveIsr;
 	int index = 0;
 
 	pvParameters = pvParameters;
@@ -240,29 +234,25 @@ void vTeeSyncTask(void *pvParameters)
 			}
 		}
 
-		vEnterCritical(&uxSaveIsr);
+		vEnterCritical();
 		PRINT_DBG("[%s]:Tee Sync clear mbox:%d\n", MBTAG, mbox);
 		ulTeeSyncTaskWake = 0;
 		vClrMboxStats(MAILBOX_CLR(mbox));
 		vClrMbInterrupt(IRQ_REV_BIT(mbox));
 		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
-		vExitCritical(uxSaveIsr);
+		vExitCritical();
 	}
 }
 
 void vMbInit(void)
 {
-	int i = 0;
-	char name[15];
-	uint32_t mbox;
-
 	PRINT("[%s]: mailbox init start\n", MBTAG);
 	mailbox_htbl_init(&g_tbl_ao);
 
 	/* Set MBOX IRQ Handler and Priority */
-	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMREE2AO), vAoRevMbHandler, MAILBOX_ARMREE2AO, 10);
+	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMREE2AO), vAoRevMbHandler, (void *)MAILBOX_ARMREE2AO, 10);
 
-	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, MAILBOX_ARMTEE2AO, 10);
+	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, (void *)MAILBOX_ARMTEE2AO, 10);
 
 	//vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
 	RegisterIrq(MAILBOX_AOCPU_IRQ, 1, vMbHandleIsr);

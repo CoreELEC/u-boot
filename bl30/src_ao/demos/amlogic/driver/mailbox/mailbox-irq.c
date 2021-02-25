@@ -5,9 +5,9 @@
 #include "mailbox-irq.h"
 #include "mailbox.h"
 
-#define TAG "AOCPU"
-#define PRINT_DBG	//printf
-#define PRINT_ERR	printf
+#define AOTAG "AOCPU"
+#define PRINT_DBG(...)	//printf(__VA_ARGS__)
+#define PRINT_ERR(...)	printf(__VA_ARGS__)
 #define NO_DISABLE_IRQ	1
 
 #define aml_writel32(val, reg)		(REG32(reg) = val)
@@ -47,6 +47,8 @@ void vEnableMbInterrupt(unsigned int xMask)
 
 	val = aml_readl32(MAILBOX_IRQ_MASK) | xMask;
 	aml_writel32(val, MAILBOX_IRQ_MASK);
+#else
+	xMask = xMask;
 #endif
 }
 
@@ -57,6 +59,8 @@ void vDisableMbInterrupt(unsigned int xMask)
 
 	val = aml_readl32(MAILBOX_IRQ_MASK) & (~xMask);
 	aml_writel32(val, MAILBOX_IRQ_MASK);
+#else
+	xMask = xMask;
 #endif
 }
 

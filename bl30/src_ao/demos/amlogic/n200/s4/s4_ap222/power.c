@@ -73,8 +73,8 @@ void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
-	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-		    NULL, CEC_TASK_PRI, &cecTask);
+	//xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+	//	    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -98,6 +98,19 @@ void str_hw_disable(void)
 void str_power_on(int shutdown_flag)
 {
 	int ret;
+
+	/***Power 5v***/
+	ret = xGpioSetDir(GPIOH_7,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIOH_7,GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc5v set gpio val fail\n");
+		return;
+	}
 
 	shutdown_flag = shutdown_flag;
 	/***set vdd_ee val***/
@@ -155,4 +168,18 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 	printf("vdd_cpu off\n");
+
+	/***Power 5v***/
+	ret = xGpioSetDir(GPIOH_7,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIOH_7,GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc5v set gpio val fail\n");
+		return;
+	}
+
 }

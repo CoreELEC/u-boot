@@ -109,6 +109,7 @@ static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	taskEXIT_CRITICAL();
 }
 
+#if 0
 static void vPrintTask1( void *pvParameters )
 {
     /*make compiler happy*/
@@ -133,6 +134,7 @@ static void vPrintTask2( void *pvParameters )
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
+#endif
 
 void hardware_init(void);
 void hardware_init()
@@ -167,12 +169,12 @@ int main(void)
 	printf("Starting timer ...\r\n");
 	xTimerStart(xSoftTimer, 0);
 
-	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
-	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
+	//xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
+	//xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
-	vCecCallbackInit(CEC_CHIP_S4);
-//	vRtcInit();
-//	create_str_task();
+	//vCecCallbackInit(CEC_CHIP_S4);
+	vRtcInit();
+	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

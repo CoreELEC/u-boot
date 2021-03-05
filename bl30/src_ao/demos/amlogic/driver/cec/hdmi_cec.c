@@ -20,12 +20,13 @@
 #include "suspend.h"
 #include "mailbox-api.h"
 #include "rpc-user.h"
+#include "register.h"
+#include "gpio.h"
 
 #define CONFIG_CEC_WAKEUP
-
 #ifdef CONFIG_CEC_WAKEUP
-#include "cec-data.h"
 #include "hdmi_cec.h"
+#include "cec-data.h"
 #include "hdmi_cec_reg.h"
 #ifndef NULL
 
@@ -34,6 +35,7 @@
 
 #define CEC_REG_DEBUG		0
 #define CEC_CFG_DEBUG		0
+#define CEC_TASK_DEBUG		0
 #define CEC_FW_DEBUG		0
 
 #define PHY_ADDR_LEN		4 /*16bit/4bit*/
@@ -87,6 +89,138 @@ struct cec_tx_msg {
 
 struct cec_tx_msg cec_tx_msgs = {};
 static void cec_reset_addr(void);
+
+#ifdef CEC_CHIP_SEL_T7
+/*T7 same with SC2 register enum cec_reg_idx */
+unsigned int cec_reg_tab[] = {
+	CLKCTRL_CECA_CTRL0,
+	CLKCTRL_CECA_CTRL1,
+	CECA_GEN_CNTL,
+	CECA_RW_REG,
+	CECA_INTR_MASKN,
+	CECA_INTR_CLR,
+	CECA_INTR_STAT,
+
+	CLKCTRL_CECB_CTRL0,
+	CLKCTRL_CECB_CTRL1,
+	CECB_GEN_CNTL,
+	CECB_RW_REG,
+	CECB_INTR_MASKN,
+	CECB_INTR_CLR,
+	CECB_INTR_STAT,
+
+	SYSCTRL_STATUS_REG0,
+	SYSCTRL_STATUS_REG1,
+
+	0xffff,//AO_CEC_STICKY_DATA0,
+	0xffff,//AO_CEC_STICKY_DATA1,
+	0xffff,//AO_CEC_STICKY_DATA2,
+	0xffff,//AO_CEC_STICKY_DATA3,
+	0xffff,//AO_CEC_STICKY_DATA4,
+	0xffff,//AO_CEC_STICKY_DATA5,
+	0xffff,//AO_CEC_STICKY_DATA6,
+	0xffff,//AO_CEC_STICKY_DATA7,
+};
+#endif
+
+#ifdef CEC_CHIP_SEL_S4
+/*s4 register enum cec_reg_idx */
+unsigned int cec_reg_tab[] = {
+	CLKCTRL_CECA_CTRL0,
+	CLKCTRL_CECA_CTRL1,
+	CECA_GEN_CNTL,
+	CECA_RW_REG,
+	CECA_INTR_MASKN,
+	CECA_INTR_CLR,
+	CECA_INTR_STAT,
+
+	CLKCTRL_CECB_CTRL0,
+	CLKCTRL_CECB_CTRL1,
+	CECB_GEN_CNTL,
+	CECB_RW_REG,
+	CECB_INTR_MASKN,
+	CECB_INTR_CLR,
+	CECB_INTR_STAT,
+
+	SYSCTRL_STATUS_REG0,
+	SYSCTRL_STATUS_REG1,
+
+	0xffff,//AO_CEC_STICKY_DATA0,
+	0xffff,//AO_CEC_STICKY_DATA1,
+	0xffff,//AO_CEC_STICKY_DATA2,
+	0xffff,//AO_CEC_STICKY_DATA3,
+	0xffff,//AO_CEC_STICKY_DATA4,
+	0xffff,//AO_CEC_STICKY_DATA5,
+	0xffff,//AO_CEC_STICKY_DATA6,
+	0xffff,//AO_CEC_STICKY_DATA7,
+};
+#endif
+
+#ifdef CEC_CHIP_SEL_SC2
+/*SC2 register enum cec_reg_idx */
+unsigned int cec_reg_tab[] = {
+	CLKCTRL_CECA_CTRL0,
+	CLKCTRL_CECA_CTRL1,
+	CECA_GEN_CNTL,
+	CECA_RW_REG,
+	CECA_INTR_MASKN,
+	CECA_INTR_CLR,
+	CECA_INTR_STAT,
+
+	CLKCTRL_CECB_CTRL0,
+	CLKCTRL_CECB_CTRL1,
+	CECB_GEN_CNTL,
+	CECB_RW_REG,
+	CECB_INTR_MASKN,
+	CECB_INTR_CLR,
+	CECB_INTR_STAT,
+
+	SYSCTRL_STATUS_REG0,
+	SYSCTRL_STATUS_REG1,
+
+	0xffff,//AO_CEC_STICKY_DATA0,
+	0xffff,//AO_CEC_STICKY_DATA1,
+	0xffff,//AO_CEC_STICKY_DATA2,
+	0xffff,//AO_CEC_STICKY_DATA3,
+	0xffff,//AO_CEC_STICKY_DATA4,
+	0xffff,//AO_CEC_STICKY_DATA5,
+	0xffff,//AO_CEC_STICKY_DATA6,
+	0xffff,//AO_CEC_STICKY_DATA7,
+};
+#endif
+
+#ifdef CEC_CHIP_SEL_T5
+/*T5 register table enum cec_reg_idx*/
+unsigned int cec_reg_tab[] ={
+	0xffff,/*AO_CEC_CLK_CNTL_REG0*/
+	0xffff,/*AO_CEC_CLK_CNTL_REG1*/
+	0xffff,/*AO_CEC_GEN_CNTL*/
+	0xffff,/*AO_CEC_RW_REG*/
+	0xffff,/*AO_CEC_INTR_MASKN*/
+	0xffff,/*AO_CEC_INTR_CLR*/
+	0xffff,/*AO_CEC_INTR_STAT*/
+
+	AO_CECB_CLK_CNTL_REG0,
+	AO_CECB_CLK_CNTL_REG1,
+	AO_CECB_GEN_CNTL,
+	AO_CECB_RW_REG,
+	AO_CECB_INTR_MASKN,
+	AO_CECB_INTR_CLR,
+	AO_CECB_INTR_STAT,
+
+	AO_DEBUG_REG0,
+	AO_DEBUG_REG1,
+
+	AO_CEC_STICKY_DATA0,
+	AO_CEC_STICKY_DATA1,/*port info return val to kernel*/
+	AO_CEC_STICKY_DATA2,/*not use*/
+	AO_CEC_STICKY_DATA3,/*not use*/
+	AO_CEC_STICKY_DATA4,/*not use*/
+	AO_CEC_STICKY_DATA5,/*not use*/
+	AO_CEC_STICKY_DATA6,/*not use*/
+	AO_CEC_STICKY_DATA7,/*not use*/
+};
+#endif
 
 #if CEC_REG_DEBUG
 static const char * const ceca_reg_name1[] = {
@@ -500,7 +634,7 @@ static u32 cec_set_pin_mux(u32 chip)
 	enum cec_chip_ver chip_type = chip;
 
 	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
-	printf("%s pin mux:0x%x func:0x%x\n", CEC_PIN_MX, CEC_PIN_FUNC);
+	printf("%s pin mux:0x%x func:0x%x\n", __func__, CEC_PIN_MX, CEC_PIN_FUNC);
 	return chip_type;
 }
 
@@ -1797,8 +1931,8 @@ u32 cec_init_config(void)
 {
 #if CEC_CFG_DEBUG
 	write_ao(CEC_REG_STS0, 0x8000002f);
-	write_ao(CEC_REG_STS1, 0x000000);
-	//write_ao(CEC_REG_STS1, 0x441000);
+	//write_ao(CEC_REG_STS1, 0x000000);
+	write_ao(CEC_REG_STS1, 0x441000);
 	cec_mailbox.cec_config |= CEC_CFG_DBG_EN;
 #endif
 
@@ -1839,9 +1973,52 @@ u32 cec_get_wakup_flag(void)
 	return cec_wakup_flag;
 }
 
+void vCEC_task(void *pvParameters)
+{
+	u32 ret;
+	u32 buf[4] = {0};
+
+	if (CEC_ON == 0) {
+		printf("cec define disabled\n");
+		goto idle;
+	}
+
+	buf[0] = CEC_WAKEUP;
+	pvParameters = pvParameters;
+	ret = cec_init_config();
+	if (!ret) {
+		printf("cec not enable\n");
+		goto idle;
+	}
+	cec_delay(100);
+	while (1) {
+		//printf("%s 01\n", __func__);
+		vTaskDelay(pdMS_TO_TICKS(20));
+		cec_suspend_handle();
+		if (cec_get_wakup_flag()) {
+			printf("%s wakeup\n", __func__);
+			STR_Wakeup_src_Queue_Send(buf);
+			break;
+		}
+	}
+
+idle:
+	for ( ;; ) {
+		vTaskDelay(pdMS_TO_TICKS(2000));
+		//printf("%s idle\n", __func__);
+	}
+}
+
+#if (CEC_TASK_DEBUG)
+static TaskHandle_t cecTask_temp = NULL;
+#endif
 void vCecCallbackInit(enum cec_chip_ver chip_mode)
 {
 	int ret;
+
+	if (CEC_ON == 0) {
+		return;
+	}
 
 	/*initial bl30 start call*/
 	cec_mailbox.cec_config = CEC_CFG_FUNC_EN | CEC_CFG_OTP_EN | CEC_CFG_PW_ON_EN;
@@ -1862,6 +2039,13 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 						    cec_update_config_data, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
+
+
+	/* only for temp debug, only for no resume function */
+#if (CEC_TASK_DEBUG)
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask_temp);
+#endif
 }
 
 void cec_req_irq(u32 onoff)

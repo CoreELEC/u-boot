@@ -1,7 +1,8 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
-#define CEC_VERSION "2021/02/07"
+
+#define CEC_VERSION "2021/03/05 s4 bringup"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
@@ -13,13 +14,13 @@ enum cec_chip_ver {
 	CEC_CHIP_SC2,
 	CEC_CHIP_T5,	/*same as t5d*/
 	CEC_CHIP_T7,	/*from sc2*/
+	CEC_CHIP_S4
 };
 
 #define CEC_A	0
 #define CEC_B	1
 
 /*cec API for suspend*/
-
 
 #define CEC_TASK_PRI			5
 #define CEC_TASK_STACK_SIZE		1024

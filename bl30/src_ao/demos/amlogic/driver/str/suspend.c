@@ -81,38 +81,6 @@ void set_suspend_flag(void)
 	suspend_flag = 1;
 	taskEXIT_CRITICAL();
 }
-
-void vCEC_task(void *pvParameters)
-{
-	u32 ret;
-	u32 buf[4] = {0};
-
-	buf[0] = CEC_WAKEUP;
-	pvParameters = pvParameters;
-	ret = cec_init_config();
-	if (!ret) {
-		printf("cec not enable\n");
-		goto idle;
-	}
-	cec_delay(100);
-	while (1) {
-		//printf("%s 01\n", __func__);
-		vTaskDelay(pdMS_TO_TICKS(20));
-		cec_suspend_handle();
-		if (cec_get_wakup_flag()) {
-			printf("%s wakeup\n", __func__);
-			STR_Wakeup_src_Queue_Send(buf);
-			break;
-		}
-	}
-
-idle:
-	for ( ;; ) {
-		vTaskDelay(pdMS_TO_TICKS(2000));
-		//printf("%s idle\n", __func__);
-	}
-}
-
 __attribute__((weak)) void vDDR_suspend(uint32_t st_f)
 {
 	st_f = st_f;

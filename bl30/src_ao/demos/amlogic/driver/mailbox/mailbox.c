@@ -94,7 +94,7 @@ static void vMbHandleIsr(void)
 /*Ree 2 AOCPU mailbox*/
 static void vAoRevMbHandler(void *vArg)
 {
-	BaseType_t xYieldRequired = pdFALSE;
+	//BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = (uint32_t)vArg;
 	mbPackInfo mbInfo;
 	MbStat_t st;
@@ -141,14 +141,14 @@ static void vAoRevMbHandler(void *vArg)
 		if (MAILBOX_ARMREE2AO == xGetChan(mbox)) {
 			syncReeMbInfo = mbInfo;
 			ulReeSyncTaskWake = 1;
-			vTaskNotifyGiveFromISR(ReembHandler, &xYieldRequired);
+			vTaskNotifyGiveFromISR(ReembHandler, NULL);
 		}
 		if (MAILBOX_ARMTEE2AO == xGetChan(mbox)) {
 			syncTeeMbInfo = mbInfo;
 			ulTeeSyncTaskWake = 1;
-			vTaskNotifyGiveFromISR(TeembHandler, &xYieldRequired);
+			vTaskNotifyGiveFromISR(TeembHandler, NULL);
 		}
-		portYIELD_FROM_ISR(xYieldRequired);
+		//portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC

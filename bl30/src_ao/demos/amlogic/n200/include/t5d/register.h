@@ -22700,6 +22700,7 @@
 
 #include "secure_apb.h"
 #include "no_enct.h"
+#include "t5d_mmc_reg.h"
 
 #endif // REGISTER_H
 

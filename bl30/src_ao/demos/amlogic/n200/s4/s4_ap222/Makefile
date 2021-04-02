@@ -100,7 +100,8 @@ OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/myprintf.o \
 		$(COMPILER)/start.o \
 		$(COMPILER)/vtable.o\
-		${COMPILER}/keypad.o
+		$(COMPILER)/keypad.o \
+		$(COMPILER)/btwake.o
 
 #
 # The default rule, which causes init to be built.

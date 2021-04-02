@@ -67,7 +67,8 @@ void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
-
+void bt_task_init(void);
+void bt_task_deinit(void);
 
 void str_hw_init(void)
 {
@@ -79,6 +80,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+	bt_task_init();
 }
 
 
@@ -90,7 +92,7 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-
+	bt_task_deinit();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }

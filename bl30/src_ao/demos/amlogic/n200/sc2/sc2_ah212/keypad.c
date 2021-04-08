@@ -49,10 +49,10 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 }
 
 struct xGpioKeyInfo gpioKeyInfo[] = {
-	GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
-			vGpioKeyCallBack, NULL),
+	/*GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
+			vGpioKeyCallBack, NULL),*/
 	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKEUP, HIGH, EVENT_SHORT,
-			vGpioKeyCallBack, NULL)
+			vGpioKeyCallBack, NULL),
 };
 
 struct xAdcKeyInfo adcKeyInfo[] = {
@@ -66,10 +66,15 @@ void vKeyPadInit(void)
 	vCreateAdcKey(adcKeyInfo,
 			sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
 	vAdcKeyEnable();
+	vCreateGpioKey(gpioKeyInfo,
+			sizeof(gpioKeyInfo)/sizeof(struct xGpioKeyInfo));
+	vGpioKeyEnable();
 }
 
 void vKeyPadDeinit(void)
 {
 	vAdcKeyDisable();
 	vDestoryAdcKey();
+	vGpioKeyDisable();
+	vDestoryGpioKey();
 }

@@ -11,7 +11,7 @@ else
 	declare CHIPSET_VARIANT_SUFFIX=""
 fi
 
-declare -a BLX_NAME=("bl2" "bl2" "bl2e" "bl2e" "bl2x" "bl31" "bl30")
+declare -a BLX_NAME=("bl2" "bl2" "bl2e" "bl2e" "bl2x" "bl31" "bl30" "bl32")
 #declare -a BLX_NAME=("bl2"	\
 #		     "bl2"	\
 #		     "bl2e"	\

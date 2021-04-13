@@ -53,7 +53,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_PAYLOAD}/bb1st${FEAT
 
 ### Input: payloads ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-csinit-params=${BASEDIR_PAYLOAD}/csinit-params.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
 
 ### Input: Chipset Level-1/2 Private RSA keys
 
@@ -66,6 +66,8 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-ddr-fwdata=${BASEDIR_AESKEY_PROT_BL2}/
 
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --switch-chipset-sign-bl2=0"
+
+#BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC}"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin${postfix}"

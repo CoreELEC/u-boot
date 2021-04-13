@@ -57,7 +57,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2e-payload=${BASEDIR_PAYLOAD}/bl2e-payload.
 BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2x-payload=${BASEDIR_PAYLOAD}/bl2x-payload.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}/dvinit-params.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-csinit-params=${BASEDIR_PAYLOAD}/csinit-params.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
 
 ### Input: Chipset Level-1/2 Private RSA keys
 
@@ -86,6 +86,8 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-bl2x-payload=${BASEDIR_AESKEY_PROT_BL2
 if [ "x${FEAT_BL2E_SIGPROT_MODE}" != "x0" ]; then
 	BB1ST_ARGS="${BB1ST_ARGS} --feature-bl2e-sigprot-mode"
 fi
+
+#BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC}"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin${postfix}"

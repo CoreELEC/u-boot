@@ -9,13 +9,7 @@
 #include "timers.h"   /* Software timer related API prototypes. */
 #include "semphr.h"   /* Semaphore related API prototypes. */
 
-#define UNUSED(x) ((void)x)
-#define BT_WAKE_HOST GPIOX_18  //bt_wake_host pin
-#define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
-
 static TaskHandle_t btTask = NULL;
-void bt_task_init(void);
-void bt_task_deinit(void);
 
 static void bt_wakeup_Task(void *args)
 {
@@ -102,3 +96,4 @@ void bt_task_deinit(void)
 	}
 	vFreeGpioIRQ(BT_WAKE_HOST);
 }
+

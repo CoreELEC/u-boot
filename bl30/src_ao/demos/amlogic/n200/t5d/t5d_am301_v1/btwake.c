@@ -3,7 +3,6 @@
 #include "suspend.h"
 #include "task.h"
 #include "gpio.h"
-#include "btwake.h"
 
 #include "queue.h"    /* RTOS queue related API prototypes. */
 #include "timers.h"   /* Software timer related API prototypes. */
@@ -13,6 +12,8 @@
 #define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
 
 void Bt_IRQHandle(void);
+void Bt_GpioIRQRegister(void);
+void Bt_GpioIRQFree(void);
 
 void Bt_IRQHandle(void)
 {

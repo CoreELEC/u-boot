@@ -34,7 +34,6 @@
 #include "keypad.h"
 
 #include "hdmi_cec.h"
-#include "btwake.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
 

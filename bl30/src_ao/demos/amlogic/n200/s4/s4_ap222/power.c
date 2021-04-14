@@ -35,6 +35,7 @@
 #include "keypad.h"
 
 #include "hdmi_cec.h"
+#include "btwake.h"
 
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
@@ -67,8 +68,6 @@ void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
-void bt_task_init(void);
-void bt_task_deinit(void);
 
 void str_hw_init(void)
 {

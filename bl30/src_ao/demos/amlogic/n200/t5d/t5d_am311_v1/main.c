@@ -39,6 +39,7 @@
 #include "mailbox-api.h"
 #include "version.h"
 #include "hdmi_cec.h"
+#include "stick_mem.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -171,6 +172,9 @@ int main(void)
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 	vPICInit();
+	stick_mem_init();
+	//write watchdog flag
+	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
 
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i);

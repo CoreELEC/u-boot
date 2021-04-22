@@ -19,6 +19,7 @@ extern "C" {
 /*use by mailbox driver*/
 #define AOREE_CHANNEL			3
 #define AOTEE_CHANNEL			5
+#define AODSPA_CHANNEL			0xc
 
 #define MBOX_CALL_MAX			MAX_ENTRY_NUM
 /*note: aoree channel support feedback, aotee channel no support feedback*/

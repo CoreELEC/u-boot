@@ -46,10 +46,13 @@ void *g_tbl_ao;
 
 TaskHandle_t ReembHandler;
 TaskHandle_t TeembHandler;
+TaskHandle_t DspmbHandler;
 static uint32_t ulReeSyncTaskWake;
 static uint32_t ulTeeSyncTaskWake;
+static uint32_t ulDspSyncTaskWake;
 mbPackInfo syncReeMbInfo;
 mbPackInfo syncTeeMbInfo;
+mbPackInfo syncDspMbInfo;
 
 extern xHandlerTableEntry xMbHandlerTable[IRQ_MAX];
 extern void vRpcUserCmdInit(void);
@@ -72,7 +75,7 @@ static void vMbHandleIsr(void)
 	int i = 0;
 
 	val = xGetMbIrqStats();
-	PRINT_DBG("[%s]: mb isr: 0x%x\n", MBTAG, val);
+	PRINT_DBG("[%s]: mb isr: 0x%llx\n", MBTAG, val);
 	val &= ulIrqMask;
 	while (val) {
 		for (i = 0; i <= IRQ_MAX; i++) {
@@ -86,7 +89,7 @@ static void vMbHandleIsr(void)
 		val = xGetMbIrqStats();
 		val &= ulIrqMask;
 		val = (val | ulPreVal) ^ ulPreVal;
-		PRINT_DBG("[%s]: mb isr: 0x%x\n", MBTAG, val);
+		printf("[%s]: mb isr: 0x%llx\n", MBTAG, val);
 	}
 }
 //DECLARE_IRQ(IRQ_NUM_MB_4, vMbHandleIsr)
@@ -107,7 +110,7 @@ static void vAoRevMbHandler(void *vArg)
 	ulSize = st.size;
 	ulSync = st.sync;
 
-	PRINT_DBG("[%s]: prvRevMbHandler 0x%x, 0x%x, 0x%x\n", MBTAG, ulMbCmd, ulSize, ulSync);
+	PRINT_DBG("[%s]: prvRevMbHandler 0x%lx, 0x%lx, 0x%lx\n", MBTAG, ulMbCmd, ulSize, ulSync);
 
 	if (ulMbCmd == 0) {
 		PRINT_DBG("[%s] mbox cmd is 0, cannot match\n");
@@ -134,6 +137,10 @@ static void vAoRevMbHandler(void *vArg)
 			PRINT("ulTeeSyncTaskWake Busy\n");
 			break;
 		}
+		if (ulDspSyncTaskWake && (MAILBOX_DSPA2AO == xGetChan(mbox))) {
+			PRINT("ulDspSyncTaskWake Busy\n");
+			break;
+		}
 		PRINT_DBG("[%s]: SYNC\n", MBTAG);
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
@@ -147,6 +154,11 @@ static void vAoRevMbHandler(void *vArg)
 			syncTeeMbInfo = mbInfo;
 			ulTeeSyncTaskWake = 1;
 			vTaskNotifyGiveFromISR(TeembHandler, NULL);
+		}
+		if (MAILBOX_DSPA2AO == xGetChan(mbox)) {
+			syncDspMbInfo = mbInfo;
+			ulDspSyncTaskWake = 1;
+			vTaskNotifyGiveFromISR(DspmbHandler, NULL);
 		}
 		//portYIELD_FROM_ISR(xYieldRequired);
 		break;
@@ -245,6 +257,45 @@ static void vTeeSyncTask(void *pvParameters)
 	}
 }
 
+static void vDspSyncTask(void *pvParameters)
+{
+	uint32_t addr = 0;
+	uint32_t mbox = 0;
+	int index = 0;
+
+	pvParameters = pvParameters;
+	while (1) {
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		PRINT_DBG("[%s]:DspSyncTask\n", MBTAG);
+
+		index = mailbox_htbl_invokeCmd(g_tbl_ao, syncDspMbInfo.ulCmd,
+					       syncDspMbInfo.mbdata.data);
+		mbox = xGetRevMbox(syncDspMbInfo.ulChan);
+		PRINT_DBG("[%s]:DspSyncTask mbox:%d\n", MBTAG, mbox);
+		addr = xSendAddrMbox(mbox);
+		if (index != 0) {
+			if (index == MAX_ENTRY_NUM) {
+				memset(&syncDspMbInfo.mbdata.data, 0, sizeof(syncDspMbInfo.mbdata.data));
+				syncDspMbInfo.mbdata.status = ACK_FAIL;
+				vBuildPayload(addr, &syncDspMbInfo.mbdata, sizeof(syncDspMbInfo.mbdata));
+				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
+			} else {
+				PRINT_DBG("[%s]:SyncTask re len:%d\n", MBTAG, sizeof(syncDspMbInfo.mbdata));
+				syncDspMbInfo.mbdata.status = ACK_OK;
+				vBuildPayload(addr, &syncDspMbInfo.mbdata, sizeof(syncDspMbInfo.mbdata));
+			}
+		}
+
+		vEnterCritical();
+		PRINT_DBG("[%s]:Tee Sync clear mbox:%d\n", MBTAG, mbox);
+		ulDspSyncTaskWake = 0;
+		vClrMboxStats(MAILBOX_CLR(mbox));
+		vClrMbInterrupt(IRQ_REV_BIT(mbox));
+		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
+		vExitCritical();
+	}
+}
+
 void vMbInit(void)
 {
 	PRINT("[%s]: mailbox init start\n", MBTAG);
@@ -254,6 +305,8 @@ void vMbInit(void)
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMREE2AO), vAoRevMbHandler, (void *)MAILBOX_ARMREE2AO, 10);
 
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, (void *)MAILBOX_ARMTEE2AO, 10);
+
+	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_DSPA2AO), vAoRevMbHandler, (void *)MAILBOX_DSPA2AO, 10);
 
 	//vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
 	RegisterIrq(MAILBOX_AOCPU_IRQ, 1, vMbHandleIsr);
@@ -272,6 +325,12 @@ void vMbInit(void)
 		    0,
 		    TASK_PRIORITY,
 		    (TaskHandle_t *)&TeembHandler);
+	xTaskCreate(vDspSyncTask,
+		    "AODspSyncTask",
+		    configMINIMAL_STACK_SIZE,
+		    0,
+		    TASK_PRIORITY,
+		    (TaskHandle_t *)&DspmbHandler);
 
 	vRpcUserCmdInit();
 	PRINT("[%s]: mailbox init end\n", MBTAG);

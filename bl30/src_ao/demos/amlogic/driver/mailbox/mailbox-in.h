@@ -20,6 +20,10 @@
 #define aml_writel32(val, reg)		(REG32(reg) = val)
 #define aml_readl32(reg)		(REG32(reg))
 
+#ifndef MAILBOX_DSPA2AO
+#define MAILBOX_DSPA2AO 0xc
+#endif
+
 enum sync_type {
 	MB_ASYNC = 1,
 	MB_SYNC,
@@ -63,7 +67,7 @@ typedef struct __attribute__((__packed__)) {
     configASSERT(cmd <= MAILBOX_CMD_MAX && size <= MAILBOX_BUFFER_SIZE)
 
 #define VALID_CHANNEL(chan) \
-    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL)
+    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL || chan == AODSPA_CHANNEL)
 
 #define VALID_BUFFER_SIZE(size) \
     configASSERT(size <= MAILBOX_BUFFER_SIZE)
@@ -97,6 +101,8 @@ static inline uint32_t xGetChan(uint32_t mbox)
 		return AOREE_CHANNEL;
 	case MAILBOX_ARMTEE2AO:
 		return AOTEE_CHANNEL;
+	case MAILBOX_DSPA2AO:
+		return AODSPA_CHANNEL;
 	default:
 		configASSERT(0);
 	}
@@ -109,6 +115,8 @@ static inline uint32_t xGetRevMbox(uint32_t ulChan)
 		return MAILBOX_ARMREE2AO;
 	case AOTEE_CHANNEL:
 		return MAILBOX_ARMTEE2AO;
+	case AODSPA_CHANNEL:
+		return MAILBOX_DSPA2AO;
 	default:
 		configASSERT(0);
 	}
@@ -119,6 +127,7 @@ static inline uint32_t xGetSendMbox(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:
+	case AODSPA_CHANNEL:
 		configASSERT(0);
 	default:
 		configASSERT(0);
@@ -131,6 +140,7 @@ static inline uint32_t xDspRevAddr(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:
+	case AODSPA_CHANNEL:
 		return PAYLOAD_RD_BASE(xGetRevMbox(ulChan));
 	default:
 		configASSERT(0);
@@ -142,6 +152,7 @@ static inline uint32_t xSendAddr(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:
+	case AODSPA_CHANNEL:
 		return PAYLOAD_WR_BASE(xGetSendMbox(ulChan));
 	default:
 		configASSERT(0);
@@ -153,6 +164,7 @@ static inline uint32_t xSendAddrBack(uint32_t ulChan)
 	switch (ulChan) {
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:
+	case AODSPA_CHANNEL:
 		return PAYLOAD_RD_BASE(xGetSendMbox(ulChan));
 	default:
 		configASSERT(0);

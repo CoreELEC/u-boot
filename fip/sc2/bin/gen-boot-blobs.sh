@@ -87,9 +87,7 @@ if [ "x${FEAT_BL2E_SIGPROT_MODE}" != "x0" ]; then
 	BB1ST_ARGS="${BB1ST_ARGS} --feature-bl2e-sigprot-mode"
 fi
 
-if [[ "y" == ${CONFIG_DDR_FULL_FW} ]]; then
-       BB1ST_ARGS="${BB1ST_ARGS} --flag-enable-ddrfw-fip"
-fi
+BB1ST_ARGS="${BB1ST_ARGS} --flag-enable-ddrfw-fip"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin${postfix}"

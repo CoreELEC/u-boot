@@ -74,6 +74,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2
 # Main
 #
 
+BB1ST_ARGS="${BB1ST_ARGS} --flag-enable-ddrfw-fip"
 set -x
 
 ${ACPU_IMAGETOOL} \

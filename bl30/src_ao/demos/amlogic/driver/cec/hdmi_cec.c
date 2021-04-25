@@ -646,11 +646,11 @@ static void cec_clear_int_sts(void)
 	if (cec_ip == CEC_B) {
 		reg = read_ao(CECB_REG_INTR_STAT);
 		if (reg)
-			write_ao(CECB_REG_INTR_STAT, reg);
+			write_ao(CECB_REG_INTR_CLR, reg);
 	} else {
 		reg = read_ao(CECA_REG_INTR_STAT);
 		if (reg)
-			write_ao(CECA_REG_INTR_STAT, reg);
+			write_ao(CECA_REG_INTR_CLR, reg);
 	}
 }
 

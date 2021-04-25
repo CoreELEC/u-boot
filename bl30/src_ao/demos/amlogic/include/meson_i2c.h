@@ -58,6 +58,8 @@ extern "C" {
 		uint32_t delay_ajust;
 		uint32_t clock_frequency;	/* i2c rate */
 		uint32_t clkin_rate;
+		uint32_t clk_base;
+		uint32_t clk_offset;
 	};
 
 #define I2C_M_RD		0x0001

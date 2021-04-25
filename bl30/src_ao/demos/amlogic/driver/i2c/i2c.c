@@ -93,30 +93,32 @@ struct xMesonI2cPlatdata *plat;
 
 uint32_t current_id;
 
+#define DEFAULT_CLK81	0
+
 /* AXG/G12A/G12B/SM1/TM2 i2c data */
 struct xMesonI2cPlatdata AxgI2cData[] = {
-	{0, 0xffd1f000, 3, 15, 100000, MESON_I2C_CLK_RATE},
-	{1, 0xffd1e000, 3, 15, 100000, MESON_I2C_CLK_RATE},
-	{2, 0xffd1d000, 3, 15, 100000, MESON_I2C_CLK_RATE},
-	{3, 0xffd1c000, 3, 15, 100000, MESON_I2C_CLK_RATE},
-	{4, 0xff805000, 3, 15, 100000, MESON_I2C_CLK_RATE},
+	{0, 0xffd1f000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},
+	{1, 0xffd1e000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},
+	{2, 0xffd1d000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},
+	{3, 0xffd1c000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},
+	{4, 0xff805000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},
 };
 
 /* A1 i2c data */
 struct xMesonI2cPlatdata A1I2cData[] = {
-	{0, 0xfe001400, 3, 15, 100000, 64000000},	/* i2c A */
-	{1, 0xfe005c00, 3, 15, 100000, 64000000},	/* i2c B */
-	{2, 0xfe006800, 3, 15, 100000, 64000000},	/* i2c C */
-	{3, 0xfe006c00, 3, 15, 100000, 64000000},	/* i2c D */
+	{0, 0xfe001400, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0},	/* i2c A */
+	{1, 0xfe005c00, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0},	/* i2c B */
+	{2, 0xfe006800, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0},	/* i2c C */
+	{3, 0xfe006c00, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0},	/* i2c D */
 };
 
 /* C1 i2c data */
 struct xMesonI2cPlatdata C1I2cData[] = {
-	{0, 0xfe001400, 3, 15, 100000, MESON_I2C_CLK_RATE},	/* i2c A */
-	{1, 0xfe005c00, 3, 15, 100000, MESON_I2C_CLK_RATE},	/* i2c B */
-	{2, 0xfe006800, 3, 15, 100000, MESON_I2C_CLK_RATE},	/* i2c C */
-	{3, 0xfe006c00, 3, 15, 100000, MESON_I2C_CLK_RATE},	/* i2c D */
-	{4, 0xfe00b000, 3, 15, 100000, MESON_I2C_CLK_RATE},	/* i2c E */
+	{0, 0xfe001400, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},	/* i2c A */
+	{1, 0xfe005c00, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},	/* i2c B */
+	{2, 0xfe006800, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},	/* i2c C */
+	{3, 0xfe006c00, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},	/* i2c D */
+	{4, 0xfe00b000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0},	/* i2c E */
 };
 
 static void prvSetBitsLe32(uint32_t *reg, uint32_t set)
@@ -461,6 +463,10 @@ int32_t xI2cMesonPortInit(uint32_t id)
 	i2cs[id].div_factor = cur_plat->div_factor;
 	i2cs[id].delay_ajust = cur_plat->delay_ajust;
 	i2cs[id].clock_frequency = cur_plat->clock_frequency;
+
+	if (cur_plat->clk_base)
+		REG32_UPDATE_BITS(cur_plat->clk_base, BIT(cur_plat->clk_offset),
+				BIT(cur_plat->clk_offset));
 
 	if (suspend_flag) {
 #if I2C_DEBUG

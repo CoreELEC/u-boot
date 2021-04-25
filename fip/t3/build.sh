@@ -561,9 +561,16 @@ function cleanup() {
 	rm -f ${BUILD_PATH}/bl*.enc ${BUILD_PATH}/bl2*.sig
 }
 
+
 function encrypt_step() {
 	dbg "encrypt: $@"
-
+	local ret=0
+	./${FIP_FOLDER}${CUR_SOC}/aml_encrypt_${CUR_SOC} $@
+	ret=$?
+	if [ 0 != $ret ]; then
+		echo "Err! aml_encrypt_${CUR_SOC} return $ret"
+		exit $ret
+	fi
 }
 
 function encrypt() {
@@ -657,6 +664,13 @@ function process_blx() {
 	fi
 	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc &> /dev/null
+
+	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
+		mv -f ${BUILD_PATH}/bl33.bin  ${BUILD_PATH}/bl33.bin.org
+		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin.org --output ${BUILD_PATH}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
+		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
+	fi
 
 	# fix size for BL33 1024KB
 	if [ ! -f ${BUILD_PATH}/bl33.bin ]; then

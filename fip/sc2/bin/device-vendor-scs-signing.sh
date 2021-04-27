@@ -64,7 +64,7 @@ function mk_uboot() {
 	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
-	ddr_fip="${input_payloads}/ddr-fip.bin"
+	ddr_fip="${input_payloads}/blob-ddr-fip.bin.signed "
 	if [ ! -f ${ddr_fip} ]; then
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	fi
@@ -249,10 +249,12 @@ if [ -z "${key_dir}" ]; then
 fi
 
 if [ -z "${part}" ]; then
+	echo "Error: project cannot be empty"
 	usage
 fi
 
 if [ -z "${input_dir}" ] && [[ ! -f ${input_package} ]]; then
+    echo "Error: input package \""${input_package}"\" does NOT exist"
 	usage
 fi
 
@@ -305,6 +307,8 @@ export DEVICE_ROOTRSA_INDEX=${rootkey_index}
 
 export DEVICE_VARIANT_SUFFIX=${chipset_variant_suffix}
 
+echo sign for blob-ddr-fip.bin.signed
+make -C ${BASEDIR_TOP} dv-ddr-fip
 export DEVICE_STORAGE_SUFFIX=.sto
 make -C ${BASEDIR_TOP} dv-boot-blobs
 export DEVICE_STORAGE_SUFFIX=.usb

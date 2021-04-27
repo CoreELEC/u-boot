@@ -36,6 +36,9 @@ dv-sign:
 dv-boot-blobs:
 	make -C generate-binaires/run $(ARGS) build-boot-blobs
 
+dv-ddr-fip:
+	make -C generate-binaires/run $(ARGS) build-ddr-fip
+
 dv-device-fip:
 	make -C generate-binaires/run $(ARGS) build-device-fip
 

@@ -90,6 +90,8 @@ BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${DEVICE_S
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-blob-bl2e=${BASEDIR_OUTPUT_BLOB}/blob-bl2e${DEVICE_STORAGE_SUFFIX}${DEVICE_VARIANT_SUFFIX}.bin${output_postfix}"
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-blob-bl2x=${BASEDIR_OUTPUT_BLOB}/blob-bl2x.bin${output_postfix}"
 
+BB1ST_ARGS="${BB1ST_ARGS} --flag-enable-ddrfw-fip"
+
 echo ${TOOLS_ARGS}
 
 #

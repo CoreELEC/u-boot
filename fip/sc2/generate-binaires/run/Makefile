@@ -20,6 +20,9 @@ build:
 build-boot-blobs:
 	make -C rootrsa-0/boot-blobs $(ARGS)
 
+build-ddr-fip:
+	make -C rootrsa-0/ddr-fip $(ARGS)
+
 build-device-fip:
 	make -C rootrsa-0/device-fip $(ARGS)
 

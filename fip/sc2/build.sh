@@ -537,7 +537,7 @@ function process_blx() {
 function build_signed() {
 
 	# package DDR_FIP_NAME
-	if [ "y" == ${CONFIG_DDR_FULL_FW} ]; then
+	if [[ "y" == ${CONFIG_DDR_FULL_FW} ]]; then
 		export CONFIG_DDR_FULL_FW
 		if [[ "1" == ${GENERATE_DDR_FIP} ]]; then
 			./${FIP_FOLDER}${CUR_SOC}/bin/gen-ddr-fip.sh ${AMLOGIC_KEY_TYPE} ${CHIPSET_NAME} ${BUILD_PATH} ${DDR_FIP_NAME}
@@ -594,6 +594,11 @@ function build_signed() {
 		fi
 		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
 
+		if [[ "y" == ${CONFIG_DDR_FULL_FW} ]]; then
+			export CONFIG_DDR_FULL_FW
+			echo sign for blob-ddr-fip.bin.signed
+			make -C ./${FIP_FOLDER}${CUR_SOC} dv-ddr-fip
+		fi
 		export DEVICE_STORAGE_SUFFIX=.sto
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
 		export DEVICE_STORAGE_SUFFIX=.usb

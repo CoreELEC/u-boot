@@ -67,10 +67,11 @@ function mk_bl2ex() {
 	output=$1
 	payload=$2
 	ddr_type=$3
-	
+
 	if [ ! -f ${output}/bl2.bin.sto ]	|| \
 	   [ ! -f ${output}/bl2.bin.usb ]	|| \
-	   [ ! -f ${output}/bl2e.bin ]	|| \
+	   [ ! -f ${output}/bl2e.bin.sto ]	|| \
+	   [ ! -f ${output}/bl2e.bin.usb ]	|| \
 	   [ ! -f ${output}/bl2x.bin ]; then
 		echo "Error: ${output}/bl2/e/x.bin does not all exist... abort"
 		ls -la ${output}
@@ -85,7 +86,7 @@ function mk_bl2ex() {
 
 	dd if=/dev/zero of=${payload}/bl2.bin.usb bs=127904 count=1
 	dd if=${output}/bl2.bin.usb of=${payload}/bl2.bin.usb conv=notrunc
-	
+
 	dd if=/dev/zero of=${payload}/bl2e.bin.sto bs=65536 count=1
 	dd if=${output}/bl2e.bin.sto of=${payload}/bl2e.bin.sto conv=notrunc
 

@@ -64,7 +64,7 @@ $(info LDFLAGS = $(LDFLAGS))
 #-include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/str/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/mailbox/build.mk
-#-include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/vrtc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/timer_source/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/get_version/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/saradc/build.mk

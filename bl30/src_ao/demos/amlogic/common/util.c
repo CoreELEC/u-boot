@@ -7,7 +7,7 @@
 
 #include "util.h"
 
-int strlen(const char *s)
+unsigned int strlen(const char *s)
 {
 	int len = 0;
 

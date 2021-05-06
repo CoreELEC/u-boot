@@ -435,7 +435,7 @@ static void *prvLedGetInfo(void *msg)
 static void vPrintLedsStatus(TimerHandle_t xTimer)
 {
 	xTimer = xTimer;
-	uint32_t i, state;
+	uint32_t i, state = 0;
 
 	//taskENTER_CRITICAL();
 	for (i = 0; i < LED_ID_MAX; i++) {

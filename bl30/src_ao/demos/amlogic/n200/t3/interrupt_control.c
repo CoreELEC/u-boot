@@ -270,7 +270,7 @@ void wfe(void) {
 
 void clean_int_src(void)
 {
-	for (uint32_t i=0; i<8; i++)
+	for (uint32_t i=0; i<16; i++)
 		REG32(AOCPU_IRQ_SEL0 + i*4) = 0;
 }
 
@@ -291,9 +291,9 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
-	index = ulIrq/4;
-	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
-	REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%4)*8;
+	index = ulIrq/2;
+	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+	REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%2)*16;
 	return 0;
 }
 
@@ -309,8 +309,8 @@ int int_src_clean(uint32_t ulIrq)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
-	index = ulIrq/4;
-	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
+	index = ulIrq/2;
+	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
 	return 0;
 }
 

@@ -69,6 +69,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --switch-chipset-sign-bl2=0"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${CHIPSET_VARIANT_SUFFIX}.bin${postfix}"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC}"
 
 #
 # Main

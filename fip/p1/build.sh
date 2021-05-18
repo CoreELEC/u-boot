@@ -81,10 +81,10 @@ function mk_bl2ex() {
 	echo "================================================================="
 	echo "image packing with acpu-imagetool for bl2 bl2e bl2x"
 
-	dd if=/dev/zero of=${payload}/bl2.bin.sto bs=127904 count=1
+	dd if=/dev/zero of=${payload}/bl2.bin.sto bs=144288 count=1
 	dd if=${output}/bl2.bin.sto of=${payload}/bl2.bin.sto conv=notrunc
 
-	dd if=/dev/zero of=${payload}/bl2.bin.usb bs=127904 count=1
+	dd if=/dev/zero of=${payload}/bl2.bin.usb bs=144288 count=1
 	dd if=${output}/bl2.bin.usb of=${payload}/bl2.bin.usb conv=notrunc
 
 	dd if=/dev/zero of=${payload}/bl2e.bin.sto bs=65536 count=1
@@ -158,11 +158,11 @@ function mk_bl2ex() {
 	chip_acs_size=`stat -c %s ${INPUT_PARAMS}/chip_acs.bin`
 	dev_acs_size=`stat -c %s ${INPUT_PARAMS}/device_acs.bin`
 
-	if [ $chip_acs_size -gt 4096 ]; then
-		echo "chip acs size exceed limit 4096, $chip_acs_size"
+	if [ $chip_acs_size -gt 8192 ]; then
+		echo "chip acs size exceed limit 8192, $chip_acs_size"
 		exit -1
 	else
-		dd if=/dev/zero of=${payload}/chip_acs.bin bs=4096 count=1
+		dd if=/dev/zero of=${payload}/chip_acs.bin bs=8192 count=1
 		dd if=${INPUT_PARAMS}/chip_acs.bin of=${payload}/chip_acs.bin conv=notrunc
 	fi
 
@@ -180,6 +180,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
+			--scs-family=${CUR_SOC} \
 			--outfile-bb1st=${output}/bb1st.sto.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.sto.bin \
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin
@@ -190,6 +191,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
+			--scs-family=${CUR_SOC} \
 			--outfile-bb1st=${output}/bb1st.usb.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.usb.bin \
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin
@@ -531,7 +533,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=508 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=1016 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"

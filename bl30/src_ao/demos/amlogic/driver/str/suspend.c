@@ -207,22 +207,22 @@ void *xMboxSuspend_Sem(void *msg)
 
 static void vSTRTask( void *pvParameters )
 {
-    /*make compiler happy*/
-	char buffer[STR_QUEUE_ITEM_SIZE];
+	/*make compiler happy*/
+	uint32_t buffer = UDEFINED_WAKEUP;
 	uint32_t exit_reason = 0;
 
 	pvParameters = pvParameters;
-    xSTRQueue = xQueueCreate(STR_QUEUE_LENGTH, STR_QUEUE_ITEM_SIZE);
+	xSTRQueue = xQueueCreate(STR_QUEUE_LENGTH, STR_QUEUE_ITEM_SIZE);
 	configASSERT(xSTRQueue);
-    xSTRSemaphore = xSemaphoreCreateBinary();
+	xSTRSemaphore = xSemaphoreCreateBinary();
 	configASSERT(xSTRSemaphore);
 
 	while (1) {
 		xSemaphoreTake(xSTRSemaphore, portMAX_DELAY);
 		system_suspend(power_mode);
-		while (xQueueReceive(xSTRQueue, buffer, portMAX_DELAY))
+		while (xQueueReceive(xSTRQueue, &buffer, portMAX_DELAY))
 		{
-			switch (buffer[0])
+			switch (buffer)
 			{
 				case REMOTE_WAKEUP:
 					exit_reason = REMOTE_WAKEUP;

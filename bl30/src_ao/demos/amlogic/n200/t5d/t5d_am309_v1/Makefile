@@ -69,6 +69,7 @@ $(info LDFLAGS = $(LDFLAGS))
 -include $(FREERTOS_VENDOR_DRIVER)/ir/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/saradc/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/ddr/build.mk
+-include $(FREERTOS_VENDOR_DRIVER)/eth/build.mk
 -include $(FREERTOS_VENDOR_DRIVER)/stick_mem/build.mk
 
 objs_from_dir=$(sort $(foreach obj, $($(2)-y), \

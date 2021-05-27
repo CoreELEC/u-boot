@@ -39,9 +39,9 @@
 /*#define CONFIG_ETH_WAKEUP*/
 
 #ifdef CONFIG_ETH_WAKEUP
-int eth_deinit = 0;
 #include "interrupt_control.h"
-#define IRQ_ETH_PMT_NUM 73
+#include "eth.h"
+#include "irq.h"
 #endif
 
 static TaskHandle_t cecTask = NULL;
@@ -70,11 +70,6 @@ static void vIRHandler(IRPowerKey_t *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-#ifdef CONFIG_ETH_WAKEUP
-void vETHInit(uint32_t ulIrq,function_ptr_t handler);
-void vETHDeint(uint32_t ulIrq);
-void eth_handler(void);
-#endif
 void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
@@ -85,7 +80,7 @@ void str_hw_init(void)
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 #ifdef CONFIG_ETH_WAKEUP
-	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
+	vETHInit(IRQ_ETH_PMT_NUM,eth_handler_t5);
 #endif
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
@@ -101,7 +96,7 @@ void str_hw_disable(void)
 	/*disable wakeup source interrupt*/
 	vIRDeint();
 #ifdef CONFIG_ETH_WAKEUP
-	vETHDeint(IRQ_ETH_PMT_NUM);
+	vETHDeint_t5();
 #endif
 	if (cecTask) {
 		vTaskDelete(cecTask);
@@ -185,29 +180,3 @@ void str_power_off(int shutdown_flag)
 	}
 }
 
-#ifdef CONFIG_ETH_WAKEUP
-void eth_handler(void)
-{
-	uint32_t buf[4] = {0};
-	if (eth_deinit == 0) {
-		buf[0] = ETH_PMT_WAKEUP;
-		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		DisableIrq(IRQ_ETH_PMT_NUM);
-	} else {
-		eth_deinit = 0;
-	}
-}
-
-void vETHInit(uint32_t ulIrq,function_ptr_t handler)
-{
-	RegisterIrq(ulIrq, 2, handler);
-	EnableIrq(ulIrq);
-}
-
-void vETHDeint(uint32_t ulIrq)
-{
-	eth_deinit = 1;
-	DisableIrq(ulIrq);
-	UnRegisterIrq(ulIrq);
-}
-#endif

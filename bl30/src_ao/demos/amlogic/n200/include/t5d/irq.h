@@ -54,4 +54,8 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_OUT_2            (28+12+3)
 #define IRQ_NUM_OUT_1            (28+11+3)
 #define IRQ_NUM_OUT_0            (28+10+3)
+
+/*wol*/
+#define IRQ_ETH_PMT_NUM 73
+
 #endif

@@ -189,8 +189,10 @@ void vAdcInit(void)
 	 * BIT[23-25]: vdda*3/4 connect to channel-7 by default
 	 * BIT[26]:    select the sampling clock period: 0:3T, 1:5T
 	 * BIT[27]:    disable ring counter
+	 * BIT[27]:    use the clk domain to add delay to
+	 *             the start convert signal for hold times
 	 */
-	REG32(P_SARADC(SARADC_REG3)) = 0x0980000a;
+	REG32(P_SARADC(SARADC_REG3)) = 0x8980000a;
 
 	/* select VDDA as reference voltage */
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG11),

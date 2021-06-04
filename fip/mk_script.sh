@@ -282,7 +282,10 @@ function build() {
 	if [ ! $CONFIG_CMD_BOOTCTOL_VAB ]; then
 		CONFIG_CMD_BOOTCTOL_VAB=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB}
+	if [ ! $CONFIG_AVB2_KPUB_FROM_FIP ]; then
+		CONFIG_AVB2_KPUB_FROM_FIP=0
+	fi
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_AVB2_KPUB_FROM_FIP}
 
 	# source other configs after uboot compile
 	init_variable_late

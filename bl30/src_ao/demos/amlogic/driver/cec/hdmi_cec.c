@@ -71,6 +71,10 @@ struct st_cec_mailbox_data cec_mailbox;
 static enum cec_chip_ver cec_chip = CEC_CHIP_SC2;
 static u32 cec_ip;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+/* [0] for msg len */
+static unsigned char cec_otp_msg[17];
+static unsigned char cec_as_msg[17];
+static void cec_set_wk_msg(unsigned char *otp_msg, unsigned char *as_msg);
 
 struct cec_tx_msg_t {
 	unsigned char buf[16];
@@ -495,6 +499,7 @@ static void ceca_wr_reg (unsigned long addr, unsigned long data)
 	write_ao(CECA_REG_RW_REG, data32);
 } /* aocec_wr_only_reg */
 
+#if 0
 static inline void ceca_set_bits(uint32_t reg, uint32_t bits,
 				       uint32_t start, uint32_t len)
 {
@@ -507,7 +512,9 @@ static inline void ceca_set_bits(uint32_t reg, uint32_t bits,
 }
 #endif
 
-static void cec_set_reg_bits(unsigned long addr, unsigned int value,
+#endif
+
+static void cec_set_reg_bits(enum cec_reg_idx addr, unsigned int value,
 	unsigned int offset, unsigned int len)
 {
 	unsigned int data32 = 0;
@@ -596,21 +603,42 @@ static void dump_cec_reg(void)
 }
 #endif
 
+/* for back, replace it with cec_set_wk_msg() */
 static u32 set_cec_wakeup_port_info(unsigned int port_info)
 {
-	/*printf("%s warning: is empty,sts:0x%x\n", __func__, cec_val);*/
-	/*cec_val = cec_val;*/
-	write_ao(CEC_REG_STICK_DATA1, port_info);
+	printf("%s wakeup port info:0x%x\n", __func__, port_info);
+	/* write_ao(CEC_REG_STICK_DATA1, port_info); */
 	return 0;
 }
 
-static void *cec_get_portinfo(void *msg)
+/* OTP message */
+static void *cec_get_wakeup_info1(void *msg)
 {
 	u32 val;
 
 	/*val = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |*/
 	/*	(cec_wakup.wk_port_id << 24);*/
 	val = read_ao(CEC_REG_STICK_DATA1);
+	/* need to clear wakeup info after read,
+	 * avoid it's mis-used in next wakeup
+	 */
+	write_ao(CEC_REG_STICK_DATA1, 0);
+	*(u32 *)msg = val;
+	printf("[%s]: info=0x%x\n", __func__, val);
+
+	return NULL;
+}
+
+/* active source message */
+static void *cec_get_wakeup_info2(void *msg)
+{
+	u32 val;
+
+	val = read_ao(CEC_REG_STICK_DATA2);
+	/* need to clear wakeup info after read,
+	 * avoid it's mis-used in next wakeup
+	 */
+	write_ao(CEC_REG_STICK_DATA2, 0);
 	*(u32 *)msg = val;
 	printf("[%s]: info=0x%x\n", __func__, val);
 
@@ -665,7 +693,7 @@ static void cec_sts_check(void)
 
 static u32 cec_set_pin_mux(u32 chip)
 {
-	enum cec_chip_ver chip_type = chip;
+	u32 chip_type = chip;
 
 	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
 	printf("%s pin mux:0x%x func:0x%x\n", __func__, CEC_PIN_MX, CEC_PIN_FUNC);
@@ -1034,7 +1062,7 @@ static int cecb_check_irq_sts(void)
 
 		if (cnt++ >= 200) {
 			printf("%s time out %d\n", __func__, cnt);
-			cnt = 0;
+			/* cnt = 0; */
 			break;
 		}
 		cec_delay(200);
@@ -1079,7 +1107,7 @@ static int ceca_check_irq_sts(void)
 
 		if (cnt++ >= 200) {
 			printf("%s time out %d\n", __func__, cnt);
-			cnt = 0;
+			/* cnt = 0; */
 			break;
 		}
 		cec_delay(200);
@@ -1166,7 +1194,12 @@ static void cec_set_stream_path(void)
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[3]))  {
 				cec_msg.cec_power = 0x1;
-				cec_msg.active_source = 1;
+				/* no need for playback dev wakeup */
+				/* cec_msg.active_source = 1; */
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
 				printf("%s power on\n", __func__);
 			}
 		}
@@ -1184,7 +1217,12 @@ static int cec_routing_change(void)
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[4]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[5])) {
 				cec_msg.cec_power = 0x1;
-				cec_msg.active_source = 1;
+				/* no need for playback dev wakeup */
+				/* cec_msg.active_source = 1; */
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
 				printf("%s power on\n", __func__);
 			}
 		}
@@ -1320,6 +1358,7 @@ static int is_phy_addr_ready(cec_msg_t *msg)
 }
 #endif
 
+/* kernel will recovery the port info from msg. only for backup */
 static u32 cec_save_port_id(void)
 {
 	unsigned int phy_addr;
@@ -1397,6 +1436,10 @@ static u32 cec_handle_message(void)
 			     (0x6d == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) ||
 			     (0x09 == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) )) {
 				cec_msg.cec_power = 0x1;
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
 				printf("user power on\n");
 			}
 			break;
@@ -1418,6 +1461,10 @@ static u32 cec_handle_message(void)
 				data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 					(cec_wakup.wk_port_id << 24);
 				set_cec_wakeup_port_info(data);
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
 				printf("otp power on\n");
 			}
 			break;
@@ -1436,6 +1483,10 @@ static u32 cec_handle_message(void)
 				data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
 					(cec_wakup.wk_port_id << 24);
 				set_cec_wakeup_port_info(data);
+				memset(cec_as_msg, 0, sizeof(cec_as_msg));
+				cec_as_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_as_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_as_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
 				printf("active src power on:0x%x\n", data);
 			}
 			break;
@@ -1752,7 +1803,7 @@ static void cec_node_init(void)
 	/*static unsigned int regist_devs = 0;*/
 	static unsigned char idx = 0, sub_idx = 0;
 	unsigned int log_addr;
-	int tx_stat = TX_ERROR;
+	int tx_stat;
 	unsigned char msg[16];
 	/*unsigned int kern_log_addr = (REG32(SYSCTRL_STATUS_REG1) >> 16) & 0xf;*/
 	unsigned int kern_log_addr = (read_ao(CEC_REG_STS1) >> 16) & 0xf;
@@ -1839,7 +1890,7 @@ static void cec_node_init(void)
 		msg[0] = (log_addr << 4 ) | log_addr;
 		/*printf("%s ping:idx:%d, 0x%x\n", __func__, sub_idx, msg[0]);*/
 		if (!ping_state) {
-			tx_stat = ping_cec_ll_tx(msg, 1);
+			ping_cec_ll_tx(msg, 1);
 			cec_delay(500);
 			ping_state = 1;
 		} else {
@@ -2007,18 +2058,94 @@ u32 cec_get_wakup_flag(void)
 	return cec_wakup_flag;
 }
 
-void vCEC_task(void *pvParameters)
+static void *cec_get_wakeup_otp_msg(void *msg)
+{
+	if (msg)
+		memcpy(msg, (void *)cec_otp_msg, sizeof(cec_otp_msg));
+	return NULL;
+}
+
+static void *cec_get_wakeup_as_msg(void *msg)
+{
+	if (msg)
+		memcpy(msg, (void *)cec_as_msg, sizeof(cec_as_msg));
+	return NULL;
+}
+
+/* wakeup message from source
+ * <Image View On> 0x04 len = 2
+ * <Text View On> 0x0D len = 2
+ * <Active Source> 0x82 len = 4
+ *
+ * wakeup message from TV
+ * <Set Stream Path> 0x86 len = 4
+ * <Routing Change> 0x80 len = 6
+ * <remote key> 0x40 0x6d 0x09 len = 3
+ * if <Routing Change> is received
+ * then ignore other otp/as msg
+ */
+static void cec_set_wk_msg(unsigned char *otp_msg, unsigned char *as_msg)
+{
+	unsigned int tmp_otp_msg = 0;
+	unsigned int tmp_as_msg = 0;
+
+	if (!otp_msg || !as_msg)
+		return;
+
+	if (otp_msg[0] > 8) {
+		printf("wrong otp msg len: %d\n", otp_msg[0]);
+		if (as_msg[0] == 4) {
+			tmp_as_msg = as_msg[1] << 24 |
+				as_msg[2] << 16 |
+				as_msg[3] << 8 |
+				as_msg[4];
+			write_ao(CEC_REG_STICK_DATA2, tmp_as_msg);
+		}
+	} else if (otp_msg[0] > 4) {
+		/* otp msg store in two stick regs */
+		tmp_otp_msg = otp_msg[1] << 24 |
+			otp_msg[2] << 16 |
+			otp_msg[3] << 8 |
+			otp_msg[4];
+		write_ao(CEC_REG_STICK_DATA1, tmp_otp_msg);
+		tmp_otp_msg = 0;
+		tmp_otp_msg = otp_msg[5] << 24 |
+			otp_msg[6] << 16 |
+			otp_msg[7] << 8 |
+			otp_msg[8];
+		write_ao(CEC_REG_STICK_DATA2, tmp_otp_msg);
+	} else if (otp_msg[0] > 0) {
+		/* otp msg store in one stick reg */
+		tmp_otp_msg = otp_msg[1] << 24 |
+			otp_msg[2] << 16 |
+			otp_msg[3] << 8 |
+			otp_msg[4];
+		write_ao(CEC_REG_STICK_DATA1, tmp_otp_msg);
+		if (as_msg[0] == 4) {
+			tmp_as_msg = as_msg[1] << 24 |
+				as_msg[2] << 16 |
+				as_msg[3] << 8 |
+				as_msg[4];
+			write_ao(CEC_REG_STICK_DATA2, tmp_as_msg);
+		}
+	}
+}
+
+
+void vCEC_task(void __unused *pvParameters)
 {
 	u32 ret;
 	u32 buf[4] = {0};
 
+	memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+	memset(cec_as_msg, 0, sizeof(cec_as_msg));
 	if (CEC_ON == 0) {
 		printf("cec define disabled\n");
 		goto idle;
 	}
 
 	buf[0] = CEC_WAKEUP;
-	pvParameters = pvParameters;
+	/* pvParameters = pvParameters; */
 	ret = cec_init_config();
 	if (!ret) {
 		printf("cec not enable\n");
@@ -2064,16 +2191,36 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	cec_mailbox.osd_name[14] = 3;
 
 	cec_chip = chip_mode;
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO,
-						    cec_get_portinfo, 1);
+	/* for shutdown/resume case */
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO1,
+						    cec_get_wakeup_info1, 1);
 	if (ret == MBOX_CALL_MAX)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO);
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO1);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO2,
+						    cec_get_wakeup_info2, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO2);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_CEC_DATA,
 						    cec_update_config_data, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
 
+	/* only for suspend/resume case, for shutdown/resume
+	 * case, need sticky registers to store wakeup info.
+	 * as box have no CEC sticky registers, now wakeup
+	 * msg can only be transfered under suspend/resume.
+	 */
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_OTP_MSG,
+						    cec_get_wakeup_otp_msg, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_OTP_MSG);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_AS_MSG,
+						    cec_get_wakeup_as_msg, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_AS_MSG);
 
 	/* only for temp debug, only for no resume function */
 #if (CEC_TASK_DEBUG)
@@ -2082,9 +2229,9 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 #endif
 }
 
-void cec_req_irq(u32 onoff)
+void cec_req_irq(u32 __unused onoff)
 {
-	onoff = onoff;
+	/* onoff = onoff; */
 }
 
 #endif

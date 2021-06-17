@@ -46,6 +46,7 @@
 
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
+static int vdd_cpu;
 
 static IRPowerKey_t prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
@@ -125,11 +126,58 @@ void str_hw_disable(void)
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 }
 
+static void vcc3v3_ctrl(int is_on)
+{
+	if (xGpioSetDir(GPIOD_10,GPIO_DIR_OUT) < 0) {
+		printf("vcc3v3 set gpio dir fail\n");
+		return;
+	}
+
+	if (xGpioSetValue(GPIOD_10, is_on ? GPIO_LEVEL_HIGH : GPIO_LEVEL_LOW) < 0) {
+		printf("vcc3v3 set gpio val fail\n");
+		return;
+	}
+
+	printf("vcc3v3 %s\n", is_on ? "on" : "off");
+};
+
+static void vcc5v_ctrl(int is_on)
+{
+	if (xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT) < 0) {
+		printf("vcc5v set gpio dir fail\n");
+		return;
+	}
+
+	if (xGpioSetValue(GPIO_TEST_N, is_on ? GPIO_LEVEL_HIGH : GPIO_LEVEL_LOW) < 0) {
+		printf("vcc5v set gpio val fail\n");
+		return;
+	}
+
+	printf("vcc5v %s\n", is_on ? "on" : "off");
+};
+
+#define power_on_vcc3v3()	vcc3v3_ctrl(1)
+#define power_off_vcc3v3()	vcc3v3_ctrl(0)
+#define power_on_vcc5v()	vcc5v_ctrl(1)
+#define power_off_vcc5v()	vcc5v_ctrl(0)
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
 
 	shutdown_flag = shutdown_flag;
+
+	/***power on vcc3v3***/
+	power_on_vcc3v3();
+
+	/***restore vddcpu***/
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,vdd_cpu);
+	if (ret < 0) {
+		printf("vddcpu pwm set fail\n");
+		return;
+	}
+	printf("vddcpu restored\n");
+
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
 	if (ret < 0) {
@@ -137,21 +185,11 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-    /***power on vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	/***power on vcc5v***/
+	power_on_vcc5v();
 
-	ret = xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
-	printf("vdd_cpu on\n");
 }
 
 void str_power_off(int shutdown_flag)
@@ -159,6 +197,22 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	shutdown_flag = shutdown_flag;
+
+	/***power off vcc3v3***/
+	power_off_vcc3v3();
+
+	/***set vddcpu val***/
+	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
+	if (vdd_cpu < 0) {
+		printf("vddcpu pwm get fail\n");
+		return;
+	}
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,720);
+	if (ret < 0) {
+		printf("vddcpu pwm set fail\n");
+		return;
+	}
+	printf("vddcpu 720mv\n");
 
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
@@ -175,17 +229,6 @@ void str_power_off(int shutdown_flag)
 	}
 #endif
 
-	/***power off vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
-
-	ret= xGpioSetValue(GPIO_TEST_N,GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
-	printf("vdd_cpu off\n");
+	/***power off vcc5v***/
+	power_off_vcc5v();
 }

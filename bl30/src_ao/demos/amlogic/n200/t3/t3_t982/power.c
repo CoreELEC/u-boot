@@ -33,7 +33,7 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
-
+#include "mailbox-api.h"
 #include "hdmi_cec.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
@@ -69,6 +69,16 @@ static void vIRHandler(IRPowerKey_t *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
+static void *xMboxVadWakeup(void *msg)
+{
+	uint32_t buf[4] = {0};
+
+	msg = msg;
+	buf[0] = VAD_WAKEUP;
+	STR_Wakeup_src_Queue_Send(buf);
+
+	return NULL;
+}
 
 void str_hw_init(void);
 void str_hw_disable(void);
@@ -77,6 +87,8 @@ void str_power_off(int shutdown_flag);
 
 void str_hw_init(void)
 {
+	int ret;
+
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 #ifdef CONFIG_ETH_WAKEUP
@@ -88,6 +100,10 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP, xMboxVadWakeup, 0);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 }
 
 
@@ -105,6 +121,7 @@ void str_hw_disable(void)
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
+	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 }
 
 void str_power_on(int shutdown_flag)

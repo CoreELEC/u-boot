@@ -39,6 +39,7 @@
 #define ETH_PMT_WAKEUP      10
 #define CECB_WAKEUP		11
 #define ETH_PHY_GPIO    12
+#define VAD_WAKEUP	13
 
 #define STR_QUEUE_LENGTH    32
 #define STR_QUEUE_ITEM_SIZE 4

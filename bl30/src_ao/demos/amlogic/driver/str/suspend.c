@@ -73,6 +73,7 @@ WakeUp_Reason vWakeupReason[] = {
 	[REMOTE_CUS_WAKEUP] = { .name = "remote_cus" },
 	[ETH_PMT_WAKEUP] = { .name = "eth" },
 	[CECB_WAKEUP] = { .name = "cecb" },
+	[VAD_WAKEUP] = { .name = "vad" },
 };
 
 void set_suspend_flag(void)
@@ -250,6 +251,9 @@ static void vSTRTask( void *pvParameters )
 					break;
 				case WIFI_WAKEUP:
 					exit_reason = WIFI_WAKEUP;
+					break;
+				case VAD_WAKEUP:
+					exit_reason = VAD_WAKEUP;
 					break;
 				default:
 					break;

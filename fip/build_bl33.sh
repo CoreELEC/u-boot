@@ -48,7 +48,12 @@ function build_uboot() {
 	echo "Build uboot...Please Wait...$1...$2...$3...$4..."
 	mkdir -p ${FIP_BUILD_FOLDER}
 	cd ${UBOOT_SRC_FOLDER}
-	make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 AVBKEYMODE=$4 # &> /dev/null
+	if [[ "${SCRIPT_ARG_CHIPSET_VARIANT}" =~ "nocs" ]] || [[ "${CONFIG_CHIPSET_VARIANT}" =~ "nocs" ]]; then
+		CONFIG_CHIP_NOCS=1
+		echo "### ${CONFIG_CHIP_NOCS} ###"
+	fi
+	make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 AVBKEYMODE=$4 CHIPMODE=${CONFIG_CHIP_NOCS} # &> /dev/null
+
 	ret=$?
 	cd ${MAIN_FOLDER}
 	if [ 0 -ne $ret ]; then

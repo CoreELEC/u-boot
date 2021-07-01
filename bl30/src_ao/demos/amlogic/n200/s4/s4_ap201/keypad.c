@@ -34,6 +34,17 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 
 static void vAdcKeyCallBack(struct xReportEvent event)
 {
+	uint32_t buf[4] = {0};
+
+	switch (event.ulCode) {
+	case ADC_KEY_ID_MENU:
+		buf[0] = POWER_KEY_WAKEUP;
+		STR_Wakeup_src_Queue_Send_FromISR(buf);
+		break;
+	default:
+		break;
+	}
+
 	printf("ADC key event 0x%x, key code %d, responseTime %d\n",
 		event.event, event.ulCode, event.responseTime);
 }
@@ -44,7 +55,7 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 };
 
 struct xAdcKeyInfo adcKeyInfo[] = {
-	ADC_KEY_INFO(ADC_KEY_ID_MENU, 0, SARADC_CH2,
+	ADC_KEY_INFO(ADC_KEY_ID_MENU, 90, SARADC_CH0,
 		     EVENT_SHORT,
 		     vAdcKeyCallBack, NULL),
 	ADC_KEY_INFO(ADC_KEY_ID_VOL_DEC, 574, SARADC_CH2,
@@ -63,13 +74,13 @@ struct xAdcKeyInfo adcKeyInfo[] = {
 
 void vKeyPadInit(void)
 {
-	vCreateGpioKey(gpioKeyInfo,
-			sizeof(gpioKeyInfo)/sizeof(struct xGpioKeyInfo));
-	vGpioKeyEnable();
+	vCreateAdcKey(adcKeyInfo,
+			sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
+	vAdcKeyEnable();
 }
 
 void vKeyPadDeinit(void)
 {
-	vGpioKeyDisable();
-	vDestoryGpioKey();
+	vAdcKeyDisable();
+	vDestoryAdcKey();
 }

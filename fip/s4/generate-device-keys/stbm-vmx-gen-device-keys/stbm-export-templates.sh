@@ -6,7 +6,7 @@
 # file 'LICENSE' which is part of this source code package.
 
 #set -x
-version=1.2
+version=1.0
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
@@ -36,28 +36,26 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Export signing keys and sign template
+       Generate all Amlogic SC2 chipset Device Vendor Secure Chipset Startup (SCS) keys
 
        $(basename $0)
-		--key-dir <key-dir> \\
-		{--project <project-name>} \\
+		--stbm-key-dir stbm-key-dir> \\
+		--project <project-name> \\
 		--template-dir  <template-dir> \\
 		--rootkey-index [0 | 1 | 2 | 3] \\
 		--arb-config <arb-config-file> \\
-		--out-dir <output-dir>
+		--out-vmx-dir <output-vmx-dir>
 EOF
     exit 1
 }
 
-key_dir=""
+stbm_key_dir=""
 part=""
-size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
-boot_blobs_arb_args=
-device_fip_arb_args=
-device_soc="s4"
+arb_config=""
+device_soc=""
 
 parse_main() {
     local i=0
@@ -80,9 +78,8 @@ parse_main() {
                 echo "Version $version";
 		exit 0
 		;;
-            --key-dir)
-                key_dir="${argv[$i]}"
-		check_dir "${key_dir}"
+            --stbm-key-dir)
+                stbm_key_dir="${argv[$i]}"
 		;;
             --project)
                 part="${argv[$i]}"
@@ -100,9 +97,9 @@ parse_main() {
 		;;
 		    --arb-config)
                 arb_config="${argv[$i]}"
-        ;;
-		    --out-dir)
-                output_dir="${argv[$i]}"
+		;;
+		    --out-vmx-dir)
+                out_vmx_dir="${argv[$i]}"
 		;;
             *)
                 echo "Unknown option $arg";
@@ -115,13 +112,14 @@ parse_main() {
 
 parse_main "$@"
 
-trace "  key-dir $key_dir"
+trace "  key-dir $stbm_key_dir"
 trace "  project $part"
 trace "  template_dir $template_dir"
 trace "  rootkey-index $rootkey_index"
-trace "  out-dir $output_dir"
+trace "  arb-config $arb_config"
+trace "  out-dir $out_vmx_dir"
 
-if [ -z "$key_dir" ]; then
+if [ -z "$stbm_key_dir" ]; then
 	usage
 fi
 
@@ -133,19 +131,20 @@ if [ -z "$rootkey_index" ]; then
 	usage
 fi
 
-if [ -z "$output_dir" ]; then
+if [ ! -f "$arb_config" ]; then
 	usage
 fi
 
-if [ -s "${arb_config}" ]; then
-    source ${arb_config}
-    boot_blobs_arb_args="--device-scs-segid ${DEVICE_SCS_SEGID} --device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-scs-vers ${DEVICE_SCS_VERS} --device-tee-vers ${DEVICE_TEE_VERS}"
-    device_fip_arb_args="--device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-tee-vers ${DEVICE_TEE_VERS} --device-ree-vers ${DEVICE_REE_VERS}"
+if [ -z "$out_vmx_dir" ]; then
+	usage
 fi
 
-${EXEC_BASEDIR}/bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}" ${device_fip_arb_args}
+${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
+    --template-dir "$template_dir" \
+    --project "$part" \
+	--device-soc "$device_soc" \
+    --arb-config "$arb_config" \
+    --out-dir "${stbm_key_dir}/outdir" \
+    --key-dir "${stbm_key_dir}/keydir"
 
-${EXEC_BASEDIR}/bin/gen_device_root_hash.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --device-soc "$device_soc" --template-dir "${template_dir}" ${boot_blobs_arb_args}
-
-${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part"
-
+${EXEC_BASEDIR}/bin/stbm-prepare-sign-request.sh "${stbm_key_dir}" "${out_vmx_dir}" "$part"

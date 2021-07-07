@@ -1,0 +1,22 @@
+if TARGET_MESON_G12A
+
+config SYS_CPU
+	string
+	default "armv8"
+
+config SYS_BOARD
+	string
+	default "radxa_zero"
+
+config SYS_VENDOR
+	string
+	default "radxa"
+
+config SYS_SOC
+	string
+	default "g12a"
+
+config SYS_CONFIG_NAME
+	default "radxa_zero"
+
+endif

@@ -279,6 +279,11 @@ config ODROID_C4
 	select ODROID_COMMON
 	default n
 
+config RADXA_ZERO
+	bool "Support Radxa Zero board"
+	select ODROID_COMMON
+	default n
+
 if GXB_SKT_V1
 source "board/amlogic/gxb_skt_v1/Kconfig"
 endif
@@ -542,4 +547,8 @@ endif
 
 if ODROID_C4
 source "board/hardkernel/odroidc4/Kconfig"
+endif
+
+if RADXA_ZERO
+source "board/radxa/radxa_zero/Kconfig"
 endif

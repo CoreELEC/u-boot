@@ -10,4 +10,6 @@
 
 #include "odroid-g12-common.h"
 
+#undef ETHERNET_EXTERNAL_PHY
+
 #endif

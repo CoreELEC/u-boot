@@ -21,6 +21,9 @@ static int do_sleep(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	delay = simple_strtoul(argv[1], NULL, 10) * CONFIG_SYS_HZ;
 
+	if (delay == 0)
+		return 0;
+
 	while (get_timer(start) < delay) {
 		if (ctrlc())
 			return (-1);

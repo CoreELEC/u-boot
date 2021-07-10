@@ -90,10 +90,12 @@
 #define ENV_PXE_DEFAULT
 #endif
 
+#define CONFIG_BOOTDELAY			1
 #define ENV_BOOT_DEFAULT				\
 	"boot_default="					\
 		"for mmc_dev in 0 1 2; do "		\
 			"if fatload mmc ${mmc_dev}:1 ${loadaddr} boot.ini; then "		\
+				"sleep "__stringify(CONFIG_BOOTDELAY)"; " \
 				"source ${loadaddr}; "	\
 			"fi; " \
 		"done\0"
@@ -346,7 +348,6 @@
 #define CONFIG_NEED_BL32			1
 #define CONFIG_CMD_RSVMEM			1
 #define CONFIG_FIP_IMG_SUPPORT			1
-#define CONFIG_BOOTDELAY			1
 #define CONFIG_SYS_LONGHELP			1
 #define CONFIG_CMD_MISC				1
 #define CONFIG_CMD_ITEST			1

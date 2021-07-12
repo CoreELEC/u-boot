@@ -210,7 +210,7 @@ EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl31-level-3-rsa-priv.pem "
 EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl32-level-3-rsa-priv.pem "
 EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl33-level-3-rsa-priv.pem "
 EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl40-level-3-rsa-priv.pem "
-
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/krnl-level-3-rsa-priv.pem "
 ### Input: DVGK derived AES-256 root key ###
 ### Required to generate Device Root cert and Lvl-1/2 cert ###
 #EXPORT_FILES+="${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-2.bin "

@@ -62,8 +62,14 @@ function init_vari() {
 		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
 	fi
 
+	if [ ! -n "${BL2E_PAYLOAD_SIZE}" ]; then
+		BL2E_PAYLOAD_SIZE=${CONFIG_BL2E_PAYLOAD_SIZE}
+		export BL2E_PAYLOAD_SIZE
+	fi
+
 	echo "------------------------------------------------------"
-	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE}"
+	echo " DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT}"
+	echo " AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} BL2E_PAYLOAD_SIZE: ${BL2E_PAYLOAD_SIZE}"
 	echo "------------------------------------------------------"
 }
 
@@ -456,6 +462,31 @@ function build_fip() {
 	return
 }
 
+function update_bb1st() {
+
+	if [[ ${CHIPSET_VARIANT} == "no_variant" ]] || [[ ${CHIPSET_VARIANT} == "general" ]];then
+		sto_type1=""
+		sto_type2=""
+	else
+		sto_type1=".sto"
+		sto_type2=".usb"
+	fi
+
+	echo update bb1st sto SCS Total Area
+	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+		--infile-template-bb1st=${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${CHIPSET_NAME}/bb1st${sto_type1}${CHIPSET_VARIANT_SUFFIX}.bin \
+		--infile-blob-bb1st-ref=${FIP_BUILD_FOLDER}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed \
+		--infile-blob-bl2e=${FIP_BUILD_FOLDER}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed \
+		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed
+
+	echo update bb1st usb SCS Total Area
+	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+		--infile-template-bb1st=${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${CHIPSET_NAME}/bb1st${sto_type2}${CHIPSET_VARIANT_SUFFIX}.bin \
+		--infile-blob-bb1st-ref=${FIP_BUILD_FOLDER}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed \
+		--infile-blob-bl2e=${FIP_BUILD_FOLDER}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed \
+		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed
+}
+
 function process_blx() {
 
 
@@ -485,12 +516,22 @@ function process_blx() {
 			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
 			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
-			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
+			if [[ "${BLX_BIN_NAME[$loop]}" =~ "blob-bl2e" ]]; then
+				if [ $blx_size -ne ${BL2E_SUPPORT_FINAL_SIZE[0]} ] &&
+				   [ $blx_size -ne ${BL2E_SUPPORT_FINAL_SIZE[1]} ] &&
+				   [ $blx_size -ne ${BL2E_SUPPORT_FINAL_SIZE[2]} ] &&
+				   [ $blx_size -ne ${BL2E_SUPPORT_FINAL_SIZE[3]} ]; then
+					echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
+					exit -1
+				fi
+			elif [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
 				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
 				exit -1
 			fi
 		fi
 	done
+
+	update_bb1st $@
 
 	if [ ! -f ${BUILD_PATH}/device_acs.bin ]; then
 		echo "dev acs params not exist !"

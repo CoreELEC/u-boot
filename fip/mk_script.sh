@@ -442,6 +442,10 @@ function bin_path_parser() {
 			--bl2e)
 				update_bin_path 5 "${argv[@]:$((i))}"
 				continue ;;
+			--bl2e-size)
+				BL2E_PAYLOAD_SIZE="${argv[i]}"
+				export BL2E_PAYLOAD_SIZE
+				continue ;;
 			--bl2x)
 				update_bin_path 6 "${argv[@]:$((i))}"
 				continue ;;

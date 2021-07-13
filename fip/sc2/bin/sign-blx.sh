@@ -148,6 +148,18 @@ function sign_blx() {
 		build_type=normal
 	fi
 
+	if [ -n ${BL2E_PAYLOAD_SIZE} ]; then
+		BLX_BIN_SIZE[1]=${BL2E_PAYLOAD_SIZE}
+	fi
+
+	if [ -f "fip/_tmp/bl2e.bin" ]; then
+		bl2e_bin_size=`stat -c %s fip/_tmp/bl2e.bin`
+		if [ ${bl2e_bin_size} -gt ${BLX_BIN_SIZE[1]} ]; then
+			echo ---- BL2E bin size ${bl2e_bin_size} is larger than ${BLX_BIN_SIZE[1]} ----
+			exit -1
+		fi
+	fi
+
 	mkdir ${BASEDIR_BUILD}
 
 	if [ ${blxname} == "bl2" ] || [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then

@@ -61,6 +61,8 @@ declare -a BLX_BIN_SIZE=("260096"	\
 			 "102400"	\
 			 "NULL")
 
+declare -a BL2E_SUPPORT_FINAL_SIZE=("74864" "140400" "271472" "1057904")
+
 declare BL30_BIN_SIZE="65536"
 declare BL33_BIN_SIZE="1572864"
 declare DEV_ACS_BIN_SIZE="28672"

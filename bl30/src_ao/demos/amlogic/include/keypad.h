@@ -135,15 +135,19 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum);
 void vDestoryGpioKey(void);
 void vGpioKeyEnable(void);
 void vGpioKeyDisable(void);
+int  vGpioKeyIsEmpty(void);
 
 void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum);
 void vDestoryAdcKey(void);
 void vAdcKeyEnable(void);
 void vAdcKeyDisable(void);
+int  vAdcKeyIsEmpty(void);
 
+void vKeyPadCreate(void);
 void vKeyPadInit(void);
 void vKeyPadDeinit(void);
 
+void vDynamicKeypadInit(void);
 #ifdef __cplusplus
 }
 #endif

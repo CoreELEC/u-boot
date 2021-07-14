@@ -131,6 +131,7 @@ static void prvGpioKeyHandler(void)
 void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 {
 	struct xOneGpioKeyInfo *xOneKey;
+	struct xGpioKeyInfo *gpioKeyInfo;
 	uint16_t i;
 
 	if (!xGpioKeyCycleTimer) {
@@ -148,28 +149,48 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 
 	for (i = 0; i < keyNum; i++) {
 		xOneKey = pvPortMalloc(sizeof(struct xOneGpioKeyInfo));
-		if (xOneKey == NULL) {
-			printf("gpio key: [%d] malloc failed!\n", i);
-			continue;
-		}
+		if (xOneKey == NULL)
+			goto fail_alloc2;
 
+		gpioKeyInfo = pvPortMalloc(sizeof(struct xGpioKeyInfo));
+		if (gpioKeyInfo == NULL)
+			goto fail_alloc1;
+
+		memcpy(gpioKeyInfo, &keyArr[i], sizeof(struct xGpioKeyInfo));
 		memset(xOneKey, 0, sizeof(struct xOneGpioKeyInfo));
 		xOneKey->keyJitterCount = 0;
 		xOneKey->keyState = UP;
-		xOneKey->gpioKeyInfo = &keyArr[i];
+		xOneKey->gpioKeyInfo = gpioKeyInfo;
 		prvAddGpioKey(xOneKey);
+
+		printf("keypad: add gpio key [%ld]\n",
+			xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
 	}
+
+	return;
+
+fail_alloc1:
+	vPortFree(xOneKey);
+fail_alloc2:
+	printf("gpio key: [%d] malloc failed!\n", i);
 }
 
 void vDestoryGpioKey(void)
 {
 	struct xOneGpioKeyInfo *xPassBtn, *xTmpBtn;
+	uint32_t key_id;
 
 	for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
+		key_id = xHeadKey->gpioKeyInfo->keyInitInfo.ulKeyId;
+
+		vPortFree(xPassBtn->gpioKeyInfo);
+
 		xTmpBtn = xPassBtn;
 		xPassBtn = xPassBtn->xNext;
 
 		vPortFree(xTmpBtn);
+
+		printf("keypad: del gpio key [%ld]\n", key_id);
 	}
 
 	xHeadKey = NULL;
@@ -207,4 +228,9 @@ void vGpioKeyDisable(void)
 
 		vFreeGpioIRQ(keyInitInfo->ulKeyId);
 	}
+}
+
+int vGpioKeyIsEmpty(void)
+{
+	return (!xHeadKey);
 }

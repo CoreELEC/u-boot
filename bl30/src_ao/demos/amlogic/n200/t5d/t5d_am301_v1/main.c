@@ -40,6 +40,7 @@
 #include "version.h"
 #include "hdmi_cec.h"
 #include "stick_mem.h"
+#include "keypad.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -198,6 +199,7 @@ int main(void)
 
 	vRtcInit();
 	create_str_task();
+	vKeyPadCreate();
 
 	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();

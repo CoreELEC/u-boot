@@ -114,26 +114,7 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 	uint16_t i;
 	struct xOneAdcKeyInfo *xOneKey;
 	struct xKeyInitInfo *keyInitInfo;
-
-	for (i = 0; i < keyNum; i++) {
-		keyInitInfo = &(keyArr[i].keyInitInfo);
-
-		if (keyInitInfo->ulKeyId < ADCKEY_ID_BASE) {
-			printf("adc key:[%d] key code not less than 512.\n", i);
-			continue;
-		}
-
-		xOneKey = pvPortMalloc(sizeof(struct xOneAdcKeyInfo));
-		if (xOneKey == NULL) {
-			printf("adc key: [%d] malloc failed!\n", i);
-			continue;
-		}
-
-		memset(xOneKey, 0, sizeof(struct xOneAdcKeyInfo));
-		xOneKey->keyState = UP;
-		xOneKey->adcKeyInfo = &keyArr[i];
-		prvAddAdcKey(xOneKey);
-	}
+	struct xAdcKeyInfo *adcKeyInfo;
 
 	if (!xAdcKeyCycleTimer) {
 		xAdcKeyCycleTimer = xTimerCreate((const char *)"xAdcKeyTimer",
@@ -147,17 +128,56 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 			return;
 		}
 	}
+
+	for (i = 0; i < keyNum; i++) {
+		keyInitInfo = &(keyArr[i].keyInitInfo);
+
+		if (keyInitInfo->ulKeyId < ADCKEY_ID_BASE) {
+			printf("adc key:[%d] key code not less than 512.\n", i);
+			continue;
+		}
+
+		xOneKey = pvPortMalloc(sizeof(struct xOneAdcKeyInfo));
+		if (xOneKey == NULL)
+			goto fail_alloc2;
+
+		adcKeyInfo = pvPortMalloc(sizeof(struct xAdcKeyInfo));
+		if (adcKeyInfo == NULL)
+			goto fail_alloc1;
+
+		memcpy(adcKeyInfo, &keyArr[i], sizeof(struct xAdcKeyInfo));
+		memset(xOneKey, 0, sizeof(struct xOneAdcKeyInfo));
+		xOneKey->keyState = UP;
+		xOneKey->adcKeyInfo = adcKeyInfo;
+		prvAddAdcKey(xOneKey);
+
+		printf("keypad: add adc key [%ld]\n", keyInitInfo->ulKeyId);
+	}
+
+	return;
+
+fail_alloc1:
+	vPortFree(xOneKey);
+fail_alloc2:
+	printf("adc key: [%d] malloc failed!\n", i);
 }
 
 void vDestoryAdcKey(void)
 {
 	struct xOneAdcKeyInfo *xPassBtn, *xTmpBtn;
+	uint32_t key_id;
 
 	for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
+		key_id = xPassBtn->adcKeyInfo->keyInitInfo.ulKeyId;
+
+		vPortFree(xPassBtn->adcKeyInfo);
+
 		xTmpBtn = xPassBtn;
 		xPassBtn = xPassBtn->xNext;
 
 		vPortFree(xTmpBtn);
+
+		printf("keypad: del adc key [%ld]\n", key_id);
 	}
 
 	xHeadKey = NULL;
@@ -181,4 +201,9 @@ void vAdcKeyDisable(void)
 
 	vAdcHwDisable();
 	vAdcDeinit();
+}
+
+int vAdcKeyIsEmpty(void)
+{
+	return (!xHeadKey);
 }

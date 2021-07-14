@@ -23,4 +23,4 @@
  #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  #
-key-y = adc_key.o gpio_key.o
+key-y = adc_key.o gpio_key.o dynamic_keypad.o

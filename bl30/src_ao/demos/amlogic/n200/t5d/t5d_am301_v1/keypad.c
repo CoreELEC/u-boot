@@ -21,6 +21,9 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 	default:
 		break;
 	}
+
+	printf("ADC key event 0x%x, key code %d, responseTicks %d\n",
+		event.event, event.ulCode, event.responseTime);
 }
 
 struct xAdcKeyInfo adcKeyInfo[] = {
@@ -29,15 +32,26 @@ struct xAdcKeyInfo adcKeyInfo[] = {
 		     vAdcKeyCallBack, NULL)
 };
 
-void vKeyPadInit(void)
+void vKeyPadCreate(void)
 {
 	vCreateAdcKey(adcKeyInfo,
 			sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
+
+	vDynamicKeypadInit();
+}
+
+void vKeyPadInit(void)
+{
+	if (vAdcKeyIsEmpty())
+		vCreateAdcKey(adcKeyInfo,
+				sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
+
 	vAdcKeyEnable();
+	vGpioKeyEnable();
 }
 
 void vKeyPadDeinit(void)
 {
 	vAdcKeyDisable();
-	vDestoryAdcKey();
+	vGpioKeyDisable();
 }

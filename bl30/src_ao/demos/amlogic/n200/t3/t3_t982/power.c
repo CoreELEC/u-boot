@@ -35,6 +35,7 @@
 #include "keypad.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
+#include "btwake.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
 
@@ -101,6 +102,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+	Bt_GpioIRQRegister();
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP, xMboxVadWakeup, 0);
 	if (ret == MBOX_CALL_MAX)
@@ -119,7 +121,7 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-
+	Bt_GpioIRQFree();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);

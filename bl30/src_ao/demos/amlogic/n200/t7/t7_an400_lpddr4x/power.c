@@ -165,6 +165,7 @@ void str_power_off(int shutdown_flag)
 
 	shutdown_flag = shutdown_flag;
 	/***power off vdd_cpu***/
+#ifndef CONFIG_ETH_WAKEUP
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu_b set gpio dir fail\n");
@@ -176,6 +177,7 @@ void str_power_off(int shutdown_flag)
 		printf("vdd_cpu_b set gpio val fail\n");
 		return;
 	}
+#endif
 
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);

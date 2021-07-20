@@ -55,6 +55,8 @@ size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
+external_dvgk=""
+EXTERNAL_LVL1CERT_EPKS=""
 
 parse_main() {
     local i=0
@@ -85,6 +87,13 @@ parse_main() {
 		;;
             --rsa-size)
                 size="${argv[$i]}"
+		;;
+	    --external-dvgk)
+		external_dvgk="${argv[$i]}"
+		;;
+	    --external_lvl1cert_epks)
+		EXTERNAL_LVL1CERT_EPKS="${argv[$i]}"
+		export EXTERNAL_LVL1CERT_EPKS
 		;;
             --template-dir)
                 template_dir="${argv[$i]}"
@@ -146,9 +155,14 @@ ${EXEC_BASEDIR}/bin/gen_device_root_cert.sh --key-dir "$key_dir" --stage boot-bl
 ${EXEC_BASEDIR}/bin/gen_device_root_cert.sh --key-dir "$key_dir" --stage fip --rsa-size "$size" --project "$part"
 
 mkdir -p "$key_dir"/root/dvgk/"$part"
-${EXEC_BASEDIR}/bin/dvgk_gen.sh "$key_dir"/root/dvgk/"$part"/dvgk
 
-${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin "$key_dir"/root/dvgk/"$part"/dvgk.bin --mrk-name DVGK --project "$part"
+if [ ! -z ${external_dvgk} ]; then
+	echo ==== use external dvgk ${external_dvgk} ====
+	${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin ${external_dvgk} --mrk-name DVGK --project "$part"
+else
+	${EXEC_BASEDIR}/bin/dvgk_gen.sh "$key_dir"/root/dvgk/"$part"/dvgk
+	${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin "$key_dir"/root/dvgk/"$part"/dvgk.bin --mrk-name DVGK --project "$part"
+fi
 
 ${EXEC_BASEDIR}/bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}"
 

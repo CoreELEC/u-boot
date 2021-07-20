@@ -202,7 +202,13 @@ if [ $stage == "boot-blobs" ]; then
 
 		echo "Generate $stage chain #$i certificate"
 		rsa_gen $i "$boot_blobs_rsa_path/key" "level-1-rsa level-2-rsa" $size
-		ek_gen $i "$boot_blobs_rsa_path/epk" "lvl1cert-epks.bin lvl2cert-epks.bin"
+		if [ ! -z ${EXTERNAL_LVL1CERT_EPKS} ]; then
+			echo ==== use external lvl1 cert-epks ${EXTERNAL_LVL1CERT_EPKS} ====
+			cp ${EXTERNAL_LVL1CERT_EPKS} ${boot_blobs_rsa_path}/epk/lvl1cert-epks.bin -rf
+			ek_gen $i "$boot_blobs_rsa_path/epk" "lvl2cert-epks.bin"
+		else
+			ek_gen $i "$boot_blobs_rsa_path/epk" "lvl1cert-epks.bin lvl2cert-epks.bin"
+		fi
 		nonce_gen $i "$boot_blobs_rsa_path/nonce" "device-lvl1rsa-nonce.bin device-lvl2rsa-nonce.bin"
 	done
 fi

@@ -74,6 +74,8 @@ void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
+void Bt_GpioIRQRegister(void);
+void Bt_GpioIRQFree(void);
 
 void str_hw_init(void)
 {
@@ -88,6 +90,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+	Bt_GpioIRQRegister();
 }
 
 

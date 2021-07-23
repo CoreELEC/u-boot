@@ -122,7 +122,7 @@ function sign_blx() {
 		chipset_variant_suffix=".${chipset_variant}"
 		if [[ "${input}" =~ ".sto" ]]; then
 			FEAT_BL2_TEMPLATE_TYPE=".sto"
-			if [[ "${chipset_variant}" =~ "nocs" ]]; then
+			if [[ "${chipset_variant}" =~ "nocs" && ${blxname} == "bl2e" ]]; then
 				FEAT_BL2E_SIGPROT_MODE=1
 			fi
 		elif [[ "${input}" =~ ".usb" ]]; then
@@ -135,6 +135,20 @@ function sign_blx() {
 	fi
 	export FEAT_BL2_TEMPLATE_TYPE
 	export FEAT_BL2E_SIGPROT_MODE
+
+	if [[ ${blxname} == "bl2e" && ! -z ${BL2E_UPDATE_TYPE} ]]; then
+		# copy pre-build bl2e of usb/sto if specified from build args
+		if [[ "${BL2E_UPDATE_TYPE}" == "usb" && "${input}" =~ ".sto" ]]; then
+			echo ~~~~ copy prebuild bl2e sto ~~~~
+			cp  bl2/bin/${CUR_SOC}/${chipset_name}/blob-bl2e.sto${chipset_variant_suffix}.bin.signed ${output}
+			return
+		fi
+		if [[ "${BL2E_UPDATE_TYPE}" == "sto" && "${input}" =~ ".usb" ]]; then
+			echo ~~~~ copy prebuild bl2e usb ~~~~
+			cp  bl2/bin/${CUR_SOC}/${chipset_name}/blob-bl2e.usb${chipset_variant_suffix}.bin.signed ${output}
+			return
+		fi
+	fi
 
 	if [ -z ${key_type} ]; then
 		key_type="dev-keys"
@@ -179,7 +193,9 @@ function sign_blx() {
 		exit 1
 	fi
 
-	${EXEC_BASEDIR}/download-keys.sh ${key_type} ${soc} chipset
+	if [[ ${FEAT_BL2E_SIGPROT_MODE} == "0" ]]; then
+		${EXEC_BASEDIR}/download-keys.sh ${key_type} ${soc} chipset
+	fi
 
 	if [ ${blxname} == "bl2" ] && [ ${build_type} == "normal" ]; then
 		if [ -z ${chip_acs} ] || [ ! -f ${chip_acs} ]; then

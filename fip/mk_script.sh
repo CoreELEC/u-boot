@@ -474,6 +474,10 @@ function bin_path_parser() {
 				continue ;;
 			--update-bl2e)
 				update_bin_path 5 "source"
+				if [[ ${argv[i]} == "sto" || ${argv[i]} == "usb" ]]; then
+					BL2E_UPDATE_TYPE=${argv[i]}
+					export BL2E_UPDATE_TYPE
+				fi
 				continue ;;
 			--update-bl2x)
 				update_bin_path 6 "source"

@@ -2,6 +2,8 @@
 
 SFX =
 
+CC = cc
+
 CFLAGS  += -Wall -static -lrt -ldl
 
 OBJS = parse.o

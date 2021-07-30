@@ -289,6 +289,7 @@ static enum LedState prvGetLastLedState(uint32_t id)
 
 static void prvLedStateMachine(enum LedState state, uint32_t id)
 {
+	static int blinkflag = 0;
 	prvSetLedState(state, id);
 
 	switch (state) {
@@ -299,17 +300,31 @@ static void prvLedStateMachine(enum LedState state, uint32_t id)
 		case LED_STATE_BRIGHTNESS:
 			prvPwmLedSetBrightness(id, prvGetLedBrightness(id));
 			prvSetLedStateToDefault(id);
+			blinkflag = 0;
 			break;
 		case LED_STATE_BREATH:
 			prvLedBreath(id, prvGetLedBreathId(id));
+			blinkflag = 0;
 			break;
 		case LED_STATE_BLINK_ON:
-			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
+			if (blinkflag == 0) {
+				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
+				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
+				blinkflag++;
+			} else if (prvPwmledIsBlinkedComplete(id)) {
+				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
+				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
+			}
 			break;
 		case LED_STATE_BLINK_OFF:
-			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
+			if (blinkflag == 0) {
+				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
+				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
+				blinkflag++;
+			} else if (prvPwmledIsBlinkedComplete(id)) {
+				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
+				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
+			}
 			break;
 		case LED_STATE_BLINK_BREATH:
 			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
@@ -320,6 +335,7 @@ static void prvLedStateMachine(enum LedState state, uint32_t id)
 				|| (prvGetLastLedState(id)==LED_STATE_DEFAULT)) {
 				prvPwmLedSetBrightness(id, LED_FULL);
 				prvSetLedStateToDefault(id);
+				blinkflag = 0;
 			}
 			break;
 		case LED_STATE_BLINK_OFF_HANDLE:
@@ -327,6 +343,7 @@ static void prvLedStateMachine(enum LedState state, uint32_t id)
 				|| (prvGetLastLedState(id)==LED_STATE_DEFAULT)) {
 				prvPwmLedSetBrightness(id, LED_OFF);
 				prvSetLedStateToDefault(id);
+				blinkflag = 0;
 			}
 			break;
 		case LED_STATE_BLINK_BREATH_HANDLE:

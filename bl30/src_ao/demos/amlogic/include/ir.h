@@ -46,6 +46,7 @@ enum PowerKeyType {
 #define MODE_SOFT		0x0
 #define MODE_HARD_NEC		0x1
 #define MODE_HARD_LEAGCY_NEC	0xff
+#define MAX_KEY_NUM  		80
 
 /**
  * Other protocol used by customer, due to size of firmware will not enabled
@@ -98,6 +99,8 @@ enum PowerKeyType {
  *  vIRDeint() - deinit ir
  */
 	extern void vIRDeint(void);
+	extern void vIRMailboxEnable(void);
+	extern void vIRGetKeyCode(IRPowerKey_t *ulPowerKeyList);
 #ifdef __cplusplus
 }
 #endif

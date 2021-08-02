@@ -33,10 +33,14 @@
 #include <unistd.h>
 #include "n200_func.h"
 #include "common.h"
+#include "ir.h"
+#include "mailbox-api.h"
 
 #include "ir_drv.h"
 
 static uint8_t ucIsDebugEnable;
+static IRPowerKey_t prvKeyCodeList[MAX_KEY_NUM] = {};
+static uint32_t key_cnt;
 
 #define IRDebug(fmt, x...)						\
 do {									\
@@ -260,3 +264,47 @@ void vIRDeint(void)
 	DisableIrq(IRQ_NUM_IRIN);
 	UnRegisterIrq(IRQ_NUM_IRIN);
 }
+
+void vIRGetKeyCode(IRPowerKey_t *PowerKeyList)
+{
+	IRPowerKey_t *Keydest = PowerKeyList;
+	IRPowerKey_t *KeyList = prvKeyCodeList;
+
+	while (key_cnt--)
+		*Keydest++ = *KeyList++;
+}
+
+static void *prvIRGetInfo(void *msg)
+{
+
+	uint32_t key_num, i;
+	uint32_t *key_code, *key_type;
+	key_num = *(u32 *)msg;
+	key_code = ((u32 *)msg) + 1;
+	key_type = ((u32 *)msg) + key_num / 2 + 1;
+
+	for (i = 0; i < key_num / 2; i++) {
+		prvKeyCodeList[i].code = *key_code;
+		prvKeyCodeList[i].type = *key_type;
+		key_code++;
+		key_type++;
+	}
+
+	key_cnt = i;
+	return NULL;
+
+
+}
+
+void vIRMailboxEnable(void)
+{
+	int32_t ret;
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_IR_INFO,
+						    prvIRGetInfo, 1);
+	if (ret == MBOX_CALL_MAX) {
+		printf("mailbox cmd 0x%x register fail\n");
+		return;
+	}
+}
+

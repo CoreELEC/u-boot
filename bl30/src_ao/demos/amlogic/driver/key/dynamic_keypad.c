@@ -51,7 +51,8 @@ static void *xMboxSetKeypad(void *msg)
 		}
 
 		struct xAdcKeyInfo adcKey[1] = {
-			ADC_KEY_INFO(key_info[0], key_info[1], key_info[2],
+			ADC_KEY_INFO(key_info[0], key_info[1],
+				     (enum AdcChannelType)key_info[2],
 				     key_info[3], vKeyCallBack, NULL)
 		};
 

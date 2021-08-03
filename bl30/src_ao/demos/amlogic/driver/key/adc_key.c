@@ -35,7 +35,7 @@
 #include "saradc.h"
 
 struct xOneAdcKeyInfo {
-	KeyState keyState;
+	enum KeyState keyState;
 	struct xAdcKeyInfo *adcKeyInfo;
 	struct xOneAdcKeyInfo *xNext;
 };
@@ -64,7 +64,7 @@ static void prAdcKeyProcess(TimerHandle_t xTimer)
 	struct xOneAdcKeyInfo *xPassBtn = xHeadKey;
 	struct xAdcKeyInfo *adcKeyInfo;
 
-	xTimer = xTimer;
+	(void)xTimer;
 	for (xPassBtn = xHeadKey; xPassBtn != NULL;
 						xPassBtn = xPassBtn->xNext) {
 		adcKeyInfo = xPassBtn->adcKeyInfo;

@@ -54,21 +54,21 @@ extern "C" {
 /* key threshold */
 #define THRESHOLD_LONG			2000
 
-typedef enum {
+enum KeyType{
 	GPIO_KEY = 0,
 	ADC_KEY,
 	KEY_TYPE_NUM
-} KeyType;
+};
 
-typedef enum {
+enum GpioLevel {
 	LOW = 0,
 	HIGH
-} GpioLevel;
+};
 
-typedef enum {
+enum KeyState{
 	UP = 0,
 	DOWN,
-} KeyState;
+};
 
 struct xReportEvent {
 	uint32_t ulCode;
@@ -91,7 +91,7 @@ struct xKeyInitInfo {
 };
 
 struct xGpioKeyInfo {
-	GpioLevel ulInitLevel;
+	int ulInitLevel;
 	struct xKeyInitInfo keyInitInfo;
 };
 

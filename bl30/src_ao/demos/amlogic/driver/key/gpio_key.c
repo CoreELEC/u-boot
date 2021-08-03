@@ -35,7 +35,7 @@
 
 struct xOneGpioKeyInfo {
 	uint16_t keyJitterCount;
-	KeyState keyState;
+	enum KeyState keyState;
 	struct xGpioKeyInfo *gpioKeyInfo;
 	struct xOneGpioKeyInfo *xNext;
 };
@@ -66,12 +66,12 @@ static void prRunPollFromISR(void)
 
 static void prvDetectGpioKey(TimerHandle_t xTimer)
 {
-	GpioLevel uiValue;
+	int uiValue;
 	uint8_t isPressingKey = 0;
 	struct xOneGpioKeyInfo *xPassBtn = xHeadKey;
 	struct xGpioKeyInfo *gpioKeyInfo;
 
-	xTimer = xTimer;
+	(void)xTimer;
 	for (xPassBtn = xHeadKey; xPassBtn != NULL;
 						xPassBtn = xPassBtn->xNext) {
 		gpioKeyInfo = xPassBtn->gpioKeyInfo;

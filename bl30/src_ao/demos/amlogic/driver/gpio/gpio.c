@@ -56,7 +56,7 @@ static void prvExitCritical(UBaseType_t uxSaveIsr)
 		taskEXIT_CRITICAL_FROM_ISR(uxSaveIsr);
 	else {
 		taskEXIT_CRITICAL();
-		uxSaveIsr = 0;
+		(void)uxSaveIsr;
 	}
 };
 

@@ -141,8 +141,9 @@ void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags)
 	reg_offset = REG_PIN_SC2_SEL + ((line / 2) << 2);
 
 	/* clear both edge */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
-			  GPIO_IRQ_BOTH_SHIFT(line), 0);
+	REG32(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR) =
+			REG32(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR) &
+			~GPIO_IRQ_BOTH_SHIFT(line);
 
 	/* set filter */
 	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,

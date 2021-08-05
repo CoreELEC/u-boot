@@ -58,6 +58,21 @@ _start:
 	.option pop
 	la sp, _sp
 
+#if defined (SOC_t3)
+	/* Fixme T3 axi_ram access issuse */
+	lw a0, _data_start
+	lw a1, _data_end
+	lw a2, _data_img
+	bgeu a0, a1, 2f
+1:
+	lw a3, 0(a2)
+	sw a3, (a0)
+	addi a0, a0, 4
+	addi a2, a2, 4
+	bltu a0, a1, 1b
+2:
+#endif
+
 	/* Clear bss section */
 	lw a0, _bss_start
 	lw a1, _bss_end
@@ -80,6 +95,14 @@ _bss_end:
 .long _ebss
 _bss_start:
 .long _bss
+#if defined (SOC_t3)
+_data_end:
+.long _edata
+_data_start:
+.long _data
+_data_img:
+.long _data_img_start
+#endif
 
 #ifndef N200_REVA
 	.global disable_mcycle_minstret

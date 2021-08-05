@@ -102,6 +102,8 @@ endif
 
 CFLAGS += -D VERSION="\"${BRANCH} ${COMMIT_ID} ${GET_TIME} ${GET_DATE}\""
 
+CFLAGS += -D SOC_${SOC}
+
 #******************************************************************************
 #
 # The rule for building the object file from each C source file.

@@ -36,6 +36,10 @@ ENTRY( _start )
 MEMORY
 {
     ram (rw) : ORIGIN = configMEM_START, LENGTH = configMEM_LEN
+#if defined (SOC_t3)
+    bss_ram (rw) : ORIGIN = 0x10000000, LENGTH = 0x1800
+#endif
+
 }
 
 
@@ -56,14 +60,23 @@ SECTIONS
         _etext = .;
     } > ram
 
+#if defined (SOC_t3)
+    . = ALIGN(4);
+    _data_img_start = .;
+#endif
     .data :
     {
         _data = .;
         *(vtable)
+#if defined (SOC_t3)
+        *(.sdata* .data*)
+        _edata = .;
+    } > bss_ram AT > ram
+#else
         *(.data)
         _edata = .;
     } > ram
-
+#endif
     .bss :
     {
         _bss = .;
@@ -73,7 +86,11 @@ SECTIONS
         *(.gnu.linkonce.b.*)
         . = ALIGN(4);
         _ebss = .;
+#if defined (SOC_t3)
+    } > bss_ram
+#else
     } > ram
+#endif
 
 /*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size :*/
     .stack :

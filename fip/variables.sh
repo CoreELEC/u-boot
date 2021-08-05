@@ -47,3 +47,5 @@ function export_variables() {
 	export CUR_SOC
 	export BOARD_DIR
 }
+
+declare serverAddr="https://10.68.11.138"

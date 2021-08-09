@@ -1,5 +1,5 @@
 ARCH_DIRS="n200"
-SOC_DIRS="sc2 t5 t5d t7 s4 t3"
+SOC_DIRS="sc2 t5 t5d t7 s4 t3 p1"
 
 function list_boards()
 {

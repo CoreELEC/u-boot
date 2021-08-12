@@ -51,6 +51,7 @@ usage() {
 Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) [--input base.efuse.bin] \\
+                      [--dfu-device-roothash dfu-device_roothash.bin] \\
                       [--device-roothash device_roothash.bin] \\
                       [--dvgk dvgk.bin] \\
                       [--dvuk dvuk.bin] \\
@@ -92,6 +93,8 @@ function generate_efuse_device_pattern() {
                 dvuk="${argv[$i]}" ;;
 			--device-roothash)
                 device_roothash="${argv[$i]}" ;;
+			--dfu-device-roothash)
+                dfu_roothash="${argv[$i]}" ;;
             --enable-usb-password)
                 enable_usb_password="${argv[$i]}" ;;
             --enable-dif-password)
@@ -112,6 +115,7 @@ function generate_efuse_device_pattern() {
     check_opt_file dvgk 16 "$dvgk"
     check_opt_file dvuk 16 "$dvuk"
     check_opt_file device_roothash 32 "$device_roothash"
+    check_opt_file dfu_roothash 32 "$dfu_roothash"
 
     check_opt_boolean enable-usb-password "$enable_usb_password"
     check_opt_boolean enable-dif-password "$enable_dif_password"
@@ -162,6 +166,12 @@ function generate_efuse_device_pattern() {
 		b_1e3="$(printf %02x $(( 0x$b_1e3 | 0x07 )))"
     fi
 
+    if [ "$dfu_roothash" != "" ]; then
+	    dd if="$dfu_roothash" of="$patt" bs=16 seek=25 count=2 \
+            conv=notrunc >& /dev/null
+		b_1e3="$(printf %02x $(( 0x$b_1e3 | 0x06 )))"
+    fi
+
     echo $b_1e2 | xxd -r -p > $efusebit
     dd if=$efusebit of=$wrlock0 bs=1 seek=2 count=1 conv=notrunc >& /dev/null
     echo $b_1e3 | xxd -r -p > $efusebit
@@ -186,6 +196,7 @@ function generate_efuse_device_pattern() {
 
     dd if=$patt of=$license0 bs=16 skip=0 count=1 &> /dev/null
     b_007=$(xxd -ps -s7 -l1 $license0)
+
     if [ "$enable_usb_password" == "true" ]; then
         b_007="$(printf %02x $(( 0x$b_007 | 0x80 )))"
     fi

@@ -8,7 +8,7 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #
 BASEDIR_BUILD="${BASEDIR_TOP}/output"
 postfix=.signed
-declare -a BLX_BIN_SIZE=("127904" "65536" "65536" "4096" "86016" "262144" "524288"  "98304")
+declare -a BLX_BIN_SIZE=("144288" "65536" "65536" "8192" "212992" "262144" "524288"  "98304")
 
 function process_ddrfw() {
 	local ddr_input=$1
@@ -64,8 +64,8 @@ function process_ddrfw() {
 		exit -1
 	fi
 	ddrfw_data_size=`stat -c %s ${ddr_output}/ddr-fwdata.bin`
-	if [ $ddrfw_data_size -ne 212992 ]; then
-		echo "ddr-fwdata size is not equal to 208K, $ddrfw_data_size"
+	if [ $ddrfw_data_size -ne ${BLX_BIN_SIZE[4]} ]; then
+		echo "ddr-fwdata size is not equal to ${BLX_BIN_SIZE[4]}, $ddrfw_data_size"
 		exit -1
 	fi
 }
@@ -124,7 +124,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${chipset_name} ]; then
-		chipset_name="a311d2"
+		chipset_name="azp1"
 	fi
 
 	# select bl2/bl2e sign template
@@ -155,7 +155,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${soc} ]; then
-		soc="t7"
+		soc="p1"
 	fi
 
 	if [ -z ${build_type} ]; then

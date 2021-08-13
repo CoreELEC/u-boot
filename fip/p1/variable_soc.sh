@@ -41,29 +41,17 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl40/bin"		\
 			   "bl30/bin_ao")
 
-#declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-#			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-#			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-#			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-#			 "blob-bl2x.bin.signed"                              \
-#			 "blob-bl31.bin.signed"                              \
-#			 "bl30.bin"					\
-#			 "blob-bl32.bin.signed"                              \
-#			 "blob-bl40.bin.signed"                              )
+declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
+			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
+			 "blob-bl2x.bin.signed"                              \
+			 "blob-bl31.bin.signed"                              \
+			 "blob-bl32.bin.signed"                              \
+			 "blob-bl40.bin.signed"                              )
 
-
-declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
-			    "bl2.bin.usb"	\
-			    "bl2e.bin.sto"	\
-			    "bl2e.bin.usb"	\
-			    "bl2x.bin"		\
-			    "bl31.bin"		\
-			    "bl32.bin"		\
-			    "bl40.bin"		\
-				"NULL")
-
-declare -a BLX_BIN_SIZE=("260096"	\
-			 "260096"	\
+declare -a BLX_BIN_SIZE=("407552"	\
+			 "407552"	\
 			 "74864"	\
 			 "74864"	\
 			 "66672"	\

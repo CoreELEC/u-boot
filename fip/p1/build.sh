@@ -50,7 +50,11 @@ function init_vari() {
 		CHIPSET_VARIANT="${CONFIG_CHIPSET_VARIANT}"
 		CHIPSET_VARIANT_SUFFIX=".${CHIPSET_VARIANT}"
 	else
-		CHIPSET_VARIANT="no_variant"
+		if [ -n "${CONFIG_FORMER_SIGN}" ]; then
+			CHIPSET_VARIANT="no_variant"
+		else
+			CHIPSET_VARIANT="general"
+		fi
 		CHIPSET_VARIANT_SUFFIX=""
 	fi
 
@@ -548,7 +552,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=1016 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=796 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"
@@ -622,11 +626,21 @@ function process_blx() {
 		if [ "NULL" != "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
-			if [ ${BLX_NAME[$loop]} == "bl2"  ]; then
-				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}"
+			if [ -n "${CONFIG_FORMER_SIGN}" ]; then
+					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
+						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
+						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}
+			else
+					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
+						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
+							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
+							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} --serverAddr=$serverAddr
+					else
+						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
+							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
+							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
+					fi
 			fi
-			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} \
-			                                          --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} --key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} ${option_args}
 		fi
 		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
@@ -655,8 +669,8 @@ function process_blx() {
 		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
 
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
@@ -775,9 +789,9 @@ function package() {
 
 	init_vari $@
 	# Enable Clear Image Packing for PXP
-	build_fip $@
+	#build_fip $@
 	# Bypass Sign Process for PXP
-	#build_signed $@
+	build_signed $@
 	#copy_file
 	cleanup
 	echo "Bootloader build done!"

@@ -36,7 +36,7 @@ extern "C" {
 #endif
 #include "register.h"
 #define	GPIO_NUM_MAX	113 /*actual numbers of pins*/
-#define	BANK_NUM_MAX	8   /*numbers of gpio bank*/
+#define	BANK_NUM_MAX	11   /*numbers of gpio bank*/
 #define	IRQ_REG_NUM	4  /* numbers of irq relative reg*/
 #define	GPIO_INVALID	0xffff
 #ifdef AO_IRQ_GPIO_REG
@@ -79,6 +79,8 @@ extern "C" {
 #define	GPIOH_19	51
 #define	GPIOH_20	52
 #define	GPIOH_21	53
+#define	GPIOH_22	54
+#define	GPIOH_23	55
 
 /*64-95*/
 #define	GPIOB_0		64
@@ -138,7 +140,6 @@ extern "C" {
 /* 192 */
 #define	GPIOE_0		192
 #define	GPIOE_1		193
-#define	GPIOE_2		194
 
 /* 224 */
 #define	GPIOM_0 	224
@@ -172,7 +173,30 @@ extern "C" {
 #define	GPIOM_28	252
 #define	GPIOM_29	253
 
-#define GPIO_TEST_N	256
+/* 256 */
+#define GPIOC_0		256
+#define GPIOC_1		257
+#define GPIOC_2		258
+#define GPIOC_3		259
+#define GPIOC_4		260
+#define GPIOC_5		261
+#define GPIOC_6		262
+#define GPIOC_7		263
+
+/* 288 */
+#define GPIOC_8		288
+#define GPIOC_9		289
+#define GPIOC_10	290
+#define GPIOC_11	291
+#define GPIOC_12	292
+#define GPIOC_13	293
+#define GPIOC_14	294
+#define GPIOC_15	295
+
+#define	GPIOH_24	320
+#define	GPIOH_25	321
+
+#define GPIO_TEST_N	352
 
 #ifdef __cplusplus
 }

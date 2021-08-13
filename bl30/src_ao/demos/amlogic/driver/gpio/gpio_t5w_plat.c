@@ -94,8 +94,11 @@ static const GpioBank_t gpioBanks[BANK_NUM_MAX] = {
 	BANK("Z1", &eeDomain, 1, 0,  1, 0, 3, 0,  4, 0, 5, 0,  4, 0, 1, 0),
 	BANK("Z2", &eeDomain, 1, 7,  1, 7, 3, 7,  4, 7, 5, 7,  8, 0, 1, 14),
 	BANK("W", &eeDomain, 3, 0,  3, 0, 9, 0,  10, 0, 11, 0, 2,0, 5, 0),
-	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 0),
+	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 16),
 	BANK("M", &eeDomain, 4, 0, 4, 0, 12, 0, 13, 0, 14, 0, 0xa, 0, 6, 0),
+	BANK("C1", &eeDomain, 5, 0, 5, 0, 16, 0, 17, 0, 18, 0, 0xf, 0, 0x28, 0),
+	BANK("C2", &eeDomain, 4, 8, 4, 8, 16, 8, 17, 8, 18, 8, 0x2a, 0, 0x28, 8),
+	BANK("H2", &eeDomain, 2, 24, 2, 24, 6, 24, 7, 24, 8, 24,  0x2b, 0, 3, 24),
 };
 
 static ParentIRQDesc_t eeIRQs[] = {
@@ -116,12 +119,15 @@ static ParentIRQDesc_t aoIRQs[] = {
 static const GpioIRQBank_t irqBanks[BANK_NUM_MAX] = {
 	GPIO_IRQ_BK("D", 0, aoIRQs, ARRAY_SIZE(aoIRQs)),
 	GPIO_IRQ_BK("H", 11, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("B", 33, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z1", 47, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z2", 55, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("W", 67, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("E", 80, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("M", 83, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("B", 52, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z1", 66, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z2", 74, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("W", 86, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("E", 99, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("M", 101, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("C1", 37, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("C2", 45, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("H2", 35, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };
 
 const GpioBank_t *pGetGpioBank(void)

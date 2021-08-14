@@ -22,8 +22,14 @@ function process_ddrfw() {
 		dd if=${ddr_input}/ddr3_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
 		dd if=/dev/zero of=${ddr_output}/ddrfw_2d.bin bs=36864 count=1
 	elif [ "$ddr_type" == "lpddr4" ]; then
-		dd if=${ddr_input}/lpddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=${ddr_input}/lpddr4_2d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=36864  &> /dev/null
+		dd if=${ddr_input}/lpddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${ddr_input}/lpddr4_1d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=69632
+	elif [ "$ddr_type" == "lpddr5" ]; then
+		dd if=${ddr_input}/lpddr5_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${ddr_input}/lpddr5_1d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=69632
+	elif [ "$ddr_type" == "lpddr4_lpddr5" ]; then
+		dd if=${ddr_input}/lpddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${ddr_input}/lpddr5_1d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=69632
 	elif [ "$ddr_type" == "lpddr3" ]; then
 		dd if=${ddr_input}/lpddr3_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
 		dd if=/dev/zero of=${ddr_output}/ddrfw_2d.bin bs=36864 count=1
@@ -35,23 +41,31 @@ function process_ddrfw() {
 	fi
 
 	piei_size=`stat -c %s ${ddr_input}/piei.fw`
-	if [ $piei_size -gt 12384 ]; then
-		dd if=${ddr_input}/piei.fw of=${ddr_output}/ddrfw_piei.bin skip=96 bs=1 count=12288  &> /dev/null
+	if [ $piei_size -gt 24672 ]; then
+		dd if=${ddr_input}/piei.fw of=${ddr_output}/ddrfw_piei.bin skip=96 bs=1 count=24576  &> /dev/null
 	else
-		dd if=/dev/zero of=${ddr_output}/ddrfw_piei.bin bs=12288 count=1  &> /dev/null
+		dd if=/dev/zero of=${ddr_output}/ddrfw_piei.bin bs=24576 count=1  &> /dev/null
 		dd if=${ddr_input}/piei.fw of=${ddr_output}/ddrfw_piei.bin skip=96 bs=1 conv=notrunc  &> /dev/null
 	fi
 
+	aml_ddr_size=`stat -c %s ${ddr_input}/aml_ddr.fw`
+	if [ $aml_ddr_size -gt 49152 ]; then
+		dd if=${ddr_input}/aml_ddr.fw of=${ddr_output}/aml_ddr.bin  bs=1 count=49152
+	else
+		dd if=/dev/zero of=${ddr_output}/aml_ddr.bin bs=49152 count=1
+		dd if=${ddr_input}/aml_ddr.fw of=${ddr_output}/aml_ddr.bin  bs=1 conv=notrunc
+	fi
+
 	cat ${ddr_output}/ddrfw_1d.bin ${ddr_output}/ddrfw_2d.bin \
-		${ddr_output}/ddrfw_piei.bin > ${ddr_output}/ddr-fwdata.bin
+		${ddr_output}/ddrfw_piei.bin ${ddr_output}/aml_ddr.bin > ${ddr_output}/ddr-fwdata.bin
 
 	if [ ! -f ${ddr_output}/ddr-fwdata.bin ]; then
 		echo "ddr-fwdata payload does not exist in ${ddr_output} !"
 		exit -1
 	fi
 	ddrfw_data_size=`stat -c %s ${ddr_output}/ddr-fwdata.bin`
-	if [ $ddrfw_data_size -ne 86016 ]; then
-		echo "ddr-fwdata size is not equal to 84K, $ddrfw_data_size"
+	if [ $ddrfw_data_size -ne 212992 ]; then
+		echo "ddr-fwdata size is not equal to 208K, $ddrfw_data_size"
 		exit -1
 	fi
 }

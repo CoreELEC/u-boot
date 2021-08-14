@@ -108,8 +108,14 @@ function mk_bl2ex() {
 		dd if=${INPUT_DDRFW}/ddr3_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
 		dd if=/dev/zero of=${payload}/ddrfw_2d.bin bs=36864 count=1
 	elif [ "$ddr_type" == "lpddr4" ]; then
-		dd if=${INPUT_DDRFW}/lpddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=${INPUT_DDRFW}/lpddr4_2d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=36864
+		dd if=${INPUT_DDRFW}/lpddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${INPUT_DDRFW}/lpddr4_1d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=69632
+	elif [ "$ddr_type" == "lpddr5" ]; then
+		dd if=${INPUT_DDRFW}/lpddr5_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${INPUT_DDRFW}/lpddr5_1d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=69632
+	elif [ "$ddr_type" == "lpddr4_lpddr5" ]; then
+		dd if=${INPUT_DDRFW}/lpddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=69632
+		dd if=${INPUT_DDRFW}/lpddr5_1d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=69632
 	elif [ "$ddr_type" == "lpddr3" ]; then
 		dd if=${INPUT_DDRFW}/lpddr3_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
 		dd if=/dev/zero of=${payload}/ddrfw_2d.bin bs=36864 count=1
@@ -121,23 +127,31 @@ function mk_bl2ex() {
 	fi
 
 	piei_size=`stat -c %s ${INPUT_DDRFW}/piei.fw`
-	if [ $piei_size -gt 12384 ]; then
-		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 count=12288
+	if [ $piei_size -gt 24672 ]; then
+		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 count=24576
 	else
-		dd if=/dev/zero of=${payload}/ddrfw_piei.bin bs=12288 count=1
+		dd if=/dev/zero of=${payload}/ddrfw_piei.bin bs=24576 count=1
 		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 conv=notrunc
 	fi
 
-	cat ${payload}/ddrfw_1d.bin ${payload}/ddrfw_2d.bin \
-		${payload}/ddrfw_piei.bin > ${payload}/ddrfw_data.bin
+	aml_ddr_size=`stat -c %s ${INPUT_DDRFW}/aml_ddr.fw`
+	if [ $aml_ddr_size -gt 49152 ]; then
+		dd if=${INPUT_DDRFW}/aml_ddr.fw of=${payload}/aml_ddr.bin  bs=1 count=49152
+	else
+		dd if=/dev/zero of=${payload}/aml_ddr.bin bs=49152 count=1
+		dd if=${INPUT_DDRFW}/aml_ddr.fw of=${payload}/aml_ddr.bin  bs=1 conv=notrunc
+	fi
+
+	cat ${payload}/ddrfw_1d.bin  ${payload}/ddrfw_2d.bin \
+		${payload}/ddrfw_piei.bin ${payload}/aml_ddr.bin > ${payload}/ddrfw_data.bin
 
 	if [ ! -f ${payload}/ddrfw_data.bin ]; then
 		echo "ddrfw_data payload does not exist in ${payload} !"
 		exit -1
 	fi
 	ddrfw_data_size=`stat -c %s ${payload}/ddrfw_data.bin`
-	if [ $ddrfw_data_size -ne 86016 ]; then
-		echo "ddr_fwdata size is not equal to 84K, $ddrfw_data_size"
+	if [ $ddrfw_data_size -ne 212992 ]; then
+		echo "ddr_fwdata size is not equal to 208K, $ddrfw_data_size"
 		exit -1
 	fi
 
@@ -180,6 +194,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
+			--infile-ddr-fwdata=${payload}/ddrfw_data.bin \
 			--scs-family=${CUR_SOC} \
 			--outfile-bb1st=${output}/bb1st.sto.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.sto.bin \

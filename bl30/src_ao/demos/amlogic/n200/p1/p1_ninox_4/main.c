@@ -105,7 +105,7 @@ void DefaultInterruptHandler(void){}
 static void vPrintSystemStatus(TimerHandle_t xTimer) {
 	xTimer = xTimer;
 	taskENTER_CRITICAL();
-	printf("\nTimer ...\r\n");
+//	printf("\nTimer ...\r\n");
 	taskEXIT_CRITICAL();
 }
 
@@ -116,7 +116,7 @@ static void vPrintTask1( void *pvParameters )
 
 	for ( ;; )
 	{
-		printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
+//		printf("\nvPTask1 tick=%d\n",(unsigned int)xTaskGetTickCount());
 		vTaskDelay(pdMS_TO_TICKS(10000));
 		//dump_fsm();
 	}

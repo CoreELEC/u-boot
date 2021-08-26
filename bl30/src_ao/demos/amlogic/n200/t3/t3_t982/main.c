@@ -49,6 +49,7 @@
 #include "vrtc.h"
 #include "mailbox-api.h"
 #include "version.h"
+#include "stick_mem.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -126,6 +127,9 @@ int main(void)
 	printf("\nStarting AOCPU FreeRTOS...\r\n");
 	version();
 
+	stick_mem_init();
+	//write watchdog flag
+	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 
@@ -149,7 +153,7 @@ int main(void)
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();
 
-	for (;;)
+	do {}while(1);
 
 	return 0;
 }

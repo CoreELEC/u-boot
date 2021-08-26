@@ -33,6 +33,7 @@
 #include "myprintf.h"
 
 #include <unistd.h>
+#include <string.h>
 
 #include "n200_func.h"
 #include "common.h"
@@ -44,14 +45,17 @@
 #include "vrtc.h"
 #include "mailbox-api.h"
 #include "wakeup.h"
+#include "stick_mem.h"
 
 void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
 void create_str_task(void);
 uint32_t get_reason_flag(void);
+uint32_t get_stick_reboot_flag(void);
 void *xMboxGetWakeupReason(void *msg);
 void *xMboxClrWakeupReason(void *msg);
+void *xMboxGetStickRebootFlag(void *msg);
 void set_suspend_flag(void);
 
 SemaphoreHandle_t xSTRSemaphore = NULL;
@@ -141,6 +145,16 @@ uint32_t get_reason_flag(void)
 	return REG32(WAKEUP_REASON_STICK_REG) & 0xf;
 }
 
+uint32_t get_stick_reboot_flag(void)
+{
+#if (configSUPPORT_STICK_MEM == 1)
+	return last_stick_reboot_flag;
+#else
+	printf("Don't support stick memory!\r\n");
+	return 0;
+#endif
+}
+
 void *xMboxGetWakeupReason(void *msg)
 {
 	*(uint32_t *)msg = get_reason_flag();
@@ -150,6 +164,13 @@ void *xMboxGetWakeupReason(void *msg)
 void *xMboxClrWakeupReason(void *msg)
 {
 	msg = msg;
+	return NULL;
+}
+
+void *xMboxGetStickRebootFlag(void *msg)
+{
+	*(uint32_t *)msg = get_stick_reboot_flag();
+
 	return NULL;
 }
 
@@ -295,6 +316,9 @@ void create_str_task(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_REASON,
 					xMboxClrWakeupReason, 0);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_STICK_REBOOT_FLAG,
+					xMboxGetStickRebootFlag, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
 }

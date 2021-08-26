@@ -28,6 +28,7 @@
 
 
 extern unsigned int __stick_base;
+unsigned int last_stick_reboot_flag;
 unsigned int *p_stick_mem = (unsigned int *)configSTICK_REG_ADDR;//&__stick_base;
 
 int stick_mem_read(enum stick_mem_idx index, unsigned int *buf)
@@ -70,11 +71,16 @@ void stick_mem_init(void)
 {
 	unsigned int i;
 
+	/* get last stick reboot flag */
+	last_stick_reboot_flag = p_stick_mem[STICK_REBOOT_FLAG];
+
+	/* this is warm boot, so do not clear stick memory */
 	if ((p_stick_mem[STICK_FLAG_1] == STICK_MEM_FLAG_1)
 		&& (p_stick_mem[STICK_FLAG_2] == STICK_MEM_FLAG_2))
 		return;
 
-	for (i = 0; i < 32; i++)
+	/* this is cold boot, so clear stick memory for init */
+	for (i = 0; i < STICK_MAX; i++)
 		p_stick_mem[i] = 0;
 
 	return;

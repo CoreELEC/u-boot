@@ -87,7 +87,10 @@ your application. */
 #define configMAX_API_CALL_INTERRUPT_PRIORITY   6
 
 #define configDEFAULT_HEAP_ADDR			0x10001800
-#define configDEFAULT_HEAP_SIZE			26 * 1024
+#define configDEFAULT_HEAP_SIZE			(26 * 1024 - 32 * 4)
+#define configSUPPORT_STICK_MEM			1
+#define configSTICK_REG_ADDR			(configDEFAULT_HEAP_ADDR + configDEFAULT_HEAP_SIZE)
+#define configSTICK_REG_SIZE			128
 
 #define portCRITICAL_NESTING_IN_TCB				1
 //#include "uart.h"

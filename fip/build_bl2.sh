@@ -94,6 +94,7 @@ function build_bl2() {
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dusb
 		target="$1/bl2.bin*"
 		targetv3="$1/chip_acs.bin"
+		targetvd="$1/ddr_param.bin"
 	else
 		/bin/bash mk $3
 	fi
@@ -106,6 +107,9 @@ function build_bl2() {
 	cp ${target} $2 -f
 	if [ -e ${targetv3} ]; then
 		cp ${targetv3} $2 -f
+	fi
+	if [ -e ${targetvd} ]; then
+		cp ${targetvd} $2 -f
 	fi
 	echo "...done"
 	return

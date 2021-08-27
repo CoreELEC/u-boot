@@ -138,16 +138,30 @@ function mk_bl2ex() {
 		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 conv=notrunc
 	fi
 
-	aml_ddr_size=`stat -c %s ${INPUT_DDRFW}/aml_ddr.fw`
-	if [ $aml_ddr_size -gt 49152 ]; then
-		dd if=${INPUT_DDRFW}/aml_ddr.fw of=${payload}/aml_ddr.bin  bs=1 count=49152
+
+	if [ ! -f ${output}/ddr_param.bin ]; then
+		echo "${output}/ddr_param.bin not exist !"
+		dd if=/dev/zero of=${output}/ddr_param.bin bs=8192 count=1
+	fi
+	ddrparam_size=`stat -c %s ${output}/ddr_param.bin`
+	if [ $ddrparam_size -gt 8192 ]; then
+		dd if=${output}/ddr_param.bin of=${payload}/ddrfix_param.bin bs=1 count=8192
 	else
-		dd if=/dev/zero of=${payload}/aml_ddr.bin bs=49152 count=1
+		dd if=/dev/zero of=${payload}/ddrfix_param.bin bs=8192 count=1
+		dd if=${output}/ddr_param.bin of=${payload}/ddrfix_param.bin bs=1 conv=notrunc
+	fi
+
+	aml_ddr_size=`stat -c %s ${INPUT_DDRFW}/aml_ddr.fw`
+	if [ $aml_ddr_size -gt 40960 ]; then
+		dd if=${INPUT_DDRFW}/aml_ddr.fw of=${payload}/aml_ddr.bin  bs=1 count=40960
+	else
+		dd if=/dev/zero of=${payload}/aml_ddr.bin bs=40960 count=1
 		dd if=${INPUT_DDRFW}/aml_ddr.fw of=${payload}/aml_ddr.bin  bs=1 conv=notrunc
 	fi
 
 	cat ${payload}/ddrfw_1d.bin  ${payload}/ddrfw_2d.bin \
-		${payload}/ddrfw_piei.bin ${payload}/aml_ddr.bin > ${payload}/ddrfw_data.bin
+		${payload}/ddrfw_piei.bin ${payload}/ddrfix_param.bin \
+		${payload}/aml_ddr.bin > ${payload}/ddrfw_data.bin
 
 	if [ ! -f ${payload}/ddrfw_data.bin ]; then
 		echo "ddrfw_data payload does not exist in ${payload} !"
@@ -210,6 +224,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
+			--infile-ddr-fwdata=${payload}/ddrfw_data.bin \
 			--scs-family=${CUR_SOC} \
 			--outfile-bb1st=${output}/bb1st.usb.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.usb.bin \
@@ -618,8 +633,10 @@ function build_fip() {
 	return
 }
 
-function process_blx() {
+declare CHIPACS_SIZE="8192"
+declare DDRFW_SIZE="212992"
 
+function process_blx() {
 
 	# process loop
 	for loop in ${!BLX_NAME[@]}; do
@@ -627,15 +644,27 @@ function process_blx() {
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
 			if [ -n "${CONFIG_FORMER_SIGN}" ]; then
+					if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+					./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+						--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+					fi
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
 						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}
 			else
 					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
+						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+							--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+						fi
 						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
 							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} --serverAddr=$serverAddr
 					else
+						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+							--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+						fi
 						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
 							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
@@ -718,6 +747,10 @@ function process_blx() {
 
 function build_signed() {
 
+	#generate ddrfw
+	./${FIP_FOLDER}${CUR_SOC}/bin/gen-ddrfw.sh  --ddr_param ${BUILD_PATH}/ddr_param.bin \
+		--output ${BUILD_PATH}/ddrfw_data.bin --soc ${CUR_SOC} --ddr_type ${DDRFW_TYPE}
+
 	process_blx $@
 
 	# package ddr-fip.bin
@@ -789,6 +822,7 @@ function copy_other_soc() {
 	# device acs params parse for ddr timing
 	#./${FIP_FOLDER}parse ${BUILD_PATH}/device_acs.bin
 }
+
 
 function package() {
 	# BUILD_PATH without "/"

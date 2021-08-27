@@ -70,6 +70,29 @@ function process_ddrfw() {
 	fi
 }
 
+declare CHIPACS_SIZE=${BLX_BIN_SIZE[3]}
+declare DDRFW_SIZE=${BLX_BIN_SIZE[4]}
+
+function split_ddrfw_from_chipacs() {
+	local input=$1
+	local output1=$2
+	local output2=$3
+	local size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
+	local input_size=`stat -c %s ${input}`
+
+	if [ $input_size -ne ${size} ]; then
+		echo "$input is not chipacs and ddrfw merge !!!"
+		return
+	fi
+	dd if=${input} of=${output1}.tmp bs=1 count=${CHIPACS_SIZE}
+	dd if=${input} of=${output2}.tmp skip=${CHIPACS_SIZE} bs=1 count=${DDRFW_SIZE}
+	cat ${output1}.tmp > ${output1}
+	cat ${output2}.tmp > ${output2}
+	rm -rf ${output1}.tmp ${output2}.tmp
+
+	return
+}
+
 function sign_blx() {
     local argv=("$@")
     local i=0
@@ -183,14 +206,24 @@ function sign_blx() {
 
 	${EXEC_BASEDIR}/download-keys.sh ${key_type} ${soc} chipset
 
+	ddrfw_split_flag=0
+
 	if [ ${blxname} == "bl2" ] && [ ${build_type} == "normal" ]; then
 		if [ -z ${chip_acs} ] || [ ! -f ${chip_acs} ]; then
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
+		chipacs_size=`stat -c %s ${chip_acs}`
+		chipacs_ddrfw_size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
+		if [ $chipacs_size == $chipacs_ddrfw_size ]; then
+			split_ddrfw_from_chipacs ${chip_acs} ${chip_acs} ${BASEDIR_BUILD}/ddr-fwdata.bin
+			ddrfw_split_flag=1
+		fi
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
-		process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+		if [ ${ddrfw_split_flag} == 0 ]; then
+			process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+		fi
 		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2" ] && [ ${build_type} == "bl2-only" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
@@ -200,8 +233,16 @@ function sign_blx() {
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
+		chipacs_size=`stat -c %s ${chip_acs}`
+		chipacs_ddrfw_size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
+		if [ $chipacs_size == $chipacs_ddrfw_size ]; then
+			split_ddrfw_from_chipacs ${chip_acs} ${chip_acs} ${BASEDIR_BUILD}/ddr-fwdata.bin
+			ddrfw_split_flag=1
+		fi
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
-		process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+		if [ ${ddrfw_split_flag} == 0 ]; then
+			process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+		fi
 		dd if=${input} of=${BASEDIR_BUILD}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${chipset_variant_suffix}.bin.bl2-only conv=notrunc  &> /dev/null
 		${EXEC_BASEDIR}/gen-boot-blob-bl2-final.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then

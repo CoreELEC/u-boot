@@ -25,7 +25,7 @@
  */
 
 /*
- * pwm t7 plat driver
+ * pwm p1 plat driver
  */
 #include "FreeRTOS.h"
 #include <common.h>
@@ -36,10 +36,8 @@ xPwmMesonChip_t meson_pwm_chip[] = {
 	{PWM_AB, PWMAB_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL},
 	{PWM_CD, PWMCD_PWM_A, 0, CLKCTRL_PWM_CLK_CD_CTRL},
 	{PWM_EF, PWMEF_PWM_A, 0, CLKCTRL_PWM_CLK_EF_CTRL},
-	{PWMAO_AB, PWM_AO_AB_PWM_A, 0, CLKCTRL_PWM_CLK_AO_AB_CTRL},
-	{PWMAO_CD, PWM_AO_CD_PWM_A, 0, CLKCTRL_PWM_CLK_AO_CD_CTRL},
-	{PWMAO_EF, PWM_AO_EF_PWM_A, 0, CLKCTRL_PWM_CLK_AO_EF_CTRL},
-	{PWMAO_GH, PWM_AO_GH_PWM_A, 0, CLKCTRL_PWM_CLK_AO_GH_CTRL},
+	{PWM_GH, PWMGH_PWM_A, 0, CLKCTRL_PWM_CLK_GH_CTRL},
+	{PWM_IJ, PWMIJ_PWM_A, 0, CLKCTRL_PWM_CLK_IJ_CTRL},
 };
 
 /* VDDEE voltage table  volt must ascending */
@@ -116,18 +114,10 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
+		return PWM_AB;
+
 	case VDDCPUB_VOLT:
-		return PWMAO_AB;
-
-	case VDDCPUA_VOLT:
-		return PWMAO_CD;
-
-	case VDDGPU_VOLT:
-	case VDDNPU_VOLT:
-		return PWMAO_EF;
-
-	case VDDDDR_VOLT:
-		return PWMAO_GH;
+		return PWM_AB;
 
 	default:
 		break;
@@ -143,13 +133,9 @@ uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-	case VDDGPU_VOLT:
-	case VDDDDR_VOLT:
 		return MESON_PWM_0;
 
-	case VDDCPUA_VOLT:
 	case VDDCPUB_VOLT:
-	case VDDNPU_VOLT:
 		return MESON_PWM_1;
 
 	default:
@@ -162,12 +148,8 @@ xPwmMesonVoltage_t *vPwmMesonGetVoltTable(uint32_t voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-	case VDDGPU_VOLT:
-	case VDDNPU_VOLT:
-	case VDDDDR_VOLT:
 		return vddee_table;
 
-	case VDDCPUA_VOLT:
 	case VDDCPUB_VOLT:
 		return vddcpu_table;
 
@@ -181,12 +163,8 @@ uint32_t vPwmMesonGetVoltTableSize(uint32_t voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-	case VDDGPU_VOLT:
-	case VDDNPU_VOLT:
-	case VDDDDR_VOLT:
 		return sizeof(vddee_table)/sizeof(xPwmMesonVoltage_t);
 
-	case VDDCPUA_VOLT:
 	case VDDCPUB_VOLT:
 		return sizeof(vddcpu_table)/sizeof(xPwmMesonVoltage_t);
 

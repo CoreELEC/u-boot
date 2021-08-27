@@ -43,21 +43,15 @@ enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
-	PWMAO_AB,
-	PWMAO_CD,
-	PWMAO_EF,
-	PWMAO_GH,
+	PWM_GH,
+	PWM_IJ,
 	PWM_MUX
 };
 
 /* VDDEE VDDCPUA VDDCPUB VDDGPU VDDNPU VDDDDR in T7 */
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
-	VDDCPUA_VOLT,
 	VDDCPUB_VOLT,
-	VDDGPU_VOLT,
-	VDDNPU_VOLT,
-	VDDDDR_VOLT
 };
 
 typedef struct xPwmMesonVoltage {

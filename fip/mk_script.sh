@@ -503,14 +503,6 @@ function bin_path_parser() {
 				CONFIG_DDR_FW=1
 				export CONFIG_DDR_FW
 				continue ;;
-			--jenkins-sign)
-				CONFIG_JENKINS_SIGN=1
-				export CONFIG_JENKINS_SIGN
-				continue ;;
-			--former-sign)
-				CONFIG_FORMER_SIGN=1
-				export CONFIG_FORMER_SIGN
-				continue ;;
 			--cas)
 				cas="${argv[$i]}"
 				#limit the "--cas xxx" only works for g12a

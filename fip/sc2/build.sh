@@ -50,11 +50,7 @@ function init_vari() {
 		CHIPSET_VARIANT="${CONFIG_CHIPSET_VARIANT}"
 		CHIPSET_VARIANT_SUFFIX=".${CHIPSET_VARIANT}"
 	else
-		if [ -n "${CONFIG_FORMER_SIGN}" ]; then
-			CHIPSET_VARIANT="no_variant"
-		else
-			CHIPSET_VARIANT="general"
-		fi
+		CHIPSET_VARIANT="no_variant"
 		CHIPSET_VARIANT_SUFFIX=""
 	fi
 
@@ -495,21 +491,11 @@ function process_blx() {
 		if [ "NULL" != "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
-			if [ -n "${CONFIG_FORMER_SIGN}" ]; then
-					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
-						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
-						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}
-			else
-					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
-						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
-							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
-							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} --serverAddr=$serverAddr
-					else
-						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
-							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
-							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
-					fi
+			if [ ${BLX_NAME[$loop]} == "bl2"  ]; then
+				option_args="--chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}"
 			fi
+			./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} --output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} \
+			                                          --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} --key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} ${option_args}
 		fi
 		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \

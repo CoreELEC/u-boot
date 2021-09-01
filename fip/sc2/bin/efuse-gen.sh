@@ -61,6 +61,12 @@ Usage: $(basename $0) --help
                       -o pattern.efuse
        $(basename $0) --audio-id audio_id_value \\
                       -o audio_id.efuse
+       $(basename $0) --device-scs-segid seg_id_value \\
+                      -o device-scs-id.efuse
+       $(basename $0) --device-vendor-segid vend_id_value \\
+                      -o device-vedor-id.efuse
+       $(basename $0) --stbcasn stbcasn_value \\
+                      -o stbcasn.efuse
 EOF
     exit 1
 }
@@ -319,6 +325,149 @@ function generate_audio_id_pattern() {
     rm -f $efusebit
 }
 
+
+function generate_mkt_id_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local mkt_id_efuse=$(mktemp --tmpdir)
+    # default mkt_id_offset 0xA8
+    local mkt_id_offset=168
+    local mkt_id_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --device-scs-segid)
+                mkt_id_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    # Verify args
+    if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
+
+    if [ -z $mkt_id_value ]; then
+        echo Error: invalid mkt_id_value
+        exit 1
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+
+    append_uint32_le $mkt_id_value $mkt_id_efuse
+    dd if=$mkt_id_efuse of=$patt bs=1 seek=$mkt_id_offset count=$mkt_id_size \
+        conv=notrunc >& /dev/null
+
+	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+
+    rm -f $patt
+    rm -f $mkt_id_efuse
+}
+
+function generate_vendor_id_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local vend_id_efuse=$(mktemp --tmpdir)
+    # default vend_id_offset 0xAC
+    local vend_id_offset=172
+    local vend_id_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --device-vendor-segid)
+                vend_id_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    # Verify args
+    if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
+
+    if [ -z $vend_id_value ]; then
+        echo Error: invalid vendor_id_value
+        exit 1
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+
+    append_uint32_le $vend_id_value $vend_id_efuse
+    dd if=$vend_id_efuse of=$patt bs=1 seek=$vend_id_offset count=$vend_id_size \
+        conv=notrunc >& /dev/null
+
+	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+
+    rm -f $patt
+    rm -f $vend_id_efuse
+}
+
+function generate_stbcasn_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local stbcasn_efuse=$(mktemp --tmpdir)
+    # default stbcasn_offset 0xBC
+    local stbcasn_offset=188
+    local stbcasn_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --stbcasn)
+                stbcasn_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    # Verify args
+    if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
+
+    if [ -z $stbcasn_value ]; then
+        echo Error: invalid stbcasn_value
+        exit 1
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+
+    append_uint32_le $stbcasn_value $stbcasn_efuse
+    dd if=$stbcasn_efuse of=$patt bs=1 seek=$stbcasn_offset count=$stbcasn_size \
+        conv=notrunc >& /dev/null
+
+	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+
+    rm -f $patt
+    rm -f $stbcasn_efuse
+}
+
+
 parse_main() {
     case "$@" in
         --help)
@@ -329,6 +478,15 @@ parse_main() {
             ;;
         *--audio-id*)
             generate_audio_id_pattern "$@"
+            ;;
+        *--device-vendor-segid*)
+            generate_vendor_id_pattern "$@"
+            ;;
+        *--device-scs-segid*)
+            generate_mkt_id_pattern "$@"
+            ;;
+        *--stbcasn*)
+            generate_stbcasn_pattern "$@"
             ;;
         *-o*)
             generate_efuse_device_pattern "$@"

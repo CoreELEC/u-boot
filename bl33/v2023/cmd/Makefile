@@ -217,6 +217,7 @@ obj-$(CONFIG_AML_DRIVER) += amlogic/
 obj-$(CONFIG_AML_TSENSOR) += amlogic/cmd_tsensor.o
 obj-$(CONFIG_AML_OSCRING) += amlogic/cmd_ringmsr.o
 
+obj-$(CONFIG_CMD_SCRIPT) += script.o
 # Power
 obj-$(CONFIG_CMD_PMIC) += pmic.o
 obj-$(CONFIG_CMD_REGULATOR) += regulator.o

@@ -219,7 +219,7 @@ function generate_efuse_device_pattern() {
     fi
     dd if=$license1 of=$patt bs=16 seek=1 count=1 conv=notrunc >& /dev/null
 
-    ${BASEDIR_TOP}/aml_encrypt_t7 --efsproc --input $patt --output $output --option=debug
+    ${BASEDIR_TOP}/aml_encrypt_p1 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
     rm -f $wrlock
@@ -281,7 +281,7 @@ function generate_audio_id_pattern() {
     dd if=$audio_id_efuse of=$patt bs=1 seek=$audio_id_offset count=$audio_id_size \
         conv=notrunc >& /dev/null
 
-	${BASEDIR_TOP}/aml_encrypt_t7 --efsproc --input $patt --output $output --option=debug
+	${BASEDIR_TOP}/aml_encrypt_p1 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
     rm -f $audio_id_efuse

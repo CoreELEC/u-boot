@@ -57,6 +57,7 @@ rootkey_index=0
 output_dir=""
 boot_blobs_arb_args=
 device_fip_arb_args=
+device_soc="p1"
 
 parse_main() {
     local i=0
@@ -85,6 +86,9 @@ parse_main() {
 		;;
             --project)
                 part="${argv[$i]}"
+		;;
+            --device-soc)
+                device_soc="${argv[$i]}"
 		;;
             --template-dir)
                 template_dir="${argv[$i]}"
@@ -141,7 +145,7 @@ fi
 
 ${EXEC_BASEDIR}/bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}" ${device_fip_arb_args}
 
-${EXEC_BASEDIR}/bin/gen_device_root_hash.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "${template_dir}" ${boot_blobs_arb_args}
+${EXEC_BASEDIR}/bin/gen_device_root_hash.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --device-soc "$device_soc" --template-dir "${template_dir}" ${boot_blobs_arb_args}
 
 ${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part"
 

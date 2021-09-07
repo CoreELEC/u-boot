@@ -721,7 +721,7 @@ function build_signed() {
 	process_blx $@
 
 	# package ddr-fip.bin
-	if [ "y" == ${CONFIG_DDR_FULL_FW} ]; then
+	if [[ "y" == ${CONFIG_DDR_FULL_FW} ]]; then
 		mk_ddr_fip ${BUILD_PATH}
 	fi
 

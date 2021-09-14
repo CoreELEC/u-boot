@@ -171,13 +171,13 @@ int main(void)
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 
 	//vCecCallbackInit(CEC_CHIP_T7);
-//	vRtcInit();
+	vRtcInit();
 //	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();
 
-	for (;;)
+	do {}while(1);
 
 	return 0;
 }

@@ -81,6 +81,7 @@ def get_args():
     parser.add_argument("--ddrType", type=str, default=ddrTypes[0])
     parser.add_argument("--chipVariant", choices=chipVariants, default=chipVariants[0])
     parser.add_argument("--keyType", type=str, dest="keyType", default="dev-keys")
+    parser.add_argument("--testService", type=int, default=0)
 
     return parser.parse_args()
 
@@ -140,6 +141,7 @@ def submitSignJob(
     chipVariant="",
     ddrType="",
     keyType="dev-keys",
+    testService=0,
 ):
 
     fileName = os.path.basename(inputFilePath)
@@ -152,6 +154,7 @@ def submitSignJob(
         data = {
             "chip_part_number": chipType,
             "ta_version": taVersion,
+            "testService": testService,
         }
     elif type == "bl32":
 
@@ -159,6 +162,7 @@ def submitSignJob(
             "chipPartNumber": chipType,
             "casProvider": casProvider,
             "keyType": keyType,
+            "testService": testService,
         }
 
     elif type == "bl2":
@@ -172,9 +176,14 @@ def submitSignJob(
             "chipVariant": chipVariant,
             "ddrType": ddrType,
             "keyType": keyType,
+            "testService": testService,
         }
-    else:  # bl2e, bl2x, bl40,
-        data = {"chipPartNumber": chipType, "keyType": keyType}
+    else:  # bl2e, bl2x, bl31, bl40,
+        data = {
+            "chipPartNumber": chipType,
+            "keyType": keyType,
+            "testService": testService,
+        }
 
     response = requests.post(url, auth=auth, data=data, files=uploadFile)
 
@@ -269,6 +278,7 @@ def main():
         chipVariant=args.chipVariant,
         ddrType=args.ddrType,
         keyType=args.keyType,
+        testService=args.testService,
     )
 
     buildNumber = int(lastBuildNumber) + 1

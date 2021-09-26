@@ -56,6 +56,38 @@ function process_ddrfw() {
 	fi
 }
 
+function parse_extra_args() {
+	local bl2e_size=
+	local oldifs="$IFS"
+	local i=0
+
+	# split each args
+	IFS=",="
+
+	local array=($1)
+	local args=${#array[*]}
+
+	echo ---- extra args: $1 ----
+	while [ $i -lt $args ]; do
+		arg="${array[$i]}"
+		i=$((i + 1))
+		case "$arg" in
+		bl2e_size)
+			BLX_BIN_SIZE[1]="${array[$i]}"
+			if [ -z ${BL2E_PAYLOAD_SIZE} ]; then
+				BL2E_PAYLOAD_SIZE="${array[$i]}"
+				export BL2E_PAYLOAD_SIZE
+			fi
+			;;
+		*)
+			echo "Unknown option $arg";
+			;;
+		esac
+		i=$((i + 1))
+	done
+	IFS="$oldifs"
+}
+
 function sign_blx() {
 	local argv=("$@")
 	local i=0
@@ -87,6 +119,8 @@ function sign_blx() {
 			soc="${argv[$i]}" ;;
 		--build_type)
 			build_type="${argv[$i]}" ;;
+		--extra_args)
+			parse_extra_args "${argv[$i]}";;
 		*)
 			echo "Unknown option $arg"; exit 1
 			;;
@@ -168,7 +202,7 @@ function sign_blx() {
 
 	if [ -f "fip/_tmp/bl2e.bin" ]; then
 		bl2e_bin_size=`stat -c %s fip/_tmp/bl2e.bin`
-		if [ ${bl2e_bin_size} -gt ${BLX_BIN_SIZE[1]} ]; then
+		if [[ ${bl2e_bin_size} -gt ${BLX_BIN_SIZE[1]} ]]; then
 			echo ---- BL2E bin size ${bl2e_bin_size} is larger than ${BLX_BIN_SIZE[1]} ----
 			exit -1
 		fi

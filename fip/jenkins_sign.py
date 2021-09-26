@@ -13,7 +13,7 @@ from os.path import expanduser
 import jenkins
 
 
-serverRootUrl = "https://jenkins-sh.amlogic.com/job/Secure_Signing_Service/job/"
+serverRootUrl = "https://jenkins-sh.amlogic.com/job/Security/job/Signing/job/"
 homeConfigFilePath = "~/.sign.cfg"
 types = ["ta", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "fw"]
 casProviders = ["", "VMX", "nagra"]
@@ -81,6 +81,7 @@ def get_args():
     parser.add_argument("--ddrType", type=str, default=ddrTypes[0])
     parser.add_argument("--chipVariant", choices=chipVariants, default=chipVariants[0])
     parser.add_argument("--keyType", type=str, dest="keyType", default="dev-keys")
+    parser.add_argument("--extraArgs", type=str, default="")
     parser.add_argument("--testService", type=int, default=0)
 
     return parser.parse_args()
@@ -141,6 +142,7 @@ def submitSignJob(
     chipVariant="",
     ddrType="",
     keyType="dev-keys",
+    extraArgs="",
     testService=0,
 ):
 
@@ -182,6 +184,7 @@ def submitSignJob(
         data = {
             "chipPartNumber": chipType,
             "keyType": keyType,
+            "extraArgs": extraArgs,
             "testService": testService,
         }
 
@@ -278,6 +281,7 @@ def main():
         chipVariant=args.chipVariant,
         ddrType=args.ddrType,
         keyType=args.keyType,
+        extraArgs=args.extraArgs,
         testService=args.testService,
     )
 

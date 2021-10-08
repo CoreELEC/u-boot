@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -f ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
+if [ -s ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
 then
 	echo "update device vendor segid"
 	c1=$(xxd -ps -s 7664 -c4 -g4 -l1 fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin)
@@ -54,7 +54,7 @@ then
 	cd -
 	./run-pre.sh
 	cd -
-	if [ ! -f ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
+	if [ ! -s ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
 	then
 		echo "!!!PLEASE PUT NAGRA SIGNED FILE to ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin";
 		echo "THEN PLEASE RE-RUN <./fip/sc2/nocs/run-all.sh sc2_ahxxx '--bl2e-size ...'>";
@@ -63,7 +63,7 @@ then
 	fi;
 
 else		# no variable just package uboot
-	if [ ! -f ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
+	if [ ! -s ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
         then
                 echo "!!!PLEASE PUT NAGRA SIGNED FILE to ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin";
 	exit;fi;

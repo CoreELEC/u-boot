@@ -88,6 +88,9 @@ BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-vers=${DEVICE_SCS_VERS}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
+if  [ "1" == "${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}" ]; then
+BB1ST_ARGS="${BB1ST_ARGS} --switch-device-lvl1cert-vers-submask=1"
+fi
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${DEVICE_STORAGE_SUFFIX}${DEVICE_VARIANT_SUFFIX}.bin${output_postfix}"

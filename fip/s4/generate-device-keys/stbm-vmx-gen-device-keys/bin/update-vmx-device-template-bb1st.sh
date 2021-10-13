@@ -124,7 +124,7 @@ output_dir=""
 project=""
 device_scs_segid=0x0
 device_vendor_segid=0x0
-device_scs_vers=0x0
+max_device_scs_vers=0xFFFFFFF
 device_tee_vers=0x0
 device_soc=s4
 storage_type=""
@@ -157,8 +157,13 @@ DEVICE_ROOTRSA_INDEX=${rootkey_index}
 
 DEVICE_SCS_SEGID=${device_scs_segid}
 DEVICE_VENDOR_SEGID=${device_vendor_segid}
-DEVICE_SCS_VERS=${device_scs_vers}
 DEVICE_TEE_VERS=${device_tee_vers}
+if [ $(($device_scs_vers)) -gt $(($max_device_scs_vers)) ]; then
+	echo "$(pwd)/update-vmx-device-template-bb1st.sh Error: device_scs_vers exceed limit $max_device_scs_vers"
+	exit -1
+else
+	DEVICE_SCS_VERS=${device_scs_vers}
+fi
 
 echo DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
 echo DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}

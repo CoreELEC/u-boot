@@ -71,17 +71,15 @@ void stick_mem_init(void)
 {
 	unsigned int i;
 
-	/* get last stick reboot flag */
-	last_stick_reboot_flag = p_stick_mem[STICK_REBOOT_FLAG];
-
-	/* this is warm boot, so do not clear stick memory */
+	/* this is warm boot, get last stick reboot flag */
 	if ((p_stick_mem[STICK_FLAG_1] == STICK_MEM_FLAG_1)
 		&& (p_stick_mem[STICK_FLAG_2] == STICK_MEM_FLAG_2))
-		return;
-
+		last_stick_reboot_flag = p_stick_mem[STICK_REBOOT_FLAG];
 	/* this is cold boot, so clear stick memory for init */
-	for (i = 0; i < STICK_MAX; i++)
-		p_stick_mem[i] = 0;
+	else {
+		for (i = 0; i < STICK_MAX; i++)
+			p_stick_mem[i] = 0;
+	}
 
 	return;
 }

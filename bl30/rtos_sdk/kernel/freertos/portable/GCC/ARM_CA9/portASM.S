@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -49,7 +49,7 @@
 	.global FreeRTOS_IRQ_Handler
 	.global FreeRTOS_SWI_Handler
 	.global vPortRestoreTaskContext
-
+	.global	print_debug
 
 
 
@@ -73,10 +73,10 @@
 	CMP		R3, #0
 
 	/* Save the floating point context, if any. */
-	FMRXNE  R1,  FPSCR
-	VPUSHNE {D0-D15}
-	VPUSHNE	{D16-D31}
-	PUSHNE	{R1}
+//	FMRXNE  R1,  FPSCR
+//	VPUSHNE {D0-D15}
+//	VPUSHNE	{D16-D31}
+//	PUSHNE	{R1}
 
 	/* Save ulPortTaskHasFPUContext itself. */
 	PUSH	{R3}
@@ -105,10 +105,10 @@
 	CMP		R1, #0
 
 	/* Restore the floating point context, if any. */
-	POPNE 	{R0}
-	VPOPNE	{D16-D31}
-	VPOPNE	{D0-D15}
-	VMSRNE  FPSCR, R0
+//	POPNE 	{R0}
+//	VPOPNE	{D16-D31}
+//	VPOPNE	{D0-D15}
+//	VMSRNE  FPSCR, R0
 
 	/* Restore the critical section nesting depth. */
 	LDR		R0, ulCriticalNestingConst
@@ -124,12 +124,22 @@
 	LDRNE	R4, [R4]
 	STR		R4, [R2]
 
+//	b		.
+//	blx		print_debug
+//	mcr p15, 0, r0, c7, c5, 0
+//	mcr p15, 0, r0, c7, c5, 6
+
+//	dsb	sy
+//	isb	sy
 	/* Restore all system mode registers other than the SP (which is already
 	being used). */
 	POP		{R0-R12, R14}
 
 	/* Return to the task code, loading CPSR on the way. */
-	RFEIA	sp!
+//	RFEIA	sp!
+	pop {r11, r12}
+	msr cpsr, r12
+	mov pc, r11
 
 	.endm
 
@@ -287,18 +297,18 @@ switch_before_exit:
 .type vApplicationIRQHandler, %function
 vApplicationIRQHandler:
 	PUSH	{LR}
-	FMRX	R1,  FPSCR
-	VPUSH	{D0-D15}
-	VPUSH	{D16-D31}
-	PUSH	{R1}
+//	FMRX	R1,  FPSCR
+//	VPUSH	{D0-D15}
+//	VPUSH	{D16-D31}
+//	PUSH	{R1}
 
-	LDR		r1, vApplicationFPUSafeIRQHandlerConst
-	BLX		r1
+//	LDR		r1, vApplicationFPUSafeIRQHandlerConst
+//	BLX		r1
 
-	POP		{R0}
-	VPOP	{D16-D31}
-	VPOP	{D0-D15}
-	VMSR	FPSCR, R0
+//	POP		{R0}
+//	VPOP	{D16-D31}
+//	VPOP	{D0-D15}
+//	VMSR	FPSCR, R0
 
 	POP {PC}
 
@@ -313,7 +323,7 @@ ulMaxAPIPriorityMaskConst: .word ulMaxAPIPriorityMask
 vTaskSwitchContextConst: .word vTaskSwitchContext
 vApplicationIRQHandlerConst: .word vApplicationIRQHandler
 ulPortInterruptNestingConst: .word ulPortInterruptNesting
-vApplicationFPUSafeIRQHandlerConst: .word vApplicationFPUSafeIRQHandler
+//vApplicationFPUSafeIRQHandlerConst: .word vApplicationFPUSafeIRQHandler
 
 .end
 

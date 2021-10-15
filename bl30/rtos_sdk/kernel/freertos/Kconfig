@@ -1,0 +1,10 @@
+menu "Target"
+
+config KERNEL_ARCH_DIR
+	string
+	default "ARM_CA53_64_BIT" if ARM_CA53_64_BIT
+	default "RISC-V" if RISCV
+	help
+	  System gcc arch dir string.
+
+endmenu

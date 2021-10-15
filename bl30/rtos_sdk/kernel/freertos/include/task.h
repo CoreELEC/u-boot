@@ -43,10 +43,10 @@ extern "C" {
  * MACROS AND DEFINITIONS
  *----------------------------------------------------------*/
 
-#define tskKERNEL_VERSION_NUMBER "V10.2.1"
+#define tskKERNEL_VERSION_NUMBER "V10.2.0"
 #define tskKERNEL_VERSION_MAJOR 10
 #define tskKERNEL_VERSION_MINOR 2
-#define tskKERNEL_VERSION_BUILD 1
+#define tskKERNEL_VERSION_BUILD 0
 
 /* MPU region parameters passed in ulParameters
  * of MemoryRegion_t struct. */
@@ -145,6 +145,7 @@ typedef struct xTASK_STATUS
 	uint32_t ulRunTimeCounter;		/* The total run time allocated to the task so far, as defined by the run time stats clock.  See http://www.freertos.org/rtos-run-time-stats.html.  Only valid when configGENERATE_RUN_TIME_STATS is defined as 1 in FreeRTOSConfig.h. */
 	StackType_t *pxStackBase;		/* Points to the lowest address of the task's stack area. */
 	configSTACK_DEPTH_TYPE usStackHighWaterMark;	/* The minimum amount of stack space that has remained for the task since the task was created.  The closer this value is to zero the closer the task has come to overflowing its stack. */
+	StackType_t uStackTotal;
 } TaskStatus_t;
 
 /* Possible return values for eTaskConfirmSleepModeStatus(). */
@@ -2411,6 +2412,11 @@ TaskHandle_t pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
  */
 void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNCTION;
 
+void vTaskRename( TaskHandle_t xTask, const char *name);
+
+#if ( configUSE_TRACE_FACILITY == 1 )
+TaskHandle_t xGetTaskHandleOfNum(UBaseType_t uxTaskNumber);
+#endif
 
 #ifdef __cplusplus
 }

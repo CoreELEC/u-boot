@@ -74,12 +74,12 @@ extern "C" {
 
 #include <stdint.h>
 
+#include <xtensa/tie/xt_core.h>
 #include <xtensa/hal.h>
 #include <xtensa/config/core.h>
 #include <xtensa/config/system.h>	/* required for XSHAL_CLIB */
 #include <xtensa/xtruntime.h>
 #include "esp_timer.h"              /* required for FreeRTOS run time stats */
-#include "esp_system.h"
 
 
 #include <esp_heap_caps.h>
@@ -229,22 +229,6 @@ void vPortCPUReleaseMutex(portMUX_TYPE *mux);
 #define portENTER_CRITICAL_ISR(mux)    vPortCPUAcquireMutexTimeout(mux, portMUX_NO_TIMEOUT)
 #define portEXIT_CRITICAL_ISR(mux)     vPortCPUReleaseMutex(mux)
 
-#define portENTER_CRITICAL_SAFE(mux)  do {                                             \
-                                         if (xPortInIsrContext()) {                    \
-                                             portENTER_CRITICAL_ISR(mux);              \
-                                         } else {                                      \
-                                             portENTER_CRITICAL(mux);                  \
-                                         }                                             \
-                                      } while(0)
-
-#define portEXIT_CRITICAL_SAFE(mux)  do {                                              \
-                                         if (xPortInIsrContext()) {                    \
-                                             portEXIT_CRITICAL_ISR(mux);               \
-                                         } else {                                      \
-                                             portEXIT_CRITICAL(mux);                   \
-                                         }                                             \
-                                      } while(0)
-
 
 // Critical section management. NW-TODO: replace XTOS_SET_INTLEVEL with more efficient version, if any?
 // These cannot be nested. They should be used with a lot of care and cannot be called from interrupt level.
@@ -298,7 +282,6 @@ static inline void uxPortCompareSet(volatile uint32_t *addr, uint32_t compare, u
         );
 }
 
-void uxPortCompareSetExtram(volatile uint32_t *addr, uint32_t compare, uint32_t *set);
 
 /*-----------------------------------------------------------*/
 
@@ -367,11 +350,6 @@ typedef struct {
 	#define PRIVILEGED_DATA
 #endif
 
-bool vApplicationSleep( TickType_t xExpectedIdleTime );
-
-#define portSUPPRESS_TICKS_AND_SLEEP( idleTime ) vApplicationSleep( idleTime )
-
-
 
 void _xt_coproc_release(volatile void * coproc_sa_base);
 
@@ -383,8 +361,8 @@ void _xt_coproc_release(volatile void * coproc_sa_base);
  * non-FreeRTOS-specific code, and behave the same as
  * pvPortMalloc()/vPortFree().
  */
-#define pvPortMalloc heap_caps_malloc_default
-#define vPortFree heap_caps_free
+#define pvPortMalloc malloc
+#define vPortFree free
 #define xPortGetFreeHeapSize esp_get_free_heap_size
 #define xPortGetMinimumEverFreeHeapSize esp_get_minimum_free_heap_size
 

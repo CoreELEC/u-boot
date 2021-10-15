@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -31,6 +31,8 @@
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "rtosinfo.h"
+#include "cache.h"
 
 #ifndef configINTERRUPT_CONTROLLER_BASE_ADDRESS
 	#error configINTERRUPT_CONTROLLER_BASE_ADDRESS must be defined.  See http://www.freertos.org/Using-FreeRTOS-on-Cortex-A-Embedded-Processors.html
@@ -183,7 +185,7 @@ static void prvTaskExitError( void );
  * FPU registers to be saved on interrupt entry their IRQ handler must be
  * called vApplicationIRQHandler().
  */
-void vApplicationFPUSafeIRQHandler( uint32_t ulICCIAR ) __attribute__((weak) );
+//void vApplicationFPUSafeIRQHandler( uint32_t ulICCIAR ) __attribute__((weak) );
 
 /*-----------------------------------------------------------*/
 
@@ -351,7 +353,7 @@ uint32_t ulAPSR;
 
 		/* Sanity check configUNIQUE_INTERRUPT_PRIORITIES matches the read
 		value. */
-		configASSERT( ucMaxPriorityValue == portLOWEST_INTERRUPT_PRIORITY );
+		configASSERT( ucMaxPriorityValue >= portLOWEST_INTERRUPT_PRIORITY );
 
 		/* Restore the clobbered interrupt priority register to its original
 		value. */
@@ -478,14 +480,14 @@ void FreeRTOS_Tick_Handler( void )
 
 	void vPortTaskUsesFPU( void )
 	{
-	uint32_t ulInitialFPSCR = 0;
+//	uint32_t ulInitialFPSCR = 0;
 
 		/* A task is registering the fact that it needs an FPU context.  Set the
 		FPU flag (which is saved as part of the task context). */
 		ulPortTaskHasFPUContext = pdTRUE;
 
 		/* Initialise the floating point status register. */
-		__asm volatile ( "FMXR 	FPSCR, %0" :: "r" (ulInitialFPSCR) : "memory" );
+	//	__asm volatile ( "FMXR 	FPSCR, %0" :: "r" (ulInitialFPSCR) : "memory" );
 	}
 
 #endif /* configUSE_TASK_FPU_SUPPORT */
@@ -560,9 +562,44 @@ uint32_t ulReturn;
 
 #endif /* configASSERT_DEFINED */
 /*-----------------------------------------------------------*/
-
+#if 0
 void vApplicationFPUSafeIRQHandler( uint32_t ulICCIAR )
 {
 	( void ) ulICCIAR;
 	configASSERT( ( volatile void * ) NULL );
+}
+#endif
+
+/*-----------------------------------------------------------*/
+portCHAR xPortIsIsrContext( void )
+{
+	return ulPortInterruptNesting == 0 ? 0 : 1;
+}
+/*-----------------------------------------------------------*/
+
+volatile xRtosInfo_t xRtosInfo __attribute__ ((aligned (4096)))=
+{
+	VERSION_1_0,
+	eRtosStat_Off,
+	(1<<PRIMARY_CPU),
+	0,
+	0,
+	0
+};
+
+void vPortRtosInfoUpdateStatus(uint32_t status)
+{
+	xRtosInfo.status=status;
+	vCacheFlushDcacheRange((uint32_t)&xRtosInfo, sizeof(xRtosInfo));
+}
+
+void vLowPowerSystem(void)
+{
+	taskENTER_CRITICAL();
+	portDISABLE_INTERRUPTS();
+	vPortRtosInfoUpdateStatus(eRtosStat_Done);
+	/*set mailbox to dsp for power control!*/
+	while (1)
+		__asm volatile ("wfi");
+
 }

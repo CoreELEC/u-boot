@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -695,6 +695,14 @@ __attribute__(( weak )) void vPortSetupTimerInterrupt( void )
 
 #endif /* configASSERT_DEFINED */
 
+/*-----------------------------------------------------------*/
+portCHAR xPortIsIsrContext( void )
+{
+uint32_t val;
+	val = portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK;
+	return val == 0 ? 0 : 1;
+}
+/*-----------------------------------------------------------*/
 
 
 

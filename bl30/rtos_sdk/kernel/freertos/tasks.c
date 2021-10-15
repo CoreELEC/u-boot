@@ -39,6 +39,9 @@ task.h is included from an application file. */
 #include "task.h"
 #include "timers.h"
 #include "stack_macros.h"
+#if ENABLE_FTRACE
+#include "ftrace.h"
+#endif
 
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
@@ -261,6 +264,7 @@ typedef struct tskTaskControlBlock 			/* The old naming convention is used to pr
 	ListItem_t			xEventListItem;		/*< Used to reference a task from an event list. */
 	UBaseType_t			uxPriority;			/*< The priority of the task.  0 is the lowest priority. */
 	StackType_t			*pxStack;			/*< Points to the start of the stack. */
+	StackType_t			uStackDepth;
 	char				pcTaskName[ configMAX_TASK_NAME_LEN ];/*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
 	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
@@ -322,7 +326,13 @@ typedef struct tskTaskControlBlock 			/* The old naming convention is used to pr
 	#if( configUSE_POSIX_ERRNO == 1 )
 		int iTaskErrno;
 	#endif
-
+	#if ( configUSE_TASK_START_HOOK == 1 )
+		void *pxTaskFun;
+		void *pxTaskPara;
+	#endif
+	#if ENABLE_KASAN
+		int kasan_depth;
+	#endif
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -548,7 +558,7 @@ static void prvResetNextTaskUnblockTime( void );
 static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
 									const char * const pcName, 		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
-									void * const pvParameters,
+									void * pvParameters,
 									UBaseType_t uxPriority,
 									TaskHandle_t * const pxCreatedTask,
 									TCB_t *pxNewTCB,
@@ -737,6 +747,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 	TCB_t *pxNewTCB;
 	BaseType_t xReturn;
 
+
 		/* If the stack grows down then allocate the stack then the TCB so the stack
 		does not grow into the TCB.  Likewise if the stack grows up then allocate
 		the TCB then the stack. */
@@ -817,11 +828,22 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 
 #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
+#if ( configUSE_TASK_START_HOOK == 1 )
+static void prvTaskFunWrp( void *para)
+{
+	TCB_t *pxNewTCB = (TCB_t *)para;
+	{
 
+		extern void vApplicationTaskStartHook( void );
+		vApplicationTaskStartHook();
+	}
+	((TaskFunction_t)pxNewTCB->pxTaskFun)(pxNewTCB->pxTaskPara);
+}
+#endif
 static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
 									const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
-									void * const pvParameters,
+									void * pvParameters,
 									UBaseType_t uxPriority,
 									TaskHandle_t * const pxCreatedTask,
 									TCB_t *pxNewTCB,
@@ -844,6 +866,18 @@ UBaseType_t x;
 		uxPriority &= ~portPRIVILEGE_BIT;
 	#endif /* portUSING_MPU_WRAPPERS == 1 */
 
+	#if ENABLE_KASAN
+		pxNewTCB->kasan_depth = 0;
+	#endif
+
+	#if ( configUSE_TASK_START_HOOK == 1 )
+		pxNewTCB->pxTaskFun = pxTaskCode;
+		pxNewTCB->pxTaskPara = pvParameters;
+		pxTaskCode = prvTaskFunWrp;
+		pvParameters = pxNewTCB;
+	#endif
+
+	pxNewTCB->uStackDepth = ulStackDepth;
 	/* Avoid dependency on memset() if it is not required. */
 	#if( tskSET_NEW_STACKS_TO_KNOWN_VALUE == 1 )
 	{
@@ -1068,6 +1102,9 @@ UBaseType_t x;
 	}
 }
 /*-----------------------------------------------------------*/
+#ifdef configMEMORY_LEAK
+extern struct MemLeak MemLeak_t[configMEMLEAK_ARRAY_SIZE];
+#endif
 
 static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 {
@@ -1116,7 +1153,25 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 		}
 
+#ifdef configMEMORY_LEAK
+		int i = 0;
+
+		if ( xSchedulerRunning != pdFALSE ) {
+			for (i = 1; i < configMEMLEAK_ARRAY_SIZE; i ++) {
+				if (MemLeak_t[i].Flag == 0) {
+					uxTaskNumber = i;
+					break;
+				}
+			}
+
+			configASSERT( i < configMEMLEAK_ARRAY_SIZE );
+		} else {
+			uxTaskNumber ++;
+		}
+		MemLeak_t[uxTaskNumber].Flag = 1;
+#else
 		uxTaskNumber++;
+#endif
 
 		#if ( configUSE_TRACE_FACILITY == 1 )
 		{
@@ -1222,6 +1277,18 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 
 			traceTASK_DELETE( pxTCB );
+#ifdef configMEMORY_LEAK
+			MemLeak_t[pxTCB->uxTCBNumber].Flag = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].TaskNum = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].WantSize = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].WantTotalSize = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].MallocCount = 0;
+			if (MemLeak_t[pxTCB->uxTCBNumber].TaskName)
+				memset(MemLeak_t[pxTCB->uxTCBNumber].TaskName, 0, 20);
+			MemLeak_t[pxTCB->uxTCBNumber].FreeSize = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].FreeTotalSize = 0;
+			MemLeak_t[pxTCB->uxTCBNumber].FreeCount = 0;
+#endif
 		}
 		taskEXIT_CRITICAL();
 
@@ -2342,7 +2409,12 @@ TCB_t *pxTCB;
 	/* If null is passed in here then the name of the calling task is being
 	queried. */
 	pxTCB = prvGetTCBFromHandle( xTaskToQuery );
+#ifdef configMEMORY_LEAK
+	if (pxTCB == NULL)
+		return NULL;
+#else
 	configASSERT( pxTCB );
+#endif
 	return &( pxTCB->pcTaskName[ 0 ] );
 }
 /*-----------------------------------------------------------*/
@@ -2528,7 +2600,7 @@ TCB_t *pxTCB;
 						#ifdef portALT_GET_RUN_TIME_COUNTER_VALUE
 							portALT_GET_RUN_TIME_COUNTER_VALUE( ( *pulTotalRunTime ) );
 						#else
-							*pulTotalRunTime = portGET_RUN_TIME_COUNTER_VALUE();
+							*pulTotalRunTime = (uint32_t)portGET_RUN_TIME_COUNTER_VALUE();
 						#endif
 					}
 				}
@@ -2962,7 +3034,7 @@ void vTaskSwitchContext( void )
 			#ifdef portALT_GET_RUN_TIME_COUNTER_VALUE
 				portALT_GET_RUN_TIME_COUNTER_VALUE( ulTotalRunTime );
 			#else
-				ulTotalRunTime = portGET_RUN_TIME_COUNTER_VALUE();
+				ulTotalRunTime = (uint32_t)portGET_RUN_TIME_COUNTER_VALUE();
 			#endif
 
 			/* Add the amount of time the task has been running to the
@@ -2975,6 +3047,18 @@ void vTaskSwitchContext( void )
 			if( ulTotalRunTime > ulTaskSwitchedInTime )
 			{
 				pxCurrentTCB->ulRunTimeCounter += ( ulTotalRunTime - ulTaskSwitchedInTime );
+#if ENABLE_FTRACE
+				int ret = vGetFtraceIndex();
+				struct ftrace_node *p = NULL;
+				if (ret >= 0) {
+					p = &ptracer->pnode[ret];
+					p->runtime = (uint32_t)(ulTotalRunTime - ulTaskSwitchedInTime);
+					p->starttime = ulTaskSwitchedInTime;
+					p->pid = (uint32_t)pxCurrentTCB->uxTCBNumber;
+					p->irqnum = 500;
+					p->type = running;
+				}
+#endif
 			}
 			else
 			{
@@ -3292,7 +3376,7 @@ void vTaskMissedYield( void )
 		if( xTask != NULL )
 		{
 			pxTCB = xTask;
-			uxReturn = pxTCB->uxTaskNumber;
+			uxReturn = pxTCB->uxTCBNumber;
 		}
 		else
 		{
@@ -3618,6 +3702,7 @@ static void prvCheckTasksWaitingTermination( void )
 		pxTaskStatus->uxCurrentPriority = pxTCB->uxPriority;
 		pxTaskStatus->pxStackBase = pxTCB->pxStack;
 		pxTaskStatus->xTaskNumber = pxTCB->uxTCBNumber;
+		pxTaskStatus->uStackTotal = pxTCB->uStackDepth;
 
 		#if ( configUSE_MUTEXES == 1 )
 		{
@@ -4386,7 +4471,7 @@ TCB_t *pxTCB;
 				pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 
 				/* Write the rest of the string. */
-				sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+				sprintf( pcWriteBuffer, "\t\t%c\t%u\t\t%u\t\t%u\t\t%u\t\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].uStackTotal, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber, ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
 				pcWriteBuffer += strlen( pcWriteBuffer ); /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
 			}
 
@@ -4766,7 +4851,7 @@ TickType_t uxReturn;
 					/* Should not get here if all enums are handled.
 					Artificially force an assert by testing a value the
 					compiler can't assume is const. */
-					configASSERT( pxTCB->ulNotifiedValue == ~0UL );
+					configASSERT( pxTCB->ulNotifiedValue == ~0U );
 
 					break;
 			}
@@ -4899,7 +4984,7 @@ TickType_t uxReturn;
 					/* Should not get here if all enums are handled.
 					Artificially force an assert by testing a value the
 					compiler can't assume is const. */
-					configASSERT( pxTCB->ulNotifiedValue == ~0UL );
+					configASSERT( pxTCB->ulNotifiedValue == ~0U );
 					break;
 			}
 
@@ -5189,6 +5274,75 @@ const TickType_t xConstTickCount = xTickCount;
 	#endif /* INCLUDE_vTaskSuspend */
 }
 
+#if ( configUSE_TRACE_FACILITY == 1 )
+static TaskHandle_t prvFindTasksWithinSingleList( List_t *pxList, UBaseType_t tasknum )
+{
+	configLIST_VOLATILE TCB_t *pxNextTCB, *pxFirstTCB, *pxFound=NULL;
+
+	if ( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
+	{
+		listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList );
+		do
+		{
+			listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList );
+			if (!pxFound && tasknum == pxNextTCB->uxTCBNumber)
+				pxFound = pxNextTCB;
+		} while( pxNextTCB != pxFirstTCB );
+	}
+	else
+	{
+		mtCOVERAGE_TEST_MARKER();
+	}
+
+	return pxFound;
+}
+TaskHandle_t xGetTaskHandleOfNum(UBaseType_t tasknum)
+{
+	UBaseType_t uxQueue = configMAX_PRIORITIES;
+	TCB_t *pxFirstTCB=NULL;
+	do
+	{
+		uxQueue--;
+		pxFirstTCB = prvFindTasksWithinSingleList( &( pxReadyTasksLists[ uxQueue ] ), tasknum );
+		if (pxFirstTCB)
+			goto GetTaskHandleOfNumExit;
+	} while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY );
+	pxFirstTCB = prvFindTasksWithinSingleList( ( List_t * ) pxDelayedTaskList, tasknum );
+	if (pxFirstTCB)
+		goto GetTaskHandleOfNumExit;
+	pxFirstTCB = prvFindTasksWithinSingleList( ( List_t * ) pxOverflowDelayedTaskList, tasknum );
+	if (pxFirstTCB)
+		goto GetTaskHandleOfNumExit;
+	#if( INCLUDE_vTaskDelete == 1 )
+	{
+		pxFirstTCB = prvFindTasksWithinSingleList( &xTasksWaitingTermination, tasknum );
+		if (pxFirstTCB)
+			goto GetTaskHandleOfNumExit;
+	}
+	#endif
+
+	#if ( INCLUDE_vTaskSuspend == 1 )
+	{
+		pxFirstTCB = prvFindTasksWithinSingleList( &xSuspendedTaskList, tasknum );
+		if (pxFirstTCB)
+			goto GetTaskHandleOfNumExit;
+	}
+	#endif
+GetTaskHandleOfNumExit:
+	return pxFirstTCB;
+}
+#endif
+void vTaskRename( TaskHandle_t xTask, const char *name)
+{
+	TCB_t *pxTCB;
+
+	pxTCB = prvGetTCBFromHandle( xTask );
+	configASSERT( pxTCB );
+
+	strncpy(pxTCB->pcTaskName, name, configMAX_TASK_NAME_LEN);
+	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
+}
+
 /* Code below here allows additional code to be inserted into this source file,
 especially where access to file scope functions and data is needed (for example
 when performing module tests). */
@@ -5211,4 +5365,34 @@ when performing module tests). */
 
 #endif
 
+#if ENABLE_STACKTRACE
+void task_stack_range(TaskHandle_t xTask, unsigned long *low, unsigned long *high);
+void task_stack_range(TaskHandle_t xTask, unsigned long *low, unsigned long *high)
+{
+	TCB_t *pxTCB;
+	pxTCB = prvGetTCBFromHandle( xTask );
+	*low = (unsigned long)pxTCB->pxStack;
+	*high = *low + pxTCB->uStackDepth * sizeof(StackType_t);
+}
+#endif
 
+#if ENABLE_KASAN
+void kasan_enable_current(void)
+{
+	if (pxCurrentTCB)
+		pxCurrentTCB->kasan_depth--;
+}
+
+void kasan_disable_current(void)
+{
+	if (pxCurrentTCB)
+		pxCurrentTCB->kasan_depth++;
+}
+
+int kasan_current_enabled(void)
+{
+	if (pxCurrentTCB)
+		return (pxCurrentTCB->kasan_depth<=0);
+	return 0;
+}
+#endif

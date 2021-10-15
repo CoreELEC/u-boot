@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,165 +25,303 @@
  * 1 tab == 4 spaces!
  */
 
-/*-----------------------------------------------------------
- * Implementation of functions defined in portable.h for the RISC-V RV32 port.
- *----------------------------------------------------------*/
-
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "portmacro.h"
 
-#ifndef configCLINT_BASE_ADDRESS
-	#warning configCLINT_BASE_ADDRESS must be defined in FreeRTOSConfig.h.  If the target chip includes a Core Local Interrupter (CLINT) then set configCLINT_BASE_ADDRESS to the CLINT base address.  Otherwise set configCLINT_BASE_ADDRESS to 0.
+
+
+#include <stdio.h>
+
+#include "n200_func.h"
+#include "soc.h"
+#include "riscv_encoding.h"
+#ifdef N200_REVA
+//#include "riscv_encoding.h"
+#include "n200_pic_tmr.h"
+#else
+#include "n200_eclic.h"
+#endif
+#include "n200_timer.h"
+#include <riscv_bits.h>
+
+
+/* Standard Includes */
+#include <stdlib.h>
+#include <unistd.h>
+//#include "printf.h"
+
+/* Each task maintains its own interrupt status in the critical nesting
+variable. */
+UBaseType_t uxCriticalNesting = 0xaaaaaaaa;
+
+#if USER_MODE_TASKS
+	unsigned long MSTATUS_INIT = (MSTATUS_MPIE);
+#else
+	unsigned long MSTATUS_INIT = (MSTATUS_MPP | MSTATUS_MPIE);
 #endif
 
-/* Let the user override the pre-loading of the initial LR with the address of
-prvTaskExitError() in case it messes up unwinding of the stack in the
-debugger. */
-#ifdef configTASK_RETURN_ADDRESS
-	#define portTASK_RETURN_ADDRESS	configTASK_RETURN_ADDRESS
-#else
-	#define portTASK_RETURN_ADDRESS	prvTaskExitError
-#endif
-
-/* The stack used by interrupt service routines.  Set configISR_STACK_SIZE_WORDS
-to use a statically allocated array as the interrupt stack.  Alternative leave
-configISR_STACK_SIZE_WORDS undefined and update the linker script so that a
-linker variable names __freertos_irq_stack_top has the same value as the top
-of the stack used by main.  Using the linker script method will repurpose the
-stack that was used by main before the scheduler was started for use as the
-interrupt stack after the scheduler has started. */
-#ifdef configISR_STACK_SIZE_WORDS
-	static __attribute__ ((aligned(16))) StackType_t xISRStack[ configISR_STACK_SIZE_WORDS ] = { 0 };
-	const StackType_t xISRStackTop = ( StackType_t ) &( xISRStack[ ( configISR_STACK_SIZE_WORDS & ~portBYTE_ALIGNMENT_MASK ) - 1 ] );
-#else
-	extern const uint32_t __freertos_irq_stack_top[];
-	const StackType_t xISRStackTop = ( StackType_t ) __freertos_irq_stack_top;
-#endif
 
 /*
- * Setup the timer to generate the tick interrupts.  The implementation in this
- * file is weak to allow application writers to change the timer used to
- * generate the tick interrupt.
+ * Used to catch tasks that attempt to return from their implementing function.
  */
-void vPortSetupTimerInterrupt( void ) __attribute__(( weak ));
-
-/*-----------------------------------------------------------*/
-
-/* Used to program the machine timer compare register. */
-uint64_t ullNextTime = 0ULL;
-const uint64_t *pullNextTime = &ullNextTime;
-const size_t uxTimerIncrementsForOneTick = ( size_t ) ( configCPU_CLOCK_HZ / configTICK_RATE_HZ ); /* Assumes increment won't go over 32-bits. */
-volatile uint64_t * const pullMachineTimerCompareRegister = ( volatile uint64_t * const ) ( configCLINT_BASE_ADDRESS + 0x4000 );
-
-/* Set configCHECK_FOR_STACK_OVERFLOW to 3 to add ISR stack checking to task
-stack checking.  A problem in the ISR stack will trigger an assert, not call the
-stack overflow hook function (because the stack overflow hook is specific to a
-task stack, not the ISR stack). */
-#if( configCHECK_FOR_STACK_OVERFLOW > 2 )
-	#warning This path not tested, or even compiled yet.
-	/* Don't use 0xa5 as the stack fill bytes as that is used by the kernerl for
-	the task stacks, and so will legitimately appear in many positions within
-	the ISR stack. */
-	#define portISR_STACK_FILL_BYTE	0xee
-
-	static const uint8_t ucExpectedStackBytes[] = {
-									portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,		\
-									portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,		\
-									portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,		\
-									portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE,		\
-									portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE, portISR_STACK_FILL_BYTE };	\
-
-	#define portCHECK_ISR_STACK() configASSERT( ( memcmp( ( void * ) xISRStack, ( void * ) ucExpectedStackBytes, sizeof( ucExpectedStackBytes ) ) == 0 ) )
+static void prvTaskExitError( void );
+unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1);
+#ifdef N200_REVA
+uint32_t vPortSysTickHandler(uint32_t int_num);
 #else
-	/* Define the function away. */
-	#define portCHECK_ISR_STACK()
-#endif /* configCHECK_FOR_STACK_OVERFLOW > 2 */
+void vPortSysTickHandler(void);
+#endif
+void vPortSetupTimer(void);
+void vPortSetup(void);
 
-/*-----------------------------------------------------------*/
+/* System Call Trap */
+//ECALL macro stores argument in a2
+unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1)	{
+	int i = 0;
+	uint32_t mstatus_mps_bits;
 
-#if( configCLINT_BASE_ADDRESS != 0 )
+	switch (mcause&0X00000fff)	{
+		//on User and Machine ECALL, handler the request
+		case 8:
+		case 11:
+			if (arg1 == IRQ_DISABLE)	{
+				//zero out mstatus.mpie
+				clear_csr(mstatus,MSTATUS_MPIE);
 
-	void vPortSetupTimerInterrupt( void )
-	{
-	uint32_t ulCurrentTimeHigh, ulCurrentTimeLow;
-	volatile uint32_t * const pulTimeHigh = ( volatile uint32_t * const ) ( configCLINT_BASE_ADDRESS + 0xBFFC );
-	volatile uint32_t * const pulTimeLow = ( volatile uint32_t * const ) ( configCLINT_BASE_ADDRESS + 0xBFF8 );
+			} else if(arg1 == IRQ_ENABLE)	{
+				//set mstatus.mpie
+				set_csr(mstatus,MSTATUS_MPIE);
 
-		do
-		{
-			ulCurrentTimeHigh = *pulTimeHigh;
-			ulCurrentTimeLow = *pulTimeLow;
-		} while( ulCurrentTimeHigh != *pulTimeHigh );
+			} else if(arg1 == PORT_YIELD)		{
+				//always yield from machine mode
+				unsigned long submode = read_csr_msubmode;
+				if ((submode & 0x300) == 0x100)
+					break;
 
-		ullNextTime = ( uint64_t ) ulCurrentTimeHigh;
-		ullNextTime <<= 32ULL;
-		ullNextTime |= ( uint64_t ) ulCurrentTimeLow;
-		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
-		*pullMachineTimerCompareRegister = ullNextTime;
+				//fix up mepc on sync trap
+				unsigned long epc = read_csr(mepc);
+				vPortYield(sp,epc+4); //never returns
 
-		/* Prepare the time to use after the next tick interrupt. */
-		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
+			} else if(arg1 == PORT_YIELD_TO_RA)	{
+
+				vPortYield(sp,(*(unsigned long*)(sp+1*sizeof(sp)))); //never returns
+			}
+
+			break;
+		default:
+			mstatus_mps_bits = ((read_csr(mstatus) & 0x00000600) >> 9);
+#if 0
+			printf("In trap handler, the msubmode is 0x%lx\n", read_csr_msubmode);
+			printf("In trap handler, the mstatus.MPS is 0x%lx\n", mstatus_mps_bits);
+			printf("In trap handler, the mcause is %lx\n", mcause);
+			printf("In trap handler, the mepc is 0x%lx\n", read_csr(mepc));
+			printf("In trap handler, the mtval is 0x%lx\n", read_csr(mbadaddr));
+			if (mstatus_mps_bits == 0x1) {
+			    printf("The exception is happened from previous Exception mode, hence is Double-Exception-fault!\n");
+			} else if (mstatus_mps_bits == 0x2){
+			    printf("The exception is happened from previous NMI mode!\n");
+			} else if (mstatus_mps_bits == 0x3){
+			    printf("The exception is happened from previous IRQ mode!\n");
+			}
+			for (i = 1; i < 31; i += 2) {
+				printf("x%-2d: %08x, x%-2d: %08x\n", i, *(unsigned *)(sp + i * REGBYTES),
+				       i + 1, *(unsigned *)(sp + (i + 1) * REGBYTES));
+			}
+
+			for (i = 0; i < 31; i += 2)
+				printf("0x%lx: %08x, %08x\n", ((read_csr(mepc)/4) *4 + i * REGBYTES -16),
+					*(unsigned *)((read_csr(mepc)/4) *4 + i * REGBYTES -16),
+				       *(unsigned *)((read_csr(mepc)/4) *4 + (i + 1) * REGBYTES -16));
+			printf("Dump Stack: \n");
+#endif
+			//vTaskDumpStack(NULL);
+			//_exit(mcause);
+			do {}while(1);
 	}
 
-#endif /* ( configCLINT_BASE_ADDRESS != 0 ) */
-/*-----------------------------------------------------------*/
+	//fix mepc and return
+	unsigned long epc = read_csr(mepc);
 
-BaseType_t xPortStartScheduler( void )
+	write_csr(mepc,epc+4);
+	return sp;
+}
+
+void vPortEnterCritical( void );
+void vPortEnterCritical( void )
 {
-extern void xPortStartFirstTask( void );
-
-	#if( configASSERT_DEFINED == 1 )
-	{
-		volatile uint32_t mtvec = 0;
-
-		/* Check the least significant two bits of mtvec are 00 - indicating
-		single vector mode. */
-		__asm volatile( "csrr %0, mtvec" : "=r"( mtvec ) );
-		configASSERT( ( mtvec & 0x03UL ) == 0 );
-
-		/* Check alignment of the interrupt stack - which is the same as the
-		stack that was being used by main() prior to the scheduler being
-		started. */
-		configASSERT( ( xISRStackTop & portBYTE_ALIGNMENT_MASK ) == 0 );
-	}
-	#endif /* configASSERT_DEFINED */
-
-	/* If there is a CLINT then it is ok to use the default implementation
-	in this file, otherwise vPortSetupTimerInterrupt() must be implemented to
-	configure whichever clock is to be used to generate the tick interrupt. */
-	vPortSetupTimerInterrupt();
-
-	#if( configCLINT_BASE_ADDRESS != 0 )
-	{
-		/* Enable mtime and external interrupts.  1<<7 for timer interrupt, 1<<11
-		for external interrupt.  _RB_ What happens here when mtime is not present as
-		with pulpino? */
-		__asm volatile( "csrs mie, %0" :: "r"(0x880) );
-	}
+	//printf("vPortEnterCritical\n");
+	#if USER_MODE_TASKS
+		ECALL(IRQ_DISABLE);
 	#else
-	{
-		/* Enable external interrupts. */
-		__asm volatile( "csrs mie, %0" :: "r"(0x800) );
-	}
-	#endif /* configCLINT_BASE_ADDRESS */
+		portDISABLE_INTERRUPTS();
+		//eclic_set_mth ((configMAX_SYSCALL_INTERRUPT_PRIORITY)<<4);
+	#endif
 
-	xPortStartFirstTask();
-
-	/* Should not get here as after calling xPortStartFirstTask() only tasks
-	should be executing. */
-	return pdFAIL;
+	uxCriticalNesting++;
 }
 /*-----------------------------------------------------------*/
 
-void vPortEndScheduler( void )
+void vPortExitCritical( void );
+void vPortExitCritical( void )
 {
-	/* Not implemented. */
-	for( ;; );
+	configASSERT( uxCriticalNesting );
+	uxCriticalNesting--;
+	if ( uxCriticalNesting == 0 )
+	{
+		#if USER_MODE_TASKS
+			ECALL(IRQ_ENABLE);
+		#else
+			//eclic_set_mth (0);
+			portENABLE_INTERRUPTS()	;
+		#endif
+	}
+	return;
+}
+/*-----------------------------------------------------------*/
+
+
+/*-----------------------------------------------------------*/
+
+/* Clear current interrupt mask and set given mask */
+void vPortClearInterruptMask(int int_mask)
+{
+#ifdef N200_REVA
+	write_csr(mie,int_mask);
+#else
+	eclic_set_mth (int_mask);
+#endif
+}
+/*-----------------------------------------------------------*/
+
+/* Set interrupt mask and return current interrupt enable register */
+int xPortSetInterruptMask()
+{
+	int int_mask=0;
+#ifdef N200_REVA
+	int_mask = read_csr(mie);
+	write_csr(mie,0);
+#else
+	int_mask=eclic_get_mth();
+	eclic_set_mth ((configMAX_SYSCALL_INTERRUPT_PRIORITY)<<4);
+#endif
+	return int_mask;
 }
 
+/*-----------------------------------------------------------*/
+/*
+ * See header file for description.
+ */
+extern void *memset(void *dest, int c, size_t len);
+
+StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
+{
+	/* Simulate the stack frame as it would be created by a context switch
+	interrupt. */
+
+	memset(pxTopOfStack - 35,0,36*4);
+	//register int *tp asm("x3");
+	pxTopOfStack -= 3;
+	*pxTopOfStack = (portSTACK_TYPE)pxCode;			/* Start address */
+
+	//set the initial mstatus value
+	pxTopOfStack--;
+	*pxTopOfStack = MSTATUS_INIT;
+
+	pxTopOfStack -= 22;
+	*pxTopOfStack = (portSTACK_TYPE)pvParameters;	/* Register a0 */
+	//pxTopOfStack -= 7;
+	//*pxTopOfStack = (portSTACK_TYPE)tp; /* Register thread pointer */
+	//pxTopOfStack -= 2;
+	pxTopOfStack -=9;
+	*pxTopOfStack = (portSTACK_TYPE)prvTaskExitError; /* Register ra */
+	pxTopOfStack--;
+
+	return pxTopOfStack;
+}
+/*-----------------------------------------------------------*/
+
+
+void prvTaskExitError( void )
+{
+	/* A function that implements a task must not exit or attempt to return to
+	its caller as there is nothing to return to.  If a task wants to exit it
+	should instead call vTaskDelete( NULL ).
+	Artificially force an assert() to be triggered if configASSERT() is
+	defined, then stop here so application writers can catch the error. */
+	configASSERT( uxCriticalNesting == ~0UL );
+	portDISABLE_INTERRUPTS();
+	printf("prvTaskExitError\n");
+	for ( ;; );
+}
+/*-----------------------------------------------------------*/
 
 
 
+/*Entry Point for Machine Timer Interrupt Handler*/
+//Bob: add the function argument int_num
+#ifdef N200_REVA
+uint32_t vPortSysTickHandler(uint32_t int_num){
+#else
+void vPortSysTickHandler(void){
+#endif
+	uint64_t then = 0;
+#ifdef N200_REVA
+	pic_disable_interrupt(PIC_INT_TMR);
+#endif
+	volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
+	volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
+	uinti64_t now = *mtime;
 
+	then = now + (configCPU_CLOCK_HZ / configTICK_RATE_HZ);
+	*mtimecmp = then;
+
+	/* Increment the RTOS tick. */
+	if ( xTaskIncrementTick() != pdFALSE )
+	{
+		//portYIELD();
+		vTaskSwitchContext();
+	}
+#ifdef N200_REVA
+	pic_enable_interrupt(PIC_INT_TMR);
+	return int_num;
+#endif
+}
+/*-----------------------------------------------------------*/
+
+
+void vPortSetupTimer(void)	{
+	// Set the machine timer
+	//Bob: update it to TMR
+	volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
+	volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
+	uint64_t now = *mtime;
+	uint64_t then = now + (configCPU_CLOCK_HZ / configTICK_RATE_HZ);
+	*mtimecmp = then;
+	//print_eclic();
+#ifdef N200_REVA
+	pic_enable_interrupt(PIC_INT_TMR);
+	pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
+#else
+	uint8_t mtime_intattr;
+	mtime_intattr=eclic_get_intattr (ECLIC_INT_MTIP);
+	mtime_intattr|=ECLIC_INT_ATTR_SHV | ECLIC_INT_ATTR_MACH_MODE;
+	mtime_intattr|= ECLIC_INT_ATTR_TRIG_EDGE;
+	eclic_set_intattr(ECLIC_INT_MTIP,mtime_intattr);
+	eclic_enable_interrupt (ECLIC_INT_MTIP);
+
+	//eclic_set_nlbits(4);
+	//eclic_set_irq_lvl_abs(ECLIC_INT_MTIP,1);
+	eclic_set_intctrl(ECLIC_INT_MTIP, 10 << 4);
+
+	set_csr(mstatus, MSTATUS_MIE);
+#endif
+}
+/*-----------------------------------------------------------*/
+
+void vPortSetup(void)	{
+	vPortSetupTimer();
+	uxCriticalNesting = 0;
+}
+/*-----------------------------------------------------------*/

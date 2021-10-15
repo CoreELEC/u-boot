@@ -34,6 +34,8 @@
  * memory management pages of http://www.FreeRTOS.org for more information.
  */
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
@@ -42,6 +44,8 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "printf.h"
+#include "stacktrace_64.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -109,16 +113,28 @@ space. */
 static size_t xBlockAllocatedBit = 0;
 
 /*-----------------------------------------------------------*/
+#ifdef configMEMORY_LEAK
+struct MemLeak MemLeak_t[configMEMLEAK_ARRAY_SIZE];
+#endif
 
 void *pvPortMalloc( size_t xWantedSize )
 {
-BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
-void *pvReturn = NULL;
+	BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
+	void *pvReturn = NULL;
+
+#ifdef configMEMORY_LEAK
+	char *taskname = pcTaskGetName(NULL);
+	int MemTaskNum = 0;
+	int len = 0;
+//	int MemTaskNum = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+	if (taskname != NULL)
+		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
+#endif
 
 	vTaskSuspendAll();
 	{
 		/* If this is the first call to malloc then the heap will require
-		initialisation to setup the list of free blocks. */
+		   initialisation to setup the list of free blocks. */
 		if( pxEnd == NULL )
 		{
 			prvHeapInit();
@@ -129,19 +145,19 @@ void *pvReturn = NULL;
 		}
 
 		/* Check the requested block size is not so large that the top bit is
-		set.  The top bit of the block size member of the BlockLink_t structure
-		is used to determine who owns the block - the application or the
-		kernel, so it must be free. */
+		   set.  The top bit of the block size member of the BlockLink_t structure
+		   is used to determine who owns the block - the application or the
+		   kernel, so it must be free. */
 		if( ( xWantedSize & xBlockAllocatedBit ) == 0 )
 		{
 			/* The wanted size is increased so it can contain a BlockLink_t
-			structure in addition to the requested amount of bytes. */
+			   structure in addition to the requested amount of bytes. */
 			if( xWantedSize > 0 )
 			{
 				xWantedSize += xHeapStructSize;
 
 				/* Ensure that blocks are always aligned to the required number
-				of bytes. */
+				   of bytes. */
 				if( ( xWantedSize & portBYTE_ALIGNMENT_MASK ) != 0x00 )
 				{
 					/* Byte alignment required. */
@@ -152,6 +168,27 @@ void *pvReturn = NULL;
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
+#ifdef configMEMORY_LEAK
+				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+					MemLeak_t[0].Flag = 1;
+					MemLeak_t[0].TaskNum = 0;
+					MemLeak_t[0].WantSize = xWantedSize;
+					MemLeak_t[0].WantTotalSize += xWantedSize;
+					MemLeak_t[0].MallocCount ++;
+					strncpy(MemLeak_t[0].TaskName, "not_in_task", 20);
+					MemLeak_t[0].TaskName[sizeof(MemLeak_t[0].TaskName) - 1] = '\0';
+				} else {
+					if (taskname != NULL) {
+						MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
+						MemLeak_t[MemTaskNum].WantSize = xWantedSize;
+						MemLeak_t[MemTaskNum].WantTotalSize += xWantedSize;
+						MemLeak_t[MemTaskNum].MallocCount ++;
+						len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
+						strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
+						MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
+					}
+				}
+#endif
 			}
 			else
 			{
@@ -262,8 +299,17 @@ void *pvReturn = NULL;
 
 void vPortFree( void *pv )
 {
-uint8_t *puc = ( uint8_t * ) pv;
-BlockLink_t *pxLink;
+	uint8_t *puc = ( uint8_t * ) pv;
+	BlockLink_t *pxLink;
+
+#ifdef configMEMORY_LEAK
+	char *taskname = pcTaskGetName(NULL);
+	int MemTaskNum = 0;
+	int len = 0;
+	//int MemTaskNum = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+	if (taskname != NULL)
+		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
+#endif
 
 	if( pv != NULL )
 	{
@@ -278,6 +324,23 @@ BlockLink_t *pxLink;
 		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
 		configASSERT( pxLink->pxNextFreeBlock == NULL );
 
+#ifdef configMEMORY_LEAK
+		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+			MemLeak_t[0].FreeSize = pxLink->xBlockSize;
+			MemLeak_t[0].FreeTotalSize += pxLink->xBlockSize;
+			MemLeak_t[0].FreeCount ++;
+		} else {
+			if (taskname != NULL) {
+				MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
+				MemLeak_t[MemTaskNum].FreeSize = pxLink->xBlockSize;
+				MemLeak_t[MemTaskNum].FreeTotalSize += pxLink->xBlockSize;
+				MemLeak_t[MemTaskNum].FreeCount ++;
+				len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
+				strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
+				MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
+			}
+		}
+#endif
 		if( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 )
 		{
 			if( pxLink->pxNextFreeBlock == NULL )
@@ -311,6 +374,10 @@ BlockLink_t *pxLink;
 size_t xPortGetFreeHeapSize( void )
 {
 	return xFreeBytesRemaining;
+}
+size_t xPortGetTotalHeapSize( void )
+{
+	return configTOTAL_HEAP_SIZE;
 }
 /*-----------------------------------------------------------*/
 
@@ -434,3 +501,30 @@ uint8_t *puc;
 	}
 }
 
+#ifdef configRealloc
+void *pvPortRealloc( void *ptr, size_t size )
+{
+	uint8_t *puc = ( uint8_t * ) ptr;
+	BlockLink_t *pxLink;
+	size_t oldlen, len;
+	void *pvReturn = NULL;
+
+	if (!ptr) {
+		pvReturn = pvPortMalloc(size);
+	} else {
+		puc -= xHeapStructSize;
+		/* This casting is to keep the compiler from issuing warnings. */
+		pxLink = ( void * ) puc;
+		/* Check the block is actually allocated. */
+		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
+		configASSERT( pxLink->pxNextFreeBlock == NULL );
+
+		oldlen = pxLink->xBlockSize & ~xBlockAllocatedBit;
+		len = oldlen < size ? oldlen : size;
+		pvReturn = pvPortMalloc(size);
+		memcpy(pvReturn, ptr, len);
+		free(ptr);
+	}
+	return pvReturn;
+}
+#endif

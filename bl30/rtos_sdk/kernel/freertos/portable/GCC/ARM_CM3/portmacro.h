@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -96,6 +96,7 @@ typedef unsigned long UBaseType_t;
 /* Critical section management. */
 extern void vPortEnterCritical( void );
 extern void vPortExitCritical( void );
+extern portCHAR xPortIsIsrContext( void );
 #define portSET_INTERRUPT_MASK_FROM_ISR()		ulPortRaiseBASEPRI()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortSetBASEPRI(x)
 #define portDISABLE_INTERRUPTS()				vPortRaiseBASEPRI()
@@ -233,7 +234,6 @@ portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
 }
 /*-----------------------------------------------------------*/
 
-#define portMEMORY_BARRIER() __asm volatile( "" ::: "memory" )
 
 #ifdef __cplusplus
 }

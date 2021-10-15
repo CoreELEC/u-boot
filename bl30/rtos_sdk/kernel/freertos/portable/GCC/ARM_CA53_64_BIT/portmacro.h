@@ -100,17 +100,129 @@ extern void vPortExitCritical( void );
 extern UBaseType_t uxPortSetInterruptMask( void );
 extern void vPortClearInterruptMask( UBaseType_t uxNewMaskValue );
 extern void vPortInstallFreeRTOSVectorTable( void );
+extern portCHAR xPortIsIsrContext( void );
+
+#if ENABLE_FTRACE
+extern void vTraceDisInterrupt(void);
+extern void vTraceEnInterrupt(void);
+#else
+#define vTraceDisInterrupt()
+#define vTraceEnInterrupt()
+#endif
 
 #define portDISABLE_INTERRUPTS()									\
 	__asm volatile ( "MSR DAIFSET, #2" ::: "memory" );				\
 	__asm volatile ( "DSB SY" );									\
-	__asm volatile ( "ISB SY" );
+	__asm volatile ( "ISB SY" ); \
+	vTraceDisInterrupt();
+
 
 #define portENABLE_INTERRUPTS()										\
 	__asm volatile ( "MSR DAIFCLR, #2" ::: "memory" );				\
 	__asm volatile ( "DSB SY" );									\
-	__asm volatile ( "ISB SY" );
+	__asm volatile ( "ISB SY" ); \
+	vTraceEnInterrupt();
 
+static inline unsigned long _irq_save(void)
+{
+	unsigned long flags;
+
+	asm volatile(
+		"mrs	%0, daif		// arch_local_irq_save\n"
+		"msr	daifset, #2"
+		: "=r" (flags)
+		:
+		: "memory");
+#if ENABLE_FTRACE
+	vTraceDisInterrupt();
+#endif
+	return flags;
+}
+static inline void _irq_restore(unsigned long flags)
+{
+	asm volatile(
+		"msr	daif, %0		// arch_local_irq_restore"
+	:
+	: "r" (flags)
+	: "memory");
+#if ENABLE_FTRACE
+	if ((flags & 0x2) == 0)
+		vTraceEnInterrupt();
+#endif
+}
+
+#define portIRQ_SAVE(flags) 			\
+	do {						\
+		flags = _irq_save();		\
+	} while (0)
+
+#define portIRQ_RESTORE(flags)			\
+	do {						\
+		_irq_restore(flags);		\
+	} while (0)
+
+#if ENABLE_MODULE_LOGBUF
+#define __CMPXCHG_CASE(w, sz, name, mb, acq, rel, cl)			\
+static inline unsigned long __cmpxchg_case_##name(volatile void *ptr,		\
+				     unsigned long old,			\
+				     unsigned long newv)		\
+{									\
+	unsigned long tmp, oldval;					\
+									\
+	asm volatile(							\
+	"	prfm	pstl1strm, %[v]\n"				\
+	"1:	ld" #acq "xr" #sz "\t%" #w "[oldval], %[v]\n"		\
+	"	eor	%" #w "[tmp], %" #w "[oldval], %" #w "[old]\n"	\
+	"	cbnz	%" #w "[tmp], 2f\n"				\
+	"	st" #rel "xr" #sz "\t%w[tmp], %" #w "[newv], %[v]\n"	\
+	"	cbnz	%w[tmp], 1b\n"					\
+	"	" #mb "\n"						\
+	"2:"								\
+	: [tmp] "=&r" (tmp), [oldval] "=&r" (oldval),			\
+	  [v] "+Q" (*(unsigned long *)ptr)				\
+	: [old] "Lr" (old), [newv] "r" (newv)				\
+	: cl);								\
+									\
+	return oldval;							\
+}
+__CMPXCHG_CASE(w, b,  mb_1, dmb ish,  , l, "memory")
+__CMPXCHG_CASE(w, h,  mb_2, dmb ish,  , l, "memory")
+__CMPXCHG_CASE(w,  ,  mb_4, dmb ish,  , l, "memory")
+__CMPXCHG_CASE( ,  ,  mb_8, dmb ish,  , l, "memory")
+
+#define __CMPXCHG_GEN(sfx)						\
+static inline unsigned long __cmpxchg##sfx(volatile void *ptr,		\
+					   unsigned long old,		\
+					   unsigned long newv,		\
+					   int size)			\
+{									\
+	switch (size) {							\
+	case 1:								\
+		return __cmpxchg_case##sfx##_1(ptr, (unsigned char)old, newv);	\
+	case 2:								\
+		return __cmpxchg_case##sfx##_2(ptr, (unsigned short)old, newv);	\
+	case 4:								\
+		return __cmpxchg_case##sfx##_4(ptr, old, newv);		\
+	case 8:								\
+		return __cmpxchg_case##sfx##_8(ptr, old, newv);		\
+	default:							\
+		configASSERT(0);						\
+	}								\
+	return 0; \
+}
+__CMPXCHG_GEN(_mb)
+
+#define __cmpxchg_wrapper(sfx, ptr, o, n)				\
+({									\
+	__typeof__(*(ptr)) __ret;					\
+	__ret = (__typeof__(*(ptr)))					\
+		__cmpxchg##sfx((ptr), (unsigned long)(o),		\
+				(unsigned long)(n), sizeof(*(ptr)));	\
+	__ret;								\
+})
+
+#define portCMPXCHG(...)		__cmpxchg_wrapper( _mb, __VA_ARGS__)
+#endif
 
 /* These macros do not globally disable/enable interrupts.  They do mask off
 interrupts that have a priority below configMAX_API_CALL_INTERRUPT_PRIORITY. */
@@ -118,6 +230,14 @@ interrupts that have a priority below configMAX_API_CALL_INTERRUPT_PRIORITY. */
 #define portEXIT_CRITICAL()			vPortExitCritical();
 #define portSET_INTERRUPT_MASK_FROM_ISR()		uxPortSetInterruptMask()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortClearInterruptMask(x)
+/*-----------------------------------------------------------*/
+
+/* Tickless idle/low power functionality. */
+//#ifdef portSUPPRESS_TICKS_AND_SLEEP
+#if( configUSE_TICKLESS_IDLE ==1 )
+	extern void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime );
+	#define portSUPPRESS_TICKS_AND_SLEEP( xExpectedIdleTime ) vPortSuppressTicksAndSleep( xExpectedIdleTime )
+#endif
 
 /*-----------------------------------------------------------*/
 
@@ -194,7 +314,11 @@ number of bits implemented by the interrupt controller. */
 #define portICCPMR_PRIORITY_MASK_OFFSET  						( 0x04 )
 #define portICCIAR_INTERRUPT_ACKNOWLEDGE_OFFSET 				( 0x0C )
 #define portICCEOIR_END_OF_INTERRUPT_OFFSET 					( 0x10 )
+#if defined(GUEST)
+#define portICCBPR_BINARY_POINT_OFFSET							( 0x1C )
+#else
 #define portICCBPR_BINARY_POINT_OFFSET							( 0x08 )
+#endif
 #define portICCRPR_RUNNING_PRIORITY_OFFSET						( 0x14 )
 
 #define portINTERRUPT_CONTROLLER_CPU_INTERFACE_ADDRESS 		( configINTERRUPT_CONTROLLER_BASE_ADDRESS + configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET )
@@ -205,7 +329,7 @@ number of bits implemented by the interrupt controller. */
 #define portICCBPR_BINARY_POINT_REGISTER 					( *( ( const volatile uint32_t * ) ( portINTERRUPT_CONTROLLER_CPU_INTERFACE_ADDRESS + portICCBPR_BINARY_POINT_OFFSET ) ) )
 #define portICCRPR_RUNNING_PRIORITY_REGISTER 				( *( ( const volatile uint32_t * ) ( portINTERRUPT_CONTROLLER_CPU_INTERFACE_ADDRESS + portICCRPR_RUNNING_PRIORITY_OFFSET ) ) )
 
-#define portMEMORY_BARRIER() __asm volatile( "" ::: "memory" )
+#define portMEMORY_BARRIER() __asm volatile( "dmb ishst" ::: "memory" )
 
 #endif /* PORTMACRO_H */
 

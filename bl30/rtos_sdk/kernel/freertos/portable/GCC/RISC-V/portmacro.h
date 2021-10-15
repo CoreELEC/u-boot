@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,13 +25,15 @@
  * 1 tab == 4 spaces!
  */
 
-
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+#include "riscv_encoding.h"
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -44,88 +46,77 @@ extern "C" {
  */
 
 /* Type definitions. */
-#if __riscv_xlen == 64
-	#define portSTACK_TYPE			uint64_t
-	#define portBASE_TYPE			int64_t
-	#define portUBASE_TYPE			uint64_t
-	#define portMAX_DELAY 			( TickType_t ) 0xffffffffffffffffUL
-	#define portPOINTER_SIZE_TYPE 	uint64_t
-#elif __riscv_xlen == 32
-	#define portSTACK_TYPE	uint32_t
-	#define portBASE_TYPE	int32_t
-	#define portUBASE_TYPE	uint32_t
-	#define portMAX_DELAY ( TickType_t ) 0xffffffffUL
-#else
-	#error Assembler did not define __riscv_xlen
-#endif
-
+#define portCHAR		char
+#define portFLOAT		float
+#define portDOUBLE		double
+#define portLONG		long
+#define portSHORT		short
+#define portSTACK_TYPE	uint32_t
+#define portBASE_TYPE	long
 
 typedef portSTACK_TYPE StackType_t;
-typedef portBASE_TYPE BaseType_t;
-typedef portUBASE_TYPE UBaseType_t;
-typedef portUBASE_TYPE TickType_t;
+typedef long BaseType_t;
+typedef unsigned long UBaseType_t;
 
-/* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
-not need to be guarded with a critical section. */
-#define portTICK_TYPE_IS_ATOMIC 1
+#if( configUSE_16_BIT_TICKS == 1 )
+	typedef uint16_t TickType_t;
+	#define portMAX_DELAY ( TickType_t ) 0xffff
+#else
+	typedef uint32_t TickType_t;
+	#define portMAX_DELAY ( TickType_t ) 0xffffffffUL
+
+#endif
 /*-----------------------------------------------------------*/
 
 /* Architecture specifics. */
 #define portSTACK_GROWTH			( -1 )
 #define portTICK_PERIOD_MS			( ( TickType_t ) 1000 / configTICK_RATE_HZ )
-#ifdef __riscv64
-	#error This is the RV32 port that has not yet been adapted for 64.
-	#define portBYTE_ALIGNMENT			16
-#else
-	#define portBYTE_ALIGNMENT 8
-#endif
+#define portBYTE_ALIGNMENT			8
+/*-----------------------------------------------------------*/
+
+/* Architecture specifics. */
+extern void vPortYield(unsigned long, unsigned long); //in port.c
+extern int xPortSetInterruptMask(void); //in port.c
+extern void vPortClearInterruptMask( int uxSavedStatusValue ); //in port.c
+
+/*-----------------------------------------------------------*/
+/*System Calls												 */
+/*-----------------------------------------------------------*/
+//ecall macro used to store argument in a3
+#define ECALL(arg) ({			\
+	register uintptr_t a2 asm ("a2") = (uintptr_t)(arg);	\
+	asm volatile ("ecall"					\
+		      : "+r" (a2)				\
+		      : 	\
+		      : "memory");				\
+	a2;							\
+})
+
+#define IRQ_DISABLE 		20
+#define IRQ_ENABLE  		30
+#define PORT_YIELD  		40
+#define PORT_YIELD_TO_RA    50
 /*-----------------------------------------------------------*/
 
 
 /* Scheduler utilities. */
-extern void vTaskSwitchContext( void );
-#define portYIELD() __asm volatile( "ecall" );
-#define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired ) vTaskSwitchContext()
-#define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
-/*-----------------------------------------------------------*/
+/* the return after the ECALL is VERY important */
+
+#define portYIELD() ECALL(PORT_YIELD);
+
+#define portYIELD_FROM_ISR(x)  if(x!=0)  {portYIELD();}
+
 
 
 /* Critical section management. */
-#define portCRITICAL_NESTING_IN_TCB					1
 extern void vTaskEnterCritical( void );
 extern void vTaskExitCritical( void );
-
-#define portSET_INTERRUPT_MASK_FROM_ISR() 0
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue ) ( void ) uxSavedStatusValue
-#define portDISABLE_INTERRUPTS()	__asm volatile( "csrc mstatus, 8" )
-#define portENABLE_INTERRUPTS()		__asm volatile( "csrs mstatus, 8" )
-#define portENTER_CRITICAL()	vTaskEnterCritical()
-#define portEXIT_CRITICAL()		vTaskExitCritical()
-
-/*-----------------------------------------------------------*/
-
-/* Architecture specific optimisations. */
-#ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
-	#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
-#endif
-
-#if( configUSE_PORT_OPTIMISED_TASK_SELECTION == 1 )
-
-	/* Check the configuration. */
-	#if( configMAX_PRIORITIES > 32 )
-		#error configUSE_PORT_OPTIMISED_TASK_SELECTION can only be set to 1 when configMAX_PRIORITIES is less than or equal to 32.  It is very rare that a system requires more than 10 to 15 difference priorities as tasks that share a priority will time slice.
-	#endif
-
-	/* Store/clear the ready priorities in a bit map. */
-	#define portRECORD_READY_PRIORITY( uxPriority, uxReadyPriorities ) ( uxReadyPriorities ) |= ( 1UL << ( uxPriority ) )
-	#define portRESET_READY_PRIORITY( uxPriority, uxReadyPriorities ) ( uxReadyPriorities ) &= ~( 1UL << ( uxPriority ) )
-
-	/*-----------------------------------------------------------*/
-
-	#define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31UL - __builtin_clz( uxReadyPriorities ) )
-
-#endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
-
+#define portSET_INTERRUPT_MASK_FROM_ISR()       xPortSetInterruptMask()
+#define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue )       vPortClearInterruptMask( uxSavedStatusValue )
+#define portDISABLE_INTERRUPTS()	        clear_csr(mstatus,MSTATUS_MIE);
+#define portENABLE_INTERRUPTS()			set_csr(mstatus, MSTATUS_MIE);
+#define portENTER_CRITICAL()			vTaskEnterCritical()
+#define portEXIT_CRITICAL()			vTaskExitCritical()
 
 /*-----------------------------------------------------------*/
 
@@ -134,10 +125,15 @@ not necessary for to use this port.  They are defined so the common demo files
 (which build with all the ports) will build. */
 #define portTASK_FUNCTION_PROTO( vFunction, pvParameters ) void vFunction( void *pvParameters )
 #define portTASK_FUNCTION( vFunction, pvParameters ) void vFunction( void *pvParameters )
-
 /*-----------------------------------------------------------*/
 
-#define portNOP() __asm volatile 	( " nop " )
+/* Tickless idle/low power functionality. */
+#ifndef portSUPPRESS_TICKS_AND_SLEEP
+	extern void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime );
+	#define portSUPPRESS_TICKS_AND_SLEEP( xExpectedIdleTime ) vPortSuppressTicksAndSleep( xExpectedIdleTime )
+#endif
+/*-----------------------------------------------------------*/
+
 
 #define portINLINE	__inline
 
@@ -145,7 +141,8 @@ not necessary for to use this port.  They are defined so the common demo files
 	#define portFORCE_INLINE inline __attribute__(( always_inline))
 #endif
 
-#define portMEMORY_BARRIER() __asm volatile( "" ::: "memory" )
+
+
 
 #ifdef __cplusplus
 }

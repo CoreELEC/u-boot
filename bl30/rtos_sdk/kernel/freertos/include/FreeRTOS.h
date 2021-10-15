@@ -68,7 +68,11 @@ extern "C" {
 
 /* Required if struct _reent is used. */
 #if ( configUSE_NEWLIB_REENTRANT == 1 )
+#ifdef ARCH64
 	#include <reent.h>
+#else
+	#include <reent_hi.h>
+#endif
 #endif
 /*
  * Check all the required application specific macros have been defined.
@@ -241,20 +245,16 @@ extern "C" {
 	#define configASSERT_DEFINED 1
 #endif
 
-/* configPRECONDITION should be resolve to configASSERT.
-   The CBMC proofs need a way to track assumptions and assertions.
-   A configPRECONDITION statement should express an implicit invariant or assumption made.
-   A configASSERT statement should express an invariant that must hold explicit before calling
-   the code. */
-#ifndef configPRECONDITION
-	#define configPRECONDITION( X ) configASSERT(X)
-	#define configPRECONDITION_DEFINED 0
-#else
-	#define configPRECONDITION_DEFINED 1
-#endif
-
 #ifndef portMEMORY_BARRIER
 	#define portMEMORY_BARRIER()
+#endif
+
+#ifndef portIRQ_SAVE
+#define portIRQ_SAVE(a) (void)(a)
+#endif
+
+#ifndef portIRQ_RESTORE
+#define portIRQ_RESTORE(a) (void)(a)
 #endif
 
 /* The timers module relies on xTaskGetSchedulerState(). */
@@ -565,11 +565,11 @@ extern "C" {
 #endif
 
 #ifndef traceMALLOC
-    #define traceMALLOC( pvAddress, uiSize )
+    #define traceMALLOC( pvAddress, uiSize ) // printf("debug alloc %p %8u %8u\n", pvAddress, uiSize, xPortGetFreeHeapSize())
 #endif
 
 #ifndef traceFREE
-    #define traceFREE( pvAddress, uiSize )
+    #define traceFREE( pvAddress, uiSize ) // printf("debug free  %p %8u %8u\n", pvAddress, uiSize, xPortGetFreeHeapSize())
 #endif
 
 #ifndef traceEVENT_GROUP_CREATE
@@ -998,6 +998,14 @@ the Secure Side only. */
 	#define configRUN_FREERTOS_SECURE_ONLY 0
 #endif
 
+#ifndef configUSE_TASK_START_HOOK
+	#define configUSE_TASK_START_HOOK 0
+#endif
+
+#ifndef portGetDspHeartBeat
+	#define portGetDspHeartBeat() 0
+#endif
+
 /* Sometimes the FreeRTOSConfig.h settings only allow a task to be created using
  * dynamically allocated RAM, in which case when any task is deleted it is known
  * that both the task's stack and TCB need to be freed.  Sometimes the
@@ -1113,6 +1121,7 @@ typedef struct xSTATIC_TCB
 	StaticListItem_t	xDummy3[ 2 ];
 	UBaseType_t			uxDummy5;
 	void				*pxDummy6;
+	UBaseType_t			uxDummyStackDepth;
 	uint8_t				ucDummy7[ configMAX_TASK_NAME_LEN ];
 	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
 		void			*pxDummy8;
@@ -1151,6 +1160,12 @@ typedef struct xSTATIC_TCB
 	#endif
 	#if ( configUSE_POSIX_ERRNO == 1 )
 		int				iDummy22;
+	#endif
+	#if ( configUSE_TASK_START_HOOK == 1 )
+		void			*pxDummy23[2];
+	#endif
+	#if ENABLE_KASAN
+		int		iDummy24;
 	#endif
 } StaticTask_t;
 

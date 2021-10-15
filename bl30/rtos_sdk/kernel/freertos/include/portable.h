@@ -137,15 +137,35 @@ typedef struct HeapRegion
  * with the lowest start address must appear first in the array.
  */
 void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions ) PRIVILEGED_FUNCTION;
+void vPortAddHeapRegion( uint8_t *pucStartAddress, size_t xSizeInBytes ) PRIVILEGED_FUNCTION;
 
+int vPrintFreeListAfterMallocFail(void);
 
 /*
  * Map to the memory management routines required for the port.
  */
+#ifdef configMEMORY_LEAK
+struct MemLeak {
+	char TaskName[20];
+	int TaskNum;
+	int WantSize;
+	int FreeSize;
+	int WantTotalSize;
+	int FreeTotalSize;
+	int MallocCount;
+	int FreeCount;
+	int Flag;
+};
+#endif
+
 void *pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION;
+void *pvPortMallocAlign( size_t xWantedSize , size_t xAlignMsk)PRIVILEGED_FUNCTION;
+void *pvPortMallocRsvAlign( size_t xWantedSize , size_t xAlignMsk) PRIVILEGED_FUNCTION;
+void *early_reserve_pages(size_t xWantedSize) PRIVILEGED_FUNCTION;
 void vPortFree( void *pv ) PRIVILEGED_FUNCTION;
 void vPortInitialiseBlocks( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetFreeHeapSize( void ) PRIVILEGED_FUNCTION;
+size_t xPortGetTotalHeapSize( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetMinimumEverFreeHeapSize( void ) PRIVILEGED_FUNCTION;
 
 /*
@@ -172,6 +192,18 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 	struct xMEMORY_REGION;
 	void vPortStoreTaskMPUSettings( xMPU_SETTINGS *xMPUSettings, const struct xMEMORY_REGION * const xRegions, StackType_t *pxBottomOfStack, uint32_t ulStackDepth ) PRIVILEGED_FUNCTION;
 #endif
+
+typedef enum Halt_Action{
+	HLTACT_RUN_OS=0,
+	HLTACT_SHUTDOWN_SYSTEM
+}Halt_Action_e;
+void vPortRtosInfoUpdateStatus(uint32_t status);
+void vPortHaltSystem(Halt_Action_e act);
+void vLowPowerSystem(void);
+void vPortAddIrq(uint32_t irq_num);
+void vPortRemoveIrq(uint32_t irq_num);
+void vPortConfigLogBuf(uint32_t pa, uint32_t len);
+void prvSleep( TickType_t xExpectedIdleTime );
 
 #ifdef __cplusplus
 }

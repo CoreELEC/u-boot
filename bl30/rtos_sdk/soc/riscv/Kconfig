@@ -1,0 +1,15 @@
+config SOC_NAME
+	string
+	help
+	  SoC name which can be found under soc/<arch>/<soc name>.
+	  This option holds the directory name used by the build system to locate
+	  the correct linker and header files for the SoC.
+
+config SOC_SERIES
+	string
+	help
+	  SoC series name which can be found under soc/<arch>/<family>/<series>.
+	  This option holds the directory name used by the build system to locate
+	  the correct linker and header files.
+
+source "soc/$(ARCH)/t5d/Kconfig"

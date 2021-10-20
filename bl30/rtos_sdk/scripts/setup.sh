@@ -6,7 +6,8 @@ input="$prj_dir/.repo/manifests/default.xml"
 cmake_file="$prj_dir/CMakeLists.txt"
 kconfig_file="$prj_dir/Kconfig"
 exclude_dir="products"
-category_pattern="drivers"
+category_drivers="drivers"
+category_boards="boards"
 
 cat <<EOF > $cmake_file
 enable_language(C CXX ASM)
@@ -27,10 +28,13 @@ do
 	keyword=`echo "$line" | grep 'path=.* name=' | awk '{print $2}'`
 	if [ $keyword ]; then
 		repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-		if [ "$repo_path" == "$category_pattern" ]; then
+		if [ "$repo_path" == "$category_drivers" ]; then
 			category=$repo_path
 		else
 			category=`dirname $repo_path`
+			if [ "$category" == "$category_boards" ]; then
+				repo_path=$repo_path/$BOARD
+			fi
 		fi
 
 		# Generate root CMakeLists.txt

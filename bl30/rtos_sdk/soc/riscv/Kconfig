@@ -12,4 +12,4 @@ config SOC_SERIES
 	  This option holds the directory name used by the build system to locate
 	  the correct linker and header files.
 
-source "soc/$(ARCH)/t5d/Kconfig"
+source "soc/riscv/t5d/Kconfig"

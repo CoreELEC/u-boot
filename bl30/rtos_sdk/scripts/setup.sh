@@ -32,9 +32,6 @@ do
 			category=$repo_path
 		else
 			category=`dirname $repo_path`
-			if [ "$category" == "$category_boards" ]; then
-				repo_path=$repo_path/$BOARD
-			fi
 		fi
 
 		# Generate root CMakeLists.txt
@@ -42,6 +39,9 @@ do
 			echo "add_subdirectory($repo_path)" >> $cmake_file
 		fi
 
+		if [ "$category" == "$category_boards" ]; then
+			repo_path=$repo_path/$BOARD
+		fi
 		# Generate root Kconfig
 		if [ -f $repo_path/Kconfig ]; then
 			if [ "$last_category" != "$category" ]; then
@@ -50,6 +50,7 @@ do
 				fi
 				echo "menu \"${category^} Options\"" >> $kconfig_file
 			fi
+
 			echo "source \"$repo_path/Kconfig\"" >> $kconfig_file
 			last_category=$category
 		fi

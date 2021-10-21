@@ -42,12 +42,19 @@ do
 		# exclude other ARCH dirs
 		case $special_dirs in
 			*"$category"*) arch=`basename $repo_path`
-				       if [ "$arch" != "$ARCH" ]; then continue; fi;;
+				       if [ "$arch" == "$ARCH" ]; then
+						cmake_path="$category/\${ARCH}"
+						kconfig_path="$category/\$(ARCH)"
+				       else
+						continue
+				       fi;;
+			* ) cmake_path=$repo_path
+			    kconfig_path=$repo_path;;
 		esac
 
 		# Generate root CMakeLists.txt
 		if [ -f $repo_path/CMakeLists.txt ]; then
-			echo "add_subdirectory($repo_path)" >> $cmake_file
+			echo "add_subdirectory($cmake_path)" >> $cmake_file
 		fi
 
 		# Generate root Kconfig
@@ -59,7 +66,7 @@ do
 				echo "menu \"${category^} Options\"" >> $kconfig_file
 			fi
 
-			echo "source \"$repo_path/Kconfig\"" >> $kconfig_file
+			echo "source \"$kconfig_path/Kconfig\"" >> $kconfig_file
 			last_category=$category
 		fi
 	fi

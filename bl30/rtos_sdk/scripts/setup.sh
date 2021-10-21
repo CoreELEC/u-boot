@@ -6,8 +6,8 @@ input="$prj_dir/.repo/manifests/default.xml"
 cmake_file="$prj_dir/CMakeLists.txt"
 kconfig_file="$prj_dir/Kconfig"
 exclude_dir="products"
-category_drivers="drivers"
-category_boards="boards"
+special_dirs="arch soc boards"
+drivers_dir="drivers"
 
 cat <<EOF > $cmake_file
 enable_language(C CXX ASM)
@@ -26,22 +26,30 @@ EOF
 while IFS= read -r line
 do
 	keyword=`echo "$line" | grep 'path=.* name=' | awk '{print $2}'`
+
 	if [ $keyword ]; then
 		repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-		if [ "$repo_path" == "$category_drivers" ]; then
+		if [[ $repo_path == $drivers_dir* ]] ; then
 			category=$repo_path
 		else
 			category=`dirname $repo_path`
 		fi
 
+		if [[ $repo_path == $exclude_dir/* ]] ; then
+			continue
+		fi
+
+		# exclude other ARCH dirs
+		case $special_dirs in
+			*"$category"*) arch=`basename $repo_path`
+				       if [ "$arch" != "$ARCH" ]; then continue; fi;;
+		esac
+
 		# Generate root CMakeLists.txt
-		if [ -f $repo_path/CMakeLists.txt ] && [ "$category" != "$exclude_dir" ]; then
+		if [ -f $repo_path/CMakeLists.txt ]; then
 			echo "add_subdirectory($repo_path)" >> $cmake_file
 		fi
 
-		if [ "$category" == "$category_boards" ]; then
-			repo_path=$repo_path/$BOARD
-		fi
 		# Generate root Kconfig
 		if [ -f $repo_path/Kconfig ]; then
 			if [ "$last_category" != "$category" ]; then

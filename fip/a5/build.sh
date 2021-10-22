@@ -210,8 +210,6 @@ function mk_bl2ex() {
 		ls -la ${output}/
 		exit -1
 	fi
-	cp ${output}/bb1st.usb.bin ${output}/bb1st.bin
-	cp ${output}/blob-bl2e.usb.bin ${output}/blob-bl2e.bin
 	echo "done to genenrate bb1st.bin folder"
 }
 
@@ -605,7 +603,9 @@ function build_fip() {
 
 
 	# build final bootloader
-	mk_uboot ${BUILD_PATH} ${BUILD_PATH}
+	#mk_uboot ${BUILD_PATH} ${BUILD_PATH}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .sto ${CHIPSET_VARIANT_SUFFIX}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	return
 }
@@ -781,6 +781,10 @@ function build_signed() {
 
 function copy_other_soc() {
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH}/device_acs.bin -f
+
+	if [ ! -f ${BUILD_PATH}/chip_acs.bin ]; then
+		cp ./${FIP_FOLDER}${CUR_SOC}/chip_acs.bin ${BUILD_PATH}/chip_acs.bin -f
+	fi
 
 	# device acs params parse for ddr timing
 	#./${FIP_FOLDER}parse ${BUILD_PATH}/device_acs.bin

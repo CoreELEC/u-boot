@@ -1,0 +1,2 @@
+rsource "aml/Kconfig"
+rsource "newlib/Kconfig"

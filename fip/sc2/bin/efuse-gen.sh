@@ -65,6 +65,8 @@ Usage: $(basename $0) --help
                       -o device-scs-id.efuse
        $(basename $0) --device-vendor-segid vend_id_value \\
                       -o device-vedor-id.efuse
+       $(basename $0) --ta-segid ta_segid_value \\
+                      -o ta_segid.efuse
        $(basename $0) --stbcasn stbcasn_value \\
                       -o stbcasn.efuse
 EOF
@@ -377,6 +379,8 @@ function generate_vendor_id_pattern() {
     local argv=("$@")
     local i=0
     local patt=$(mktemp --tmpdir)
+    local wrlock=$(mktemp --tmpdir)
+	local efusebit=$(mktemp --tmpdir)
     local vend_id_efuse=$(mktemp --tmpdir)
     # default vend_id_offset 0xAC
     local vend_id_offset=172
@@ -414,11 +418,86 @@ function generate_vendor_id_pattern() {
     dd if=$vend_id_efuse of=$patt bs=1 seek=$vend_id_offset count=$vend_id_size \
         conv=notrunc >& /dev/null
 
+	dd if=$patt of=$wrlock bs=16 skip=29 count=1 &> /dev/null
+	b_1d5=$(xxd -ps -s5 -l1 $wrlock)
+	b_1d5="$(printf %02x $(( 0x$b_1d5 | 0x08 )))"
+	echo $b_1d5 | xxd -r -p > $efusebit
+	dd if=$efusebit of=$wrlock bs=1 seek=5 count=1 conv=notrunc >& /dev/null
+
+	filesize=$(wc -c < $wrlock)
+	if [ $filesize -ne 16 ]; then
+		echo Internal Error -- Invalid write-lock pattern length
+		exit 1
+	fi
+	dd if=$wrlock of=$patt bs=16 seek=29 count=1 conv=notrunc >& /dev/null
+
 	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
 
     rm -f $patt
     rm -f $vend_id_efuse
 }
+
+function generate_ta_segid_pattern() {
+    local argv=("$@")
+    local i=0
+    local patt=$(mktemp --tmpdir)
+    local wrlock=$(mktemp --tmpdir)
+	local efusebit=$(mktemp --tmpdir)
+    local ta_segid_efuse=$(mktemp --tmpdir)
+    local ta_segid_offset=644
+    local ta_segid_size=4
+     # Parse args
+    i=0
+    while [ $i -lt $# ]; do
+        arg="${argv[$i]}"
+        #echo "i=$i argv[$i]=${argv[$i]}"
+        i=$((i + 1))
+        case "$arg" in
+            --ta-segid)
+                ta_segid_value="${argv[$i]}" ;;
+           -o)
+                output="${argv[$i]}" ;;
+            *)
+                echo "Unknown option $arg"; exit 1
+                ;;
+        esac
+        i=$((i + 1))
+    done
+
+    # Verify args
+    if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
+
+    if [ -z $ta_segid_value ]; then
+        echo Error: invalid ta_segid_value
+        exit 1
+    fi
+
+    # Generate empty eFUSE pattern data
+    dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null
+
+    append_uint32_le $ta_segid_value $ta_segid_efuse
+    dd if=$ta_segid_efuse of=$patt bs=1 seek=$ta_segid_offset count=$ta_segid_size \
+        conv=notrunc >& /dev/null
+
+	dd if=$patt of=$wrlock bs=16 skip=29 count=1 &> /dev/null
+	b_1dd=$(xxd -ps -s13 -l1 $wrlock)
+	b_1dd="$(printf %02x $(( 0x$b_1dd | 0x02 )))"
+	echo $b_1dd | xxd -r -p > $efusebit
+	dd if=$efusebit of=$wrlock bs=1 seek=13 count=1 conv=notrunc >& /dev/null
+
+	filesize=$(wc -c < $wrlock)
+	if [ $filesize -ne 16 ]; then
+		echo Internal Error -- Invalid write-lock pattern length
+		exit 1
+	fi
+	dd if=$wrlock of=$patt bs=16 seek=29 count=1 conv=notrunc >& /dev/null
+
+	${BASEDIR_TOP}/aml_encrypt_sc2 --efsproc --input $patt --output $output --option=debug
+
+    rm -f $patt
+    rm -f $ta_segid_efuse
+}
+
 
 function generate_stbcasn_pattern() {
     local argv=("$@")
@@ -487,6 +566,9 @@ parse_main() {
             ;;
         *--stbcasn*)
             generate_stbcasn_pattern "$@"
+            ;;
+        *--ta-segid*)
+            generate_ta_segid_pattern "$@"
             ;;
         *-o*)
             generate_efuse_device_pattern "$@"

@@ -80,8 +80,8 @@ task.h is included from an application file. */
 #include "task.h"
 #ifdef ARCH64
 #include "printf.h"
-#endif
 #include "stacktrace_64.h"
+#endif
 #if ENABLE_KASAN
 #include <kasan/kasan.h>
 #endif

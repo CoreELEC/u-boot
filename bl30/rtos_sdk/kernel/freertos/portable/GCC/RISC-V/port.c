@@ -272,7 +272,7 @@ void vPortSysTickHandler(void){
 #endif
 	volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
 	volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
-	uinti64_t now = *mtime;
+	uint64_t now = *mtime;
 
 	then = now + (configCPU_CLOCK_HZ / configTICK_RATE_HZ);
 	*mtimecmp = then;

@@ -35,12 +35,20 @@ EOF
 cat <<EOF > $kconfig_file
 EOF
 
+absolute_prj_dir=`echo ${input%.repo*}`
+if [[ $absolute_prj_dir == $PWD/ ]] ; then
+	pattern="path="
+else
+	relative_prj_dir=`echo ${PWD#*${absolute_prj_dir}}`
+	pattern="path=\"${relative_prj_dir}/"
+fi
+
 while IFS= read -r line
 do
 	keyword=`echo "$line" | grep 'path=.* name=' | awk '{print $2}'`
 
 	if [ $keyword ]; then
-		repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
 		if [[ $repo_path == $drivers_dir* ]] ; then
 			category=$repo_path
 		else

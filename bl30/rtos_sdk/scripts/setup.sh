@@ -1,10 +1,22 @@
 #!/bin/bash
 
-prj_dir=`pwd`
+###############################################################
+# Function: Auto-generate root CMakeLists.txt and Kconfig according to manifest.xml.
+###############################################################
 
-input="$prj_dir/.repo/manifests/default.xml"
-cmake_file="$prj_dir/CMakeLists.txt"
-kconfig_file="$prj_dir/Kconfig"
+if [ -n "$1" ]; then
+	input=$1
+else
+	input="$PWD/.repo/manifests/default.xml"
+fi
+
+if [ ! -f $1 ]; then
+	echo "No such file: $input"
+	exit 1
+fi
+
+cmake_file="$PWD/CMakeLists.txt"
+kconfig_file="$PWD/Kconfig"
 exclude_dir="products"
 special_dirs="arch soc boards"
 drivers_dir="drivers"

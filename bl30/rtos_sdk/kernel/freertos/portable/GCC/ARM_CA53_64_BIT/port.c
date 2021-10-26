@@ -613,7 +613,7 @@ void vLowPowerSystem(void)
 		__asm volatile ("wfi");
 
 }
-#if ENABLE_STACKTRACE
+#if CONFIG_STACK_TRACE
 #include "stacktrace_64.h"
 int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
 {

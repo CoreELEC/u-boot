@@ -7,4 +7,8 @@ config KERNEL_ARCH_DIR
 	help
 	  System gcc arch dir string.
 
+
+config MEMORY_LEAK2
+        bool "support check memory leak"
+
 endmenu

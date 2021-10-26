@@ -163,7 +163,7 @@ static size_t xBlockAllocatedBit = 0;
 struct MemLeak MemLeak_t[configMEMLEAK_ARRAY_SIZE];
 #endif
 
-#if ENABLE_MEMORY_LEAK2 && ENABLE_STACKTRACE
+#if CONFIG_MEMORY_LEAK2 && CONFIG_STACK_TRACE
 typedef uint32_t addr_t;
 typedef uint16_t id_t;
 
@@ -601,7 +601,7 @@ void *pvPortMalloc( size_t xWantedSize )
 
 		traceMALLOC( pvReturn, xWantedSize );
 	}
-#if ENABLE_MEMORY_LEAK2 && ENABLE_STACKTRACE
+#if CONFIG_MEMORY_LEAK2 && CONFIG_STACK_TRACE
 	if (pvReturn) on_malloc(pvReturn,xWantedSize);
 	else {
 		printf("malloc size %lu fail\n", xWantedSize);
@@ -1038,7 +1038,7 @@ void *pvPortMallocAlign( size_t xWantedSize , size_t xAlignMsk)
 
 		traceMALLOC( pvReturn, xWantedSize );
 	}
-#if ENABLE_MEMORY_LEAK2 && ENABLE_STACKTRACE
+#if CONFIG_MEMORY_LEAK2 && CONFIG_STACK_TRACE
 	if (pvReturn) on_malloc(pvReturn,xWantedSize);
 	else {
 		printf("malloc size %lu fail\n", xWantedSize);
@@ -1137,7 +1137,7 @@ void vPortFree( void *pv )
 #else
 				vTaskSuspendAll();
 #endif
-#if ENABLE_MEMORY_LEAK2 && ENABLE_STACKTRACE
+#if CONFIG_MEMORY_LEAK2 && CONFIG_STACK_TRACE
 				on_free(pv);
 #endif
 				{

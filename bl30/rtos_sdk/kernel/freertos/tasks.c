@@ -5365,7 +5365,7 @@ when performing module tests). */
 
 #endif
 
-#if ENABLE_STACKTRACE
+#if CONFIG_STACK_TRACE
 void task_stack_range(TaskHandle_t xTask, unsigned long *low, unsigned long *high);
 void task_stack_range(TaskHandle_t xTask, unsigned long *low, unsigned long *high)
 {

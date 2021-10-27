@@ -4,22 +4,33 @@
 # Function: Auto-generate root CMakeLists.txt and Kconfig according to manifest.xml.
 ###############################################################
 
-if [ -n "$1" ]; then
-	input=$1
-else
-	input="$PWD/.repo/manifests/default.xml"
-fi
-
-if [ ! -f $1 ]; then
-	echo "No such file: $input"
-	exit 1
-fi
-
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
 exclude_dir="products"
 special_dirs="arch soc boards"
 drivers_dir="drivers"
+dir=$PWD
+
+if [ -n "$1" ]; then
+	file_name=$1
+else
+	file_name="default.xml"
+fi
+
+while : ; do
+	if [[ -n $(find $dir/.repo -name $file_name 2>/dev/null) ]]; then
+		file_path=`find $dir/.repo -name $file_name`
+		break
+	fi
+	dir=`dirname $dir`
+	mountpoint -q $dir
+	[ $? -eq 0 ] && break;
+done
+
+if [ ! -f $file_path ]; then
+	echo "No such file: $file_name"
+	exit 1
+fi
 
 cat <<EOF > $cmake_file
 enable_language(C CXX ASM)
@@ -35,11 +46,11 @@ EOF
 cat <<EOF > $kconfig_file
 EOF
 
-absolute_prj_dir=`echo ${input%.repo*}`
+absolute_prj_dir=$dir
 if [[ $absolute_prj_dir == $PWD/ ]] ; then
 	pattern="path="
 else
-	relative_prj_dir=`echo ${PWD#*${absolute_prj_dir}}`
+	relative_prj_dir=`echo ${PWD#*${absolute_prj_dir}/}`
 	pattern="path=\"${relative_prj_dir}/"
 fi
 
@@ -90,6 +101,6 @@ do
 			last_category=$category
 		fi
 	fi
-done < "$input"
+done < "$file_path"
 
 echo "endmenu" >> $kconfig_file

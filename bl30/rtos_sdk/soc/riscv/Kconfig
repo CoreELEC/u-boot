@@ -13,3 +13,4 @@ config SOC_SERIES
 	  the correct linker and header files.
 
 source "soc/riscv/t5d/Kconfig"
+source "soc/riscv/t5w/Kconfig"

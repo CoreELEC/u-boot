@@ -1,0 +1,8 @@
+config SOC_T5W
+	bool "T5W Soc"
+	select RISCV
+
+if SOC_T5W
+config SOC_NAME
+	default "t5w"
+endif

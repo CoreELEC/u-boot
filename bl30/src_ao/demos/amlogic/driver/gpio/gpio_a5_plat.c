@@ -69,16 +69,18 @@ static const GpioBank_t gpioBanks[BANK_NUM_MAX] = {
 			  /* pullen    pull	 dir       out       in        mux */
 	BANK("E", &eeDomain, 0x43, 0, 0x44, 0, 0x42, 0, 0x41, 0, 0x40, 0, 0x12,
 	     0, 0x47, 0),
-	BANK("B", &eeDomain, 0x63, 0, 0x64, 0, 0x62, 0, 0x61, 0, 0x60, 0, 0x00,
-	     0, 0x67, 0),
-	BANK("C", &eeDomain, 0x53, 0, 0x54, 0, 0x52, 0, 0x51, 0, 0x50, 0, 0x09,
-	     0, 0x57, 0),
+	BANK("H", &eeDomain, 0x73, 0, 0x74, 0, 0x72, 0, 0x71, 0, 0x70, 0, 0x13,
+	     0, 0x77, 0),
 	BANK("D", &eeDomain, 0x33, 0, 0x34, 0, 0x32, 0, 0x31, 0, 0x30, 0, 0x10,
 	     0, 0x37, 0),
-	BANK("H", &eeDomain, 0x23, 0, 0x24, 0, 0x22, 0, 0x21, 0, 0x20, 0, 0x0b,
-	     0, 0x27, 0),
+	BANK("B", &eeDomain, 0x63, 0, 0x64, 0, 0x62, 0, 0x61, 0, 0x60, 0, 0x00,
+	     0, 0x67, 0),
 	BANK("X", &eeDomain, 0x13, 0, 0x14, 0, 0x12, 0, 0x11, 0, 0x10, 0, 0x03,
 	     0, 0x17, 0),
+	BANK("C", &eeDomain, 0x53, 0, 0x54, 0, 0x52, 0, 0x51, 0, 0x50, 0, 0x09,
+	     0, 0x57, 0),
+	BANK("T", &eeDomain, 0x23, 0, 0x24, 0, 0x22, 0, 0x21, 0, 0x20, 0, 0x0b,
+	     0, 0x27, 0),
 	BANK("Z", &eeDomain, 0x03, 0, 0x04, 0, 0x02, 0, 0x01, 0, 0x00, 0, 0x06,
 	     0, 0x07, 0),
 	BANK("TEST_N", &eeDomain, 0x83, 0, 0x84, 0, 0x82, 0, 0x81, 0, 0x80, 0,
@@ -97,14 +99,15 @@ static ParentIRQDesc_t eeIRQs[] = {
 };
 
 static const GpioIRQBank_t irqBanks[BANK_NUM_MAX] = {
-	GPIO_IRQ_BK("E", 22, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("E", 25, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("H", 27, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("D", 32, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("B", 0, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("X", 62, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("C", 14, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("D", 24, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("H", 36, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("X", 48, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z", 68, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("TEST_N", 86, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("T", 48, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z", 82, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("TEST_N", 98, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };
 
 const GpioBank_t *pGetGpioBank(void)

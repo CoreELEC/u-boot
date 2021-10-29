@@ -3,10 +3,7 @@ project(aml-rtos)
 
 include($ENV{SDK_BASE}/build/cmake/root.cmake)
 
-target_include_directories(
-	${TARGET_NAME} PUBLIC include
-	${SDK_BASE}/products/${PRODUCT}/include
-)
+target_include_directories(${TARGET_NAME} PUBLIC include)
 
 aml_sources(
 	util.c

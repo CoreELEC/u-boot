@@ -31,9 +31,7 @@ endif()
 aml_library_include_directories(
 	include
 	portable/GCC/${CONFIG_KERNEL_ARCH_DIR}
-	${SDK_BASE}/include
 	${SDK_BASE}/products/${PRODUCT}/include
-	${SDK_BASE}/soc/${ARCH}
 	${SDK_BASE}/soc/${ARCH}/${CONFIG_SOC_NAME}
 	${SDK_BASE}/boards/${ARCH}/${BOARD}
 )

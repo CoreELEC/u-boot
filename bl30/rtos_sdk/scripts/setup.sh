@@ -18,8 +18,8 @@ else
 fi
 
 while : ; do
-	if [[ -n $(find $dir/.repo -name $file_name 2>/dev/null) ]]; then
-		file_path=`find $dir/.repo -name $file_name`
+	if [[ -n $(find $dir/.repo -name $file_name) ]]; then
+		manifest_file=`find $dir/.repo -name $file_name`
 		break
 	fi
 	dir=`dirname $dir`
@@ -27,7 +27,11 @@ while : ; do
 	[ $? -eq 0 ] && break;
 done
 
-if [ ! -f $file_path ]; then
+if [ -f $dir/CMakeLists.txt ] || [ $manifest_file -ot $dir/CMakeLists.txt ]; then
+	exit 0
+fi
+
+if [ ! -f $manifest_file ]; then
 	echo "No such file: $file_name"
 	exit 1
 fi
@@ -47,7 +51,7 @@ cat <<EOF > $kconfig_file
 EOF
 
 absolute_prj_dir=$dir
-if [[ $absolute_prj_dir == $PWD/ ]] ; then
+if [[ $absolute_prj_dir == $PWD ]] ; then
 	pattern="path="
 else
 	relative_prj_dir=`echo ${PWD#*${absolute_prj_dir}/}`
@@ -101,6 +105,6 @@ do
 			last_category=$category
 		fi
 	fi
-done < "$file_path"
+done < "$manifest_file"
 
 echo "endmenu" >> $kconfig_file

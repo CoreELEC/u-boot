@@ -37,11 +37,12 @@ enum scpi_client_id {
 	SCPI_CL_THERMAL,
 	SCPI_CL_REMOTE,
 	SCPI_CL_LED_TIMER,
-	SCPI_CL_WOL,
+	SCPI_CL_SET_CEC_DATA,
+	SCPI_CL_WOL = 100,
 	SCPI_CL_IRPROTO,
 	SCPI_CL_REMOTE_MASK,
 	SCPI_CL_5V_SYSTEM_POWER,
-	SCPI_MAX,
+	SCPI_MAX = 0xff,
 };
 
 void __switch_idle_task(void)

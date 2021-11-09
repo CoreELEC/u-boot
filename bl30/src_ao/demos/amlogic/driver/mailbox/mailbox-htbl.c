@@ -77,6 +77,8 @@ void mailbox_htbl_init(void **pHTbl)
 	struct entry *p = NULL;
 
 	p = malloc(size);
+	if (p == NULL)
+		return;
 	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = MAX_ENTRY_NUM;
@@ -87,12 +89,13 @@ void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen)
 	size_t size = sizeof(struct entry) * tabLen;
 	struct entry *p = NULL;
 
-	p = malloc(size);
-
 	if (tabLen == 0) {
 		PRINT_ERR("tabLen == 0\n");
 		return;
 	}
+	p = malloc(size);
+	if (p == NULL)
+		return;
 	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = tabLen;

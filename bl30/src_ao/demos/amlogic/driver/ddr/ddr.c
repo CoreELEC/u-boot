@@ -451,7 +451,7 @@ void vDDR_suspend(uint32_t st_f)
 	//return ;
 
 	while (0xfffffff != rd_reg(DMC_CHAN_STS)) {
-	//	printf("DMC_CHAN_STS: 0x%x\n", rd_reg(DMC_CHAN_STS));
+		printf("DMC_CHAN_STS: 0x%x\n", rd_reg(DMC_CHAN_STS));
 		vTaskDelay(pdMS_TO_TICKS(100000));
 	}
 

@@ -23,32 +23,7 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-
-ifeq ("$(SOC)","t3")
-MAILBOX=y
-endif
-ifeq ("$(SOC)","p1")
-MAILBOX=y
-endif
-ifeq ("$(SOC)","t7")
-MAILBOX=y
-endif
-ifeq ("$(SOC)","s4")
-MAILBOX=y
-endif
-ifeq ("$(SOC)","sc2")
-MAILBOX=y
-endif
-ifeq ("$(SOC)","t5")
-MAILBOX_PL=y
-endif
-ifeq ("$(SOC)","t5d")
-MAILBOX_PL=y
-endif
-
-ifeq ("$(SOC)","t5w")
-MAILBOX_PL=y
-endif
-
-mailbox-$(MAILBOX) = mailbox.o mailbox-irq.o mailbox-htbl.o rpc-user.o
-mailbox-$(MAILBOX_PL) = mailbox-pl.o mailbox-htbl.o rpc-user.o
+SOC=t5w
+ARCH_CPU=RISC_V_N205
+#ARCH_CPU=RISCV_N200
+BOARD=t5w_skt

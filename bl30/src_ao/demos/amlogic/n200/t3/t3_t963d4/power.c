@@ -199,8 +199,10 @@ void str_power_off(int shutdown_flag)
 
 	shutdown_flag = shutdown_flag;
 
+#ifndef CONFIG_ETH_WAKEUP
 	/***power off vcc3v3***/
 	power_off_vcc3v3();
+#endif
 
 	/***set vddcpu val***/
 	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
@@ -222,13 +224,11 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-#ifndef CONFIG_ETH_WAKEUP
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
-#endif
 
 	/***power off vcc5v***/
 	power_off_vcc5v();

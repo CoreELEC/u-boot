@@ -193,11 +193,12 @@ void str_power_on(int shutdown_flag)
 	vTaskDelay(pdMS_TO_TICKS(200));
 }
 
+extern uint32_t get_vddee_voltage(int is_shutdown);
+extern uint32_t get_vddcpu_voltage(int is_shutdown);
 void str_power_off(int shutdown_flag)
 {
 	int ret;
-
-	shutdown_flag = shutdown_flag;
+	uint32_t vol;
 
 #ifndef CONFIG_ETH_WAKEUP
 	/***power off vcc3v3***/
@@ -210,12 +211,13 @@ void str_power_off(int shutdown_flag)
 		printf("vddcpu pwm get fail\n");
 		return;
 	}
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,720);
+
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,690);
 	if (ret < 0) {
 		printf("vddcpu pwm set fail\n");
 		return;
 	}
-	printf("vddcpu 720mv\n");
+	printf("vddcpu 690mv\n");
 
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
@@ -224,12 +226,20 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
+	vol = get_vddee_voltage(shutdown_flag);
+	if (vol) {
+#ifndef CONFIG_ETH_WAKEUP
+		ret = vPwmMesonsetvoltage(VDDEE_VOLT,vol);
+		if (ret < 0) {
+			printf("vdd_EE pwm set fail\n");
+			return;
+		}
+#endif
+		printf("vddee %dmv\n", vol);
+	} else {
+		printf("No need to adjust voltage, vddee:%dmV\n",
+				vdd_ee);
 	}
-
 	/***power off vcc5v***/
 	power_off_vcc5v();
 }

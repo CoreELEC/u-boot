@@ -12,7 +12,7 @@ usage() {
 Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) --audio-id audio_id_value \\
-                       --soc [axg | txhd | g12a | g12b | sm1 | tl1 | tm2 | a1 | c1 |c2 | t5 | t5d | sc2 | t7 | s4 | t3 | s4d | p1] \\
+                       --soc [axg | txhd | g12a | g12b | sm1 | tl1 | tm2 | a1 | c1 |c2 | t5 | t5d | t5w | sc2 | t7 | s4 | t3 | s4d | p1] \\
                        -o audio_id.efuse
 EOF
     exit 1
@@ -60,7 +60,7 @@ function generate_audio_id_pattern() {
     elif [ "$soc" == "axg" ] || [ "$soc" == "txhd" ] || [ "$soc" == "g12a" ] \
        || [ "$soc" == "sm1" ] || [ "$soc" == "g12b" ] || [ "$soc" == "tl1" ] || [ "$soc" == "tm2" ] \
        || [ "$soc" == "a1" ] || [ "$soc" == "c1" ] || [ "$soc" == "c2" ] \
-       || [ "$soc" == "t5" ] || [ "$soc" == "t5d" ] ; then
+       || [ "$soc" == "t5" ] || [ "$soc" == "t5d" ] || [ "$soc" == "t5w" ]; then
         ${EXEC_BASEDIR}/stool/efuse.sh --audio-id ${audio_id_value} --soc ${soc} -o ${output}
     else
         echo Error: invalid soc [$soc]

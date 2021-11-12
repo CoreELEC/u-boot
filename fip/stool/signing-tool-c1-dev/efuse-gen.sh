@@ -1401,7 +1401,7 @@ generate_efuse_pattern_a1() {
 }
 
 generate_efuse_pattern_t5() {
-    echo -n "Generate OTP pattern for T5/T5D ... "
+    echo -n "Generate OTP pattern for T5/T5D/T5W ... "
 
     # Additional args check
     if [ "$userefusefile" != "" ]; then

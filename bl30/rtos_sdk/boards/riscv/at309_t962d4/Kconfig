@@ -1,0 +1,21 @@
+config BOARD_AT309_T5W
+	bool "Amlogic AT309 Board"
+	select SOC_T5W
+	help
+		Enable Amlogic AT309 Board.
+
+if BOARD_AT309_T5W
+
+config FLASH_BASE_ADDRESS
+	hex "flash base address"
+	default 0x2000000
+
+config PARTITION_BOOTLOADER_OFFSET
+	hex "boot loader offset"
+	default 0x0
+
+config PARTITION_BOOTLOADER_SIZE
+	hex "boot loader size"
+	default 0x20000
+
+endif

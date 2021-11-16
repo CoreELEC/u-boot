@@ -3,13 +3,16 @@ project(aml-rtos)
 
 include($ENV{SDK_BASE}/build/cmake/root.cmake)
 
+message(STATUS "#################${SDK_BASE}/products/${PRODUCT}/${BOARD}/include")
+
 target_include_directories(${TARGET_NAME} PUBLIC include)
 
 aml_sources(
-	${BOARD}/fsm.c
-	${BOARD}/btwake.c
-	${BOARD}/keypad.c
-	${BOARD}/power.c
-	${BOARD}/main.c
+	util.c
+	fsm.c
+	btwake.c
+	keypad.c
+	power.c
+	main.c
 )
 

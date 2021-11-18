@@ -6,10 +6,7 @@ include($ENV{SDK_BASE}/build/cmake/root.cmake)
 target_include_directories(${TARGET_NAME} PUBLIC include)
 
 aml_sources(
-	fsm.c
-	btwake.c
-	keypad.c
-	power.c
+	sw_business.c
 	main.c
 )
 

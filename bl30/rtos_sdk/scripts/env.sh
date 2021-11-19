@@ -49,7 +49,7 @@ if [ -z $PRODUCT ]; then
 	fi
 fi
 
-ARCH=`find -name "*$BOARD" -exec dirname {} \; | xargs basename`
+ARCH=`find -not -path "./output/*" -name "*$BOARD" -exec dirname {} \; | xargs basename`
 
 case $ARCH in
 	arm) COMPILER=gcc;TOOLCHAIN_KEYWORD="arm-none-eabi" ;;

@@ -4,10 +4,6 @@
 # Function: Auto-generate root CMakeLists.txt and Kconfig according to manifest.xml.
 ###############################################################
 
-if [ -f $dir/CMakeLists.txt ] && [ $manifest_file -ot $dir/CMakeLists.txt ]; then
-	exit 0
-fi
-
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
 exclude_dir="products"
@@ -30,6 +26,10 @@ while : ; do
 	mountpoint -q $dir
 	[ $? -eq 0 ] && break;
 done
+
+if [ -f $dir/CMakeLists.txt ] && [ $manifest_file -ot $dir/CMakeLists.txt ]; then
+	exit 0
+fi
 
 if [ ! -f $manifest_file ]; then
 	echo "No such file: $file_name"

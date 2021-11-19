@@ -34,7 +34,10 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 
+//#define CONFIG_CEC_TASK
+#ifdef CONFIG_CEC_TASK
 #include "hdmi_cec.h"
+#endif
 
 /*#define CONFIG_ETH_WAKEUP*/
 
@@ -44,7 +47,9 @@
 #include "irq.h"
 #endif
 
+#ifdef CONFIG_CEC_TASK
 static TaskHandle_t cecTask = NULL;
+#endif
 static int vdd_ee;
 static int vdd_cpu;
 
@@ -85,8 +90,10 @@ void str_hw_init(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler_t5);
 #endif
+#ifdef CONFIG_CEC_TASK
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
+#endif
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
@@ -101,10 +108,12 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint_t5();
 #endif
+#ifdef CONFIG_CEC_TASK
 	if (cecTask) {
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
+#endif
 	Bt_GpioIRQFree();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
@@ -114,6 +123,8 @@ void str_power_on(int shutdown_flag)
 {
 	int ret;
 
+	shutdown_flag = shutdown_flag;
+	printf("poweron\n");
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
 	if (ret < 0) {
@@ -141,23 +152,6 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power on VDDQ/VDDCPU***/
-		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("VDDCPU/VDDQ set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("VDDCPU/VDDQ set gpio val fail\n");
-			return;
-		}
-		/*Wait 200ms for VDDCPU statble*/
-		vTaskDelay(pdMS_TO_TICKS(200));
-	}
-
 	/***power on 5v***/
 	REG32(AO_GPIO_TEST_N) = REG32(AO_GPIO_TEST_N) | (1 << 31);
 }
@@ -166,25 +160,11 @@ void str_power_off(int shutdown_flag)
 {
 	int ret;
 
+	shutdown_flag = shutdown_flag;
 	printf("poweroff 5v\n");
 	printf("0x%x\n", REG32(AO_GPIO_TEST_N));
 
 	REG32(AO_GPIO_TEST_N) = (REG32(AO_GPIO_TEST_N) << 1) >> 1;
-
-	if (shutdown_flag) {
-		/***power off VDDQ/VDDCPU***/
-		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("VDDCPU/VDDQ set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("VDDCPU/VDDQ set gpio val fail\n");
-			return;
-		}
-	}
 
 	/***power off vcc3.3***/
 	ret = xGpioSetDir(GPIOD_10,GPIO_DIR_OUT);

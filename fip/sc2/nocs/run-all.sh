@@ -86,14 +86,14 @@ else		#//build usb and sto mode u-boot
 	cd ./fip/sc2/nocs
 	./installkeys.sh $1 stage-3a-stbm-generate-keysets/
 	cd -
-	./mk $1 --update-bl2e sto --chip-varient nocs-prod --former-sign $2
+	./mk $1 --chip-varient nocs-prod --former-sign $2
 	cd -
 	./run-pre.sh
 	cd -
 	if [ ! -s ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin ];
 	then
 		echo "!!!PLEASE PUT NAGRA SIGNED FILE to ./fip/sc2/nocs/stage-4-nagra-signing/output/refImgSigned.bin";
-		echo "THEN PLEASE RE-RUN <./fip/sc2/nocs/run-all.sh sc2_ahxxx '--bl2e-size ...'>";
+		echo "THEN PLEASE RE-RUN <./fip/sc2/nocs/run-all.sh sc2_ahxxx '--vab --avb2 ...'>";
 	else
 		echo "NOW PLEASE RUN <./fip/sc2/nocs/run-all.sh sc2_ahxxx production> to generate complete U-boot.bin under fip/sc2/nocs/sto";
 	fi;

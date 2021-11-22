@@ -15,6 +15,7 @@ source fip/build_bl31.sh
 source fip/build_bl32.sh
 source fip/build_bl33.sh
 source fip/build_bl40.sh
+source fip/check_coverity.sh
 
 function parse_bl33_global_config() {
 	local oldifs="$IFS"
@@ -337,6 +338,8 @@ function usage() {
     6. update aml ddr fw by source code (for g12a and later use)
         ./$(basename $0) [config_name] --update-bl2 --ddrfw
 
+	7. build uboot with bl[x]/src source code, and run coverity defect
+		./$(basename $0) [config_name] --update-bl[x] --cov
 
     Example:
     1) ./$(basename $0) gxb_p200_v1
@@ -399,6 +402,9 @@ function parser() {
 				continue ;;
 			--check-compile)
 				check_compile "${argv[@]:$((i))}"
+				exit ;;
+			--cov|--cov-high)
+				check_coverity $@
 				exit ;;
 			clean|distclean|-distclean|--distclean)
 				clean

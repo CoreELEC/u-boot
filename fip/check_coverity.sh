@@ -14,6 +14,7 @@ COV_IM_DIR="./cov-imdir"
 COV_RESULT_HTML="./result-html"
 HIGH_LEVEL="0"
 PATTERN_PATH=""
+PATTERN_ENABLE="0"
 
 #############
 # function
@@ -25,54 +26,54 @@ function err_exit()
 }
 
 function check_cov_path() {
-    echo ""
-    echo "check_cov_path ..."
-    echo ""
+	echo ""
+	echo "check_cov_path ..."
+	echo ""
 	if [ -d "${COV_IM_DIR}" ]; then
 		rm -rf ${COV_IM_DIR}
 	fi
 	mkdir -p ${COV_IM_DIR}
-    if [ -d "${COV_RESULT_HTML}" ]; then
-        rm -rf ${COV_RESULT_HTML}
-    fi
+	if [ -d "${COV_RESULT_HTML}" ]; then
+		rm -rf ${COV_RESULT_HTML}
+	fi
 }
 
 function run_coverity() {
 	echo ""
 	echo -e "\e[1;35m[1] run cov-build ... \e[0m"
 	${COVERITY_PATH}/cov-build --dir ${COV_IM_DIR} ./mk $@ || err_exit "cov-build error."
-    echo -e "\e[1;35m[1] run cov-build OK. \e[0m"
+	echo -e "\e[1;35m[1] run cov-build OK. \e[0m"
 
 	echo ""
 	echo -e "\e[1;35m[2] run cov-analyze ... \e[0m"
-    if [ ${HIGH_LEVEL} = "1" ]; then
-        if [ -z "${PATTERN_PATH}" ];then
-            ${COVERITY_PATH}/cov-analyze --dir ../im-dir/ --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 || err_exit "cov-analyze high level error."
-        else
-            ${COVERITY_PATH}/cov-analyze --dir ../im-dir/ --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze high level error."
-        fi
-    else
-        if [ -z "${PATTERN_PATH}" ];then
-            ${COVERITY_PATH}/cov-analyze --dir ../im-dir/ --strip-path $MKPATH --all  || err_exit "cov-analyze normal level error."
-        else
-            ${COVERITY_PATH}/cov-analyze --dir ../im-dir/ --strip-path $MKPATH --all  --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze normal level error."
-        fi
-    fi
-    echo -e "\e[1;35m[2] run cov-analyze OK. \e[0m"
+	if [ ${HIGH_LEVEL} = "1" ]; then
+        	if [ "${PATTERN_ENABLE}" = "1" ];then
+			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze high level error."
+        	else
+			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 || err_exit "cov-analyze high level error."
+		fi
+	else
+		if [ "${PATTERN_ENABLE}" = "1" ];then
+			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze normal level error."
+		else
+			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  || err_exit "cov-analyze normal level error."
+		fi
+	fi
+	echo -e "\e[1;35m[2] run cov-analyze OK. \e[0m"
 
-    echo ""
+	echo ""
 	echo -e "\e[1;35m[3] run cov-format-errors ... \e[0m"
-	${COVERITY_PATH}/cov-format-errors --dir ../im-dir/ --html-output ${COV_RESULT_HTML} --filesort --strip-path $MKPATH -x || err_exit "cov-format-errors error."
-    echo -e "\e[1;35m[3] run cov-format-errors OK. \e[0m"
+	${COVERITY_PATH}/cov-format-errors --dir ${COV_IM_DIR} --html-output ${COV_RESULT_HTML} --filesort --strip-path $MKPATH -x || err_exit "cov-format-errors error."
+	echo -e "\e[1;35m[3] run cov-format-errors OK. \e[0m"
 	echo "end."
 
-    rm -rf ${COV_IM_DIR}
+	rm -rf ${COV_IM_DIR}
 }
 
 function show_coverity_result() {
 	echo ""
 	echo -e "\e[1;35m[html-result] \e[0m"
-    echo "you can open the index.html files through a browser, and view code defects."
+	echo "you can open the index.html files through a browser, and view code defects."
 	echo "path: ${MKPATH}/`basename ${COV_RESULT_HTML}`/index.html"
 	echo " "
 }
@@ -82,35 +83,52 @@ function show_coverity_result() {
 ########
 function check_coverity() {
 
-    MK_ARGV=$@
+	MK_ARGV=$@
+	if [ -z "${PATTERN_PATH}" ];then
+		echo "pattern_path not set, ignore. "
+		PATTERN_ENABLE="0"
+	else
+		if [ -e "./${PATTERN_PATH}" ];then
+			echo "PATTERN_PATH set ok: ${PATTERN_PATH}"
+			PATTERN_ENABLE="1"
+		else
+			echo "PATTERN_PATH invalid, ingore."
+			PATTERN_ENABLE="2"
+		fi
+	fi
 
-    echo -e "\e[1;35m=========== run check_coverity() ===========\e[0m"
+	echo -e "\e[1;35m=========== run check_coverity() ===========\e[0m"
 
-    echo ""
-    echo "coverity raw command  : ./mk  $@ "
-    # check argv
-    result=$(echo ${MK_ARGV} | grep "\-\-cov-high")
-    if [[ "$result" != "" ]]; then
-        echo "coverity defect level : high"
-        HIGH_LEVEL="1"
-        NEW_ARGV=`echo "${MK_ARGV//--cov-high/ }"`
-    else
-        echo "coverity defect level : normal"
-        HIGH_LEVEL="0"
-        NEW_ARGV=`echo "${MK_ARGV//--cov/ }"`
-    fi
-    echo "coverity new command  : ./mk ${NEW_ARGV}"
-    MKPATH=`pwd`
+	echo "------------------------------------------------------------------"
+	echo "coverity raw command  : ./mk $@ "
+
+	# check argv
+	result=$(echo ${MK_ARGV} | grep "\-\-cov-high")
+	if [[ "$result" != "" ]]; then
+		echo "coverity defect level : high"
+		HIGH_LEVEL="1"
+		NEW_ARGV=`echo "${MK_ARGV//--cov-high/ }"`
+	else
+		echo "coverity defect level : normal"
+		HIGH_LEVEL="0"
+		NEW_ARGV=`echo "${MK_ARGV//--cov/ }"`
+	fi
+	if [ "PATTERN_ENABLE" != "0" ];then
+		NEW_ARGV=`echo "${NEW_ARGV//${PATTERN_PATH}/ }"`
+	fi
+	echo "coverity new command  : ./mk ${NEW_ARGV}"
+	MKPATH=`pwd -P`
 	echo "coverity run path     : $MKPATH"
+	echo "------------------------------------------------------------------"
 
-    # check_cov_path
-    check_cov_path
+	# check_cov_path
+	check_cov_path
 
-    # run_coverity
-    run_coverity ${NEW_ARGV}
+	# run_coverity
+	run_coverity ${NEW_ARGV}
 
-    # show coverity result info
-    show_coverity_result
+	# show coverity result info
+	show_coverity_result
 }
 
 

@@ -338,8 +338,9 @@ function usage() {
     6. update aml ddr fw by source code (for g12a and later use)
         ./$(basename $0) [config_name] --update-bl2 --ddrfw
 
-	7. build uboot with bl[x]/src source code, and run coverity defect
-		./$(basename $0) [config_name] --update-bl[x] --cov
+    7. build uboot with bl[x]/src source code, and run coverity defect
+        ./$(basename $0) [config_name] --update-bl[x] --cov
+        ./$(basename $0) [config_name] --update-bl[x] --cov-high [path]
 
     Example:
     1) ./$(basename $0) gxb_p200_v1
@@ -404,6 +405,9 @@ function parser() {
 				check_compile "${argv[@]:$((i))}"
 				exit ;;
 			--cov|--cov-high)
+				PATTERN_PATH="${argv[$i]}"
+				echo "PATTERN_PATH = ${PATTERN_PATH}"
+				export PATTERN_PATH
 				check_coverity $@
 				exit ;;
 			clean|distclean|-distclean|--distclean)

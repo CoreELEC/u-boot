@@ -84,7 +84,7 @@ void bt_task_init(void)
 {
 	bt_task_create();
 	xGpioSetDir(BT_WAKE_HOST, GPIO_DIR_IN);
-	xRequestGpioIRQ(BT_WAKE_HOST, vBTWakeup, IRQF_TRIGGER_FALLING);
+	xRequestGpioIRQ(BT_WAKE_HOST, vBTWakeup, IRQF_TRIGGER_LOW);
 }
 
 void bt_task_deinit(void)

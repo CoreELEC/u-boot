@@ -18,7 +18,7 @@
 uint32_t vddee_voltage_matrix[][3] = {
 	/*ss  tt   ff*/
 	{770, 720, 700},/*shutdown*/
-	{770, 770, 770},/*suspend*/
+	{770, 720, 700},/*suspend*/
 	{0  , 0  , 0  } /*vad*/
 };
 

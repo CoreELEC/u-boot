@@ -202,7 +202,7 @@ int main(void)
 	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();
 
-	for (;;)
+	do {}while(1);
 
 	return 0;
 }

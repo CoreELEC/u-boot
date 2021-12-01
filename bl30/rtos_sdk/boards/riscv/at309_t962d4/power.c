@@ -34,7 +34,7 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 
-//#define CONFIG_CEC_TASK
+#define CONFIG_CEC_TASK
 #ifdef CONFIG_CEC_TASK
 #include "hdmi_cec.h"
 #endif

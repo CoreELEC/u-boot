@@ -9,6 +9,7 @@ kconfig_file="$PWD/Kconfig"
 exclude_dir="products"
 special_dirs="arch soc boards"
 drivers_dir="drivers"
+third_party_dir="third_party"
 dir=$PWD
 
 if [ -n "$1" ]; then
@@ -46,12 +47,6 @@ fi
 cat <<EOF > $cmake_file
 enable_language(C CXX ASM)
 
-target_include_directories(
-	\${TARGET_NAME}
-	PUBLIC
-	include
-)
-
 EOF
 
 cat <<EOF > $kconfig_file
@@ -71,8 +66,8 @@ do
 
 	if [ $keyword ]; then
 		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
-		if [[ $repo_path == $drivers_dir* ]] ; then
-			category=$repo_path
+		if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
+			category=`echo $repo_path | sed 's/_/ /g'`
 		else
 			category=`dirname $repo_path`
 		fi
@@ -102,7 +97,7 @@ do
 		# Generate root Kconfig
 		if [ -f $repo_path/Kconfig ]; then
 			if [ "$last_category" != "$category" ]; then
-				if [ $last_category ]; then
+				if [ -n "$last_category" ]; then
 					echo -e "endmenu\n" >> $kconfig_file
 				fi
 				echo "menu \"${category^} Options\"" >> $kconfig_file

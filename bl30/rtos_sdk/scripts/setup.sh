@@ -62,51 +62,54 @@ fi
 
 while IFS= read -r line
 do
-	keyword=`echo "$line" | grep 'path=.* name=' | awk '{print $2}'`
+	keyline=`echo "$line" | grep 'path=.* name='`
+	for keyword in $keyline; do
+		if [[ $keyword == path=* ]]; then
+			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
 
-	if [ $keyword ]; then
-		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
-		if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
-			category=`echo $repo_path | sed 's/_/ /g'`
-		else
-			category=`dirname $repo_path`
-		fi
-
-		if [[ $repo_path == $exclude_dir/* ]] ; then
-			continue
-		fi
-
-		# exclude other ARCH dirs
-		case $special_dirs in
-			*"$category"*) arch=`basename $repo_path`
-				       if [ "$arch" == "$ARCH" ]; then
-						cmake_path="$category/\${ARCH}"
-						kconfig_path="$category/\$(ARCH)"
-				       else
-						continue
-				       fi;;
-			* ) cmake_path=$repo_path
-			    kconfig_path=$repo_path;;
-		esac
-
-		# Generate root CMakeLists.txt
-		if [ -f $repo_path/CMakeLists.txt ]; then
-			echo "add_subdirectory($cmake_path)" >> $cmake_file
-		fi
-
-		# Generate root Kconfig
-		if [ -f $repo_path/Kconfig ]; then
-			if [ "$last_category" != "$category" ]; then
-				if [ -n "$last_category" ]; then
-					echo -e "endmenu\n" >> $kconfig_file
-				fi
-				echo "menu \"${category^} Options\"" >> $kconfig_file
+			if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
+				category=`echo $repo_path | sed 's/_/ /g'`
+			else
+				category=`dirname $repo_path`
 			fi
 
-			echo "source \"$kconfig_path/Kconfig\"" >> $kconfig_file
-			last_category=$category
+			if [[ $repo_path == $exclude_dir/* ]]; then
+				continue
+			fi
+
+			# exclude other ARCH dirs
+			case $special_dirs in
+				*"$category"*) arch=`basename $repo_path`
+					       if [ "$arch" == "$ARCH" ]; then
+							cmake_path="$category/\${ARCH}"
+							kconfig_path="$category/\$(ARCH)"
+					       else
+							continue
+					       fi;;
+				* ) cmake_path=$repo_path
+				    kconfig_path=$repo_path;;
+			esac
+
+			# Generate root CMakeLists.txt
+			if [ -f $repo_path/CMakeLists.txt ]; then
+				echo "add_subdirectory($cmake_path)" >> $cmake_file
+			fi
+
+			# Generate root Kconfig
+			if [ -f $repo_path/Kconfig ]; then
+				if [ "$last_category" != "$category" ]; then
+					if [ -n "$last_category" ]; then
+						echo -e "endmenu\n" >> $kconfig_file
+					fi
+					echo "menu \"${category^} Options\"" >> $kconfig_file
+				fi
+
+				echo "source \"$kconfig_path/Kconfig\"" >> $kconfig_file
+				last_category=$category
+			fi
+			break;
 		fi
-	fi
+	done
 done < "$manifest_file"
 
 echo "endmenu" >> $kconfig_file

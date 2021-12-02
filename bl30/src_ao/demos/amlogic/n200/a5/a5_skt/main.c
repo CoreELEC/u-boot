@@ -46,7 +46,7 @@
 
 #include "hdmi_cec.h"
 #include "suspend.h"
-#include "vrtc.h"
+#include "rtc.h"
 #include "mailbox-api.h"
 #include "version.h"
 
@@ -172,7 +172,8 @@ int main(void)
 
 //	vCecCallbackInit(CEC_CHIP_SC2);
 //	vRtcInit();
-//	create_str_task();
+	rtc_init();
+	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

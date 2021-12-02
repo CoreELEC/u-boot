@@ -48,30 +48,75 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "common.h"
-#include "vrtc.h"
-#include "timer_source.h"
+#include "rtc.h"
 #include "register.h"
 #include "FreeRTOS.h"
 #include "mailbox-api.h"
-#include "timers.h"
-#include "suspend.h"
 #include "soc.h"
 #include "util.h"
+#include "string.h"
+#include "interrupt.h"
+#include "suspend.h"
+#include <unistd.h>
 
 #undef TAG
-#define TAG "VRTC"
-/* Timer handle */
-//TimerHandle_t xRTCTimer = NULL;
-static uint32_t last_time;
+#define TAG "AOCPU RTC"
 
-void set_rtc(uint32_t val)
+static void vRTCInterruptHandler(void)
 {
-	REG32(VRTC_STICKY_REG) = val;
-	/*The last time update RTC*/
-	last_time = timere_read();
+	uint32_t buf[4] = {0};
+	uint32_t alarm_int_status;
+	uint32_t alarm0_int_status;
+	uint32_t reg_val;
+
+	/* Mask alarm0 irq */
+	reg_val = REG32(RTC_INT_MASK);
+	reg_val |= 0x1;
+	REG32(RTC_INT_MASK) = reg_val;
+
+	/* Clear alarm0 */
+	REG32(RTC_ALARM0_REG) = 0;
+
+	alarm_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_IRQ);
+	if (alarm_int_status) {
+		alarm0_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
+		/* Clear alarm0 int status */
+		if (alarm0_int_status)
+			REG32(RTC_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
+	}
+
+	printf("[%s]: rtc alarm fired\n", TAG);
+
+	buf[0] = RTC_WAKEUP;
+	STR_Wakeup_src_Queue_Send_FromISR(buf);
 }
 
-int get_rtc(uint32_t *val)
+static uint32_t get_reboot_mode(void)
+{
+	uint32_t reg_val;
+	uint32_t reboot_mode;
+
+	reg_val = REG32(SYSCTRL_SEC_STATUS_REG31);
+	reboot_mode = ((reg_val >> 12) & 0xf);
+
+	return reboot_mode;
+}
+
+static void reset_rtc(void)
+{
+	uint32_t reg_val;
+
+	printf("[%s]: reset rtc\n", TAG);
+	/* Reset RTC */
+	reg_val = (1 << 0);
+	REG32(RESETCTRL_RESET4) = reg_val;
+	/* Mask RTC reset to prevent RTC being reset in the next reboot */
+	reg_val = REG32(RESETCTRL_RESET4_MASK);
+	reg_val |= (1 << 0);
+	REG32(RESETCTRL_RESET4_MASK) = reg_val;
+}
+
+static int get_rtc(uint32_t *val)
 {
 	if (!REG32(VRTC_STICKY_REG))
 		return -1;
@@ -81,26 +126,29 @@ int get_rtc(uint32_t *val)
 	return 0;
 }
 
-void vRTC_update(void)
+static void set_rtc(uint32_t val)
 {
-	uint32_t val;
-
-	if (!get_rtc(&val)) {
-		val += timere_read() - last_time;
-		set_rtc(val);
-	}
+	REG32(VRTC_STICKY_REG) = val;
 }
 
-void *xMboxSetRTC(void *msg)
+void store_rtc(void)
+{
+	uint32_t reg_val;
+
+	reg_val = REG32(RTC_REAL_TIME);
+	REG32(VRTC_STICKY_REG) = reg_val;
+}
+
+void *MboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
-	printf("[%s]: xMboxSetRTC val=0x%x \n", TAG, val);
+	printf("[%s]: MboxSetRTC val=0x%x \n", TAG, val);
 	set_rtc(val);
 
 	return NULL;
 }
 
-void *xMboxGetRTC(void *msg)
+void *MboxGetRTC(void *msg)
 {
 	uint32_t val = 0;
 
@@ -108,69 +156,34 @@ void *xMboxGetRTC(void *msg)
 	memset(msg, 0, MBOX_BUF_LEN);
 	*(uint32_t *)msg = val;
 
-	printf("[%s]: xMboxGetRTC val=0x%x\n", TAG, val);
+	printf("[%s]: MboxGetRTC val=0x%x\n", TAG, val);
 
 	return NULL;
 }
 
-void vRtcInit(void)
+void rtc_init(void)
 {
 	int ret;
+	uint32_t reboot_mode;
+
+	printf("[%s]: init rtc\n", TAG);
+	ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
+	if (ret)
+		printf("[%s]: RegisterIrq error, ret = %d\n", TAG, ret);
+	EnableIrq(RTC_IRQ);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
-						xMboxSetRTC, 0);
+						MboxSetRTC, 0);
 	if (ret == MBOX_CALL_MAX)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_SET_RTC);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
-						xMboxGetRTC, 1);
+						MboxGetRTC, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
-}
 
-static TimerHandle_t xRTCTimer = NULL;
-static uint32_t time_start;
-
-void alarm_set(void)
-{
-	uint32_t val;
-
-	val = REG32(VRTC_PARA_REG);
-
-	if (val) {
-		printf("[%s]: alarm val=%d S\n", TAG, val);
-		time_start = timere_read();
-		if (xRTCTimer)
-			xTimerStart(xRTCTimer, 0);
-	}
-}
-
-void alarm_clr(void)
-{
-	time_start = 0;
-	xTimerStop(xRTCTimer, 0);
-}
-
-
-static void valarm_update(TimerHandle_t xTimer) {
-	uint32_t val;
-
-	val = REG32(VRTC_PARA_REG);
-	xTimer = xTimer;
-
-	if (time_start && (timere_read() - time_start > val)) {
-		uint32_t buf[4] = {0};
-		buf[0] = RTC_WAKEUP;
-
-		printf("[%s]: vrtc alarm fired\n", TAG);
-
-		REG32(VRTC_PARA_REG) = 0;
-		STR_Wakeup_src_Queue_Send(buf);
-	}
-}
-
-void vCreat_alarm_timer(void)
-{
-	xRTCTimer = xTimerCreate("Timer", pdMS_TO_TICKS(1000), pdTRUE, NULL, valarm_update);
+	reboot_mode = get_reboot_mode();
+	if (reboot_mode == COLD_REBOOT)
+		reset_rtc();
 }
 

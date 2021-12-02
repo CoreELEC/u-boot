@@ -43,6 +43,7 @@
 
 #include "hdmi_cec.h"
 #include "vrtc.h"
+#include "rtc.h"
 #include "mailbox-api.h"
 #include "wakeup.h"
 #include "stick_mem.h"
@@ -97,6 +98,26 @@ __attribute__((weak)) void vDDR_resume(uint32_t st_f)
 	st_f = st_f;
 }
 
+__attribute__((weak)) void alarm_set(void)
+{
+}
+
+__attribute__((weak)) void alarm_clr(void)
+{
+}
+
+__attribute__((weak)) void vRTC_update(void)
+{
+}
+
+__attribute__((weak)) void vCreat_alarm_timer(void)
+{
+}
+
+__attribute__((weak)) void store_rtc(void)
+{
+}
+
 void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
@@ -112,8 +133,11 @@ void system_resume(uint32_t pm)
 	wakeup_ap();
 	clear_wakeup_trigger();
 	/*Shutdown*/
-	if (shutdown_flag)
+	if (shutdown_flag) {
+		/* Store RTC time for a5 temporarily*/
+		store_rtc();
 		watchdog_reset_system();
+	}
 }
 
 void system_suspend(uint32_t pm)

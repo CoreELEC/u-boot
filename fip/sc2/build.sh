@@ -477,14 +477,14 @@ function update_bb1st() {
 		--infile-template-bb1st=${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${CHIPSET_NAME}/bb1st${sto_type1}${CHIPSET_VARIANT_SUFFIX}.bin \
 		--infile-blob-bb1st-ref=${FIP_BUILD_FOLDER}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed \
 		--infile-blob-bl2e=${FIP_BUILD_FOLDER}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed \
-		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed
+		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed --flag-enable-ddrfw-fip
 
 	echo update bb1st usb SCS Total Area
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
 		--infile-template-bb1st=${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${CHIPSET_NAME}/bb1st${sto_type2}${CHIPSET_VARIANT_SUFFIX}.bin \
 		--infile-blob-bb1st-ref=${FIP_BUILD_FOLDER}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed \
 		--infile-blob-bl2e=${FIP_BUILD_FOLDER}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed \
-		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed
+		--outfile-bb1st=${FIP_BUILD_FOLDER}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed --flag-enable-ddrfw-fip
 }
 
 function process_blx() {

@@ -28,45 +28,80 @@ LAST_MANIFEST_FILE="manifest_last.xml"
 CURRENT_MANIFEST_FILE="manifest.xml"
 DIFF_MANIFEST_FILE="updates.xml"
 
-rm -rf $WORK_DIR
+#rm -rf $WORK_DIR
 if [ ! -d "$WORK_DIR" ]; then
 	echo -e "\n======== Downloading source code ========"
 	mkdir -p $WORK_DIR
 	cd "$WORK_DIR"
-	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH}  --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
+	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH} --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
 else
 	echo -e "\n======== Syncing source code ========"
-    cd "$WORK_DIR"
-    repo forall -c git reset --hard origin/$BRANCH_NAME
+	cd "$WORK_DIR"
+	repo forall -c git reset --hard origin/$BRANCH_NAME > /dev/null
 	repo manifest -r -o $LAST_MANIFEST_FILE
 fi
 
 repo sync -cq -j8
-repo forall -c git reset --hard origin/$BRANCH_NAME
+repo forall -c git reset --hard origin/$BRANCH_NAME > /dev/null
 repo manifest -r -o $CURRENT_MANIFEST_FILE
-echo -e "======== Downloading/Syncing Done ========\n"
+echo -e "======== Done ========\n"
 
-echo -e "======== Recent Changes ========\n"
-comm -23 <(sort $LAST_MANIFEST_FILE) <(sort $CURRENT_MANIFEST_FILE) > $DIFF_MANIFEST_FILE
+if [ -f $LAST_MANIFEST_FILE ] && [ -f $CURRENT_MANIFEST_FILE ]; then
+	comm -23 <(sort $LAST_MANIFEST_FILE) <(sort $CURRENT_MANIFEST_FILE) > $DIFF_MANIFEST_FILE
 
-while IFS= read -r line
-do
-	keyword=`echo "$line" | grep 'name=.* path='`
+	if [ -s $DIFF_MANIFEST_FILE ]; then
+		echo "======== Recent Changes ========"
 
-	if [ -n "$keyword" ]; then
-		repo_name=`echo "$keyword" | awk '{print $2}'`
-		repo_name=`echo ${repo_name#*name=} | sed 's/\"//g'`
-		repo_path=`echo "$keyword" | awk '{print $3}'`
-		repo_path=`echo ${repo_path#*path=} | sed 's/\"//g'`
-		repo_version=`echo "$keyword" | awk '{print $4}'`
-		repo_version=`echo ${repo_version#*revision=} | sed 's/\"//g'`
+		while IFS= read -r line
+		do
+			keyline=`echo "$line" | grep 'name=.* path='`
 
-		pushd $repo_path > /dev/null
-		echo -e "\nProject $repo_name"
-		git log $repo_version..HEAD
-		popd > /dev/null
+			for keyword in $keyline; do
+				[[ $keyword == path=* ]] && repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+				[[ $keyword == name=* ]] && repo_name=`echo ${keyword#*name=} | sed 's/\"//g'`
+				[[ $keyword == revision=* ]] && repo_version=`echo ${keyword#*revision=} | sed 's/\"//g'`
+			done
+
+			if [ -d "$repo_path" ]; then
+				pushd $repo_path > /dev/null
+				echo -e "\nProject $repo_name"
+				git log $repo_version..HEAD
+				popd > /dev/null
+			fi
+		done < $DIFF_MANIFEST_FILE
+	else
+		echo -e "======== Nothing changed since last build ========"
 	fi
-done < $DIFF_MANIFEST_FILE
+	rm -f $DIFF_MANIFEST_FILE
+fi
+
+if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then
+	echo -e "\n======== Applying patch $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+
+	for keyword in $keyline; do
+		if [[ $keyword == path=* ]]; then
+			repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+			break;
+		fi
+	done
+
+	if [ -d "$repo_path" ]; then
+		pushd $repo_path > /dev/null
+		l2=${GERRIT_CHANGE_NUMBER: -2}
+		git fetch ssh://scgit.amlogic.com:29418/${GERRIT_PROJECT} refs/changes/${l2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}
+		git cherry-pick FETCH_HEAD
+		if [ "$?" -ne 0 ]; then
+			echo -e "========= Applying patch failed! =========\n"
+			exit 1
+		fi
+		popd > /dev/null
+	else
+		echo "No such directory! $repo_path"
+		exit 1
+	fi
+	echo -e "======== Done ========\n"
+fi
 
 parse_list=`echo ${PROFILE}|tr ',' ' '`
 for single in $parse_list; do
@@ -82,15 +117,17 @@ for single in $parse_list; do
 		exit 1
 	fi
 
-	echo "\n========= Building $board $product ========="
+	echo -n "========= Building $board $product: "
 	source ./scripts/env.sh $board $product
 	make distclean 2>&1
-	make 2>&1
-	if [ "$?" -eq 0 ];then
-	echo "========= Building successful =========\n"
+	make > build.log 2>&1
+	if [ "$?" -eq 0 ]; then
+		echo -e "successful =========\n"
 	else
-	echo "========= Building failed =========\n"
-	exit 1
+		echo -e "failed =========\n"
+		cat build.log
+		echo -e "\nAborted!"
+		exit 1
 	fi
 done
 

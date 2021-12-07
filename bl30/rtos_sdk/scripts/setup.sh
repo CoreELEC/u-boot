@@ -10,7 +10,8 @@ exclude_dir="products"
 special_dirs="arch soc boards"
 drivers_dir="drivers"
 third_party_dir="third_party"
-dir=$PWD
+
+RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 
 if [ -n "$1" ]; then
 	file_name=$1
@@ -18,9 +19,10 @@ else
 	file_name="default.xml"
 fi
 
+dir=$PWD
 while : ; do
 	if [[ -n $(find $dir/.repo -name $file_name) ]]; then
-		manifest_file=`find $dir/.repo -name $file_name`
+		MANIFEST_FILE=`find $dir/.repo -name $file_name`
 		break
 	fi
 	dir=`dirname $dir`
@@ -28,19 +30,22 @@ while : ; do
 	[ $? -eq 0 ] && break;
 done
 
-if [ -f $dir/CMakeLists.txt ] && [ $manifest_file -ot $dir/CMakeLists.txt ]; then
-	exit 0
-fi
-
-if [ ! -f $manifest_file ]; then
+if [ ! -f $MANIFEST_FILE ]; then
 	echo "No such file: $file_name"
 	exit 1
 fi
 
+if [ -f $RTOS_SDK_MANIFEST_FILE ] && [ $MANIFEST_FILE -ot $RTOS_SDK_MANIFEST_FILE ]; then
+	exit 0
+fi
 
-if [ ! -f $dir/CMakeLists.txt ]; then
+repo manifest -o $RTOS_SDK_MANIFEST_FILE
+sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
+
+
+if [ ! -f $cmake_file ]; then
 	echo "CMakeLists.txt and Kconfig Generated"
-elif [ $manifest_file -nt $dir/CMakeLists.txt ]; then
+elif [ $RTOS_SDK_MANIFEST_FILE -nt $cmake_file ]; then
 	echo "CMakeLists.txt and Kconfig Updated"
 fi
 
@@ -62,10 +67,10 @@ fi
 
 while IFS= read -r line
 do
-	keyline=`echo "$line" | grep 'path=.* name='`
+	keyline=`echo "$line" | grep 'name=.* path='`
 	for keyword in $keyline; do
 		if [[ $keyword == path=* ]]; then
-			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
+			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 
 			if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
 				category=`echo $repo_path | sed 's/_/ /g'`
@@ -110,6 +115,6 @@ do
 			break;
 		fi
 	done
-done < "$manifest_file"
+done < "$RTOS_SDK_MANIFEST_FILE"
 
 echo "endmenu" >> $kconfig_file

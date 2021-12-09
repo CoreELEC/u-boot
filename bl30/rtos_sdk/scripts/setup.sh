@@ -6,64 +6,58 @@
 
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
+build_dir="build"
+drivers_dir="drivers"
 exclude_dir="products"
 special_dirs="arch soc boards"
-drivers_dir="drivers"
 third_party_dir="third_party"
 
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 
-if [ -n "$1" ]; then
-	file_name=$1
-else
-	file_name="default.xml"
-fi
-
-dir=$PWD
-while : ; do
-	if [[ -n $(find $dir/.repo -name $file_name) ]]; then
-		MANIFEST_FILE=`find $dir/.repo -name $file_name`
-		break
-	fi
-	dir=`dirname $dir`
-	mountpoint -q $dir
-	[ $? -eq 0 ] && break;
-done
-
-if [ ! -f $MANIFEST_FILE ]; then
-	echo "No such file: $file_name"
-	exit 1
-fi
-
-if [ -f $RTOS_SDK_MANIFEST_FILE ] && [ $MANIFEST_FILE -ot $RTOS_SDK_MANIFEST_FILE ]; then
+if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $RTOS_SDK_MANIFEST_FILE -ot $kconfig_file ]; then
 	exit 0
 fi
 
-repo manifest -o $RTOS_SDK_MANIFEST_FILE
-sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
-
-
-if [ ! -f $cmake_file ]; then
-	echo "CMakeLists.txt and Kconfig Generated"
-elif [ $RTOS_SDK_MANIFEST_FILE -nt $cmake_file ]; then
-	echo "CMakeLists.txt and Kconfig Updated"
+# Generate manifest.xml
+repo manifest > $RTOS_SDK_MANIFEST_FILE
+if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
+	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
+	exit 1
 fi
 
+# Write the fixed content to CMakeLists.txt
 cat <<EOF > $cmake_file
 enable_language(C CXX ASM)
 
 EOF
 
+# Clear Kconfig
 cat <<EOF > $kconfig_file
 EOF
 
-absolute_prj_dir=$dir
-if [[ $absolute_prj_dir == $PWD ]] ; then
+# filter manifest.xml of RTOS SDK
+sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
+# figure out the $relative_dir and its column
+pattern="path="
+i=0
+keyline=`grep 'path=".*build"' $RTOS_SDK_MANIFEST_FILE`
+for keyword in $keyline; do
+	let i++
+	if [[ $keyword == $pattern* ]]; then
+		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
+		relative_dir=`dirname $repo_path`
+		break;
+	fi
+done
+
+if [[ $relative_dir == . ]]; then
 	pattern="path="
 else
-	relative_prj_dir=`echo ${PWD#*${absolute_prj_dir}/}`
-	pattern="path=\"${relative_prj_dir}/"
+	pattern="path=\"${relative_dir}/"
 fi
+
+# sort manifest.xml of RTOS SDK
+sort -k $i $RTOS_SDK_MANIFEST_FILE -o $RTOS_SDK_MANIFEST_FILE
 
 while IFS= read -r line
 do

@@ -4,8 +4,17 @@ config KERNEL_ARCH_DIR
 	string
 	default "ARM_CA53_64_BIT" if ARM_CA53_64_BIT
 	default "RISC-V" if RISCV
+	default "Xtensa" if XTENSA
 	help
-	  System gcc arch dir string.
+	  System arch dir string.
+
+config KERNEL_COMPILER_DIR
+	string
+	default "GCC" if ARM_CA53_64_BIT
+	default "GCC" if RISCV
+	default "XCC" if XTENSA
+	help
+	  System compiler dir string.
 
 
 config MEMORY_LEAK2

@@ -45,7 +45,7 @@ task.h is included from an application file. */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "printf.h"
-#include "stacktrace_64.h"
+//#include "stacktrace_64.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -68,10 +68,16 @@ task.h is included from an application file. */
 	static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 #endif /* configAPPLICATION_ALLOCATED_HEAP */
 
+// #define configMEMORY_GUARD
+#define GUARD_VALUE         (0xA5A5A5A5)
+
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
 typedef struct A_BLOCK_LINK
 {
+#ifdef configMEMORY_GUARD
+	int32_t xGuard;
+#endif
 	struct A_BLOCK_LINK *pxNextFreeBlock;	/*<< The next free block in the list. */
 	size_t xBlockSize;						/*<< The size of the free block. */
 } BlockLink_t;
@@ -233,6 +239,10 @@ void *pvPortMalloc( size_t xWantedSize )
 						/* Calculate the sizes of two blocks split from the
 						single block. */
 						pxNewBlockLink->xBlockSize = pxBlock->xBlockSize - xWantedSize;
+#ifdef configMEMORY_GUARD
+						pxNewBlockLink->xGuard = GUARD_VALUE;
+						pxBlock->xGuard = GUARD_VALUE;
+#endif
 						pxBlock->xBlockSize = xWantedSize;
 
 						/* Insert the new block into the list of free blocks. */
@@ -321,6 +331,13 @@ void vPortFree( void *pv )
 		pxLink = ( void * ) puc;
 
 		/* Check the block is actually allocated. */
+#ifdef configMEMORY_GUARD
+		if (pxLink->xGuard != GUARD_VALUE) {
+			printf("heap overflow guard fail at pointer=%p guard=%x\n",
+			       pv, pxLink->xGuard);
+			configASSERT( pxLink->xGuard == GUARD_VALUE);
+		}
+#endif
 		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
 		configASSERT( pxLink->pxNextFreeBlock == NULL );
 

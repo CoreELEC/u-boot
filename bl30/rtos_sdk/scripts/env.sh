@@ -70,6 +70,7 @@ case $ARCH in
 	arm) COMPILER=gcc;TOOLCHAIN_KEYWORD="arm-none-eabi" ;;
 	arm64) COMPILER=gcc;TOOLCHAIN_KEYWORD="aarch64-none-elf" ;;
 	riscv) COMPILER=gcc;TOOLCHAIN_KEYWORD="riscv-none" ;;
+	xtensa) COMPILER=xcc;TOOLCHAIN_KEYWORD="xt" ;;
 	*) echo "Failed to identify ARCH $ARCH";return 1;;
 esac
 

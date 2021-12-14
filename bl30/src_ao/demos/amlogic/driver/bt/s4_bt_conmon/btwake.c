@@ -18,6 +18,7 @@ static void bt_wakeup_Task(void *args)
 	int flag_p = 0;
 	int flag_n = 0;
 
+restart_task:
 	UNUSED(args);
 	INFO();
 	vTaskSuspend(btTask);
@@ -64,6 +65,8 @@ static void bt_wakeup_Task(void *args)
 			INFO("suspend null");
 		}
 	}
+	vEnableGpioIRQ(BT_WAKE_HOST);
+	goto restart_task;
 }
 
 static void vBTWakeup(void)
@@ -91,6 +94,7 @@ void bt_task_deinit(void)
 {
 	if (btTask != NULL)
 	{
+		INFO("deinit");
 		vTaskDelete(btTask);
 		btTask = NULL;
 	}

@@ -16,7 +16,7 @@ usage()
 choose()
 {
 	echo "Available $1s:"
-	ARRAY=($(find $PWD/$1s/ -mindepth $2 -maxdepth $2 -type d ! -name ".*" | xargs basename -a))
+	ARRAY=($(find $PWD/$1s/ -mindepth $2 -maxdepth $2 -type d ! -name ".*" | xargs basename -a | sort -n))
 	for i in "${!ARRAY[@]}";
 	do
 		echo -e "\t$i. ${ARRAY[$i]}"

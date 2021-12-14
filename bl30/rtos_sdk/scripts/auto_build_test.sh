@@ -12,6 +12,7 @@ board_product_pair_list=(
 	"am301_t950d4 aocpu"
 	"at309_t962d4 aocpu"
 	"at301_t962d4 aocpu"
+	"a5_hifi5a hifi_dsp"
 )
 
 #build test for every pair until there is error occurred

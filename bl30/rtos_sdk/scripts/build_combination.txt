@@ -1,0 +1,6 @@
+ad401_a113l a1 arm64 speaker
+ad403_a113l a1 arm64 speaker
+ad409_a113l a1 arm64 speaker
+am301_t950d4 t5d riscv aocpu
+at301_t962d4 t5w riscv aocpu
+at309_t962d4 t5w riscv aocpu

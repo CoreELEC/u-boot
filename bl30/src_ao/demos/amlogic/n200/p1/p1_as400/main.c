@@ -173,7 +173,7 @@ int main(void)
 
 	//vCecCallbackInit(CEC_CHIP_T7);
 	vRtcInit();
-//	create_str_task();
+	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

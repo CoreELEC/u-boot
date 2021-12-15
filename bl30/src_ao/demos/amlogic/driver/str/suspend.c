@@ -319,6 +319,7 @@ static void vSTRTask( void *pvParameters )
 				default:
 					break;
 			}
+
 			if (exit_reason) {
 				printf("exit_reason=%d, %s\n",exit_reason, vWakeupReason[exit_reason].name);
 				set_reason_flag((char)exit_reason);

@@ -42,7 +42,7 @@ aml_library_include_directories(
 	include
 	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}
 	${SDK_BASE}/soc/${ARCH}
-	${SDK_BASE}/soc/${ARCH}/${CONFIG_SOC_NAME}
+	${SDK_BASE}/soc/${ARCH}/${SOC}
 	${SDK_BASE}/boards/${ARCH}/${BOARD}
 )
 

@@ -37,3 +37,10 @@ CONFIG_DDR_FW=0
 DDR_FW_NAME="aml_ddr.fw"
 
 CONFIG_DDR_PARSE=1
+
+declare CONFIG_RTOS_SDK_ENABLE=1
+if [ "${BL30_SELECT}" == "t5w_at301" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="at301_t962d4"
+else
+	declare CONFIG_BOARD_PACKAGE_NAME="at309_t962d4"
+fi

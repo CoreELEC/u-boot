@@ -52,10 +52,10 @@ check_params()
 
 unset ARCHS SOCS BOARDS PRODUCTS
 
-ARCHS=(`ls $PWD/arch`)
+ARCHS=($(find $PWD/arch -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
 SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
 BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
-PRODUCTS=(`ls $PWD/products`)
+PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
 
 if [ -n "$1" ]; then
 	if [ $1 == "-h" ]; then

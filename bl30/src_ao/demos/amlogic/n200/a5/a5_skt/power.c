@@ -34,8 +34,6 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 
-#include "hdmi_cec.h"
-
 /* #define CONFIG_ETH_WAKEUP */
 
 #ifdef CONFIG_ETH_WAKEUP
@@ -43,8 +41,6 @@
 #include "eth.h"
 #endif
 
-
-static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
 
 static IRPowerKey_t prvPowerKeyList[] = {
@@ -84,8 +80,6 @@ void str_hw_init(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
 #endif
-	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -100,10 +94,6 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
-	if (cecTask) {
-		vTaskDelete(cecTask);
-		cec_req_irq(0);
-	}
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();

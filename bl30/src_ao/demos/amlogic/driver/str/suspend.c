@@ -118,12 +118,23 @@ __attribute__((weak)) void store_rtc(void)
 {
 }
 
+__attribute__((weak)) void vCLK_suspend(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void vCLK_resume(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
 void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 
 	if (pm == 0xf)
 		shutdown_flag = 1;
+	vCLK_resume(shutdown_flag);
 	/*Need clr alarm ASAP*/
 	alarm_clr();
 	str_power_on(shutdown_flag);
@@ -156,6 +167,7 @@ void system_suspend(uint32_t pm)
 	vTaskDelay(pdMS_TO_TICKS(500));
 	vDDR_suspend(shutdown_flag);
 	str_power_off(shutdown_flag);
+	vCLK_suspend(shutdown_flag);
 }
 
 void set_reason_flag(char exit_reason)

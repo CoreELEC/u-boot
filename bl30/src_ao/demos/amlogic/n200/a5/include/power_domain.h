@@ -24,40 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * power domain header file
+ */
 
-/* wake up reason*/
-#define	UDEFINED_WAKEUP	0
-#define	CHARGING_WAKEUP	1
-#define	REMOTE_WAKEUP		2
-#define	RTC_WAKEUP			3
-#define	BT_WAKEUP			4
-#define	WIFI_WAKEUP			5
-#define	POWER_KEY_WAKEUP	6
-#define	AUTO_WAKEUP			7
-#define CEC_WAKEUP		8
-#define	REMOTE_CUS_WAKEUP		9
-#define ETH_PMT_WAKEUP      10
-#define CECB_WAKEUP		11
-#define ETH_PHY_GPIO    12
-#define VAD_WAKEUP	13
-#define HDMI_RX_WAKEUP	14
+#ifndef _POWER_DOMAIN_H_
+#define _POWER_DOMAIN_H_
 
-#define STR_QUEUE_LENGTH    32
-#define STR_QUEUE_ITEM_SIZE 4
+#define PWR_ON    1
+#define PWR_OFF   0
 
-typedef struct {
-	char* name;
-} WakeUp_Reason;
+#define EVT_CPU_PWR_ON                          47
+#define EVT_CPU_PWR_OFF                         48
+#define EVT_DDR_ON                              49
+#define EVT_DDR_OFF                             50
 
-void vDDR_suspend(uint32_t st_f);
-void vDDR_resume(uint32_t st_f);
-uint32_t parse_suspend_msg(void *msg);
-void vCLK_suspend(uint32_t st_f);
-void vCLK_resume(uint32_t st_f);
-extern void create_str_task(void);
-extern void STR_Start_Sem_Give_FromISR(void);
-extern void STR_Start_Sem_Give(void);
-extern void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src);
-extern void STR_Wakeup_src_Queue_Send(uint32_t *src);
-extern void *xMboxSuspend_Sem(void *msg);
+#define FSM_NUM   8
 
+typedef enum a {
+    PM_CPU_PWR,
+    PM_CPU_CORE0,
+    PM_CPU_CORE1,
+    PM_CPU_CORE2,
+    PM_CPU_CORE3,
+    PM_DSPA,
+    PM_AOCPU,
+    PM_NNA      = FSM_NUM + 1,       // 9
+    PM_AUDIO                 ,       // 10
+    PM_RESV_SEC              ,       // 11
+    PM_SDIOA                 ,       // 12
+    PM_EMMC                  ,       // 13
+    PM_USB_COMB              ,       // 14
+    PM_RESV_SYS_WRAP         ,       // 15
+    PM_ETH                   ,       // 16
+    PM_RESV0                 ,       // 17
+    PM_RSA              = 23 ,       // 23
+    PM_AUDIO_PDM             ,       // 24
+    PM_DMC              = 26 ,       // 26
+    PM_SYS_WRAP         = 32         // 32
+} PM_E;
+
+void  power_switch_to_domains(PM_E domain, uint32_t pwr_state);
+
+#endif

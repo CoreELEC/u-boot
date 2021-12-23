@@ -24,40 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * clk header file
+ */
 
-/* wake up reason*/
-#define	UDEFINED_WAKEUP	0
-#define	CHARGING_WAKEUP	1
-#define	REMOTE_WAKEUP		2
-#define	RTC_WAKEUP			3
-#define	BT_WAKEUP			4
-#define	WIFI_WAKEUP			5
-#define	POWER_KEY_WAKEUP	6
-#define	AUTO_WAKEUP			7
-#define CEC_WAKEUP		8
-#define	REMOTE_CUS_WAKEUP		9
-#define ETH_PMT_WAKEUP      10
-#define CECB_WAKEUP		11
-#define ETH_PHY_GPIO    12
-#define VAD_WAKEUP	13
-#define HDMI_RX_WAKEUP	14
+#ifndef _CLK_H_
+#define _CLK_H_
 
-#define STR_QUEUE_LENGTH    32
-#define STR_QUEUE_ITEM_SIZE 4
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef struct {
-	char* name;
-} WakeUp_Reason;
+typedef enum {
+	PLL_SYS,
+	PLL_GP0,
+	PLL_GP1,
+	PLL_FIX,
+	PLL_HIFI,
+	PLL_RTC,
+	PLL_DDR
+} PLL_TYPE;
 
-void vDDR_suspend(uint32_t st_f);
-void vDDR_resume(uint32_t st_f);
-uint32_t parse_suspend_msg(void *msg);
-void vCLK_suspend(uint32_t st_f);
-void vCLK_resume(uint32_t st_f);
-extern void create_str_task(void);
-extern void STR_Start_Sem_Give_FromISR(void);
-extern void STR_Start_Sem_Give(void);
-extern void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src);
-extern void STR_Wakeup_src_Queue_Send(uint32_t *src);
-extern void *xMboxSuspend_Sem(void *msg);
+void disable_pll(int id);
+void set_time(uint32_t val);
+uint32_t get_time(void);
+void alt_timebase(int use_clk_src);
+void set_sys_div_clk(int sel, int div);
+void set_axi_div_clk(int sel, int div);
+void clk_util_set_dsp_clk(uint32_t id, uint32_t freq_sel);
 
+#ifdef __cplusplus
+}
+#endif
+#endif

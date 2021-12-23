@@ -81,7 +81,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RS
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --switch-keep-device-lvl2-pubrsa=1"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC}"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s4"
 
 # arb info
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"

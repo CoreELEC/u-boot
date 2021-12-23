@@ -41,17 +41,7 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl40/bin"		\
 			   "bl30/bin_ao")
 
-#declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-#			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-#			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-#			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-#			 "blob-bl2x.bin.signed"                              \
-#			 "blob-bl31.bin.signed"                              \
-#			 "blob-bl32.bin.signed"                              \
-#			 "blob-bl40.bin.signed"                              \
-#			 "bl30.bin")
-
-
+if [ "y" == "${CONFIG_PXP_NO_SIGNED}" ]; then
 declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\
 			    "bl2e.bin.sto"	\
@@ -61,6 +51,19 @@ declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl32.bin"		\
 			    "bl40.bin"		\
 				"NULL")
+
+else
+declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
+			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
+			 "blob-bl2x.bin.signed"                              \
+			 "blob-bl31.bin.signed"                              \
+			 "blob-bl32.bin.signed"                              \
+			 "blob-bl40.bin.signed"                              \
+			 "bl30.bin")
+fi
+
 
 declare -a BLX_BIN_SIZE=("169984"	\
 			 "169984"	\

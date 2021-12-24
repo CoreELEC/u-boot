@@ -33,8 +33,8 @@ endif()
 
 if(CONFIG_ARM_CA53_64_BIT)
 aml_library_include_directories(
-	${SDK_BASE}/drivers/${ARCH}/include
-	${SDK_BASE}/drivers/${ARCH}/include/drivers
+	${SDK_BASE}/drivers/include
+	${SDK_BASE}/drivers/include/drivers
 )
 endif()
 

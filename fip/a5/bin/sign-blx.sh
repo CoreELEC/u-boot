@@ -6,7 +6,8 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #
 # Settings
 #
-BASEDIR_BUILD="${BASEDIR_TOP}/output"
+#BASEDIR_BUILD="${BASEDIR_TOP}/output"
+BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
 declare -a BLX_BIN_SIZE=("150432" "65536" "65536" "2048" "86016" "262144" "524288"  "98304")
 
@@ -110,7 +111,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${chipset_name} ]; then
-		chipset_name="s905y4"
+		chipset_name="a113x2"
 	fi
 
 	# select bl2/bl2e sign template
@@ -141,7 +142,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${soc} ]; then
-		soc="s4"
+		soc="a5"
 	fi
 
 	if [ -z ${build_type} ]; then

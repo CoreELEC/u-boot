@@ -7,7 +7,7 @@
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
 build_dir="build"
-drivers_dir="drivers"
+#drivers_dir="drivers drivers_aocpu"
 exclude_dir="products"
 special_dirs="arch soc boards"
 third_party_dir="third_party"
@@ -23,6 +23,11 @@ repo manifest > $RTOS_SDK_MANIFEST_FILE
 if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
+fi
+if [[ "$PRODUCT" == aocpu ]]; then
+	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE
+else
+	sed -i '/path="drivers_aocpu"/d' $RTOS_SDK_MANIFEST_FILE
 fi
 
 # Write the fixed content to CMakeLists.txt
@@ -66,7 +71,8 @@ do
 		if [[ $keyword == path=* ]]; then
 			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 
-			if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
+#			if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
+			if [[ $repo_path == $third_party_dir* ]]; then
 				category=`echo $repo_path | sed 's/_/ /g'`
 			else
 				category=`dirname $repo_path`

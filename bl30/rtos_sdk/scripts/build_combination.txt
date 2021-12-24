@@ -1,5 +1,5 @@
-ad401_a113l_hifi4a a1 xtensa hifi_dsp
 ad401_a113l a1 arm64 speaker
+ad401_a113l_hifi4a a1 xtensa hifi_dsp
 ad403_a113l a1 arm64 speaker
 ad409_a113l a1 arm64 speaker
 am301_t950d4 t5d riscv aocpu

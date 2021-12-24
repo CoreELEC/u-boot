@@ -7,7 +7,7 @@ aml_library_sources(
 )
 
 aml_library_link_libraries(kernel__${KERNEL})
-aml_library_link_libraries(drivers__${ARCH})
+aml_library_link_libraries(drivers)
 target_link_libraries(${TARGET_NAME} -lc)
 target_link_libraries(${TARGET_NAME} libc__newlib)
 target_link_libraries(${TARGET_NAME} -lc)

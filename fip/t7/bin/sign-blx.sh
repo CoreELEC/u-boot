@@ -6,7 +6,8 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #
 # Settings
 #
-BASEDIR_BUILD="${BASEDIR_TOP}/output"
+#BASEDIR_BUILD="${BASEDIR_TOP}/output"
+BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
 declare -a BLX_BIN_SIZE=("127904" "65536" "65536" "4096" "86016" "262144" "524288"  "98304")
 

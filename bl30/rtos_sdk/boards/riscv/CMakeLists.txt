@@ -9,6 +9,6 @@ aml_library_sources(
 )
 
 aml_library_link_libraries(kernel__${KERNEL})
-aml_library_link_libraries(drivers__${ARCH})
+aml_library_link_libraries(drivers)
 
 aml_link_libraries()

@@ -1,0 +1,2 @@
+config SARADC
+	bool "SARADC Driver"

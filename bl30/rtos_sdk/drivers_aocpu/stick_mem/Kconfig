@@ -1,0 +1,2 @@
+config STICK_MEM
+	bool "StickMem Driver"

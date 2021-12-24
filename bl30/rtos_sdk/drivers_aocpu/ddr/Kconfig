@@ -1,0 +1,2 @@
+config DDR
+	bool "DDR Driver"

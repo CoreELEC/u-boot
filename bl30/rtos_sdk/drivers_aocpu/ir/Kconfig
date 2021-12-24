@@ -1,0 +1,2 @@
+config IR
+	bool "IR Driver"

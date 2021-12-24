@@ -1,0 +1,2 @@
+config UART
+	bool "UART Driver"

@@ -1,0 +1,2 @@
+config VRTC
+	bool "VRTC Driver"

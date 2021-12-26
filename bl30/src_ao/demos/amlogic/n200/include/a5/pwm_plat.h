@@ -38,13 +38,12 @@ extern "C" {
 
 #define PwmMesonVolt_Duty	1
 
-/* There are 5 pwm controllers in sc2 */
+/* There are 4 pwm controllers in a5 */
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
 	PWM_GH,
-	PWM_IJ,
 	PWM_MUX,
 };
 

@@ -31,7 +31,6 @@
 #ifndef __XLAT_TABLES_PRIVATE_H__
 #define __XLAT_TABLES_PRIVATE_H__
 
-#define u_register_t BaseType_t
 #define LOG_LEVEL 0
 #define LOG_LEVEL_VERBOSE		50
 #define DEBUG 0

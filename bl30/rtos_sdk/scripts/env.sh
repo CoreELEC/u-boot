@@ -60,7 +60,7 @@ PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xa
 if [ -n "$1" ]; then
 	if [ $1 == "-h" ]; then
 		usage
-		return 0
+		exit 0
 	else
 		PROJECT="$1 $2 $3 $4"
 	fi

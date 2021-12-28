@@ -35,7 +35,6 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/timer_source
 	${SDK_BASE}/drivers_aocpu/saradc
 	${SDK_BASE}/drivers_aocpu/ir
-	${SDK_BASE}/drivers_aocpu/common
 )
 
 aml_library_link_libraries(arch__${ARCH})

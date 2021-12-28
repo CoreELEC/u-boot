@@ -11,16 +11,17 @@ exclude_dir="products"
 special_dirs="arch soc boards"
 
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
+STAMP="$kernel_BUILD_DIR/.stamp"
+
+if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+	exit 0
+fi
 
 # Generate manifest.xml
 repo manifest > $RTOS_SDK_MANIFEST_FILE
 if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
-fi
-
-if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $RTOS_SDK_MANIFEST_FILE -ot $kconfig_file ]; then
-	exit 0
 fi
 
 if [[ "$PRODUCT" == aocpu ]]; then
@@ -117,3 +118,5 @@ do
 done < "$RTOS_SDK_MANIFEST_FILE"
 
 echo "endmenu" >> $kconfig_file
+
+touch $STAMP

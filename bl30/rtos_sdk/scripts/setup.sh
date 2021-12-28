@@ -7,16 +7,10 @@
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
 build_dir="build"
-#drivers_dir="drivers drivers_aocpu"
 exclude_dir="products"
 special_dirs="arch soc boards"
-third_party_dir="third_party"
 
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
-
-if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $RTOS_SDK_MANIFEST_FILE -ot $kconfig_file ]; then
-	exit 0
-fi
 
 # Generate manifest.xml
 repo manifest > $RTOS_SDK_MANIFEST_FILE
@@ -24,6 +18,11 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
 fi
+
+if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $RTOS_SDK_MANIFEST_FILE -ot $kconfig_file ]; then
+	exit 0
+fi
+
 if [[ "$PRODUCT" == aocpu ]]; then
 	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE
 else
@@ -71,9 +70,9 @@ do
 		if [[ $keyword == path=* ]]; then
 			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 
-#			if [[ $repo_path == $drivers_dir* ]] || [[ $repo_path == $third_party_dir* ]]; then
-			if [[ $repo_path == $third_party_dir* ]]; then
-				category=`echo $repo_path | sed 's/_/ /g'`
+			if [[ $repo_path == drivers* ]] || [[ $repo_path == third_party* ]]; then
+				category=`basename $repo_path | sed 's/_/ /g'`
+				category=`echo $category | sed "s/ $PRODUCT//g"`
 			else
 				category=`dirname $repo_path`
 			fi

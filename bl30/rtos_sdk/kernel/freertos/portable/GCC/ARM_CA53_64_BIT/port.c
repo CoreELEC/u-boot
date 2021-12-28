@@ -28,7 +28,7 @@
 /* Standard includes. */
 #include <stdlib.h>
 #include <stdio.h>
-#include <drivers/gic.h>
+#include <gic.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"

@@ -1,7 +1,8 @@
+set(CURRENT_LIBRARY_TYPE STATIC)
 set(CURRENT_LIBRARY drivers)
-message(STATUS "@@CURRENT_LIBRARY: ${CURRENT_LIBRARY}")
+message(STATUS "@@${CURRENT_LIBRARY_TYPE}: ${CURRENT_LIBRARY}")
 
-add_library(${CURRENT_LIBRARY} STATIC)
+add_library(${CURRENT_LIBRARY} ${CURRENT_LIBRARY_TYPE})
 
 add_subdirectory_if_kconfig(get_version)
 add_subdirectory_if_kconfig(stick_mem)

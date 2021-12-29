@@ -119,4 +119,5 @@ done < "$RTOS_SDK_MANIFEST_FILE"
 
 echo "endmenu" >> $kconfig_file
 
+sleep 1
 touch $STAMP

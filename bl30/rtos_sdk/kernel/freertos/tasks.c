@@ -1102,8 +1102,8 @@ UBaseType_t x;
 	}
 }
 /*-----------------------------------------------------------*/
-#ifdef configMEMORY_LEAK
-extern struct MemLeak MemLeak_t[configMEMLEAK_ARRAY_SIZE];
+#ifdef CONFIG_MEMORY_LEAK
+extern struct MemLeak MemLeak_t[CONFIG_MEMLEAK_ARRAY_SIZE];
 #endif
 
 static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
@@ -1153,18 +1153,18 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 		}
 
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 		int i = 0;
 
 		if ( xSchedulerRunning != pdFALSE ) {
-			for (i = 1; i < configMEMLEAK_ARRAY_SIZE; i ++) {
+			for (i = 1; i < CONFIG_MEMLEAK_ARRAY_SIZE; i ++) {
 				if (MemLeak_t[i].Flag == 0) {
 					uxTaskNumber = i;
 					break;
 				}
 			}
 
-			configASSERT( i < configMEMLEAK_ARRAY_SIZE );
+			configASSERT( i < CONFIG_MEMLEAK_ARRAY_SIZE );
 		} else {
 			uxTaskNumber ++;
 		}
@@ -1277,7 +1277,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 
 			traceTASK_DELETE( pxTCB );
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 			MemLeak_t[pxTCB->uxTCBNumber].Flag = 0;
 			MemLeak_t[pxTCB->uxTCBNumber].TaskNum = 0;
 			MemLeak_t[pxTCB->uxTCBNumber].WantSize = 0;
@@ -2409,7 +2409,7 @@ TCB_t *pxTCB;
 	/* If null is passed in here then the name of the calling task is being
 	queried. */
 	pxTCB = prvGetTCBFromHandle( xTaskToQuery );
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 	if (pxTCB == NULL)
 		return NULL;
 #else

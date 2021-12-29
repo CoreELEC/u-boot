@@ -159,8 +159,8 @@ space. */
 static size_t xBlockAllocatedBit = 0;
 
 /*-----------------------------------------------------------*/
-#ifdef configMEMORY_LEAK
-struct MemLeak MemLeak_t[configMEMLEAK_ARRAY_SIZE];
+#ifdef CONFIG_MEMORY_LEAK
+struct MemLeak MemLeak_t[CONFIG_MEMLEAK_ARRAY_SIZE];
 #endif
 
 #if CONFIG_MEMORY_LEAK2 && CONFIG_STACK_TRACE
@@ -442,7 +442,7 @@ void *pvPortMalloc( size_t xWantedSize )
 	size_t mallocsz = xWantedSize;
 #endif
 
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -494,7 +494,7 @@ void *pvPortMalloc( size_t xWantedSize )
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 					MemLeak_t[0].Flag = 1;
 					MemLeak_t[0].TaskNum = 0;
@@ -868,7 +868,7 @@ void *pvPortMallocAlign( size_t xWantedSize , size_t xAlignMsk)
 	size_t mallocsz = xWantedSize;
 #endif
 
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -921,7 +921,7 @@ void *pvPortMallocAlign( size_t xWantedSize , size_t xAlignMsk)
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 					MemLeak_t[0].Flag = 1;
 					MemLeak_t[0].TaskNum = 0;
@@ -1082,7 +1082,7 @@ void vPortFree( void *pv )
 	uint8_t *puc = ( uint8_t * ) pv;
 	BlockLink_t *pxLink;
 	unsigned long flags;
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -1104,7 +1104,7 @@ void vPortFree( void *pv )
 		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
 		configASSERT( pxLink->pxNextFreeBlock == NULL );
 
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 			MemLeak_t[0].FreeSize = pxLink->xBlockSize;
 			MemLeak_t[0].FreeTotalSize += pxLink->xBlockSize;

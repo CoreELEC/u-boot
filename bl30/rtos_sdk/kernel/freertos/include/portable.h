@@ -144,7 +144,7 @@ int vPrintFreeListAfterMallocFail(void);
 /*
  * Map to the memory management routines required for the port.
  */
-#ifdef configMEMORY_LEAK
+#ifdef CONFIG_MEMORY_LEAK
 struct MemLeak {
 	char TaskName[20];
 	int TaskNum;

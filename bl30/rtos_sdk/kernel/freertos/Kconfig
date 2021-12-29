@@ -20,4 +20,11 @@ config KERNEL_COMPILER_DIR
 config MEMORY_LEAK2
         bool "support check memory leak"
 
+config MEMORY_LEAK
+        bool "support trace thread malloc/free"
+
+config MEMLEAK_ARRAY_SIZE
+		hex "memleak trace buffer pool size"
+		default 128
+
 endmenu

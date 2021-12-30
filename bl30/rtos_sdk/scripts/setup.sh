@@ -13,6 +13,10 @@ special_dirs="arch soc boards"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 STAMP="$kernel_BUILD_DIR/.stamp"
 
+# Check whether the project is a repo
+repo manifest >/dev/null 2>&1
+[ "$?" -ne 0 ] && exit 0
+
 if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 	exit 0
 fi

@@ -4,7 +4,6 @@ message(STATUS "@@${CURRENT_LIBRARY_TYPE}: ${CURRENT_LIBRARY}")
 
 add_library(${CURRENT_LIBRARY} ${CURRENT_LIBRARY_TYPE})
 
-add_subdirectory_if_kconfig(get_version)
 add_subdirectory_if_kconfig(stick_mem)
 add_subdirectory_if_kconfig(uart)
 add_subdirectory_if_kconfig(cec)
@@ -22,7 +21,6 @@ add_subdirectory_if_kconfig(ir)
 aml_library_include_directories(
 	${SDK_BASE}/soc/${ARCH}
 	${SDK_BASE}/soc/${ARCH}/${SOC}
-	${SDK_BASE}/drivers_aocpu/get_version
 	${SDK_BASE}/drivers_aocpu/stick_mem
 	${SDK_BASE}/drivers_aocpu/uart
 	${SDK_BASE}/drivers_aocpu/cec

@@ -1,2 +1,0 @@
-config GET_VERSION
-	bool "GetVersion Driver"

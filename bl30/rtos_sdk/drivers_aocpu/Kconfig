@@ -1,4 +1,3 @@
-source "drivers_aocpu/get_version/Kconfig"
 source "drivers_aocpu/stick_mem/Kconfig"
 source "drivers_aocpu/uart/Kconfig"
 source "drivers_aocpu/cec/Kconfig"

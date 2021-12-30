@@ -8,9 +8,9 @@
 #include "uart.h"
 #include "common.h"
 #include "mailbox-api.h"
-#include "version.h"
 #include "hdmi_cec.h"
 #include "stick_mem.h"
+#include "sdk_version.h"
 
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -85,7 +85,7 @@ extern void create_str_task(void);
 
 void hw_business_process(void)
 {
-	version();
+	printf("AOCPU image version='%s'\n", CONFIG_VERSION_STRING);
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();

@@ -2419,6 +2419,49 @@ TCB_t *pxTCB;
 }
 /*-----------------------------------------------------------*/
 
+BaseType_t pcTaskSetName( TaskHandle_t xTaskToQuery, const char *pcName ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+{
+TCB_t *pxTCB;
+UBaseType_t x;
+BaseType_t xReturn;
+
+	/* If null is passed in here then the name of the calling task is being
+	queried. */
+	pxTCB = prvGetTCBFromHandle( xTaskToQuery );
+
+	/* Store the task name in the TCB. */
+	if( pxTCB != NULL && pcName != NULL )
+	{
+		for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
+		{
+			pxTCB->pcTaskName[ x ] = pcName[ x ];
+
+			/* Don't copy all configMAX_TASK_NAME_LEN if the string is shorter than
+			configMAX_TASK_NAME_LEN characters just in case the memory after the
+			string is not accessible (extremely unlikely). */
+			if( pcName[ x ] == ( char ) 0x00 )
+			{
+				break;
+			}
+			else
+			{
+				mtCOVERAGE_TEST_MARKER();
+			}
+		}
+
+		/* Ensure the name string is terminated in the case that the string length
+		was greater or equal to configMAX_TASK_NAME_LEN. */
+		pxTCB->pcTaskName[ configMAX_TASK_NAME_LEN - 1 ] = '\0';
+	}
+	else
+	{
+		xReturn = pdFALSE;
+	}
+
+	return xReturn;
+}
+/*-----------------------------------------------------------*/
+
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
 	static TCB_t *prvSearchForNameWithinSingleList( List_t *pxList, const char pcNameToQuery[] )

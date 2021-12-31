@@ -28,13 +28,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/types.h>
 #include <FreeRTOS.h>
 #include <string.h>
 #include <arch.h>
 #include <arch_helpers.h>
 #include "xlat_tables_private.h"
-#include <xlat_tables.h>
-#include <printf.h>
+#include "xlat_tables.h"
+#include "printf.h"
+#include "common.h"
 
 
 #if LOG_LEVEL >= LOG_LEVEL_VERBOSE

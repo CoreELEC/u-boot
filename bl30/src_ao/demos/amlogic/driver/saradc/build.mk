@@ -24,4 +24,8 @@
  #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  #
 
-saradc-y = saradc.o
+ifeq ("$(SOC)","a5")
+saradc-y = saradc_c2.o
+else
+saradc-y = saradc_g12a.o
+endif

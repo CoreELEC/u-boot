@@ -26,16 +26,16 @@
 
 /* Printf-like functionality for Chrome EC */
 
-#include "aml_printf.h"
-#include "projdefs.h"
-//#include <stdarg.h>
-//#include <stdlib.h>
-//#include <stdio.h>
+#include <projdefs.h>
 #include <string.h>
-#include "uart.h"
-#include "FreeRTOS.h"
-#include "task.h"     /* RTOS task related API prototypes. */
-
+#include <FreeRTOS.h>
+#include <task.h>
+#include "aml_printf.h"
+#if (1 == CONFIG_ARM64)
+	#include "serial.h"
+#else
+	#include "uart.h"
+#endif
 static const char error_str[] = "ERROR";
 
 #define MAX_FORMAT 1024		/* Maximum chars in a single format field */
@@ -437,30 +437,49 @@ int sPrintf(char *str, size_t size, const char *fmt, ...)
 	return i;
 }
 
-//int iprintf(const char *fmt, ...)
+int iprintf(const char *fmt, ...)
+{
+	va_list args;
+	int i;
+	UBaseType_t uxSavedInterruptStatus;
+
+	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
+
+	va_start(args, fmt);
+
+	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
+	va_end(args);
+	{
+		/* Print the string */
+#if (1 == CONFIG_ARM64)
+		vSerialPutString(ConsoleSerial, printbuffer);
+#else
+		vUartPuts(printbuffer);
+#endif
+	}
+	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
+	return i;
+}
+
 int printf(const char *fmt, ...)
 {
 	va_list args;
 	int i;
 	UBaseType_t uxSavedInterruptStatus;
 
-	//char buf[20] = {0};
-
 	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
 
 	va_start(args, fmt);
 
-	/* For this to work, printbuffer must be larger than
-	 * anything we ever want to print.
-	 */
 	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
 	va_end(args);
 	{
 		/* Print the string */
-		//sprintf(buf, "%lld : ", (long long int)xTaskGetTickCount());
-		//vSerialPutString(ConsoleSerial, buf);
-		//vSerialPutString(ConsoleSerial, printbuffer);
+#if (1 == CONFIG_ARM64)
+		vSerialPutString(ConsoleSerial, printbuffer);
+#else
 		vUartPuts(printbuffer);
+#endif
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
 	return i;
@@ -468,8 +487,11 @@ int printf(const char *fmt, ...)
 
 int iprint_string(char *str)
 {
-	//vSerialPutString(ConsoleSerial, str);
+#if (1 == CONFIG_ARM64)
+	vSerialPutString(ConsoleSerial, str);
+#else
 	vUartPuts(str);
+#endif
 
 	return 0;
 }
@@ -478,7 +500,11 @@ extern int puts(const char *str);
 
 int puts(const char *str)
 {
+#if (1 == CONFIG_ARM64)
+	vSerialPutString(ConsoleSerial, str);
+#else
 	vUartPuts(str);
+#endif
 
 	return 0;
 }

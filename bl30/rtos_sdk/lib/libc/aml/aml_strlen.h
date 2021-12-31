@@ -31,8 +31,13 @@
 extern "C" {
 #endif
 
-int strlen(const char *s);
+#if (1 == CONFIG_ARM64)
+#include <sys/types.h>
 
+size_t  strlen (const char *s);
+#else
+int strlen(const char *s);
+#endif
 
 #ifdef __cplusplus
 }

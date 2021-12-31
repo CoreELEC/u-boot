@@ -6,7 +6,11 @@
 #include <string.h>
 
 #include <FreeRTOS.h>
+#if (1 == CONFIG_ARM64)
+#include <serial.h>
+#else
 #include <uart.h>
+#endif
 
 #define UNUSED(x)        (void)(x)
 
@@ -202,6 +206,32 @@ int _read (int file, void * ptr, size_t len)
 }
 
 
+int _open (const char * path, int flags, int mode)
+{
+	int _fhandle=-1;
+	int i = alloc_file(FILE_TYPE_VFS);
+
+	UNUSED(path);
+	UNUSED(flags);
+	UNUSED(mode);
+
+	if (i < 0) {
+		errno = ENFILE;
+		return -1;
+	}
+#if ENABLE_MODULE_VFS
+	_fhandle = esp_vfs_open(path, flags, mode);
+#endif
+
+	if (_fhandle<0) {
+		free_file(i);
+		return -1;
+	}
+
+	openfiles[i].handle = _fhandle;
+	return i;
+}
+
 int _write (int file, const void * ptr, size_t len)
 {
 	int myhan = remap_handle (file);
@@ -229,9 +259,17 @@ int _write (int file, const void * ptr, size_t len)
 		portIRQ_SAVE(flags);
 		pxNext = (signed char *) ptr;
 		while (i<len && *pxNext) {
-			if (*pxNext == '\n')
-				vUartPutc('\r');
-			vUartPutc(*pxNext);
+			#if (1 == CONFIG_ARM64)
+				if (*pxNext == '\n') {
+					vSerialPutChar(ConsoleSerial, '\r');
+				}
+				vSerialPutChar(ConsoleSerial, *pxNext);
+			#else
+				if (*pxNext == '\n') {
+					vUartPutc('\r');
+				}
+				vUartPutc(*pxNext);
+			#endif
 			pxNext++;
 			i++;
 		}
@@ -274,18 +312,44 @@ int _close (int file)
 	return 0;
 }
 
+int
+_kill (int pid, int sig)
+{
+  UNUSED(pid);
+  UNUSED(sig);
+  errno = ENOTSUP;
+  return -1;
+}
+
+pid_t
+_getpid (void)
+{
+  return (pid_t)1;
+}
+
+int _stat (const char *fname, struct stat *st)
+{
+#if ENABLE_MODULE_VFS
+	return esp_vfs_stat(fname, st);
+#else
+	UNUSED(fname);
+	UNUSED(st);
+	return -1;
+#endif
+}
+
 void *__wrap__malloc_r(struct _reent *reent, size_t size)
 {
 	UNUSED(reent);
 	return pvPortMalloc(size);
 }
-void *_calloc_r(struct _reent *reent, size_t nmemb, size_t size)
+void *__wrap__calloc_r(struct _reent *reent, size_t nmemb, size_t size)
 {
 	size_t total = nmemb * size;
 	void *p;
 	UNUSED(reent);
 	if (total <= 0) return NULL;
-	p = _malloc_r(reent, total);
+	p = pvPortMalloc(total);
 	if (!p) return NULL;
 	return memset(p, 0, total);
 }
@@ -300,5 +364,12 @@ void __wrap__free_r(struct _reent *reent, void *ptr)
 {
 	UNUSED(reent);
 	vPortFree(ptr);
+}
+
+void _exit (int status)
+{
+  UNUSED(status);
+  errno = ENOTSUP;
+  while (1) ;
 }
 

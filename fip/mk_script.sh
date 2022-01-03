@@ -349,7 +349,7 @@ function usage() {
         ./$(basename $0) [config_name] --update-bl[x] --cov-high [path]
 
     8. build uboot with ramdump function
-        ./$(basename $0) [config_name] --update-bl[x] --chipid [cpu_id]
+        ./$(basename $0) [config_name] --update-bl[x] --enable-ramdump --chipid [cpu_id]
 
     Example:
     1) ./$(basename $0) gxb_p200_v1
@@ -367,8 +367,8 @@ function usage() {
     5) ./$(basename $0) --check-compile skt
       check all skt board compile status
 
-    6) ./$(basename $0) --update-bl2 --chipid 1c35ea385f52ea56 --update-bl2e
-       build uboot with ramdump function
+    6) ./$(basename $0) sc2_ah212 --update-bl2 --update-bl2e --enable-ramdump --chipid 00D9C73147101D16
+       build uboot with ramdump function, chipid for bl2.
 
     Remark:
     bl[x].bin/img priority:
@@ -422,12 +422,17 @@ function parser() {
 				export PATTERN_PATH
 				check_coverity $@
 				exit ;;
+			--enable-ramdump)
+				CONFIG_MDUMP_COMPRESS=1
+				export CONFIG_MDUMP_COMPRESS
+				echo "SET CONFIG: CONFIG_MDUMP_COMPRESS"
+				continue ;;
 			--chipid)
 				CONFIG_CHIPID_SUPPORT=1
 				export CONFIG_CHIPID_SUPPORT
 				CONFIG_RAMDUMP_CHIPID="${argv[$i]}"
 				export CONFIG_RAMDUMP_CHIPID
-				echo "SET CHIP ID: ${CONFIG_RAMDUMP_CHIPID} "
+				echo "SET CHIP ID: ${CONFIG_RAMDUMP_CHIPID}"
 				continue ;;
 			clean|distclean|-distclean|--distclean)
 				clean

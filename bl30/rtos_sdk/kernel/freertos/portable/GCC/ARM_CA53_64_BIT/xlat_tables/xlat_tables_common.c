@@ -35,7 +35,6 @@
 #include <arch_helpers.h>
 #include "xlat_tables_private.h"
 #include "xlat_tables.h"
-#include "printf.h"
 #include "common.h"
 
 

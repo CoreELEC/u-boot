@@ -79,7 +79,7 @@ task.h is included from an application file. */
 #include "FreeRTOS.h"
 #include "task.h"
 #ifdef ARCH64
-#include "printf.h"
+#include "sys_printf.h"
 #include "stacktrace_64.h"
 #endif
 #if ENABLE_KASAN

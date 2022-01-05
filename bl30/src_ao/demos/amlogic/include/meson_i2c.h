@@ -43,6 +43,19 @@ extern "C" {
 		I2C_AO_B
 	};
 
+	enum {
+		I2C0 = 0,
+		I2C1,
+		I2C2,
+		I2C3,
+		I2C4,
+		I2C5,
+		I2C6,
+		I2C7,
+		I2C8,
+		I2C9,
+		I2C10,
+	};
 
 	struct xI2cMsg {
 		uint32_t addr;

@@ -51,7 +51,6 @@ typedef struct {
 
 void vDDR_suspend(uint32_t st_f);
 void vDDR_resume(uint32_t st_f);
-uint32_t parse_suspend_msg(void *msg);
 extern void create_str_task(void);
 extern void STR_Start_Sem_Give_FromISR(void);
 extern void STR_Start_Sem_Give(void);

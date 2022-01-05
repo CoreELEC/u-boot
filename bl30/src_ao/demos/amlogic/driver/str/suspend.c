@@ -218,14 +218,9 @@ void STR_Wakeup_src_Queue_Send(uint32_t *src)
 		xQueueSend(xSTRQueue, src, portMAX_DELAY);
 }
 
-__attribute__((weak)) uint32_t parse_suspend_msg(void *msg)
-{
-	return *(uint32_t *)msg;
-}
-
 void *xMboxSuspend_Sem(void *msg)
 {
-	power_mode = parse_suspend_msg(msg);
+	power_mode = *(uint32_t *)msg;
 
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();

@@ -1,2 +1,0 @@
-config COMMON
-	bool "COMMON Driver"

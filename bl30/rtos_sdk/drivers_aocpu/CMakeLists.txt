@@ -19,8 +19,6 @@ add_subdirectory_if_kconfig(saradc)
 add_subdirectory_if_kconfig(ir)
 
 aml_library_include_directories(
-	${SDK_BASE}/soc/${ARCH}
-	${SDK_BASE}/soc/${ARCH}/${SOC}
 	${SDK_BASE}/drivers_aocpu/stick_mem
 	${SDK_BASE}/drivers_aocpu/uart
 	${SDK_BASE}/drivers_aocpu/cec
@@ -37,6 +35,7 @@ aml_library_include_directories(
 )
 
 aml_library_link_libraries(arch__${ARCH})
+aml_library_link_libraries(soc__${ARCH})
 aml_library_link_libraries(boards__${ARCH})
 
 aml_link_libraries()

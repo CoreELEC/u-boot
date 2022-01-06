@@ -38,9 +38,6 @@ endif()
 aml_library_include_directories(
 	include
 	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}
-	${SDK_BASE}/soc/${ARCH}
-	${SDK_BASE}/soc/${ARCH}/${SOC}
-	${SDK_BASE}/boards/${ARCH}/${BOARD}
 )
 
 aml_library_link_libraries(arch__${ARCH})

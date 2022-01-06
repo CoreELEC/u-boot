@@ -110,7 +110,12 @@ do
 					if [ -n "$last_category" ]; then
 						echo -e "endmenu\n" >> $kconfig_file
 					fi
-					echo "menu \"${category^} Options\"" >> $kconfig_file
+
+					if [ "$category" == "wcn" ]; then
+						echo "menu \"${category^^} Options\"" >> $kconfig_file
+					else
+						echo "menu \"${category^} Options\"" >> $kconfig_file
+					fi
 				fi
 
 				echo "source \"$kconfig_path/Kconfig\"" >> $kconfig_file

@@ -1,5 +1,9 @@
 aml_add_library()
 
+aml_library_include_directories(
+	${SDK_BASE}/boards/${ARCH}/${BOARD}
+)
+
 aml_library_sources(
 	${BOARD}/fsm.c
 	${BOARD}/btwake.c

@@ -30,7 +30,7 @@
 #include <string.h>
 #include <FreeRTOS.h>
 #include <task.h>
-#include "aml_printf.h"
+#include "printk.h"
 #if (1 == CONFIG_ARM64)
 	#include "serial.h"
 #else
@@ -66,49 +66,6 @@ static int hexdigit(int c)
 	return c > 9 ? (c + 'a' - 10) : (c + '0');
 }
 
-static int uint64divmod(uint64_t *n, int d)
-{
-	uint64_t q = 0, mask;
-	int r = 0;
-
-	/* Divide-by-zero returns zero */
-	if (!d) {
-		*n = 0;
-		return 0;
-	}
-
-	/* Common powers of 2 = simple shifts */
-	if (d == 2) {
-		r = *n & 1;
-		*n >>= 1;
-		return r;
-	} else if (d == 16) {
-		r = *n & 0xf;
-		*n >>= 4;
-		return r;
-	}
-
-	/* If v fits in 32-bit, we're done. */
-	if (*n <= 0xffffffff) {
-		uint32_t v32 = *n;
-		r = v32 % d;
-		*n = v32 / d;
-		return r;
-	}
-
-	/* Otherwise do integer division the slow way. */
-	for (mask = (1ULL << 63); mask; mask >>= 1) {
-		r <<= 1;
-		if (*n & mask)
-			r |= 1;
-		if (r >= d) {
-			r -= d;
-			q |= mask;
-		}
-	}
-	*n = q;
-	return r;
-}
 
 /* Flags for vfnprintf() flags */
 #define PF_LEFT		(1 << 0)	/* Left-justify */
@@ -437,30 +394,6 @@ int sPrintf(char *str, size_t size, const char *fmt, ...)
 	return i;
 }
 
-int iprintf(const char *fmt, ...)
-{
-	va_list args;
-	int i;
-	UBaseType_t uxSavedInterruptStatus;
-
-	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
-
-	va_start(args, fmt);
-
-	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
-	va_end(args);
-	{
-		/* Print the string */
-#if (1 == CONFIG_ARM64)
-		vSerialPutString(ConsoleSerial, printbuffer);
-#else
-		vUartPuts(printbuffer);
-#endif
-	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
-	return i;
-}
-
 int printk(const char *fmt, ...)
 {
 	va_list args;
@@ -485,29 +418,7 @@ int printk(const char *fmt, ...)
 	return i;
 }
 
-int printf(const char *fmt, ...)
-{
-	va_list args;
-	int i;
-	UBaseType_t uxSavedInterruptStatus;
 
-	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
-
-	va_start(args, fmt);
-
-	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
-	va_end(args);
-	{
-		/* Print the string */
-#if (1 == CONFIG_ARM64)
-		vSerialPutString(ConsoleSerial, printbuffer);
-#else
-		vUartPuts(printbuffer);
-#endif
-	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
-	return i;
-}
 
 int iprint_string(char *str)
 {

@@ -82,6 +82,7 @@ extern "C" {
 			va_list args);
 	int printf(const char *fmt, ...);
 	int iprintf(const char *fmt, ...);
+	int printk(const char *fmt, ...);
 	int sPrintf(char *str, size_t size, const char *fmt, ...);
 	int syslog_buf_init(void);
 //	int aml_log_out(int level, const char *fmt, ...);

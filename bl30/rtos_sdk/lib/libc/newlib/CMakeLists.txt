@@ -4,6 +4,7 @@ aml_add_library()
 
 aml_library_sources(
 	syscalls.c
+	printk.c
 )
 
 aml_library_link_libraries(kernel__${KERNEL})

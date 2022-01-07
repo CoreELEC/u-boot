@@ -1,3 +1,4 @@
 config LIBC_STD
-        bool "Libc implement by standard"
-
+	bool "Libc implement by standard"
+	help
+		Enable libc of standard implementation.

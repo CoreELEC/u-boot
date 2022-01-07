@@ -17,7 +17,7 @@ STAMP="$kernel_BUILD_DIR/.stamp"
 repo manifest >/dev/null 2>&1
 [ "$?" -ne 0 ] && exit 0
 
-if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $PWD/Makefile -ot $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 	exit 0
 fi
 

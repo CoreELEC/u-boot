@@ -1,3 +1,5 @@
 config SOC_T5W
 	bool "T5W"
 	select RISCV
+	help
+	Enable T5W SOC of RISCV.

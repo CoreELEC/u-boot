@@ -1,3 +1,5 @@
 config SOC_T5D
 	bool "T5D"
 	select RISCV
+	help
+	Enable T5D SOC of RISCV.

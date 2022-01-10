@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <sys/stat.h>
 #include <stdio.h>
 #include <errno.h>

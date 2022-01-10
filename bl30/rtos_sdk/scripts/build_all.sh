@@ -1,5 +1,5 @@
 #!/bin/bash
-#usage:./scripts/auto_build_test.sh at rtos sdk root dir
+#usage:./scripts/build_all.sh at rtos sdk root dir
 
 set -e
 

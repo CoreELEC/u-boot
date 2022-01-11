@@ -7,7 +7,7 @@
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
 build_dir="build"
-exclude_dir="products"
+exclude_dir="products docs"
 special_dirs="arch soc boards"
 
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
@@ -82,11 +82,12 @@ do
 				category=`dirname $repo_path`
 			fi
 
-			if [[ $repo_path == $exclude_dir/* ]]; then
+			# exclude other ARCH dirs
+			if [[ $repo_path == docs* ]] || [[ $repo_path == products* ]]; then
 				continue
 			fi
 
-			# exclude other ARCH dirs
+			# substitute ARCH dirs with viarable
 			case $special_dirs in
 				*"$category"*) arch=`basename $repo_path`
 					       if [ "$arch" == "$ARCH" ]; then

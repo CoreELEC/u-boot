@@ -1,12 +1,9 @@
-
 /*
- *  Copyright (C) 2014-2018 Amlogic, Inc. All rights reserved.
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
  *
- *  All information contained herein is Amlogic confidential.
- *
+ * SPDX-License-Identifier: MIT
  */
 
-/*Mailbox driver*/
 #include <stdint.h>
 #include <stdlib.h>
 #include "FreeRTOS.h"

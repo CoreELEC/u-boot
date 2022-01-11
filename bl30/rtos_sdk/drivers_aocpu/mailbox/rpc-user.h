@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef __RPC_USER_H__
 #define __RPC_USER_H__
 

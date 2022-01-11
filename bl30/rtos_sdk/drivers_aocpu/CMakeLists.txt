@@ -1,3 +1,7 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
 set(CURRENT_LIBRARY_TYPE STATIC)
 set(CURRENT_LIBRARY drivers)
 message(STATUS "@@${CURRENT_LIBRARY_TYPE}: ${CURRENT_LIBRARY}")

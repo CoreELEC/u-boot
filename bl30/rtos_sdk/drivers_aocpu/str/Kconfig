@@ -1,2 +1,6 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
 config STR
 	bool "STR suspend Driver"

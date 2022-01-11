@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef _MAILBOX_IRQ_H_
 #define _MAILBOX_IRQ_H_
 #include "mailbox.h"

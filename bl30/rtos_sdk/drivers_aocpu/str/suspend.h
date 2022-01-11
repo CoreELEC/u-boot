@@ -1,39 +1,18 @@
 /*
- * Copyright (C) 2014-2018 Amlogic, Inc. All rights reserved.
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
  *
- * All information contained herein is Amlogic confidential.
- *
- * This software is provided to you pursuant to Software License Agreement
- * (SLA) with Amlogic Inc ("Amlogic"). This software may be used
- * only in accordance with the terms of this agreement.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification is strictly prohibited without prior written permission from
- * Amlogic.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: MIT
  */
 
-
 /* wake up reason*/
-#define	UDEFINED_WAKEUP	0
-#define	CHARGING_WAKEUP	1
-#define	REMOTE_WAKEUP		2
-#define	RTC_WAKEUP			3
-#define	BT_WAKEUP			4
-#define	WIFI_WAKEUP			5
-#define	POWER_KEY_WAKEUP	6
-#define	AUTO_WAKEUP			7
+#define        UDEFINED_WAKEUP 0
+#define        CHARGING_WAKEUP 1
+#define        REMOTE_WAKEUP           2
+#define        RTC_WAKEUP                      3
+#define        BT_WAKEUP                       4
+#define        WIFI_WAKEUP                     5
+#define        POWER_KEY_WAKEUP        6
+#define        AUTO_WAKEUP                     7
 #define CEC_WAKEUP		8
 #define	REMOTE_CUS_WAKEUP		9
 #define ETH_PMT_WAKEUP      10

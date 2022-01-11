@@ -1,5 +1,8 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
-/* Copyright (C) 2018 ROHM Semiconductors */
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #ifndef __BD71837_H__
 

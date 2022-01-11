@@ -1,8 +1,9 @@
-/**************************************************
- *           HDMI CEC uboot code                  *
- *                                                *
- **************************************************/
-/* Kernel includes. */
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "FreeRTOS.h" /* Must come first. */
 #include "task.h"     /* RTOS task related API prototypes. */
 #include "queue.h"    /* RTOS queue related API prototypes. */

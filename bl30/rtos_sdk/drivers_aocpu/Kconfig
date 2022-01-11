@@ -1,3 +1,7 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
 source "drivers_aocpu/stick_mem/Kconfig"
 source "drivers_aocpu/uart/Kconfig"
 source "drivers_aocpu/cec/Kconfig"

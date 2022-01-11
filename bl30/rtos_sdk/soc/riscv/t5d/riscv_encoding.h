@@ -1,4 +1,8 @@
-// See LICENSE for license details.
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #ifndef RISCV_CSR_ENCODING_H
 #define RISCV_CSR_ENCODING_H

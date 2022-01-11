@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #define NO_ENCT
 #ifdef NO_ENCT
 #undef ENCT_VFIFO2VD_CTL

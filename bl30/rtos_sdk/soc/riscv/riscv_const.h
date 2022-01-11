@@ -1,5 +1,8 @@
-// See LICENSE for license details.
-/* Derived from <linux/const.h> */
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #ifndef _RISCV_CONST_H
 #define _RISCV_CONST_H

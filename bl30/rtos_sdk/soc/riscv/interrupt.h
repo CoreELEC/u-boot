@@ -1,4 +1,8 @@
-// See LICENSE file for licence details
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #ifndef INTERRUPT_H
 #define INTERRUPT_H

@@ -1,5 +1,9 @@
 aml_add_library()
 
+if(CONFIG_ARM64)
+target_compile_options(${CURRENT_LIBRARY} PUBLIC -DARCH64)
+endif()
+
 aml_library_sources(
 	list.c
 	queue.c

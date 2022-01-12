@@ -4,6 +4,10 @@ if(CONFIG_ARM64)
 target_compile_options(${CURRENT_LIBRARY} PUBLIC -DARCH64)
 endif()
 
+if(CONFIG_EXCEPTION_SVC)
+target_compile_options(${CURRENT_LIBRARY} PUBLIC -DGUEST)
+endif()
+
 aml_library_sources(
 	list.c
 	queue.c

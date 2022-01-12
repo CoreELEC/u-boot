@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
 CONFIG_BOARD_AT309_T5W=y
 CONFIG_GET_VERSION=y
 CONFIG_STICK_MEM=y

@@ -1,8 +1,9 @@
 #!/bin/bash
-
+#
 # Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
-
+#
 # SPDX-License-Identifier: MIT
+#
 
 #usage:./scripts/build_all.sh at rtos sdk root dir
 

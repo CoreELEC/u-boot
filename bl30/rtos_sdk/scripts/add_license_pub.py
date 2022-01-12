@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 #coding:utf-8
-
+#
 # Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
-
+#
 # SPDX-License-Identifier: MIT
+#
 
 import os
 import sys
@@ -36,6 +37,25 @@ def add_Header_02(filepath, filename):
 '''# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
 
 # SPDX-License-Identifier: MIT\n
+''')
+        head = head_info.substitute(vars())
+        f = open(filepath, "r+", errors='ignore')
+        content = f.read()
+
+        f.seek(0,0)
+        new_content = re.sub("\r\n", "\n", content)
+        f.write(head)
+        f.write(new_content)
+        f.close
+
+def add_Header_03(filepath, filename):
+    if os.path.exists(filepath) :
+        head_info = string.Template(
+'''#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#\n
 ''')
         head = head_info.substitute(vars())
         f = open(filepath, "r+", errors='ignore')
@@ -81,8 +101,8 @@ if __name__ == '__main__':
             print(filepath)
             if 'Kconfig' in file or 'CMakeList' in file:
                 add_Header_02(filepath, file)
-            elif '.cmake' in file:
-                add_Header_02(filepath, file)
+            elif 'defconfig' in file or 'prj.conf' in file:
+                add_Header_03(filepath, file)
             elif '.h' in file or '.ld' in file:
                 del_H_Header(filepath)
                 add_Header_01(filepath, file)

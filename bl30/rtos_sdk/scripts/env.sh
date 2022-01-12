@@ -1,8 +1,9 @@
 #!/bin/bash
-
+#
 # Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
-
+#
 # SPDX-License-Identifier: MIT
+#
 
 ###############################################################
 # Function: choose board and product, set environment variables.

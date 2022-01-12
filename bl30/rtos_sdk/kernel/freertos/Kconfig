@@ -16,15 +16,15 @@ config KERNEL_COMPILER_DIR
 	help
 	  System compiler dir string.
 
-
-config MEMORY_LEAK2
-        bool "support check memory leak"
-
 config MEMORY_LEAK
-        bool "support trace thread malloc/free"
+	bool "memory malloc/free trace"
+	help
+	  Track task memory usage information.
 
 config MEMLEAK_ARRAY_SIZE
-		hex "memleak trace buffer pool size"
-		default 128
+	hex "memleak trace arry size"
+	default 128
+	help
+	  Set memleak trace buffer size.
 
 endmenu

@@ -38,7 +38,7 @@
 #include "btwake.h"
 
 
-/* #define CONFIG_ETH_WAKEUP */
+#define CONFIG_ETH_WAKEUP
 
 #ifdef CONFIG_ETH_WAKEUP
 #include "interrupt_control.h"

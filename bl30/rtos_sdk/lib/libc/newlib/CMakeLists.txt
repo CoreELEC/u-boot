@@ -6,6 +6,10 @@ if(CONFIG_LIBC_STD)
 
 aml_add_library()
 
+aml_library_include_directories(
+	"${CMAKE_CURRENT_LIST_DIR}"
+)
+
 aml_library_sources(
 	syscalls.c
 	printk.c

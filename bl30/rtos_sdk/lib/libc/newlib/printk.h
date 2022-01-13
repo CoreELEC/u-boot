@@ -20,8 +20,9 @@ extern "C" {
 
 
 
+int sPrintf_ext(char *str, size_t size, const char *format, va_list args);
 
-int printfk(const char *fmt, ...);
+int printk(const char *fmt, ...);
 
 
 

@@ -1449,13 +1449,13 @@ int vPrintFreeListAfterMallocFail(void)
 	{
 		printf("the address: %p, len: %d\n", pxIterator, (int)(pxIterator->xBlockSize));
 #ifdef ARCH64
-		print_lastword_crash("the address: %p, len: 0x%x\n", pxIterator, (int)(pxIterator->xBlockSize));
+		/*print_lastword_crash("the address: %p, len: 0x%x\n", pxIterator, (int)(pxIterator->xBlockSize));*/
 #endif
 		total_free_size += (pxIterator->xBlockSize);
 	}
 	printf("the total free size: %d\n", total_free_size);
 #ifdef ARCH64
-	print_lastword_crash("the total free size: %d\n", total_free_size);
+	/*print_lastword_crash("the total free size: %d\n", total_free_size);*/
 #endif
 
 	return 0;

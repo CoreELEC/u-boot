@@ -18,13 +18,21 @@ special_dirs="arch soc boards"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 STAMP="$kernel_BUILD_DIR/.stamp"
 
+[ -n "$1" ] && BUILD_DIR=$1;
+RTOS_SDK_VERSION_FILE="$BUILD_DIR/sdk_ver.h"
+
+#COMPILE_TIME="$(shell date +%g.%V.%u" "%H:%M:%S)"
+COMPILE_TIME=`date +%F" "%T`
+
+if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $PWD/Makefile -ot $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+	sed -i '/#define CONFIG_COMPILE_TIME/d' $RTOS_SDK_VERSION_FILE
+	echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
+	exit 0
+fi
+
 # Check whether the project is a repo
 repo manifest >/dev/null 2>&1
 [ "$?" -ne 0 ] && exit 0
-
-if [ -s $RTOS_SDK_MANIFEST_FILE ] && [ -s $kconfig_file ] && [ $PWD/Makefile -ot $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
-	exit 0
-fi
 
 # Generate manifest.xml
 repo manifest > $RTOS_SDK_MANIFEST_FILE
@@ -32,6 +40,20 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
 fi
+
+pattern="revision="
+keyline=`grep 'default .* revision' $RTOS_SDK_MANIFEST_FILE`
+for keyword in $keyline; do
+	let i++
+	if [[ $keyword == $pattern* ]]; then
+		SDK_VERSION=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
+		break;
+	fi
+done
+echo "#define CONFIG_VERSION_STRING \"$SDK_VERSION\"" > $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_BOARD_NAME \"$BOARD\"" >> $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_PRODUCT_NAME \"$PRODUCT\"" >> $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
 
 if [[ "$PRODUCT" == aocpu ]]; then
 	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE

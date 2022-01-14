@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.13.1)
 project(aml-rtos)
 
-include($ENV{SDK_BASE}/build/cmake/root.cmake)
+include($ENV{SDK_BASE}/build_system/cmake/root.cmake)
 
 target_include_directories(${TARGET_NAME} PUBLIC include)
 

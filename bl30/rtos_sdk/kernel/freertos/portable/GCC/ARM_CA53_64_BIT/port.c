@@ -110,7 +110,7 @@ context. */
 #define portSP_ELx						( ( StackType_t ) 0x01 )
 #define portSP_EL0						( ( StackType_t ) 0x00 )
 
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	#define portEL1						( ( StackType_t ) 0x04 )
 	#define portINITIAL_PSTATE				( portEL1 | portSP_EL0 )
 #else
@@ -322,7 +322,7 @@ uint32_t ulAPSR;
 	__asm volatile ( "MRS %0, CurrentEL" : "=r" ( ulAPSR ) );
 	ulAPSR &= portAPSR_MODE_BITS_MASK;
 
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	//#warning Building for execution as a guest under XEN. THIS IS NOT A FULLY TESTED PATH.
 	configASSERT( ulAPSR == portEL1 );
 	if( ulAPSR == portEL1 )
@@ -408,7 +408,7 @@ void vPortExitCritical( void )
 volatile int standard_flag = 0;
 void FreeRTOS_Tick_Handler( void )
 {
-#if defined(GUEST) && defined(configUSE_TICKLESS_IDLE)
+#if defined(CONFIG_EXCEPTION_SVC) && defined(configUSE_TICKLESS_IDLE)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	if (standard_flag) {
 		standard_flag = 0;
 		vTickTimerConfig(configTICK_RATE_HZ);

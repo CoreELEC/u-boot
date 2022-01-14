@@ -86,7 +86,7 @@ extern uint64_t ullPortYieldRequired;			\
 }
 
 #define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
-#if defined( GUEST )
+#if defined( CONFIG_EXCEPTION_SVC )  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	#define portYIELD() __asm volatile ( "SVC 0" ::: "memory" )
 #else
 	#define portYIELD() __asm volatile ( "SMC 0" ::: "memory" )
@@ -314,7 +314,7 @@ number of bits implemented by the interrupt controller. */
 #define portICCPMR_PRIORITY_MASK_OFFSET  						( 0x04 )
 #define portICCIAR_INTERRUPT_ACKNOWLEDGE_OFFSET 				( 0x0C )
 #define portICCEOIR_END_OF_INTERRUPT_OFFSET 					( 0x10 )
-#if defined(GUEST)
+#if defined(CONFIG_EXCEPTION_SVC)	/* replace GUEST with CONFIG_EXCEPTION_SVC. */         
 #define portICCBPR_BINARY_POINT_OFFSET							( 0x1C )
 #else
 #define portICCBPR_BINARY_POINT_OFFSET							( 0x08 )

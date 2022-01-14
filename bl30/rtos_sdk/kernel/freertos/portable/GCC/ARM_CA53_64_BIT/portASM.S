@@ -69,7 +69,7 @@
 	STP 	X30, XZR, [SP, #-0x10]!
 
 	/* Save the SPSR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MRS		X3, SPSR_EL1
 	MRS		X2, ELR_EL1
 #else
@@ -179,7 +179,7 @@
 1:
 	LDP 	X2, X3, [SP], #0x10  /* SPSR and ELR. */
 
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	/* Restore the SPSR. */
 	MSR		SPSR_EL1, X3
 	/* Restore the ELR. */
@@ -239,7 +239,7 @@ vPortRestoreTaskContext:
 
 	/* Install the FreeRTOS interrupt handlers. */
 	LDR		X1, =freertos_vector_base
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		VBAR_EL1, X1
 #else
 	MSR		VBAR_EL3, X1
@@ -307,7 +307,7 @@ FreeRTOS_IRQ_Handler:
 	STP		X29, X30, [SP, #-0x10]!
 
 	/* Save the SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MRS		X3, SPSR_EL1
 	MRS		X2, ELR_EL1
 #else
@@ -375,7 +375,7 @@ irq_handle_done:
 
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		SPSR_EL1, X5
 	MSR		ELR_EL1, X4
 #else
@@ -406,7 +406,7 @@ irq_handle_done:
 Exit_IRQ_No_Context_Switch:
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		SPSR_EL1, X5
 	MSR		ELR_EL1, X4
 #else

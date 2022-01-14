@@ -76,7 +76,7 @@ sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
 # figure out the $relative_dir and its column
 pattern="path="
 i=0
-keyline=`grep 'path=".*build"' $RTOS_SDK_MANIFEST_FILE`
+keyline=`grep 'path=".*build_system"' $RTOS_SDK_MANIFEST_FILE`
 for keyword in $keyline; do
 	let i++
 	if [[ $keyword == $pattern* ]]; then

@@ -2,7 +2,13 @@
 
 # SPDX-License-Identifier: MIT
 
-menu "Target"
+config KERNEL
+	bool "RTOS Kernel"
+	default y
+	help
+	  Enable RTOS kernel.
+
+if KERNEL
 
 config KERNEL_ARCH_DIR
 	string
@@ -31,4 +37,4 @@ config MEMLEAK_ARRAY_SIZE
 	help
 	  Set memleak trace buffer size.
 
-endmenu
+endif # KERNEL

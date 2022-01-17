@@ -28,7 +28,7 @@
 #include "soc.h"
 #include "riscv_encoding.h"
 #include "n200_timer.h"
-#ifndef N200_REVA
+#ifndef CONFIG_N200_REVA
 #include "n200_eclic.h"
 #else
 #include "n200_pic_tmr.h"
@@ -422,7 +422,7 @@ trap_entry:
 //Bob: Rename this to irq_entry to make it override the weak symbol from BSPs entry.S
 //interrupt:
 .align 2
-#ifndef N200_REVA
+#ifndef CONFIG_N200_REVA
 .global irq_entry
 irq_entry: // -------------> This label will be set to MTVT2 register
   	// Allocate the stack space

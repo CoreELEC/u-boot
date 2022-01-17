@@ -99,7 +99,7 @@ task.h is included from an application file. */
 #define heapBITS_PER_BYTE		( ( size_t ) 8 )
 
 /* Allocate the memory for the heap. */
-#if N200_REVA
+#if CONFIG_N200_REVA
 #define MAX_REGION_CNT 2
 static HeapRegion_t xDefRegion[MAX_REGION_CNT+1]=
 {

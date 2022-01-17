@@ -37,7 +37,7 @@
 #include "n200_func.h"
 #include "soc.h"
 #include "riscv_encoding.h"
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 //#include "riscv_encoding.h"
 #include "n200_pic_tmr.h"
 #else
@@ -68,7 +68,7 @@ UBaseType_t uxCriticalNesting = 0xaaaaaaaa;
  */
 static void prvTaskExitError( void );
 unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1);
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 uint32_t vPortSysTickHandler(uint32_t int_num);
 #else
 void vPortSysTickHandler(void);
@@ -187,7 +187,7 @@ void vPortExitCritical( void )
 /* Clear current interrupt mask and set given mask */
 void vPortClearInterruptMask(int int_mask)
 {
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 	write_csr(mie,int_mask);
 #else
 	eclic_set_mth (int_mask);
@@ -199,7 +199,7 @@ void vPortClearInterruptMask(int int_mask)
 int xPortSetInterruptMask()
 {
 	int int_mask=0;
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 	int_mask = read_csr(mie);
 	write_csr(mie,0);
 #else
@@ -261,13 +261,13 @@ void prvTaskExitError( void )
 
 /*Entry Point for Machine Timer Interrupt Handler*/
 //Bob: add the function argument int_num
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 uint32_t vPortSysTickHandler(uint32_t int_num){
 #else
 void vPortSysTickHandler(void){
 #endif
 	uint64_t then = 0;
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 	pic_disable_interrupt(PIC_INT_TMR);
 #endif
 	volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
@@ -283,7 +283,7 @@ void vPortSysTickHandler(void){
 		//portYIELD();
 		vTaskSwitchContext();
 	}
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 	pic_enable_interrupt(PIC_INT_TMR);
 	return int_num;
 #endif
@@ -300,7 +300,7 @@ void vPortSetupTimer(void)	{
 	uint64_t then = now + (configCPU_CLOCK_HZ / configTICK_RATE_HZ);
 	*mtimecmp = then;
 	//print_eclic();
-#ifdef N200_REVA
+#ifdef CONFIG_N200_REVA
 	pic_enable_interrupt(PIC_INT_TMR);
 	pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
 #else

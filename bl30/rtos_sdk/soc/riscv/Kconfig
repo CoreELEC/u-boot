@@ -4,3 +4,12 @@
 
 source "soc/riscv/t5d/Kconfig"
 source "soc/riscv/t5w/Kconfig"
+
+choice
+	prompt "Serial"
+	default N200_REVA
+	config N200_REVA
+	bool "N200 REVA"
+	help
+	  Enable N200 REVA serial of RISCV.
+endchoice

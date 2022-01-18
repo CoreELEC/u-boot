@@ -1,3 +1,4 @@
+#!/bin/bash
 BUILD_DATE=`date +%Y-%m-%d`
 TARGET_DIR=images
 PUBLISH_SERVER=firmware.amlogic.com
@@ -7,7 +8,7 @@ SRC_DIR=output/$PRODUCT_BUILD_DIR/$TARGET_DIR
 HTTP_DEST_DIR=$BUILD_DATE/$PRODUCT_BUILD_DIR
 SCP_DEST_DIR=$SERVER_ROOT_DIR/$HTTP_DEST_DIR
 
-if [ -d "SRC_DIR" ]
+if [ -d $SRC_DIR ]
 then
 	file_dirs=$SRC_DIR
 fi

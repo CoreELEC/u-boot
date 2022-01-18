@@ -35,6 +35,9 @@ ENTRY( _start )
 
 MEMORY
 {
+#if defined (SOC_sc2) || defined (SOC_s4)
+    local_ram (rw) : ORIGIN = 0x10000000, LENGTH = 0x1000000
+#endif
     ram (rw) : ORIGIN = configMEM_START, LENGTH = configMEM_LEN
 #if defined (SOC_t3)
     bss_ram (rw) : ORIGIN = 0x10000000, LENGTH = 0x1800
@@ -47,17 +50,32 @@ SECTIONS
 {
     __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
 
+#if defined (SOC_sc2) || defined (SOC_s4)
+    __heap_size = DEFINED(__heap_size) ? __heap_size : 32K;
+    .heap :
+    {
+        PROVIDE( _heap = . );
+	. = ALIGN(1024);
+        . += __heap_size;
+        PROVIDE( _eheap = . );
+    } > local_ram
+#endif
+
     .text :
     {
+        . = ALIGN(4);
+	PROVIDE( _text = . );
+	*(.init)
+        *(.text* .rodata*)
+#if defined (SOC_sc2) || defined (SOC_s4)
+        . = ALIGN(0x4000);
+#endif
+        PROVIDE( _etext = . );
 #if N200_REVA
 	KEEP (*(SORT_NONE(.init)))
 #else
 	*(.vtable)
 #endif
-        . = ALIGN(4);
-        *(.text)
-        *(.rodata*)
-        _etext = .;
     } > ram
 
 #if defined (SOC_t3)
@@ -73,10 +91,11 @@ SECTIONS
         _edata = .;
     } > bss_ram AT > ram
 #else
-        *(.data)
+        *(.sdata* .data*)
         _edata = .;
     } > ram
 #endif
+
     .bss :
     {
         _bss = .;
@@ -95,7 +114,7 @@ SECTIONS
 /*    .stack ORIGIN(ram) + LENGTH(ram) - __stack_size :*/
     .stack :
     {
-        PROVIDE( _heap_end = . );
+        PROVIDE( _stack = . );
 	. = ALIGN(1024);
         . += __stack_size;
         PROVIDE( _sp = . );

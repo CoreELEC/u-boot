@@ -377,7 +377,7 @@ without editing the source code. Here are some of the more useful ones:
                             performance in simulation (see XT_CLOCK_FREQ).
                             Set by default unless PLATFORM is overridden.
 
-    XT_BOARD                Set this if building for a supported board.
+    CONFIG_XT_BOARD
                             Be sure to specify the correct LSP for the
                             board. See the example makefile for usage.
 

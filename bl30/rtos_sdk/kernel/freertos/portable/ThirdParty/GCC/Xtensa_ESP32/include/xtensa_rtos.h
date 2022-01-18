@@ -68,9 +68,9 @@ However these can still be overridden from the command line.
   #endif
 #endif
 
-#ifndef XT_BOARD
+#ifndef CONFIG_XT_BOARD
   #if configXT_BOARD
-    #define XT_BOARD                 1  /* Board mode */
+    #define CONFIG_XT_BOARD                 1  /* Board mode */
   #endif
 #endif
 
@@ -86,8 +86,8 @@ However these can still be overridden from the command line.
   #endif
 #endif
 
-#if !defined(XT_SIMULATOR) && !defined(XT_BOARD)
-  #error Either XT_SIMULATOR or XT_BOARD must be defined.
+#if !defined(XT_SIMULATOR) && !defined(CONFIG_XT_BOARD)
+  #error Either XT_SIMULATOR or CONFIG_XT_BOARD must be defined.
 #endif
 
 

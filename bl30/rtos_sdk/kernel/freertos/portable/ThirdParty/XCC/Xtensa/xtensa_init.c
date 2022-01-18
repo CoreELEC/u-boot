@@ -30,7 +30,7 @@
  */
 
 
-#ifdef XT_BOARD
+#ifdef CONFIG_XT_BOARD
 #include    <xtensa/xtbsp.h>
 #endif
 
@@ -53,11 +53,11 @@ void _xt_tick_divisor_init(void)
 
 #else
 
-    #ifdef XT_BOARD
+    #ifdef CONFIG_XT_BOARD
     _xt_tick_divisor = xtbsp_clock_freq_hz() / XT_TICK_PER_SEC;
     #else
     #error "No way to obtain processor clock frequency"
-    #endif  /* XT_BOARD */
+    #endif  /* CONFIG_XT_BOARD */
 
 #endif /* XT_CLOCK_FREQ */
 }

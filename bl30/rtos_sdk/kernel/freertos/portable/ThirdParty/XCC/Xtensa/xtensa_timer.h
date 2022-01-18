@@ -129,7 +129,7 @@ Adjust this frequency to taste (it's not real-time anyway!).
 #define XT_CLOCK_FREQ       configCPU_CLOCK_HZ
 #endif
 
-#if !defined(XT_CLOCK_FREQ) && !defined(XT_BOARD)
+#if !defined(XT_CLOCK_FREQ) && !defined(CONFIG_XT_BOARD)
   #error "XT_CLOCK_FREQ must be defined for the target platform."
 #endif
 

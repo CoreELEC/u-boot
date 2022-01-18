@@ -29,7 +29,7 @@ that are implemented in C.
 *******************************************************************************/
 
 
-#ifdef XT_BOARD
+#ifdef CONFIG_XT_BOARD
 #include    <xtensa/xtbsp.h>
 #endif
 

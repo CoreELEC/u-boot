@@ -17,5 +17,8 @@ while IFS= read -r LINE; do
 	i=$((i+1))
 	make distclean
 	source scripts/env.sh $LINE
+	if [ $SUBMIT_TYPE = "daily"];then
+		source scripts/scp.sh
+	fi
 	make
 done < "$BUILD_COMBINATION"

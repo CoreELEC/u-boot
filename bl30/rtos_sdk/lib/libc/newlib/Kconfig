@@ -4,5 +4,6 @@
 
 config LIBC_STD
 	bool "Libc implement by standard"
+	select KERNEL
 	help
 		Enable libc of standard implementation.

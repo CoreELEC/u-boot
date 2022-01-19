@@ -4,5 +4,6 @@
 
 config LIBC_AML
 	bool "Libc implement by AML"
+	select KERNEL
 	help
 		Enable libc of AML's implementation.

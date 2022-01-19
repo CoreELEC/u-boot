@@ -16,7 +16,7 @@ fi
 if [ -n "$file_dirs" ]
 then
 	echo "PUBLISH PATH : "$SCP_DEST_DIR
-	ssh autobuild@$PUBLISH_SERVER   "mkdir -p $SCP_DEST_DIR"
+	ssh -n autobuild@$PUBLISH_SERVER   "mkdir -p $SCP_DEST_DIR"
 	if [ $? -ne 0 ]
 	then
         echo "ssh the publish server "$PUBLISH_SERVER" failed."

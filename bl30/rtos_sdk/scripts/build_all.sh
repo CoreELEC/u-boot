@@ -15,8 +15,8 @@ i=0
 while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
 	i=$((i+1))
-	make distclean
 	source scripts/env.sh $LINE
+	make distclean
 	make
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		source scripts/scp.sh

@@ -55,6 +55,35 @@ check_params()
 	return 0
 }
 
+function version_lt() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1"; }
+
+CMAKE_FILE=`which cmake`
+if [ -x /opt/cmake-3.18.4-Linux-x86_64/bin/cmake ]; then
+	export PATH=/opt/cmake-3.18.4-Linux-x86_64/bin/:$PATH
+elif [ -n "$CMAKE_FILE" ]; then
+	CMAKE_VERSION=`cmake --version`
+	pattern="cmake version "
+	CMAKE_VERSION=`echo ${CMAKE_VERSION#*${pattern}}`
+	pattern=" CMake"
+	CMAKE_VERSION=`echo ${CMAKE_VERSION%${pattern}*}`
+	if version_lt $CMAKE_VERSION "3.13.1"; then
+		echo "cmake version $CMAKE_VERSION < 3.13.1!"
+		echo "Please upgrade cmake!"
+		return 0
+	fi
+else
+	echo "cmake not found!"
+	echo "Please install cmake!"
+	return 0
+fi
+
+NINJA_FILE=`which ninja`
+if [ -z "$NINJA_FILE" ]; then
+	echo "ninja not found!"
+	echo "Please install ninja!"
+	return 0
+fi
+
 unset ARCHS SOCS BOARDS PRODUCTS
 
 ARCHS=($(find $PWD/arch -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))

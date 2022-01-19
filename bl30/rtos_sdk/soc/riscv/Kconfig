@@ -2,8 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-source "soc/riscv/t5d/Kconfig"
-source "soc/riscv/t5w/Kconfig"
+source "soc/riscv/${SOC}/Kconfig"
 
 choice
 	prompt "Serial"

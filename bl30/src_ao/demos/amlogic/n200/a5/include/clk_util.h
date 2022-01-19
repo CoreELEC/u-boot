@@ -12,7 +12,7 @@
 #define ENC_SEL_L 0
 #define ENC_SEL_T 3
 #define ENC_SEL_ALL -1
-
+/*
 typedef enum {
 	PLL_SYS,
 	PLL_GP0,
@@ -22,7 +22,7 @@ typedef enum {
 	PLL_RTC,
 	PLL_DDR
 } PLL_TYPE;
-
+*/
 typedef enum {
 	A55_CLK_PCLK,
 	A55_CLK_ACLKM,

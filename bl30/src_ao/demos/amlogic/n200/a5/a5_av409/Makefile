@@ -97,6 +97,7 @@ OBJS += ${COMPILER}/main.o	\
 		$(COMPILER)/n200_func.o \
 		$(COMPILER)/handlers.o \
 		$(COMPILER)/interrupt_control.o \
+		$(COMPILER)/clk.o \
 		$(COMPILER)/util.o  \
 		$(COMPILER)/myprintf.o \
 		$(COMPILER)/start.o \

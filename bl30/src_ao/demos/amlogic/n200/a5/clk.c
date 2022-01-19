@@ -28,12 +28,12 @@
 #include <common.h>
 #include "util.h"
 #include "register.h"
-#include "clk_util.h"
 #include "uart.h"
 #include <task.h>
 #include <util.h>
 #include "timer_source.h"
-#include "clk.h"
+#include "./include/clk.h"
+#include "./include/clk_util.h"
 
 void set_time(uint32_t val);
 uint32_t get_time(void);
@@ -42,6 +42,8 @@ void set_sys_div_clk(int sel, int div);
 void set_axi_div_clk(int sel, int div);
 void clk_util_set_dsp_clk(uint32_t id, uint32_t freq_sel);
 void disable_pll(int id);
+void vCLK_resume(uint32_t st_f);
+void vCLK_suspend(uint32_t st_f);
 
 void set_time(uint32_t val)
 {
@@ -177,7 +179,7 @@ void clk_util_set_dsp_clk(uint32_t id, uint32_t freq_sel)
 	uint32_t    control;
 	uint32_t    clk_sel;
 	uint32_t    clk_div;
-	uint32_t    addr;
+	uint32_t    addr = CLKCTRL_DSPA_CLK_CTRL0;
 
 	switch (id) {
 		case 0:   addr = CLKCTRL_DSPA_CLK_CTRL0; break;
@@ -284,17 +286,17 @@ void disable_pll(int id)
 
 void vCLK_resume(uint32_t st_f)
 {
+	st_f = st_f;
 	/* switch osc_clk back*/
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
 	REG32(CLKCTRL_OSCIN_CTRL) |=  (1<<31);
 
 	/* enable memory of srama and sramb */
 	REG32(PWRCTRL_MEM_PD2) = 0x0;
-#if DEF_NON_PXP
+
 	/* switching tick timer (using osc_clk) */
 	alt_timebase(0);
 
-#endif
 	set_sys_div_clk(0, 0);  // osc_clk
 	set_axi_div_clk(0, 0);  // osc_clk
 	clk_util_set_dsp_clk(0, 8);  // osc_clk
@@ -308,19 +310,24 @@ void vCLK_resume(uint32_t st_f)
 
 void vCLK_suspend(uint32_t st_f)
 {
-//	power_switch_to_domains(PM_SYS_WRAP, PWR_OFF);
-
+	st_f = st_f;
+	udelay(2000);
 	/* switch to RTC pll */
-	set_sys_div_clk(6, 3);  // rtc pll (122.88MHz)
+	set_sys_div_clk(6, 3);  // rtc pll (30.72MHz)
 	set_axi_div_clk(6, 0);  // rtc pll (122.88MHz)
 	clk_util_set_dsp_clk(0, 11);  // rtc pll (122.88MHz)
 
+	udelay(9000);
 	/* power off osc_clk */
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
-
+	printf("[AOCPU]: running at 30.72MHz, 24MHz osc clk power off.\n");
+	udelay(9000);
 	/* switching tick timer (using sys_clk) */
 	alt_timebase(2);  // 1us/10us/100us/1ms/xtal3 = 1 us tick  30.72/30
-
+	disable_pll(PLL_FIX);
+	disable_pll(PLL_GP0);
+	disable_pll(PLL_GP1);
+	disable_pll(PLL_HIFI);
 /*
 	setup_timer(0);
 	add_hw_pwrctrl_fsm_awake_irq(PM_AOCPU, SPI_TIMERA);
@@ -341,6 +348,5 @@ void vCLK_suspend(uint32_t st_f)
 	// select rtc clk
 	alt_timebase(3); // 1us/10us/100us/1ms/xtal3 will actually be 1ms ticks
 */
-	system_resume(pm);
 }
 

@@ -66,12 +66,10 @@ static void vIRHandler(IRPowerKey_t *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-
 void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
-
 
 void str_hw_init(void)
 {
@@ -111,7 +109,8 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-    /***power on vdd_cpu***/
+	REG32(PWMEF_MISC_REG_AB) |= (1<<1);
+	/***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
@@ -140,13 +139,11 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-#ifndef CONFIG_ETH_WAKEUP
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
-#endif
 
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
@@ -160,5 +157,7 @@ void str_power_off(int shutdown_flag)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+
+	REG32(PWMEF_MISC_REG_AB) &= ~(1<<1);
 	printf("vdd_cpu off\n");
 }

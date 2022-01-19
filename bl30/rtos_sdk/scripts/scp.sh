@@ -22,7 +22,7 @@ then
         echo "ssh the publish server "$PUBLISH_SERVER" failed."
         exit 1
 	fi
-	scp ./SRC_DIR autobuild@$PUBLISH_SERVER:$SCP_DEST_DIR
+	scp $SRC_DIR autobuild@$PUBLISH_SERVER:$SCP_DEST_DIR
 	echo "scp the $file_dirs success."
 else
 	echo "output target dir didn't exist"

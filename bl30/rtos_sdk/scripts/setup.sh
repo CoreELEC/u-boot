@@ -35,9 +35,12 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
 fi
-if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ $kconfig_file -ot $STAMP ]; then
-	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE) | wc -m`
-	if [ $is_update -eq 0 ]; then
+
+cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
+
+if [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`
+	if [ -z "$is_update" ]; then
 		sed -i '/#define CONFIG_COMPILE_TIME/d' $RTOS_SDK_VERSION_FILE
 		echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
 		exit 0
@@ -163,5 +166,3 @@ echo "endmenu" >> $kconfig_file
 
 sleep 1
 touch $STAMP
-
-cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE

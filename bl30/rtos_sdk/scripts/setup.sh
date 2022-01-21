@@ -36,9 +36,7 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	exit 1
 fi
 
-cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
-
-if [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`
 	if [ -z "$is_update" ]; then
 		sed -i '/#define CONFIG_COMPILE_TIME/d' $RTOS_SDK_VERSION_FILE
@@ -48,6 +46,9 @@ if [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 		echo "Update top Kconfig and CMakelists.txt."
 	fi
 fi
+
+# Back up manifest.xml
+cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
 
 pattern="revision="
 keyline=`grep 'default .* revision' $RTOS_SDK_MANIFEST_FILE`

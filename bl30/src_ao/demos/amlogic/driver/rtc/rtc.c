@@ -65,7 +65,6 @@
 static void vRTCInterruptHandler(void)
 {
 	uint32_t buf[4] = {0};
-	uint32_t alarm_int_status;
 	uint32_t alarm0_int_status;
 	uint32_t reg_val;
 
@@ -77,13 +76,10 @@ static void vRTCInterruptHandler(void)
 	/* Clear alarm0 */
 	REG32(RTC_ALARM0_REG) = 0;
 
-	alarm_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_IRQ);
-	if (alarm_int_status) {
-		alarm0_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
-		/* Clear alarm0 int status */
-		if (alarm0_int_status)
-			REG32(RTC_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
-	}
+	alarm0_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
+	/* Clear alarm0 int status */
+	if (alarm0_int_status)
+		REG32(RTC_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
 
 	printf("[%s]: rtc alarm fired\n", TAG);
 

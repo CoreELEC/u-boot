@@ -70,25 +70,25 @@ static void vExitCritical(void)
 static void vMbHandleIsr(void)
 {
 	uint64_t val = 0;
-	uint64_t ulPreVal = 0;
 	uint64_t ulIrqMask = IRQ_MASK;
 	int i = 0;
+	uint64_t ulIrqBitHandled = 0;
 
 	val = xGetMbIrqStats();
 	PRINT_DBG("[%s]: mb isr: 0x%llx\n", MBTAG, val);
 	val &= ulIrqMask;
 	while (val) {
-		for (i = 0; i <= IRQ_MAX; i++) {
+		for (i = 0; i < IRQ_MAX; i++) {
 			if (val & (1 << i)) {
 				if (xMbHandlerTable[i].vHandler != NULL) {
 					xMbHandlerTable[i].vHandler(xMbHandlerTable[i].vArg);
 				}
 			}
 		}
-		ulPreVal = val;
+		ulIrqBitHandled |= val;
 		val = xGetMbIrqStats();
 		val &= ulIrqMask;
-		val = (val | ulPreVal) ^ ulPreVal;
+		val = val ^ (ulIrqBitHandled & val);
 		PRINT_DBG("[%s]: mb isr: 0x%llx\n", MBTAG, val);
 	}
 }
@@ -177,6 +177,19 @@ static void vAoRevMbHandler(void *vArg)
 		vEnableMbInterrupt(IRQ_REV_BIT(mbox));
 		break;
 	}
+}
+
+static void vAoAckMbHandler(void *vArg)
+{
+	uint32_t mbox = (uint32_t)vArg;
+	uint32_t addr = xRevAddrMbox(mbox);
+	mbHeadInfo mbHead;
+	BaseType_t xYieldRequired = pdFALSE;
+
+	xGetPayloadHead(addr, &mbHead);
+	if (mbHead.taskid)
+		vTaskNotifyGiveFromISR((TaskHandle_t)((uint32_t)mbHead.taskid), &xYieldRequired);
+	portYIELD_FROM_ISR(xYieldRequired);
 }
 
 static void vReeSyncTask(void *pvParameters)
@@ -307,6 +320,7 @@ void vMbInit(void)
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_ARMTEE2AO), vAoRevMbHandler, (void *)MAILBOX_ARMTEE2AO, 10);
 
 	vSetMbIrqHandler(IRQ_REV_NUM(MAILBOX_DSPA2AO), vAoRevMbHandler, (void *)MAILBOX_DSPA2AO, 10);
+	vSetMbIrqHandler(IRQ_SENDACK_NUM(MAILBOX_AO2DSPA), vAoAckMbHandler, (void *)MAILBOX_AO2DSPA, 10);
 
 	//vEnableIrq(IRQ_NUM_MB_4, MAILBOX_AOCPU_IRQ);
 	RegisterIrq(MAILBOX_AOCPU_IRQ, 1, vMbHandleIsr);
@@ -349,4 +363,41 @@ BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
 {
 	UNUSED(ulChan);
 	return mailbox_htbl_unreg(g_tbl_ao, cmd);
+}
+
+BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+				 void *data, size_t size)
+{
+	mboxData mbData;
+	uint32_t mboxId;
+	uint32_t addr;
+	uint32_t mbSize;
+	MbStat_t st;
+	uint32_t xPreVal = 0;
+
+	VALID_CHANNEL(ulChan);
+	mboxId = xGetSendMbox(ulChan);
+	addr = xSendAddrMbox(mboxId);
+	mbSize = size + sizeof(mbHeadInfo);
+
+	st.cmd = ulCmd;
+	st.size = mbSize;
+	st.sync = MB_ASYNC;
+
+	strncpy((char *)mbData.data, data, size);
+	mbData.taskid = (uint32_t)(void *)xTaskGetCurrentTaskHandle();
+	mbData.status = 1;
+	vBuildPayload(addr, &mbData, mbSize);
+	vSetMboxStats(MAILBOX_SET(mboxId), st);
+	xPreVal = ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(3000));
+	if (xPreVal == 0) {
+		st.cmd = 0;
+		st.size = 0;
+		st.sync = 0;
+		vSetMboxStats(MAILBOX_SET(mboxId), st);
+	} else {
+		vClrMbInterrupt(IRQ_SENDACK_BIT(mboxId));
+		vEnableMbInterrupt(IRQ_SENDACK_BIT(mboxId));
+	}
+	return 0;
 }

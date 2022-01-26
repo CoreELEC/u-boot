@@ -4439,6 +4439,8 @@ TCB_t *pxTCB;
 	TaskStatus_t *pxTaskStatusArray;
 	UBaseType_t uxArraySize, x;
 	char cStatus;
+	uint32_t ulTotalTime, ulStatsAsPercentage;
+
 
 		/*
 		 * PLEASE NOTE:
@@ -4480,7 +4482,8 @@ TCB_t *pxTCB;
 		if( pxTaskStatusArray != NULL )
 		{
 			/* Generate the (binary) data. */
-			uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+			uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, &ulTotalTime );
+			ulTotalTime /= 100UL;
 
 			/* Create a human readable table from the binary data. */
 			for( x = 0; x < uxArraySize; x++ )
@@ -4513,8 +4516,17 @@ TCB_t *pxTCB;
 				can be printed in tabular form more easily. */
 				pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 
+
+				ulStatsAsPercentage = ulTotalTime == 0 ? 0 : pxTaskStatusArray[ x ].ulRunTimeCounter / ulTotalTime;
 				/* Write the rest of the string. */
-				sprintf( pcWriteBuffer, "\t\t%c\t%u\t\t%u\t\t%u\t\t%u\t\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].uStackTotal, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber, ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+				sprintf( pcWriteBuffer, "\t%u\t%c\t%u\t\t%u\t\t%u\t\t%u\t%u\t\r\n",
+					( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber,
+					cStatus,
+					( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority,
+					( unsigned int ) pxTaskStatusArray[ x ].uStackTotal,
+					( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark,
+					( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter,
+					( unsigned int ) ulStatsAsPercentage);
 				pcWriteBuffer += strlen( pcWriteBuffer ); /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
 			}
 

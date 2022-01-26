@@ -8,6 +8,25 @@ __BEGIN_DECLS
 #include "n200_timer.h"
 #include "interrupt_control.h"
 
+#define PMP_CFG_R_NO    (0<<0)
+#define PMP_CFG_R_EN    (1<<0)
+
+#define PMP_CFG_W_NO    (0<<1)
+#define PMP_CFG_W_EN    (1<<1)
+
+#define PMP_CFG_X_NO    (0<<2)
+#define PMP_CFG_X_EN    (1<<2)
+
+#define PMP_CFG_A_OFF   (0<<3)
+#define PMP_CFG_A_NA4   (2<<3)
+#define PMP_CFG_A_NAPOT (3<<3)
+
+#define PMP_CFG_L_NO    (0<<7)
+#define PMP_CFG_L_EN    (1<<7)
+
+/* The size should be the number of 2^n */
+#define NAPOT_SIZE(size)	(((size) - 1) >> 3)
+
 void pmp_open_all_space(void);
 
 void switch_m2u_mode(void);

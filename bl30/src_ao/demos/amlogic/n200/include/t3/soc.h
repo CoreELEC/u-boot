@@ -38,3 +38,4 @@
 
 #define UART_PORT_CONS UART_B_WFIFO
 #endif
+

@@ -84,6 +84,30 @@ typedef int32_t s32;
 typedef int16_t s16;
 typedef int8_t s8;
 
+#ifndef MTAG
+#define MTAG "dft"
+#endif
+
+#define _sys_log_(arg,...)	do{\
+	printf(arg,##__VA_ARGS__);\
+	}while(0)
+
+#define sys_log		_sys_log_
+
+#define logi(arg, ...)	sys_log("[30/%s] "arg,\
+		MTAG, ##__VA_ARGS__)
+
+#define loge(arg, ...)	sys_log("[30/%s] [error]%s:%d "arg,\
+		MTAG, __func__, __LINE__, ##__VA_ARGS__)
+
+typedef int (*initcall_t) (void);
+#define ____define_initcall(fn, id) \
+	initcall_t __initcall_##id##_##fn = (void *)fn;
+
+#define __define_initcall(fn, id) ____define_initcall(fn, id)
+
+#define device_initcall(fn) __define_initcall(fn, 6)
+
 #ifndef BIT
 #define BIT(x) (1 << (x))
 #endif

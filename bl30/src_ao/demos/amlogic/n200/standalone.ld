@@ -88,6 +88,10 @@ SECTIONS
         _data = .;
         *(vtable)
 #if defined (SOC_t3)
+	. = ALIGN(4);
+	_module_pm_begin = .;
+	KEEP (*(SORT(.sdata.__initcall*)))
+	_module_pm_end = .;
         *(.sdata* .data*)
         _edata = .;
     } > bss_ram AT > ram

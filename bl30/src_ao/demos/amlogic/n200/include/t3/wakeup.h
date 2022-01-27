@@ -4,7 +4,7 @@
 #define __WAKEUP_H__
 
 /*use timerB to wakeup AP FSM*/
-inline void wakeup_ap(void)
+static inline void wakeup_ap(void)
 {
 	uint32_t value;
 	//uint32_t time_out = 20;
@@ -19,13 +19,13 @@ inline void wakeup_ap(void)
 	vTaskDelay(1);
 }
 
-inline void clear_wakeup_trigger(void)
+static inline void clear_wakeup_trigger(void)
 {
 	REG32(FSM_TRIGER_SRC) = 0;
 	REG32(FSM_TRIGER_CTRL) = 0;
 }
 
-inline void watchdog_reset_system(void)
+static inline void watchdog_reset_system(void)
 {
 }
 #endif

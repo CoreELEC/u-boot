@@ -1,3 +1,4 @@
+#define MTAG "power"
 /*
  * Copyright (C) 2014-2018 Amlogic, Inc. All rights reserved.
  *
@@ -36,6 +37,8 @@
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
 #include "btwake.h"
+#include "soc.h"
+#include "pm.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
 
@@ -162,6 +165,7 @@ static void vcc5v_ctrl(int is_on)
 #define power_on_vcc5v()	vcc5v_ctrl(1)
 #define power_off_vcc5v()	vcc5v_ctrl(0)
 
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -231,3 +235,32 @@ void str_power_off(int shutdown_flag)
 	/***power off vcc5v***/
 	power_off_vcc5v();
 }
+
+extern int set_platform_power_ops(struct platform_power_ops *ops);
+
+
+static int platform_power_begin(void)
+{
+	logi("%s, power off\n", __func__);
+	str_power_off(0);
+	return 0;
+}
+
+static int platform_power_end(void)
+{
+	logi("%s, power on\n", __func__);
+	str_power_on(0);
+	return 0;
+}
+
+static struct platform_power_ops ops = {
+	.begin = platform_power_begin,
+	.end = platform_power_end,
+};
+
+void platform_power_interface_register(void);
+void platform_power_interface_register(void)
+{
+	set_platform_power_ops(&ops);
+}
+

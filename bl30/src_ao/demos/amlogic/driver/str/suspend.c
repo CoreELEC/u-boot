@@ -47,6 +47,7 @@
 #include "mailbox-api.h"
 #include "wakeup.h"
 #include "stick_mem.h"
+#include "pm.h"
 
 void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
@@ -264,6 +265,23 @@ void *xMboxSuspend_Sem(void *msg)
 	return NULL;
 }
 
+#define FREEZE_ENTER	0x01
+#define FREEZE_EXIT	0x02
+
+void *xMboxpm_sem(void *msg);
+void *xMboxpm_sem(void *msg)
+{
+	uint32_t mode = *(uint32_t *)msg;
+
+	if (mode == FREEZE_ENTER) {
+		pm_enter();
+	} else if (mode == FREEZE_EXIT) {
+		wakeup_ap_from_kernel();
+	}
+
+	return NULL;
+}
+
 static void vSTRTask( void *pvParameters )
 {
 	/*make compiler happy*/
@@ -358,4 +376,9 @@ void create_str_task(void)
 					xMboxGetStickRebootFlag, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE,
+					xMboxpm_sem, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_PM_FREEZE);
 }

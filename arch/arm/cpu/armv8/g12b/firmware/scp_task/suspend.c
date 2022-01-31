@@ -79,7 +79,7 @@ void enter_suspend(unsigned int suspend_from)
 
 	#ifdef CONFIG_GPIO_WAKEUP
 	gpio_wakeup_keyno = ((readl(P_AO_DEBUG_REG0) & 0x0fff0000) >> 16);
-	gpio_wakeup_bank  = ((readl(P_AO_DEBUG_REG0) & 0xf0000000) >> 28);
+	gpio_wakeup_bank  = ((readl(P_AO_DEBUG_REG0) & 0x70000000) >> 28);
 	wait_uart_empty();
 	uart_puts("WAKEUP GPIO cfg: 0x");
 	uart_put_hex(gpio_wakeup_keyno, 16);

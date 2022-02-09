@@ -25,9 +25,13 @@ RTOS_SDK_VERSION_FILE="$BUILD_DIR/sdk_ver.h"
 #COMPILE_TIME="$(shell date +%g.%V.%u" "%H:%M:%S)"
 COMPILE_TIME=`date +%F" "%T`
 
+echo "#define CONFIG_BOARD_NAME \"$BOARD\"" > $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_PRODUCT_NAME \"$PRODUCT\"" >> $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
+
 # Check whether the project is a repo
 repo manifest >/dev/null 2>&1
-[ "$?" -ne 0 ] && exit 0
+[ "$?" -ne 0 ] && echo "Non-repo source code" && exit 0
 
 # Generate manifest.xml
 repo manifest > $RTOS_SDK_MANIFEST_FILE
@@ -36,20 +40,7 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	exit 1
 fi
 
-if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
-	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`
-	if [ -z "$is_update" ]; then
-		sed -i '/#define CONFIG_COMPILE_TIME/d' $RTOS_SDK_VERSION_FILE
-		echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
-		exit 0
-	else
-		echo "Update top Kconfig and CMakelists.txt."
-	fi
-fi
-
-# Back up manifest.xml
-cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
-
+# Get SDK_VERSION
 pattern="revision="
 keyline=`grep 'default .* revision' $RTOS_SDK_MANIFEST_FILE`
 for keyword in $keyline; do
@@ -59,10 +50,19 @@ for keyword in $keyline; do
 		break;
 	fi
 done
-echo "#define CONFIG_VERSION_STRING \"$SDK_VERSION\"" > $RTOS_SDK_VERSION_FILE
-echo "#define CONFIG_BOARD_NAME \"$BOARD\"" >> $RTOS_SDK_VERSION_FILE
-echo "#define CONFIG_PRODUCT_NAME \"$PRODUCT\"" >> $RTOS_SDK_VERSION_FILE
-echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
+echo "#define CONFIG_VERSION_STRING \"$SDK_VERSION\"" >> $RTOS_SDK_VERSION_FILE
+
+if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
+	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`
+	if [ -z "$is_update" ]; then
+		exit 0
+	else
+		echo "Update top Kconfig and CMakelists.txt."
+	fi
+fi
+
+# Back up manifest.xml
+cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
 
 if [[ "$PRODUCT" == aocpu ]]; then
 	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE
@@ -80,7 +80,7 @@ EOF
 cat <<EOF > $kconfig_file
 EOF
 
-# filter manifest.xml of RTOS SDK
+# Filter manifest.xml of RTOS SDK
 sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
 # figure out the $relative_dir and its column
 pattern="path="
@@ -101,7 +101,7 @@ else
 	pattern="path=\"${relative_dir}/"
 fi
 
-# sort manifest.xml of RTOS SDK
+# Sort manifest.xml of RTOS SDK
 sort -k $i $RTOS_SDK_MANIFEST_FILE -o $RTOS_SDK_MANIFEST_FILE
 
 while IFS= read -r line

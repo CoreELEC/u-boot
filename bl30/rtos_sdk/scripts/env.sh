@@ -13,7 +13,7 @@ BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
 
 usage()
 {
-	echo "Usage: source $BASH_SOURCE [board_name] [soc_name] [arch_name] [product_name]"
+	echo "Usage: source $BASH_SOURCE [arch_name] [soc_name] [board_name] [product_name]"
 	echo "−h: display help."
 	echo ""
 }

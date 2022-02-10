@@ -109,9 +109,9 @@ else
 	j=0
 	for j in "${!ARRAY[@]}"; do
 		NR=$j
-		ARCH=`echo "${ARRAY[$j]}"|awk '{print $3}'`
+		ARCH=`echo "${ARRAY[$j]}"|awk '{print $1}'`
 		SOC=`echo "${ARRAY[$j]}"|awk '{print $2}'`
-		BOARD=`echo "${ARRAY[$j]}"|awk '{print $1}'`
+		BOARD=`echo "${ARRAY[$j]}"|awk '{print $3}'`
 		PRODUCT=`echo "${ARRAY[$j]}"|awk '{print $4}'`
 		j=$((j+1))
 		check_params $ARCH $SOC $BOARD $PRODUCT
@@ -135,9 +135,9 @@ else
 	fi
 fi
 
-ARCH=`echo "$PROJECT"|awk '{print $3}'`
+ARCH=`echo "$PROJECT"|awk '{print $1}'`
 SOC=`echo "$PROJECT"|awk '{print $2}'`
-BOARD=`echo "$PROJECT"|awk '{print $1}'`
+BOARD=`echo "$PROJECT"|awk '{print $3}'`
 PRODUCT=`echo "$PROJECT"|awk '{print $4}'`
 check_params $ARCH $SOC $BOARD $PRODUCT
 err=$?

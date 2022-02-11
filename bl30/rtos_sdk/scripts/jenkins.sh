@@ -17,11 +17,13 @@ if [ -z "$MANIFEST_URL" ] || [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ]
 	exit 1
 fi
 
-if [ $SUBMIT_TYPE = "daily" -o $SUBMIT_TYPE = "weekly" ];then
+SUBMIT_TYPE="every"
+
+if [ $SUBMIT_TYPE == "daily" -o $SUBMIT_TYPE == "weekly" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/auto-build
-elif [ $SUBMIT_TYPE = "every" ];then
+elif [ $SUBMIT_TYPE == "every" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
-elif [ $SUBMIT_TYPE = "merge" ];then
+elif [ $SUBMIT_TYPE == "merge" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
 fi
 
@@ -81,7 +83,7 @@ if [ -f $LAST_MANIFEST_FILE ] && [ -f $CURRENT_MANIFEST_FILE ]; then
 fi
 
 if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then
-	echo -e "\n======== Applying patch $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+	echo -e "\n======== Applying Gerrit patch $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
 
 	for keyword in $keyline; do
@@ -108,32 +110,53 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 	echo -e "======== Done ========\n"
 fi
 
-parse_list=`echo ${PROFILE}|tr ',' ' '`
-for single in $parse_list; do
-	board=`echo "$single"|awk -F ':' '{print $1}'`
-	product=`echo "$single"|awk -F ':' '{print $2}'`
-	if [ -z "$board" ] || [ -z "$product" ]; then
-		if [ -z "$board" ]; then
-			echo "No board specified!"
-		fi
-		if [ -z "$product" ]; then
-			echo "No product specified!"
-		fi
-		exit 1
-	fi
+if [ -n "$GIT_CHERRY_PICK" ]; then
+	echo "$GIT_CHERRY_PICK" | while read line
+    do
+        pattern=":29418/"
+		for keyword in $line; do
+			if [[ $keyword == *$pattern* ]]; then
+				GIT_PROJECT=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
+				break;
+			fi
+        done
 
-	echo -n "========= Building $board $product: "
-	source ./scripts/env.sh $board $product
-	make distclean 2>&1
-	make > build.log 2>&1
-	if [ "$?" -eq 0 ]; then
-		echo -e "successful =========\n"
-	else
-		echo -e "failed =========\n"
-		cat build.log
-		echo -e "\nAborted!"
-		exit 1
-	fi
-done
+		echo -e "\n======== Applying manual patch $GERRIT_CHANGE_NUMBER on Project $GIT_PROJECT ========"
+		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+
+		for keyword in $keyline; do
+			if [[ $keyword == path=* ]]; then
+				repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+				break;
+			fi
+		done
+
+		if [ -d "$repo_path" ]; then
+			pushd $repo_path > /dev/null
+            cmd=`echo $line | sed -e 's/ssh:\/\/.*@scgit.amlogic.com/ssh:\/\/scgit.amlogic.com/'`
+            eval $cmd
+			if [ "$?" -ne 0 ]; then
+				echo -e "========= Applying patch failed! =========\n"
+				exit 1
+			fi
+			popd > /dev/null
+		else
+			echo "No such directory! $repo_path"
+			exit 1
+		fi
+        echo -e "======== Done ========\n"
+	done
+fi
+
+echo -n "========= Building all projects: "
+./scripts/build_all.sh > build.log 2>&1
+if [ "$?" -eq 0 ]; then
+	echo -e "successful =========\n"
+else
+	echo -e "failed =========\n"
+	cat build.log
+	echo -e "\nAborted!"
+	exit 1
+fi
 
 cd -

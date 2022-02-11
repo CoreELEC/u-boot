@@ -5,9 +5,15 @@
 # SPDX-License-Identifier: MIT
 #
 
-#usage:./scripts/build_all.sh at rtos sdk root dir
+# usage:./scripts/build_all.sh at rtos sdk root dir
 
 set -e
+
+# Build and upload document
+if [[ "$SUBMIT_TYPE" == "daily" ]]; then
+	make docs
+	cd output/docs/html; find -type f -exec curl --ftp-create-dirs -T {} ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/{} \;; cd -
+fi
 
 BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
 
@@ -23,9 +29,3 @@ while IFS= read -r LINE; do
 		source scripts/scp.sh
 	fi
 done < "$BUILD_COMBINATION"
-
-# Build and upload document
-if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-	make docs
-	cd output/docs/html; find -type f -exec curl --ftp-create-dirs -T {} ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/{} \;; cd -
-fi

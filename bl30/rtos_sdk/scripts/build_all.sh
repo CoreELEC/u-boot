@@ -8,7 +8,8 @@
 # usage:./scripts/build_all.sh at rtos sdk root dir
 
 BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
-DOC_SERVER_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
+LOCAL_DOC_PATH="$PWD/output/docs/html"
+SERVER_DOC_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
 
 # Build and upload document
 update_docoment()
@@ -24,13 +25,17 @@ update_docoment()
 
 if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 	make docs
-	cd html
-	update_docoment
-	if [ $? -ne 0 ]; then
-	    echo "Failed to update document"
+	if [ -d $LOCAL_DOC_PATH ]
+		cd $LOCAL_DOC_PATH
+		update_docoment
+		if [ $? -ne 0 ]; then
+			echo "Failed to update document"
+		else
+			echo "Document updated!"
+		fi
 	else
-	    echo "Document updated!"
-	fi
+		echo "$LOCAL_DOC_PATH not exist!"
+	if
 	cd -
 fi
 

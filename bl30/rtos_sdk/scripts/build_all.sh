@@ -11,6 +11,7 @@ set -e
 
 BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
 
+# Build all projects
 i=0
 while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
@@ -22,3 +23,9 @@ while IFS= read -r LINE; do
 		source scripts/scp.sh
 	fi
 done < "$BUILD_COMBINATION"
+
+# Build and upload document
+if [[ "$SUBMIT_TYPE" == "daily" ]]; then
+	make docs
+	cd output/docs/html; find -type f -exec curl --ftp-create-dirs -T {} ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/{} \;; cd -
+fi

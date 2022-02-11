@@ -13,14 +13,12 @@ export XTENSA_SYSTEM=/opt/xtensa/XtDevTools/install/builds/RG-2018.9-linux/Amlog
 export XTENSA_CORE=Amlogic_v0
 
 if [ -z "$MANIFEST_URL" ] || [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ]; then
-	echo "param must not null"
+	echo "NULL params!"
 	exit 1
 fi
 
-SUBMIT_TYPE="every"
-
 if [ $SUBMIT_TYPE == "daily" -o $SUBMIT_TYPE == "weekly" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/auto-build
+	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
 elif [ $SUBMIT_TYPE == "every" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
 elif [ $SUBMIT_TYPE == "merge" ];then

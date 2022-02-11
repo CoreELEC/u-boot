@@ -8,11 +8,30 @@
 # usage:./scripts/build_all.sh at rtos sdk root dir
 
 BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
+DOC_SERVER_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
 
 # Build and upload document
+update_docoment()
+{
+	find -type f | while read filename
+	do
+		curl --ftp-create-dirs -T $filename $DOC_SERVER_PATH
+		if [ $? -ne 0 ]; then
+			return 1;
+		fi
+	done
+}
+
 if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 	make docs
-	cd output/docs/html; find -type f -exec curl --ftp-create-dirs -T {} ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/{} \;; cd -
+	cd html
+	update_docoment
+	if [ $? -ne 0 ]; then
+	    echo "Failed to update document"
+	else
+	    echo "Document updated!"
+	fi
+	cd -
 fi
 
 # Build all projects

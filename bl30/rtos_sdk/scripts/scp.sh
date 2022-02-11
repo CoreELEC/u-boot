@@ -1,5 +1,11 @@
 #!/bin/bash
-BUILD_DATE=`date +%Y-%m-%d`
+#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
+BUILD_DATE=`date +%F`
 TARGET_DIR=images
 PUBLISH_SERVER=firmware.amlogic.com
 SERVER_ROOT_DIR=/data/shanghai/image/RTOS
@@ -10,20 +16,17 @@ SCP_DEST_DIR=$SERVER_ROOT_DIR/$HTTP_DEST_DIR
 
 if [ -d $SRC_DIR ]
 then
-	file_dirs=$SRC_DIR
-fi
 
-if [ -n "$file_dirs" ]
-then
-	echo "PUBLISH PATH : "$SCP_DEST_DIR
-	ssh -n autobuild@$PUBLISH_SERVER   "mkdir -p $SCP_DEST_DIR"
+	ssh -n autobuild@$PUBLISH_SERVER "mkdir -p $SCP_DEST_DIR"
 	if [ $? -ne 0 ]
 	then
-        echo "ssh the publish server "$PUBLISH_SERVER" failed."
-        exit 1
+		echo "Failed to create publish path! $SCP_DEST_DIR"
+		exit 1
+	else
+		echo "Publish path: $SCP_DEST_DIR"
 	fi
 	scp -r $SRC_DIR autobuild@$PUBLISH_SERVER:$SCP_DEST_DIR
-	echo "scp the $file_dirs success."
+	echo "Publish success."
 else
-	echo "output target dir didn't exist"
+	echo "output target directory doesn't exist!"
 fi

@@ -565,6 +565,9 @@ function bin_path_parser() {
 					dbg "Loading CAS VMX config"
 					source fip/config_cas_vmx.sh
 				fi
+				if [ "${CUR_SOC}" == "s4" ] && [ "${cas}" == "gs" ]; then
+					CONFIG_CAS=${cas}
+				fi
 				echo "CAS: ${cas},${CONFIG_CAS}"
 				export CONFIG_CAS
 				continue ;;

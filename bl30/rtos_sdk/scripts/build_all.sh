@@ -35,7 +35,7 @@ if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		fi
 	else
 		echo "$LOCAL_DOC_PATH not exist!"
-	if
+	fi
 	cd -
 fi
 

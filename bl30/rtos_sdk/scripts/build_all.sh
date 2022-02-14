@@ -25,7 +25,7 @@ update_docoment()
 
 if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 	make docs
-	if [ -d $LOCAL_DOC_PATH ]
+	if [ -d $LOCAL_DOC_PATH ]; then
 		cd $LOCAL_DOC_PATH
 		update_docoment
 		if [ $? -ne 0 ]; then

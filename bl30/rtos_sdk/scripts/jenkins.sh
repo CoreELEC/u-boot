@@ -42,12 +42,12 @@ if [ ! -d "$WORK_DIR" ]; then
 else
 	echo -e "\n======== Syncing source code ========"
 	cd "$WORK_DIR"
-	repo forall -c git reset --hard origin/$BRANCH_NAME > /dev/null
+	repo forall -c git reset -q --hard origin/$BRANCH_NAME
 	repo manifest -r -o $LAST_MANIFEST_FILE
 fi
 
 repo sync -cq -j8
-repo forall -c git reset --hard origin/$BRANCH_NAME > /dev/null
+repo forall -c git reset -q --hard origin/$BRANCH_NAME
 repo manifest -r -o $CURRENT_MANIFEST_FILE
 echo -e "======== Done ========\n"
 

@@ -16,7 +16,7 @@ update_docoment()
 {
 	find -type f | while read filename
 	do
-		curl --ftp-create-dirs -T $filename $DOC_SERVER_PATH
+		curl --ftp-create-dirs -T $filename $SERVER_DOC_PATH
 		if [ $? -ne 0 ]; then
 			return 1;
 		fi

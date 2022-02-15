@@ -34,6 +34,7 @@
 #include "timer_source.h"
 #include "./include/clk.h"
 #include "./include/clk_util.h"
+#include "./include/vad_suspend.h"
 
 void set_time(uint32_t val);
 uint32_t get_time(void);
@@ -284,28 +285,41 @@ void disable_pll(int id)
 	}
 }
 
+int oscin_ctrl_reg = 0;
 void vCLK_resume(uint32_t st_f)
 {
 	st_f = st_f;
+	if ((REG32(SYSCTRL_DEBUG_REG6) != WAIT_SWITCH_TO_RTC_PLL) &&
+			(REG32(SYSCTRL_DEBUG_REG6) != DSP_VAD_WAKUP_ARM))
+		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
+			REG32(SYSCTRL_DEBUG_REG6));
+
+	if (REG32(SYSCTRL_DEBUG_REG6) == WAIT_SWITCH_TO_RTC_PLL)
+		REG32(SYSCTRL_DEBUG_REG6) = WAKEUP_FROM_OTHER_KEY;
 	/* switch osc_clk back*/
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
-	REG32(CLKCTRL_OSCIN_CTRL) |=  (1<<31);
-
-	/* enable memory of srama and sramb */
-	REG32(PWRCTRL_MEM_PD2) = 0x0;
+	REG32(CLKCTRL_OSCIN_CTRL) = oscin_ctrl_reg | (1<<31);
+	udelay(9000);
 
 	/* switching tick timer (using osc_clk) */
 	alt_timebase(0);
 
 	set_sys_div_clk(0, 0);  // osc_clk
 	set_axi_div_clk(0, 0);  // osc_clk
-	clk_util_set_dsp_clk(0, 8);  // osc_clk
 
+	if ((REG32(SYSCTRL_DEBUG_REG6) != DSP_VAD_WAKUP_ARM) &&
+			(REG32(SYSCTRL_DEBUG_REG6) != WAKEUP_FROM_OTHER_KEY))
+		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
+			REG32(SYSCTRL_DEBUG_REG6));
+
+	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_24MHZ;
+
+	vTaskDelay(pdMS_TO_TICKS(90));
 	disable_pll(PLL_RTC);
+
 	// In a55 boot code
 
 	REG32(PWRCTRL_ACCESS_CTRL) = 0x0;  // default access pwrctrl
-
 }
 
 void vCLK_suspend(uint32_t st_f)
@@ -313,17 +327,27 @@ void vCLK_suspend(uint32_t st_f)
 	st_f = st_f;
 	udelay(2000);
 	/* switch to RTC pll */
+
 	set_sys_div_clk(6, 3);  // rtc pll (30.72MHz)
 	set_axi_div_clk(6, 0);  // rtc pll (122.88MHz)
-	clk_util_set_dsp_clk(0, 11);  // rtc pll (122.88MHz)
+	udelay(2000);
 
-	udelay(9000);
+	if (REG32(SYSCTRL_DEBUG_REG6) != 0)
+		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
+			REG32(SYSCTRL_DEBUG_REG6));
+	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_RTC_PLL;
+	vTaskDelay(pdMS_TO_TICKS(90));
+
 	/* power off osc_clk */
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
+	oscin_ctrl_reg = REG32(CLKCTRL_OSCIN_CTRL);
+	REG32(CLKCTRL_OSCIN_CTRL) = 0;
+
 	printf("[AOCPU]: running at 30.72MHz, 24MHz osc clk power off.\n");
 	udelay(9000);
 	/* switching tick timer (using sys_clk) */
 	alt_timebase(2);  // 1us/10us/100us/1ms/xtal3 = 1 us tick  30.72/30
+
 	disable_pll(PLL_FIX);
 	disable_pll(PLL_GP0);
 	disable_pll(PLL_GP1);
@@ -335,8 +359,6 @@ void vCLK_suspend(uint32_t st_f)
 	start_hw_pwrctrl_fsm_off(PM_AOCPU);
 	printf("[AOCPU-SRAM]: Sleeping and power off\n");
 	Wr(AOCPU_BOOT_SEQ, 1);
-	// close mem_pd of srama and sramb
-	REG32(PWRCTRL_MEM_PD2) = 0xffffffff;
 
 	REG32(CLKCTRL_OSCIN_CTRL) &= ~(1<<31);  // osc clk -> rtc clk
 

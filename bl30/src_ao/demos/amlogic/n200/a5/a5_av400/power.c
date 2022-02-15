@@ -33,6 +33,9 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
+#include <util.h>
+#include "timer_source.h"
+#include "../include/vad_suspend.h"
 
 /* #define CONFIG_ETH_WAKEUP */
 
@@ -40,8 +43,8 @@
 #include "interrupt_control.h"
 #include "eth.h"
 #endif
-
 static int vdd_ee;
+static int vdd_cpu;
 
 static IRPowerKey_t prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
@@ -70,7 +73,25 @@ void str_hw_init(void);
 void str_hw_disable(void);
 void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
+static TaskHandle_t vadTask = NULL;
+void vVAD_task(void __unused *pvParameters);
+void vVAD_task(void __unused *pvParameters)
+{
+	uint32_t buf[4] = {0};
 
+	while (1) {
+		if (REG32(SYSCTRL_DEBUG_REG6) == DSP_VAD_WAKUP_ARM) {
+			buf[0] = VAD_WAKEUP;
+			printf("enter  vVAD_task\n");
+			STR_Wakeup_src_Queue_Send(buf);
+			vadTask = NULL;
+			vTaskDelete(NULL);
+			break;
+		} else
+			vTaskDelay(pdMS_TO_TICKS(30));
+	}
+
+}
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
@@ -78,6 +99,8 @@ void str_hw_init(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
 #endif
+	xTaskCreate(vVAD_task, "VADtask", configMINIMAL_STACK_SIZE,
+		    NULL, VAD_TASK_PRI, &vadTask);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -92,7 +115,10 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
-
+	if (vadTask) {
+		vTaskDelete(vadTask);
+		vadTask = NULL;
+	}
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
@@ -102,14 +128,24 @@ void str_power_on(int shutdown_flag)
 	int ret;
 
 	shutdown_flag = shutdown_flag;
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
+
+	/* open PWM clk */
+	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
+
+	/* set GPIOE_0 & GPIOE_1 pinmux to pwm */
+	xPinmuxSet(GPIOE_1, PIN_FUNC1);
+
+	/* enable PWM channel */
+	REG32(PWMEF_MISC_REG_AB) |= (1 << 0);
+	REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
+
+	/***set vdd_cpu val***/
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,vdd_cpu);
 	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
+		printf("VDD_CPU pwm set fail\n");
 		return;
 	}
 
-	REG32(PWMEF_MISC_REG_AB) |= (1<<1);
 	/***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -122,6 +158,42 @@ void str_power_on(int shutdown_flag)
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+
+	/***set vdd_ee val***/
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
+	if (ret < 0) {
+		printf("VDD_EE pwm set fail\n");
+		return;
+	}
+
+	if (shutdown_flag) {
+		/***power on vcc_3.3v***/
+		ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vcc_3.3v set gpio dir fail\n");
+			return;
+		}
+
+		ret= xGpioSetValue(GPIOD_2,GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("vcc_3.3v gpio val fail\n");
+			return;
+		}
+	}
+
+	/***power on vcc_5v***/
+	ret = xGpioSetDir(GPIOD_6,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_5v set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIOD_6,GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc_5v gpio val fail\n");
+		return;
+	}
+
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
 	printf("vdd_cpu on\n");
@@ -132,6 +204,34 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	shutdown_flag = shutdown_flag;
+	/***power off vcc_5v***/
+	ret = xGpioSetDir(GPIOD_6,GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_5v set gpio dir fail\n");
+		return;
+	}
+
+	ret= xGpioSetValue(GPIOD_6,GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc_5v gpio val fail\n");
+		return;
+	}
+
+	if (shutdown_flag) {
+		/***power off vcc_3.3v***/
+		ret = xGpioSetDir(GPIOD_2,GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vcc_3.3v set gpio dir fail\n");
+			return;
+		}
+
+		ret= xGpioSetValue(GPIOD_2,GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vcc_3.3v gpio val fail\n");
+			return;
+		}
+	}
+
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 	if (vdd_ee < 0) {
@@ -139,9 +239,16 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT,720);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
+		return;
+	}
+
+	/***set vdd_cpu val***/
+	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
+	if (vdd_ee < 0) {
+		printf("VDD_CPU pwm get fail\n");
 		return;
 	}
 
@@ -158,6 +265,20 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	REG32(PWMEF_MISC_REG_AB) &= ~(1<<1);
+	/* set GPIOE_0 & GPIOE_1 pinmux to gpio */
+	xPinmuxSet(GPIOE_1, PIN_FUNC0);
+
+	/***set vddcpu pwm to input***/
+	ret = xGpioSetDir(GPIOE_1,GPIO_DIR_IN);
+	if (ret < 0) {
+		printf("GPIOE_1 set gpio dir fail\n");
+		return;
+	}
+
+	/*disable PWM CLK*/
+	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
+
+	/* disable PWM channel */
+	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
 	printf("vdd_cpu off\n");
 }

@@ -18,6 +18,7 @@ config KERNEL_ARCH_DIR
 	help
 	  System arch dir string.
 
+
 config KERNEL_COMPILER_DIR
 	string
 	default "GCC" if ARM_CA53_64_BIT
@@ -36,5 +37,10 @@ config MEMLEAK_ARRAY_SIZE
 	default 128
 	help
 	  Set memleak trace buffer size.
+
+config USE_MALLOC_DEBUG
+	bool "memory malloc/free debug"
+	help
+	  Used to assist debugging memory out-of-bounds, leaks.
 
 endif # KERNEL

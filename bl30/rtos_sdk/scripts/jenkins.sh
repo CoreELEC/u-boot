@@ -110,14 +110,14 @@ fi
 
 if [ -n "$GIT_CHERRY_PICK" ]; then
 	echo "$GIT_CHERRY_PICK" | while read line
-    do
-        pattern=":29418/"
+	do
+		pattern=":29418/"
 		for keyword in $line; do
 			if [[ $keyword == *$pattern* ]]; then
 				GIT_PROJECT=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 				break;
 			fi
-        done
+		done
 
 		echo -e "\n======== Applying manual patch $GERRIT_CHANGE_NUMBER on Project $GIT_PROJECT ========"
 		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
@@ -131,8 +131,8 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 
 		if [ -d "$repo_path" ]; then
 			pushd $repo_path > /dev/null
-            cmd=`echo $line | sed -e 's/ssh:\/\/.*@scgit.amlogic.com/ssh:\/\/scgit.amlogic.com/'`
-            eval $cmd
+			cmd=`echo $line | sed -e 's/ssh:\/\/.*@scgit.amlogic.com/ssh:\/\/scgit.amlogic.com/'`
+			eval $cmd
 			if [ "$?" -ne 0 ]; then
 				echo -e "========= Applying patch failed! =========\n"
 				exit 1
@@ -146,12 +146,11 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 	done
 fi
 
-echo -n "========= Building all projects: "
+echo "========= Building all projects ========"
 ./scripts/build_all.sh > build.log 2>&1
 if [ "$?" -eq 0 ]; then
-	echo -e "successful =========\n"
+        echo "======== Done ========"
 else
-	echo -e "failed =========\n"
 	cat build.log
 	echo -e "\nAborted!"
 	exit 1

@@ -51,7 +51,9 @@ while IFS= read -r LINE; do
 	make
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-		source scripts/scp.sh
+		scripts/scp.sh
 		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
 	fi
 done < "$BUILD_COMBINATION"
+
+echo "Build completed!"

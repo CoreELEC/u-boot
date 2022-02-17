@@ -159,8 +159,8 @@ struct MemLeak {
 #endif
 
 #ifdef CONFIG_USE_MALLOC_DEBUG
-int vPortCheckIntegrity(void);
-int vPortMemoryScan(void);
+int xPortCheckIntegrity(void);
+int xPortMemoryScan(void);
 #endif
 
 void *pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION;

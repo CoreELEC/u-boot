@@ -172,8 +172,8 @@ struct MemLeak MemLeak_t[CONFIG_MEMLEAK_ARRAY_SIZE];
 #define TRACE_BUFFER_LEN 256
 #define HEAD_CANARY_PATTERN (size_t)0x5051525354555657
 #define TAIL_CANARY_PATTERN (size_t)0x6061626364656667
-#define HEAD_CANARY(x) (x->head_canary)
-#define TAIL_CANARY(x) *(size_t *)((size_t)x + (x->xBlockSize & ~xBlockAllocatedBit) - sizeof(size_t))
+#define HEAD_CANARY(x) ((x)->head_canary)
+#define TAIL_CANARY(x, y) *(size_t *)((size_t)(x) + ((y) & ~xBlockAllocatedBit) - sizeof(size_t))
 
 /* Used to define the bss and data segments in the program. */
 typedef struct
@@ -186,6 +186,7 @@ typedef struct
 {
 	BlockLink_t *allocHandle;
 	TaskHandle_t xOwner;
+	size_t blockSize;
 	size_t requestSize;
 	unsigned long backTrace[UNWIND_DEPTH];
 } allocTraceBlock_t;
@@ -250,13 +251,15 @@ static void vPortAddToList(size_t pointer, size_t tureSize)
 	/* Set up an out-of-bounds protected area */
 	BlockLink_t *temp = (BlockLink_t *)pointer;
 	HEAD_CANARY(temp) = HEAD_CANARY_PATTERN;
-	TAIL_CANARY(temp) = TAIL_CANARY_PATTERN;
+	TAIL_CANARY(temp, temp->xBlockSize) = TAIL_CANARY_PATTERN;
 	/* Fill Tracking Info Block */
 	while (pos < TRACE_BUFFER_LEN)
 	{
 		if (!allocList[pos].allocHandle)
 		{
 			allocList[pos].requestSize = tureSize;
+			/* cache block size */
+			allocList[pos].blockSize = temp->xBlockSize;
 			/* mount malloc point */
 			allocList[pos].allocHandle = (BlockLink_t *)pointer;
 			/* get call stack info */
@@ -298,6 +301,7 @@ static void vPortRmFromList(size_t pointer)
 		if (allocList[pos].allocHandle == (BlockLink_t *)pointer)
 		{
 			allocList[pos].xOwner = NULL;
+			allocList[pos].blockSize = 0;
 			allocList[pos].requestSize = 0;
 			allocList[pos].allocHandle = NULL;
 			memset(allocList[pos].backTrace, 0, sizeof(allocList[pos].backTrace));
@@ -306,7 +310,7 @@ static void vPortRmFromList(size_t pointer)
 	}
 }
 // Check for out of bounds memory
-int vPortCheckIntegrity(void)
+int xPortCheckIntegrity(void)
 {
 	int result = 0;
 	size_t pos = 0;
@@ -341,7 +345,7 @@ int vPortCheckIntegrity(void)
 				result++;
 			}
 			/* Tail integrity check */
-			if (TAIL_CANARY(allocList[pos].allocHandle) != TAIL_CANARY_PATTERN)
+			if (TAIL_CANARY(allocList[pos].allocHandle, allocList[pos].blockSize) != TAIL_CANARY_PATTERN)
 			{
 				printk("ERROR!!! detected buffer overflow(TAIL)\n");
 				if (allocList[pos].xOwner)
@@ -364,7 +368,7 @@ int vPortCheckIntegrity(void)
 	return result;
 }
 // Check for orphaned memory(memleak detection)
-int vPortMemoryScan(void)
+int xPortMemoryScan(void)
 {
 	int result = 0;
 	size_t pos = 0, idx = 0;

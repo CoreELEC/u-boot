@@ -149,11 +149,9 @@ fi
 echo "========= Building all projects ========"
 ./scripts/build_all.sh > build.log 2>&1
 if [ "$?" -eq 0 ]; then
-        echo "======== Done ========"
+	echo "======== Done ========"
 else
 	cat build.log
 	echo -e "\nAborted!"
 	exit 1
 fi
-
-cd -

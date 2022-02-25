@@ -260,6 +260,10 @@ function build() {
 	clean
 
 	# pre-build, get .config defines
+	if [ ! $BOARD_COMPILE_HDMITX_ONLY ]; then
+            echo "export BOARD_COMPILE_HDMITX_ONLY=null"
+	    export BOARD_COMPILE_HDMITX_ONLY=null
+	fi
 	pre_build_uboot $@
 
 	# variable init depends on uboot .config

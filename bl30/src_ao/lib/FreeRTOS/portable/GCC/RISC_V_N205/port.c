@@ -75,6 +75,7 @@ void vPortSysTickHandler(void);
 #endif
 void vPortSetupTimer(void);
 void vPortSetup(void);
+void vPortSysTickHandler_soc(void);
 
 /* System Call Trap */
 //ECALL macro stores argument in a2
@@ -264,6 +265,9 @@ uint32_t vPortSysTickHandler(uint32_t int_num){
 #else
 void vPortSysTickHandler(void){
 #endif
+#ifdef configSOC_TIMER_AS_TICK
+#else
+
 	uint64_t then = 0;
 #ifdef N200_REVA
 	pic_disable_interrupt(PIC_INT_TMR);
@@ -285,19 +289,53 @@ void vPortSysTickHandler(void){
        pic_enable_interrupt(PIC_INT_TMR);
        return int_num;
 #endif
+
+#endif
 }
 /*-----------------------------------------------------------*/
 
+/*Entry Point for SOC Timer Interrupt Handler*/
+void vPortSysTickHandler_soc(void)
+{
+    /* Increment the RTOS tick. */
+    if ( xTaskIncrementTick() != pdFALSE )
+    {
+        vTaskSwitchContext();
+    }
+}
 
-void vPortSetupTimer(void)	{
+void vPortSetupTimer(void) {
+#ifdef configSOC_TIMER_AS_TICK
+    uint32_t threshold;
+    uint64_t reg;
+    int ret;
+
+    /* Register SoC Timer as systick soure timer */
+    ret = RegisterIrq(IRQ_NUM_TIMER, IRQ_TIMER_PROI, vPortSysTickHandler_soc);
+    if (ret)
+    printf("[%s]: RegisterIrq error, ret = %d\n",
+           __func__, ret);
+    EnableIrq(IRQ_NUM_TIMER);
+
+    /* Set timer interrupt frequency */
+    threshold = configRTC_CLOCK_HZ / configTICK_RATE_HZ;
+    REG32(SYSCTRL_TIMER) = (threshold & 0xffff);
+
+    /*Enable timer, set timer to periodic irq timer mode, set clock.*/
+    reg = REG32(SYSTICK_TIMER_CTRL);
+    reg &= ~(TIMER_EN | TIMER_MODE_IRQ_PERIO);
+    reg |= SYSTICK_TIMER_CTRL_PARM;
+    REG32(SYSTICK_TIMER_CTRL) = reg;
+#else
     // Set the machine timer
     //Bob: update it to TMR
     volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
     volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
     uint64_t now = *mtime;
     uint64_t then = now + (configRTC_CLOCK_HZ / configTICK_RATE_HZ);
+
     *mtimecmp = then;
-	//print_eclic();
+    //print_eclic();
 #ifdef N200_REVA
     pic_enable_interrupt(PIC_INT_TMR);
     pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
@@ -311,9 +349,10 @@ void vPortSetupTimer(void)	{
 
     //eclic_set_nlbits(4);
     //eclic_set_irq_lvl_abs(ECLIC_INT_MTIP,1);
-	eclic_set_intctrl(ECLIC_INT_MTIP, 10 << 4);
+    eclic_set_intctrl(ECLIC_INT_MTIP, 10 << 4);
 
     set_csr(mstatus, MSTATUS_MIE);
+#endif
 #endif
 }
 /*-----------------------------------------------------------*/

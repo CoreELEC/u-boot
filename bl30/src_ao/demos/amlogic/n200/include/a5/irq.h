@@ -50,4 +50,17 @@ extern void eclic_irq50_handler(void);
 /*wol*/
 #define IRQ_ETH_PMT_NUM 76
 
+/* timerA~timerJ */
+#define IRQ_NUM_TIMERA	0
+#define IRQ_NUM_TIMERB	1
+#define IRQ_NUM_TIMERC	2
+#define IRQ_NUM_TIMERD	3
+#define IRQ_NUM_TIMERG	4
+#define IRQ_NUM_TIMERH	5
+#define IRQ_NUM_TIMERI	6
+#define IRQ_NUM_TIMERJ	7
+
+#define IRQ_NUM_TIMER	IRQ_NUM_TIMERJ
+#define IRQ_TIMER_PROI	8
+
 #endif

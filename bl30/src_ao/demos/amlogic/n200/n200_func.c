@@ -34,13 +34,21 @@ void switch_m2u_mode(void){
 
 uint32_t mtime_lo(void)
 {
-  return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME);
+#ifdef configSOC_TIMER_AS_TICK
+    return *(volatile uint32_t *)TIMERE_LOW_REG;
+#else
+    return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME);
+#endif
 }
 
 
 uint32_t mtime_hi(void)
 {
-  return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME + 4);
+#ifdef configSOC_TIMER_AS_TICK
+    return *(volatile uint32_t *)TIMERE_HIG_REG;
+#else
+    return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME + 4);
+#endif
 }
 
 uint64_t get_timer_value(void)

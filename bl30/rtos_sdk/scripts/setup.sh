@@ -129,7 +129,7 @@ do
 				*"$category"*) arch=`basename $repo_path`
 					       if [ "$arch" == "$ARCH" ]; then
 							cmake_path="$category/\${ARCH}"
-							kconfig_path="$category/\$(ARCH)"
+							kconfig_path="$category/\${ARCH}"
 					       else
 							continue
 					       fi;;

@@ -1,3 +1,4 @@
+arm a1 ad401_a113l speaker
 arm64 a1 ad401_a113l speaker
 arm64 a1 ad403_a113l speaker
 arm64 a1 ad409_a113l speaker

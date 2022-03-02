@@ -43,8 +43,8 @@ FIRMWARE_SERVER=firmware.amlogic.com
 
 publish_firmware()
 {
-	LOCAL_FIRMWARE_PATH=output/$BOARD-$PRODUCT
-	REMOTE_FIRMWARE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/$BOARD-$PRODUCT
+	LOCAL_FIRMWARE_PATH=output/$ARCH-$BOARD-$PRODUCT
+	REMOTE_FIRMWARE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/$ARCH-$BOARD-$PRODUCT
 
 	if [ -d $LOCAL_FIRMWARE_PATH ]
 	then

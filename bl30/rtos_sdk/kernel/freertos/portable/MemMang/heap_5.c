@@ -81,8 +81,11 @@ task.h is included from an application file. */
 #ifdef ARCH64
 #include <printk.h>
 #include "sys_printf.h"
+#if CONFIG_STACK_TRACE
 #include "stacktrace_64.h"
 #endif
+#endif
+
 #if ENABLE_KASAN
 #include <kasan/kasan.h>
 #endif

@@ -36,12 +36,6 @@ aml_library_sources(
 )
 endif()
 
-if(CONFIG_ARM_CA53_64_BIT)
-aml_library_include_directories(
-	${SDK_BASE}/libs/stack_trace
-)
-endif()
-
 aml_library_include_directories(
 	include
 	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}
@@ -49,5 +43,9 @@ aml_library_include_directories(
 
 aml_library_link_libraries(arch__${ARCH})
 aml_library_link_libraries(drivers)
+
+if(CONFIG_STACK_TRACE)
+aml_library_link_libraries(libs__stack_trace)
+endif()
 
 aml_link_libraries()

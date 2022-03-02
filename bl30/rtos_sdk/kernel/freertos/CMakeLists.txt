@@ -4,7 +4,7 @@
 
 aml_add_library()
 
-if(CONFIG_ARM64)
+if(CONFIG_ARM64 OR CONFIG_ARM)
 target_compile_options(${CURRENT_LIBRARY} PUBLIC -DARCH64)
 endif()
 

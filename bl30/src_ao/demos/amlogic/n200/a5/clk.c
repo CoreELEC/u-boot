@@ -35,6 +35,7 @@
 #include "./include/clk.h"
 #include "./include/clk_util.h"
 #include "./include/vad_suspend.h"
+#include "include/power_domain.h"
 
 void set_time(uint32_t val);
 uint32_t get_time(void);
@@ -91,13 +92,13 @@ void alt_timebase(int use_clk_src)
 		//when sys_clk < 32MHz
 		//if sys_clk is 30MHz
 		clk_div = 30;
-		REG32(CLKCTRL_TIMEBASE_CTRL0) = (clk_div<<19) | (0x2aa<<6);
+		REG32(CLKCTRL_TIMEBASE_CTRL0) = (1 << 17) | (clk_div<<19) | (0x2aa<<6);
 	} else if (use_clk_src == 2) {
 		/* select sys_clk (rtc_pll) clk_div2
 		  when sys_clk < 256MHz  */
 		// if sys_clk is 122.88MHz
-		clk_div = 123;
-		REG32(CLKCTRL_TIMEBASE_CTRL0) = (clk_div<<24) | (0x3ff<<6);
+		clk_div = 122;
+		REG32(CLKCTRL_TIMEBASE_CTRL0) = (1 << 17) | (clk_div<<24) | (0x3ff<<6);
 	} else {
 		//select rtc clk
 		// 32k/32 = 1k
@@ -105,46 +106,94 @@ void alt_timebase(int use_clk_src)
 	}
 }
 
-void set_sys_div_clk(int sel, int div)
-{
-	if (REG32(CLKCTRL_SYS_CLK_CTRL0) & (1<<15)) {
-		REG32(CLKCTRL_SYS_CLK_CTRL0) = (REG32(CLKCTRL_SYS_CLK_CTRL0) & ~((0x7 << 10) |
-		 (1 << 13) | (0x3ff << 0))) | ((sel << 10) | (1   << 13) | (div << 0));
-		//switch to 2nd clock path
-		REG32(CLKCTRL_SYS_CLK_CTRL0) &= ~(1 << 15);
-//		while ((REG32(CLKCTRL_SYS_CLK_CTRL0)>>31) != 0);
-		udelay(25);
-	} else {
-		REG32(CLKCTRL_SYS_CLK_CTRL0) = (REG32(CLKCTRL_SYS_CLK_CTRL0) & ~((0x7 << 26) |
-		(1 << 29) | (0x3ff << 16))) | ((sel << 26) | (1   << 29) | (div << 16));
-		//switch to 2nd clock path
-		REG32(CLKCTRL_SYS_CLK_CTRL0) |= (1 << 15);
-		//while ((REG32(CLKCTRL_SYS_CLK_CTRL0)>>31) == 0);
-		udelay(25);
-	}
-}
-
+/*
+ * This is function for axi clk setting:
+ * Includes axi_clk(AKA cpu_axi_clk/ACLK), axi_matrix, axi_sram
+ *
+ */
 void set_axi_div_clk(int sel, int div)
 {
-	if (REG32(CLKCTRL_AXI_CLK_CTRL0) & (1<<15)) {
-		/* set AXI_CLK to 384Mhz Fixed */
-		REG32(CLKCTRL_AXI_CLK_CTRL0) = (REG32(CLKCTRL_AXI_CLK_CTRL0) & ~((0x7 << 10) |
-		(1 << 13) | (0x3ff << 0))) |  ((sel << 10) | (1   << 13) | (div << 0));
-		/* switch to 1st clock path */
-		REG32(CLKCTRL_AXI_CLK_CTRL0) &= ~(1 << 15);
+	uint32_t control;
+	uint32_t dyn_pre_mux;
+	uint32_t dyn_div;
+
+	// fclk_div4 = 500MHz
+	dyn_pre_mux = sel;
+	dyn_div = div;/* divide by 1 */
+
+	control = REG32(CLKCTRL_AXI_CLK_CTRL0);
+	if (control & (1 << 15)) {//default is preb, need use prea
+		control = (control & ~(0x3fff))
+					| ((1 << 13)
+					| (dyn_pre_mux << 10)
+					| (dyn_div << 0));
+		REG32(CLKCTRL_AXI_CLK_CTRL0) = control;
+		control = control & ~(1 << 15);
+		REG32(CLKCTRL_AXI_CLK_CTRL0) = control;
 		udelay(25);
-	//	while ((REG32(CLKCTRL_AXI_CLK_CTRL0)>>31) != 0);
 	} else {
-		/* set AXI_CLK to 384Mhz Fixed */
-		REG32(CLKCTRL_AXI_CLK_CTRL0) = (REG32(CLKCTRL_AXI_CLK_CTRL0) & ~((0x7 << 26) |
-		(1 << 29) | (0x3ff << 16))) | ((sel << 26) |(1   << 29) | (div << 16));
-		/* switch to 2nd clock path */
-		REG32(CLKCTRL_AXI_CLK_CTRL0) |= (1 << 15);
+		//preb
+		control = (control & ~((0x3fff) << 16))
+					| ((1 << 29)
+					| (dyn_pre_mux << 26)
+					| (dyn_div << 16));
+		REG32(CLKCTRL_AXI_CLK_CTRL0) = control;
+		control = control | (1 << 15);
+		REG32(CLKCTRL_AXI_CLK_CTRL0) = control;
 		udelay(25);
-	//	while ((REG32(CLKCTRL_AXI_CLK_CTRL0)>>31) == 0);
 	}
+
+	return;
 }
 
+/*
+ * This is function for clk81 setting
+ *
+ */
+void set_sys_div_clk(int sel, int div)
+{
+	uint32_t control;
+	uint32_t dyn_pre_mux;
+	uint32_t dyn_div;
+
+	printf("Set sys clock to 167Mhz\n");
+
+	// fclk_div4 = 500MHz
+	dyn_pre_mux = sel;
+	dyn_div = div;/* divide by 3 */
+
+	control = REG32(CLKCTRL_SYS_CLK_CTRL0);
+
+	if (control & (1 << 15)) {//default is preb, need use prea
+		control = (control & ~(0x3fff))
+					| ((1 << 13)
+					| (dyn_pre_mux << 10)
+					| (dyn_div << 0));
+		REG32(CLKCTRL_SYS_CLK_CTRL0) = control;
+		control = control & ~(1 << 15);
+		REG32(CLKCTRL_SYS_CLK_CTRL0) = control;
+		udelay(25);
+	} else {
+		//preb
+		control = (control & ~((0x3fff) << 16))
+					| ((1 << 29)
+					| (dyn_pre_mux << 26)
+					| (dyn_div << 16));
+		REG32(CLKCTRL_SYS_CLK_CTRL0) = control;
+		control = control | (1 << 15);
+		REG32(CLKCTRL_SYS_CLK_CTRL0) = control;
+		udelay(25);
+	}
+
+
+	/* when bus switched from 24MHz to 166MHz,
+	 * the clock tick used to generate OTP waveform
+	 * needs 20us waiting time to switch to new clock tick
+	 */
+	udelay(25);
+
+	return;
+}
 /*
  * clk_util_set_dsp_clk
  * freq_sel:
@@ -288,7 +337,6 @@ void disable_pll(int id)
 int oscin_ctrl_reg = 0;
 void vCLK_resume(uint32_t st_f)
 {
-	st_f = st_f;
 	if ((REG32(SYSCTRL_DEBUG_REG6) != WAIT_SWITCH_TO_RTC_PLL) &&
 			(REG32(SYSCTRL_DEBUG_REG6) != DSP_VAD_WAKUP_ARM))
 		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
@@ -315,21 +363,33 @@ void vCLK_resume(uint32_t st_f)
 	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_24MHZ;
 
 	vTaskDelay(pdMS_TO_TICKS(90));
-	disable_pll(PLL_RTC);
+//	disable_pll(PLL_RTC);
+
+	if (st_f) {
+		power_switch_to_wraper(PWR_ON);
+		/* open mem_pd of srama and sramb */
+		REG32(PWRCTRL_MEM_PD2) = 0x0;
+	}
 
 	// In a55 boot code
-
 	REG32(PWRCTRL_ACCESS_CTRL) = 0x0;  // default access pwrctrl
 }
 
 void vCLK_suspend(uint32_t st_f)
 {
-	st_f = st_f;
+	if (st_f) {
+		/* close mem_pd of srama and sramb */
+		REG32(PWRCTRL_MEM_PD2) = 0xfffffffc;
+		/* poweroff wrapper */
+		power_switch_to_wraper(PWR_OFF);
+	}
+
 	udelay(2000);
 	/* switch to RTC pll */
-
 	set_sys_div_clk(6, 3);  // rtc pll (30.72MHz)
 	set_axi_div_clk(6, 0);  // rtc pll (122.88MHz)
+	alt_timebase(1);  // 1us/10us/100us/1ms/xtal3 = 1 us tick  30.72/30
+
 	udelay(2000);
 
 	if (REG32(SYSCTRL_DEBUG_REG6) != 0)
@@ -337,7 +397,6 @@ void vCLK_suspend(uint32_t st_f)
 			REG32(SYSCTRL_DEBUG_REG6));
 	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_RTC_PLL;
 	vTaskDelay(pdMS_TO_TICKS(90));
-
 	/* power off osc_clk */
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
 	oscin_ctrl_reg = REG32(CLKCTRL_OSCIN_CTRL);
@@ -345,30 +404,10 @@ void vCLK_suspend(uint32_t st_f)
 
 	printf("[AOCPU]: running at 30.72MHz, 24MHz osc clk power off.\n");
 	udelay(9000);
-	/* switching tick timer (using sys_clk) */
-	alt_timebase(2);  // 1us/10us/100us/1ms/xtal3 = 1 us tick  30.72/30
 
 	disable_pll(PLL_FIX);
 	disable_pll(PLL_GP0);
 	disable_pll(PLL_GP1);
 	disable_pll(PLL_HIFI);
-/*
-	setup_timer(0);
-	add_hw_pwrctrl_fsm_awake_irq(PM_AOCPU, SPI_TIMERA);
-
-	start_hw_pwrctrl_fsm_off(PM_AOCPU);
-	printf("[AOCPU-SRAM]: Sleeping and power off\n");
-	Wr(AOCPU_BOOT_SEQ, 1);
-
-	REG32(CLKCTRL_OSCIN_CTRL) &= ~(1<<31);  // osc clk -> rtc clk
-
-	set_sys_div_clk(0, 0);  // rtc clk
-	set_axi_div_clk(0, 0);  // rtc clk
-	clk_util_set_dsp_clk(0, 8);  // rtc clk
-
-	disable_pll(PLL_RTC);
-	// select rtc clk
-	alt_timebase(3); // 1us/10us/100us/1ms/xtal3 will actually be 1ms ticks
-*/
 }
 

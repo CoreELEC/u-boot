@@ -27,5 +27,16 @@ inline void clear_wakeup_trigger(void)
 
 inline void watchdog_reset_system(void)
 {
+        int i = 0;
+
+        printf("enter watchdog_reset_system\n");
+        while (1) {
+                REG32(RESETCTRL_WATCHDOG_CTRL0) = 1 << 27 | 0 << 18;
+                /* Decive GCC for waiting some cycles */
+                for (i = 0; i < 100; i++) {
+                        REG32(RESETCTRL_WATCHDOG_CTRL0);
+                }
+        }
+
 }
 #endif

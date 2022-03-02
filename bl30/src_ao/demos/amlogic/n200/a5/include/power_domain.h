@@ -41,6 +41,36 @@
 
 #define FSM_NUM   8
 
+#define PWR_STATE_IDLE                 0
+#define PWR_STATE_OFF_WAIT_OTH_FSM     1 //wait other pwr_fsm powered down
+#define PWR_STATE_OFF_WAIT_PACTIVE     2 //wait pactive
+#define PWR_STATE_OFF_START_HS         3 //start handshake
+#define PWR_STATE_OFF_SET_PSTATE       4 //set pstate = reg
+#define PWR_STATE_OFF_SET_PREQ1        5 //set preq = 1
+#define PWR_STATE_OFF_PDENIED          6 //set preq = 0, back to preq1
+#define PWR_STATE_OFF_PACCEPT          7 //set preq = 0, jump to OFF_WAIT
+#define PWR_STATE_OFF_WAIT             8 //add this because CPU need time to reset
+#define PWR_STATE_OFF_S0               9 //set reset = 1
+#define PWR_STATE_OFF_S1              10 //set ISO = 1
+#define PWR_STATE_OFF_S2              11 //set mempd = 1
+#define PWR_STATE_OFF_S3              12 //set pwr off = 1
+#define PWR_STATE_WAIT_ON             16 //wait irq
+#define PWR_STATE_ON_WAIT_OTH_FSM     17 //wait other pwr_fsm powered on
+#define PWR_STATE_ON_S0               18 //set pwr off = 0
+#define PWR_STATE_ON_S0B              19 //wait pwr ack = 1
+#define PWR_STATE_ON_S1A              20 //mempd
+#define PWR_STATE_ON_S1B              21 //mempd
+#define PWR_STATE_ON_S1C              22 //mempd
+#define PWR_STATE_ON_S1D              23 //mempd
+#define PWR_STATE_ON_S2               24 //set ISO = 0
+#define PWR_STATE_ON_S3               25 //set reset = 0
+#define PWR_STATE_ON_WAIT_PACTIVE     26 //wait pactive
+#define PWR_STATE_ON_START_HS         27 //start handshake
+#define PWR_STATE_ON_SET_PSTATE       28 //set pstate = reg
+#define PWR_STATE_ON_SET_PREQ1        29 //set preq = 1
+#define PWR_STATE_ON_PDENIED          30 //set preq = 0, back to preq1
+#define PWR_STATE_ON_PACCEPT          31 //set preq = 0, jump to OFF_WAIT
+
 typedef enum a {
     PM_CPU_PWR,
     PM_CPU_CORE0,
@@ -65,5 +95,7 @@ typedef enum a {
 } PM_E;
 
 void  power_switch_to_domains(PM_E domain, uint32_t pwr_state);
+void start_hw_pwrctrl_cpu_on(int id);
+void power_switch_to_wraper(uint32_t pwr_state);
 
 #endif

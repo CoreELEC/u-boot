@@ -75,6 +75,7 @@ void str_power_on(int shutdown_flag);
 void str_power_off(int shutdown_flag);
 static TaskHandle_t vadTask = NULL;
 void vVAD_task(void __unused *pvParameters);
+extern void watchdog_reset_system(void);
 void vVAD_task(void __unused *pvParameters)
 {
 	uint32_t buf[4] = {0};
@@ -196,6 +197,12 @@ void str_power_on(int shutdown_flag)
 
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
+
+	if (shutdown_flag) {
+		/* disable sar adc */
+		watchdog_reset_system();
+	}
+
 	printf("vdd_cpu on\n");
 }
 
@@ -204,6 +211,7 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	shutdown_flag = shutdown_flag;
+
 	/***power off vcc_5v***/
 	ret = xGpioSetDir(GPIOD_6,GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -280,5 +288,11 @@ void str_power_off(int shutdown_flag)
 
 	/* disable PWM channel */
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
+
+	if (shutdown_flag) {
+		/* disable sar adc */
+		vKeyPadDeinit();
+	}
+
 	printf("vdd_cpu off\n");
 }

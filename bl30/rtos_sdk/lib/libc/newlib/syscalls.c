@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include <FreeRTOS.h>
-#if (1 == CONFIG_ARM64)
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 #include <serial.h>
 #else
 #include <uart.h>
@@ -265,7 +265,7 @@ int _write (int file, const void * ptr, size_t len)
 		portIRQ_SAVE(flags);
 		pxNext = (signed char *) ptr;
 		while (i<len && *pxNext) {
-			#if (1 == CONFIG_ARM64)
+			#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 				if (*pxNext == '\n') {
 					vSerialPutChar(ConsoleSerial, '\r');
 				}

@@ -37,11 +37,6 @@ aml_library_sources(
 endif()
 
 if(CONFIG_ARM_CA53_64_BIT)
-aml_library_sources(
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}/xlat_tables/xlat_tables_common.c
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}/xlat_tables/xlat_tables.c
-)
-
 aml_library_include_directories(
 	${SDK_BASE}/libs/stack_trace
 )

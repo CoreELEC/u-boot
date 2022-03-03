@@ -17,11 +17,11 @@ if [ -z "$MANIFEST_URL" ] || [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ]
 	exit 1
 fi
 
-if [ $SUBMIT_TYPE == "daily" -o $SUBMIT_TYPE == "weekly" ];then
+if [ "$SUBMIT_TYPE" = "daily" -o "$SUBMIT_TYPE" = "weekly" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
-elif [ $SUBMIT_TYPE == "every" ];then
+elif [ "$SUBMIT_TYPE" = "every" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
-elif [ $SUBMIT_TYPE == "merge" ];then
+elif [ "$SUBMIT_TYPE" = "merge" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
 fi
 
@@ -29,6 +29,15 @@ MATCH_PATTERN="projects/"
 BRANCH=${BRANCH_NAME#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
 
-export MANIFEST_URL MANIFEST_BRANCH PROJECT_NAME BRANCH_NAME SUBMIT_TYPE WORK_DIR
+#rm -rf $WORK_DIR
+if [ ! -d "$WORK_DIR" ]; then
+	echo -e "\n======== Downloading source code ========"
+	mkdir -p $WORK_DIR
+	cd $WORK_DIR
+	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH} --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
+fi
 
+export PROJECT_NAME BRANCH_NAME SUBMIT_TYPE WORK_DIR GIT_CHERRY_PICK
+
+cd $WORK_DIR
 ./scripts/verify.sh

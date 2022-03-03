@@ -5,8 +5,6 @@
 # SPDX-License-Identifier: MIT
 #
 
-[ -z "$MANIFEST_URL" ] && MANIFEST_URL="ssh://scgit.amlogic.com:29418/rtos_sdk"
-[ -z "$MANIFEST_BRANCH" ] && MANIFEST_BRANCH="projects/rtos_sdk-dev"
 [ -z "$PROJECT_NAME" ] && PROJECT_NAME="rtos_sdk"
 [ -z "$BRANCH_NAME" ] && BRANCH_NAME="projects/amlogic-dev"
 [ -z "$SUBMIT_TYPE" ] && SUBMIT_TYPE="every"
@@ -16,18 +14,10 @@ LAST_MANIFEST_FILE="manifest_last.xml"
 CURRENT_MANIFEST_FILE="manifest.xml"
 DIFF_MANIFEST_FILE="updates.xml"
 
-#rm -rf $WORK_DIR
-if [ ! -d "$WORK_DIR" ]; then
-	echo -e "\n======== Downloading source code ========"
-	mkdir -p $WORK_DIR
-	cd "$WORK_DIR"
-	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH} --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
-else
-	echo -e "\n======== Syncing source code ========"
-	cd $WORK_DIR
-	repo forall -c git reset -q --hard origin/$BRANCH_NAME
-	repo manifest -r -o $LAST_MANIFEST_FILE
-fi
+echo -e "\n======== Syncing source code ========"
+cd $WORK_DIR
+repo forall -c git reset -q --hard origin/$BRANCH_NAME
+repo manifest -r -o $LAST_MANIFEST_FILE
 
 repo sync -cq -j8
 repo forall -c git reset -q --hard origin/$BRANCH_NAME

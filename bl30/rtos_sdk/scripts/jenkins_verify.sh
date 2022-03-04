@@ -108,6 +108,9 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 	echo -e "======== Done ========\n"
 fi
 
+# Manually cherry pick patches
+./scripts/cherry_pick.sh
+
 echo "========= Building all projects ========"
 ./scripts/build_all.sh > build.log 2>&1
 if [ "$?" -eq 0 ]; then

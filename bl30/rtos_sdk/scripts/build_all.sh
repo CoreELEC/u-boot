@@ -72,9 +72,9 @@ publish_firmware()
 
 cherry_pick()
 {
-	repo manifest -r -o $CURRENT_MANIFEST_FILE
+	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
+	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
 
-	echo "$GIT_CHERRY_PICK"
 	echo "$GIT_CHERRY_PICK" | while read line
 	do
 		pattern=":29418/"
@@ -114,8 +114,6 @@ cherry_pick()
 
 if [ -n "$GIT_CHERRY_PICK" ]; then
 	cherry_pick
-else
-	echo "No GIT_CHERRY_PICK"
 fi
 
 # Build all projects

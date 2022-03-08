@@ -21,14 +21,19 @@ def add_Header_01(filepath, filename):
  */\n
 ''')
         head = head_info.substitute(vars())
-        f = open(filepath, "r+", errors='ignore')
+        f = open(filepath, "r", errors='ignore', newline='')
         content = f.read()
+        f_w = open(filepath, "w", errors='ignore', newline='')
+        f_w.seek(0,0)
 
-        f.seek(0,0)
-        new_content = re.sub("\r\n", "\n", content)
-        f.write(head)
-        f.write(new_content)
-        f.close
+        if(content.find('\r\n') > 0):
+            head_new = re.sub("\n", "\r\n", head)
+            f_w.write(head_new)
+        else:
+            f_w.write(head)
+
+        f_w.write(content)
+        f_w.close
 
 
 def add_Header_02(filepath, filename):
@@ -39,14 +44,19 @@ def add_Header_02(filepath, filename):
 # SPDX-License-Identifier: MIT\n
 ''')
         head = head_info.substitute(vars())
-        f = open(filepath, "r+", errors='ignore')
+        f = open(filepath, "r", errors='ignore', newline='')
         content = f.read()
+        f_w = open(filepath, "w", errors='ignore', newline='')
+        f_w.seek(0,0)
 
-        f.seek(0,0)
-        new_content = re.sub("\r\n", "\n", content)
-        f.write(head)
-        f.write(new_content)
-        f.close
+        if(content.find('\r\n') > 0):
+            head_new = re.sub("\n", "\r\n", head)
+            f_w.write(head_new)
+        else:
+            f_w.write(head)
+
+        f_w.write(content)
+        f_w.close
 
 def add_Header_03(filepath, filename):
     if os.path.exists(filepath) :
@@ -58,21 +68,26 @@ def add_Header_03(filepath, filename):
 #\n
 ''')
         head = head_info.substitute(vars())
-        f = open(filepath, "r+", errors='ignore')
+        f = open(filepath, "r", errors='ignore', newline='')
         content = f.read()
+        f_w = open(filepath, "w", errors='ignore', newline='')
+        f_w.seek(0,0)
 
-        f.seek(0,0)
-        new_content = re.sub("\r\n", "\n", content)
-        f.write(head)
-        f.write(new_content)
-        f.close
+        if(content.find('\r\n') > 0):
+            head_new = re.sub("\n", "\r\n", head)
+            f_w.write(head_new)
+        else:
+            f_w.write(head)
+
+        f_w.write(content)
+        f_w.close
 
 def del_C_Header(filepath):
     if os.path.exists(filepath) :
-        file = open(filepath, "r", errors='ignore')
+        file = open(filepath, "r", errors='ignore', newline='')
         lines = file.readlines()
         beforeTag = True
-        writer = open(filepath, 'w', errors='ignore')
+        writer = open(filepath, 'w', errors='ignore', newline='')
         for line in lines :
             if '#include' in line:
                 beforeTag = False
@@ -81,12 +96,12 @@ def del_C_Header(filepath):
 
 def del_H_Header(filepath):
     if os.path.exists(filepath):
-        file = open(filepath, "r", errors='ignore')
+        file = open(filepath, "r", errors='ignore', newline='')
         lines = file.readlines()
         beforeTag = True
-        writer = open(filepath, 'w', errors='ignore')
+        writer = open(filepath, 'w', errors='ignore', newline='')
         for line in lines :
-            if '#ifndef ' in line or '#include ' in line or '#define ' in line:
+            if '#ifndef ' in line or '#include ' in line or '#define ' in line or '#ifdef' in line:
                 beforeTag = False
             if beforeTag == False:
                 writer.write(line)

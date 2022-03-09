@@ -13,7 +13,11 @@
 
 #include <FreeRTOS.h>
 #if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
+#if defined(CONFIG_SOC_T7)
+#include <uart.h>
+#else
 #include <serial.h>
+#endif
 #else
 #include <uart.h>
 #endif
@@ -266,10 +270,17 @@ int _write (int file, const void * ptr, size_t len)
 		pxNext = (signed char *) ptr;
 		while (i<len && *pxNext) {
 			#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
+			#if defined(CONFIG_SOC_T7)
+				if (*pxNext == '\n') {
+					vUartPutc('\r');
+				}
+				vUartPutc(*pxNext);
+			#else
 				if (*pxNext == '\n') {
 					vSerialPutChar(ConsoleSerial, '\r');
 				}
 				vSerialPutChar(ConsoleSerial, *pxNext);
+			#endif
 			#else
 				if (*pxNext == '\n') {
 					vUartPutc('\r');

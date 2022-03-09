@@ -74,7 +74,7 @@ publish_firmware()
 ./scripts/cherry_pick.sh
 
 # Build all projects
-BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
+BUILD_COMBINATION="$PWD/build_system/build_combination.txt"
 
 i=0
 while IFS= read -r LINE; do

@@ -9,7 +9,7 @@
 # Function: choose board and product, set environment variables.
 ###############################################################
 
-BUILD_COMBINATION="$PWD/scripts/build_combination.txt"
+BUILD_COMBINATION="$PWD/build_system/build_combination.txt"
 
 usage()
 {

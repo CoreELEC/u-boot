@@ -5394,7 +5394,7 @@ void vTaskRename( TaskHandle_t xTask, const char *name)
 	pxTCB = prvGetTCBFromHandle( xTask );
 	configASSERT( pxTCB );
 
-	strncpy(pxTCB->pcTaskName, name, configMAX_TASK_NAME_LEN);
+	memcpy(pxTCB->pcTaskName, name, configMAX_TASK_NAME_LEN);
 	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
 }
 

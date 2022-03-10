@@ -89,6 +89,16 @@ void bt_task_start(void)
 
 	xGpioSetDir(GPIOX_18, GPIO_DIR_IN);
 	xRequestGpioIRQ(GPIOX_18, vBTWakeup, IRQF_TRIGGER_FALLING);
+#ifdef CONFIG_YOCTO
+	/*  In case gpio is pull low already, irq might won't triggered,
+		wake bt-task directrly */
+	if (!xGpioGetValue(GPIOX_18)) {
+		printf("bt wake pin is already low, wake up soc\n");
+		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskResume(btTask);
+		return;
+	}
+#endif
 }
 
 void bt_task_disable(void)

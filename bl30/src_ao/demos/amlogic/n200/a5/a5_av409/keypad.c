@@ -1,10 +1,12 @@
 #include <string.h>
+#include <soc.h>
 #include "FreeRTOS.h"
 #include "ir.h"
 #include "keypad.h"
 #include "gpio.h"
 #include "saradc.h"
 #include "suspend.h"
+#include "../include/vad_suspend.h"
 
 /*KEY ID*/
 #define GPIO_KEY_ID_POWER	GPIOD_3
@@ -29,6 +31,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 	case ADC_KEY_ID_MENU:
 		buf[0] = POWER_KEY_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);
+		wakeup_dsp();
 		break;
 	default:
 		break;

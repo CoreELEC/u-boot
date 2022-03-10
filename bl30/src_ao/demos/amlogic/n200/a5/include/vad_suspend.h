@@ -41,6 +41,28 @@ extern "C" {
 #define WAIT_SWITCH_TO_RTC_PLL 0xA5A5A5A5
 #define WAKEUP_FROM_OTHER_KEY  0xA8A8A8A8
 
+/*use timerI to wakeup dsp FSM*/
+inline static void wakeup_dsp(void)
+{
+	uint32_t value;
+	//uint32_t time_out = 20;
+
+	/*set alarm timer*/
+	REG32(DSP_FSM_TRIGER_SRC) = 10;/*10us*/
+
+	value = REG32(DSP_FSM_TRIGER_CTRL);
+	value &= ~((1 << 7) | (0x3) | (1 << 6));
+	value |= ((1 << 7) | (0 << 6) | (0x3));
+	REG32(DSP_FSM_TRIGER_CTRL) = value;
+	vTaskDelay(1);
+}
+
+inline static void clear_dsp_wakeup_trigger(void)
+{
+	REG32(DSP_FSM_TRIGER_SRC) = 0;
+	REG32(DSP_FSM_TRIGER_CTRL) = 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

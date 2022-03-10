@@ -81,7 +81,7 @@ while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
 	i=$((i+1))
 	source scripts/env.sh $LINE
-	[ "$?" -ne 0 ] && echo "Failed to source scripts/env.sh!" && exit 1
+	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
 	make distclean
 	[ "$?" -ne 0 ] && echo "Failed to make distclean!" && exit 2
 	make

@@ -9,7 +9,8 @@
 # Function: choose board and product, set environment variables.
 ###############################################################
 
-BUILD_COMBINATION="$PWD/build_system/build_combination.txt"
+BUILD_COMBINATION_INPUT="$PWD/build_system/build_combination.in"
+BUILD_COMBINATION="$PWD/output/build_combination.txt"
 
 usage()
 {
@@ -91,6 +92,19 @@ SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basen
 BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
 PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
 
+# Get available projects
+if [ ! -s "$BUILD_COMBINATION" ]; then
+	touch $BUILD_COMBINATION
+	while IFS= read -r LINE; do
+		ARCH=`echo "$LINE"|awk '{print $1}'`
+		SOC=`echo "$LINE"|awk '{print $2}'`
+		BOARD=`echo "$LINE"|awk '{print $3}'`
+		PRODUCT=`echo "$LINE"|awk '{print $4}'`
+		check_params $ARCH $SOC $BOARD $PRODUCT
+		[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
+	done < $BUILD_COMBINATION_INPUT
+fi
+
 if [ -n "$1" ]; then
 	if [ $1 == "-h" ]; then
 		usage
@@ -103,7 +117,7 @@ else
 
 	while IFS= read -r LINE; do
 		ARRAY+=( "$LINE" )
-	done < "$BUILD_COMBINATION"
+	done < $BUILD_COMBINATION
 
 	echo "Available projects:"
 	j=0
@@ -114,9 +128,6 @@ else
 		BOARD=`echo "${ARRAY[$j]}"|awk '{print $3}'`
 		PRODUCT=`echo "${ARRAY[$j]}"|awk '{print $4}'`
 		j=$((j+1))
-		check_params $ARCH $SOC $BOARD $PRODUCT
-		[ "$?" -ne 0 ] && continue
-
 		echo -e "\t$NR. ${ARRAY[$j-1]}"
 	done
 	read -p "Choose your project: " CHOICE
@@ -139,6 +150,7 @@ ARCH=`echo "$PROJECT"|awk '{print $1}'`
 SOC=`echo "$PROJECT"|awk '{print $2}'`
 BOARD=`echo "$PROJECT"|awk '{print $3}'`
 PRODUCT=`echo "$PROJECT"|awk '{print $4}'`
+# Check current project
 check_params $ARCH $SOC $BOARD $PRODUCT
 err=$?
 [ "$err" -eq 1 ] && echo "Invalid ARCH: $ARCH!" && return $err

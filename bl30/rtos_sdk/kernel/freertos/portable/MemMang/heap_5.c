@@ -78,7 +78,7 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 #include <printk.h>
 #include "sys_printf.h"
 #if CONFIG_STACK_TRACE
@@ -494,7 +494,7 @@ void *pvPortMalloc(size_t xWantedSize)
 	if (xWantedSize <= 0)
 		return pvReturn;
 
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_SAVE(flags);
 #else
 	vTaskSuspendAll();
@@ -655,7 +655,7 @@ void *pvPortMalloc(size_t xWantedSize)
 
 		traceMALLOC(pvReturn, xWantedSize);
 	}
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_RESTORE(flags);
 #else
 	(void)xTaskResumeAll();
@@ -771,7 +771,7 @@ void *pvPortMallocRsvAlign(size_t xWantedSize, size_t xAlignMsk)
 		return pvReturn;
 	configASSERT(((xAlignMsk + 1) & xAlignMsk) == 0);
 
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_SAVE(flags);
 #else
 	vTaskSuspendAll();
@@ -907,7 +907,7 @@ void *pvPortMallocRsvAlign(size_t xWantedSize, size_t xAlignMsk)
 		traceMALLOC(pvReturn, xWantedSize);
 	}
 
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_RESTORE(flags);
 #else
 	(void)xTaskResumeAll();
@@ -944,7 +944,7 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 		return pvReturn;
 	configASSERT(((xAlignMsk + 1) & xAlignMsk) == 0);
 
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_SAVE(flags);
 #else
 	vTaskSuspendAll();
@@ -1107,7 +1107,7 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 
 		traceMALLOC(pvReturn, xWantedSize);
 	}
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	portIRQ_RESTORE(flags);
 #else
 	(void)xTaskResumeAll();
@@ -1198,7 +1198,7 @@ void vPortFree(void *pv)
 #if ENABLE_KASAN
 				kasan_poison(pv, pxLink->xBlockSize - xHeapStructSize, KASAN_MALLOC_FREE);
 #endif
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 				portIRQ_SAVE(flags);
 #else
 				vTaskSuspendAll();
@@ -1215,7 +1215,7 @@ void vPortFree(void *pv)
 					vPortUpdateFreeBlockList();
 #endif
 				}
-#ifdef ARCH64
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 				portIRQ_RESTORE(flags);
 #else
 				(void)xTaskResumeAll();
@@ -1537,15 +1537,9 @@ int vPrintFreeListAfterMallocFail(void)
 	for (pxIterator = &xStart; pxIterator != pxEnd; pxIterator = pxIterator->pxNextFreeBlock)
 	{
 		printf("the address: %p, len: %d\n", pxIterator, (int)(pxIterator->xBlockSize));
-#ifdef ARCH64
-		/*print_lastword_crash("the address: %p, len: 0x%x\n", pxIterator, (int)(pxIterator->xBlockSize));*/
-#endif
 		total_free_size += (pxIterator->xBlockSize);
 	}
 	printf("the total free size: %d\n", total_free_size);
-#ifdef ARCH64
-	/*print_lastword_crash("the total free size: %d\n", total_free_size);*/
-#endif
 
 	return 0;
 }

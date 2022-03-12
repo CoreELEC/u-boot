@@ -7,3 +7,12 @@ config SOC_T5W
 	select RISCV
 	help
 	  Enable T5W SOC of RISCV.
+
+choice
+	prompt "Serial"
+	default N200_REVA
+	config N200_REVA
+	bool "N200 REVA"
+	help
+	  Enable N200 REVA serial of RISCV.
+endchoice

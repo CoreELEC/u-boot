@@ -11,6 +11,7 @@ aml_library_include_directories(
 
 aml_library_sources(
 	n200_func.c
+	${SOC}/interrupt_control.c
 )
 
 aml_library_link_libraries(arch__${ARCH})

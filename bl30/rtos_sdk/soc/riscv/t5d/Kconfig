@@ -6,4 +6,13 @@ config SOC_T5D
 	bool "T5D"
 	select RISCV
 	help
-	Enable T5D SOC of RISCV.
+	  Enable T5D SOC of RISCV.
+
+choice
+	prompt "Serial"
+	default N200_REVA
+	config N200_REVA
+	bool "N200 REVA"
+	help
+	  Enable N200 REVA serial of RISCV.
+endchoice

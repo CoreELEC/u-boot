@@ -2,5 +2,8 @@
 
 # SPDX-License-Identifier: MIT
 
-source "soc/riscv/${SOC}/Kconfig"
-
+config SOC_A5
+	bool "A5"
+	select RISCV
+	help
+	  Enable A5 SOC of RISCV.

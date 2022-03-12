@@ -2,5 +2,4 @@
 
 # SPDX-License-Identifier: MIT
 
-source "soc/riscv/${SOC}/Kconfig"
-
+#add compiler options at here which is associated with soc.

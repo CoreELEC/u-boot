@@ -5398,6 +5398,25 @@ void vTaskRename( TaskHandle_t xTask, const char *name)
 	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
 }
 
+void vTaskDumpStack(TaskHandle_t xTask)
+{
+	TCB_t *pxTCB;
+	StackType_t *p;
+	int i;
+
+	pxTCB = prvGetTCBFromHandle( xTask );
+	if (!pxTCB)
+		return;
+	p = pxTCB->pxStack+pxTCB->uStackDepth-1;
+	printf("Dump Stack:\n");
+	while (p >= pxTCB->pxStack) {
+		printf("%08p:",(unsigned long)p);
+		for (i = 0; i < 8 && p >= pxTCB->pxStack; i++)
+			printf(" %08x",*p--);
+		printf("\n");
+	}
+}
+
 /* Code below here allows additional code to be inserted into this source file,
 especially where access to file scope functions and data is needed (for example
 when performing module tests). */

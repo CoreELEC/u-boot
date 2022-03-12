@@ -45,6 +45,7 @@
 #endif
 #include "n200_timer.h"
 #include <riscv_bits.h>
+#include "common.h"
 
 
 /* Standard Includes */
@@ -75,10 +76,14 @@ void vPortSysTickHandler(void);
 #endif
 void vPortSetupTimer(void);
 void vPortSetup(void);
+void vPortSysTickHandler_soc(void);
 
 /* System Call Trap */
 //ECALL macro stores argument in a2
-unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1)	{
+extern void vTaskDumpStack(TaskHandle_t xTask);
+
+unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1)
+{
 	int i = 0;
 	uint32_t mstatus_mps_bits;
 
@@ -112,7 +117,6 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 			break;
 		default:
 			mstatus_mps_bits = ((read_csr(mstatus) & 0x00000600) >> 9);
-#if 0
 			printf("In trap handler, the msubmode is 0x%lx\n", read_csr_msubmode);
 			printf("In trap handler, the mstatus.MPS is 0x%lx\n", mstatus_mps_bits);
 			printf("In trap handler, the mcause is %lx\n", mcause);
@@ -135,8 +139,7 @@ unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long 
 					*(unsigned *)((read_csr(mepc)/4) *4 + i * REGBYTES -16),
 				       *(unsigned *)((read_csr(mepc)/4) *4 + (i + 1) * REGBYTES -16));
 			printf("Dump Stack: \n");
-#endif
-			//vTaskDumpStack(NULL);
+			vTaskDumpStack(NULL);
 			//_exit(mcause);
 			do {}while(1);
 	}
@@ -262,10 +265,15 @@ void prvTaskExitError( void )
 /*Entry Point for Machine Timer Interrupt Handler*/
 //Bob: add the function argument int_num
 #ifdef CONFIG_N200_REVA
-uint32_t vPortSysTickHandler(uint32_t int_num){
+uint32_t vPortSysTickHandler(uint32_t int_num)
+{
 #else
-void vPortSysTickHandler(void){
+void vPortSysTickHandler(void)
+{
 #endif
+#ifdef configSOC_TIMER_AS_TICK
+#else
+
 	uint64_t then = 0;
 #ifdef CONFIG_N200_REVA
 	pic_disable_interrupt(PIC_INT_TMR);
@@ -287,23 +295,58 @@ void vPortSysTickHandler(void){
 	pic_enable_interrupt(PIC_INT_TMR);
 	return int_num;
 #endif
+
+#endif
 }
 /*-----------------------------------------------------------*/
 
+/*Entry Point for SOC Timer Interrupt Handler*/
+void vPortSysTickHandler_soc(void)
+{
+	/* Increment the RTOS tick. */
+	if ( xTaskIncrementTick() != pdFALSE )
+	{
+		vTaskSwitchContext();
+	}
+}
 
-void vPortSetupTimer(void)	{
+void vPortSetupTimer(void)
+{
+#ifdef configSOC_TIMER_AS_TICK
+	uint32_t threshold;
+	uint64_t reg;
+	int ret;
+
+	/* Register SoC Timer as systick soure timer */
+	ret = RegisterIrq(IRQ_NUM_TIMER, IRQ_TIMER_PROI, vPortSysTickHandler_soc);
+	if (ret)
+	printf("[%s]: RegisterIrq error, ret = %d\n",
+		   __func__, ret);
+	EnableIrq(IRQ_NUM_TIMER);
+
+	/* Set timer interrupt frequency */
+	threshold = configCPU_CLOCK_HZ / configTICK_RATE_HZ;
+	REG32(SYSCTRL_TIMER) = (threshold & 0xffff);
+
+	/*Enable timer, set timer to periodic irq timer mode, set clock.*/
+	reg = REG32(SYSTICK_TIMER_CTRL);
+	reg &= ~(TIMER_EN | TIMER_MODE_IRQ_PERIO);
+	reg |= SYSTICK_TIMER_CTRL_PARM;
+	REG32(SYSTICK_TIMER_CTRL) = reg;
+	#else
 	// Set the machine timer
 	//Bob: update it to TMR
 	volatile uint64_t * mtime       = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIME);
 	volatile uint64_t * mtimecmp    = (uint64_t*) (TIMER_CTRL_ADDR + TIMER_MTIMECMP);
 	uint64_t now = *mtime;
 	uint64_t then = now + (configCPU_CLOCK_HZ / configTICK_RATE_HZ);
+
 	*mtimecmp = then;
 	//print_eclic();
-#ifdef CONFIG_N200_REVA
+	#ifdef CONFIG_N200_REVA
 	pic_enable_interrupt(PIC_INT_TMR);
 	pic_set_priority(PIC_INT_TMR, 0x1);//Bob: set the TMR priority to the lowest
-#else
+	#else
 	uint8_t mtime_intattr;
 	mtime_intattr=eclic_get_intattr (ECLIC_INT_MTIP);
 	mtime_intattr|=ECLIC_INT_ATTR_SHV | ECLIC_INT_ATTR_MACH_MODE;
@@ -317,10 +360,12 @@ void vPortSetupTimer(void)	{
 
 	set_csr(mstatus, MSTATUS_MIE);
 #endif
+#endif
 }
 /*-----------------------------------------------------------*/
 
-void vPortSetup(void)	{
+void vPortSetup(void)
+{
 	vPortSetupTimer();
 	uxCriticalNesting = 0;
 }

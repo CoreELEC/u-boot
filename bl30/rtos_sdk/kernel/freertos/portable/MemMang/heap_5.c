@@ -145,7 +145,7 @@ space. */
 static size_t xBlockAllocatedBit = 0;
 
 /* Allocate the memory for the heap. */
-#if CONFIG_N200_REVA
+#if CONFIG_RISCV
 #define MAX_REGION_CNT 2
 static HeapRegion_t xDefRegion[MAX_REGION_CNT + 1] =
 	{

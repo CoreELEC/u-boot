@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "hw_business.h"

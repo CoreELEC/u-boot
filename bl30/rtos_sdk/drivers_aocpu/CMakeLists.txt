@@ -13,6 +13,7 @@ add_subdirectory_if_kconfig(uart)
 add_subdirectory_if_kconfig(cec)
 add_subdirectory_if_kconfig(ddr)
 add_subdirectory_if_kconfig(mailbox)
+add_subdirectory_if_kconfig(rtc)
 add_subdirectory_if_kconfig(vrtc)
 add_subdirectory_if_kconfig(str)
 add_subdirectory_if_kconfig(gpio)
@@ -28,6 +29,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/cec
 	${SDK_BASE}/drivers_aocpu/ddr
 	${SDK_BASE}/drivers_aocpu/mailbox
+	${SDK_BASE}/drivers_aocpu/rtc
 	${SDK_BASE}/drivers_aocpu/vrtc
 	${SDK_BASE}/drivers_aocpu/str
 	${SDK_BASE}/drivers_aocpu/gpio

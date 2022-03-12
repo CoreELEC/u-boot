@@ -7,7 +7,6 @@
 #ifndef __MAIL_IN_H__
 #define __MAIL_IN_H__
 
-#include "myprintf.h"
 #include "mailbox.h"
 #include "mailbox-api.h"
 

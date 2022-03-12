@@ -5,14 +5,13 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <util.h>
+#include <string.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-#include <stdio.h>
-#include "myprintf.h"
 #include <unistd.h>
 #include "n200_eclic.h"
 #include "n200_func.h"

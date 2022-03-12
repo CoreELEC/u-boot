@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <stdio.h>
 #include "ddr.h"
 #include "common.h"
 #include "register.h"

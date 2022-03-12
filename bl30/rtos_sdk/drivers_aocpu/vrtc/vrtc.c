@@ -52,7 +52,7 @@ void vRTC_update(void)
 void *xMboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
-	printf("[%s] xMboxSetRTC val=0x%x \n", TAG, val);
+	printf("[%s]: xMboxSetRTC val=0x%x \n", TAG, val);
 	set_rtc(val);
 
 	return NULL;
@@ -96,7 +96,7 @@ void alarm_set(void)
 	val = REG32(VRTC_PARA_REG);
 
 	if (val) {
-		printf("alarm val=%d S\n",val);
+		printf("[%s]: alarm val=%d S\n", TAG, val);
 		time_start = timere_read();
 		if (xRTCTimer)
 			xTimerStart(xRTCTimer, 0);
@@ -120,7 +120,7 @@ static void valarm_update(TimerHandle_t xTimer) {
 		uint32_t buf[4] = {0};
 		buf[0] = RTC_WAKEUP;
 
-		printf("alarm fired\n");
+		printf("[%s]: vrtc alarm fired\n", TAG);
 
 		REG32(VRTC_PARA_REG) = 0;
 		STR_Wakeup_src_Queue_Send(buf);

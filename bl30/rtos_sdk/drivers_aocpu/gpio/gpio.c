@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include <register.h>
 #include <common.h>

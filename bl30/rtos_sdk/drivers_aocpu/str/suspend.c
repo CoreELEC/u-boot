@@ -12,6 +12,7 @@
 #include "semphr.h"   /* Semaphore related API prototypes. */
 
 #include <unistd.h>
+#include <string.h>
 
 #include "n200_func.h"
 #include "common.h"
@@ -21,10 +22,11 @@
 
 #include "hdmi_cec.h"
 #include "vrtc.h"
+#include "rtc.h"
 #include "mailbox-api.h"
 #include "wakeup.h"
 #include "stick_mem.h"
-#include "ddr.h"
+#include "pm.h"
 
 void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
@@ -66,6 +68,45 @@ void set_suspend_flag(void)
 	suspend_flag = 1;
 	taskEXIT_CRITICAL();
 }
+__attribute__((weak)) void vDDR_suspend(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void vDDR_resume(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void alarm_set(void)
+{
+}
+
+__attribute__((weak)) void alarm_clr(void)
+{
+}
+
+__attribute__((weak)) void vRTC_update(void)
+{
+}
+
+__attribute__((weak)) void vCreat_alarm_timer(void)
+{
+}
+
+__attribute__((weak)) void store_rtc(void)
+{
+}
+
+__attribute__((weak)) void vCLK_suspend(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void vCLK_resume(uint32_t st_f)
+{
+	st_f = st_f;
+}
 
 void system_resume(uint32_t pm)
 {
@@ -73,6 +114,7 @@ void system_resume(uint32_t pm)
 
 	if (pm == 0xf)
 		shutdown_flag = 1;
+	vCLK_resume(shutdown_flag);
 	/*Need clr alarm ASAP*/
 	alarm_clr();
 	str_power_on(shutdown_flag);
@@ -82,8 +124,11 @@ void system_resume(uint32_t pm)
 	wakeup_ap();
 	clear_wakeup_trigger();
 	/*Shutdown*/
-	if (shutdown_flag)
+	if (shutdown_flag) {
+		/* Store RTC time for a5 temporarily*/
+		store_rtc();
 		watchdog_reset_system();
+	}
 }
 
 void system_suspend(uint32_t pm)
@@ -102,6 +147,7 @@ void system_suspend(uint32_t pm)
 	vTaskDelay(pdMS_TO_TICKS(500));
 	vDDR_suspend(shutdown_flag);
 	str_power_off(shutdown_flag);
+	vCLK_suspend(shutdown_flag);
 }
 
 void set_reason_flag(char exit_reason)
@@ -194,6 +240,23 @@ void *xMboxSuspend_Sem(void *msg)
 
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();
+
+	return NULL;
+}
+
+#define FREEZE_ENTER	0x01
+#define FREEZE_EXIT	0x02
+
+void *xMboxpm_sem(void *msg);
+void *xMboxpm_sem(void *msg)
+{
+	uint32_t mode = *(uint32_t *)msg;
+
+	if (mode == FREEZE_ENTER) {
+		pm_enter();
+	} else if (mode == FREEZE_EXIT) {
+		wakeup_ap_from_kernel();
+	}
 
 	return NULL;
 }
@@ -291,4 +354,9 @@ void create_str_task(void)
 					xMboxGetStickRebootFlag, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE,
+					xMboxpm_sem, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_PM_FREEZE);
 }

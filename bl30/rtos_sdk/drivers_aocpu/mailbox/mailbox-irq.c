@@ -6,10 +6,10 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include "myprintf.h"
 
 #include "mailbox-irq.h"
 #include "mailbox.h"
+#include "common.h"
 
 #define AOTAG "AOCPU"
 #define PRINT_DBG(...)	//printf(__VA_ARGS__)

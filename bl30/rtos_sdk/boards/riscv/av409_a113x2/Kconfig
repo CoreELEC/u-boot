@@ -1,0 +1,9 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_AV409_A5
+	bool "Amlogic AV409 Board"
+	select SOC_A5
+	help
+	  Enable Amlogic AV409 Board.

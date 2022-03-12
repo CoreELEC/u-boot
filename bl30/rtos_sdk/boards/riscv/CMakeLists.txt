@@ -8,13 +8,7 @@ aml_library_include_directories(
 	${SDK_BASE}/boards/${ARCH}/${BOARD}
 )
 
-aml_library_sources(
-	${BOARD}/fsm.c
-	${BOARD}/btwake.c
-	${BOARD}/keypad.c
-	${BOARD}/power.c
-	${BOARD}/hw_business.c
-)
+add_subdirectory(${BOARD})
 
 aml_library_link_libraries(kernel__${KERNEL})
 aml_library_link_libraries(drivers)

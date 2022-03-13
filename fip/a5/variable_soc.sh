@@ -168,3 +168,11 @@ DDR_FW_NAME="aml_ddr.fw"
 
 CONFIG_NEED_BL32=y
 ADVANCED_BOOTLOADER=1
+
+declare CONFIG_RTOS_SDK_ENABLE=1
+declare CONFIG_SOC_NAME="a5"
+if [ "${BL30_SELECT}" == "a5_av400" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="av400_a113x2"
+else
+	declare CONFIG_BOARD_PACKAGE_NAME="av409_a113x2"
+fi

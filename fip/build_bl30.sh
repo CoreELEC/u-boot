@@ -9,8 +9,8 @@ function build_bl30() {
 		local current_dir=$(cd $(dirname $0); pwd)
 		local work_dir=${current_dir}/bl30/rtos_sdk
 		local output_dir
-		cd $work_dir && source scripts/env.sh $CONFIG_BOARD_PACKAGE_NAME t5w riscv aocpu &&  make &&    \
-			output_dir=$work_dir/output/$BOARD-$PRODUCT/freertos
+		cd $work_dir && source scripts/env.sh riscv $CONFIG_SOC_NAME $CONFIG_BOARD_PACKAGE_NAME aocpu &&  make &&    \
+			output_dir=$work_dir/output/riscv-$CONFIG_BOARD_PACKAGE_NAME-$PRODUCT/freertos
 		target=$output_dir/bl30.bin
 		cp -arf $output_dir/freertos.bin $output_dir/bl30.bin
 	else

@@ -73,13 +73,15 @@ publish_firmware()
 # Manually cherry pick patches
 ./scripts/cherry_pick.sh
 
-# Build all projects
-BUILD_COMBINATION="$PWD/build_system/build_combination.txt"
+source scripts/gen_build_combination.sh
 
 i=0
 while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
 	i=$((i+1))
+
+	check_project "$LINE"
+	[ "$?" -ne 0 ] && continue
 	source scripts/env.sh $LINE
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
 	make distclean

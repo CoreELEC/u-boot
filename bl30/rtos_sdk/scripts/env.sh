@@ -9,9 +9,6 @@
 # Function: choose board and product, set environment variables.
 ###############################################################
 
-BUILD_COMBINATION_INPUT="$PWD/build_system/build_combination.in"
-BUILD_COMBINATION="$PWD/output/build_combination.txt"
-
 usage()
 {
 	echo "Usage: source $BASH_SOURCE [arch_name] [soc_name] [board_name] [product_name]"
@@ -19,44 +16,7 @@ usage()
 	echo ""
 }
 
-# $1: arch
-# $2: soc
-# $3: board
-# $4: product
-check_params()
-{
-	i=0
-	for arch in ${ARCHS[*]}; do
-		[[ "$1" == "$arch" ]] && break
-		i=$((i+1))
-	done
-	[ $i -ge ${#ARCHS[*]} ] && return 1
-
-	i=0
-	for soc in ${SOCS[*]};do
-		[[ "$2" == "$soc" ]] && break
-		i=$((i+1))
-	done
-	[ "$i" -ge ${#SOCS[*]} ] && return 2
-
-	i=0
-	for board in ${BOARDS[*]};do
-		[[ "$3" == "$board" ]] && break
-		i=$((i+1))
-	done
-	[ "$i" -ge ${#BOARDS[*]} ] && return 3
-
-	i=0
-	for product in ${PRODUCTS[*]};do
-		[[ "$4" == "$product" ]] && break
-		i=$((i+1))
-	done
-	[ "$i" -ge ${#PRODUCTS[*]} ] && return 4
-
-	return 0
-}
-
-function version_lt() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1"; }
+version_lt() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1"; }
 
 CMAKE_FILE=`which cmake`
 if [ -x /opt/cmake-3.18.4-Linux-x86_64/bin/cmake ]; then
@@ -85,25 +45,7 @@ if [ -z "$NINJA_FILE" ]; then
 	return 0
 fi
 
-unset ARCHS SOCS BOARDS PRODUCTS
-
-ARCHS=($(find $PWD/arch -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
-SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
-BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
-PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
-
-# Get available projects
-if [ ! -s "$BUILD_COMBINATION" ]; then
-	touch $BUILD_COMBINATION
-	while IFS= read -r LINE; do
-		ARCH=`echo "$LINE"|awk '{print $1}'`
-		SOC=`echo "$LINE"|awk '{print $2}'`
-		BOARD=`echo "$LINE"|awk '{print $3}'`
-		PRODUCT=`echo "$LINE"|awk '{print $4}'`
-		check_params $ARCH $SOC $BOARD $PRODUCT
-		[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
-	done < $BUILD_COMBINATION_INPUT
-fi
+source scripts/gen_build_combination.sh
 
 if [ -n "$1" ]; then
 	if [ $1 == "-h" ]; then
@@ -151,7 +93,7 @@ SOC=`echo "$PROJECT"|awk '{print $2}'`
 BOARD=`echo "$PROJECT"|awk '{print $3}'`
 PRODUCT=`echo "$PROJECT"|awk '{print $4}'`
 # Check current project
-check_params $ARCH $SOC $BOARD $PRODUCT
+check_build_combination $ARCH $SOC $BOARD $PRODUCT
 err=$?
 [ "$err" -eq 1 ] && echo "Invalid ARCH: $ARCH!" && return $err
 [ "$err" -eq 2 ] && echo "Invalid SOC: $SOC!" && return $err

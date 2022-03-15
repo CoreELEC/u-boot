@@ -39,7 +39,6 @@ typedef struct xPwmMesonRegs {
 	uint32_t  br; /*Blink Register*/
 } xPwmMesonRegs_t;
 
-extern unsigned int xPortIsIsrContext(void);
 static void prvPwmEnterCritical(UBaseType_t *uxIsr)
 {
 	if (xPortIsIsrContext())

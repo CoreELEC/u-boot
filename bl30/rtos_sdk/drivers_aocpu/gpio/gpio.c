@@ -16,7 +16,6 @@
 
 #define DRIVER_NAME "gpio"
 
-extern unsigned int xPortIsIsrContext(void);
 static void prvEnterCritical(UBaseType_t *uxIsr)
 {
 	if (xPortIsIsrContext())

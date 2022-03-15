@@ -58,8 +58,6 @@ void interrupt_disable(void);
 
 void interrupt_enable(void);
 
-unsigned int xPortIsIsrContext(void);
-
 __END_DECLS
 
 #endif

@@ -100,7 +100,6 @@ extern void vPortExitCritical( void );
 extern UBaseType_t uxPortSetInterruptMask( void );
 extern void vPortClearInterruptMask( UBaseType_t uxNewMaskValue );
 extern void vPortInstallFreeRTOSVectorTable( void );
-extern portCHAR xPortIsIsrContext( void );
 
 #if ENABLE_FTRACE
 extern void vTraceDisInterrupt(void);
@@ -122,44 +121,6 @@ extern void vTraceEnInterrupt(void);
 	__asm volatile ( "DSB SY" );									\
 	__asm volatile ( "ISB SY" ); \
 	vTraceEnInterrupt();
-
-static inline unsigned long _irq_save(void)
-{
-	unsigned long flags;
-
-	asm volatile(
-		"mrs	%0, daif		// arch_local_irq_save\n"
-		"msr	daifset, #2"
-		: "=r" (flags)
-		:
-		: "memory");
-#if ENABLE_FTRACE
-	vTraceDisInterrupt();
-#endif
-	return flags;
-}
-static inline void _irq_restore(unsigned long flags)
-{
-	asm volatile(
-		"msr	daif, %0		// arch_local_irq_restore"
-	:
-	: "r" (flags)
-	: "memory");
-#if ENABLE_FTRACE
-	if ((flags & 0x2) == 0)
-		vTraceEnInterrupt();
-#endif
-}
-
-#define portIRQ_SAVE(flags) 			\
-	do {						\
-		flags = _irq_save();		\
-	} while (0)
-
-#define portIRQ_RESTORE(flags)			\
-	do {						\
-		_irq_restore(flags);		\
-	} while (0)
 
 #if ENABLE_MODULE_LOGBUF
 #define __CMPXCHG_CASE(w, sz, name, mb, acq, rel, cl)			\

@@ -198,15 +198,7 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 	void vPortStoreTaskMPUSettings( xMPU_SETTINGS *xMPUSettings, const struct xMEMORY_REGION * const xRegions, StackType_t *pxBottomOfStack, uint32_t ulStackDepth ) PRIVILEGED_FUNCTION;
 #endif
 
-typedef enum Halt_Action{
-	HLTACT_RUN_OS=0,
-	HLTACT_SHUTDOWN_SYSTEM
-}Halt_Action_e;
-void vPortRtosInfoUpdateStatus(uint32_t status);
-void vPortHaltSystem(Halt_Action_e act);
-void vLowPowerSystem(void);
-void vPortAddIrq(uint32_t irq_num);
-void vPortRemoveIrq(uint32_t irq_num);
+
 void vPortConfigLogBuf(uint32_t pa, uint32_t len);
 void prvSleep( TickType_t xExpectedIdleTime );
 

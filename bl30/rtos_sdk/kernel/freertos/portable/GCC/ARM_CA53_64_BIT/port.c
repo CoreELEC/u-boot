@@ -535,84 +535,7 @@ uint32_t ulReturn;
 	}
 
 #endif /* configASSERT_DEFINED */
-/*-----------------------------------------------------------*/
 
-/*-----------------------------------------------------------*/
-portCHAR xPortIsIsrContext( void )
-{
-	return ullPortInterruptNesting == 0 ? 0 : 1;
-}
-/*-----------------------------------------------------------*/
-#define portMAX_IRQ_NUM		1024
-static unsigned char irq_mask[portMAX_IRQ_NUM/8];
-static void pvPortSetIrqMask(uint32_t irq_num, int val)
-{
-	int idx,bit;
-	unsigned long flags;
-	portIRQ_SAVE(flags);
-	bit=(irq_num&0x7);
-	idx=(irq_num/8);
-	if (val)irq_mask[idx] |= (1<<bit);
-	else irq_mask[idx] &= ~(1<<bit);
-	portIRQ_RESTORE(flags);
-}
-void vPortAddIrq(uint32_t irq_num)
-{
-	if (irq_num >= portMAX_IRQ_NUM)
-		return;
-	pvPortSetIrqMask(irq_num, 1);
-}
-void vPortRemoveIrq(uint32_t irq_num)
-{
-	if (irq_num >= portMAX_IRQ_NUM)
-		return;
-	pvPortSetIrqMask(irq_num, 0);
-}
-extern xRtosInfo_t xRtosInfo;
-void vPortRtosInfoUpdateStatus(uint32_t status)
-{
-	xRtosInfo.status=status;
-	vCacheFlushDcacheRange((uint64_t)&xRtosInfo, sizeof(xRtosInfo));
-}
-void vPortHaltSystem(Halt_Action_e act)
-{
-	uint32_t irq=0,i;
-	taskENTER_CRITICAL();
-	portDISABLE_INTERRUPTS();
-	for (irq = 0; irq < portMAX_IRQ_NUM; irq+=8) {
-		for ( i=0; i<8; i++) {
-			if (irq_mask[irq/8] & (1<<i)) {
-				plat_gic_irq_unregister(irq+i);
-			}
-		}
-	}
-#if 0
-	//Do not support now
-	if (act == HLTACT_SHUTDOWN_SYSTEM)
-		xRtosInfo.flags |= RTOSINFO_FLG_SHUTDOWN;
-	else
-		xRtosInfo.flags |= ~((uint32_t)RTOSINFO_FLG_SHUTDOWN);
-#else
-	(void)act;
-#endif
-	vPortRtosInfoUpdateStatus(eRtosStat_Done);
-	configPREPARE_CPU_HALT();
-	plat_gic_raise_softirq(1, 7);
-	while (1) {
-		__asm volatile ("wfi");
-	}
-}
-
-void vLowPowerSystem(void)
-{
-	taskENTER_CRITICAL();
-	portDISABLE_INTERRUPTS();
-	vPortRtosInfoUpdateStatus(eRtosStat_Done);
-	/*set mailbox to dsp for power control!*/
-	while (1)
-		__asm volatile ("wfi");
-
-}
 #if CONFIG_STACK_TRACE
 #include "stacktrace_64.h"
 int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
@@ -758,3 +681,6 @@ void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime )
 	}
 }
 #endif
+
+/* Add include implement source code which depend on the inner elements */
+#include "aml_portable_ext.c"

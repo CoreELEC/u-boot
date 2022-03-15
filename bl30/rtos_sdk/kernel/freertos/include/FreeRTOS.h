@@ -55,6 +55,9 @@ extern "C" {
 /* Application specific configuration options. */
 #include "FreeRTOSConfig.h"
 
+/* Add the extended interfaces for AML */
+#include "aml_ext_interfaces.h"
+
 /* Basic FreeRTOS definitions. */
 #include "projdefs.h"
 
@@ -247,14 +250,6 @@ extern "C" {
 
 #ifndef portMEMORY_BARRIER
 	#define portMEMORY_BARRIER()
-#endif
-
-#ifndef portIRQ_SAVE
-#define portIRQ_SAVE(a) (void)(a)
-#endif
-
-#ifndef portIRQ_RESTORE
-#define portIRQ_RESTORE(a) (void)(a)
 #endif
 
 /* The timers module relies on xTaskGetSchedulerState(). */

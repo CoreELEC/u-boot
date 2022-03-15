@@ -79,9 +79,6 @@ void vPortSetup(void);
 void vPortSysTickHandler_soc(void);
 
 /* System Call Trap */
-//ECALL macro stores argument in a2
-extern void vTaskDumpStack(TaskHandle_t xTask);
-
 unsigned long ulSynchTrap(unsigned long mcause, unsigned long sp, unsigned long arg1)
 {
 	int i = 0;

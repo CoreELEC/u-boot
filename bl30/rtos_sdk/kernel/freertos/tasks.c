@@ -2417,50 +2417,6 @@ TCB_t *pxTCB;
 #endif
 	return &( pxTCB->pcTaskName[ 0 ] );
 }
-/*-----------------------------------------------------------*/
-
-BaseType_t pcTaskSetName( TaskHandle_t xTaskToQuery, const char *pcName ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-{
-TCB_t *pxTCB;
-UBaseType_t x;
-BaseType_t xReturn;
-
-	/* If null is passed in here then the name of the calling task is being
-	queried. */
-	pxTCB = prvGetTCBFromHandle( xTaskToQuery );
-
-	/* Store the task name in the TCB. */
-	if( pxTCB != NULL && pcName != NULL )
-	{
-		for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
-		{
-			pxTCB->pcTaskName[ x ] = pcName[ x ];
-
-			/* Don't copy all configMAX_TASK_NAME_LEN if the string is shorter than
-			configMAX_TASK_NAME_LEN characters just in case the memory after the
-			string is not accessible (extremely unlikely). */
-			if( pcName[ x ] == ( char ) 0x00 )
-			{
-				break;
-			}
-			else
-			{
-				mtCOVERAGE_TEST_MARKER();
-			}
-		}
-
-		/* Ensure the name string is terminated in the case that the string length
-		was greater or equal to configMAX_TASK_NAME_LEN. */
-		pxTCB->pcTaskName[ configMAX_TASK_NAME_LEN - 1 ] = '\0';
-	}
-	else
-	{
-		xReturn = pdFALSE;
-	}
-
-	return xReturn;
-}
-/*-----------------------------------------------------------*/
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
@@ -5329,94 +5285,6 @@ const TickType_t xConstTickCount = xTickCount;
 	#endif /* INCLUDE_vTaskSuspend */
 }
 
-#if ( configUSE_TRACE_FACILITY == 1 )
-static TaskHandle_t prvFindTasksWithinSingleList( List_t *pxList, UBaseType_t tasknum )
-{
-	configLIST_VOLATILE TCB_t *pxNextTCB, *pxFirstTCB, *pxFound=NULL;
-
-	if ( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
-	{
-		listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList );
-		do
-		{
-			listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList );
-			if (!pxFound && tasknum == pxNextTCB->uxTCBNumber)
-				pxFound = pxNextTCB;
-		} while( pxNextTCB != pxFirstTCB );
-	}
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-
-	return pxFound;
-}
-TaskHandle_t xGetTaskHandleOfNum(UBaseType_t tasknum)
-{
-	UBaseType_t uxQueue = configMAX_PRIORITIES;
-	TCB_t *pxFirstTCB=NULL;
-	do
-	{
-		uxQueue--;
-		pxFirstTCB = prvFindTasksWithinSingleList( &( pxReadyTasksLists[ uxQueue ] ), tasknum );
-		if (pxFirstTCB)
-			goto GetTaskHandleOfNumExit;
-	} while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY );
-	pxFirstTCB = prvFindTasksWithinSingleList( ( List_t * ) pxDelayedTaskList, tasknum );
-	if (pxFirstTCB)
-		goto GetTaskHandleOfNumExit;
-	pxFirstTCB = prvFindTasksWithinSingleList( ( List_t * ) pxOverflowDelayedTaskList, tasknum );
-	if (pxFirstTCB)
-		goto GetTaskHandleOfNumExit;
-	#if( INCLUDE_vTaskDelete == 1 )
-	{
-		pxFirstTCB = prvFindTasksWithinSingleList( &xTasksWaitingTermination, tasknum );
-		if (pxFirstTCB)
-			goto GetTaskHandleOfNumExit;
-	}
-	#endif
-
-	#if ( INCLUDE_vTaskSuspend == 1 )
-	{
-		pxFirstTCB = prvFindTasksWithinSingleList( &xSuspendedTaskList, tasknum );
-		if (pxFirstTCB)
-			goto GetTaskHandleOfNumExit;
-	}
-	#endif
-GetTaskHandleOfNumExit:
-	return pxFirstTCB;
-}
-#endif
-void vTaskRename( TaskHandle_t xTask, const char *name)
-{
-	TCB_t *pxTCB;
-
-	pxTCB = prvGetTCBFromHandle( xTask );
-	configASSERT( pxTCB );
-
-	memcpy(pxTCB->pcTaskName, name, configMAX_TASK_NAME_LEN);
-	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
-}
-
-void vTaskDumpStack(TaskHandle_t xTask)
-{
-	TCB_t *pxTCB;
-	StackType_t *p;
-	int i;
-
-	pxTCB = prvGetTCBFromHandle( xTask );
-	if (!pxTCB)
-		return;
-	p = pxTCB->pxStack+pxTCB->uStackDepth-1;
-	printf("Dump Stack:\n");
-	while (p >= pxTCB->pxStack) {
-		printf("%08p:",(unsigned long)p);
-		for (i = 0; i < 8 && p >= pxTCB->pxStack; i++)
-			printf(" %08x",*p--);
-		printf("\n");
-	}
-}
-
 /* Code below here allows additional code to be inserted into this source file,
 especially where access to file scope functions and data is needed (for example
 when performing module tests). */
@@ -5470,3 +5338,6 @@ int kasan_current_enabled(void)
 	return 0;
 }
 #endif
+
+/* Add include implement source code which depend on the inner elements */
+#include "aml_tasks_ext.c"

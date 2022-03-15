@@ -35,6 +35,7 @@ endif()
 aml_library_include_directories(
 	include
 	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}
+	aml_extend
 )
 
 aml_library_link_libraries(arch__${ARCH})

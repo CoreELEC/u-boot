@@ -1396,18 +1396,6 @@ char *pcTaskGetName( TaskHandle_t xTaskToQuery ) PRIVILEGED_FUNCTION; /*lint !e9
 
 /**
  * task. h
- * <PRE>char *pcTaskSetName( TaskHandle_t xTaskToQuery, const char *pcName );</PRE>
- *
- * @return If set succeed then pdTRUE is
- *		  returned, otherwise pdFALSE is returned.
- *
- * \defgroup pcTaskSetName pcTaskSetName
- * \ingroup TaskUtils
- */
-BaseType_t pcTaskSetName( TaskHandle_t xTaskToQuery, const char *pcName ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-
-/**
- * task. h
  * <PRE>TaskHandle_t xTaskGetHandle( const char *pcNameToQuery );</PRE>
  *
  * NOTE:  This function takes a relatively long time to complete and should be
@@ -2423,12 +2411,6 @@ TaskHandle_t pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
  * section.
  */
 void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNCTION;
-
-void vTaskRename( TaskHandle_t xTask, const char *name);
-
-#if ( configUSE_TRACE_FACILITY == 1 )
-TaskHandle_t xGetTaskHandleOfNum(UBaseType_t uxTaskNumber);
-#endif
 
 #ifdef __cplusplus
 }

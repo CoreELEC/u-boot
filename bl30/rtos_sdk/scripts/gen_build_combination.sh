@@ -73,8 +73,8 @@ export BUILD_COMBINATION="$PWD/output/build_combination.txt"
 if [ ! -d "$PWD/output" ]; then
 	mkdir -p $PWD/output
 fi
-if [ ! -s "$BUILD_COMBINATION" ]; then
-	touch $BUILD_COMBINATION
+if [ ! -s "$BUILD_COMBINATION" ] || [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
+	:> $BUILD_COMBINATION
 	while IFS= read -r LINE; do
 		arch=`echo "$LINE"|awk '{print $1}'`
 		soc=`echo "$LINE"|awk '{print $2}'`

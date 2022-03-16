@@ -334,33 +334,51 @@ int xPortCheckIntegrity(void)
 			/* Header integrity check */
 			if (HEAD_CANARY(allocList[pos].allocHandle) != HEAD_CANARY_PATTERN)
 			{
-				printk("ERROR!!! detected buffer overflow(HEAD)\n");
+				printk("ERROR!!! detected buffer overflow(HEAD)\r\n");
+
+				size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
+				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
+
 				if (allocList[pos].xOwner)
 				{
 					TaskStatus_t status;
 					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
-					size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\n",
+					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
 						   status.pcTaskName, buffer_address, allocList[pos].requestSize, buffer_size);
-					print_traceitem(allocList[pos].backTrace);
 				}
+				else
+				{
+					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+						   buffer_address, allocList[pos].requestSize, buffer_size);
+				}
+
+				print_traceitem(allocList[pos].backTrace);
+
 				result++;
 			}
 			/* Tail integrity check */
 			if (TAIL_CANARY(allocList[pos].allocHandle, allocList[pos].blockSize) != TAIL_CANARY_PATTERN)
 			{
-				printk("ERROR!!! detected buffer overflow(TAIL)\n");
+				printk("ERROR!!! detected buffer overflow(TAIL)\r\n");
+
+				size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
+				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
+
 				if (allocList[pos].xOwner)
 				{
 					TaskStatus_t status;
 					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
-					size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\n",
+					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
 						   status.pcTaskName, buffer_address, allocList[pos].requestSize, buffer_size);
-					print_traceitem(allocList[pos].backTrace);
 				}
+				else
+				{
+					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+						   buffer_address, allocList[pos].requestSize, buffer_size);
+				}
+
+				print_traceitem(allocList[pos].backTrace);
+
 				result++;
 			}
 		}
@@ -439,7 +457,7 @@ int xPortMemoryScan(void)
 			/* Didn't found any references to a pointer */
 			if (!found)
 			{
-				printk("WARNING!!! detected buffer leak\n");
+				printk("WARNING!!! detected buffer leak\r\n");
 
 				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
 
@@ -447,13 +465,13 @@ int xPortMemoryScan(void)
 				{
 					TaskStatus_t status;
 					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\n",
+					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
 						   status.pcTaskName, allocatedAddress, allocList[pos].requestSize, buffer_size);
 					print_traceitem(allocList[pos].backTrace);
 				}
 				else
 				{
-					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\n",
+					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
 						   allocatedAddress, allocList[pos].requestSize, buffer_size);
 					print_traceitem(allocList[pos].backTrace);
 				}

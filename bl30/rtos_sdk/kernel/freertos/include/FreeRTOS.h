@@ -71,11 +71,7 @@ extern "C" {
 
 /* Required if struct _reent is used. */
 #if ( configUSE_NEWLIB_REENTRANT == 1 )
-#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 	#include <reent.h>
-#else
-	#include <reent_hi.h>
-#endif
 #endif
 /*
  * Check all the required application specific macros have been defined.

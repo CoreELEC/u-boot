@@ -307,7 +307,12 @@ function mk_devfip() {
 	dd if=/dev/zero of=${payload}/bl32.bin bs=524288 count=1
 	dd if=${output}/bl32.bin of=${payload}/bl32.bin conv=notrunc
 
-
+	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
+		mv -f ${output}/bl33.bin  ${output}/bl33.bin.org
+		encrypt_step --bl3sig  --input ${output}/bl33.bin.org --output ${output}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
+		dd if=${output}/bl33.bin.org.lz4 of=${output}/bl33.bin bs=1 skip=1824 >& /dev/null
+	fi
 	# fix size for BL33 1024KB + 512 KB
 	if [ ! -f ${output}/bl33.bin ]; then
 		echo "Error: ${output}/bl33.bin does not exist... abort"
@@ -833,9 +838,12 @@ function package() {
 
 	init_vari $@
 	# Enable Clear Image Packing for PXP
-	#build_fip $@
+	if [ -n "${CONFIG_BUILD_UNSIGN}" ]; then
+		build_fip $@
+	else
 	# Bypass Sign Process for PXP
-	build_signed $@
+		build_signed $@
+	fi
 	#copy_file
 	cleanup
 	echo "Bootloader build done!"

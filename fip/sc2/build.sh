@@ -78,8 +78,10 @@ function mk_bl2ex() {
 	payload=$2
 	ddr_type=$3
 
-	if [ ! -f ${output}/bl2.bin ]	|| \
-	   [ ! -f ${output}/bl2e.bin ]	|| \
+	if [ ! -f ${output}/bl2.bin.sto ]	|| \
+	   [ ! -f ${output}/bl2.bin.usb ]	|| \
+	   [ ! -f ${output}/bl2e.bin.sto ]	|| \
+	   [ ! -f ${output}/bl2e.bin.usb ]	|| \
 	   [ ! -f ${output}/bl2x.bin ]; then
 		echo "Error: ${output}/bl2/e/x.bin does not all exist... abort"
 		ls -la ${output}
@@ -89,11 +91,17 @@ function mk_bl2ex() {
 	echo "================================================================="
 	echo "image packing with acpu-imagetool for bl2 bl2e bl2x"
 
-	dd if=/dev/zero of=${payload}/bl2.bin bs=127904 count=1
-	dd if=${output}/bl2.bin of=${payload}/bl2.bin conv=notrunc
+	dd if=/dev/zero of=${payload}/bl2.bin.sto bs=127904 count=1
+	dd if=${output}/bl2.bin.sto of=${payload}/bl2.bin.sto conv=notrunc
 
-	dd if=/dev/zero of=${payload}/bl2e.bin bs=65536 count=1
-	dd if=${output}/bl2e.bin of=${payload}/bl2e.bin conv=notrunc
+	dd if=/dev/zero of=${payload}/bl2.bin.usb bs=127904 count=1
+	dd if=${output}/bl2.bin.usb of=${payload}/bl2.bin.usb conv=notrunc
+
+	dd if=/dev/zero of=${payload}/bl2e.bin.sto bs=65536 count=1
+	dd if=${output}/bl2e.bin.sto of=${payload}/bl2e.bin.sto conv=notrunc
+
+	dd if=/dev/zero of=${payload}/bl2e.bin.usb bs=65536 count=1
+	dd if=${output}/bl2e.bin.usb of=${payload}/bl2e.bin.usb conv=notrunc
 
 	dd if=/dev/zero of=${payload}/bl2x.bin bs=65536 count=1
 	dd if=${output}/bl2x.bin of=${payload}/bl2x.bin conv=notrunc
@@ -176,20 +184,33 @@ function mk_bl2ex() {
 		dd if=${INPUT_PARAMS}/device_acs.bin of=${payload}/device_acs.bin conv=notrunc
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/acpu-imagetool create-boot-blobs \
-			--infile-bl2-payload=${payload}/bl2.bin \
-			--infile-bl2e-payload=${payload}/bl2e.bin \
+	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--infile-bl2-payload=${payload}/bl2.bin.sto \
+			--infile-bl2e-payload=${payload}/bl2e.bin.sto \
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
 			--infile-ddr-fwdata=${payload}/ddrfw_data.bin \
-			--outfile-bb1st=${output}/test-bb1st.bin \
-			--outfile-blob-bl2e=${output}/test-blob-bl2e.bin \
-			--outfile-blob-bl2x=${output}/test-blob-bl2x.bin
+			--outfile-bb1st=${output}/bb1st.sto.bin \
+			--outfile-blob-bl2e=${output}/blob-bl2e.sto.bin \
+			--outfile-blob-bl2x=${output}/blob-bl2x.bin
 
-	if [ ! -f ${output}/test-bb1st.bin ] || \
-	   [ ! -f ${output}/test-blob-bl2e.bin ] || \
-	   [ ! -f ${output}/test-blob-bl2x.bin ]; then
+	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--infile-bl2-payload=${payload}/bl2.bin.usb \
+			--infile-bl2e-payload=${payload}/bl2e.bin.usb \
+			--infile-bl2x-payload=${payload}/bl2x.bin \
+			--infile-dvinit-params=${payload}/device_acs.bin \
+			--infile-csinit-params=${payload}/chip_acs.bin \
+			--infile-ddr-fwdata=${payload}/ddrfw_data.bin \
+			--outfile-bb1st=${output}/bb1st.usb.bin \
+			--outfile-blob-bl2e=${output}/blob-bl2e.usb.bin \
+			--outfile-blob-bl2x=${output}/blob-bl2x.bin
+
+	if [ ! -f ${output}/bb1st.sto.bin ] || \
+	   [ ! -f ${output}/bb1st.usb.bin ] || \
+	   [ ! -f ${output}/blob-bl2e.sto.bin ] || \
+	   [ ! -f ${output}/blob-bl2e.usb.bin ] || \
+	   [ ! -f ${output}/blob-bl2x.bin ]; then
 		echo "Error: ${output}/ bootblob does not all exist... abort"
 		ls -la ${output}/
 		exit -1
@@ -205,8 +226,8 @@ function mk_devfip() {
 	if [ -f ${output}/bl30.bin ]; then
 		#blx_size=`du -b ${output}/bl30.bin | awk '{print int(${output}/bl30.bin)}'`
 		blx_size=`stat -c %s ${output}/bl30.bin`
-		if [ $blx_size -gt 131072 ]; then
-			echo "Error: bl30 size exceed limit 131072"
+		if [ $blx_size -gt ${BL30_BIN_SIZE}]; then
+			echo "Error: bl30 size exceed limit ${BL30_BIN_SIZE}"
 			exit -1
 		fi
 	else
@@ -214,7 +235,7 @@ function mk_devfip() {
 		#dd if=/dev/random of=${output}/bl30.bin bs=4096 count=1
 		dd if=bl30/bin/sc2/bl30.bin of=${output}/bl30.bin
 	fi
-	dd if=/dev/zero of=${payload}/bl30.bin bs=131072 count=1
+	dd if=/dev/zero of=${payload}/bl30.bin bs=${BL30_BIN_SIZE} count=1
 	dd if=${output}/bl30.bin of=${payload}/bl30.bin conv=notrunc
 
 	# fix size for BL40 96KB
@@ -266,7 +287,12 @@ function mk_devfip() {
 	dd if=/dev/zero of=${payload}/bl32.bin bs=524288 count=1
 	dd if=${output}/bl32.bin of=${payload}/bl32.bin conv=notrunc
 
-
+	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
+		mv -f ${output}/bl33.bin  ${output}/bl33.bin.org
+		encrypt_step --bl3sig  --input ${output}/bl33.bin.org --output ${output}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
+		dd if=${output}/bl33.bin.org.lz4 of=${output}/bl33.bin bs=1 skip=1824 >& /dev/null
+	fi
 	# fix size for BL33 1024KB
 	if [ ! -f ${output}/bl33.bin ]; then
 		echo "Error: ${output}/bl33.bin does not exist... abort"
@@ -282,19 +308,19 @@ function mk_devfip() {
 	dd if=${output}/bl33.bin of=${payload}/bl33.bin conv=notrunc
 
 
-	./${FIP_FOLDER}${CUR_SOC}/acpu-imagetool create-device-fip \
+	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-device-fip \
 			--infile-bl30-payload=${payload}/bl30.bin \
 			--infile-bl40-payload=${payload}/bl40.bin \
 			--infile-bl31-payload=${payload}/bl31.bin \
 			--infile-bl32-payload=${payload}/bl32.bin \
 			--infile-bl33-payload=${payload}/bl33.bin \
-			--outfile-device-fip=${output}/test-device-fip.bin
+			--outfile-device-fip=${output}/device-fip.bin
 
-	if [ ! -f ${output}/test-device-fip.bin ]; then
-		echo "Error: ${output}/test-device-fip.bin does not exist... abort"
+	if [ ! -f ${output}/device-fip.bin ]; then
+		echo "Error: ${output}/device-fip.bin does not exist... abort"
 		exit -1
 	fi
-	echo "done to genenrate test-device-fip.bin"
+	echo "done to genenrate device-fip.bin"
 }
 
 function mk_uboot() {
@@ -457,7 +483,9 @@ function build_fip() {
 
 
 	# build final bootloader
-	mk_uboot ${BUILD_PATH} ${BUILD_PATH}
+	#mk_uboot ${BUILD_PATH} ${BUILD_PATH}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .sto ${CHIPSET_VARIANT_SUFFIX}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	return
 }
@@ -698,8 +726,11 @@ function package() {
 	fi
 
 	init_vari $@
-	#build_fip $@
-	build_signed $@
+	if [ -n "${CONFIG_BUILD_UNSIGN}" ]; then
+		build_fip $@
+	else
+		build_signed $@
+	fi
 	#copy_file
 	cleanup
 	echo "Bootloader build done!"

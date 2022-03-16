@@ -549,6 +549,10 @@ function bin_path_parser() {
 				CONFIG_FORMER_SIGN=1
 				export CONFIG_FORMER_SIGN
 				continue ;;
+			--build-unsign)
+				CONFIG_BUILD_UNSIGN=1
+				export CONFIG_BUILD_UNSIGN
+				continue ;;
 			--cas)
 				cas="${argv[$i]}"
 				#limit the "--cas xxx" only works for g12a

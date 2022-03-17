@@ -119,8 +119,8 @@ space. */
 static size_t xBlockAllocatedBit = 0;
 
 /*-----------------------------------------------------------*/
-#ifdef CONFIG_MEMORY_LEAK
-struct MemLeak MemLeak_t[CONFIG_MEMLEAK_ARRAY_SIZE];
+#ifdef CONFIG_DMALLOC
+struct MemLeak MemLeak_t[CONFIG_DMALLOC_SIZE];
 #endif
 
 void *pvPortMalloc( size_t xWantedSize )
@@ -128,7 +128,7 @@ void *pvPortMalloc( size_t xWantedSize )
 	BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 	void *pvReturn = NULL;
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -174,7 +174,7 @@ void *pvPortMalloc( size_t xWantedSize )
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 					MemLeak_t[0].Flag = 1;
 					MemLeak_t[0].TaskNum = 0;
@@ -312,7 +312,7 @@ void vPortFree( void *pv )
 	uint8_t *puc = ( uint8_t * ) pv;
 	BlockLink_t *pxLink;
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -341,7 +341,7 @@ void vPortFree( void *pv )
 		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
 		configASSERT( pxLink->pxNextFreeBlock == NULL );
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 			MemLeak_t[0].FreeSize = pxLink->xBlockSize;
 			MemLeak_t[0].FreeTotalSize += pxLink->xBlockSize;

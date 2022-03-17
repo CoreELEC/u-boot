@@ -536,7 +536,7 @@ uint32_t ulReturn;
 
 #endif /* configASSERT_DEFINED */
 
-#if CONFIG_STACK_TRACE
+#if CONFIG_BACKTRACE
 #include "stacktrace_64.h"
 int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
 {

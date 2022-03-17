@@ -81,7 +81,7 @@ task.h is included from an application file. */
 #if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 #include <printk.h>
 #include "sys_printf.h"
-#if CONFIG_STACK_TRACE
+#if CONFIG_BACKTRACE
 #include "stacktrace_64.h"
 #endif
 #endif
@@ -106,7 +106,7 @@ task.h is included from an application file. */
 of their memory address. */
 typedef struct A_BLOCK_LINK
 {
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 	size_t head_canary; /*<< Head Canary, TODO: Remove */
 #endif
 	struct A_BLOCK_LINK *pxNextFreeBlock; /*<< The next free block in the list. */
@@ -164,15 +164,14 @@ static HeapRegion_t xDefRegion[MAX_REGION_CNT + 1] =
 #endif
 
 /*-----------------------------------------------------------*/
-#ifdef CONFIG_MEMORY_LEAK
-struct MemLeak MemLeak_t[CONFIG_MEMLEAK_ARRAY_SIZE];
+#ifdef CONFIG_DMALLOC
+struct MemLeak MemLeak_t[CONFIG_DMALLOC_SIZE];
 #endif
 
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 
 #define UNWIND_DEPTH 5
 #define RAM_REGION_NUMS 2
-#define TRACE_BUFFER_LEN 256
 #define HEAD_CANARY_PATTERN (size_t)0x5051525354555657
 #define TAIL_CANARY_PATTERN (size_t)0x6061626364656667
 #define HEAD_CANARY(x) ((x)->head_canary)
@@ -195,7 +194,7 @@ typedef struct
 } allocTraceBlock_t;
 
 /* allocation buffer pool tracking alloc */
-allocTraceBlock_t allocList[TRACE_BUFFER_LEN] = {NULL};
+allocTraceBlock_t allocList[CONFIG_MEMORY_ERROR_DETECTION_SIZE] = {NULL};
 
 #if CONFIG_N200_REVA
 // NOTHING
@@ -213,17 +212,20 @@ tMemoryRegion globalRam[RAM_REGION_NUMS] = {
 // print_traceitem
 static void print_traceitem(unsigned long *trace)
 {
+#if CONFIG_BACKTRACE
 	printk("\tCallTrace:\n");
 	for (int i = 0; i < UNWIND_DEPTH; i++)
 	{
 		printk("\t");
 		print_symbol(*(trace + i));
 	}
+#endif
 	return;
 }
 // get_calltrace
 static void get_calltrace(unsigned long *trace)
 {
+#if CONFIG_BACKTRACE
 #define CT_SKIP 2
 	int32_t ret, i;
 	unsigned long _trace[32];
@@ -235,6 +237,7 @@ static void get_calltrace(unsigned long *trace)
 			trace[i] = _trace[i + CT_SKIP];
 		}
 	}
+#endif
 }
 /* Additional functions to scan memory (buffer overflow, memory leaks) */
 // vPortUpdateFreeBlockList
@@ -256,7 +259,7 @@ static void vPortAddToList(size_t pointer, size_t tureSize)
 	HEAD_CANARY(temp) = HEAD_CANARY_PATTERN;
 	TAIL_CANARY(temp, temp->xBlockSize) = TAIL_CANARY_PATTERN;
 	/* Fill Tracking Info Block */
-	while (pos < TRACE_BUFFER_LEN)
+	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
 	{
 		if (!allocList[pos].allocHandle)
 		{
@@ -291,7 +294,7 @@ static void vPortRmFromList(size_t pointer)
 	/* The allocated address of the current block */
 	size_t allocatedAddress = xHeapStructSize + pointer;
 	/* Check if the task is freed */
-	for (pos = 0; pos < TRACE_BUFFER_LEN; pos++)
+	for (pos = 0; pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE; pos++)
 	{
 		if (((size_t)(allocList[pos].xOwner)) == allocatedAddress)
 		{
@@ -299,7 +302,7 @@ static void vPortRmFromList(size_t pointer)
 		}
 	}
 	/* Release the specified tracking block */
-	for (pos = 0; pos < TRACE_BUFFER_LEN; pos++)
+	for (pos = 0; pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE; pos++)
 	{
 		if (allocList[pos].allocHandle == (BlockLink_t *)pointer)
 		{
@@ -327,7 +330,7 @@ int xPortCheckIntegrity(void)
 	} while (start->pxNextFreeBlock != NULL);
 
 	/* Scan allocated memory integrity */
-	while (pos < TRACE_BUFFER_LEN)
+	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
 	{
 		if (allocList[pos].allocHandle)
 		{
@@ -400,7 +403,7 @@ int xPortMemoryScan(void)
 	size_t *jumpEndAddress = (size_t *)((size_t)jumpStartAddress + sizeof(allocList));
 
 	/* memory leak scan */
-	while (pos < TRACE_BUFFER_LEN)
+	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
 	{
 		idx = 0;
 		found = 0;
@@ -410,7 +413,7 @@ int xPortMemoryScan(void)
 			/* Set target address */
 			allocatedAddress = xHeapStructSize + (size_t)(allocList[pos].allocHandle);
 			/* Scan all dynamic memory -1 */
-			while (idx < TRACE_BUFFER_LEN)
+			while (idx < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
 			{
 				if ((pos != idx) && (allocList[idx].allocHandle))
 				{
@@ -497,11 +500,11 @@ void *pvPortMalloc(size_t xWantedSize)
 	size_t mallocsz = xWantedSize;
 #endif
 
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 	size_t dMallocsz = xWantedSize;
 #endif
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 	int len = 0;
 	int MemTaskNum = 0;
 	char *taskname = pcTaskGetName(NULL);
@@ -541,7 +544,7 @@ void *pvPortMalloc(size_t xWantedSize)
 			{
 				xWantedSize += xHeapStructSize;
 
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 				xWantedSize += sizeof(size_t); // add size of tail_canary
 #endif
 				/* Ensure that blocks are always aligned to the required number
@@ -625,12 +628,12 @@ void *pvPortMalloc(size_t xWantedSize)
 					pxBlock->xBlockSize |= xBlockAllocatedBit;
 					pxBlock->pxNextFreeBlock = NULL;
 
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 					/* memory request record */
 					vPortAddToList((size_t)(((uint8_t *)pvReturn) - xHeapStructSize), dMallocsz);
 #endif
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 					if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
 					{
 						MemLeak_t[0].Flag = 1;
@@ -950,7 +953,7 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 	size_t mallocsz = xWantedSize;
 #endif
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 	char *taskname = pcTaskGetName(NULL);
 	int MemTaskNum = 0;
 	int len = 0;
@@ -1002,7 +1005,7 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
 				{
 					MemLeak_t[0].Flag = 1;
@@ -1163,7 +1166,7 @@ void vPortFree(void *pv)
 	BlockLink_t *pxLink;
 	unsigned long flags;
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 	int len = 0;
 	int MemTaskNum = 0;
 	char *taskname = pcTaskGetName(NULL);
@@ -1184,7 +1187,7 @@ void vPortFree(void *pv)
 		configASSERT((pxLink->xBlockSize & xBlockAllocatedBit) != 0);
 		configASSERT(pxLink->pxNextFreeBlock == NULL);
 
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
 		{
 			MemLeak_t[0].FreeSize = pxLink->xBlockSize;
@@ -1225,11 +1228,11 @@ void vPortFree(void *pv)
 					/* Add this block to the list of free blocks. */
 					xFreeBytesRemaining += pxLink->xBlockSize;
 					traceFREE(pv, pxLink->xBlockSize);
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 					vPortRmFromList((size_t)pxLink);
 #endif
 					prvInsertBlockIntoFreeList(((BlockLink_t *)pxLink));
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 					vPortUpdateFreeBlockList();
 #endif
 				}

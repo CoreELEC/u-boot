@@ -41,7 +41,7 @@ aml_library_include_directories(
 aml_library_link_libraries(arch__${ARCH})
 aml_library_link_libraries(drivers)
 
-if(CONFIG_STACK_TRACE)
+if(CONFIG_BACKTRACE)
 aml_library_link_libraries(libs__stack_trace)
 endif()
 

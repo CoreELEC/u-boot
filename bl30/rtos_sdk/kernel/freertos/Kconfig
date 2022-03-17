@@ -28,20 +28,28 @@ config KERNEL_COMPILER_DIR
 	help
 	  System compiler dir string.
 
-config MEMORY_LEAK
-	bool "memory malloc/free trace"
+config DMALLOC
+	bool "Debug Memory Allocation"
 	help
-	  Track task memory usage information.
+	  Enable the memory allocation statistics of tasks..
 
-config MEMLEAK_ARRAY_SIZE
-	hex "memleak trace arry size"
+config DMALLOC_SIZE
+	hex "Debug Memory Allocation Buffer Size"
+	depends on DMALLOC
 	default 128
 	help
-	  Set memleak trace buffer size.
+	  Set the buffer size of memory allocation statistics.
 
-config USE_MALLOC_DEBUG
-	bool "memory malloc/free debug"
+config MEMORY_ERROR_DETECTION
+	bool "Memory Error Detection"
 	help
-	  Used to assist debugging memory out-of-bounds, leaks.
+	  Enable detecting out-of-bounds access, memory leaks.
+
+config MEMORY_ERROR_DETECTION_SIZE
+	hex "Memory Error Detection Buffer Size"
+	depends on MEMORY_ERROR_DETECTION
+	default 256
+	help
+	  Set the buffer size of memory error detection.
 
 endif # KERNEL

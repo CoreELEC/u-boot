@@ -144,7 +144,7 @@ int vPrintFreeListAfterMallocFail(void);
 /*
  * Map to the memory management routines required for the port.
  */
-#ifdef CONFIG_MEMORY_LEAK
+#ifdef CONFIG_DMALLOC
 struct MemLeak {
 	char TaskName[20];
 	int TaskNum;
@@ -158,7 +158,7 @@ struct MemLeak {
 };
 #endif
 
-#ifdef CONFIG_USE_MALLOC_DEBUG
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
 int xPortCheckIntegrity(void);
 int xPortMemoryScan(void);
 #endif

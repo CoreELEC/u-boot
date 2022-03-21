@@ -2,18 +2,10 @@
 
 # SPDX-License-Identifier: MIT
 
-aml_add_library()
-
 aml_library_include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 aml_library_sources(
-	n200_func.c
+	interrupt_control.c
 )
-
-add_subdirectory(${SOC})
-
-aml_library_link_libraries(arch__${ARCH})
-
-aml_link_libraries()

@@ -12,7 +12,7 @@ if KERNEL
 
 config KERNEL_ARCH_DIR
 	string
-	default "ARM_CA53_64_BIT" if ARM_CA53_64_BIT
+	default "ARM_AML_64_BIT" if ARM_CA35_64_BIT || ARM_CA73_64_BIT
 	default "ARM_CA9" if ARM_CA9
 	default "RISC-V" if RISCV
 	default "Xtensa" if XTENSA

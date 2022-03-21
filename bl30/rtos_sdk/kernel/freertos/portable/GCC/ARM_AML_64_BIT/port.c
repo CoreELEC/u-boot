@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.1
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -27,10 +27,19 @@
 
 /* Standard includes. */
 #include <stdlib.h>
+#include <stdio.h>
+#include <gic.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "secure_apb.h"
+#include <rtosinfo.h>
+#include <cache.h>
+#include "common.h"
+#include "hwtimer.h"
+#include "tick_timer.h"
+#include "delay.h"
 
 #ifndef configINTERRUPT_CONTROLLER_BASE_ADDRESS
 	#error configINTERRUPT_CONTROLLER_BASE_ADDRESS must be defined.  See http://www.freertos.org/Using-FreeRTOS-on-Cortex-A-Embedded-Processors.html
@@ -78,6 +87,10 @@ portmacro.h. */
 	#define configCLEAR_TICK_INTERRUPT()
 #endif
 
+#ifndef configPREPARE_CPU_HALT
+#define configPREPARE_CPU_HALT()
+#endif
+
 /* A critical section is exited when the critical section nesting count reaches
 this value. */
 #define portNO_CRITICAL_NESTING			( ( size_t ) 0 )
@@ -97,7 +110,7 @@ context. */
 #define portSP_ELx						( ( StackType_t ) 0x01 )
 #define portSP_EL0						( ( StackType_t ) 0x00 )
 
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	#define portEL1						( ( StackType_t ) 0x04 )
 	#define portINITIAL_PSTATE				( portEL1 | portSP_EL0 )
 #else
@@ -285,6 +298,8 @@ uint32_t ulAPSR;
 		/* Read the value back to see how many bits stuck. */
 		ucMaxPriorityValue = *pucFirstUserPriorityRegister;
 
+		configASSERT( ucMaxPriorityValue != 0 );
+
 		/* Shift to the least significant bits. */
 		while( ( ucMaxPriorityValue & portBIT_0_SET ) != portBIT_0_SET )
 		{
@@ -293,7 +308,6 @@ uint32_t ulAPSR;
 
 		/* Sanity check configUNIQUE_INTERRUPT_PRIORITIES matches the read
 		value. */
-
 		configASSERT( ucMaxPriorityValue >= portLOWEST_INTERRUPT_PRIORITY );
 
 
@@ -308,8 +322,8 @@ uint32_t ulAPSR;
 	__asm volatile ( "MRS %0, CurrentEL" : "=r" ( ulAPSR ) );
 	ulAPSR &= portAPSR_MODE_BITS_MASK;
 
-#if defined( GUEST )
-	#warning Building for execution as a guest under XEN. THIS IS NOT A FULLY TESTED PATH.
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
+	//#warning Building for execution as a guest under XEN. THIS IS NOT A FULLY TESTED PATH.
 	configASSERT( ulAPSR == portEL1 );
 	if( ulAPSR == portEL1 )
 #else
@@ -391,9 +405,16 @@ void vPortExitCritical( void )
 	}
 }
 /*-----------------------------------------------------------*/
-
+volatile int standard_flag = 0;
 void FreeRTOS_Tick_Handler( void )
 {
+#if defined(CONFIG_EXCEPTION_SVC) && defined(configUSE_TICKLESS_IDLE)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
+	if (standard_flag) {
+		standard_flag = 0;
+		vTickTimerConfig(configTICK_RATE_HZ);
+	}
+#endif
+
 	/* Must be the lowest possible priority. */
 	#if !defined( QEMU )
 	{
@@ -514,5 +535,152 @@ uint32_t ulReturn;
 	}
 
 #endif /* configASSERT_DEFINED */
+
+#if CONFIG_BACKTRACE
+#include "stacktrace_64.h"
+int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
+{
+	StackType_t *pxTopOfStack;
+	int i;
+	if (!task || task == xTaskGetCurrentTaskHandle())
+		return -1;
+	pxTopOfStack=*(StackType_t **)task;
+	reg->sp = (unsigned long)pxTopOfStack;
+	if (*pxTopOfStack) pxTopOfStack += 64;
+	pxTopOfStack += 2;
+	reg->elr = *pxTopOfStack++;
+	reg->spsr = *pxTopOfStack++;
+	for (i=0; i<31; i++) {
+		reg->regs[i]=pxTopOfStack[31-(i^1)];
+	}
+	return 0;
+}
+#endif
+
+#if ENABLE_MODULE_LOGBUF
+void vPortConfigLogBuf(uint32_t pa, uint32_t len)
+{
+	xRtosInfo.logbuf_phy = pa;
+	xRtosInfo.logbuf_len = len;
+	vCacheFlushDcacheRange((uint64_t)&xRtosInfo, sizeof(xRtosInfo));
+}
+#endif
 /*-----------------------------------------------------------*/
 
+#if configUSE_TICKLESS_IDLE == 1
+
+	void prvSleep( TickType_t xExpectedIdleTime )
+	{
+		/* Allow the application to define some pre-sleep processing. */
+		configPRE_SLEEP_PROCESSING( xExpectedIdleTime );
+
+		/* xExpectedIdleTime being set to 0 by configPRE_SLEEP_PROCESSING()
+		means the application defined code has already executed the WAIT
+		instruction. */
+		if ( xExpectedIdleTime > 0 )
+			__asm volatile ("wfi");
+
+		/* Allow the application to define some post sleep processing. */
+		configPOST_SLEEP_PROCESSING( xExpectedIdleTime );
+	}
+
+#endif /* configUSE_TICKLESS_IDLE */
+/*-----------------------------------------------------------*/
+
+#if( configUSE_TICKLESS_IDLE ==1 )
+
+#define UINT_MAX		0xffffffff
+#define portMAX_16_BIT_NUMBER	0xffffU
+#define ulTimerCountsForOneTick 1000U
+#define xMaximumPossibleSuppressedTicks (portMAX_16_BIT_NUMBER/ulTimerCountsForOneTick)
+
+//void portSUPPRESS_TICKS_AND_SLEEP( TickType_t xExpectedIdleTime )
+void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime )
+{
+	uint64_t ulLowPowerTimeBeforeSleep, ulLowPowerTimeAfterSleep, ulDuration;
+	eSleepModeStatus eSleepStatus;
+	uint64_t ulRemainderValue = 0, ulReloadValue = 0;
+
+	if (xExpectedIdleTime > xMaximumPossibleSuppressedTicks)
+		xExpectedIdleTime = xMaximumPossibleSuppressedTicks;
+
+	/* read the current time from timere that will remain opereational
+	   while the microcontroller is in a low power state. */
+	ulLowPowerTimeBeforeSleep = xHwClockSourceRead();
+
+	/* Stop the timer that is generating the tick interrupt. */
+	prvStopTickInterruptTimer();
+
+	/* enter a critical section that will not effect inerrupts bringing
+	 the MCU out of sleep mode. */
+	portDISABLE_INTERRUPTS();
+
+	ulRemainderValue = xGetTickTimerCurrentValue();
+	ulReloadValue = xExpectedIdleTime * ulTimerCountsForOneTick;
+
+	/* ensure it is still ok to enter the sleep mode. */
+	eSleepStatus = eTaskConfirmSleepModeStatus();
+	if ( eSleepStatus == eAbortSleep ) {
+		/* a task has been woved out of the blocked state since this
+		 macro was executed, or a context siwth is being held pending.
+		 do not enter a sleep state, restart the tick and exit the critical
+		 section. */
+		/* configASSERT( (REG32(TICK_TIMER_CTRL) & 0x43) == 0x43 ); */
+		REG32(TICK_TIMER_CTRL) |= (1U << 7);
+
+		portENABLE_INTERRUPTS();
+	}
+	else {
+		if ( eSleepStatus == eNoTasksWaitingTimeout ) {
+			//iprintf("===== enter task waiting timeout ======== %d\n", eNoTasksWaitingTimeout);
+			/* it is not necessary to configure an interrupt to bring
+			   the microcontroller out of its low power state at a fixed
+			   time in the future. */
+			prvSleep(ulReloadValue);
+		} else {
+			/* configure an interrupt to bring the microcontroller
+			   out of its low power state at the time the kernel next
+			   needs to execute. the interrupt must be generated from
+			   a source that remains operational when the microcontroller is
+			   in a low power state. */
+			vSetWakeTimeInterrupt( ulReloadValue );
+			/* enter the low power state. */
+			prvSleep(ulReloadValue);
+		}
+		/*determine how long the microcontroller was acrually in a low power
+		  state for, which will be less than xExpectedIdleTime if the
+		  microcontroller was brought out of low power mode by an interrupt
+		  other than that configured by vSetWakeTimeInterrupt() call. Note
+		  that the scheduler is sucpended before portSUPPRESS_TICKS_AND_SLEEP()
+		  is called, and resumed when portSUPPRESS_TICKS_AND_SLEEP() returns. therefore
+		  no other tasks will execute until this function completes. */
+		ulLowPowerTimeAfterSleep = xHwClockSourceRead();
+		/* correct the kernels tick count to accunt for the time the microcontroller
+		   spent in its low power state. */
+		if (ulLowPowerTimeAfterSleep <  ulLowPowerTimeBeforeSleep)
+			ulDuration = ulLowPowerTimeAfterSleep + UINT_MAX - ulLowPowerTimeBeforeSleep;
+		else
+			ulDuration = ulLowPowerTimeAfterSleep - ulLowPowerTimeBeforeSleep;
+		/*if (ulDuration > ulReloadValue) {
+			iprintf("======= ulDuration: %ld, ulReloadValue: %d\n", ulDuration, ulReloadValue);
+		}
+		//configASSERT(ulDuration <= ulReloadValue);*/
+		if ((ulDuration + ulRemainderValue) > 1000000) {
+			iprintf("======ulDuration: %lx, ulRemainderValue: %lx, after: %lx, before: %lx\n", ulDuration, ulRemainderValue, ulLowPowerTimeAfterSleep, ulLowPowerTimeBeforeSleep);
+		}
+
+		vTaskStepTick( (ulDuration + ulRemainderValue) / 1000U );
+
+		/* exit the critical section - it might be possible to do this immediately after
+		   the prvSleep() call. */
+		portENABLE_INTERRUPTS();
+
+		/* restart the timer that is generating the tick interrupt. */
+		prvStartTickInterruptTimer( (ulDuration + ulRemainderValue) % 1000U );
+		standard_flag = 1;
+	}
+}
+#endif
+
+/* Add include implement source code which depend on the inner elements */
+#include "aml_portable_ext.c"

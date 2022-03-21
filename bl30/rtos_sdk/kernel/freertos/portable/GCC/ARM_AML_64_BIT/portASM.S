@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.1
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -69,7 +69,7 @@
 	STP 	X30, XZR, [SP, #-0x10]!
 
 	/* Save the SPSR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MRS		X3, SPSR_EL1
 	MRS		X2, ELR_EL1
 #else
@@ -179,7 +179,7 @@
 1:
 	LDP 	X2, X3, [SP], #0x10  /* SPSR and ELR. */
 
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	/* Restore the SPSR. */
 	MSR		SPSR_EL1, X3
 	/* Restore the ELR. */
@@ -224,27 +224,10 @@
 FreeRTOS_SWI_Handler:
 	/* Save the context of the current task and select a new task to run. */
 	portSAVE_CONTEXT
-#if defined( GUEST )
-	MRS		X0, ESR_EL1
-#else
-	MRS		X0, ESR_EL3
-#endif
 
-	LSR		X1, X0, #26
-
-#if defined( GUEST )
-	CMP		X1, #0x15 	/* 0x15 = SVC instruction. */
-#else
-	CMP		X1, #0x17 	/* 0x17 = SMC instruction. */
-#endif
-	B.NE	FreeRTOS_Abort
 	BL 		vTaskSwitchContext
 
 	portRESTORE_CONTEXT
-
-FreeRTOS_Abort:
-	/* Full ESR is in X0, exception class code is in X1. */
-	B		.
 
 /******************************************************************************
  * vPortRestoreTaskContext is used to start the scheduler.
@@ -256,7 +239,7 @@ vPortRestoreTaskContext:
 
 	/* Install the FreeRTOS interrupt handlers. */
 	LDR		X1, =freertos_vector_base
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		VBAR_EL1, X1
 #else
 	MSR		VBAR_EL3, X1
@@ -267,7 +250,42 @@ vPortRestoreTaskContext:
 	/* Start the first task. */
 	portRESTORE_CONTEXT
 
-
+.macro portSAVE_FPU
+	STP		Q0, Q1, [SP,#-0x20]!
+	STP		Q2, Q3, [SP,#-0x20]!
+	STP		Q4, Q5, [SP,#-0x20]!
+	STP		Q6, Q7, [SP,#-0x20]!
+	STP		Q8, Q9, [SP,#-0x20]!
+	STP		Q10, Q11, [SP,#-0x20]!
+	STP		Q12, Q13, [SP,#-0x20]!
+	STP		Q14, Q15, [SP,#-0x20]!
+	STP		Q16, Q17, [SP,#-0x20]!
+	STP		Q18, Q19, [SP,#-0x20]!
+	STP		Q20, Q21, [SP,#-0x20]!
+	STP		Q22, Q23, [SP,#-0x20]!
+	STP		Q24, Q25, [SP,#-0x20]!
+	STP		Q26, Q27, [SP,#-0x20]!
+	STP		Q28, Q29, [SP,#-0x20]!
+	STP		Q30, Q31, [SP,#-0x20]!
+.endm
+.macro portRESTORE_FPU
+	LDP		Q30, Q31, [SP], #0x20
+	LDP		Q28, Q29, [SP], #0x20
+	LDP		Q26, Q27, [SP], #0x20
+	LDP		Q24, Q25, [SP], #0x20
+	LDP		Q22, Q23, [SP], #0x20
+	LDP		Q20, Q21, [SP], #0x20
+	LDP		Q18, Q19, [SP], #0x20
+	LDP		Q16, Q17, [SP], #0x20
+	LDP		Q14, Q15, [SP], #0x20
+	LDP		Q12, Q13, [SP], #0x20
+	LDP		Q10, Q11, [SP], #0x20
+	LDP		Q8, Q9, [SP], #0x20
+	LDP		Q6, Q7, [SP], #0x20
+	LDP		Q4, Q5, [SP], #0x20
+	LDP		Q2, Q3, [SP], #0x20
+	LDP		Q0, Q1, [SP], #0x20
+.endm
 /******************************************************************************
  * FreeRTOS_IRQ_Handler handles IRQ entry and exit.
  *****************************************************************************/
@@ -275,6 +293,7 @@ vPortRestoreTaskContext:
 .type FreeRTOS_IRQ_Handler, %function
 FreeRTOS_IRQ_Handler:
 	/* Save volatile registers. */
+	portSAVE_FPU
 	STP		X0, X1, [SP, #-0x10]!
 	STP		X2, X3, [SP, #-0x10]!
 	STP		X4, X5, [SP, #-0x10]!
@@ -288,7 +307,7 @@ FreeRTOS_IRQ_Handler:
 	STP		X29, X30, [SP, #-0x10]!
 
 	/* Save the SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MRS		X3, SPSR_EL1
 	MRS		X2, ELR_EL1
 #else
@@ -315,9 +334,14 @@ FreeRTOS_IRQ_Handler:
 	/* Maintain the ICCIAR value across the function call. */
 	STP		X0, X1, [SP, #-0x10]!
 
+	UBFX	X1, X0, #1, #9
+	CMP		X1, #511
+	BEQ		irq_handle_done
+
 	/* Call the C handler. */
 	BL vApplicationIRQHandler
 
+irq_handle_done:
 	/* Disable interrupts. */
 	MSR 	DAIFSET, #2
 	DSB		SY
@@ -351,7 +375,7 @@ FreeRTOS_IRQ_Handler:
 
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		SPSR_EL1, X5
 	MSR		ELR_EL1, X4
 #else
@@ -372,6 +396,7 @@ FreeRTOS_IRQ_Handler:
 	LDP		X4, X5, [SP], #0x10
 	LDP		X2, X3, [SP], #0x10
 	LDP		X0, X1, [SP], #0x10
+	portRESTORE_FPU
 
 	/* Save the context of the current task and select a new task to run. */
 	portSAVE_CONTEXT
@@ -381,7 +406,7 @@ FreeRTOS_IRQ_Handler:
 Exit_IRQ_No_Context_Switch:
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
-#if defined( GUEST )
+#if defined(CONFIG_EXCEPTION_SVC)  /* replace GUEST with CONFIG_EXCEPTION_SVC. */
 	MSR		SPSR_EL1, X5
 	MSR		ELR_EL1, X4
 #else
@@ -402,6 +427,7 @@ Exit_IRQ_No_Context_Switch:
 	LDP		X4, X5, [SP], #0x10
 	LDP		X2, X3, [SP], #0x10
 	LDP		X0, X1, [SP], #0x10
+	portRESTORE_FPU
 
 	ERET
 
@@ -415,12 +441,10 @@ ullPortTaskHasFPUContextConst: .dword ullPortTaskHasFPUContext
 
 ullICCPMRConst: .dword ullICCPMR
 ullMaxAPIPriorityMaskConst: .dword ullMaxAPIPriorityMask
-vApplicationIRQHandlerConst: .word vApplicationIRQHandler
 ullPortInterruptNestingConst: .dword ullPortInterruptNesting
 ullPortYieldRequiredConst: .dword ullPortYieldRequired
 ullICCIARConst:	.dword ullICCIAR
 ullICCEOIRConst: .dword ullICCEOIR
-
 
 
 .end

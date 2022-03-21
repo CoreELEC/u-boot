@@ -4,10 +4,6 @@
 
 aml_add_library()
 
-aml_library_include_directories(
-	${SDK_BASE}/boards/${ARCH}/${BOARD}
-)
-
 add_subdirectory(${BOARD})
 
 aml_library_link_libraries(kernel__${KERNEL})

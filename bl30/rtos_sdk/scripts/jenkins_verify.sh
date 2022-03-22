@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 #
 
+source /etc/profile.d/TOOLSENV.sh
+
 export PATH=/opt/cmake-3.18.4-Linux-x86_64/bin/:$PATH
 export PATH=/proj/coverity/cov-analysis/bin/:$PATH
 export LM_LICENSE_FILE=/mnt/fileroot/jenkins/Xplorer_key.txt:$LM_LICENSE_FILE
@@ -26,7 +28,7 @@ elif [ "$SUBMIT_TYPE" = "merge" ];then
 fi
 
 MATCH_PATTERN="projects/"
-BRANCH=${BRANCH_NAME#*${MATCH_PATTERN}}
+BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
 
 LAST_MANIFEST_FILE="manifest_last.xml"

@@ -47,13 +47,12 @@ fi
 
 source scripts/gen_build_combination.sh
 
-if [ -n "$1" ]; then
-	if [ $1 == "-h" ]; then
-		usage
-		exit 0
-	else
-		PROJECT="$1 $2 $3 $4"
-	fi
+if [ -n "$1" ] && [ $1 == "-h" ]; then
+	usage
+	return 0
+elif [ $# -eq 4 ]; then
+	PROJECT="$1 $2 $3 $4"
+	echo "Choose project:$PROJECT"
 else
 	unset ARRAY
 

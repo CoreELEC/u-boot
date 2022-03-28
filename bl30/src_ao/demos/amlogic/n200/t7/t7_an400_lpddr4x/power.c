@@ -111,7 +111,7 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-
+	Bt_GpioIRQFree();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP

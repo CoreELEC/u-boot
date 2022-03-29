@@ -15,7 +15,7 @@ import jenkins
 
 serverRootUrl = "https://jenkins-sh.amlogic.com/job/Security/job/Signing/job/"
 homeConfigFilePath = "~/.sign.cfg"
-types = ["ta", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "fw", "aucpufw"]
+types = ["ta", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "aucpufw", "vdecfw"]
 casProviders = ["", "VMX", "nagra"]
 ddrTypes = ["ddr4", "lpddr4", "ddr3", "lpddr3", "lpddr4_lpddr5"]
 chipVariants = ["general", "nocs-jts-ap", "nocs-prod"]
@@ -111,10 +111,10 @@ def getJobRootUrl(type):
         return urljoin(serverRootUrl, "Sign_Bl2/")
     elif type == "bl32":
         return urljoin(serverRootUrl, "Sign_Bl32/")
-    elif type == "fw":
-        return urljoin(serverRootUrl, "Sign_FW/")
     elif type == "aucpufw":
         return urljoin(serverRootUrl, "Sign_AUCPU_FW/")
+    elif type == "vdecfw":
+        return urljoin(serverRootUrl, "Sign_VDEC_FW/")
     else:  # bl2e, bl2x, bl40
         return urljoin(serverRootUrl, "Sign_Bl2e_Bl2x_Bl40/")
 
@@ -128,10 +128,10 @@ def getJobName(type):
         return "Sign_Bl2"
     elif type == "bl32":
         return "Sign_Bl32"
-    elif type == "fw":
-        return "Sign_FW"
     elif type == "aucpufw":
         return "Sign_AUCPU_FW"
+    elif type == "vdecfw":
+        return "Sign_VDEC_FW"
     else:  # bl2e, bl2x, bl40
         return "Sign_Bl2e_Bl2x_Bl40"
 
@@ -184,7 +184,7 @@ def submitSignJob(
             "keyType": keyType,
             "testService": testService,
         }
-    else:  # bl2e, bl2x, bl31, bl40, aucpufw
+    else:  # bl2e, bl2x, bl31, bl40, aucpufw, vdecfw
         data = {
             "chipPartNumber": chipType,
             "keyType": keyType,

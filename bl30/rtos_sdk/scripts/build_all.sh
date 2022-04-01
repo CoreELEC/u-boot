@@ -5,19 +5,15 @@
 # SPDX-License-Identifier: MIT
 #
 
-# usage:./scripts/build_all.sh at rtos sdk root dir
-
 LOCAL_DOC_PATH="$PWD/output/docs/html"
 REMOTE_DOC_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
 
 # Build and upload document
-update_docoment()
-{
-	find -type f | while read filename
-	do
+update_docoment() {
+	find -type f | while read filename; do
 		curl -s --ftp-create-dirs -T $filename $REMOTE_DOC_PATH/$filename
 		if [ $? -ne 0 ]; then
-			return 1;
+			return 1
 		fi
 	done
 }
@@ -25,48 +21,67 @@ update_docoment()
 if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 	make docs
 	if [ -d $LOCAL_DOC_PATH ]; then
-		pushd $LOCAL_DOC_PATH > /dev/null
+		pushd $LOCAL_DOC_PATH >/dev/null
 		update_docoment
 		if [ $? -ne 0 ]; then
 			echo "Failed to update document"
 		else
 			echo "Document updated!"
 		fi
-		popd > /dev/null
+		popd >/dev/null
 	else
 		echo "$LOCAL_DOC_PATH not exist!"
 	fi
 fi
 
-BUILD_DATE=`date +%F`
+BUILD_DATE=$(date +%F)
+LOCAL_OUTPUT_PATH=output
+FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
 
-publish_firmware()
-{
-	LOCAL_FIRMWARE_PATH=output/$ARCH-$BOARD-$PRODUCT
-	REMOTE_FIRMWARE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/$ARCH-$BOARD-$PRODUCT
+publish_image() {
+	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
+	REMOTE_IMAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/$ARCH-$BOARD-$PRODUCT
 
-	if [ -d $LOCAL_FIRMWARE_PATH ]
-	then
-
-		ssh -n autobuild@$FIRMWARE_SERVER "mkdir -p $REMOTE_FIRMWARE_PATH"
-		if [ $? -ne 0 ]
-		then
-			echo "Failed to create remote path! $REMOTE_FIRMWARE_PATH"
+	if [ -d $LOCAL_IMAGE_PATH ]; then
+		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_IMAGE_PATH"
+		if [ $? -ne 0 ]; then
+			echo "Failed to create remote image path! $REMOTE_IMAGE_PATH"
 			exit 1
 		else
-			echo "Remote path: $REMOTE_FIRMWARE_PATH"
+			echo "Remote image path: $REMOTE_IMAGE_PATH"
 		fi
-		scp build.log autobuild@$FIRMWARE_SERVER:$REMOTE_FIRMWARE_PATH
-		pushd $LOCAL_FIRMWARE_PATH > /dev/null
+		scp build.log $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		pushd $LOCAL_IMAGE_PATH >/dev/null
 		tar -cJf $KERNEL.tar.xz $KERNEL/$KERNEL.*
 		LOCAL_FILES="manifest.xml $KERNEL.tar.xz"
-		scp $LOCAL_FILES autobuild@$FIRMWARE_SERVER:$REMOTE_FIRMWARE_PATH
-		scp -r images autobuild@$FIRMWARE_SERVER:$REMOTE_FIRMWARE_PATH
-		popd > /dev/null
-		echo "Publish success."
+		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		scp -r images $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		popd >/dev/null
+		echo "Publish images success."
 	else
-		echo "No local path! $LOCAL_FIRMWARE_PATH"
+		echo "No local image path! $LOCAL_IMAGE_PATH"
+	fi
+}
+
+publish_package() {
+	LOCAL_PACKAGE_PATH=$LOCAL_OUTPUT_PATH/package/images
+	REMOTE_PACKAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/package
+
+	if [ -d $LOCAL_PACKAGE_PATH ]; then
+		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_PACKAGE_PATH"
+		if [ $? -ne 0 ]; then
+			echo "Failed to create remote package path! $REMOTE_PACKAGE_PATH"
+			exit 1
+		else
+			echo "Remote package path: $REMOTE_PACKAGE_PATH"
+		fi
+		pushd $LOCAL_PACKAGE_PATH >/dev/null
+		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
+		popd >/dev/null
+		echo "Publish packages success."
+	else
+		echo "No local package path! $LOCAL_PACKAGE_PATH"
 	fi
 }
 
@@ -78,7 +93,7 @@ source scripts/gen_build_combination.sh
 i=0
 while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
-	i=$((i+1))
+	i=$((i + 1))
 
 	check_project "$LINE"
 	[ "$?" -ne 0 ] && continue
@@ -89,9 +104,24 @@ while IFS= read -r LINE; do
 	make
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-		publish_firmware
+		publish_image
 		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
 	fi
-done < "$BUILD_COMBINATION"
+done <"$BUILD_COMBINATION"
+
+source scripts/gen_package_combination.sh
+
+index=0
+while IFS= read -r LINE; do
+	source scripts/pkg_env.sh $index gen_all
+	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
+	make package
+	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
+	if [[ "$SUBMIT_TYPE" == "release" ]]; then
+		publish_package
+		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
+	fi
+	index=$((index + 1))
+done <"$PACKAGE_COMBINATION"
 
 echo "Build completed!"

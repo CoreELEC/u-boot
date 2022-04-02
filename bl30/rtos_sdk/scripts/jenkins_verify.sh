@@ -19,11 +19,9 @@ if [ -z "$MANIFEST_URL" ] || [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ]
 	exit 1
 fi
 
-if [ "$SUBMIT_TYPE" = "daily" -o "$SUBMIT_TYPE" = "weekly" ];then
+if [ "$SUBMIT_TYPE" = "daily" -o "$SUBMIT_TYPE" = "release" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
 elif [ "$SUBMIT_TYPE" = "every" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
-elif [ "$SUBMIT_TYPE" = "merge" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
 fi
 
@@ -113,12 +111,24 @@ fi
 # Manually cherry pick patches
 ./scripts/cherry_pick.sh
 
-echo "========= Building all projects ========"
-./scripts/build_all.sh > build.log 2>&1
-if [ "$?" -eq 0 ]; then
-	echo "======== Done ========"
+if [[ "$SUBMIT_TYPE" == "release" ]]; then
+	echo "========= Building all packages ========"
+	./scripts/build_all_pkg.sh > build.log 2>&1
+	if [ "$?" -eq 0 ]; then
+		echo "======== Done ========"
+	else
+		cat build.log
+		echo -e "\nAborted!"
+		exit 1
+	fi
 else
-	cat build.log
-	echo -e "\nAborted!"
-	exit 1
+	echo "========= Building all projects ========"
+	./scripts/build_all.sh > build.log 2>&1
+	if [ "$?" -eq 0 ]; then
+		echo "======== Done ========"
+	else
+		cat build.log
+		echo -e "\nAborted!"
+		exit 1
+	fi
 fi

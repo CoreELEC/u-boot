@@ -5,6 +5,13 @@
 # SPDX-License-Identifier: MIT
 #
 
+#!/bin/bash
+#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
 ./scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
@@ -26,25 +33,19 @@ fi
 # Manually cherry pick patches
 ./scripts/cherry_pick.sh
 
-source scripts/gen_build_combination.sh
+source scripts/gen_package_combination.sh
 
-i=0
+index=0
 while IFS= read -r LINE; do
-	[[ "$i" -ne 0 ]] && echo ""
-	i=$((i + 1))
-
-	check_project "$LINE"
-	[ "$?" -ne 0 ] && continue
-	source scripts/env.sh $LINE
+	source scripts/pkg_env.sh $index gen_all
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
-	make distclean
-	[ "$?" -ne 0 ] && echo "Failed to make distclean!" && exit 2
-	make
+	make package
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
-	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-		publish_image
+	if [[ "$SUBMIT_TYPE" == "release" ]]; then
+		publish_package
 		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
 	fi
-done <"$BUILD_COMBINATION"
+	index=$((index + 1))
+done <"$PACKAGE_COMBINATION"
 
 echo "Build completed!"

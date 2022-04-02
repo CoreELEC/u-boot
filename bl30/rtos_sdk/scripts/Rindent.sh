@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-PARAM="-npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1"
+PARAM="-npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1 -bad"
 
 function read_dir(){
     for file in `ls $1`

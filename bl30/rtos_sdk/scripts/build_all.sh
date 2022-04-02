@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-./scripts/publish.sh
+source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 	make docs

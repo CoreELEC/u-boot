@@ -55,7 +55,6 @@ void vApplicationIdleHook( void );
 void config_eclic_irqs ( void );
 void vApplicationIdleHook( void );
 void vApplicationMallocFailedHook( void );
-void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName );
 void power_on_off_cpu(void);
 
 extern void create_str_task(void);

@@ -88,7 +88,7 @@ struct xMesonI2c {
 	uint32_t clkin_rate;
 };
 
-struct xMesonI2c i2cs[8];
+struct xMesonI2c i2cs[11];
 struct xMesonI2cPlatdata *plat;
 
 uint32_t current_id;

@@ -22,10 +22,11 @@ manifest_file="./.repo/manifests/default.xml"
 
 def usage():
     """
-The script is  generate the module size for freertos.elf, 
+The script is  generate the module size for freertos.elf,
 Usage: ./scripts/module_size_report.py <manifest_file>
 
-Example: ./scripts/module_size_report.py ./.repo/manifests/default.xml
+Example: ./scripts/module_size_report.py -m ./.repo/manifests/default.xml
+Note: This script is depend on xlwt library, install cmd is "pip3 install xlwt"
 
 Description
     -h --help           display help information
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     os.system(nm_cmd+nm_para+elf_path+" > symbols_1.txt")
     book = xlwt.Workbook(encoding='utf-8', style_compression=0)
     sheet = book.add_sheet('symbol_report', cell_overwrite_ok=True)
-    col = ['Module', 'Text', 'Data', 'BSS', 'Total']
+    col = ['Module', 'Text', 'Data', 'BSS', 'Binary(text+Data)', 'Total']
     for i in range(0,len(col)):
         #write the first row
         sheet.write(0, i, col[i])
@@ -90,7 +91,8 @@ if __name__ == '__main__':
             sheet.write(row, 1, int(code_size))
             sheet.write(row, 2, int(data_size))
             sheet.write(row, 3, int(bss_size))
-            sheet.write(row, 4, int(total_size))
+            sheet.write(row, 4, int(code_size)+int(data_size))
+            sheet.write(row, 5, int(total_size))
             row +=1
 
 #write last row
@@ -99,5 +101,6 @@ sheet.write(row, 1, xlwt.Formula('SUM(B2:B%d'%(row)+')'))
 sheet.write(row, 2, xlwt.Formula('SUM(C2:C%d'%(row)+')'))
 sheet.write(row, 3, xlwt.Formula('SUM(D2:D%d'%(row)+')'))
 sheet.write(row, 4, xlwt.Formula('SUM(E2:E%d'%(row)+')'))
+sheet.write(row, 5, xlwt.Formula('SUM(F2:F%d'%(row)+')'))
 book.save(report_file)
 os.popen('rm symbols_1.txt symbols_2.txt symbols_3.txt')

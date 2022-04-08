@@ -165,6 +165,17 @@ else ifeq ($(CONFIG_RADXA_ZERO2),y)
 			--ddrfw8 $(buildsrc)/fip/$(SOC)/diag_lpddr4.fw \
 			--ddrfw9 $(buildsrc)/fip/$(SOC)/$(DDR_FW_NAME) \
 			--output $(FUSING_FOLDER)/u-boot.bin)
+else ifeq ($(CONFIG_ODROID_N2L),y)
+	$(call encrypt_step,--bootmk $(FIP_BL32_PROCESS) $(V3_PROCESS_FLAG) \
+			--bl2 $(buildtree)/fip/bl2.n.bin.sig \
+			--bl30 $(buildtree)/fip/bl30_new.bin.enc \
+			--bl31 $(buildtree)/fip/bl31.$(BL3X_SUFFIX).enc \
+			--bl33 $(buildtree)/fip/bl33.bin.enc \
+			--ddrfw1 $(buildsrc)/fip/$(SOC)/lpddr4_1d.fw \
+			--ddrfw2 $(buildsrc)/fip/$(SOC)/lpddr4_2d.fw \
+			--ddrfw4 $(buildsrc)/fip/$(SOC)/piei.fw \
+			--ddrfw8 $(buildsrc)/fip/$(SOC)/$(DDR_FW_NAME) \
+			--output $(FUSING_FOLDER)/u-boot.bin)
 else
 	$(call encrypt_step,--bootmk $(FIP_BL32_PROCESS) $(V3_PROCESS_FLAG) \
 		--bl2 $(buildtree)/fip/bl2.n.bin.sig \

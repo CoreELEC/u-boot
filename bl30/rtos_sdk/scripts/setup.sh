@@ -81,9 +81,7 @@ EOF
 cat <<EOF > $kconfig_file
 EOF
 
-# Filter manifest.xml of RTOS SDK
-sed -i '/rtos_sdk\//!d' $RTOS_SDK_MANIFEST_FILE
-# figure out the $relative_dir and its column
+# Figure out the $relative_dir and its column
 pattern="path="
 i=0
 keyline=`grep 'path=".*build_system"' $RTOS_SDK_MANIFEST_FILE`
@@ -92,7 +90,10 @@ for keyword in $keyline; do
 	if [[ $keyword == $pattern* ]]; then
 		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 		relative_dir=`dirname $repo_path`
-		break;
+		# Filter current project
+		if [[ $PWD == *$relative_dir ]]; then
+			break
+		fi
 	fi
 done
 
@@ -107,7 +108,11 @@ sort -k $i $RTOS_SDK_MANIFEST_FILE -o $RTOS_SDK_MANIFEST_FILE
 
 while IFS= read -r line
 do
-	keyline=`echo "$line" | grep 'name=.* path='`
+	keyline=`echo "$line" | grep "$pattern"`
+	if [ -z "$keyline" ]; then
+		continue
+	fi
+
 	for keyword in $keyline; do
 		if [[ $keyword == path=* ]]; then
 			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`

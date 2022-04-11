@@ -428,6 +428,11 @@ function parser() {
 				export CONFIG_MDUMP_COMPRESS
 				echo "SET CONFIG: CONFIG_MDUMP_COMPRESS"
 				continue ;;
+			--enable-bl33z)
+				CONFIG_SUPPORT_BL33Z=1
+				export CONFIG_SUPPORT_BL33Z
+				echo "SET CONFIG: CONFIG_SUPPORT_BL33Z"
+				continue ;;
 			--chipid)
 				CONFIG_CHIPID_SUPPORT=1
 				export CONFIG_CHIPID_SUPPORT

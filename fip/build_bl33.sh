@@ -31,6 +31,8 @@ function pre_build_uboot() {
 	cd ${UBOOT_SRC_FOLDER}
 	echo -n "Compile config: "
 	echo "$1"
+	SOCNAME=$1
+	echo "SOCNAME:${SOCNAME}"
 	make distclean # &> /dev/null
 	make $1'_config' # &> /dev/null
 	if [ $? != 0 ]
@@ -60,6 +62,36 @@ function build_uboot() {
 		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 CHIPMODE=${CONFIG_CHIP_NOCS} # &> /dev/null
 	fi
 
+	if [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then
+		echo ""
+		echo "ramdump enable, build bl33z.bin for soc [${SOCNAME}] ..."
+		if [ -z "${SOCNAME}" ];then
+			SOCNAME=p1
+		fi
+		if [ -f "./bl33z/Makefile" ]; then
+			make -C bl33z/ PLAT=${SOCNAME} AARCH=aarch64 distclean
+			make -C bl33z/ PLAT=${SOCNAME} AARCH=aarch64
+			if [ -f "./bl33z/build/bl33z.bin" -a -f "./build/u-boot.bin" ]; then
+				# place bl33z at end of u-boot.bin, _end align(4096)
+				END_LENS=`ls -l ./build/u-boot.bin | awk '{print $5}'`
+				END_ALIGN=4096
+				BL33Z_LOAD=`echo "((($END_LENS-1) / $END_ALIGN * $END_ALIGN) + $END_ALIGN)" | bc`
+				echo "uboot.bin size:$END_LENS, align:$END_ALIGN, new uboot size:$BL33Z_LOAD"
+
+				dd if=/dev/zero of=u-boot.tmp bs=$BL33Z_LOAD count=1
+				dd if=./build/u-boot.bin of=u-boot.tmp  conv=notrunc  &> /dev/null
+				cat ./bl33z/build/bl33z.bin >> u-boot.tmp
+				cp -rf u-boot.tmp build/u-boot.bin
+				rm -rf u-boot.tmp
+				echo "Append bl33z.bin to the end of uboot.bin OK."
+			else
+				echo "Error: build bl33z.bin failed... abort"
+			fi
+		else
+			echo "Error: bl33z proj is not exist... abort"
+		fi
+		echo ""
+	fi
 	ret=$?
 	cd ${MAIN_FOLDER}
 	if [ 0 -ne $ret ]; then

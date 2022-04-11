@@ -11,8 +11,8 @@
 
 cmake_file="$PWD/CMakeLists.txt"
 kconfig_file="$PWD/Kconfig"
-build_dir="build"
-exclude_dir="products docs"
+build_dir="build_system"
+exclude_dirs="boot products docs"
 special_dirs="arch soc boards"
 
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
@@ -84,7 +84,7 @@ EOF
 # Figure out the $relative_dir and its column
 pattern="path="
 i=0
-keyline=`grep 'path=".*build_system"' $RTOS_SDK_MANIFEST_FILE`
+keyline=`grep "path=\".*$build_dir\"" $RTOS_SDK_MANIFEST_FILE`
 for keyword in $keyline; do
 	let i++
 	if [[ $keyword == $pattern* ]]; then
@@ -124,10 +124,15 @@ do
 				category=`dirname $repo_path`
 			fi
 
-			# exclude other ARCH dirs
-			if [[ $repo_path == docs* ]] || [[ $repo_path == products* ]]; then
-				continue
-			fi
+			# exclude some dirs
+			skip_flag=0
+			for exclude_dir in $exclude_dirs; do
+				if [[ $repo_path == $exclude_dir* ]]; then
+					skip_flag=1
+					break
+				fi
+			done
+			[ "$skip_flag" -eq 1 ] && continue
 
 			# substitute ARCH dirs with viarable
 			case $special_dirs in

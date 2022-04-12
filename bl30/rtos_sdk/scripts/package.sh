@@ -21,7 +21,7 @@ function package_target_verify() {
 
     #parameter check
     if [ -z "$PACKAGE_ARRY" ]; then
-        echo -e "\033[41;33m package list is not set, please execute source scripts/env_package.sh \033[0m"
+        echo -e "\033[41;33m package list is not set, please execute source scripts/pkg_env.sh \033[0m"
         exit 1
     fi
 

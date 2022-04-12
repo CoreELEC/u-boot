@@ -5,26 +5,39 @@
  */
 
 #include "aml_portable_ext.h"
-#include "rtosinfo.h"
+
 #include "FreeRTOS.h"
+#include "arm-smccc.h"
+#include "rtosinfo.h"
 #include "task.h"
 
-#define portMAX_IRQ_NUM		1024
+#define portMAX_IRQ_NUM 1024
 
 extern xRtosInfo_t xRtosInfo;
 
-static unsigned char irq_mask[portMAX_IRQ_NUM/8];
+static unsigned char irq_mask[portMAX_IRQ_NUM / 8];
 
 static void pvPortSetIrqMask(uint32_t irq_num, int val)
 {
-	int idx,bit;
+	int idx, bit;
 	unsigned long flags;
+
 	portIRQ_SAVE(flags);
-	bit=(irq_num&0x7);
-	idx=(irq_num/8);
-	if (val)irq_mask[idx] |= (1<<bit);
-	else irq_mask[idx] &= ~(1<<bit);
+	bit = (irq_num & 0x7);
+	idx = (irq_num / 8);
+	if (val)
+		irq_mask[idx] |= (1 << bit);
+	else
+		irq_mask[idx] &= ~(1 << bit);
 	portIRQ_RESTORE(flags);
+}
+
+static unsigned long prvCorePowerDown(void)
+{
+	struct arm_smccc_res res;
+
+	arm_smccc_smc(0x84000002, 0, 0, 0, 0, 0, 0, 0, &res);
+	return res.a0;
 }
 
 void vLowPowerSystem(void)
@@ -34,11 +47,11 @@ void vLowPowerSystem(void)
 	vPortRtosInfoUpdateStatus(eRtosStat_Done);
 	/*set mailbox to dsp for power control!*/
 	while (1) {
-		__asm volatile ("wfi");
+		__asm volatile("wfi");
 	}
 }
 
-uint8_t xPortIsIsrContext( void )
+uint8_t xPortIsIsrContext(void)
 {
 #if CONFIG_ARM64
 	return ullPortInterruptNesting == 0 ? 0 : 1;
@@ -62,20 +75,20 @@ void vPortRemoveIrq(uint32_t irq_num)
 
 void vPortRtosInfoUpdateStatus(uint32_t status)
 {
-	xRtosInfo.status=status;
+	xRtosInfo.status = status;
 	vCacheFlushDcacheRange((uint64_t)&xRtosInfo, sizeof(xRtosInfo));
 }
 
 void vPortHaltSystem(Halt_Action_e act)
 {
-	uint32_t irq=0,i;
+	uint32_t irq = 0, i;
+
 	taskENTER_CRITICAL();
 	portDISABLE_INTERRUPTS();
-	for (irq = 0; irq < portMAX_IRQ_NUM; irq+=8) {
-		for ( i=0; i<8; i++) {
-			if (irq_mask[irq/8] & (1<<i)) {
-				plat_gic_irq_unregister(irq+i);
-			}
+	for (irq = 0; irq < portMAX_IRQ_NUM; irq += 8) {
+		for (i = 0; i < 8; i++) {
+			if (irq_mask[irq / 8] & (1 << i))
+				plat_gic_irq_unregister(irq + i);
 		}
 	}
 #if 0
@@ -91,6 +104,10 @@ void vPortHaltSystem(Halt_Action_e act)
 	configPREPARE_CPU_HALT();
 	plat_gic_raise_softirq(1, 7);
 	while (1) {
-		__asm volatile ("wfi");
+#ifdef CONFIG_SOC_T7
+		prvCorePowerDown();
+#else
+		__asm volatile("wfi");
+#endif
 	}
 }

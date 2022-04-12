@@ -162,6 +162,22 @@ void str_power_off(int shutdown_flag)
 	printf("poweroff 5v\n");
 	printf("0x%x\n", REG32(AO_GPIO_TEST_N));
 
+	/*to prevent the leakage on GPIOH_0/8 */
+	xPinmuxSet(GPIOH_0, PIN_FUNC0);
+	ret = xGpioSetValue(GPIOH_0, GPIO_LEVEL_LOW);
+	ret = xGpioSetDir(GPIOH_0, GPIO_DIR_OUT);
+	xPinmuxSet(GPIOH_8, PIN_FUNC0);
+	ret = xGpioSetValue(GPIOH_8, GPIO_LEVEL_LOW);
+	ret = xGpioSetDir(GPIOH_8, GPIO_DIR_OUT);
+
+	/*to prevent the leakage on GPIOZ_0/1/2 */
+	xPinmuxSet(GPIOZ_0, PIN_FUNC0);
+	ret = xGpioSetValue(GPIOZ_0, GPIO_LEVEL_LOW);
+	xPinmuxSet(GPIOZ_1, PIN_FUNC0);
+	ret = xGpioSetValue(GPIOZ_1, GPIO_LEVEL_LOW);
+	xPinmuxSet(GPIOZ_2, PIN_FUNC0);
+	ret = xGpioSetValue(GPIOZ_2, GPIO_LEVEL_LOW);
+
 	REG32(AO_GPIO_TEST_N) = (REG32(AO_GPIO_TEST_N) << 1) >> 1;
 
 	if (shutdown_flag) {

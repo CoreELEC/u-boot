@@ -40,8 +40,8 @@ mkdir -p "./intermediate/"
 ${ACPU_IMAGETOOL} create-boot-blobs \
     --scs-family=sc2 \
     --infile-template-bb1st=${FIN_BB1ST_BIN} \
-    --infile-pubkey-device-lvl2cert=${DEVICE_KEYS_BASEDIR}/boot-blobs/rsa/s905c2/rootrsa-0/key/level-2-rsa-pub.pem \
-    --infile-epks-device-lvl2cert=${DEVICE_KEYS_BASEDIR}/boot-blobs/rsa/s905c2/rootrsa-0/epk/lvl2cert-epks.bin \
+    --infile-pubkey-device-lvl2cert=${DEVICE_KEYS_BASEDIR}/boot-blobs/rsa/${PRJ}/rootrsa-0/key/level-2-rsa-pub.pem \
+    --infile-epks-device-lvl2cert=${DEVICE_KEYS_BASEDIR}/boot-blobs/rsa/${PRJ}/rootrsa-0/epk/lvl2cert-epks.bin \
     --outfile-bb1st=${FOUT_BB1ST_BIN}
 
 ### Copy BLOB BL2E ###

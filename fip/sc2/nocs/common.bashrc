@@ -9,7 +9,7 @@ echo ${BASHRC_BASEDIR}
 ACPU_IMAGETOOL="${BASHRC_BASEDIR}/tools/bin/acpu-imagetool"
 
 DEVICE_KEYS_BASEDIR=$(realpath -m ${BASHRC_BASEDIR}/stage-3a-stbm-generate-keysets/output/data-stbm/outdir/)
-AESKEY_ROOT_BASEDIR=$(realpath -m ${BASHRC_BASEDIR}/stage-3a-stbm-generate-keysets/output/data-stbm/keydir/root/aes/s905c2/rootkey/)
+AESKEY_ROOT_BASEDIR=$(realpath -m ${BASHRC_BASEDIR}/stage-3a-stbm-generate-keysets/output/data-stbm/keydir/root/aes/${PRJ}/rootkey/)
 
 #
 # Checking

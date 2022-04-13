@@ -55,7 +55,7 @@ dd status=none iflag=skip_bytes,count_bytes \
         seek=$(( 0x2000 ))
 
 dd status=none iflag=skip_bytes,count_bytes \
-        if=${DEVICE_KEYS_BASEDIR}/boot-blobs/template/s905c2/rootrsa-0/bb1st.bin \
+        if=${DEVICE_KEYS_BASEDIR}/boot-blobs/template/${PRJ}/rootrsa-0/bb1st.bin \
         skip=$(( 0x2080 )) count=$(( 0x500 )) \
     | dd status=none oflag=seek_bytes conv=notrunc \
         of=${FOUT_BB1ST_BIN} \

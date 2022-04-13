@@ -1,4 +1,12 @@
 #!/bin/bash
+if [[ $1 =~ "sc2" ]];
+then
+PROJECT=`cat ./bl33/v2019/board/amlogic/defconfigs/$1_defconfig | grep 'CONFIG_CHIPSET_NAME' | awk -F '=' '{print $2}' `
+PRJ=`echo $PROJECT | tr -d "\""`
+echo $PRJ
+export PRJ
+fi;
+
 if [[ $1 == "ta_seg_id" ]];		## generate dfu&device keys
 then
 	mkdir -p ./fip/sc2/nocs/efuse/input
@@ -8,25 +16,25 @@ then
 elif [[ $2 == "generate_keys" ]];		## generate dfu&device keys
 then
 	echo "Start to build Uboot";
-		if [ ! -f "dv_scs_keys/root/rsa/s905c2/roothash/hash-device-rootcert.bin"  ];
+		if [ ! -f "dv_scs_keys/root/rsa/$PRJ/roothash/hash-device-rootcert.bin"  ];
 		then	echo "generate dfu keys";
-			./fip/sc2/generate-device-keys/gen_all_device_key.sh --key-dir ./dv_scs_keys --rsa-size 4096 --project s905c2 --rootkey-index 0 --template-dir ./soc/templates/sc2/ --out-dir ./bl33/v2019/board/amlogic/$1/device-keys
+			./fip/sc2/generate-device-keys/gen_all_device_key.sh --key-dir ./dv_scs_keys --rsa-size 4096 --project $PRJ --rootkey-index 0 --template-dir ./soc/templates/sc2/ --out-dir ./bl33/v2019/board/amlogic/$1/device-keys
 			./fip/sc2/nocs/createtemplate.sh $1
 			./fip/sc2/generate-device-keys/bin/dvuk_gen.sh fip/sc2/nocs/dvuk
 			mkdir -p ./fip/sc2/nocs/efuse/input
 			mkdir -p ./fip/sc2/nocs/efuse/output
-			./fip/sc2/bin/efuse-gen.sh --dfu-device-roothash ./dv_scs_keys/root/rsa/s905c2/roothash/hash-device-rootcert.bin -o ./fip/sc2/nocs/efuse/input/dfu.efuse
-			./fip/sc2/bin/efuse-gen.sh --dvgk ./dv_scs_keys/root/dvgk/s905c2/dvgk.bin -o ./fip/sc2/nocs/efuse/input/dvgk.efuse 
+			./fip/sc2/bin/efuse-gen.sh --dfu-device-roothash ./dv_scs_keys/root/rsa/$PRJ/roothash/hash-device-rootcert.bin -o ./fip/sc2/nocs/efuse/input/dfu.efuse
+			./fip/sc2/bin/efuse-gen.sh --dvgk ./dv_scs_keys/root/dvgk/$PRJ/dvgk.bin -o ./fip/sc2/nocs/efuse/input/dvgk.efuse
 			./fip/sc2/bin/efuse-gen.sh --dvuk ./fip/sc2/nocs/dvuk.bin -o ./fip/sc2/nocs/efuse/input/dvuk.efuse
 		else
 			./fip/sc2/nocs/createtemplate.sh $1
 			echo "no need generate dfu keys"; 
 		fi;
 ## generate device keys
-	cp ./dv_scs_keys/root/dvgk/s905c2/dvgk.bin ./fip/sc2/nocs
+	cp ./dv_scs_keys/root/dvgk/$PRJ/dvgk.bin ./fip/sc2/nocs
 	cd ./fip/sc2/nocs
 
-	if [ ! -f "./stage-3a-stbm-generate-keysets/output/data-stbm/keydir/boot-blobs/rsa/s905c2/rootrsa-0/key/level-2-rsa-pub.pem"  ];
+	if [ ! -f "./stage-3a-stbm-generate-keysets/output/data-stbm/keydir/boot-blobs/rsa/$PRJ/rootrsa-0/key/level-2-rsa-pub.pem"  ];
 	then echo "generate device key";
 		./run-generate-key.sh
 	else

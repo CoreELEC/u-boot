@@ -32,16 +32,16 @@ mkdir -p ${STBM_DATA_BASEDIR}
 
 ${AMLOGIC_BOOTLOADER_BUILDDIR}/fip/sc2/generate-device-keys/gen_all_device_key.sh \
     --template-dir "${AMLOGIC_BOOTLOADER_BUILDDIR}/soc/templates/sc2" \
-    --project s905c2 \
+    --project ${PRJ} \
     --external-dvgk ${DVGK_EXTERNAL}	\
     --external_lvl1cert_epks ${LVL1CERT_EPKS} \
     --rsa-size 4096 \
     --out-dir "${STBM_DATA_BASEDIR}/outdir" \
     --key-dir "${STBM_DATA_BASEDIR}/keydir"
 
-mkdir -p ${STBM_DATA_BASEDIR}/outdir/boot-blobs/rsa/s905c2/rootrsa-0/epk/
+mkdir -p ${STBM_DATA_BASEDIR}/outdir/boot-blobs/rsa/${PRJ}/rootrsa-0/epk/
 cp -adv \
-    ${STBM_DATA_BASEDIR}/keydir/boot-blobs/rsa/s905c2/rootrsa-0/epk/lvl2cert-epks.bin \
-    ${STBM_DATA_BASEDIR}/outdir/boot-blobs/rsa/s905c2/rootrsa-0/epk/lvl2cert-epks.bin
+    ${STBM_DATA_BASEDIR}/keydir/boot-blobs/rsa/${PRJ}/rootrsa-0/epk/lvl2cert-epks.bin \
+    ${STBM_DATA_BASEDIR}/outdir/boot-blobs/rsa/${PRJ}/rootrsa-0/epk/lvl2cert-epks.bin
 
 # vim: set syntax=sh filetype=sh tabstop=4 expandtab shiftwidth=4 softtabstop=-1:

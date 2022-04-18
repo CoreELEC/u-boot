@@ -2,5 +2,5 @@
 
 # SPDX-License-Identifier: MIT
 
-source "soc/riscv/${SOC}/Kconfig"
+rsource "${SOC}/Kconfig"
 

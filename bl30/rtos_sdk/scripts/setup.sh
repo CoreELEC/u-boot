@@ -39,7 +39,6 @@ if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
 	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 	exit 1
 fi
-cp -f $RTOS_SDK_MANIFEST_FILE $kernel_BUILD_DIR/../manifest.xml
 
 # Get SDK_VERSION
 pattern="revision="

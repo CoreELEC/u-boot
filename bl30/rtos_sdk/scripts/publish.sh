@@ -25,7 +25,7 @@ FIRMWARE_SERVER=firmware.amlogic.com
 
 publish_image() {
 	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
-	REMOTE_IMAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/$ARCH-$BOARD-$PRODUCT
+	REMOTE_IMAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/images/$ARCH-$BOARD-$PRODUCT
 
 	if [ -d $LOCAL_IMAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_IMAGE_PATH"
@@ -35,11 +35,11 @@ publish_image() {
 		else
 			echo "Remote image path: $REMOTE_IMAGE_PATH"
 		fi
-		scp build.log $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		LOCAL_FILES="build.log $CURRENT_MANIFEST_FILE"
+		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		pushd $LOCAL_IMAGE_PATH >/dev/null
 		tar -cJf $KERNEL.tar.xz $KERNEL/$KERNEL.*
-		LOCAL_FILES="manifest.xml $KERNEL.tar.xz"
-		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		scp $KERNEL.tar.xz $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		scp -r images $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		popd >/dev/null
 		echo "Publish images success."
@@ -50,7 +50,7 @@ publish_image() {
 
 publish_package() {
 	LOCAL_PACKAGE_PATH=$LOCAL_OUTPUT_PATH/package/images
-	REMOTE_PACKAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/package
+	REMOTE_PACKAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/packages
 
 	if [ -d $LOCAL_PACKAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_PACKAGE_PATH"
@@ -60,6 +60,8 @@ publish_package() {
 		else
 			echo "Remote package path: $REMOTE_PACKAGE_PATH"
 		fi
+		LOCAL_FILES="build.log $CURRENT_MANIFEST_FILE"
+		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		pushd $LOCAL_PACKAGE_PATH >/dev/null
 		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		popd >/dev/null

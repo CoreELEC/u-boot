@@ -195,5 +195,3 @@ test -n "$BUILD_UBOOT" && build_uboot
 test -n "$BUILD_IMAGE" && build_aml_image
 
 echo "======Done======"
-echo "Image Path: $PROJECT_BUILD_OUT_IMAGE_PATH "
-ls -la $PROJECT_BUILD_OUT_IMAGE_PATH

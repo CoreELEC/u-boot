@@ -28,26 +28,40 @@ fi
 MATCH_PATTERN="projects/"
 BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
+OUTPUT_DIR=$WORK_DIR/output
 
-LAST_MANIFEST_FILE="manifest_last.xml"
-CURRENT_MANIFEST_FILE="manifest.xml"
-DIFF_MANIFEST_FILE="updates.xml"
+LAST_MANIFEST_FILE="$OUTPUT_DIR/manifest_last.xml"
+CURRENT_MANIFEST_FILE="$OUTPUT_DIR/manifest.xml"
+DIFF_MANIFEST_FILE="$OUTPUT_DIR/updates.xml"
+BUILD_LOG="$OUTPUT_DIR/build.log"
 
-#rm -rf $WORK_DIR
+if [ -n "$EXCLUDE_REPOS" ]; then
+	echo "Exclude repos:"
+	echo "$EXCLUDE_REPOS"
+	while IFS= read -r line
+	do
+		[ -n "$REPO_SYNC_IPATTERN" ] && REPO_SYNC_IPATTERN+="|"
+		REPO_SYNC_IPATTERN+="$line"
+	done <<< "$EXCLUDE_REPOS"
+fi
+
+[ "$FRESH_DOWNLOAD" = "yes" ] && rm -rf $WORK_DIR
+
 if [ ! -d "$WORK_DIR" ]; then
 	echo -e "\n======== Downloading source code ========"
 	mkdir -p $WORK_DIR
+	mkdir -p $OUTPUT_DIR
 	cd $WORK_DIR
 	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH} --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
 else
 	echo -e "\n======== Syncing source code ========"
 	cd $WORK_DIR
-	repo forall -c git reset -q --hard origin/$BRANCH_NAME
+	repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
 	repo manifest -r -o $LAST_MANIFEST_FILE
 fi
 
 repo sync -cq -j8
-repo forall -c git reset -q --hard origin/$BRANCH_NAME
+repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
 repo manifest -r -o $CURRENT_MANIFEST_FILE
 echo -e "======== Done ========\n"
 
@@ -113,21 +127,21 @@ fi
 
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
 	echo "========= Building all packages ========"
-	./scripts/build_all_pkg.sh > build.log 2>&1
+	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		echo "======== Done ========"
 	else
-		cat build.log
+		cat $BUILD_LOG
 		echo -e "\nAborted!"
 		exit 1
 	fi
 else
 	echo "========= Building all projects ========"
-	./scripts/build_all.sh > build.log 2>&1
+	./scripts/build_all.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		echo "======== Done ========"
 	else
-		cat build.log
+		cat $BUILD_LOG
 		echo -e "\nAborted!"
 		exit 1
 	fi

@@ -23,9 +23,6 @@ if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 	fi
 fi
 
-# Manually cherry pick patches
-./scripts/cherry_pick.sh
-
 source scripts/gen_build_combination.sh
 
 i=0

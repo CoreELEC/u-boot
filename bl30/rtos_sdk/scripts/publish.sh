@@ -35,7 +35,7 @@ publish_image() {
 		else
 			echo "Remote image path: $REMOTE_IMAGE_PATH"
 		fi
-		LOCAL_FILES="build.log $CURRENT_MANIFEST_FILE"
+		LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
 		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		pushd $LOCAL_IMAGE_PATH >/dev/null
 		tar -cJf $KERNEL.tar.xz $KERNEL/$KERNEL.*
@@ -60,7 +60,7 @@ publish_package() {
 		else
 			echo "Remote package path: $REMOTE_PACKAGE_PATH"
 		fi
-		LOCAL_FILES="build.log $CURRENT_MANIFEST_FILE"
+		LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
 		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		pushd $LOCAL_PACKAGE_PATH >/dev/null
 		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH

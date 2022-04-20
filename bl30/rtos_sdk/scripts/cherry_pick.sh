@@ -9,7 +9,7 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
 	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
 
-	echo "$GIT_CHERRY_PICK" | while read line
+	while IFS= read -r line
 	do
 		pattern=":29418/"
 		for keyword in $line; do
@@ -43,5 +43,5 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			exit 1
 		fi
         echo -e "======== Done ========\n"
-	done
+	done <<< "$GIT_CHERRY_PICK"
 fi

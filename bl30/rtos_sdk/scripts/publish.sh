@@ -63,6 +63,9 @@ post_publish_images() {
 }
 
 publish_packages() {
+	LOCAL_PACKAGE_PATH=$LOCAL_PACKAGES_PATH/$CURRENT_PRODUCTS_DIR_NAME
+	REMOTE_PACKAGE_PATH=$REMOTE_PACKAGES_PATH/$CURRENT_PRODUCTS_DIR_NAME
+
 	if [ -d $LOCAL_PACKAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_PACKAGE_PATH"
 		if [ $? -ne 0 ]; then
@@ -71,8 +74,6 @@ publish_packages() {
 		else
 			echo "Remote package path: $REMOTE_PACKAGE_PATH"
 		fi
-		LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
-		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		pushd $LOCAL_PACKAGE_PATH >/dev/null
 		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		popd >/dev/null

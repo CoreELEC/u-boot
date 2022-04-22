@@ -7,6 +7,13 @@
 
 source scripts/publish.sh
 
+function get_new_package_dir() {
+	filelist=$(ls -t output/packages)
+	fileArry=($filelist)
+	CURRENT_PRODUCTS_DIR_NAME=${fileArry[0]}
+	export CURRENT_PRODUCTS_DIR_NAME
+}
+
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 	make docs
 	if [ -d $LOCAL_DOC_PATH ]; then
@@ -33,6 +40,7 @@ while IFS= read -r LINE; do
 	source scripts/pkg_env.sh $index gen_all
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
 	make package
+	get_new_package_dir
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "release" ]]; then
 		publish_packages

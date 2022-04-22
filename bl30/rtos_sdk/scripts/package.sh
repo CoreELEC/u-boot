@@ -151,8 +151,7 @@ function build_aml_image() {
         $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
     fi
 
-    test -f ${PROJECT_BUILD_OUT_IMAGE_PATH}/aml_upgrade_package.img && cp ${PROJECT_BUILD_OUT_IMAGE_PATH}/aml_upgrade_package.img \
-        $PROJECT_BUILD_ALL_IMAGE_PATH/"${ARCH_PREFIX}"${RTOS_BOARD}"${PRODUCT_SUFFIX}".img
+    cd $PROJECT_BUILD_OUT_IMAGE_PATH && rm $(ls | grep -v "aml_upgrade_package.img")
 }
 
 #build uboot
@@ -171,8 +170,7 @@ function build_uboot() {
 package_target_verify
 package_env_config $RTOS_BOARD
 
-export PROJECT_BUILD_ALL_IMAGE_PATH=${RTOS_BUILD_DIR}/output/package/images/
-export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/package/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}/images/
+export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}/images/
 
 export RTOS_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}
 export RTOS_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images
@@ -181,8 +179,6 @@ export RTOS_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOA
 export DSP_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}
 export DSP_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images
 export DSP_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images/${KERNEL}-signed.bin
-
-[ ! -d "$PROJECT_BUILD_ALL_IMAGE_PATH" ] && mkdir -p $PROJECT_BUILD_ALL_IMAGE_PATH
 
 test -n "$BUILD_CLEAN" && rm -fr $DSP_SDK_OUT_PATH
 test -n "$BUILD_CLEAN" && rm -fr $RTOS_SDK_OUT_PATH

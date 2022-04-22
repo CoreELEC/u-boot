@@ -35,8 +35,8 @@ while IFS= read -r LINE; do
 	make package
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "release" ]]; then
-		publish_package
-		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
+		publish_packages
+		[ "$?" -ne 0 ] && echo "Failed to publish packages!" && exit 4
 	fi
 	index=$((index + 1))
 done <"$PACKAGE_COMBINATION"

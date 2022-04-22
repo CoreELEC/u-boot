@@ -39,8 +39,8 @@ while IFS= read -r LINE; do
 	make
 	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-		publish_image
-		[ "$?" -ne 0 ] && echo "Failed to source scripts/scp.sh!" && exit 4
+		publish_images
+		[ "$?" -ne 0 ] && echo "Failed to publish images!" && exit 4
 	fi
 done <"$BUILD_COMBINATION"
 

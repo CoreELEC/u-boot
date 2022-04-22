@@ -125,10 +125,14 @@ fi
 # Manually cherry pick patches
 ./scripts/cherry_pick.sh
 
+# Include publish functions
+source scripts/publish.sh
+
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
 	echo "========= Building all packages ========"
 	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
+		post_publish_packages >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG
@@ -139,6 +143,7 @@ else
 	echo "========= Building all projects ========"
 	./scripts/build_all.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
+		post_publish_images >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG

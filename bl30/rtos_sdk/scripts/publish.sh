@@ -20,12 +20,15 @@ publish_docoment() {
 
 BUILD_DATE=$(date +%F)
 LOCAL_OUTPUT_PATH=output
+LOCAL_PACKAGES_PATH=$LOCAL_OUTPUT_PATH/packages
 FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
+REMOTE_IMAGES_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/images
+REMOTE_PACKAGES_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/packages
 
-publish_image() {
+publish_images() {
 	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
-	REMOTE_IMAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/images/$ARCH-$BOARD-$PRODUCT
+	REMOTE_IMAGE_PATH=$REMOTE_IMAGES_PATH/$ARCH-$BOARD-$PRODUCT
 
 	if [ -d $LOCAL_IMAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_IMAGE_PATH"
@@ -35,12 +38,10 @@ publish_image() {
 		else
 			echo "Remote image path: $REMOTE_IMAGE_PATH"
 		fi
-		LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
-		scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		pushd $LOCAL_IMAGE_PATH >/dev/null
 		tar -cJf $KERNEL.tar.xz $KERNEL/$KERNEL.*
 		scp $KERNEL.tar.xz $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
-		scp -r images $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
+		scp images/* $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		popd >/dev/null
 		echo "Publish images success."
 	else
@@ -48,10 +49,20 @@ publish_image() {
 	fi
 }
 
-publish_package() {
-	LOCAL_PACKAGE_PATH=$LOCAL_OUTPUT_PATH/package/images
-	REMOTE_PACKAGE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/packages
+post_publish_images() {
+	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_IMAGES_PATH"
+	if [ $? -ne 0 ]; then
+		echo "Failed to create remote image path! $REMOTE_IMAGES_PATH"
+		exit 1
+	else
+		echo "Remote image path: $REMOTE_IMAGES_PATH"
+	fi
+	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
+	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGES_PATH
+	echo "Post publish images done."
+}
 
+publish_packages() {
 	if [ -d $LOCAL_PACKAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_PACKAGE_PATH"
 		if [ $? -ne 0 ]; then
@@ -69,4 +80,17 @@ publish_package() {
 	else
 		echo "No local package path! $LOCAL_PACKAGE_PATH"
 	fi
+}
+
+post_publish_packages() {
+	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_PACKAGES_PATH"
+	if [ $? -ne 0 ]; then
+		echo "Failed to create remote package path! $REMOTE_PACKAGES_PATH"
+		exit 1
+	else
+		echo "Remote package path: $REMOTE_PACKAGES_PATH"
+	fi
+	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
+	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGES_PATH
+	echo "Post publish packages done."
 }

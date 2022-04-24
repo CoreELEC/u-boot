@@ -1,0 +1,9 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_SKT_S5
+	bool "Amlogic SKT Board"
+	select SOC_S5
+	help
+	  Enable Amlogic SKT Board.

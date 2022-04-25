@@ -75,7 +75,7 @@ function package_env_config() {
         UBOOT_BOARDNAME="a1_ad401_nand_rtos"
         ;;
     'ad403_a113l')
-        UBOOT_BOARDNAME="a1_ad403_nor_rtos"
+        UBOOT_BOARDNAME="a1_ad403_nand_rtos"
         unset BUILD_DSP
         unset DSP_ARCH
         ;;
@@ -170,7 +170,7 @@ function build_uboot() {
 package_target_verify
 package_env_config $RTOS_BOARD
 
-export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}/images/
+export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}
 
 export RTOS_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}
 export RTOS_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images

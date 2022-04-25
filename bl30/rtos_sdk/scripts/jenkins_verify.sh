@@ -143,7 +143,7 @@ else
 	echo "========= Building all projects ========"
 	./scripts/build_all.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
-		post_publish_images >> $BUILD_LOG 2>&1
+		[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG

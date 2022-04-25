@@ -42,6 +42,85 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			echo "No such directory! $repo_path"
 			exit 1
 		fi
-        echo -e "======== Done ========\n"
+		echo -e "======== Done ========\n"
 	done <<< "$GIT_CHERRY_PICK"
+fi
+
+if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
+	GERRIT_SERVER="scgit.amlogic.com"
+	GERRIT_PORT="29418"
+	GERRIT_QUERY_RESULT="changes.txt"
+	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
+	GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
+	GERRIT_CHANGE_REF=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
+
+	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
+	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
+
+	echo -e "\n======== Applying manual patch on Project $GERRIT_PROJECT ========"
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+
+	for keyword in $keyline; do
+		if [[ $keyword == path=* ]]; then
+			repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+			break;
+		fi
+	done
+
+	if [ -d "$repo_path" ]; then
+		pushd $repo_path > /dev/null
+		git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
+		git cherry-pick FETCH_HEAD
+		if [ "$?" -ne 0 ]; then
+			echo -e "========= Applying patch failed! =========\n"
+			exit 1
+		fi
+		popd > /dev/null
+	else
+		echo "No such directory! $repo_path"
+		exit 1
+	fi
+	echo -e "======== Done ========\n"
+fi
+
+if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
+	GERRIT_SERVER="scgit.amlogic.com"
+	GERRIT_PORT="29418"
+	GERRIT_QUERY_RESULT="changes.txt"
+	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open topic:$MANUAL_GERRIT_TOPIC > $GERRIT_QUERY_RESULT
+	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
+	GERRIT_CHANGE_REFS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
+
+	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
+	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
+
+	i=1
+	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
+		echo -e "\n======== Applying manual patch on Project $GERRIT_PROJECT ========"
+		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+
+		for keyword in $keyline; do
+			if [[ $keyword == path=* ]]; then
+				repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
+				break;
+			fi
+		done
+
+		if [ -d "$repo_path" ]; then
+			GERRIT_CHANGE_REF=$(echo $GERRIT_CHANGE_REFS | awk "{print \$$i}")
+			pushd $repo_path > /dev/null
+			git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
+			git cherry-pick FETCH_HEAD
+			if [ "$?" -ne 0 ]; then
+				echo -e "========= Applying patch failed! =========\n"
+				exit 1
+			fi
+			popd > /dev/null
+		else
+			echo "No such directory! $repo_path"
+			exit 1
+		fi
+		echo -e "======== Done ========\n"
+		i=$((i+1))
+	done
 fi

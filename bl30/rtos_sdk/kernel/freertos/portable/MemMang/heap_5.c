@@ -86,10 +86,6 @@ task.h is included from an application file. */
 #endif
 #endif
 
-#if ENABLE_KASAN
-#include <kasan/kasan.h>
-#endif
-
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 #if (configSUPPORT_DYNAMIC_ALLOCATION == 0)
@@ -239,6 +235,36 @@ static void get_calltrace(unsigned long *trace)
 	}
 #endif
 }
+// On-site printing from memory
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
+static void print_memory_site_info(uint8_t *address)
+{
+#define STEP_VALUE_FOR_MEMORY 8
+
+	int step;
+
+	printk("Memory Request Address Field Details (ADDRESS:0x%08x)\n", (size_t)address);
+	printk("\t ADDRESS -%d\n", STEP_VALUE_FOR_MEMORY * sizeof(size_t));
+
+	for (step = (STEP_VALUE_FOR_MEMORY - 1); step >= 0; step--){
+		printk("\t");
+		for (int loops = sizeof(size_t); loops > 0; loops--){
+			printk("%02x ", *(address - loops - step * sizeof(size_t)));
+		}
+		printk("\n");
+	}
+
+	printk("\t ADDRESS\n");
+
+	for (step = 0; step < STEP_VALUE_FOR_MEMORY; step++){
+		printk("\t");
+		for (int loops = 0; loops < sizeof(size_t); loops++){
+			printk("%02x ", *(address + loops + step * sizeof(size_t)));
+		}
+		printk("\n");
+	}
+}
+#endif
 /* Additional functions to scan memory (buffer overflow, memory leaks) */
 // vPortUpdateFreeBlockList
 static void vPortUpdateFreeBlockList(void)
@@ -356,7 +382,9 @@ int xPortCheckIntegrity(void)
 				}
 
 				print_traceitem(allocList[pos].backTrace);
-
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
+				print_memory_site_info((uint8_t *)buffer_address);
+#endif
 				result++;
 			}
 			/* Tail integrity check */
@@ -381,7 +409,9 @@ int xPortCheckIntegrity(void)
 				}
 
 				print_traceitem(allocList[pos].backTrace);
-
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
+				print_memory_site_info((uint8_t *)buffer_address);
+#endif
 				result++;
 			}
 		}
@@ -496,10 +526,6 @@ void *pvPortMalloc(size_t xWantedSize)
 	void *pvReturn = NULL;
 	unsigned long flags;
 
-#if ENABLE_KASAN
-	size_t mallocsz = xWantedSize;
-#endif
-
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
 	size_t dMallocsz = xWantedSize;
 #endif
@@ -547,6 +573,7 @@ void *pvPortMalloc(size_t xWantedSize)
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
 				xWantedSize += sizeof(size_t); // add size of tail_canary
 #endif
+
 				/* Ensure that blocks are always aligned to the required number
 				of bytes. */
 				if ((xWantedSize & portBYTE_ALIGNMENT_MASK) != 0x00)
@@ -696,15 +723,6 @@ void *pvPortMalloc(size_t xWantedSize)
 	}
 #endif
 
-#if ENABLE_KASAN
-	if (pvReturn)
-	{
-		BlockLink_t *pxTmp = (BlockLink_t *)(((uint8_t *)pvReturn) - xHeapStructSize);
-		kasan_poison((void *)pxTmp, xHeapStructSize, KASAN_MALLOC_REDZONE);
-		kasan_unpoison(pvReturn, mallocsz);
-	}
-#endif
-
 	return pvReturn;
 }
 
@@ -783,10 +801,6 @@ void *pvPortMallocRsvAlign(size_t xWantedSize, size_t xAlignMsk)
 	BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 	void *pvReturn = NULL;
 	unsigned long flags;
-
-#if ENABLE_KASAN
-	size_t mallocsz = xWantedSize;
-#endif
 
 	if (xWantedSize <= 0)
 		return pvReturn;
@@ -934,13 +948,6 @@ void *pvPortMallocRsvAlign(size_t xWantedSize, size_t xAlignMsk)
 	(void)xTaskResumeAll();
 #endif
 
-#if ENABLE_KASAN
-	if (pvReturn)
-	{
-		kasan_unpoison(pvReturn, mallocsz);
-	}
-#endif
-
 	return pvReturn;
 }
 
@@ -949,20 +956,22 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 	BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 	void *pvReturn = NULL;
 	unsigned long flags;
-#if ENABLE_KASAN
-	size_t mallocsz = xWantedSize;
+
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
+	size_t dMallocsz = xWantedSize;
 #endif
 
 #ifdef CONFIG_DMALLOC
-	char *taskname = pcTaskGetName(NULL);
-	int MemTaskNum = 0;
 	int len = 0;
+	int MemTaskNum = 0;
+	char *taskname = pcTaskGetName(NULL);
 	if (taskname != NULL)
 		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
 #endif
 
 	if (xWantedSize <= 0)
 		return pvReturn;
+
 	configASSERT(((xAlignMsk + 1) & xAlignMsk) == 0);
 
 #if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
@@ -994,6 +1003,10 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 			{
 				xWantedSize += xHeapStructSize;
 
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
+				xWantedSize += sizeof(size_t); // add size of tail_canary
+#endif
+
 				/* Ensure that blocks are always aligned to the required number
 				of bytes. */
 				if ((xWantedSize & portBYTE_ALIGNMENT_MASK) != 0x00)
@@ -1005,31 +1018,6 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 				{
 					mtCOVERAGE_TEST_MARKER();
 				}
-#ifdef CONFIG_DMALLOC
-				if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
-				{
-					MemLeak_t[0].Flag = 1;
-					MemLeak_t[0].TaskNum = 0;
-					MemLeak_t[0].WantSize = xWantedSize;
-					MemLeak_t[0].WantTotalSize += xWantedSize;
-					MemLeak_t[0].MallocCount++;
-					strncpy(MemLeak_t[0].TaskName, "not_in_task", 20);
-					MemLeak_t[0].TaskName[sizeof(MemLeak_t[0].TaskName) - 1] = '\0';
-				}
-				else
-				{
-					if (taskname != NULL)
-					{
-						MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
-						MemLeak_t[MemTaskNum].WantSize = xWantedSize;
-						MemLeak_t[MemTaskNum].WantTotalSize += xWantedSize;
-						MemLeak_t[MemTaskNum].MallocCount++;
-						len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
-						strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
-						MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
-					}
-				}
-#endif
 			}
 			else
 			{
@@ -1042,6 +1030,7 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 				one	of adequate size is found. */
 				pxPreviousBlock = &xStart;
 				pxBlock = xStart.pxNextFreeBlock;
+
 				while (((pvReturn = _pxGetAlignedAddr(pxBlock, xWantedSize, xAlignMsk, 1)) == NULL) && (pxBlock->pxNextFreeBlock != NULL))
 				{
 					pxPreviousBlock = pxBlock;
@@ -1110,6 +1099,37 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 					by the application and has no "next" block. */
 					pxBlock->xBlockSize |= xBlockAllocatedBit;
 					pxBlock->pxNextFreeBlock = NULL;
+
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
+					/* memory request record */
+					vPortAddToList((size_t)(((uint8_t *)pvReturn) - xHeapStructSize), dMallocsz);
+#endif
+
+#ifdef CONFIG_DMALLOC
+					if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
+					{
+						MemLeak_t[0].Flag = 1;
+						MemLeak_t[0].TaskNum = 0;
+						MemLeak_t[0].WantSize = xWantedSize;
+						MemLeak_t[0].WantTotalSize += xWantedSize;
+						MemLeak_t[0].MallocCount++;
+						strncpy(MemLeak_t[0].TaskName, "not_in_task", 20);
+						MemLeak_t[0].TaskName[sizeof(MemLeak_t[0].TaskName) - 1] = '\0';
+					}
+					else
+					{
+						if (taskname != NULL)
+						{
+							MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
+							MemLeak_t[MemTaskNum].WantSize = xWantedSize;
+							MemLeak_t[MemTaskNum].WantTotalSize += xWantedSize;
+							MemLeak_t[MemTaskNum].MallocCount++;
+							len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
+							strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
+							MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
+						}
+					}
+#endif
 				}
 				else
 				{
@@ -1145,14 +1165,6 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 		{
 			mtCOVERAGE_TEST_MARKER();
 		}
-	}
-#endif
-#if ENABLE_KASAN
-	if (pvReturn)
-	{
-		BlockLink_t *pxTmp = (BlockLink_t *)(((uint8_t *)pvReturn) - xHeapStructSize);
-		kasan_poison((void *)pxTmp, xHeapStructSize, KASAN_MALLOC_REDZONE);
-		kasan_unpoison(pvReturn, mallocsz);
 	}
 #endif
 
@@ -1216,9 +1228,7 @@ void vPortFree(void *pv)
 				/* The block is being returned to the heap - it is no longer
 				allocated. */
 				pxLink->xBlockSize &= ~xBlockAllocatedBit;
-#if ENABLE_KASAN
-				kasan_poison(pv, pxLink->xBlockSize - xHeapStructSize, KASAN_MALLOC_FREE);
-#endif
+
 #if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 				portIRQ_SAVE(flags);
 #else
@@ -1286,6 +1296,7 @@ static void prvInsertBlockIntoFreeList(BlockLink_t *pxBlockToInsert)
 	/* Do the block being inserted, and the block it is being inserted after
 	make a contiguous block of memory? */
 	puc = (uint8_t *)pxIterator;
+
 	if ((puc + pxIterator->xBlockSize) == (uint8_t *)pxBlockToInsert)
 	{
 		pxIterator->xBlockSize += pxBlockToInsert->xBlockSize;
@@ -1341,6 +1352,7 @@ void vPortDefineHeapRegions(const HeapRegion_t *const pRegions)
 	BaseType_t xDefinedRegions = 0;
 	size_t xAddress;
 	const HeapRegion_t *pxHeapRegion;
+
 	const HeapRegion_t *pxHeapRegions = pRegions;
 
 	/* Can only call once! */
@@ -1373,9 +1385,6 @@ void vPortDefineHeapRegions(const HeapRegion_t *const pRegions)
 		}
 
 		xAlignedHeap = xAddress;
-#if ENABLE_KASAN
-		kasan_poison((void *)xAddress, xTotalRegionSize, KASAN_MALLOC_REDZONE);
-#endif
 
 		/* Set xStart if it has not already been set. */
 		if (xDefinedRegions == 0)
@@ -1474,9 +1483,6 @@ void vPortAddHeapRegion(uint8_t *pucStartAddress, size_t xSizeInBytes)
 		{
 			mtCOVERAGE_TEST_MARKER();
 		}
-#if ENABLE_KASAN
-		kasan_poison((void *)xAddress, xTotalRegionSize, KASAN_MALLOC_REDZONE);
-#endif
 
 		if (xTotalRegionSize > heapMINIMUM_BLOCK_SIZE)
 		{

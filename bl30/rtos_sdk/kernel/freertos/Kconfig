@@ -52,4 +52,10 @@ config MEMORY_ERROR_DETECTION_SIZE
 	help
 	  Set the buffer size of memory error detection.
 
+config MEMORY_ERROR_DETECTION_PRINT
+	bool "Memory Error Detection Print"
+	depends on MEMORY_ERROR_DETECTION
+	help
+	  Print details of memory error field.
+
 endif # KERNEL

@@ -95,7 +95,7 @@ if [ -f $LAST_MANIFEST_FILE ] && [ -f $CURRENT_MANIFEST_FILE ]; then
 fi
 
 if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then
-	echo -e "\n======== Applying Gerrit patch $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+	echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
 
 	for keyword in $keyline; do

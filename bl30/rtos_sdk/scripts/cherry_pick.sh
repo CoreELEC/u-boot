@@ -19,7 +19,7 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			fi
 		done
 
-		echo -e "\n======== Applying manual patch on Project $GIT_PROJECT ========"
+		echo -e "\n-------- Applying manual patch on Project $GIT_PROJECT --------"
 		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
 
 		for keyword in $keyline; do
@@ -34,7 +34,7 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			cmd=`echo $line | sed -e 's/ssh:\/\/.*@scgit.amlogic.com/ssh:\/\/scgit.amlogic.com/'`
 			eval $cmd
 			if [ "$?" -ne 0 ]; then
-				echo -e "========= Applying patch failed! =========\n"
+				echo -e "-------- Applying patch failed! --------\n"
 				exit 1
 			fi
 			popd > /dev/null
@@ -42,7 +42,7 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			echo "No such directory! $repo_path"
 			exit 1
 		fi
-		echo -e "======== Done ========\n"
+		echo -e "-------- Done --------\n"
 	done <<< "$GIT_CHERRY_PICK"
 fi
 
@@ -57,7 +57,7 @@ if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
 	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
 
-	echo -e "\n======== Applying manual patch on Project $GERRIT_PROJECT ========"
+	echo -e "\n-------- Applying manual patch on Project $GERRIT_PROJECT --------"
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
 
 	for keyword in $keyline; do
@@ -72,7 +72,7 @@ if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 		git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
 		git cherry-pick FETCH_HEAD
 		if [ "$?" -ne 0 ]; then
-			echo -e "========= Applying patch failed! =========\n"
+			echo -e "-------- Applying patch failed! --------\n"
 			exit 1
 		fi
 		popd > /dev/null
@@ -80,7 +80,7 @@ if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 		echo "No such directory! $repo_path"
 		exit 1
 	fi
-	echo -e "======== Done ========\n"
+	echo -e "-------- Done --------\n"
 fi
 
 if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
@@ -96,7 +96,7 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
-		echo -e "\n======== Applying manual patch on Project $GERRIT_PROJECT ========"
+		echo -e "\n-------- Applying manual patch on Project $GERRIT_PROJECT --------"
 		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
 
 		for keyword in $keyline; do
@@ -112,7 +112,7 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 			git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
 			git cherry-pick FETCH_HEAD
 			if [ "$?" -ne 0 ]; then
-				echo -e "========= Applying patch failed! =========\n"
+				echo -e "-------- Failed to apply patch! --------\n"
 				exit 1
 			fi
 			popd > /dev/null
@@ -120,7 +120,11 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 			echo "No such directory! $repo_path"
 			exit 1
 		fi
-		echo -e "======== Done ========\n"
+		echo -e "-------- Done --------\n"
 		i=$((i+1))
 	done
+
+	i=$((i-1))
+	[[ "$i" -eq 1 ]] && echo -e "\n======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========"
+	[[ "$i" -gt 1 ]] && echo -e "\n======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========"
 fi

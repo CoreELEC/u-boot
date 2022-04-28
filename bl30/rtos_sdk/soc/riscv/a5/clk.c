@@ -6,16 +6,14 @@
 
 #include "FreeRTOS.h"
 #include <common.h>
-#include "util.h"
 #include "register.h"
 #include "uart.h"
 #include <task.h>
-#include <util.h>
 #include "timer_source.h"
-#include "./include/clk.h"
-#include "./include/clk_util.h"
-#include "./include/vad_suspend.h"
-#include "include/power_domain.h"
+#include "clk.h"
+#include "clk_util.h"
+#include "vad_suspend.h"
+#include "power_domain.h"
 
 void set_time(uint32_t val);
 uint32_t get_time(void);

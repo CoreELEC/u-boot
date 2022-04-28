@@ -8,8 +8,7 @@
 #include "FreeRTOS.h"
 #include "task.h"     /* RTOS task related API prototypes. */
 #include <common.h>
-#include "util.h"
-#include "./include/power_domain.h"
+#include "power_domain.h"
 #include "p_register.h"
 #include "timer_source.h"
 int get_domain_id(PM_E domain);

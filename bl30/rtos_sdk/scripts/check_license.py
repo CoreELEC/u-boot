@@ -89,7 +89,7 @@ def check_patch(patch_file):
             #diff start of file, and get the file name
             line=lines[line_index]
             file = line.split(' ')[-1].strip()
-            file = file.split('/', 1)[1]
+            file = file.split('/')[-1]
             patch_str = ''
 
             if 'new file mode' in lines[line_index+1]:

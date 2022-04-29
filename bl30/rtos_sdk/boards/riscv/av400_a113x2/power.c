@@ -20,6 +20,7 @@
 #include "vad_suspend.h"
 #include "wakeup.h"
 #include "power.h"
+#include "mailbox-api.h"
 
 /* #define CONFIG_ETH_WAKEUP */
 
@@ -54,32 +55,30 @@ static void vIRHandler(struct IRPowerKey *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-void vVAD_task(void __unused * pvParameters)
+static void *xMboxVadWakeup(void *msg)
 {
 	uint32_t buf[4] = { 0 };
 
-	while (1) {
-		if (REG32(SYSCTRL_DEBUG_REG6) == DSP_VAD_WAKUP_ARM) {
-			buf[0] = VAD_WAKEUP;
-			printf("enter  %s\n", __func__);
-			STR_Wakeup_src_Queue_Send(buf);
-			vadTask = NULL;
-			vTaskDelete(NULL);
-			break;
-		}
-		vTaskDelay(pdMS_TO_TICKS(30));
-	}
+	buf[0] = VAD_WAKEUP;
+	STR_Wakeup_src_Queue_Send(buf);
+
+	return NULL;
 }
 
 void str_hw_init(void)
 {
+	int ret;
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM, eth_handler);
 #endif
-	xTaskCreate(vVAD_task, "VADtask", configMINIMAL_STACK_SIZE, NULL, VAD_TASK_PRI, &vadTask);
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
+									xMboxVadWakeup, 0);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -93,10 +92,8 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
-	if (vadTask) {
-		vTaskDelete(vadTask);
-		vadTask = NULL;
-	}
+	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
+
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
@@ -110,11 +107,10 @@ void str_power_on(int shutdown_flag)
 	/* open PWM clk */
 	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
 
-	/* set GPIOE_0 & GPIOE_1 pinmux to pwm */
+	/* set GPIOE_1 pinmux to pwm */
 	xPinmuxSet(GPIOE_1, PIN_FUNC1);
 
-	/* enable PWM channel */
-	REG32(PWMEF_MISC_REG_AB) |= (1 << 0);
+	/* enable vddcpu PWM channel */
 	REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
 
 	/***set vdd_cpu val***/
@@ -174,11 +170,6 @@ void str_power_on(int shutdown_flag)
 
 	/*Wait 200ms for VDDCPU statble*/
 	vTaskDelay(pdMS_TO_TICKS(200));
-
-	if (shutdown_flag) {
-		/* disable sar adc */
-		watchdog_reset_system();
-	}
 
 	printf("vdd_cpu on\n");
 }
@@ -250,7 +241,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	/* set GPIOE_0 & GPIOE_1 pinmux to gpio */
+	/* set GPIOE_1 pinmux to gpio */
 	xPinmuxSet(GPIOE_1, PIN_FUNC0);
 
 	/***set vddcpu pwm to input***/

@@ -15,6 +15,10 @@
 #include "clk_util.h"
 #include "vad_suspend.h"
 #include "power_domain.h"
+#include "mailbox-api.h"
+#include "suspend.h"
+
+extern uint32_t get_reason_flag(void);
 
 void set_time(uint32_t val)
 {
@@ -311,13 +315,14 @@ void disable_pll(int id)
 int oscin_ctrl_reg;
 void vCLK_resume(uint32_t st_f)
 {
-	if ((REG32(SYSCTRL_DEBUG_REG6) != WAIT_SWITCH_TO_RTC_PLL) &&
-	    (REG32(SYSCTRL_DEBUG_REG6) != DSP_VAD_WAKUP_ARM))
-		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
-		       REG32(SYSCTRL_DEBUG_REG6));
+	int xIdx = 0;
 
-	if (REG32(SYSCTRL_DEBUG_REG6) == WAIT_SWITCH_TO_RTC_PLL)
-		REG32(SYSCTRL_DEBUG_REG6) = WAKEUP_FROM_OTHER_KEY;
+	if (get_reason_flag() != VAD_WAKEUP) {
+		wakeup_dsp();
+		vTaskDelay(pdMS_TO_TICKS(90));
+		xIdx = WAKEUP_FROM_OTHER_KEY;
+		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
+	}
 	/* switch osc_clk back*/
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
 	REG32(CLKCTRL_OSCIN_CTRL) = oscin_ctrl_reg | (1 << 31);
@@ -330,15 +335,12 @@ void vCLK_resume(uint32_t st_f)
 	set_sys_div_clk(0, 0); // osc_clk
 	set_axi_div_clk(0, 0); // osc_clk
 
-	if ((REG32(SYSCTRL_DEBUG_REG6) != DSP_VAD_WAKUP_ARM) &&
-	    (REG32(SYSCTRL_DEBUG_REG6) != WAKEUP_FROM_OTHER_KEY))
-		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
-		       REG32(SYSCTRL_DEBUG_REG6));
 
-	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_24MHZ;
+	xIdx = WAIT_SWITCH_TO_24MHZ;
+	xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
 
 	vTaskDelay(pdMS_TO_TICKS(90));
-	//	disable_pll(PLL_RTC);
+	disable_pll(PLL_RTC);
 
 	if (st_f) {
 		power_switch_to_wraper(PWR_ON);
@@ -352,6 +354,8 @@ void vCLK_resume(uint32_t st_f)
 
 void vCLK_suspend(uint32_t st_f)
 {
+	int xIdx = 0;
+
 	if (st_f) {
 		/* close mem_pd of srama and sramb */
 		REG32(PWRCTRL_MEM_PD2) = 0xfffffffc;
@@ -359,6 +363,7 @@ void vCLK_suspend(uint32_t st_f)
 		power_switch_to_wraper(PWR_OFF);
 	}
 
+	printf("[AOCPU]: enter vCLK_suspend.\n");
 	udelay(2000);
 	/* switch to RTC pll */
 	set_sys_div_clk(6, 3); // rtc pll (30.72MHz)
@@ -367,10 +372,8 @@ void vCLK_suspend(uint32_t st_f)
 
 	udelay(2000);
 
-	if (REG32(SYSCTRL_DEBUG_REG6) != 0)
-		printf("[AOCPU]:WARNING SYSCTRL_DEBUG_REG6's value is :0x%x!\n",
-		       REG32(SYSCTRL_DEBUG_REG6));
-	REG32(SYSCTRL_DEBUG_REG6) = WAIT_SWITCH_TO_RTC_PLL;
+	xIdx = WAIT_SWITCH_TO_RTC_PLL;
+	xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
 	vTaskDelay(pdMS_TO_TICKS(90));
 	/* power off osc_clk */
 	REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
@@ -379,9 +382,4 @@ void vCLK_suspend(uint32_t st_f)
 
 	printf("[AOCPU]: running at 30.72MHz, 24MHz osc clk power off.\n");
 	udelay(9000);
-
-	disable_pll(PLL_FIX);
-	disable_pll(PLL_GP0);
-	disable_pll(PLL_GP1);
-	disable_pll(PLL_HIFI);
 }

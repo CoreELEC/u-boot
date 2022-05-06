@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+<remote name="origin" fetch="ssh://scgit.amlogic.com:29418/" review="https://scgit.amlogic.com/" />
+
+<project path="bl30/rtos_sdk/arch/riscv" name="rtos_sdk/arch/riscv" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/boards/riscv" name="rtos_sdk/boards/riscv" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/build_system" name="rtos_sdk/build" remote="origin" revision="projects/amlogic-dev">
+	<copyfile dest="bl30/rtos_sdk/Makefile" src="Makefile"/>
+</project>
+
+<project path="bl30/rtos_sdk/drivers_aocpu" name="rtos_sdk/drivers_aocpu" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/kernel/freertos" name="rtos_sdk/freertos" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/lib/libc" name="rtos_sdk/libc" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/products/aocpu" name="rtos_sdk/product/aocpu" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/scripts" name="rtos_sdk/scripts" remote="origin" revision="projects/amlogic-dev" />
+
+<project path="bl30/rtos_sdk/soc/riscv" name="rtos_sdk/soc/riscv" remote="origin" revision="projects/amlogic-dev" />
+
+</manifest>

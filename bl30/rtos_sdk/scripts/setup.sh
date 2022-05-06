@@ -15,6 +15,7 @@ build_dir="build_system"
 exclude_dirs="boot products docs"
 special_dirs="arch soc boards"
 
+DEFAULT_RTOS_SDK_MANIFEST="$PWD/products/$PRODUCT/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_OLD_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest_old.xml"
 STAMP="$kernel_BUILD_DIR/.stamp"
@@ -31,13 +32,22 @@ echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
 
 # Check whether the project is a repo
 repo manifest >/dev/null 2>&1
-[ "$?" -ne 0 ] && echo "Non-repo source code" && exit 0
-
-# Generate manifest.xml
-repo manifest > $RTOS_SDK_MANIFEST_FILE
-if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
-	echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
-	exit 1
+if [ "$?" -ne 0 ]; then
+	echo "Non-repo source code"
+	if [ -f $DEFAULT_RTOS_SDK_MANIFEST ]; then
+		echo "Use default manifest: $DEFAULT_RTOS_SDK_MANIFEST"
+		cp -f $DEFAULT_RTOS_SDK_MANIFEST $RTOS_SDK_MANIFEST_FILE
+	else
+		echo "Default manifest.xml not found!"
+		exit 0
+	fi
+else
+	echo "Generate manifest.xml"
+	repo manifest > $RTOS_SDK_MANIFEST_FILE
+	if [ ! -f $RTOS_SDK_MANIFEST_FILE ]; then
+		echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
+		exit 1
+	fi
 fi
 
 # Get SDK_VERSION

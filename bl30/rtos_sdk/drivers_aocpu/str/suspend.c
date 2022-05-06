@@ -98,6 +98,7 @@ __attribute__((weak)) void store_rtc(void)
 {
 }
 
+#ifndef CONFIG_SOC_A5
 __attribute__((weak)) void vCLK_suspend(uint32_t st_f)
 {
 	st_f = st_f;
@@ -107,6 +108,7 @@ __attribute__((weak)) void vCLK_resume(uint32_t st_f)
 {
 	st_f = st_f;
 }
+#endif
 
 void system_resume(uint32_t pm)
 {

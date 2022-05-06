@@ -20,7 +20,6 @@
 #else
 #define DOS_REGISTER_H
 
-
 //
 // Reading file:  ./dos_param.h
 //
@@ -43,163 +42,163 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_ASSIST_CBUS_BASE = 0x00
 // -----------------------------------------------
-#define VDEC_ASSIST_MMC_CTRL0                      ((0x0001  << 2) + 0xff620000)
-#define VDEC_ASSIST_MMC_CTRL1                      ((0x0002  << 2) + 0xff620000)
-#define VDEC_ASSIST_MMC_CTRL2                      ((0x0003  << 2) + 0xff620000)
-#define VDEC_ASSIST_MMC_CTRL3                      ((0x0004  << 2) + 0xff620000)
+#define VDEC_ASSIST_MMC_CTRL0 ((0x0001 << 2) + 0xff620000)
+#define VDEC_ASSIST_MMC_CTRL1 ((0x0002 << 2) + 0xff620000)
+#define VDEC_ASSIST_MMC_CTRL2 ((0x0003 << 2) + 0xff620000)
+#define VDEC_ASSIST_MMC_CTRL3 ((0x0004 << 2) + 0xff620000)
 // bit[11]  canvas_blk32_wr
 // bit[10]  canvas_blk32
 // bit[9]   Reserved
 // bit[8]   canvas_index_wr
 // bit[7:0] canvas_index
-#define VDEC_ASSIST_CANVAS_BLK32                   ((0x0005  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT0                      ((0x0025  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT1                      ((0x0026  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT2                      ((0x0027  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT3                      ((0x0028  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT4                      ((0x0029  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT5                      ((0x002a  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT6                      ((0x002b  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT7                      ((0x002c  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT8                      ((0x002d  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INT9                      ((0x002e  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTA                      ((0x002f  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTB                      ((0x0030  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTC                      ((0x0031  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTD                      ((0x0032  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTE                      ((0x0033  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR1_INTF                      ((0x0034  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT0                      ((0x0035  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT1                      ((0x0036  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT2                      ((0x0037  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT3                      ((0x0038  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT4                      ((0x0039  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT5                      ((0x003a  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT6                      ((0x003b  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT7                      ((0x003c  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT8                      ((0x003d  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INT9                      ((0x003e  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTA                      ((0x003f  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTB                      ((0x0040  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTC                      ((0x0041  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTD                      ((0x0042  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTE                      ((0x0043  << 2) + 0xff620000)
-#define VDEC_ASSIST_AMR2_INTF                      ((0x0044  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBX_SSEL                       ((0x0045  << 2) + 0xff620000)
-#define VDEC_ASSIST_TIMER0_LO                      ((0x0060  << 2) + 0xff620000)
-#define VDEC_ASSIST_TIMER0_HI                      ((0x0061  << 2) + 0xff620000)
-#define VDEC_ASSIST_TIMER1_LO                      ((0x0062  << 2) + 0xff620000)
-#define VDEC_ASSIST_TIMER1_HI                      ((0x0063  << 2) + 0xff620000)
-#define VDEC_ASSIST_DMA_INT                        ((0x0064  << 2) + 0xff620000)
-#define VDEC_ASSIST_DMA_INT_MSK                    ((0x0065  << 2) + 0xff620000)
-#define VDEC_ASSIST_DMA_INT2                       ((0x0066  << 2) + 0xff620000)
-#define VDEC_ASSIST_DMA_INT_MSK2                   ((0x0067  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX0_IRQ_REG                  ((0x0070  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX0_CLR_REG                  ((0x0071  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX0_MASK                     ((0x0072  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX0_FIQ_SEL                  ((0x0073  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX1_IRQ_REG                  ((0x0074  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX1_CLR_REG                  ((0x0075  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX1_MASK                     ((0x0076  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX1_FIQ_SEL                  ((0x0077  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX2_IRQ_REG                  ((0x0078  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX2_CLR_REG                  ((0x0079  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX2_MASK                     ((0x007a  << 2) + 0xff620000)
-#define VDEC_ASSIST_MBOX2_FIQ_SEL                  ((0x007b  << 2) + 0xff620000)
+#define VDEC_ASSIST_CANVAS_BLK32 ((0x0005 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT0 ((0x0025 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT1 ((0x0026 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT2 ((0x0027 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT3 ((0x0028 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT4 ((0x0029 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT5 ((0x002a << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT6 ((0x002b << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT7 ((0x002c << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT8 ((0x002d << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INT9 ((0x002e << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTA ((0x002f << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTB ((0x0030 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTC ((0x0031 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTD ((0x0032 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTE ((0x0033 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR1_INTF ((0x0034 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT0 ((0x0035 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT1 ((0x0036 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT2 ((0x0037 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT3 ((0x0038 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT4 ((0x0039 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT5 ((0x003a << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT6 ((0x003b << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT7 ((0x003c << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT8 ((0x003d << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INT9 ((0x003e << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTA ((0x003f << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTB ((0x0040 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTC ((0x0041 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTD ((0x0042 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTE ((0x0043 << 2) + 0xff620000)
+#define VDEC_ASSIST_AMR2_INTF ((0x0044 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBX_SSEL ((0x0045 << 2) + 0xff620000)
+#define VDEC_ASSIST_TIMER0_LO ((0x0060 << 2) + 0xff620000)
+#define VDEC_ASSIST_TIMER0_HI ((0x0061 << 2) + 0xff620000)
+#define VDEC_ASSIST_TIMER1_LO ((0x0062 << 2) + 0xff620000)
+#define VDEC_ASSIST_TIMER1_HI ((0x0063 << 2) + 0xff620000)
+#define VDEC_ASSIST_DMA_INT ((0x0064 << 2) + 0xff620000)
+#define VDEC_ASSIST_DMA_INT_MSK ((0x0065 << 2) + 0xff620000)
+#define VDEC_ASSIST_DMA_INT2 ((0x0066 << 2) + 0xff620000)
+#define VDEC_ASSIST_DMA_INT_MSK2 ((0x0067 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX0_IRQ_REG ((0x0070 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX0_CLR_REG ((0x0071 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX0_MASK ((0x0072 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX0_FIQ_SEL ((0x0073 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX1_IRQ_REG ((0x0074 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX1_CLR_REG ((0x0075 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX1_MASK ((0x0076 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX1_FIQ_SEL ((0x0077 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX2_IRQ_REG ((0x0078 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX2_CLR_REG ((0x0079 << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX2_MASK ((0x007a << 2) + 0xff620000)
+#define VDEC_ASSIST_MBOX2_FIQ_SEL ((0x007b << 2) + 0xff620000)
 //------------------------------------------------------------------------------
 // VDEC2_ASSIST module level register offset
 //------------------------------------------------------------------------------
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC2_ASSIST_CBUS_BASE = 0x00
 // -----------------------------------------------
-#define VDEC2_ASSIST_MMC_CTRL0                     ((0x2001  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MMC_CTRL1                     ((0x2002  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT0                     ((0x2025  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT1                     ((0x2026  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT2                     ((0x2027  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT3                     ((0x2028  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT4                     ((0x2029  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT5                     ((0x202a  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT6                     ((0x202b  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT7                     ((0x202c  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT8                     ((0x202d  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INT9                     ((0x202e  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTA                     ((0x202f  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTB                     ((0x2030  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTC                     ((0x2031  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTD                     ((0x2032  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTE                     ((0x2033  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR1_INTF                     ((0x2034  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT0                     ((0x2035  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT1                     ((0x2036  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT2                     ((0x2037  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT3                     ((0x2038  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT4                     ((0x2039  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT5                     ((0x203a  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT6                     ((0x203b  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT7                     ((0x203c  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT8                     ((0x203d  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INT9                     ((0x203e  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTA                     ((0x203f  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTB                     ((0x2040  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTC                     ((0x2041  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTD                     ((0x2042  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTE                     ((0x2043  << 2) + 0xff620000)
-#define VDEC2_ASSIST_AMR2_INTF                     ((0x2044  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBX_SSEL                      ((0x2045  << 2) + 0xff620000)
-#define VDEC2_ASSIST_TIMER0_LO                     ((0x2060  << 2) + 0xff620000)
-#define VDEC2_ASSIST_TIMER0_HI                     ((0x2061  << 2) + 0xff620000)
-#define VDEC2_ASSIST_TIMER1_LO                     ((0x2062  << 2) + 0xff620000)
-#define VDEC2_ASSIST_TIMER1_HI                     ((0x2063  << 2) + 0xff620000)
-#define VDEC2_ASSIST_DMA_INT                       ((0x2064  << 2) + 0xff620000)
-#define VDEC2_ASSIST_DMA_INT_MSK                   ((0x2065  << 2) + 0xff620000)
-#define VDEC2_ASSIST_DMA_INT2                      ((0x2066  << 2) + 0xff620000)
-#define VDEC2_ASSIST_DMA_INT_MSK2                  ((0x2067  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX0_IRQ_REG                 ((0x2070  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX0_CLR_REG                 ((0x2071  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX0_MASK                    ((0x2072  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX0_FIQ_SEL                 ((0x2073  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX1_IRQ_REG                 ((0x2074  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX1_CLR_REG                 ((0x2075  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX1_MASK                    ((0x2076  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX1_FIQ_SEL                 ((0x2077  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX2_IRQ_REG                 ((0x2078  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX2_CLR_REG                 ((0x2079  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX2_MASK                    ((0x207a  << 2) + 0xff620000)
-#define VDEC2_ASSIST_MBOX2_FIQ_SEL                 ((0x207b  << 2) + 0xff620000)
+#define VDEC2_ASSIST_MMC_CTRL0 ((0x2001 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MMC_CTRL1 ((0x2002 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT0 ((0x2025 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT1 ((0x2026 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT2 ((0x2027 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT3 ((0x2028 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT4 ((0x2029 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT5 ((0x202a << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT6 ((0x202b << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT7 ((0x202c << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT8 ((0x202d << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INT9 ((0x202e << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTA ((0x202f << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTB ((0x2030 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTC ((0x2031 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTD ((0x2032 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTE ((0x2033 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR1_INTF ((0x2034 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT0 ((0x2035 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT1 ((0x2036 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT2 ((0x2037 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT3 ((0x2038 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT4 ((0x2039 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT5 ((0x203a << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT6 ((0x203b << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT7 ((0x203c << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT8 ((0x203d << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INT9 ((0x203e << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTA ((0x203f << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTB ((0x2040 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTC ((0x2041 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTD ((0x2042 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTE ((0x2043 << 2) + 0xff620000)
+#define VDEC2_ASSIST_AMR2_INTF ((0x2044 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBX_SSEL ((0x2045 << 2) + 0xff620000)
+#define VDEC2_ASSIST_TIMER0_LO ((0x2060 << 2) + 0xff620000)
+#define VDEC2_ASSIST_TIMER0_HI ((0x2061 << 2) + 0xff620000)
+#define VDEC2_ASSIST_TIMER1_LO ((0x2062 << 2) + 0xff620000)
+#define VDEC2_ASSIST_TIMER1_HI ((0x2063 << 2) + 0xff620000)
+#define VDEC2_ASSIST_DMA_INT ((0x2064 << 2) + 0xff620000)
+#define VDEC2_ASSIST_DMA_INT_MSK ((0x2065 << 2) + 0xff620000)
+#define VDEC2_ASSIST_DMA_INT2 ((0x2066 << 2) + 0xff620000)
+#define VDEC2_ASSIST_DMA_INT_MSK2 ((0x2067 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX0_IRQ_REG ((0x2070 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX0_CLR_REG ((0x2071 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX0_MASK ((0x2072 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX0_FIQ_SEL ((0x2073 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX1_IRQ_REG ((0x2074 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX1_CLR_REG ((0x2075 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX1_MASK ((0x2076 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX1_FIQ_SEL ((0x2077 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX2_IRQ_REG ((0x2078 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX2_CLR_REG ((0x2079 << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX2_MASK ((0x207a << 2) + 0xff620000)
+#define VDEC2_ASSIST_MBOX2_FIQ_SEL ((0x207b << 2) + 0xff620000)
 //------------------------------------------------------------------------------
 // HCODEC_ASSIST module level register offset
 //------------------------------------------------------------------------------
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HCODEC_ASSIST_CBUS_BASE = 0x00
 // -----------------------------------------------
-#define HCODEC_ASSIST_MMC_CTRL0                    ((0x1001  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MMC_CTRL1                    ((0x1002  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MMC_CTRL2                    ((0x1003  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MMC_CTRL3                    ((0x1004  << 2) + 0xff620000)
+#define HCODEC_ASSIST_MMC_CTRL0 ((0x1001 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MMC_CTRL1 ((0x1002 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MMC_CTRL2 ((0x1003 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MMC_CTRL3 ((0x1004 << 2) + 0xff620000)
 // bit[11]  canvas_blk32_wr
 // bit[10]  canvas_blk32
 // bit[9]   Reserved
 // bit[8]   canvas_index_wr
 // bit[7:0] canvas_index
-#define HCODEC_ASSIST_CANVAS_BLK32                 ((0x1005  << 2) + 0xff620000)
+#define HCODEC_ASSIST_CANVAS_BLK32 ((0x1005 << 2) + 0xff620000)
 //cfg_soft_rst = mfdin_reg0_crst[0]; // Soft Reset
 //cfg_cg_cfe   = mfdin_reg0_crst[1]; // Clock Gating Forcing Enable
 //cfg_dbuf_rst = mfdin_reg0_crst[2]; // Reset DBUF information
-#define HCODEC_MFDIN_REG0_CRST                     ((0x1008  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG0_CRST ((0x1008 << 2) + 0xff620000)
 //cfg_iformat       = mfdin_reg1_ctrl[3:0]; // Data In Format: 0 :CANVAS 422 YCbCr<-one canvas,
-                                                     //        1 :CANVAS 444 YCbCr(or RGB)<-one canvas,
-                                                     //        2 :CANVAS 420 Y<-one CrCb<-one (NV21)
-                                                     //        3 :CANVAS 420 Y<-one CbCr<-one (NV12)
-                                                     //        4 :CANVAS 420 Y<-one Cb<-one Cr<-one
-                                                     //        5 :CANVAS 444 Y<-one Cb<-one Cr<-one
-                                                     //        6 : Reserved for other canvas mode
-                                                     //        7 : should combine with cfg_ifmt_extra, for 10-12bits
-                                                     //        8 :LINEAR RGB888 (24bit)
-                                                     //        9 :LINEAR RGB565 (16bit)
-                                                     //        10:LINEAR YUV422
-                                                     //        11:LINEAR YUV420 (Note:Legacy mode not supported)
-                                                     //        12~15: Reserved for other linear mode
+//        1 :CANVAS 444 YCbCr(or RGB)<-one canvas,
+//        2 :CANVAS 420 Y<-one CrCb<-one (NV21)
+//        3 :CANVAS 420 Y<-one CbCr<-one (NV12)
+//        4 :CANVAS 420 Y<-one Cb<-one Cr<-one
+//        5 :CANVAS 444 Y<-one Cb<-one Cr<-one
+//        6 : Reserved for other canvas mode
+//        7 : should combine with cfg_ifmt_extra, for 10-12bits
+//        8 :LINEAR RGB888 (24bit)
+//        9 :LINEAR RGB565 (16bit)
+//        10:LINEAR YUV422
+//        11:LINEAR YUV420 (Note:Legacy mode not supported)
+//        12~15: Reserved for other linear mode
 //cfg_oformat       = mfdin_reg1_ctrl[5:4];  // Data Out Format: 0:420 1:422 2:444 3:reserved
 //cfg_dsample_enable= mfdin_reg1_ctrl[6];    // Downsample Enable
 //cfg_dsample_trunc = mfdin_reg1_ctrl[7];    // Downsample Addition Option: 0:Round 1:Truncated
@@ -210,17 +209,17 @@
 //cfg_r2y_mode      = mfdin_reg1_ctrl[14:13];// RGb->YUV Mode
 //cfg_rgb565_mode   = mfdin_reg1_ctrl[15];   // RGB565 mode: 0:fill zero in tail 1:fill zero in head
 //cfg_ifmt_extra    = mfdin_reg1_ctrl[17:16];// when cfg_iformat==7,
-                                             //        0: CANVAS 12bit 422, YCbCr<-one canvas{...Y1[11:0],C1[11:0],Y0[11:0],C0[11:0]}
-                                             //        1: CANVAS 10bit 444, YCbCr<-one canvas{...2'b0,Y0[9:0],U0[9:0],V0[9:0]}
-                                             //        2: CANVAS 10bit 422, YCbCr<-one canvas{...Y1[9:0],C1[9:0],Y0[9:0],C0[9:0]}
+//        0: CANVAS 12bit 422, YCbCr<-one canvas{...Y1[11:0],C1[11:0],Y0[11:0],C0[11:0]}
+//        1: CANVAS 10bit 444, YCbCr<-one canvas{...2'b0,Y0[9:0],U0[9:0],V0[9:0]}
+//        2: CANVAS 10bit 422, YCbCr<-one canvas{...Y1[9:0],C1[9:0],Y0[9:0],C0[9:0]}
 //cfg_reserved1     = mfdin_reg1_ctrl[18];   // Reserved
 //cfg_nr_enable     = mfdin_reg1_ctrl[19];   // Noise Reduction Enable
 //cfg_outofpic      = mfdin_reg1_ctrl[28:20];// Out Of Picture Control: [8]mode:0:extend 1:fixed, [7:0]fixed value
 //cfg_rd_blktype    = mfdin_reg1_ctrl[30:29];// Block Type: 0:H264_I_PIC_ALL_4x4, 1:H264_P_PIC_Y_16x16_C_8x8, 2:JPEG_ALL_8x8, 3:Reserved
 //cfg_rd_nonycintl  = mfdin_reg1_ctrl[31];   // 0:YC interleaved 1:YC non-interleaved(for JPEG)
-#define HCODEC_MFDIN_REG1_CTRL                     ((0x1009  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG1_CTRL ((0x1009 << 2) + 0xff620000)
 //mfdin_reg2: DEBUG Only Status
-#define HCODEC_MFDIN_REG2_STAT                     ((0x100a  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG2_STAT ((0x100a << 2) + 0xff620000)
 //cfg_canvas_index0  = mfdin_reg3_canv[7:0];  //canvas index 0
 //cfg_canvas_index1  = mfdin_reg3_canv[15:8]; //canvas index 1
 //cfg_canvas_index2  = mfdin_reg3_canv[23:16];//canvas index 2
@@ -228,35 +227,36 @@
 //cfg_canv_idx1_bppx = mfdin_reg3_canv[27:26];//canvas bytes per pixel in x direction for index1, 0:half 1:1 2:2 3:3
 //cfg_canv_idx0_bppy = mfdin_reg3_canv[29:28];//canvas bytes per pixel in y direction for index0, 0:half 1:1 2:2 3:3
 //cfg_canv_idx1_bppy = mfdin_reg3_canv[31:30];//canvas bytes per pixel in y direction for index1, 0:half 1:1 2:2 3:3
-#define HCODEC_MFDIN_REG3_CANV                     ((0x100b  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG3_CANV ((0x100b << 2) + 0xff620000)
 //cfg_bytes_per_line  = mfdin_reg4_lnr0[15:0];  //linear Bytes per line
 //cfg_linear_bytes4p  = mfdin_reg4_lnr0[17:16]; //linear (Bytes per pixel) - 1
 //cfg_linear_dbl2line = mfdin_reg4_lnr0[18];    //linear double size for odd line
-#define HCODEC_MFDIN_REG4_LNR0                     ((0x100c  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG4_LNR0 ((0x100c << 2) + 0xff620000)
 //cfg_base_address    = mfdin_reg5_lnr1[31:0];  //linear base address
-#define HCODEC_MFDIN_REG5_LNR1                     ((0x100d  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG5_LNR1 ((0x100d << 2) + 0xff620000)
 //assign cfg_r2y_trunc     = mfdin_reg6_dcfg[9];   //RGb->YUV Addition Option: 0:Round 1:Truncated
 //assign cfg_dma_ugt       = mfdin_reg6_dcfg[8];   //DMA Urgent
 //assign cfg_dma_thread_id = mfdin_reg6_dcfg[7:6]; //DMA Thread ID
 //assign cfg_dma_burst_num = mfdin_reg6_dcfg[5:0]; //DMA Burst Number
-#define HCODEC_MFDIN_REG6_DCFG                     ((0x100e  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG6_DCFG ((0x100e << 2) + 0xff620000)
 //cfg_soft_cmd = mfdin_reg7_scmd; // Soft Command [28]selfcleared start,[27:14]dmb_x,[13:0]dmb_y
-#define HCODEC_MFDIN_REG7_SCMD                     ((0x100f  << 2) + 0xff620000)
-//cfg_pic_xsize = mfdin_reg8_dmbl[23:12]; //pixel (x,y) at the begining of last dmb in the picturem, picture x size
+#define HCODEC_MFDIN_REG7_SCMD ((0x100f << 2) + 0xff620000)
+//pixel (x,y) at the beginning of last dmb in the picturem, picture x size
+//cfg_pic_xsize = mfdin_reg8_dmbl[23:12];
 //cfg_pic_ysize = mfdin_reg8_dmbl[11:0];  //picture y size
-#define HCODEC_MFDIN_REG8_DMBL                     ((0x1010  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG8_DMBL ((0x1010 << 2) + 0xff620000)
 //cfg_endian = mfdin_reg9_endn; //Endian Control
-#define HCODEC_MFDIN_REG9_ENDN                     ((0x1011  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG9_ENDN ((0x1011 << 2) + 0xff620000)
 //cfg_canv_biasx = mfdin_rega_cav1[23:12]; //canvas bias address x
 //cfg_canv_biasy = mfdin_rega_cav1[11:0];  //canvas bias address y
-#define HCODEC_MFDIN_REGA_CAV1                     ((0x1012  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REGA_CAV1 ((0x1012 << 2) + 0xff620000)
 //cfg_amp_en = mfdin_regb_ampc[24];      //Amplitude Enable
 //cfg_amp_cy = mfdin_regb_ampc[23:16];   //Amplitude Coeff Y
 //cfg_amp_cu = mfdin_regb_ampc[15:8];    //Amplitude Coeff U
 //cfg_amp_cv = mfdin_regb_ampc[7:0];     //Amplitude Coeff V
-#define HCODEC_MFDIN_REGB_AMPC                     ((0x1013  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REGB_AMPC ((0x1013 << 2) + 0xff620000)
 //cfg_mb_end = mfdin_regc_mblp; // Soft Command [28]mb end enable,[27:14]dmb_x,[13:0]dmb_y
-#define HCODEC_MFDIN_REGC_MBLP                     ((0x1014  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REGC_MBLP ((0x1014 << 2) + 0xff620000)
 //       cfg_y_snr_en               = mfdin_reg0d[0];
 //       cfg_y_snr_err_norm         = mfdin_reg0d[1];
 // [3:0] cfg_y_snr_gau_bld_core     = mfdin_reg0d[5:2];
@@ -264,7 +264,7 @@
 // [5:0] cfg_y_snr_gau_bld_rate     = mfdin_reg0d[19:14];
 // [5:0] cfg_y_snr_gau_alp0_min     = mfdin_reg0d[25:20];
 // [5:0] cfg_y_snr_gau_alp0_max     = mfdin_reg0d[31:26];
-#define HCODEC_MFDIN_REG0D                         ((0x1015  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG0D ((0x1015 << 2) + 0xff620000)
 //       cfg_y_tnr_en               = mfdin_reg0e[0];
 //       cfg_y_tnr_mc_en            = mfdin_reg0e[1];
 //       cfg_y_tnr_txt_mode         = mfdin_reg0e[2];
@@ -272,87 +272,87 @@
 // [5:0] cfg_y_tnr_alpha_min        = mfdin_reg0e[12:7];
 // [5:0] cfg_y_tnr_alpha_max        = mfdin_reg0e[18:13];
 // [5:0] cfg_y_tnr_deghost_os       = mfdin_reg0e[24:19];
-#define HCODEC_MFDIN_REG0E                         ((0x1016  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG0E ((0x1016 << 2) + 0xff620000)
 // [3:0] cfg_y_tnr_mot_cortxt_rate  = mfdin_reg0f[3:0];
 // [7:0] cfg_y_tnr_mot_distxt_ofst  = mfdin_reg0f[15:8];
 // [3:0] cfg_y_tnr_mot_distxt_rate  = mfdin_reg0f[7:4];
 // [7:0] cfg_y_tnr_mot_dismot_ofst  = mfdin_reg0f[23:16];
 // [7:0] cfg_y_tnr_mot_frcsad_lock  = mfdin_reg0f[31:24];
-#define HCODEC_MFDIN_REG0F                         ((0x1017  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG0F ((0x1017 << 2) + 0xff620000)
 // [7:0] cfg_y_tnr_mot2alp_frc_gain = mfdin_reg10[7:0];
 // [7:0] cfg_y_tnr_mot2alp_nrm_gain = mfdin_reg10[15:8];
 // [7:0] cfg_y_tnr_mot2alp_dis_gain = mfdin_reg10[23:16];
 // [5:0] cfg_y_tnr_mot2alp_dis_ofst = mfdin_reg10[29:24];
-#define HCODEC_MFDIN_REG10                         ((0x1018  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG10 ((0x1018 << 2) + 0xff620000)
 // [7:0] cfg_y_bld_beta2alp_rate    = mfdin_reg11[7:0];
 // [5:0] cfg_y_bld_beta_min         = mfdin_reg11[13:8];
 // [5:0] cfg_y_bld_beta_max         = mfdin_reg11[19:14];
-#define HCODEC_MFDIN_REG11                         ((0x1019  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG11 ((0x1019 << 2) + 0xff620000)
 // REG12~16 for Chroma, same as Luma
-#define HCODEC_MFDIN_REG12                         ((0x101a  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG13                         ((0x101b  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG14                         ((0x101c  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG15                         ((0x101d  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG16                         ((0x101e  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG17                         ((0x101f  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG18                         ((0x1020  << 2) + 0xff620000)
-#define HCODEC_MFDIN_REG19                         ((0x1021  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT0                    ((0x1025  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT1                    ((0x1026  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT2                    ((0x1027  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT3                    ((0x1028  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT4                    ((0x1029  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT5                    ((0x102a  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT6                    ((0x102b  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT7                    ((0x102c  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT8                    ((0x102d  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INT9                    ((0x102e  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTA                    ((0x102f  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTB                    ((0x1030  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTC                    ((0x1031  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTD                    ((0x1032  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTE                    ((0x1033  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR1_INTF                    ((0x1034  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT0                    ((0x1035  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT1                    ((0x1036  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT2                    ((0x1037  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT3                    ((0x1038  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT4                    ((0x1039  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT5                    ((0x103a  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT6                    ((0x103b  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT7                    ((0x103c  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT8                    ((0x103d  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INT9                    ((0x103e  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTA                    ((0x103f  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTB                    ((0x1040  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTC                    ((0x1041  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTD                    ((0x1042  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTE                    ((0x1043  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AMR2_INTF                    ((0x1044  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBX_SSEL                     ((0x1045  << 2) + 0xff620000)
-#define HCODEC_ASSIST_TIMER0_LO                    ((0x1060  << 2) + 0xff620000)
-#define HCODEC_ASSIST_TIMER0_HI                    ((0x1061  << 2) + 0xff620000)
-#define HCODEC_ASSIST_TIMER1_LO                    ((0x1062  << 2) + 0xff620000)
-#define HCODEC_ASSIST_TIMER1_HI                    ((0x1063  << 2) + 0xff620000)
-#define HCODEC_ASSIST_DMA_INT                      ((0x1064  << 2) + 0xff620000)
-#define HCODEC_ASSIST_DMA_INT_MSK                  ((0x1065  << 2) + 0xff620000)
-#define HCODEC_ASSIST_DMA_INT2                     ((0x1066  << 2) + 0xff620000)
-#define HCODEC_ASSIST_DMA_INT_MSK2                 ((0x1067  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX0_IRQ_REG                ((0x1070  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX0_CLR_REG                ((0x1071  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX0_MASK                   ((0x1072  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX0_FIQ_SEL                ((0x1073  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX1_IRQ_REG                ((0x1074  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX1_CLR_REG                ((0x1075  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX1_MASK                   ((0x1076  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX1_FIQ_SEL                ((0x1077  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX2_IRQ_REG                ((0x1078  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX2_CLR_REG                ((0x1079  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX2_MASK                   ((0x107a  << 2) + 0xff620000)
-#define HCODEC_ASSIST_MBOX2_FIQ_SEL                ((0x107b  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AXI_CTRL                     ((0x107c  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AXI_STATUS                   ((0x107d  << 2) + 0xff620000)
-#define HCODEC_ASSIST_AXI_SETTING_VLC              ((0x107e  << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG12 ((0x101a << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG13 ((0x101b << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG14 ((0x101c << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG15 ((0x101d << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG16 ((0x101e << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG17 ((0x101f << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG18 ((0x1020 << 2) + 0xff620000)
+#define HCODEC_MFDIN_REG19 ((0x1021 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT0 ((0x1025 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT1 ((0x1026 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT2 ((0x1027 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT3 ((0x1028 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT4 ((0x1029 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT5 ((0x102a << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT6 ((0x102b << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT7 ((0x102c << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT8 ((0x102d << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INT9 ((0x102e << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTA ((0x102f << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTB ((0x1030 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTC ((0x1031 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTD ((0x1032 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTE ((0x1033 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR1_INTF ((0x1034 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT0 ((0x1035 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT1 ((0x1036 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT2 ((0x1037 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT3 ((0x1038 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT4 ((0x1039 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT5 ((0x103a << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT6 ((0x103b << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT7 ((0x103c << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT8 ((0x103d << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INT9 ((0x103e << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTA ((0x103f << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTB ((0x1040 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTC ((0x1041 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTD ((0x1042 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTE ((0x1043 << 2) + 0xff620000)
+#define HCODEC_ASSIST_AMR2_INTF ((0x1044 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBX_SSEL ((0x1045 << 2) + 0xff620000)
+#define HCODEC_ASSIST_TIMER0_LO ((0x1060 << 2) + 0xff620000)
+#define HCODEC_ASSIST_TIMER0_HI ((0x1061 << 2) + 0xff620000)
+#define HCODEC_ASSIST_TIMER1_LO ((0x1062 << 2) + 0xff620000)
+#define HCODEC_ASSIST_TIMER1_HI ((0x1063 << 2) + 0xff620000)
+#define HCODEC_ASSIST_DMA_INT ((0x1064 << 2) + 0xff620000)
+#define HCODEC_ASSIST_DMA_INT_MSK ((0x1065 << 2) + 0xff620000)
+#define HCODEC_ASSIST_DMA_INT2 ((0x1066 << 2) + 0xff620000)
+#define HCODEC_ASSIST_DMA_INT_MSK2 ((0x1067 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX0_IRQ_REG ((0x1070 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX0_CLR_REG ((0x1071 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX0_MASK ((0x1072 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX0_FIQ_SEL ((0x1073 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX1_IRQ_REG ((0x1074 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX1_CLR_REG ((0x1075 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX1_MASK ((0x1076 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX1_FIQ_SEL ((0x1077 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX2_IRQ_REG ((0x1078 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX2_CLR_REG ((0x1079 << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX2_MASK ((0x107a << 2) + 0xff620000)
+#define HCODEC_ASSIST_MBOX2_FIQ_SEL ((0x107b << 2) + 0xff620000)
+#define HCODEC_ASSIST_AXI_CTRL ((0x107c << 2) + 0xff620000)
+#define HCODEC_ASSIST_AXI_STATUS ((0x107d << 2) + 0xff620000)
+#define HCODEC_ASSIST_AXI_SETTING_VLC ((0x107e << 2) + 0xff620000)
 //------------------------------------------------------------------------------
 // MDEC module level register offset
 //------------------------------------------------------------------------------
@@ -365,48 +365,48 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_MDEC_CBUS_BASE = 0x09
 // -----------------------------------------------
-#define MC_CTRL_REG                                ((0x0900  << 2) + 0xff620000)
-#define MC_MB_INFO                                 ((0x0901  << 2) + 0xff620000)
-#define MC_PIC_INFO                                ((0x0902  << 2) + 0xff620000)
-#define MC_HALF_PEL_ONE                            ((0x0903  << 2) + 0xff620000)
-#define MC_HALF_PEL_TWO                            ((0x0904  << 2) + 0xff620000)
-#define POWER_CTL_MC                               ((0x0905  << 2) + 0xff620000)
-#define MC_CMD                                     ((0x0906  << 2) + 0xff620000)
-#define MC_CTRL0                                   ((0x0907  << 2) + 0xff620000)
-#define MC_PIC_W_H                                 ((0x0908  << 2) + 0xff620000)
-#define MC_STATUS0                                 ((0x0909  << 2) + 0xff620000)
-#define MC_STATUS1                                 ((0x090a  << 2) + 0xff620000)
-#define MC_CTRL1                                   ((0x090b  << 2) + 0xff620000)
-#define MC_MIX_RATIO0                              ((0x090c  << 2) + 0xff620000)
-#define MC_MIX_RATIO1                              ((0x090d  << 2) + 0xff620000)
-#define MC_DP_MB_XY                                ((0x090e  << 2) + 0xff620000)
-#define MC_OM_MB_XY                                ((0x090f  << 2) + 0xff620000)
-#define PSCALE_RST                                 ((0x0910  << 2) + 0xff620000)
-#define PSCALE_CTRL                                ((0x0911  << 2) + 0xff620000)
-#define PSCALE_PICI_W                              ((0x0912  << 2) + 0xff620000)
-#define PSCALE_PICI_H                              ((0x0913  << 2) + 0xff620000)
-#define PSCALE_PICO_W                              ((0x0914  << 2) + 0xff620000)
-#define PSCALE_PICO_H                              ((0x0915  << 2) + 0xff620000)
-#define PSCALE_PICO_START_X                        ((0x0916  << 2) + 0xff620000)
-#define PSCALE_PICO_START_Y                        ((0x0917  << 2) + 0xff620000)
-#define PSCALE_DUMMY                               ((0x0918  << 2) + 0xff620000)
-#define PSCALE_FILT0_COEF0                         ((0x0919  << 2) + 0xff620000)
-#define PSCALE_FILT0_COEF1                         ((0x091a  << 2) + 0xff620000)
-#define PSCALE_CMD_CTRL                            ((0x091b  << 2) + 0xff620000)
-#define PSCALE_CMD_BLK_X                           ((0x091c  << 2) + 0xff620000)
-#define PSCALE_CMD_BLK_Y                           ((0x091d  << 2) + 0xff620000)
-#define PSCALE_STATUS                              ((0x091e  << 2) + 0xff620000)
-#define PSCALE_BMEM_ADDR                           ((0x091f  << 2) + 0xff620000)
-#define PSCALE_BMEM_DAT                            ((0x0920  << 2) + 0xff620000)
-#define PSCALE_DRAM_BUF_CTRL                       ((0x0921  << 2) + 0xff620000)
-#define PSCALE_MCMD_CTRL                           ((0x0922  << 2) + 0xff620000)
-#define PSCALE_MCMD_XSIZE                          ((0x0923  << 2) + 0xff620000)
-#define PSCALE_MCMD_YSIZE                          ((0x0924  << 2) + 0xff620000)
-#define PSCALE_RBUF_START_BLKX                     ((0x0925  << 2) + 0xff620000)
-#define PSCALE_RBUF_START_BLKY                     ((0x0926  << 2) + 0xff620000)
+#define MC_CTRL_REG ((0x0900 << 2) + 0xff620000)
+#define MC_MB_INFO ((0x0901 << 2) + 0xff620000)
+#define MC_PIC_INFO ((0x0902 << 2) + 0xff620000)
+#define MC_HALF_PEL_ONE ((0x0903 << 2) + 0xff620000)
+#define MC_HALF_PEL_TWO ((0x0904 << 2) + 0xff620000)
+#define POWER_CTL_MC ((0x0905 << 2) + 0xff620000)
+#define MC_CMD ((0x0906 << 2) + 0xff620000)
+#define MC_CTRL0 ((0x0907 << 2) + 0xff620000)
+#define MC_PIC_W_H ((0x0908 << 2) + 0xff620000)
+#define MC_STATUS0 ((0x0909 << 2) + 0xff620000)
+#define MC_STATUS1 ((0x090a << 2) + 0xff620000)
+#define MC_CTRL1 ((0x090b << 2) + 0xff620000)
+#define MC_MIX_RATIO0 ((0x090c << 2) + 0xff620000)
+#define MC_MIX_RATIO1 ((0x090d << 2) + 0xff620000)
+#define MC_DP_MB_XY ((0x090e << 2) + 0xff620000)
+#define MC_OM_MB_XY ((0x090f << 2) + 0xff620000)
+#define PSCALE_RST ((0x0910 << 2) + 0xff620000)
+#define PSCALE_CTRL ((0x0911 << 2) + 0xff620000)
+#define PSCALE_PICI_W ((0x0912 << 2) + 0xff620000)
+#define PSCALE_PICI_H ((0x0913 << 2) + 0xff620000)
+#define PSCALE_PICO_W ((0x0914 << 2) + 0xff620000)
+#define PSCALE_PICO_H ((0x0915 << 2) + 0xff620000)
+#define PSCALE_PICO_START_X ((0x0916 << 2) + 0xff620000)
+#define PSCALE_PICO_START_Y ((0x0917 << 2) + 0xff620000)
+#define PSCALE_DUMMY ((0x0918 << 2) + 0xff620000)
+#define PSCALE_FILT0_COEF0 ((0x0919 << 2) + 0xff620000)
+#define PSCALE_FILT0_COEF1 ((0x091a << 2) + 0xff620000)
+#define PSCALE_CMD_CTRL ((0x091b << 2) + 0xff620000)
+#define PSCALE_CMD_BLK_X ((0x091c << 2) + 0xff620000)
+#define PSCALE_CMD_BLK_Y ((0x091d << 2) + 0xff620000)
+#define PSCALE_STATUS ((0x091e << 2) + 0xff620000)
+#define PSCALE_BMEM_ADDR ((0x091f << 2) + 0xff620000)
+#define PSCALE_BMEM_DAT ((0x0920 << 2) + 0xff620000)
+#define PSCALE_DRAM_BUF_CTRL ((0x0921 << 2) + 0xff620000)
+#define PSCALE_MCMD_CTRL ((0x0922 << 2) + 0xff620000)
+#define PSCALE_MCMD_XSIZE ((0x0923 << 2) + 0xff620000)
+#define PSCALE_MCMD_YSIZE ((0x0924 << 2) + 0xff620000)
+#define PSCALE_RBUF_START_BLKX ((0x0925 << 2) + 0xff620000)
+#define PSCALE_RBUF_START_BLKY ((0x0926 << 2) + 0xff620000)
 //`define PSCALE_RBUF_MB_WIDTH   8'h27
-#define PSCALE_PICO_SHIFT_XY                       ((0x0928  << 2) + 0xff620000)
-#define PSCALE_CTRL1                               ((0x0929  << 2) + 0xff620000)
+#define PSCALE_PICO_SHIFT_XY ((0x0928 << 2) + 0xff620000)
+#define PSCALE_CTRL1 ((0x0929 << 2) + 0xff620000)
 //Bit 15, wmask enable
 //Bit 14:13, filt0 srckey_less,
 //Bit 12:11, filt1 srckey_less, in the case of the interpolated data is equal distance to
@@ -414,48 +414,48 @@
 //Bit 10:9, srckey mode, 00: equal, 01: less than or equal, 10: great than or equal
 //Bit 8, src key enable
 //Bit 7:0, y src key
-#define PSCALE_SRCKEY_CTRL0                        ((0x092a  << 2) + 0xff620000)
+#define PSCALE_SRCKEY_CTRL0 ((0x092a << 2) + 0xff620000)
 //Bit 15:8, cb src key
 //Bit 7:0, cr src key
-#define PSCALE_SRCKEY_CTRL1                        ((0x092b  << 2) + 0xff620000)
+#define PSCALE_SRCKEY_CTRL1 ((0x092b << 2) + 0xff620000)
 //Bit 22:16 canvas_rd_addr2
 //Bit 14:8 canvas_rd_addr1
 //Bit 6:0 canvas_rd_addr1
-#define PSCALE_CANVAS_RD_ADDR                      ((0x092c  << 2) + 0xff620000)
+#define PSCALE_CANVAS_RD_ADDR ((0x092c << 2) + 0xff620000)
 //Bit 22:16 canvas_wr_addr2
 //Bit 14:8 canvas_wr_addr1
 //Bit 6:0 canvas_wr_addr1
-#define PSCALE_CANVAS_WR_ADDR                      ((0x092d  << 2) + 0xff620000)
+#define PSCALE_CANVAS_WR_ADDR ((0x092d << 2) + 0xff620000)
 //bit 13:8 pscale thread ID and token
 //bit 7 disable write response count adding to busy bit
 //bit 5:0  pscale prearbitor burst num
-#define PSCALE_CTRL2                               ((0x092e  << 2) + 0xff620000)
+#define PSCALE_CTRL2 ((0x092e << 2) + 0xff620000)
 //   31 - use_omem_mb_xy_auto
 //23:16 - omem_max_mb_x
 //15:8  - omem_mb_y_auto
 // 7:0  - omem_mb_x_auto
-#define HDEC_MC_OMEM_AUTO                          ((0x0930  << 2) + 0xff620000)
-#define HDEC_MC_MBRIGHT_IDX                        ((0x0931  << 2) + 0xff620000)
-#define HDEC_MC_MBRIGHT_RD                         ((0x0932  << 2) + 0xff620000)
-#define MC_MPORT_CTRL                              ((0x0940  << 2) + 0xff620000)
-#define MC_MPORT_DAT                               ((0x0941  << 2) + 0xff620000)
-#define MC_WT_PRED_CTRL                            ((0x0942  << 2) + 0xff620000)
-#define MC_MBBOT_ST_EVEN_ADDR                      ((0x0944  << 2) + 0xff620000)
-#define MC_MBBOT_ST_ODD_ADDR                       ((0x0945  << 2) + 0xff620000)
-#define MC_DPDN_MB_XY                              ((0x0946  << 2) + 0xff620000)
-#define MC_OMDN_MB_XY                              ((0x0947  << 2) + 0xff620000)
-#define MC_HCMDBUF_H                               ((0x0948  << 2) + 0xff620000)
-#define MC_HCMDBUF_L                               ((0x0949  << 2) + 0xff620000)
-#define MC_HCMD_H                                  ((0x094a  << 2) + 0xff620000)
-#define MC_HCMD_L                                  ((0x094b  << 2) + 0xff620000)
-#define MC_IDCT_DAT                                ((0x094c  << 2) + 0xff620000)
-#define MC_CTRL_GCLK_CTRL                          ((0x094d  << 2) + 0xff620000)
-#define MC_OTHER_GCLK_CTRL                         ((0x094e  << 2) + 0xff620000)
+#define HDEC_MC_OMEM_AUTO ((0x0930 << 2) + 0xff620000)
+#define HDEC_MC_MBRIGHT_IDX ((0x0931 << 2) + 0xff620000)
+#define HDEC_MC_MBRIGHT_RD ((0x0932 << 2) + 0xff620000)
+#define MC_MPORT_CTRL ((0x0940 << 2) + 0xff620000)
+#define MC_MPORT_DAT ((0x0941 << 2) + 0xff620000)
+#define MC_WT_PRED_CTRL ((0x0942 << 2) + 0xff620000)
+#define MC_MBBOT_ST_EVEN_ADDR ((0x0944 << 2) + 0xff620000)
+#define MC_MBBOT_ST_ODD_ADDR ((0x0945 << 2) + 0xff620000)
+#define MC_DPDN_MB_XY ((0x0946 << 2) + 0xff620000)
+#define MC_OMDN_MB_XY ((0x0947 << 2) + 0xff620000)
+#define MC_HCMDBUF_H ((0x0948 << 2) + 0xff620000)
+#define MC_HCMDBUF_L ((0x0949 << 2) + 0xff620000)
+#define MC_HCMD_H ((0x094a << 2) + 0xff620000)
+#define MC_HCMD_L ((0x094b << 2) + 0xff620000)
+#define MC_IDCT_DAT ((0x094c << 2) + 0xff620000)
+#define MC_CTRL_GCLK_CTRL ((0x094d << 2) + 0xff620000)
+#define MC_OTHER_GCLK_CTRL ((0x094e << 2) + 0xff620000)
 //Bit 29:24, mbbot thread ID and token
 //Bit 21:16, mc read/write thread ID and token
 //Bit 13:8,  mbbot pre-arbitor burst number
 //Bit 5:0,   mc pre-arbitor burst number
-#define MC_CTRL2                                   ((0x094f  << 2) + 0xff620000)
+#define MC_CTRL2 ((0x094f << 2) + 0xff620000)
 // `define DBLK_QUANT            8'h76 // ONLY for $ucode/real/amrisc/rv.s, reg value from apollo
 //`define ANC1_CANVAS_ADDR      8'h80
 //`define ANC2_CANVAS_ADDR      8'h81
@@ -463,89 +463,89 @@
 //`define MDEC_PIC_W          8'h8c
 //`define MDEC_PIC_H          8'h8d
 // mdec_pic_dc_mux_ctrl[31]  -- mcr_hevc_mode
-#define MDEC_PIC_DC_MUX_CTRL                       ((0x098d  << 2) + 0xff620000)
-#define MDEC_PIC_DC_CTRL                           ((0x098e  << 2) + 0xff620000)
-#define MDEC_PIC_DC_STATUS                         ((0x098f  << 2) + 0xff620000)
-#define ANC0_CANVAS_ADDR                           ((0x0990  << 2) + 0xff620000)
-#define ANC1_CANVAS_ADDR                           ((0x0991  << 2) + 0xff620000)
-#define ANC2_CANVAS_ADDR                           ((0x0992  << 2) + 0xff620000)
-#define ANC3_CANVAS_ADDR                           ((0x0993  << 2) + 0xff620000)
-#define ANC4_CANVAS_ADDR                           ((0x0994  << 2) + 0xff620000)
-#define ANC5_CANVAS_ADDR                           ((0x0995  << 2) + 0xff620000)
-#define ANC6_CANVAS_ADDR                           ((0x0996  << 2) + 0xff620000)
-#define ANC7_CANVAS_ADDR                           ((0x0997  << 2) + 0xff620000)
-#define ANC8_CANVAS_ADDR                           ((0x0998  << 2) + 0xff620000)
-#define ANC9_CANVAS_ADDR                           ((0x0999  << 2) + 0xff620000)
-#define ANC10_CANVAS_ADDR                          ((0x099a  << 2) + 0xff620000)
-#define ANC11_CANVAS_ADDR                          ((0x099b  << 2) + 0xff620000)
-#define ANC12_CANVAS_ADDR                          ((0x099c  << 2) + 0xff620000)
-#define ANC13_CANVAS_ADDR                          ((0x099d  << 2) + 0xff620000)
-#define ANC14_CANVAS_ADDR                          ((0x099e  << 2) + 0xff620000)
-#define ANC15_CANVAS_ADDR                          ((0x099f  << 2) + 0xff620000)
-#define ANC16_CANVAS_ADDR                          ((0x09a0  << 2) + 0xff620000)
-#define ANC17_CANVAS_ADDR                          ((0x09a1  << 2) + 0xff620000)
-#define ANC18_CANVAS_ADDR                          ((0x09a2  << 2) + 0xff620000)
-#define ANC19_CANVAS_ADDR                          ((0x09a3  << 2) + 0xff620000)
-#define ANC20_CANVAS_ADDR                          ((0x09a4  << 2) + 0xff620000)
-#define ANC21_CANVAS_ADDR                          ((0x09a5  << 2) + 0xff620000)
-#define ANC22_CANVAS_ADDR                          ((0x09a6  << 2) + 0xff620000)
-#define ANC23_CANVAS_ADDR                          ((0x09a7  << 2) + 0xff620000)
-#define ANC24_CANVAS_ADDR                          ((0x09a8  << 2) + 0xff620000)
-#define ANC25_CANVAS_ADDR                          ((0x09a9  << 2) + 0xff620000)
-#define ANC26_CANVAS_ADDR                          ((0x09aa  << 2) + 0xff620000)
-#define ANC27_CANVAS_ADDR                          ((0x09ab  << 2) + 0xff620000)
-#define ANC28_CANVAS_ADDR                          ((0x09ac  << 2) + 0xff620000)
-#define ANC29_CANVAS_ADDR                          ((0x09ad  << 2) + 0xff620000)
-#define ANC30_CANVAS_ADDR                          ((0x09ae  << 2) + 0xff620000)
-#define ANC31_CANVAS_ADDR                          ((0x09af  << 2) + 0xff620000)
-#define DBKR_CANVAS_ADDR                           ((0x09b0  << 2) + 0xff620000)
-#define DBKW_CANVAS_ADDR                           ((0x09b1  << 2) + 0xff620000)
-#define REC_CANVAS_ADDR                            ((0x09b2  << 2) + 0xff620000)
+#define MDEC_PIC_DC_MUX_CTRL ((0x098d << 2) + 0xff620000)
+#define MDEC_PIC_DC_CTRL ((0x098e << 2) + 0xff620000)
+#define MDEC_PIC_DC_STATUS ((0x098f << 2) + 0xff620000)
+#define ANC0_CANVAS_ADDR ((0x0990 << 2) + 0xff620000)
+#define ANC1_CANVAS_ADDR ((0x0991 << 2) + 0xff620000)
+#define ANC2_CANVAS_ADDR ((0x0992 << 2) + 0xff620000)
+#define ANC3_CANVAS_ADDR ((0x0993 << 2) + 0xff620000)
+#define ANC4_CANVAS_ADDR ((0x0994 << 2) + 0xff620000)
+#define ANC5_CANVAS_ADDR ((0x0995 << 2) + 0xff620000)
+#define ANC6_CANVAS_ADDR ((0x0996 << 2) + 0xff620000)
+#define ANC7_CANVAS_ADDR ((0x0997 << 2) + 0xff620000)
+#define ANC8_CANVAS_ADDR ((0x0998 << 2) + 0xff620000)
+#define ANC9_CANVAS_ADDR ((0x0999 << 2) + 0xff620000)
+#define ANC10_CANVAS_ADDR ((0x099a << 2) + 0xff620000)
+#define ANC11_CANVAS_ADDR ((0x099b << 2) + 0xff620000)
+#define ANC12_CANVAS_ADDR ((0x099c << 2) + 0xff620000)
+#define ANC13_CANVAS_ADDR ((0x099d << 2) + 0xff620000)
+#define ANC14_CANVAS_ADDR ((0x099e << 2) + 0xff620000)
+#define ANC15_CANVAS_ADDR ((0x099f << 2) + 0xff620000)
+#define ANC16_CANVAS_ADDR ((0x09a0 << 2) + 0xff620000)
+#define ANC17_CANVAS_ADDR ((0x09a1 << 2) + 0xff620000)
+#define ANC18_CANVAS_ADDR ((0x09a2 << 2) + 0xff620000)
+#define ANC19_CANVAS_ADDR ((0x09a3 << 2) + 0xff620000)
+#define ANC20_CANVAS_ADDR ((0x09a4 << 2) + 0xff620000)
+#define ANC21_CANVAS_ADDR ((0x09a5 << 2) + 0xff620000)
+#define ANC22_CANVAS_ADDR ((0x09a6 << 2) + 0xff620000)
+#define ANC23_CANVAS_ADDR ((0x09a7 << 2) + 0xff620000)
+#define ANC24_CANVAS_ADDR ((0x09a8 << 2) + 0xff620000)
+#define ANC25_CANVAS_ADDR ((0x09a9 << 2) + 0xff620000)
+#define ANC26_CANVAS_ADDR ((0x09aa << 2) + 0xff620000)
+#define ANC27_CANVAS_ADDR ((0x09ab << 2) + 0xff620000)
+#define ANC28_CANVAS_ADDR ((0x09ac << 2) + 0xff620000)
+#define ANC29_CANVAS_ADDR ((0x09ad << 2) + 0xff620000)
+#define ANC30_CANVAS_ADDR ((0x09ae << 2) + 0xff620000)
+#define ANC31_CANVAS_ADDR ((0x09af << 2) + 0xff620000)
+#define DBKR_CANVAS_ADDR ((0x09b0 << 2) + 0xff620000)
+#define DBKW_CANVAS_ADDR ((0x09b1 << 2) + 0xff620000)
+#define REC_CANVAS_ADDR ((0x09b2 << 2) + 0xff620000)
 //28:24, read/write, current canvas idx, used in h264 only now
 //23:0, read only, current canvas address, 23:16, Cr canvas addr, 15:8, Cb canvas addr, 7:0, Y  canvas addr
-#define CURR_CANVAS_CTRL                           ((0x09b3  << 2) + 0xff620000)
-#define MDEC_PIC_DC_THRESH                         ((0x09b8  << 2) + 0xff620000)
-#define MDEC_PICR_BUF_STATUS                       ((0x09b9  << 2) + 0xff620000)
-#define MDEC_PICW_BUF_STATUS                       ((0x09ba  << 2) + 0xff620000)
-#define MCW_DBLK_WRRSP_CNT                         ((0x09bb  << 2) + 0xff620000)
-#define MC_MBBOT_WRRSP_CNT                         ((0x09bc  << 2) + 0xff620000)
-#define MDEC_PICW_BUF2_STATUS                      ((0x09bd  << 2) + 0xff620000)
-#define WRRSP_FIFO_PICW_DBK                        ((0x09be  << 2) + 0xff620000)
-#define WRRSP_FIFO_PICW_MC                         ((0x09bf  << 2) + 0xff620000)
-#define AV_SCRATCH_0                               ((0x09c0  << 2) + 0xff620000)
-#define AV_SCRATCH_1                               ((0x09c1  << 2) + 0xff620000)
-#define AV_SCRATCH_2                               ((0x09c2  << 2) + 0xff620000)
-#define AV_SCRATCH_3                               ((0x09c3  << 2) + 0xff620000)
-#define AV_SCRATCH_4                               ((0x09c4  << 2) + 0xff620000)
-#define AV_SCRATCH_5                               ((0x09c5  << 2) + 0xff620000)
-#define AV_SCRATCH_6                               ((0x09c6  << 2) + 0xff620000)
-#define AV_SCRATCH_7                               ((0x09c7  << 2) + 0xff620000)
-#define AV_SCRATCH_8                               ((0x09c8  << 2) + 0xff620000)
-#define AV_SCRATCH_9                               ((0x09c9  << 2) + 0xff620000)
-#define AV_SCRATCH_A                               ((0x09ca  << 2) + 0xff620000)
-#define AV_SCRATCH_B                               ((0x09cb  << 2) + 0xff620000)
-#define AV_SCRATCH_C                               ((0x09cc  << 2) + 0xff620000)
-#define AV_SCRATCH_D                               ((0x09cd  << 2) + 0xff620000)
-#define AV_SCRATCH_E                               ((0x09ce  << 2) + 0xff620000)
-#define AV_SCRATCH_F                               ((0x09cf  << 2) + 0xff620000)
-#define AV_SCRATCH_G                               ((0x09d0  << 2) + 0xff620000)
-#define AV_SCRATCH_H                               ((0x09d1  << 2) + 0xff620000)
-#define AV_SCRATCH_I                               ((0x09d2  << 2) + 0xff620000)
-#define AV_SCRATCH_J                               ((0x09d3  << 2) + 0xff620000)
-#define AV_SCRATCH_K                               ((0x09d4  << 2) + 0xff620000)
-#define AV_SCRATCH_L                               ((0x09d5  << 2) + 0xff620000)
-#define AV_SCRATCH_M                               ((0x09d6  << 2) + 0xff620000)
-#define AV_SCRATCH_N                               ((0x09d7  << 2) + 0xff620000)
+#define CURR_CANVAS_CTRL ((0x09b3 << 2) + 0xff620000)
+#define MDEC_PIC_DC_THRESH ((0x09b8 << 2) + 0xff620000)
+#define MDEC_PICR_BUF_STATUS ((0x09b9 << 2) + 0xff620000)
+#define MDEC_PICW_BUF_STATUS ((0x09ba << 2) + 0xff620000)
+#define MCW_DBLK_WRRSP_CNT ((0x09bb << 2) + 0xff620000)
+#define MC_MBBOT_WRRSP_CNT ((0x09bc << 2) + 0xff620000)
+#define MDEC_PICW_BUF2_STATUS ((0x09bd << 2) + 0xff620000)
+#define WRRSP_FIFO_PICW_DBK ((0x09be << 2) + 0xff620000)
+#define WRRSP_FIFO_PICW_MC ((0x09bf << 2) + 0xff620000)
+#define AV_SCRATCH_0 ((0x09c0 << 2) + 0xff620000)
+#define AV_SCRATCH_1 ((0x09c1 << 2) + 0xff620000)
+#define AV_SCRATCH_2 ((0x09c2 << 2) + 0xff620000)
+#define AV_SCRATCH_3 ((0x09c3 << 2) + 0xff620000)
+#define AV_SCRATCH_4 ((0x09c4 << 2) + 0xff620000)
+#define AV_SCRATCH_5 ((0x09c5 << 2) + 0xff620000)
+#define AV_SCRATCH_6 ((0x09c6 << 2) + 0xff620000)
+#define AV_SCRATCH_7 ((0x09c7 << 2) + 0xff620000)
+#define AV_SCRATCH_8 ((0x09c8 << 2) + 0xff620000)
+#define AV_SCRATCH_9 ((0x09c9 << 2) + 0xff620000)
+#define AV_SCRATCH_A ((0x09ca << 2) + 0xff620000)
+#define AV_SCRATCH_B ((0x09cb << 2) + 0xff620000)
+#define AV_SCRATCH_C ((0x09cc << 2) + 0xff620000)
+#define AV_SCRATCH_D ((0x09cd << 2) + 0xff620000)
+#define AV_SCRATCH_E ((0x09ce << 2) + 0xff620000)
+#define AV_SCRATCH_F ((0x09cf << 2) + 0xff620000)
+#define AV_SCRATCH_G ((0x09d0 << 2) + 0xff620000)
+#define AV_SCRATCH_H ((0x09d1 << 2) + 0xff620000)
+#define AV_SCRATCH_I ((0x09d2 << 2) + 0xff620000)
+#define AV_SCRATCH_J ((0x09d3 << 2) + 0xff620000)
+#define AV_SCRATCH_K ((0x09d4 << 2) + 0xff620000)
+#define AV_SCRATCH_L ((0x09d5 << 2) + 0xff620000)
+#define AV_SCRATCH_M ((0x09d6 << 2) + 0xff620000)
+#define AV_SCRATCH_N ((0x09d7 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_co_mb
 // bit[21:16] A_id_co_mb
 // bit[11:0] wrrsp_count_co_mb
-#define WRRSP_CO_MB                                ((0x09d8  << 2) + 0xff620000)
+#define WRRSP_CO_MB ((0x09d8 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_dcac
 // bit[21:16] A_id_dcac
 // bit[11:0] wrrsp_count_dcac
-#define WRRSP_DCAC                                 ((0x09d9  << 2) + 0xff620000)
+#define WRRSP_DCAC ((0x09d9 << 2) + 0xff620000)
 // bit[11:0] wrrsp_count_vld
-#define WRRSP_VLD                                  ((0x09da  << 2) + 0xff620000)
+#define WRRSP_VLD ((0x09da << 2) + 0xff620000)
 // doublew_cfg0[0];     //       Second Channel Enable, 1:Enable 0:Disable
 // doublew_cfg0[3:1];   // [2:0] Endian Control for Luma
 // doublew_cfg0[5:4];   // [1:0] Pixel sel by horizontal, 0x:1/2 10:left 11:right
@@ -561,116 +561,116 @@
 // doublew_cfg0[29:28]; // [1:0] 0x:select both top and bottom 10:select top 11:select bottom
 // doublew_cfg0[30];    //       0:no merge 1:automatic merge
 // doublew_cfg0[31];    //       0:Y addr no change 1:Y addr divided to half
-#define MDEC_DOUBLEW_CFG0                          ((0x09db  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG0 ((0x09db << 2) + 0xff620000)
 // doublew_cfg1[7:0];   // [7:0] DMA Canvas Address for Luma
 // doublew_cfg1[15:8];  // [7:0] DMA Canvas Address for Chroma
 // doublew_cfg1[16];    //       Disable 1st Write -
 // doublew_cfg1[17];    //       Reverse to original version -
 // doublew_cfg1[18];    //       DMA Address Mode - 0:Canvas Mode 1:Non-Canvas Mode
-#define MDEC_DOUBLEW_CFG1                          ((0x09dc  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG1 ((0x09dc << 2) + 0xff620000)
 // doublew_cfg2[11:0];  //[11:0] vertical flip initial value
 // doublew_cfg2[15];    //       vertical flip enable
 // doublew_cfg2[24:16]; // [8:0] horizontal flip initial value
 // doublew_cfg2[31];    //       horizontal flip enable
-#define MDEC_DOUBLEW_CFG2                          ((0x09dd  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG2 ((0x09dd << 2) + 0xff620000)
 // doublew_cfg3[31:0];  //[31:0] non-canvas start address for Luma -
-#define MDEC_DOUBLEW_CFG3                          ((0x09de  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG3 ((0x09de << 2) + 0xff620000)
 // doublew_cfg4[31:0];  //[31:0] non-canvas start address for Chroma -
-#define MDEC_DOUBLEW_CFG4                          ((0x09df  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG4 ((0x09df << 2) + 0xff620000)
 // doublew_cfg5[12:0];  //[12:0] non-canvas picture width for Luma -
 // doublew_cfg5[28:16]; //[12:0] non-canvas picture width for Chroma -
-#define MDEC_DOUBLEW_CFG5                          ((0x09e0  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG5 ((0x09e0 << 2) + 0xff620000)
 // doublew_cfg6: reserved
-#define MDEC_DOUBLEW_CFG6                          ((0x09e1  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG6 ((0x09e1 << 2) + 0xff620000)
 // doublew_cfg7: reserved
-#define MDEC_DOUBLEW_CFG7                          ((0x09e2  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_CFG7 ((0x09e2 << 2) + 0xff620000)
 // doublew_status[11:0];//[11:0] wrrsp_count_doublew
 // doublew_status[12];  //       doublew_status_busy
 // doublew_status[13];  //       doublew_status_error
-#define MDEC_DOUBLEW_STATUS                        ((0x09e3  << 2) + 0xff620000)
-#define MDEC_EXTIF_CFG0                            ((0x09e4  << 2) + 0xff620000)
-#define MDEC_EXTIF_CFG1                            ((0x09e5  << 2) + 0xff620000)
-#define MDEC_EXTIF_CFG2                            ((0x09e6  << 2) + 0xff620000)
-#define MDEC_EXTIF_STS0                            ((0x09e7  << 2) + 0xff620000)
-#define MDEC_PICW_BUFDW_CFG0                       ((0x09e8  << 2) + 0xff620000)
-#define MDEC_PICW_BUFDW_CFG1                       ((0x09e9  << 2) + 0xff620000)
+#define MDEC_DOUBLEW_STATUS ((0x09e3 << 2) + 0xff620000)
+#define MDEC_EXTIF_CFG0 ((0x09e4 << 2) + 0xff620000)
+#define MDEC_EXTIF_CFG1 ((0x09e5 << 2) + 0xff620000)
+#define MDEC_EXTIF_CFG2 ((0x09e6 << 2) + 0xff620000)
+#define MDEC_EXTIF_STS0 ((0x09e7 << 2) + 0xff620000)
+#define MDEC_PICW_BUFDW_CFG0 ((0x09e8 << 2) + 0xff620000)
+#define MDEC_PICW_BUFDW_CFG1 ((0x09e9 << 2) + 0xff620000)
 //======================================
 //  MC Control Register Bits
 //
 //======================================
 // For bits, just copy the defines...don't translate to addresses
-    #define MC_ENABLE	    0x0001
-    //`define MC_RESET	    16'h0002
-    #define SKIP_MB		    0x0004
+#define MC_ENABLE 0x0001
+//`define MC_RESET	    16'h0002
+#define SKIP_MB 0x0004
 
 //======================================
 //  MB Info Register Bits
 //
 //======================================
-    #define INTRA_MB	    0x0001
+#define INTRA_MB 0x0001
 
-    #define BWD_PRED	    0x0004
-    #define FWD_PRED	    0x0008
+#define BWD_PRED 0x0004
+#define FWD_PRED 0x0008
 
-    #define FLD_MOT		    0x0100
-    #define FRM_16x8_MOT	0x0200
-    #define DUAL_PRM_MOT	0x0300
+#define FLD_MOT 0x0100
+#define FRM_16x8_MOT 0x0200
+#define DUAL_PRM_MOT 0x0300
 
-    #define FRM_DCT		    0x0000	    // Bit 10
-    #define FLD_DCT		    0x0400
+#define FRM_DCT 0x0000 // Bit 10
+#define FLD_DCT 0x0400
 
 //======================================
 //  MB Info Register Bits
 //
 //======================================
-    #define I_PIC		    0x0001
-    #define P_PIC		    0x0002
-    #define B_PIC		    0x0003
+#define I_PIC 0x0001
+#define P_PIC 0x0002
+#define B_PIC 0x0003
 
-    #define FLD_PIC		    0x0000	    // Bit 8
-    #define FRM_PIC		    0x0100
+#define FLD_PIC 0x0000 // Bit 8
+#define FRM_PIC 0x0100
 //========================================================================
 // DBLK Register:  12'h950 - 12'h97f
 //========================================================================
-#define DBLK_RST                                   ((0x0950  << 2) + 0xff620000)
-#define DBLK_CTRL                                  ((0x0951  << 2) + 0xff620000)
-#define DBLK_MB_WID_HEIGHT                         ((0x0952  << 2) + 0xff620000)
-#define DBLK_STATUS                                ((0x0953  << 2) + 0xff620000)
-#define DBLK_CMD_CTRL                              ((0x0954  << 2) + 0xff620000)
-#define DBLK_MB_XY                                 ((0x0955  << 2) + 0xff620000)
-#define DBLK_QP                                    ((0x0956  << 2) + 0xff620000)
-#define DBLK_Y_BHFILT                              ((0x0957  << 2) + 0xff620000)
-#define DBLK_Y_BHFILT_HIGH                         ((0x0958  << 2) + 0xff620000)
-#define DBLK_Y_BVFILT                              ((0x0959  << 2) + 0xff620000)
-#define DBLK_CB_BFILT                              ((0x095a  << 2) + 0xff620000)
-#define DBLK_CR_BFILT                              ((0x095b  << 2) + 0xff620000)
-#define DBLK_Y_HFILT                               ((0x095c  << 2) + 0xff620000)
-#define DBLK_Y_HFILT_HIGH                          ((0x095d  << 2) + 0xff620000)
-#define DBLK_Y_VFILT                               ((0x095e  << 2) + 0xff620000)
-#define DBLK_CB_FILT                               ((0x095f  << 2) + 0xff620000)
-#define DBLK_CR_FILT                               ((0x0960  << 2) + 0xff620000)
-#define DBLK_BETAX_QP_SEL                          ((0x0961  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL0                            ((0x0962  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL1                            ((0x0963  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL2                            ((0x0964  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL3                            ((0x0965  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL4                            ((0x0966  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL5                            ((0x0967  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL6                            ((0x0968  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL7                            ((0x0969  << 2) + 0xff620000)
-#define DBLK_CLIP_CTRL8                            ((0x096a  << 2) + 0xff620000)
-#define DBLK_STATUS1                               ((0x096b  << 2) + 0xff620000)
-#define DBLK_GCLK_FREE                             ((0x096c  << 2) + 0xff620000)
-#define DBLK_GCLK_OFF                              ((0x096d  << 2) + 0xff620000)
-#define DBLK_AVSFLAGS                              ((0x096e  << 2) + 0xff620000)
+#define DBLK_RST ((0x0950 << 2) + 0xff620000)
+#define DBLK_CTRL ((0x0951 << 2) + 0xff620000)
+#define DBLK_MB_WID_HEIGHT ((0x0952 << 2) + 0xff620000)
+#define DBLK_STATUS ((0x0953 << 2) + 0xff620000)
+#define DBLK_CMD_CTRL ((0x0954 << 2) + 0xff620000)
+#define DBLK_MB_XY ((0x0955 << 2) + 0xff620000)
+#define DBLK_QP ((0x0956 << 2) + 0xff620000)
+#define DBLK_Y_BHFILT ((0x0957 << 2) + 0xff620000)
+#define DBLK_Y_BHFILT_HIGH ((0x0958 << 2) + 0xff620000)
+#define DBLK_Y_BVFILT ((0x0959 << 2) + 0xff620000)
+#define DBLK_CB_BFILT ((0x095a << 2) + 0xff620000)
+#define DBLK_CR_BFILT ((0x095b << 2) + 0xff620000)
+#define DBLK_Y_HFILT ((0x095c << 2) + 0xff620000)
+#define DBLK_Y_HFILT_HIGH ((0x095d << 2) + 0xff620000)
+#define DBLK_Y_VFILT ((0x095e << 2) + 0xff620000)
+#define DBLK_CB_FILT ((0x095f << 2) + 0xff620000)
+#define DBLK_CR_FILT ((0x0960 << 2) + 0xff620000)
+#define DBLK_BETAX_QP_SEL ((0x0961 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL0 ((0x0962 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL1 ((0x0963 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL2 ((0x0964 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL3 ((0x0965 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL4 ((0x0966 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL5 ((0x0967 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL6 ((0x0968 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL7 ((0x0969 << 2) + 0xff620000)
+#define DBLK_CLIP_CTRL8 ((0x096a << 2) + 0xff620000)
+#define DBLK_STATUS1 ((0x096b << 2) + 0xff620000)
+#define DBLK_GCLK_FREE ((0x096c << 2) + 0xff620000)
+#define DBLK_GCLK_OFF ((0x096d << 2) + 0xff620000)
+#define DBLK_AVSFLAGS ((0x096e << 2) + 0xff620000)
 // bit 15:0
-#define DBLK_CBPY                                  ((0x0970  << 2) + 0xff620000)
+#define DBLK_CBPY ((0x0970 << 2) + 0xff620000)
 // bit 11:8 -- deblk_cbpy_bottom
 // bit 7:4 -- deblk_cbpy_left
 // bit 3:0 -- deblk_cbpy_top
-#define DBLK_CBPY_ADJ                              ((0x0971  << 2) + 0xff620000)
+#define DBLK_CBPY_ADJ ((0x0971 << 2) + 0xff620000)
 // bit 7:0 -- deblk_cbpc
-#define DBLK_CBPC                                  ((0x0972  << 2) + 0xff620000)
+#define DBLK_CBPC ((0x0972 << 2) + 0xff620000)
 // bit 15 -- bottom_mb
 // bit 14 -- left_mb
 // bit 13 -- top_mb
@@ -678,10 +678,10 @@
 // bit 11:8 -- deblk_cbpc_bottom
 // bit 7:4 -- deblk_cbpc_left
 // bit 3:0 -- deblk_cbpc_top
-#define DBLK_CBPC_ADJ                              ((0x0973  << 2) + 0xff620000)
+#define DBLK_CBPC_ADJ ((0x0973 << 2) + 0xff620000)
 // bit 15:8 -- deblk_hmvd   -- {left_1, left_0, below_1, below_0, block3-0}
 // bit 7:0 -- deblk_vmvd    -- {top_1, top_0, below_1, below_0, block3-0}
-#define DBLK_VHMVD                                 ((0x0974  << 2) + 0xff620000)
+#define DBLK_VHMVD ((0x0974 << 2) + 0xff620000)
 // bit 13:12 -- right_vmvd
 // bit 11 -- right_above_vmvd
 // bit 10 -- left_below_hmvd
@@ -695,40 +695,40 @@
 // bit 2 -- s_left
 // bit 1 -- s_above
 // bit 0 -- s
-#define DBLK_STRONG                                ((0x0975  << 2) + 0xff620000)
+#define DBLK_STRONG ((0x0975 << 2) + 0xff620000)
 // bit 14:10 -- PQUANT
 // bit 9:5 -- left_PQUANT
 // bit 4:0 -- top_PQUANT
-#define DBLK_RV8_QUANT                             ((0x0976  << 2) + 0xff620000)
-#define DBLK_CBUS_HCMD2                            ((0x0977  << 2) + 0xff620000)
-#define DBLK_CBUS_HCMD1                            ((0x0978  << 2) + 0xff620000)
-#define DBLK_CBUS_HCMD0                            ((0x0979  << 2) + 0xff620000)
-#define DBLK_VLD_HCMD2                             ((0x097a  << 2) + 0xff620000)
-#define DBLK_VLD_HCMD1                             ((0x097b  << 2) + 0xff620000)
-#define DBLK_VLD_HCMD0                             ((0x097c  << 2) + 0xff620000)
-#define DBLK_OST_YBASE                             ((0x097d  << 2) + 0xff620000)
-#define DBLK_OST_CBCRDIFF                          ((0x097e  << 2) + 0xff620000)
+#define DBLK_RV8_QUANT ((0x0976 << 2) + 0xff620000)
+#define DBLK_CBUS_HCMD2 ((0x0977 << 2) + 0xff620000)
+#define DBLK_CBUS_HCMD1 ((0x0978 << 2) + 0xff620000)
+#define DBLK_CBUS_HCMD0 ((0x0979 << 2) + 0xff620000)
+#define DBLK_VLD_HCMD2 ((0x097a << 2) + 0xff620000)
+#define DBLK_VLD_HCMD1 ((0x097b << 2) + 0xff620000)
+#define DBLK_VLD_HCMD0 ((0x097c << 2) + 0xff620000)
+#define DBLK_OST_YBASE ((0x097d << 2) + 0xff620000)
+#define DBLK_OST_CBCRDIFF ((0x097e << 2) + 0xff620000)
 //13:8 dblk thread ID and token
 //5:0  dblk prearbitor burst num
-#define DBLK_CTRL1                                 ((0x097f  << 2) + 0xff620000)
+#define DBLK_CTRL1 ((0x097f << 2) + 0xff620000)
 // MCRCC_CTL1
 // 31:3  <reserved[23:0]>
 // 2     <cfg_field_pic>
 // 1     <sw_rst>
 // 0     <bypass_en>
-#define MCRCC_CTL1                                 ((0x0980  << 2) + 0xff620000)
+#define MCRCC_CTL1 ((0x0980 << 2) + 0xff620000)
 // MCRCC_CTL2
 // 31:24    <cfg_cache_anc01_c[7:0]>
 // 23:16    <cfg_cache_anc01_y[7:0]>
 // 15:8     <cfg_cache_anc00_c[7:0]>
 // 7:0      <cfg_cache_anc00_y[7:0]>
-#define MCRCC_CTL2                                 ((0x0981  << 2) + 0xff620000)
+#define MCRCC_CTL2 ((0x0981 << 2) + 0xff620000)
 // MCRCC_CTL3
 // 31:24    <cfg_cache_anc11_c[7:0]>
 // 23:16    <cfg_cache_anc11_y[7:0]>
 // 15:8     <cfg_cache_anc10_c[7:0]>
 // 7:0      <cfg_cache_anc10_y[7:0]>
-#define MCRCC_CTL3                                 ((0x0982  << 2) + 0xff620000)
+#define MCRCC_CTL3 ((0x0982 << 2) + 0xff620000)
 // bit[31:10] reserved
 // bit[9:0] sw_clock_gating control
 // [9] vdec clk_en for assist and cbus.
@@ -741,7 +741,7 @@
 // [2] vdec clk_en for pic_dc
 // [1] vdec clk_en for psc
 // [0] vdec clk_en for vld
-#define GCLK_EN                                    ((0x0983  << 2) + 0xff620000)
+#define GCLK_EN ((0x0983 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  Reset assist, mdec's CBUS
@@ -756,7 +756,7 @@
 // [11] Reset vcpu's MCPU
 // [12] Reset vcpu's CCPU
 // [13] Reset mmc_pre_arb
-#define MDEC_SW_RESET                              ((0x0984  << 2) + 0xff620000)
+#define MDEC_SW_RESET ((0x0984 << 2) + 0xff620000)
 // [0]      dblkmerge_bypass
 // [2:1]    picture_structure
 // [3]      is_mbaff_frame
@@ -764,12 +764,12 @@
 // [6]      Reserved
 // [7]      write_mask_redge
 // [31:6]   Reserved
-#define MDEC_DBLKWMERGE_CTRL0                      ((0x0985  << 2) + 0xff620000)
+#define MDEC_DBLKWMERGE_CTRL0 ((0x0985 << 2) + 0xff620000)
 // [12:0]   dblkwmerge_pic_w
 // [15:13]  Reserved
 // [28:16]  dblkwmerge_pic_h
 // [31:29]  Reserved
-#define MDEC_DBLKWMERGE_CTRL1                      ((0x0986  << 2) + 0xff620000)
+#define MDEC_DBLKWMERGE_CTRL1 ((0x0986 << 2) + 0xff620000)
 //DBLK last address 12'h97f
 //
 // Closing file:  mdec_regs.h
@@ -786,7 +786,7 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VLD_CBUS_BASE = 0x0c
 // -----------------------------------------------
-#define VLD_STATUS_CTRL                            ((0x0c00  << 2) + 0xff620000)
+#define VLD_STATUS_CTRL ((0x0c00 << 2) + 0xff620000)
 //
 // bit 10 -- use_old_shift_en
 // bit 9 -- output_mv_not_pmv
@@ -796,13 +796,13 @@
 // bit 2 -- disable_m2_ac_coeff_one_cycle
 // bit 1 -- forced_reset  force reset pmv
 // bit 0 -- mpeg_type  0:mpeg1 1: mpeg2
-#define MPEG1_2_REG                                ((0x0c01  << 2) + 0xff620000)
-#define F_CODE_REG                                 ((0x0c02  << 2) + 0xff620000)
-#define PIC_HEAD_INFO                              ((0x0c03  << 2) + 0xff620000)
-#define SLICE_VER_POS_PIC_TYPE                     ((0x0c04  << 2) + 0xff620000)
-#define QP_VALUE_REG                               ((0x0c05  << 2) + 0xff620000)
-#define MBA_INC                                    ((0x0c06  << 2) + 0xff620000)
-#define MB_MOTION_MODE                             ((0x0c07  << 2) + 0xff620000)
+#define MPEG1_2_REG ((0x0c01 << 2) + 0xff620000)
+#define F_CODE_REG ((0x0c02 << 2) + 0xff620000)
+#define PIC_HEAD_INFO ((0x0c03 << 2) + 0xff620000)
+#define SLICE_VER_POS_PIC_TYPE ((0x0c04 << 2) + 0xff620000)
+#define QP_VALUE_REG ((0x0c05 << 2) + 0xff620000)
+#define MBA_INC ((0x0c06 << 2) + 0xff620000)
+#define MB_MOTION_MODE ((0x0c07 << 2) + 0xff620000)
 //`define PACKET_BYTE_COUNT   8'h08
 // bit 15 -- force_search_startcode_en
 // bit 14 -- int_cpu_when_error (before do anything)
@@ -810,26 +810,26 @@
 // bit 12 -- return_on_slice_header
 // bit 6 -- jpeg_ff00_en
 // bit 5:0 -- vld_power_ctl
-#define POWER_CTL_VLD                              ((0x0c08  << 2) + 0xff620000)
-#define MB_WIDTH                                   ((0x0c09  << 2) + 0xff620000)
-#define SLICE_QP                                   ((0x0c0a  << 2) + 0xff620000)
+#define POWER_CTL_VLD ((0x0c08 << 2) + 0xff620000)
+#define MB_WIDTH ((0x0c09 << 2) + 0xff620000)
+#define SLICE_QP ((0x0c0a << 2) + 0xff620000)
 // `define MB_X_MB_Y           8'h0b   /* current MBX and MBY                  */
-#define PRE_START_CODE                             ((0x0c0b  << 2) + 0xff620000)
-#define SLICE_START_BYTE_01                        ((0x0c0c  << 2) + 0xff620000)
-#define SLICE_START_BYTE_23                        ((0x0c0d  << 2) + 0xff620000)
-#define RESYNC_MARKER_LENGTH                       ((0x0c0e  << 2) + 0xff620000)
+#define PRE_START_CODE ((0x0c0b << 2) + 0xff620000)
+#define SLICE_START_BYTE_01 ((0x0c0c << 2) + 0xff620000)
+#define SLICE_START_BYTE_23 ((0x0c0d << 2) + 0xff620000)
+#define RESYNC_MARKER_LENGTH ((0x0c0e << 2) + 0xff620000)
 // bit[6:5] - frame/field info, 01 - top, 10 - bottom, 11 - frame
 // bit[4:0] - buffer ID
 // L0_BUFF_ID_0, L0_BUFF_ID_1, L1_BUFF_ID_0, L1_BUFF_ID_1
-#define DECODER_BUFFER_INFO                        ((0x0c0f  << 2) + 0xff620000)
-#define FST_FOR_MV_X                               ((0x0c10  << 2) + 0xff620000)
-#define FST_FOR_MV_Y                               ((0x0c11  << 2) + 0xff620000)
-#define SCD_FOR_MV_X                               ((0x0c12  << 2) + 0xff620000)
-#define SCD_FOR_MV_Y                               ((0x0c13  << 2) + 0xff620000)
-#define FST_BAK_MV_X                               ((0x0c14  << 2) + 0xff620000)
-#define FST_BAK_MV_Y                               ((0x0c15  << 2) + 0xff620000)
-#define SCD_BAK_MV_X                               ((0x0c16  << 2) + 0xff620000)
-#define SCD_BAK_MV_Y                               ((0x0c17  << 2) + 0xff620000)
+#define DECODER_BUFFER_INFO ((0x0c0f << 2) + 0xff620000)
+#define FST_FOR_MV_X ((0x0c10 << 2) + 0xff620000)
+#define FST_FOR_MV_Y ((0x0c11 << 2) + 0xff620000)
+#define SCD_FOR_MV_X ((0x0c12 << 2) + 0xff620000)
+#define SCD_FOR_MV_Y ((0x0c13 << 2) + 0xff620000)
+#define FST_BAK_MV_X ((0x0c14 << 2) + 0xff620000)
+#define FST_BAK_MV_Y ((0x0c15 << 2) + 0xff620000)
+#define SCD_BAK_MV_X ((0x0c16 << 2) + 0xff620000)
+#define SCD_BAK_MV_Y ((0x0c17 << 2) + 0xff620000)
 // Bit 24 -- spatial_scale_no_update_when_f_invalid // disable_fix
 // Bit 23 -- spatial_scale_no_update_when_f_zero // disable_fix
 // Bit 22 -- pure_jpeg_hw_en
@@ -846,13 +846,13 @@
 // bit 2 -- weighting_prediction
 // bit 1 -- mb_weighting_flag
 // bit 0 -- slice_weighting_flag
-#define VLD_DECODE_CONTROL                         ((0x0c18  << 2) + 0xff620000)
+#define VLD_DECODE_CONTROL ((0x0c18 << 2) + 0xff620000)
 // bit[15:0] - vld_jpeg_tab_addr
-#define VLD_JPEG_TAB_ADDR                          ((0x0c19  << 2) + 0xff620000)
-#define VIFF_BIT_CNT                               ((0x0c1a  << 2) + 0xff620000)
-#define BYTE_ALIGN_PEAK_HI                         ((0x0c1b  << 2) + 0xff620000)
-#define BYTE_ALIGN_PEAK_LO                         ((0x0c1c  << 2) + 0xff620000)
-#define NEXT_ALIGN_PEAK                            ((0x0c1d  << 2) + 0xff620000)
+#define VLD_JPEG_TAB_ADDR ((0x0c19 << 2) + 0xff620000)
+#define VIFF_BIT_CNT ((0x0c1a << 2) + 0xff620000)
+#define BYTE_ALIGN_PEAK_HI ((0x0c1b << 2) + 0xff620000)
+#define BYTE_ALIGN_PEAK_LO ((0x0c1c << 2) + 0xff620000)
+#define NEXT_ALIGN_PEAK ((0x0c1d << 2) + 0xff620000)
 // bit 31    : byte_aligned_zero_23_from_org // From GXM
 // bit 30    : force_shift_out_drop_flag_zero // From GXM
 // bit 29    : en_st_protect_from_org // From GXM
@@ -880,40 +880,40 @@
 // bit 3 : first_mode3
 // bit 2:1 : vc1_profile  0-SP, 1-MP, 2-reserved, 3-AP
 // bit 0   : vc1_enable
-#define VC1_CONTROL_REG                            ((0x0c1e  << 2) + 0xff620000)
-#define PMV1_X                                     ((0x0c20  << 2) + 0xff620000)
-#define PMV1_Y                                     ((0x0c21  << 2) + 0xff620000)
-#define PMV2_X                                     ((0x0c22  << 2) + 0xff620000)
-#define PMV2_Y                                     ((0x0c23  << 2) + 0xff620000)
-#define PMV3_X                                     ((0x0c24  << 2) + 0xff620000)
-#define PMV3_Y                                     ((0x0c25  << 2) + 0xff620000)
-#define PMV4_X                                     ((0x0c26  << 2) + 0xff620000)
-#define PMV4_Y                                     ((0x0c27  << 2) + 0xff620000)
+#define VC1_CONTROL_REG ((0x0c1e << 2) + 0xff620000)
+#define PMV1_X ((0x0c20 << 2) + 0xff620000)
+#define PMV1_Y ((0x0c21 << 2) + 0xff620000)
+#define PMV2_X ((0x0c22 << 2) + 0xff620000)
+#define PMV2_Y ((0x0c23 << 2) + 0xff620000)
+#define PMV3_X ((0x0c24 << 2) + 0xff620000)
+#define PMV3_Y ((0x0c25 << 2) + 0xff620000)
+#define PMV4_X ((0x0c26 << 2) + 0xff620000)
+#define PMV4_Y ((0x0c27 << 2) + 0xff620000)
 // Can't use the same address for different defines
 // Therefore, create a single define that covers both
 // Only appears to be used in micro-code since the VLD hardware is
 // hard coded.
 // `define M4_TABLE_SELECT     8'h28  // Does this exist in HW ? Added from register_mp2.h
 // `define M4_TABLE_OUTPUT     8'h28  // Does this exist in HW ? Added from register_mp2.h
-#define M4_TABLE_SELECT                            ((0x0c28  << 2) + 0xff620000)
-#define M4_CONTROL_REG                             ((0x0c29  << 2) + 0xff620000)
-#define BLOCK_NUM                                  ((0x0c2a  << 2) + 0xff620000)
-#define PATTERN_CODE                               ((0x0c2b  << 2) + 0xff620000)
-#define MB_INFO                                    ((0x0c2c  << 2) + 0xff620000)
-#define VLD_DC_PRED                                ((0x0c2d  << 2) + 0xff620000)
-#define VLD_ERROR_MASK                             ((0x0c2e  << 2) + 0xff620000)
-#define VLD_DC_PRED_C                              ((0x0c2f  << 2) + 0xff620000)
-#define LAST_SLICE_MV_ADDR                         ((0x0c30  << 2) + 0xff620000)
-#define LAST_MVX                                   ((0x0c31  << 2) + 0xff620000)
-#define LAST_MVY                                   ((0x0c32  << 2) + 0xff620000)
-#define VLD_C38                                    ((0x0c38  << 2) + 0xff620000)
-#define VLD_C39                                    ((0x0c39  << 2) + 0xff620000)
-#define VLD_STATUS                                 ((0x0c3a  << 2) + 0xff620000)
-#define VLD_SHIFT_STATUS                           ((0x0c3b  << 2) + 0xff620000)
+#define M4_TABLE_SELECT ((0x0c28 << 2) + 0xff620000)
+#define M4_CONTROL_REG ((0x0c29 << 2) + 0xff620000)
+#define BLOCK_NUM ((0x0c2a << 2) + 0xff620000)
+#define PATTERN_CODE ((0x0c2b << 2) + 0xff620000)
+#define MB_INFO ((0x0c2c << 2) + 0xff620000)
+#define VLD_DC_PRED ((0x0c2d << 2) + 0xff620000)
+#define VLD_ERROR_MASK ((0x0c2e << 2) + 0xff620000)
+#define VLD_DC_PRED_C ((0x0c2f << 2) + 0xff620000)
+#define LAST_SLICE_MV_ADDR ((0x0c30 << 2) + 0xff620000)
+#define LAST_MVX ((0x0c31 << 2) + 0xff620000)
+#define LAST_MVY ((0x0c32 << 2) + 0xff620000)
+#define VLD_C38 ((0x0c38 << 2) + 0xff620000)
+#define VLD_C39 ((0x0c39 << 2) + 0xff620000)
+#define VLD_STATUS ((0x0c3a << 2) + 0xff620000)
+#define VLD_SHIFT_STATUS ((0x0c3b << 2) + 0xff620000)
 // `define VLD_SHIFT_INFO      8'h3b  // Does this exist in HW ? used in $ucode/mpeg4
-#define VOFF_STATUS                                ((0x0c3c  << 2) + 0xff620000)
-#define VLD_C3D                                    ((0x0c3d  << 2) + 0xff620000)
-#define VLD_DBG_INDEX                              ((0x0c3e  << 2) + 0xff620000)
+#define VOFF_STATUS ((0x0c3c << 2) + 0xff620000)
+#define VLD_C3D ((0x0c3d << 2) + 0xff620000)
+#define VLD_DBG_INDEX ((0x0c3e << 2) + 0xff620000)
 // vld_buff_info -- (index == 0)
 // Bit11]    halt_decode_start_voff
 // Bit10]    C_pred_error
@@ -993,20 +993,20 @@
 // Bit[5] weight_cal_busy
 // Bit[4] weight_cal_not_finished
 // Bit[3:0] weight_process_state
-#define VLD_DBG_DATA                               ((0x0c3f  << 2) + 0xff620000)
+#define VLD_DBG_DATA ((0x0c3f << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO DDR Interface
 // --------------------------------------------
 // The VIFIFO start pointer into DDR memory is a 32-bit number
 // The Start pointer will automatically be truncated to land on
 // an 8-byte boundary.  That is, bits [2:0] = 0;
-#define VLD_MEM_VIFIFO_START_PTR                   ((0x0c40  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_START_PTR ((0x0c40 << 2) + 0xff620000)
 // The current pointer points so some location between the START and END
 // pointers.  The current pointer is a BYTE pointer.  That is, you can
 // point to any BYTE address within the START/END range
-#define VLD_MEM_VIFIFO_CURR_PTR                    ((0x0c41  << 2) + 0xff620000)
-#define VLD_MEM_VIFIFO_END_PTR                     ((0x0c42  << 2) + 0xff620000)
-#define VLD_MEM_VIFIFO_BYTES_AVAIL                 ((0x0c43  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_CURR_PTR ((0x0c41 << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_END_PTR ((0x0c42 << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_BYTES_AVAIL ((0x0c43 << 2) + 0xff620000)
 // VIFIFO FIFO Control
 // bit  [31:24] viff_empty_int_enable_cpu[7:0]
 // bit  [23:16] viff_empty_int_enable_amrisc[7:0]
@@ -1037,13 +1037,13 @@
 //                              and read masks, set this bit to 1 and then to 0
 //                              NOTE:  You don't need to pulse cntl_init if only the start address is
 //                              being changed
-#define VLD_MEM_VIFIFO_CONTROL                     ((0x0c44  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_CONTROL ((0x0c44 << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO Buffer Level Manager
 // --------------------------------------------
-#define VLD_MEM_VIFIFO_WP                          ((0x0c45  << 2) + 0xff620000)
-#define VLD_MEM_VIFIFO_RP                          ((0x0c46  << 2) + 0xff620000)
-#define VLD_MEM_VIFIFO_LEVEL                       ((0x0c47  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_WP ((0x0c45 << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_RP ((0x0c46 << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_LEVEL ((0x0c47 << 2) + 0xff620000)
 //
 // bit  [8]     use_parser_video2_wp
 // bit  [7]     vbuf2_out_manual
@@ -1053,7 +1053,7 @@
 // bit  [3:2]   reserved
 // bit  [1]     manual mode     Set to 1 for manual write pointer mode
 // bit  [0]     Init            Set high then low after everything has been initialized
-#define VLD_MEM_VIFIFO_BUF_CNTL                    ((0x0c48  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_BUF_CNTL ((0x0c48 << 2) + 0xff620000)
 // bit 31:16 -- drop_bytes
 // bit 15:14 -- drop_status (Read-Only)
 // bit 13:12 -- sync_match_position (Read-Only)
@@ -1063,37 +1063,37 @@
 // bit 2 -- TIME_STAMP_length_enable
 // bit 1 -- TIME_STAMP_sync64_enable
 // bit 0 -- TIME_STAMP_enable
-#define VLD_TIME_STAMP_CNTL                        ((0x0c49  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_CNTL ((0x0c49 << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_0
-#define VLD_TIME_STAMP_SYNC_0                      ((0x0c4a  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_SYNC_0 ((0x0c4a << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_1
-#define VLD_TIME_STAMP_SYNC_1                      ((0x0c4b  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_SYNC_1 ((0x0c4b << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_0
-#define VLD_TIME_STAMP_0                           ((0x0c4c  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_0 ((0x0c4c << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_1
-#define VLD_TIME_STAMP_1                           ((0x0c4d  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_1 ((0x0c4d << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_2
-#define VLD_TIME_STAMP_2                           ((0x0c4e  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_2 ((0x0c4e << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_3
-#define VLD_TIME_STAMP_3                           ((0x0c4f  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_3 ((0x0c4f << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_LENGTH
-#define VLD_TIME_STAMP_LENGTH                      ((0x0c50  << 2) + 0xff620000)
+#define VLD_TIME_STAMP_LENGTH ((0x0c50 << 2) + 0xff620000)
 // bit 15:0 vififo_rd_count
-#define VLD_MEM_VIFIFO_WRAP_COUNT                  ((0x0c51  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_WRAP_COUNT ((0x0c51 << 2) + 0xff620000)
 // bit 29:24 A_brst_num
 // bit 21:16 A_id
 // bit 15:0 level_hold
-#define VLD_MEM_VIFIFO_MEM_CTL                     ((0x0c52  << 2) + 0xff620000)
-#define VLD_MEM_VBUF_RD_PTR                        ((0x0c53  << 2) + 0xff620000)
-#define VLD_MEM_VBUF2_RD_PTR                       ((0x0c54  << 2) + 0xff620000)
-#define VLD_MEM_SWAP_ADDR                          ((0x0c55  << 2) + 0xff620000)
+#define VLD_MEM_VIFIFO_MEM_CTL ((0x0c52 << 2) + 0xff620000)
+#define VLD_MEM_VBUF_RD_PTR ((0x0c53 << 2) + 0xff620000)
+#define VLD_MEM_VBUF2_RD_PTR ((0x0c54 << 2) + 0xff620000)
+#define VLD_MEM_SWAP_ADDR ((0x0c55 << 2) + 0xff620000)
 // bit[23:16] - swap_d_count (Read Only)
 // bit[15:8]  - swap_a_count (Read Only)
 // bit [7] - swap busy (Read Only)
 // bit [6:2] - reserved
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - swap active
-#define VLD_MEM_SWAP_CTL                           ((0x0c56  << 2) + 0xff620000)
+#define VLD_MEM_SWAP_CTL ((0x0c56 << 2) + 0xff620000)
 // bit[12]  -- zero_use_cbp_blk
 // bit[11]  -- mv_use_abs (only calculate abs)
 // bit[10]  -- mv_use_simple_mode (every size count has same weight)
@@ -1101,7 +1101,7 @@
 // bit[8]   -- reseet_all_count // write only
 // bit[7:5] Reserved
 // bit[4:0] pic_quality_rd_idx
-#define VDEC_PIC_QUALITY_CTRL                      ((0x0c57  << 2) + 0xff620000)
+#define VDEC_PIC_QUALITY_CTRL ((0x0c57 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- blk88_y_count // 4k will use 20 bits
 //   1  -- qp_y_sum // 4k use 27 bits
@@ -1124,7 +1124,7 @@
 //  18  -- {mvy_L0_max, mvy_L0_min}
 //  19  -- {mvx_L1_max, mvx_L1_min}
 //  20  -- {mvy_L1_max, mvy_L1_min}
-#define VDEC_PIC_QUALITY_DATA                      ((0x0c58  << 2) + 0xff620000)
+#define VDEC_PIC_QUALITY_DATA ((0x0c58 << 2) + 0xff620000)
 //
 // Closing file:  vld_regs.h
 //
@@ -1140,26 +1140,26 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_IQIDCT_CBUS_BASE = 0x0e
 // -----------------------------------------------
-#define VCOP_CTRL_REG                              ((0x0e00  << 2) + 0xff620000)
-#define QP_CTRL_REG                                ((0x0e01  << 2) + 0xff620000)
-#define INTRA_QUANT_MATRIX                         ((0x0e02  << 2) + 0xff620000)
-#define NON_I_QUANT_MATRIX                         ((0x0e03  << 2) + 0xff620000)
-#define DC_SCALER                                  ((0x0e04  << 2) + 0xff620000)
-#define DC_AC_CTRL                                 ((0x0e05  << 2) + 0xff620000)
+#define VCOP_CTRL_REG ((0x0e00 << 2) + 0xff620000)
+#define QP_CTRL_REG ((0x0e01 << 2) + 0xff620000)
+#define INTRA_QUANT_MATRIX ((0x0e02 << 2) + 0xff620000)
+#define NON_I_QUANT_MATRIX ((0x0e03 << 2) + 0xff620000)
+#define DC_SCALER ((0x0e04 << 2) + 0xff620000)
+#define DC_AC_CTRL ((0x0e05 << 2) + 0xff620000)
 // `define RV_AI_CTRL          8'h05  // ONLY for $ucode/real/amrisc/rv.s reg value from apollo
-#define DC_AC_SCALE_MUL                            ((0x0e06  << 2) + 0xff620000)
-#define DC_AC_SCALE_DIV                            ((0x0e07  << 2) + 0xff620000)
+#define DC_AC_SCALE_MUL ((0x0e06 << 2) + 0xff620000)
+#define DC_AC_SCALE_DIV ((0x0e07 << 2) + 0xff620000)
 // `define DC_AC_SCALE_RESULT  8'h06
 // `define RESERVED_E07        8'h07
-#define POWER_CTL_IQIDCT                           ((0x0e08  << 2) + 0xff620000)
-#define RV_AI_Y_X                                  ((0x0e09  << 2) + 0xff620000)
-#define RV_AI_U_X                                  ((0x0e0a  << 2) + 0xff620000)
-#define RV_AI_V_X                                  ((0x0e0b  << 2) + 0xff620000)
+#define POWER_CTL_IQIDCT ((0x0e08 << 2) + 0xff620000)
+#define RV_AI_Y_X ((0x0e09 << 2) + 0xff620000)
+#define RV_AI_U_X ((0x0e0a << 2) + 0xff620000)
+#define RV_AI_V_X ((0x0e0b << 2) + 0xff620000)
 // bit 15:0 will count up when rv_ai_mb finished when non zero
 // and rv_ai_mb_finished_int will be generate when this is not zero
-#define RV_AI_MB_COUNT                             ((0x0e0c  << 2) + 0xff620000)
+#define RV_AI_MB_COUNT ((0x0e0c << 2) + 0xff620000)
 // For H264 I in PB picture Use -- dma type : h264_next_intra_dma
-#define NEXT_INTRA_DMA_ADDRESS                     ((0x0e0d  << 2) + 0xff620000)
+#define NEXT_INTRA_DMA_ADDRESS ((0x0e0d << 2) + 0xff620000)
 // Bit 18 -- neighbor_intra_dcac_do_not_use_reg
 // Bit 17 -- neighbor_intra_idct_use_reg
 // Bit 16 -- dcac_dma_read_cache_disable
@@ -1179,7 +1179,7 @@
 // Bit 2 -- disable_mb_aff_fix
 // Bit 1 -- canvas_addr_7
 // Bit 0 -- constrained_intra_pred_flag for H264
-#define IQIDCT_CONTROL                             ((0x0e0e  << 2) + 0xff620000)
+#define IQIDCT_CONTROL ((0x0e0e << 2) + 0xff620000)
 // Bit[31:19] Reserved
 // Bit[18] iq_waiting
 // Bit[17] iq_om_wr_idx
@@ -1196,9 +1196,9 @@
 // Bit[6] idx_fifo_7
 // Bit[5:3] idx_fifo_wp
 // Bit[2:0] idx_fifo_rp
-#define IQIDCT_DEBUG_INFO_0                        ((0x0e0f  << 2) + 0xff620000)
+#define IQIDCT_DEBUG_INFO_0 ((0x0e0f << 2) + 0xff620000)
 // For RTL Simulation Only
-#define DEBLK_CMD                                  ((0x0e10  << 2) + 0xff620000)
+#define DEBLK_CMD ((0x0e10 << 2) + 0xff620000)
 // Bit[15+16] ds_mc_valid_2
 // Bit[14+16] new_idct1_rd_idx_2
 // Bit[13+16] new_idct1_wr_idx_2
@@ -1231,7 +1231,7 @@
 // Bit[2] idct2_en_1
 // Bit[1] new_idct2_busy_1
 // Bit[0] new_idct1_ready_1
-#define IQIDCT_DEBUG_IDCT                          ((0x0e11  << 2) + 0xff620000)
+#define IQIDCT_DEBUG_IDCT ((0x0e11 << 2) + 0xff620000)
 // bit 31 -- convas_enable
 // bit 30:24 -- convas_x_count ( 8 pixels / 64 bits )
 // bit 23:16 -- convas_y_count
@@ -1241,22 +1241,22 @@
 // bit 7    -- dcac_dma_rw
 // bit 6    -- dcac_skip_read_mode
 // bit 5:0  -- dcac_dma_offset
-#define DCAC_DMA_CTRL                              ((0x0e12  << 2) + 0xff620000)
+#define DCAC_DMA_CTRL ((0x0e12 << 2) + 0xff620000)
 // when (convas_enable == 0 )
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
 //   bit 24:12 convas_y_start ( 13 btis )
 //   bit 11:0  convas_x_start ( 12 btis )
-#define DCAC_DMA_ADDRESS                           ((0x0e13  << 2) + 0xff620000)
+#define DCAC_DMA_ADDRESS ((0x0e13 << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
-#define DCAC_CPU_ADDRESS                           ((0x0e14  << 2) + 0xff620000)
+#define DCAC_CPU_ADDRESS ((0x0e14 << 2) + 0xff620000)
 // bit 31:0 -- dcac_cpu_data
-#define DCAC_CPU_DATA                              ((0x0e15  << 2) + 0xff620000)
+#define DCAC_CPU_DATA ((0x0e15 << 2) + 0xff620000)
 // bit 31:19 -- reserved
 // bit 18:16 -- block_num_reg -- Read-Only
 // bit 15:0 -- dcac_mb_count
-#define DCAC_MB_COUNT                              ((0x0e16  << 2) + 0xff620000)
+#define DCAC_MB_COUNT ((0x0e16 << 2) + 0xff620000)
 // bit 31:18 -- reserved
 // For H264 :
 //   bit 17:2 -- h264_quant
@@ -1269,7 +1269,7 @@
 //   bit 11:6  -- AltPQuant
 //   bit  5:0  -- PQuant
 //
-#define IQ_QUANT                                   ((0x0e17  << 2) + 0xff620000)
+#define IQ_QUANT ((0x0e17 << 2) + 0xff620000)
 // bit 31:24  -- bitplane_width
 // bit 23:16  -- bitplane_height
 // bit 15:14  -- bitplane_start_x
@@ -1277,21 +1277,21 @@
 // bit 11:4   -- reserved
 // bit 3:1    -- bitplane_type
 // bit 0      -- bitplane_busy
-#define VC1_BITPLANE_CTL                           ((0x0e18  << 2) + 0xff620000)
+#define VC1_BITPLANE_CTL ((0x0e18 << 2) + 0xff620000)
 // bit 24:16  -- wq_param1
 // bit  8: 0  -- wq_param0
-#define AVSP_IQ_WQ_PARAM_01                        ((0x0e19  << 2) + 0xff620000)
+#define AVSP_IQ_WQ_PARAM_01 ((0x0e19 << 2) + 0xff620000)
 // bit 24:16  -- wq_param3
 // bit  8: 0  -- wq_param2
-#define AVSP_IQ_WQ_PARAM_23                        ((0x0e1a  << 2) + 0xff620000)
+#define AVSP_IQ_WQ_PARAM_23 ((0x0e1a << 2) + 0xff620000)
 // bit 24:16  -- wq_param5
 // bit  8: 0  -- wq_param4
-#define AVSP_IQ_WQ_PARAM_45                        ((0x0e1b  << 2) + 0xff620000)
+#define AVSP_IQ_WQ_PARAM_45 ((0x0e1b << 2) + 0xff620000)
 // bit    31  -- weight_quant_en
 // bit 17:16  -- current_scene_model
 // bit 12: 8  -- chroma_qp_delta_cr
 // bit  4: 0  -- chroma_qp_delta_cb
-#define AVSP_IQ_CTL                                ((0x0e1c  << 2) + 0xff620000)
+#define AVSP_IQ_CTL ((0x0e1c << 2) + 0xff620000)
 // bit 30:28 - rd_buf_wr_addr // Read Only
 // bit 27    - Reserved
 // bit 26:24 - rd_buf_rd_addr // Read Only
@@ -1304,36 +1304,36 @@
 // bit  7:4  - wr_buf_cnt     // Read Only
 // bit  3:2  - rd_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:invalid_cache
 // bit  1:0  - wr_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:flush
-#define DCAC_DDR_BYTE64_CTL                        ((0x0e1d  << 2) + 0xff620000)
-    #define RAM_TEST_CMD        0x002
-    #define RAM_TEST_ADDR       0x003
-    #define RAM_TEST_DATAH      0x004
-    #define RAM_TEST_DATAL      0x005
+#define DCAC_DDR_BYTE64_CTL ((0x0e1d << 2) + 0xff620000)
+#define RAM_TEST_CMD 0x002
+#define RAM_TEST_ADDR 0x003
+#define RAM_TEST_DATAH 0x004
+#define RAM_TEST_DATAL 0x005
 
-    #define RAM_TEST_RD_CMD	    0x0000
-    #define RAM_TEST_WR_CMD	    0x8000
-    #define IDCT_TM2_PT0	    0x0001
-    #define IDCT_TM2_PT1	    0x0002
-    #define IDCT_TM1_PT0	    0x0004
-    #define IDCT_TM1_PT1	    0x0008
-    #define IQ_OMEM_PT0	        0x0010
-    #define IQ_OMEM_PT1	        0x0020
-    #define MC_IMEM_PT0	        0x0040
-    #define ALL_RAM_PTS	        0x007f
+#define RAM_TEST_RD_CMD 0x0000
+#define RAM_TEST_WR_CMD 0x8000
+#define IDCT_TM2_PT0 0x0001
+#define IDCT_TM2_PT1 0x0002
+#define IDCT_TM1_PT0 0x0004
+#define IDCT_TM1_PT1 0x0008
+#define IQ_OMEM_PT0 0x0010
+#define IQ_OMEM_PT1 0x0020
+#define MC_IMEM_PT0 0x0040
+#define ALL_RAM_PTS 0x007f
 //======================================
 //  VCOP Control Register Bits
 //
 //======================================
-    //`define IQIDCT_RESET	    16'h0001	    // Bit 0
-    #define QM_WEN		    0x0002	    // Bit 1
-    #define IQIDCT_ENABLE	    0x0004	    // Bit 2
-    #define INTRA_QM	    0x0008	    // Bit 3	0 = Use default; 1 = use loaded
-    #define NINTRA_QM	    0x0010	    // Bit 4	0 = Use default; 1 = use loaded
+//`define IQIDCT_RESET	    16'h0001	    // Bit 0
+#define QM_WEN 0x0002 // Bit 1
+#define IQIDCT_ENABLE 0x0004 // Bit 2
+#define INTRA_QM 0x0008 // Bit 3	0 = Use default; 1 = use loaded
+#define NINTRA_QM 0x0010 // Bit 4	0 = Use default; 1 = use loaded
 //======================================
 //  QP Control Register Bits
 //
 //======================================
-    #define INTRA_MODE	    0x0080	    // Bit 7
+#define INTRA_MODE 0x0080 // Bit 7
 // Duplicate Address:  When actually used
 // please move to a different address
 // `define FLD_DCT_TYPE	    16'h0100	    // Bit 8	0 = Frame DCT; 1 = field DCT
@@ -1352,91 +1352,91 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VCPU_CBUS_BASE = 0x03
 // -----------------------------------------------
-#define MSP                                        ((0x0300  << 2) + 0xff620000)
-#define MPSR                                       ((0x0301  << 2) + 0xff620000)
-#define MINT_VEC_BASE                              ((0x0302  << 2) + 0xff620000)
-#define MCPU_INTR_GRP                              ((0x0303  << 2) + 0xff620000)
-#define MCPU_INTR_MSK                              ((0x0304  << 2) + 0xff620000)
-#define MCPU_INTR_REQ                              ((0x0305  << 2) + 0xff620000)
-#define MPC_P                                      ((0x0306  << 2) + 0xff620000)
-#define MPC_D                                      ((0x0307  << 2) + 0xff620000)
-#define MPC_E                                      ((0x0308  << 2) + 0xff620000)
-#define MPC_W                                      ((0x0309  << 2) + 0xff620000)
-#define MINDEX0_REG                                ((0x030a  << 2) + 0xff620000)
-#define MINDEX1_REG                                ((0x030b  << 2) + 0xff620000)
-#define MINDEX2_REG                                ((0x030c  << 2) + 0xff620000)
-#define MINDEX3_REG                                ((0x030d  << 2) + 0xff620000)
-#define MINDEX4_REG                                ((0x030e  << 2) + 0xff620000)
-#define MINDEX5_REG                                ((0x030f  << 2) + 0xff620000)
-#define MINDEX6_REG                                ((0x0310  << 2) + 0xff620000)
-#define MINDEX7_REG                                ((0x0311  << 2) + 0xff620000)
-#define MMIN_REG                                   ((0x0312  << 2) + 0xff620000)
-#define MMAX_REG                                   ((0x0313  << 2) + 0xff620000)
-#define MBREAK0_REG                                ((0x0314  << 2) + 0xff620000)
-#define MBREAK1_REG                                ((0x0315  << 2) + 0xff620000)
-#define MBREAK2_REG                                ((0x0316  << 2) + 0xff620000)
-#define MBREAK3_REG                                ((0x0317  << 2) + 0xff620000)
-#define MBREAK_TYPE                                ((0x0318  << 2) + 0xff620000)
-#define MBREAK_CTRL                                ((0x0319  << 2) + 0xff620000)
-#define MBREAK_STAUTS                              ((0x031a  << 2) + 0xff620000)
-#define MDB_ADDR_REG                               ((0x031b  << 2) + 0xff620000)
-#define MDB_DATA_REG                               ((0x031c  << 2) + 0xff620000)
-#define MDB_CTRL                                   ((0x031d  << 2) + 0xff620000)
-#define MSFTINT0                                   ((0x031e  << 2) + 0xff620000)
-#define MSFTINT1                                   ((0x031f  << 2) + 0xff620000)
-#define CSP                                        ((0x0320  << 2) + 0xff620000)
-#define CPSR                                       ((0x0321  << 2) + 0xff620000)
-#define CINT_VEC_BASE                              ((0x0322  << 2) + 0xff620000)
-#define CCPU_INTR_GRP                              ((0x0323  << 2) + 0xff620000)
-#define CCPU_INTR_MSK                              ((0x0324  << 2) + 0xff620000)
-#define CCPU_INTR_REQ                              ((0x0325  << 2) + 0xff620000)
-#define CPC_P                                      ((0x0326  << 2) + 0xff620000)
-#define CPC_D                                      ((0x0327  << 2) + 0xff620000)
-#define CPC_E                                      ((0x0328  << 2) + 0xff620000)
-#define CPC_W                                      ((0x0329  << 2) + 0xff620000)
-#define CINDEX0_REG                                ((0x032a  << 2) + 0xff620000)
-#define CINDEX1_REG                                ((0x032b  << 2) + 0xff620000)
-#define CINDEX2_REG                                ((0x032c  << 2) + 0xff620000)
-#define CINDEX3_REG                                ((0x032d  << 2) + 0xff620000)
-#define CINDEX4_REG                                ((0x032e  << 2) + 0xff620000)
-#define CINDEX5_REG                                ((0x032f  << 2) + 0xff620000)
-#define CINDEX6_REG                                ((0x0330  << 2) + 0xff620000)
-#define CINDEX7_REG                                ((0x0331  << 2) + 0xff620000)
-#define CMIN_REG                                   ((0x0332  << 2) + 0xff620000)
-#define CMAX_REG                                   ((0x0333  << 2) + 0xff620000)
-#define CBREAK0_REG                                ((0x0334  << 2) + 0xff620000)
-#define CBREAK1_REG                                ((0x0335  << 2) + 0xff620000)
-#define CBREAK2_REG                                ((0x0336  << 2) + 0xff620000)
-#define CBREAK3_REG                                ((0x0337  << 2) + 0xff620000)
-#define CBREAK_TYPE                                ((0x0338  << 2) + 0xff620000)
-#define CBREAK_CTRL                                ((0x0339  << 2) + 0xff620000)
-#define CBREAK_STAUTS                              ((0x033a  << 2) + 0xff620000)
-#define CDB_ADDR_REG                               ((0x033b  << 2) + 0xff620000)
-#define CDB_DATA_REG                               ((0x033c  << 2) + 0xff620000)
-#define CDB_CTRL                                   ((0x033d  << 2) + 0xff620000)
-#define CSFTINT0                                   ((0x033e  << 2) + 0xff620000)
-#define CSFTINT1                                   ((0x033f  << 2) + 0xff620000)
-#define IMEM_DMA_CTRL                              ((0x0340  << 2) + 0xff620000)
-#define IMEM_DMA_ADR                               ((0x0341  << 2) + 0xff620000)
-#define IMEM_DMA_COUNT                             ((0x0342  << 2) + 0xff620000)
+#define MSP ((0x0300 << 2) + 0xff620000)
+#define MPSR ((0x0301 << 2) + 0xff620000)
+#define MINT_VEC_BASE ((0x0302 << 2) + 0xff620000)
+#define MCPU_INTR_GRP ((0x0303 << 2) + 0xff620000)
+#define MCPU_INTR_MSK ((0x0304 << 2) + 0xff620000)
+#define MCPU_INTR_REQ ((0x0305 << 2) + 0xff620000)
+#define MPC_P ((0x0306 << 2) + 0xff620000)
+#define MPC_D ((0x0307 << 2) + 0xff620000)
+#define MPC_E ((0x0308 << 2) + 0xff620000)
+#define MPC_W ((0x0309 << 2) + 0xff620000)
+#define MINDEX0_REG ((0x030a << 2) + 0xff620000)
+#define MINDEX1_REG ((0x030b << 2) + 0xff620000)
+#define MINDEX2_REG ((0x030c << 2) + 0xff620000)
+#define MINDEX3_REG ((0x030d << 2) + 0xff620000)
+#define MINDEX4_REG ((0x030e << 2) + 0xff620000)
+#define MINDEX5_REG ((0x030f << 2) + 0xff620000)
+#define MINDEX6_REG ((0x0310 << 2) + 0xff620000)
+#define MINDEX7_REG ((0x0311 << 2) + 0xff620000)
+#define MMIN_REG ((0x0312 << 2) + 0xff620000)
+#define MMAX_REG ((0x0313 << 2) + 0xff620000)
+#define MBREAK0_REG ((0x0314 << 2) + 0xff620000)
+#define MBREAK1_REG ((0x0315 << 2) + 0xff620000)
+#define MBREAK2_REG ((0x0316 << 2) + 0xff620000)
+#define MBREAK3_REG ((0x0317 << 2) + 0xff620000)
+#define MBREAK_TYPE ((0x0318 << 2) + 0xff620000)
+#define MBREAK_CTRL ((0x0319 << 2) + 0xff620000)
+#define MBREAK_STAUTS ((0x031a << 2) + 0xff620000)
+#define MDB_ADDR_REG ((0x031b << 2) + 0xff620000)
+#define MDB_DATA_REG ((0x031c << 2) + 0xff620000)
+#define MDB_CTRL ((0x031d << 2) + 0xff620000)
+#define MSFTINT0 ((0x031e << 2) + 0xff620000)
+#define MSFTINT1 ((0x031f << 2) + 0xff620000)
+#define CSP ((0x0320 << 2) + 0xff620000)
+#define CPSR ((0x0321 << 2) + 0xff620000)
+#define CINT_VEC_BASE ((0x0322 << 2) + 0xff620000)
+#define CCPU_INTR_GRP ((0x0323 << 2) + 0xff620000)
+#define CCPU_INTR_MSK ((0x0324 << 2) + 0xff620000)
+#define CCPU_INTR_REQ ((0x0325 << 2) + 0xff620000)
+#define CPC_P ((0x0326 << 2) + 0xff620000)
+#define CPC_D ((0x0327 << 2) + 0xff620000)
+#define CPC_E ((0x0328 << 2) + 0xff620000)
+#define CPC_W ((0x0329 << 2) + 0xff620000)
+#define CINDEX0_REG ((0x032a << 2) + 0xff620000)
+#define CINDEX1_REG ((0x032b << 2) + 0xff620000)
+#define CINDEX2_REG ((0x032c << 2) + 0xff620000)
+#define CINDEX3_REG ((0x032d << 2) + 0xff620000)
+#define CINDEX4_REG ((0x032e << 2) + 0xff620000)
+#define CINDEX5_REG ((0x032f << 2) + 0xff620000)
+#define CINDEX6_REG ((0x0330 << 2) + 0xff620000)
+#define CINDEX7_REG ((0x0331 << 2) + 0xff620000)
+#define CMIN_REG ((0x0332 << 2) + 0xff620000)
+#define CMAX_REG ((0x0333 << 2) + 0xff620000)
+#define CBREAK0_REG ((0x0334 << 2) + 0xff620000)
+#define CBREAK1_REG ((0x0335 << 2) + 0xff620000)
+#define CBREAK2_REG ((0x0336 << 2) + 0xff620000)
+#define CBREAK3_REG ((0x0337 << 2) + 0xff620000)
+#define CBREAK_TYPE ((0x0338 << 2) + 0xff620000)
+#define CBREAK_CTRL ((0x0339 << 2) + 0xff620000)
+#define CBREAK_STAUTS ((0x033a << 2) + 0xff620000)
+#define CDB_ADDR_REG ((0x033b << 2) + 0xff620000)
+#define CDB_DATA_REG ((0x033c << 2) + 0xff620000)
+#define CDB_CTRL ((0x033d << 2) + 0xff620000)
+#define CSFTINT0 ((0x033e << 2) + 0xff620000)
+#define CSFTINT1 ((0x033f << 2) + 0xff620000)
+#define IMEM_DMA_CTRL ((0x0340 << 2) + 0xff620000)
+#define IMEM_DMA_ADR ((0x0341 << 2) + 0xff620000)
+#define IMEM_DMA_COUNT ((0x0342 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_imem
 // bit[21:16] A_id_imem
 // bit[11:0] wrrsp_count_imem (reserved)
-#define WRRSP_IMEM                                 ((0x0343  << 2) + 0xff620000)
-#define LMEM_DMA_CTRL                              ((0x0350  << 2) + 0xff620000)
-#define LMEM_DMA_ADR                               ((0x0351  << 2) + 0xff620000)
-#define LMEM_DMA_COUNT                             ((0x0352  << 2) + 0xff620000)
+#define WRRSP_IMEM ((0x0343 << 2) + 0xff620000)
+#define LMEM_DMA_CTRL ((0x0350 << 2) + 0xff620000)
+#define LMEM_DMA_ADR ((0x0351 << 2) + 0xff620000)
+#define LMEM_DMA_COUNT ((0x0352 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_lmem
 // bit[21:16] A_id_lmem
 // bit[11:0] wrrsp_count_lmem
-#define WRRSP_LMEM                                 ((0x0353  << 2) + 0xff620000)
-#define MAC_CTRL1                                  ((0x0360  << 2) + 0xff620000)
-#define ACC0REG1                                   ((0x0361  << 2) + 0xff620000)
-#define ACC1REG1                                   ((0x0362  << 2) + 0xff620000)
-#define MAC_CTRL2                                  ((0x0370  << 2) + 0xff620000)
-#define ACC0REG2                                   ((0x0371  << 2) + 0xff620000)
-#define ACC1REG2                                   ((0x0372  << 2) + 0xff620000)
-#define CPU_TRACE                                  ((0x0380  << 2) + 0xff620000)
+#define WRRSP_LMEM ((0x0353 << 2) + 0xff620000)
+#define MAC_CTRL1 ((0x0360 << 2) + 0xff620000)
+#define ACC0REG1 ((0x0361 << 2) + 0xff620000)
+#define ACC1REG1 ((0x0362 << 2) + 0xff620000)
+#define MAC_CTRL2 ((0x0370 << 2) + 0xff620000)
+#define ACC0REG2 ((0x0371 << 2) + 0xff620000)
+#define ACC1REG2 ((0x0372 << 2) + 0xff620000)
+#define CPU_TRACE ((0x0380 << 2) + 0xff620000)
 //
 // Closing file:  vcpu_regs.h
 //
@@ -1452,32 +1452,32 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HCODEC_HENC_CBUS_BASE = 0x0a
 // -----------------------------------------------
-#define HENC_SCRATCH_0                             ((0x1ac0  << 2) + 0xff620000)
-#define HENC_SCRATCH_1                             ((0x1ac1  << 2) + 0xff620000)
-#define HENC_SCRATCH_2                             ((0x1ac2  << 2) + 0xff620000)
-#define HENC_SCRATCH_3                             ((0x1ac3  << 2) + 0xff620000)
-#define HENC_SCRATCH_4                             ((0x1ac4  << 2) + 0xff620000)
-#define HENC_SCRATCH_5                             ((0x1ac5  << 2) + 0xff620000)
-#define HENC_SCRATCH_6                             ((0x1ac6  << 2) + 0xff620000)
-#define HENC_SCRATCH_7                             ((0x1ac7  << 2) + 0xff620000)
-#define HENC_SCRATCH_8                             ((0x1ac8  << 2) + 0xff620000)
-#define HENC_SCRATCH_9                             ((0x1ac9  << 2) + 0xff620000)
-#define HENC_SCRATCH_A                             ((0x1aca  << 2) + 0xff620000)
-#define HENC_SCRATCH_B                             ((0x1acb  << 2) + 0xff620000)
-#define HENC_SCRATCH_C                             ((0x1acc  << 2) + 0xff620000)
-#define HENC_SCRATCH_D                             ((0x1acd  << 2) + 0xff620000)
-#define HENC_SCRATCH_E                             ((0x1ace  << 2) + 0xff620000)
-#define HENC_SCRATCH_F                             ((0x1acf  << 2) + 0xff620000)
-#define HENC_SCRATCH_G                             ((0x1ad0  << 2) + 0xff620000)
-#define HENC_SCRATCH_H                             ((0x1ad1  << 2) + 0xff620000)
-#define HENC_SCRATCH_I                             ((0x1ad2  << 2) + 0xff620000)
-#define HENC_SCRATCH_J                             ((0x1ad3  << 2) + 0xff620000)
-#define HENC_SCRATCH_K                             ((0x1ad4  << 2) + 0xff620000)
-#define HENC_SCRATCH_L                             ((0x1ad5  << 2) + 0xff620000)
-#define HENC_SCRATCH_M                             ((0x1ad6  << 2) + 0xff620000)
-#define HENC_SCRATCH_N                             ((0x1ad7  << 2) + 0xff620000)
+#define HENC_SCRATCH_0 ((0x1ac0 << 2) + 0xff620000)
+#define HENC_SCRATCH_1 ((0x1ac1 << 2) + 0xff620000)
+#define HENC_SCRATCH_2 ((0x1ac2 << 2) + 0xff620000)
+#define HENC_SCRATCH_3 ((0x1ac3 << 2) + 0xff620000)
+#define HENC_SCRATCH_4 ((0x1ac4 << 2) + 0xff620000)
+#define HENC_SCRATCH_5 ((0x1ac5 << 2) + 0xff620000)
+#define HENC_SCRATCH_6 ((0x1ac6 << 2) + 0xff620000)
+#define HENC_SCRATCH_7 ((0x1ac7 << 2) + 0xff620000)
+#define HENC_SCRATCH_8 ((0x1ac8 << 2) + 0xff620000)
+#define HENC_SCRATCH_9 ((0x1ac9 << 2) + 0xff620000)
+#define HENC_SCRATCH_A ((0x1aca << 2) + 0xff620000)
+#define HENC_SCRATCH_B ((0x1acb << 2) + 0xff620000)
+#define HENC_SCRATCH_C ((0x1acc << 2) + 0xff620000)
+#define HENC_SCRATCH_D ((0x1acd << 2) + 0xff620000)
+#define HENC_SCRATCH_E ((0x1ace << 2) + 0xff620000)
+#define HENC_SCRATCH_F ((0x1acf << 2) + 0xff620000)
+#define HENC_SCRATCH_G ((0x1ad0 << 2) + 0xff620000)
+#define HENC_SCRATCH_H ((0x1ad1 << 2) + 0xff620000)
+#define HENC_SCRATCH_I ((0x1ad2 << 2) + 0xff620000)
+#define HENC_SCRATCH_J ((0x1ad3 << 2) + 0xff620000)
+#define HENC_SCRATCH_K ((0x1ad4 << 2) + 0xff620000)
+#define HENC_SCRATCH_L ((0x1ad5 << 2) + 0xff620000)
+#define HENC_SCRATCH_M ((0x1ad6 << 2) + 0xff620000)
+#define HENC_SCRATCH_N ((0x1ad7 << 2) + 0xff620000)
 // bit [7:0] data_feed_buff_id
-#define IE_DATA_FEED_BUFF_INFO                     ((0x1ad8  << 2) + 0xff620000)
+#define IE_DATA_FEED_BUFF_INFO ((0x1ad8 << 2) + 0xff620000)
 //
 // Closing file:  henc_regs.h
 //
@@ -1504,7 +1504,7 @@
 // Bit[2] - hcmd_enable
 // Bit[1] - vlc_control_enable (0 will treat as soft_reset)
 // Bit[0] - vlc_input_enable (enable input interface)
-#define VLC_STATUS_CTRL                            ((0x1d00  << 2) + 0xff620000)
+#define VLC_STATUS_CTRL ((0x1d00 << 2) + 0xff620000)
 // Bit [31]  - small_luma_ignore_chroma
 // Bit[30:16] - Reserved
 // Bit [15]  - enable_free_clk_mc_hcmd_buff
@@ -1523,18 +1523,18 @@
 // Bit [2]   - use_set_b8_mode ( not used now)
 // Bit [1]   - use_set_mb_skip_run
 // Bit [0]   - pop_coeff_even_all_zero
-#define VLC_CONFIG                                 ((0x1d01  << 2) + 0xff620000)
+#define VLC_CONFIG ((0x1d01 << 2) + 0xff620000)
 // --------------------------------------------
 // Bitstream DDR Interface
 // --------------------------------------------
-#define VLC_VB_START_PTR                           ((0x1d10  << 2) + 0xff620000)
-#define VLC_VB_END_PTR                             ((0x1d11  << 2) + 0xff620000)
-#define VLC_VB_WR_PTR                              ((0x1d12  << 2) + 0xff620000)
+#define VLC_VB_START_PTR ((0x1d10 << 2) + 0xff620000)
+#define VLC_VB_END_PTR ((0x1d11 << 2) + 0xff620000)
+#define VLC_VB_WR_PTR ((0x1d12 << 2) + 0xff620000)
 // Read Only, VLC_VB_SW_RD_PTR or VLC_VB_HW_RD_PTR
-#define VLC_VB_RD_PTR                              ((0x1d13  << 2) + 0xff620000)
-#define VLC_VB_SW_RD_PTR                           ((0x1d14  << 2) + 0xff620000)
+#define VLC_VB_RD_PTR ((0x1d13 << 2) + 0xff620000)
+#define VLC_VB_SW_RD_PTR ((0x1d14 << 2) + 0xff620000)
 // Read Only
-#define VLC_VB_LEFT                                ((0x1d15  << 2) + 0xff620000)
+#define VLC_VB_LEFT ((0x1d15 << 2) + 0xff620000)
 // VB FIFO Control
 // bit  [31:24] vb_full_int_enable_cpu[7:0]
 // bit  [23:16] vb_full_int_enable_amrisc[7:0]
@@ -1560,39 +1560,39 @@
 // bit  [2]     vb_write_busy   Read Only - indicate DDR write busy
 // bit  [1]     vb_write_en     Set to 1 to enable writing data to DDR memory
 // bit  [0]     vb_soft_reset   Soft reset
-#define VLC_VB_CONTROL                             ((0x1d16  << 2) + 0xff620000)
+#define VLC_VB_CONTROL ((0x1d16 << 2) + 0xff620000)
 // bit 31    transfer_length 0 - 32x64 Bits per request, 1 - 16x64 Bits per request  // default : 0
 // bit 30    A_urgent  // default : 0
 // bit 29:24 A_brst_num // default : 0x3f
 // bit 23:22 reserved
 // bit 21:16 A_id  // default : 0x20
 // bit 15:0  vb_left_hold // default : 0
-#define VLC_VB_MEM_CTL                             ((0x1d17  << 2) + 0xff620000)
+#define VLC_VB_MEM_CTL ((0x1d17 << 2) + 0xff620000)
 // vb_wr_ptr address to generate interrupt
-#define VLC_VB_INT_PTR                             ((0x1d18  << 2) + 0xff620000)
+#define VLC_VB_INT_PTR ((0x1d18 << 2) + 0xff620000)
 // bit[31:12] reserved
 // bit[11:0] vlc_wrrsp_count
-#define VLC_WRRSP                                  ((0x1d19  << 2) + 0xff620000)
-#define VLC_TOTAL_BYTES                            ((0x1d1a  << 2) + 0xff620000)
+#define VLC_WRRSP ((0x1d19 << 2) + 0xff620000)
+#define VLC_TOTAL_BYTES ((0x1d1a << 2) + 0xff620000)
 // bit  [31:26] reserved
 // bit  [25]    vb_flush
 // bit  [24]    vb_reg_ready
 // bit  [23:16] vb_buff_left     -- Read only
 // bit  [15:8]  vb_buff_wr_point -- RW
 // bit  [7:0]   vb_buff_rd_point -- RW
-#define VLC_VB_BUFF                                ((0x1d1b  << 2) + 0xff620000)
+#define VLC_VB_BUFF ((0x1d1b << 2) + 0xff620000)
 // bit[31]    flush_vlc_pre_buff
 // bit[30:27] reserved
 // bit[26:24] vb_pre_buff_level
 // bit[23:0]  vb_pre_buff_data[55:32]
-#define VLC_VB_PRE_BUFF_HI                         ((0x1d1c  << 2) + 0xff620000)
+#define VLC_VB_PRE_BUFF_HI ((0x1d1c << 2) + 0xff620000)
 // bit[31:0] vb_pre_buff_data[31:0]
-#define VLC_VB_PRE_BUFF_LOW                        ((0x1d1d  << 2) + 0xff620000)
+#define VLC_VB_PRE_BUFF_LOW ((0x1d1d << 2) + 0xff620000)
 // bit[31]    stream_encap_enable  // 0x0000(00-03) will be changed to 0x000003(00-03) if enabled
 // bit[30:29] stream_encap_delay   // delay bytes for encap used
 // bit[28:24] stream_buff_point
 // bit[23:0]  stream_buff_data
-#define VLC_STREAM_BUFF                            ((0x1d1e  << 2) + 0xff620000)
+#define VLC_STREAM_BUFF ((0x1d1e << 2) + 0xff620000)
 // bit[31]    push_stream_block - Read Only (Will set if vb_buff full)
 // bit[30]    push_stream_busy  - Read Only (busy when output one byte from stream_buf (max 2 clocks for 8 bits push)
 // bit[29:28] stream_encap_status - Read Only
@@ -1606,12 +1606,12 @@
 // Short Mode : (Amrisc can use mtspi to push stream directely)
 //   bit[7:5] push_stream_short_length (0-5 : short length, else - invalid)
 //   bit[4:0]  push_stream_data
-#define VLC_PUSH_STREAM                            ((0x1d1f  << 2) + 0xff620000)
+#define VLC_PUSH_STREAM ((0x1d1f << 2) + 0xff620000)
 // bit[15:8] ELEMENT_LENGTH
 // bit[7:1]  reserved
 // bit[0]  Write - push start, Read - Push Busy
-#define VLC_PUSH_ELEMENT                           ((0x1d20  << 2) + 0xff620000)
-#define VLC_ELEMENT_DATA                           ((0x1d21  << 2) + 0xff620000)
+#define VLC_PUSH_ELEMENT ((0x1d20 << 2) + 0xff620000)
+#define VLC_ELEMENT_DATA ((0x1d21 << 2) + 0xff620000)
 // bit[9] reset_last_dquant_ne_zero
 // bit[8] set_last_dquant_ne_zero
 // bit[7] hcmd_intra_use_sw_info
@@ -1622,18 +1622,18 @@
 // bit[2] reset_top_mb_wr
 // bit[1] set_left_mb_wr
 // bit[0] set_top_mb_wr
-#define VLC_SPECIAL_CTL                            ((0x1d22  << 2) + 0xff620000)
+#define VLC_SPECIAL_CTL ((0x1d22 << 2) + 0xff620000)
 // bit[28]    left_intra
 // bit[27:22] left_quant
 // bit[21:16] left_quant_c
 // bit[12]    top_intra
 // bit[11:6]  top_quant
 // bit[5:0]   top_quant_c
-#define VLC_HCMD_T_L_INFO                          ((0x1d23  << 2) + 0xff620000)
+#define VLC_HCMD_T_L_INFO ((0x1d23 << 2) + 0xff620000)
 // bit[12]    cur_intra
 // bit[11:6]  cur_quant
 // bit[5:0]   cur_quant_c
-#define VLC_HCMD_CUR_INFO                          ((0x1d24  << 2) + 0xff620000)
+#define VLC_HCMD_CUR_INFO ((0x1d24 << 2) + 0xff620000)
 // bit[13]    top_left_info_in_data_mv_cal
 // bit[12]    only_use_info_0_top_left_in_I
 // bit[11]    top_left_info_in_data
@@ -1648,14 +1648,14 @@
 // bit[2]     hcmd_use_q_info
 // bit[1]     use_q_delta_quant
 // bit[0]     detect_I16_from_I4
-#define VLC_ADV_CONFIG                             ((0x1d25  << 2) + 0xff620000)
+#define VLC_ADV_CONFIG ((0x1d25 << 2) + 0xff620000)
 //   31 - use_hcmd_mb_xy_auto
 //23:16 - hcmd_max_mb_x
 //15:8  - hcmd_mb_y_auto
 // 7:0  - hcmd_mb_x_auto
-#define VLC_HCMD_MBXY_AUTO                         ((0x1d26  << 2) + 0xff620000)
+#define VLC_HCMD_MBXY_AUTO ((0x1d26 << 2) + 0xff620000)
 // bit[31:0] vlc_int_control_inter -- will be used when use_seperate_int_control is set
-#define VLC_INT_CONTROL_INTER                      ((0x1d2f  << 2) + 0xff620000)
+#define VLC_INT_CONTROL_INTER ((0x1d2f << 2) + 0xff620000)
 // --------------------------------------------
 // Picture VLC
 // --------------------------------------------
@@ -1692,18 +1692,18 @@
 // bit[2]     AND interrupt Enable for c_ipred_mode_ready
 // bit[1]     AND interrupt Enable for ipred_mode_ready
 // bit[0]     AND interrupt Enable for mb_info_ready
-#define VLC_INT_CONTROL                            ((0x1d30  << 2) + 0xff620000)
+#define VLC_INT_CONTROL ((0x1d30 << 2) + 0xff620000)
 // Bit[31:16] picture_height
 // Bit[15:0]  picture_width
-#define VLC_PIC_SIZE                               ((0x1d31  << 2) + 0xff620000)
+#define VLC_PIC_SIZE ((0x1d31 << 2) + 0xff620000)
 // [31:16] Reserved
 // [15:3] pic_width_in_mbs_minus1
 // [2:0]  picture_type
-#define VLC_PIC_INFO                               ((0x1d32  << 2) + 0xff620000)
+#define VLC_PIC_INFO ((0x1d32 << 2) + 0xff620000)
 // Bit[31:16] MB_NR
 // Bit[15:8] MBY
 // Bit[7:0] MBX
-#define VLC_PIC_POSITION                           ((0x1d33  << 2) + 0xff620000)
+#define VLC_PIC_POSITION ((0x1d33 << 2) + 0xff620000)
 // Bit[31] MV_busy
 // Bit[30:6] Reserved
 // Bit[15] Reserved
@@ -1722,12 +1722,12 @@
 // Bit[2] c_ipred_mode
 // Bit[1] ipred_mode
 // Bit[0] mb_info ( mb_type, mb_x, mb_y)
-#define VLC_INPUT_STATUS                           ((0x1d34  << 2) + 0xff620000)
+#define VLC_INPUT_STATUS ((0x1d34 << 2) + 0xff620000)
 // Bit[31:28] detected_mb_type
 // Bit[27:16] mb_y
 // Bit[15:4]  mb_x
 // Bit[3:0]   mb_type
-#define VLC_MB_INFO                                ((0x1d35  << 2) + 0xff620000)
+#define VLC_MB_INFO ((0x1d35 << 2) + 0xff620000)
 // commnad 0 -- no pending
 // normal command + 1 is pending command
 //
@@ -1739,46 +1739,46 @@
 // bit 11:8  -- pending command 2
 // bit  7:4  -- pending command 1
 // bit  3:0  -- pending command 0
-#define VLC_ENC_PEND_CMD                           ((0x1d36  << 2) + 0xff620000)
+#define VLC_ENC_PEND_CMD ((0x1d36 << 2) + 0xff620000)
 // For I Slice
 // Bit[31:16] Reserved
 // Bit[15:0] IntraType
-#define HENC_TOP_INFO_0                            ((0x1d37  << 2) + 0xff620000)
-#define HENC_LEFT_INFO_0                           ((0x1d38  << 2) + 0xff620000)
+#define HENC_TOP_INFO_0 ((0x1d37 << 2) + 0xff620000)
+#define HENC_LEFT_INFO_0 ((0x1d38 << 2) + 0xff620000)
 // For I Slice
 // Bit[31:24] V_nnz
 // Bit[23:16] U_nnz
 // Bit[15:0]  Y_nnz
-#define HENC_TOP_INFO_1                            ((0x1d39  << 2) + 0xff620000)
-#define HENC_LEFT_INFO_1                           ((0x1d3a  << 2) + 0xff620000)
+#define HENC_TOP_INFO_1 ((0x1d39 << 2) + 0xff620000)
+#define HENC_LEFT_INFO_1 ((0x1d3a << 2) + 0xff620000)
 // bit[63:0] ipred_mode
-#define VLC_IPRED_MODE_HI                          ((0x1d3b  << 2) + 0xff620000)
-#define VLC_IPRED_MODE_LO                          ((0x1d3c  << 2) + 0xff620000)
+#define VLC_IPRED_MODE_HI ((0x1d3b << 2) + 0xff620000)
+#define VLC_IPRED_MODE_LO ((0x1d3c << 2) + 0xff620000)
 // bit[15:8] SE delta quant
 // bit[7:0]  UE delta quant
-#define VLC_DELTA_QP                               ((0x1d3d  << 2) + 0xff620000)
+#define VLC_DELTA_QP ((0x1d3d << 2) + 0xff620000)
 // bit[31:16] Reserved
 // bit[15:12] Reserved
 // bit[11:8] c_ipred_mode
 // bit[7:0] cbp
-#define VLC_MB_HEADER_INFO                         ((0x1d3e  << 2) + 0xff620000)
+#define VLC_MB_HEADER_INFO ((0x1d3e << 2) + 0xff620000)
 // bit[31:16] mb_skip_run
 // bit[15:0]  b8_mode
-#define VLC_P_MB_HEADER_INFO                       ((0x1d3f  << 2) + 0xff620000)
+#define VLC_P_MB_HEADER_INFO ((0x1d3f << 2) + 0xff620000)
 // bit[31]    write_ptr_update
 // bit[30]    read_ptr_update
 // bit[29:20] coeff_buf_level
 // bit[19:10] coeff_buf_write_ptr
 // bit[9:0]   coeff_buf_read_ptr
-#define VLC_COEFF_BUF_STATUS                       ((0x1d40  << 2) + 0xff620000)
+#define VLC_COEFF_BUF_STATUS ((0x1d40 << 2) + 0xff620000)
 // bit[31:10] Reserved
 // bit[9:0] read_req_addr
-#define VLC_COEFF_RD_REQ                           ((0x1d41  << 2) + 0xff620000)
+#define VLC_COEFF_RD_REQ ((0x1d41 << 2) + 0xff620000)
 // bit[20]   - coeff_buf_read_finished
 // bit[19]   - coeff_first
 // bit[18:4] - coeff_level
 // bit[3:0]  - coeff_run
-#define VLC_COEFF                                  ((0x1d42  << 2) + 0xff620000)
+#define VLC_COEFF ((0x1d42 << 2) + 0xff620000)
 // bit[31]    - coeff_info_ready
 // bit[30:25] - Reserved
 // bit[24:15] - block_begin_addr
@@ -1786,7 +1786,7 @@
 // bit[10:6]  - total_coeff
 // bit[5:4]   - trailing_ones
 // bit[3:0]   - total_zeros
-#define VLC_COEFF_INFO                             ((0x1d43  << 2) + 0xff620000)
+#define VLC_COEFF_INFO ((0x1d43 << 2) + 0xff620000)
 // bit[31]    write_ptr_update
 // bit[30]    read_ptr_update
 // bit[29:25] Reserved
@@ -1795,16 +1795,16 @@
 // bit[14:10] dc_buf_write_ptr
 // bit[9:5]   Reserved
 // bit[4:0]   dc_buf_read_ptr
-#define VLC_DC_BUF_STATUS                          ((0x1d44  << 2) + 0xff620000)
+#define VLC_DC_BUF_STATUS ((0x1d44 << 2) + 0xff620000)
 // bit[31:10] Reserved
 // bit[9:4]   Reserved
 // bit[3:0]   read_req_addr
-#define VLC_DC_RD_REQ                              ((0x1d45  << 2) + 0xff620000)
+#define VLC_DC_RD_REQ ((0x1d45 << 2) + 0xff620000)
 // bit[31:17] - Reserved
 // bit[16]   - dc_first
 // bit[15:1] - dc_level
 // bit[0]    - dc_type  0 - CDC, 1 - LDC
-#define VLC_DC                                     ((0x1d46  << 2) + 0xff620000)
+#define VLC_DC ((0x1d46 << 2) + 0xff620000)
 // bit[31]    - dc_info_ready
 // bit[30:25] - Reserved
 // bit[24:20] - Reserved
@@ -1813,44 +1813,44 @@
 // bit[10:6]  - dc_total_coeff
 // bit[5:4]   - dc_trailing_ones
 // bit[3:0]   - dc_total_zeros
-#define VLC_DC_INFO                                ((0x1d47  << 2) + 0xff620000)
+#define VLC_DC_INFO ((0x1d47 << 2) + 0xff620000)
 // bit[31:4]  - Reserved
 // bit[3:0]   - mv_rw_idx  (auto increment when read/write VLC_MV)
-#define VLC_MV_INDEX                               ((0x1d48  << 2) + 0xff620000)
+#define VLC_MV_INDEX ((0x1d48 << 2) + 0xff620000)
 // bit[31:16] - MVY
 // bit[15:0]  - MVX
-#define VLC_MV                                     ((0x1d49  << 2) + 0xff620000)
+#define VLC_MV ((0x1d49 << 2) + 0xff620000)
 // bit[31:16] - MVY
 // bitp15:0]  - MVX
 // Write to HENC_TOP_MV_0 will cause previous U->UL, UR->U, and UR write
 // Read will read U MV only
-#define HENC_TOP_MV_0                              ((0x1d4a  << 2) + 0xff620000)
-#define HENC_TOP_MV_1                              ((0x1d4b  << 2) + 0xff620000)
-#define HENC_TOP_MV_2                              ((0x1d4c  << 2) + 0xff620000)
-#define HENC_TOP_MV_3                              ((0x1d4d  << 2) + 0xff620000)
-#define HENC_LEFT_MV_0                             ((0x1d4e  << 2) + 0xff620000)
-#define HENC_LEFT_MV_1                             ((0x1d4f  << 2) + 0xff620000)
-#define HENC_LEFT_MV_2                             ((0x1d50  << 2) + 0xff620000)
-#define HENC_LEFT_MV_3                             ((0x1d51  << 2) + 0xff620000)
+#define HENC_TOP_MV_0 ((0x1d4a << 2) + 0xff620000)
+#define HENC_TOP_MV_1 ((0x1d4b << 2) + 0xff620000)
+#define HENC_TOP_MV_2 ((0x1d4c << 2) + 0xff620000)
+#define HENC_TOP_MV_3 ((0x1d4d << 2) + 0xff620000)
+#define HENC_LEFT_MV_0 ((0x1d4e << 2) + 0xff620000)
+#define HENC_LEFT_MV_1 ((0x1d4f << 2) + 0xff620000)
+#define HENC_LEFT_MV_2 ((0x1d50 << 2) + 0xff620000)
+#define HENC_LEFT_MV_3 ((0x1d51 << 2) + 0xff620000)
 // Bit[31:1] Reserved
 // Bit[0] top_left_mv_ready
-#define TOP_LEFT_READY                             ((0x1d52  << 2) + 0xff620000)
+#define TOP_LEFT_READY ((0x1d52 << 2) + 0xff620000)
 // Bit[31:16] Reserved
 // Bit[15:0] mb_skip_run
-#define MB_SKIP_RUN                                ((0x1d53  << 2) + 0xff620000)
+#define MB_SKIP_RUN ((0x1d53 << 2) + 0xff620000)
 // Bit[31:16] Reserved
 // Bit[15]    Reserved
 // Bit[14:13] rd_struct // 00 - frame, 10 - top field, 11 - bottom field
 // Bit[12:11] wr_struct // 00 - frame, 10 - top field, 11 - bottom field
 // Bit[10:5]  mv_buff_id
 // Bit[4:0]   mv_ref
-#define VLC_HCMD_CONFIG                            ((0x1d54  << 2) + 0xff620000)
+#define VLC_HCMD_CONFIG ((0x1d54 << 2) + 0xff620000)
 // Bit[9:0] h264_dblk_info
-#define VLC_HCMD_DBLK_INFO                         ((0x1d55  << 2) + 0xff620000)
+#define VLC_HCMD_DBLK_INFO ((0x1d55 << 2) + 0xff620000)
 // Bit[3:0] vlc_dbg_idx
-#define VLC_DBG_IDX                                ((0x1d56  << 2) + 0xff620000)
+#define VLC_DBG_IDX ((0x1d56 << 2) + 0xff620000)
 // Read Only
-#define VLC_DBG_READ                               ((0x1d57  << 2) + 0xff620000)
+#define VLC_DBG_READ ((0x1d57 << 2) + 0xff620000)
 // [   29] RW jpeg_comp2_ac_table_sel.                                                      Default 0.
 // [   28] RW jpeg_comp2_dc_table_sel.                                                      Default 0.
 // [26:25] RW jpeg_comp2_cnt_max.                                                           Default 0.
@@ -1865,24 +1865,24 @@
 // [    8] RW jpeg_comp0_en. Set 1 if the scan will include component 0 (Y).                Default 0.
 // [    1] W  jpeg_coeff_init. Write 1 to this bit to initialize JPEG run length encoder.
 // [    0] RW jpeg_en. 0=Disable JPEG encoder; 1=Enable JPEG encoder.                       Default 0.
-#define VLC_JPEG_CTRL                              ((0x1d58  << 2) + 0xff620000)
+#define VLC_JPEG_CTRL ((0x1d58 << 2) + 0xff620000)
 // [   13] RW jpeg_coeff_buf_overfl. Write this bit to 1 to clear overfl.
 // [   12] RW jpeg_coeff_buf_undrfl. Write this bit to 1 to clear undrfl.
 // [   11] R  jpeg_coeff_buf_full.
 // [   10] R  jpeg_coeff_buf_empty.
 // [ 8: 0] R  jpeg_coeff_buf_level.
-#define VLC_JPEG_COEFF_BUF_STAT                    ((0x1d59  << 2) + 0xff620000)
+#define VLC_JPEG_COEFF_BUF_STAT ((0x1d59 << 2) + 0xff620000)
 // [   16] RW JPEG HUFFMAN table access mode. 0=Write; 1=Read.  Default 1.
 // [ 8: 0] RW JPEG HUFFMAN table addr.                          Default 0.
-#define VLC_HUFFMAN_ADDR                           ((0x1d5a  << 2) + 0xff620000)
+#define VLC_HUFFMAN_ADDR ((0x1d5a << 2) + 0xff620000)
 // [19: 0] RW JPEG HUFFMAN table data.
-#define VLC_HUFFMAN_DATA                           ((0x1d5b  << 2) + 0xff620000)
+#define VLC_HUFFMAN_DATA ((0x1d5b << 2) + 0xff620000)
 // bit[31:0] enc_mv_bits - including b8_mode and mvd
-#define VLC_ENC_MV_BITS                            ((0x1d5c  << 2) + 0xff620000)
+#define VLC_ENC_MV_BITS ((0x1d5c << 2) + 0xff620000)
 // bit[31:0] enc_coeff_bits - including cbp, token, trailing_sign, coeff_enc, h264_totzeros, h264_run
-#define VLC_ENC_COEFF_BITS                         ((0x1d5d  << 2) + 0xff620000)
-#define VLC_RESERVED_5E                            ((0x1d5e  << 2) + 0xff620000)
-#define VLC_RESERVED_5F                            ((0x1d5f  << 2) + 0xff620000)
+#define VLC_ENC_COEFF_BITS ((0x1d5d << 2) + 0xff620000)
+#define VLC_RESERVED_5E ((0x1d5e << 2) + 0xff620000)
+#define VLC_RESERVED_5F ((0x1d5f << 2) + 0xff620000)
 // ----------------------------------------------------------
 // CABAC
 // ----------------------------------------------------------
@@ -1894,12 +1894,12 @@
 // [7]      reserved
 // [6]      cabac_en
 // [5:0]    slice_quant
-#define VLC_SLICE_QP                               ((0x1d60  << 2) + 0xff620000)
+#define VLC_SLICE_QP ((0x1d60 << 2) + 0xff620000)
 // For save mvd[12:0] {mvd_y[6:0], mvd_x[5:0]}
-#define HENC_TOP_INFO_2                            ((0x1d61  << 2) + 0xff620000)
-#define HENC_LEFT_INFO_2                           ((0x1d62  << 2) + 0xff620000)
-#define HENC_TOP_INFO_3                            ((0x1d63  << 2) + 0xff620000)
-#define HENC_LEFT_INFO_3                           ((0x1d64  << 2) + 0xff620000)
+#define HENC_TOP_INFO_2 ((0x1d61 << 2) + 0xff620000)
+#define HENC_LEFT_INFO_2 ((0x1d62 << 2) + 0xff620000)
+#define HENC_TOP_INFO_3 ((0x1d63 << 2) + 0xff620000)
+#define HENC_LEFT_INFO_3 ((0x1d64 << 2) + 0xff620000)
 //
 // Closing file:  vlc_regs.h
 //
@@ -1916,7 +1916,7 @@
 // CBUS_BASE:  DOS_HCODEC_QDCT_CBUS_BASE = 0x0f
 // -----------------------------------------------
 // bit[31:28] - mb_info_state
-#define QDCT_STATUS_CTRL                           ((0x1f00  << 2) + 0xff620000)
+#define QDCT_STATUS_CTRL ((0x1f00 << 2) + 0xff620000)
 // bit[18]    - enable_free_clk_sad_top
 // bit[17]    - enable_free_clk_ie_top
 // bit[16]    - enable_free_clk_ie_sub
@@ -1936,7 +1936,7 @@
 // bit[2]     - not_ignore_dc
 // bit[1]     - ignore_small_lac_intra
 // bit[0]     - disable_fast_zero_block
-#define QDCT_CONFIG                                ((0x1f01  << 2) + 0xff620000)
+#define QDCT_CONFIG ((0x1f01 << 2) + 0xff620000)
 // bit[31]    - ignore_lac_coeff_en
 // bit[30:26] - ignore_lac_coeff_else
 // bit[25:21] - ignore_lac_coeff_2
@@ -1945,7 +1945,7 @@
 // bit[14:10] - ignore_cac_coeff_else
 // bit[9:5]   - ignore_cac_coeff_2
 // bit[4:0]   - ignore_cac_coeff_1
-#define IGNORE_CONFIG                              ((0x1f02  << 2) + 0xff620000)
+#define IGNORE_CONFIG ((0x1f02 << 2) + 0xff620000)
 // bit[31]    - ignore_t_lac_coeff_en
 // bit[30:26] - ignore_t_lac_coeff_else
 // bit[25:21] - ignore_t_lac_coeff_2
@@ -1962,15 +1962,15 @@
 // bit[4]     - ignore_cdc_only_when_one_empty_intra
 // bit[3:2]   - ignore_cdc_range_max_intra // 0-0, 1-1, 2,-2, 3-3
 // bit[1:0]   - ignore_cdc_abs_max_intra // 0-1, 1-2, 2,-3, 3-4
-#define IGNORE_CONFIG_2                            ((0x1f03  << 2) + 0xff620000)
+#define IGNORE_CONFIG_2 ((0x1f03 << 2) + 0xff620000)
 // --------------------------------------------
 // MB DATA DDR Interface
 // --------------------------------------------
-#define QDCT_MB_START_PTR                          ((0x1f10  << 2) + 0xff620000)
-#define QDCT_MB_END_PTR                            ((0x1f11  << 2) + 0xff620000)
-#define QDCT_MB_WR_PTR                             ((0x1f12  << 2) + 0xff620000)
-#define QDCT_MB_RD_PTR                             ((0x1f13  << 2) + 0xff620000)
-#define QDCT_MB_LEVEL                              ((0x1f14  << 2) + 0xff620000)
+#define QDCT_MB_START_PTR ((0x1f10 << 2) + 0xff620000)
+#define QDCT_MB_END_PTR ((0x1f11 << 2) + 0xff620000)
+#define QDCT_MB_WR_PTR ((0x1f12 << 2) + 0xff620000)
+#define QDCT_MB_RD_PTR ((0x1f13 << 2) + 0xff620000)
+#define QDCT_MB_LEVEL ((0x1f14 << 2) + 0xff620000)
 // bit  [31]    disable_mbxy_ie_save
 // bit  [30]    no_wait_after_q_cdc
 // bit  [29]    ie_start_int_enable
@@ -2001,7 +2001,7 @@
 // bit  [2]     mb_read_busy   Read Only - indicate DDR read busy
 // bit  [1]     mb_read_en     Set to 1 to enable reading data from DDR memory
 // bit  [0]     mb_soft_reset   Soft reset
-#define QDCT_MB_CONTROL                            ((0x1f15  << 2) + 0xff620000)
+#define QDCT_MB_CONTROL ((0x1f15 << 2) + 0xff620000)
 // bit 31    transfer_length 0 - 32x64 Bits per request, 1 - 16x64 Bits per request  // default : 0
 // bit 30    A_urgent  // default : 0
 // bit 29:24 A_brst_num // default : 0x3f
@@ -2009,14 +2009,14 @@
 // bit 22    read_till_zero
 // bit 21:16 A_id  // default : 0x21
 // bit 15:0  mb_level_hold // default : 0
-#define QDCT_MB_MEM_CTL                            ((0x1f16  << 2) + 0xff620000)
+#define QDCT_MB_MEM_CTL ((0x1f16 << 2) + 0xff620000)
 // bit  [31:24] reserved
 // bit  [23:16] vb_buff_level     -- Read only
 // bit  [15:8]  vb_buff_wr_point -- RW
 // bit  [7:0]   vb_buff_rd_point -- RW
-#define QDCT_MB_BUFF                               ((0x1f17  << 2) + 0xff620000)
+#define QDCT_MB_BUFF ((0x1f17 << 2) + 0xff620000)
 // bit [31:0] mb infor data begin magic word - default : 0xa55aaa55
-#define QDCT_MB_MAGIC_WORD                         ((0x1f18  << 2) + 0xff620000)
+#define QDCT_MB_MAGIC_WORD ((0x1f18 << 2) + 0xff620000)
 // Read Only Register
 // bit[19]   dct_ready_1
 // bit[18]   dct_ready_0
@@ -2028,16 +2028,16 @@
 // bit[12:8] dct_block_number
 // bit[7:4]  dct_rw_addr
 // bit[3:0]  dct_status
-#define QDCT_DCT_STATUS                            ((0x1f19  << 2) + 0xff620000)
+#define QDCT_DCT_STATUS ((0x1f19 << 2) + 0xff620000)
 // bit[24:23]  vlc_quant_count
 // bit[22:16]  vlc_delta_quant_data
 // bit[15:10]  vlc_quant_data
 // bit[9:4]    vlc_prev_quant_data
 // bit[3:0]    q_status
-#define QDCT_Q_STATUS                              ((0x1f1a  << 2) + 0xff620000)
+#define QDCT_Q_STATUS ((0x1f1a << 2) + 0xff620000)
 // bit[31:3] Reserved
 // bit[2:0]  picture_type
-#define QDCT_PIC_INFO                              ((0x1f1b  << 2) + 0xff620000)
+#define QDCT_PIC_INFO ((0x1f1b << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:22] I_pic_quant_c
 // bit[21:16] I_pic_quant
@@ -2047,7 +2047,7 @@
 // bit[7]     reserved
 // bit[6:4]   quant_rem
 // bit[3:0]   quant_per
-#define QDCT_Q_QUANT_I                             ((0x1f1c  << 2) + 0xff620000)
+#define QDCT_Q_QUANT_I ((0x1f1c << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:22] P_pic_quant_c
 // bit[21:16] P_pic_quant
@@ -2057,11 +2057,11 @@
 // bit[7]     reserved
 // bit[6:4]   quant_rem
 // bit[3:0]   quant_per
-#define QDCT_Q_QUANT_P                             ((0x1f1d  << 2) + 0xff620000)
+#define QDCT_Q_QUANT_P ((0x1f1d << 2) + 0xff620000)
 // bit[31]    mb_info_pause
 // bit[30:16] pause_mby
 // bit[15:0]  pause_mbx
-#define QDCT_MB_PAUSE_CTL                          ((0x1f1e  << 2) + 0xff620000)
+#define QDCT_MB_PAUSE_CTL ((0x1f1e << 2) + 0xff620000)
 // bit[31]   top_control_ready_i_pred
 // bit[30:28]top_dma_status
 // bit[27]   top_control_ready_ie
@@ -2075,20 +2075,20 @@
 // bit[5:4]  i_pred_ref_idx_UL
 // bit[3:2]  i_pred_ref_idx_U
 // bit[1:0]  i_pred_ref_idx_UR
-#define QDCT_TOP_CONTROL                           ((0x1f1f  << 2) + 0xff620000)
+#define QDCT_TOP_CONTROL ((0x1f1f << 2) + 0xff620000)
 // bit[31:0] top_base_addr - DDR Memory start address for save top Pixel
-#define QDCT_TOP_BASE_MEM                          ((0x1f20  << 2) + 0xff620000)
+#define QDCT_TOP_BASE_MEM ((0x1f20 << 2) + 0xff620000)
 // bit 15:13 Reserved
 // bit 12    A_urgent  // default : 0
 // bit 11:6  A_brst_num // default : 0x3f
 // bit 5:0   A_id  // default : 0x22
-#define QDCT_TOP_MEM_CTL                           ((0x1f21  << 2) + 0xff620000)
+#define QDCT_TOP_MEM_CTL ((0x1f21 << 2) + 0xff620000)
 // bit [11:0] top_wrrsp_count
-#define QDCT_TOP_WRRSP                             ((0x1f22  << 2) + 0xff620000)
+#define QDCT_TOP_WRRSP ((0x1f22 << 2) + 0xff620000)
 // Bit[3:0] qdct_dbg_idx
-#define QDCT_DBG_IDX                               ((0x1f23  << 2) + 0xff620000)
+#define QDCT_DBG_IDX ((0x1f23 << 2) + 0xff620000)
 // Read Only
-#define QDCT_DBG_READ                              ((0x1f24  << 2) + 0xff620000)
+#define QDCT_DBG_READ ((0x1f24 << 2) + 0xff620000)
 // [19:18] RW jdct_inflow_ctrl. JPEG DCT input flow control.                                Default 0.
 //            0=No halt;
 //            1=DCT halts request at end of each 8x8 block;
@@ -2119,51 +2119,51 @@
 //            5=Intr at end of each MCU of DCT output;
 //            6=Intr at end of a scan of DCT output.
 // [    0] RW jpeg_en. 0=Disable JPEG QDCT; 1=Enable JPEG QDCT.                             Default 0.
-#define QDCT_JPEG_CTRL                             ((0x1f25  << 2) + 0xff620000)
+#define QDCT_JPEG_CTRL ((0x1f25 << 2) + 0xff620000)
 // [29:16] RW jpeg_x_end.   Picture X end.      Default 0.
 // [13: 0] RW jpeg_x_start. Picture X start.    Default 0.
-#define QDCT_JPEG_X_START_END                      ((0x1f26  << 2) + 0xff620000)
+#define QDCT_JPEG_X_START_END ((0x1f26 << 2) + 0xff620000)
 // [29:16] RW jpeg_y_end.   Picture Y end.      Default 0.
 // [13: 0] RW jpeg_y_start. Picture Y start.    Default 0.
-#define QDCT_JPEG_Y_START_END                      ((0x1f27  << 2) + 0xff620000)
+#define QDCT_JPEG_Y_START_END ((0x1f27 << 2) + 0xff620000)
 // [    8] RW JPEG QUANT table access mode. 0=Write; 1=Read.    Default 1.
 // [ 5: 0] RW JPEG QUANT table addr.                            Default 0.
-#define QDCT_JPEG_QUANT_ADDR                       ((0x1f28  << 2) + 0xff620000)
+#define QDCT_JPEG_QUANT_ADDR ((0x1f28 << 2) + 0xff620000)
 // [31: 0] RW JPEG QUANT table data.
-#define QDCT_JPEG_QUANT_DATA                       ((0x1f29  << 2) + 0xff620000)
+#define QDCT_JPEG_QUANT_DATA ((0x1f29 << 2) + 0xff620000)
 // [    1] W  resume_jdct.
 //            Write 1 to this bit will resume JPEG input engine when previously
 //            it is halted by QDCT_JPEG_CTRL.jdct_inflow_ctrl.
 // [    0] W  jpeg_sof.
 //            Write 1 to this bit will start JPEG input engine.
-#define QDCT_JPEG_SOF_RESUME                       ((0x1f2a  << 2) + 0xff620000)
+#define QDCT_JPEG_SOF_RESUME ((0x1f2a << 2) + 0xff620000)
 // [31:30] R  dct_st.       jdct_ctrl state. 0=IDLE; 1=WAIT; 2=DCT_REQ.
 // [29:28] R  mfdin_comp.   Current component at pixel request to MFDIN.
 // [27:14] R  mfdin_y.      Current Y at pixel request to MFDIN.
 // [13: 0] R  mfdin_x.      Current X at pixel request to MFDIN.
-#define QDCT_JPEG_DCT_STATUS0                      ((0x1f2b  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_STATUS0 ((0x1f2b << 2) + 0xff620000)
 // [15:12] R  JPEG Quant read MEM select.
 // [11: 8] R  JPEG DCT2 write MEM select.
 // [ 7: 4] R  JPEG DCT2 read MEM select.
 // [ 3: 0] R  JPEG DCT1 write MEM select.
-#define QDCT_JPEG_DCT_STATUS1                      ((0x1f2c  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_STATUS1 ((0x1f2c << 2) + 0xff620000)
 // [28:16] RW jdct_coeff1.  Default 13'h1D90; // 7568 = 4096 * sqrt(2) * (cos(Pi/8) + sin(Pi/8)) // 7569
 // [12: 0] RW jdct_coeff0.  Default 13'h16A1; // 5793 = 4096 * sqrt(2)
-#define QDCT_JPEG_DCT_COEFF01                      ((0x1f2d  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_COEFF01 ((0x1f2d << 2) + 0xff620000)
 // [28:16] RW jdct_coeff3.  Default 13'h0C3F; // 3135 = 4096 * sqrt(2) * (cos(Pi/8) - sin(Pi/8))
 // [12: 0] RW jdct_coeff2.  Default 13'h08A9; // 2217 = 4096 * sqrt(2) * sin(Pi/8) // 2215
-#define QDCT_JPEG_DCT_COEFF23                      ((0x1f2e  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_COEFF23 ((0x1f2e << 2) + 0xff620000)
 // [28:16] RW jdct_coeff5.  Default 13'h046A; // 1130 = 4096 * (cos(3Pi/16) - sin(3Pi/16))
 // [12: 0] RW jdct_coeff4.  Default 13'h1631; // 5681 = 4096 * (cos(3Pi/16) + sin(3Pi/16)) // 5682
-#define QDCT_JPEG_DCT_COEFF45                      ((0x1f2f  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_COEFF45 ((0x1f2f << 2) + 0xff620000)
 // [28:16] RW jdct_coeff7.  Default 13'h0C92; // 3218 = 4096 * (cos(Pi/16) - sin(Pi/16))
 // [12: 0] RW jdct_coeff6.  Default 13'h12D0; // 4816 = 4096 * (cos(Pi/16) + sin(Pi/16))
-#define QDCT_JPEG_DCT_COEFF67                      ((0x1f30  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_COEFF67 ((0x1f30 << 2) + 0xff620000)
 // [28:16] RW jdct_coeff9.  Default 13'h0FB1; // 4017 = 4096 * cos(Pi/16)
 // [12: 0] RW jdct_coeff8.  Default 13'h0D4E; // 3406 = 4096 * cos(3Pi/16)
-#define QDCT_JPEG_DCT_COEFF89                      ((0x1f31  << 2) + 0xff620000)
-#define QDCT_I_PRED_REF_WR_IDX                     ((0x1f32  << 2) + 0xff620000)
-#define QDCT_I_PRED_REF_WR_DATA                    ((0x1f33  << 2) + 0xff620000)
+#define QDCT_JPEG_DCT_COEFF89 ((0x1f31 << 2) + 0xff620000)
+#define QDCT_I_PRED_REF_WR_IDX ((0x1f32 << 2) + 0xff620000)
+#define QDCT_I_PRED_REF_WR_DATA ((0x1f33 << 2) + 0xff620000)
 // bit[29]  mb_info_latch_no_I16_pred_mode
 // bit[28]  ie_dma_mbxy_use_i_pred
 // bit[27]  ie_dma_read_write_use_ip_idx
@@ -2193,10 +2193,10 @@
 // bit[3]   ie_not_wait_ref_busy
 // bit[2]   ie_I16_enable
 // bit[1:0] ie_done_sel (0, 1, 2, -1)
-#define QDCT_ADV_CONFIG                            ((0x1f34  << 2) + 0xff620000)
+#define QDCT_ADV_CONFIG ((0x1f34 << 2) + 0xff620000)
 // bit [31:16] I16x16_weight
 // bit [15:0]  I4x4_weight
-#define IE_WEIGHT                                  ((0x1f35  << 2) + 0xff620000)
+#define IE_WEIGHT ((0x1f35 << 2) + 0xff620000)
 // bit [31]  reserved
 // bit [30] q_I16MB
 // bit [29]  reserved
@@ -2210,24 +2210,24 @@
 // bit [7:2] quant
 // bit [1] update_rem_per
 // bit [0] clear_wait_status
-#define Q_QUANT_CONTROL                            ((0x1f36  << 2) + 0xff620000)
-#define MBBOT_EVEN_ADDR                            ((0x1f37  << 2) + 0xff620000)
-#define MBBOT_ODD_ADDR                             ((0x1f38  << 2) + 0xff620000)
+#define Q_QUANT_CONTROL ((0x1f36 << 2) + 0xff620000)
+#define MBBOT_EVEN_ADDR ((0x1f37 << 2) + 0xff620000)
+#define MBBOT_ODD_ADDR ((0x1f38 << 2) + 0xff620000)
 // bit [29:24] quant_table_data_3
 // bit [21:16] quant_table_data_2
 // bit [13:8]  quant_table_data_1
 // bit [5:0]   quant_table_data_0
-#define QUANT_TABLE_DATA                           ((0x1f39  << 2) + 0xff620000)
+#define QUANT_TABLE_DATA ((0x1f39 << 2) + 0xff620000)
 // bit [31:16] ie_sad_offset_I16
 // bit [15:0] ie_sad_offset_I4
-#define SAD_CONTROL_0                              ((0x1f3a  << 2) + 0xff620000)
+#define SAD_CONTROL_0 ((0x1f3a << 2) + 0xff620000)
 // bit [31]     sad_soft_reset
 // bit [30:27]  reserved
 // bit [26:24]  ie_sad_shift_I16
 // bit [22:20]  ie_sad_shift_I4
 // bit [18:16]  me_sad_shift_INTER
 // bit [15:0]   me_sad_offset_INTER
-#define SAD_CONTROL_1                              ((0x1f3b  << 2) + 0xff620000)
+#define SAD_CONTROL_1 ((0x1f3b << 2) + 0xff620000)
 // bit [31]     vlc_quant_rd_ptr
 // bit [30]     vlc_quant_rd_ptr_update
 // bit [29]     vlc_quant_wr_ptr
@@ -2237,7 +2237,7 @@
 // bit [18:13]  vlc_quant_1
 // bit [12:6]   vlc_delta_quant_0
 // bit [5:0]    vlc_quant_0
-#define QDCT_VLC_QUANT_CTL_0                       ((0x1f3c  << 2) + 0xff620000)
+#define QDCT_VLC_QUANT_CTL_0 ((0x1f3c << 2) + 0xff620000)
 // bit [31:30]  me_sad_rd_idx
 // bit [29]     me_sad_rd_idx_update
 // bit [28:27]  me_sad_wr_idx
@@ -2249,16 +2249,16 @@
 // bit [19:12]  Reserved
 // bit [11:6]   vlc_max_delta_q_neg
 // bit [5:0]    vlc_max_delta_q_pos
-#define QDCT_VLC_QUANT_CTL_1                       ((0x1f3d  << 2) + 0xff620000)
+#define QDCT_VLC_QUANT_CTL_1 ((0x1f3d << 2) + 0xff620000)
 // bit[4] jdct_int
 // bit[3] quant_latch
 // bit[2] me_done
 // bit[1] ie_start
 // bit[0] i_pred_start
-#define QDCT_INT_STATUS                            ((0x1f3e  << 2) + 0xff620000)
+#define QDCT_INT_STATUS ((0x1f3e << 2) + 0xff620000)
 // bit[3]   mix_i_pred_wait_left_en
 // bit[2:0] mc_pending_mb_count
-#define QDCT_MIX_I_PRED_STATUS                     ((0x1f3f  << 2) + 0xff620000)
+#define QDCT_MIX_I_PRED_STATUS ((0x1f3f << 2) + 0xff620000)
 // IE/ME share same cbus_base as QDCT
 //
 // bit[31]  active_ur_block
@@ -2281,37 +2281,37 @@
 // bit[2]   reserved
 // bit[1]   ie_enable
 // bit[0]   ie_soft_reset
-#define IE_CONTROL                                 ((0x1f40  << 2) + 0xff620000)
+#define IE_CONTROL ((0x1f40 << 2) + 0xff620000)
 // bit[31:12] Reserved
 // bit[11:0]  mb_y
-#define IE_MB_POSITION                             ((0x1f41  << 2) + 0xff620000)
+#define IE_MB_POSITION ((0x1f41 << 2) + 0xff620000)
 // bit[31:16] me_skip_run
 // bit[15:8]  reserved
 // bit [7:4]  me_b8_mode
 // bit [3:0]  ie_me_mb_type
-#define IE_ME_MB_INFO                              ((0x1f42  << 2) + 0xff620000)
+#define IE_ME_MB_INFO ((0x1f42 << 2) + 0xff620000)
 // bit[3]   ie_result_buff_enable
 // bit[2]   ie_result_buff_soft_reset
 // bit[1]   sad_enable
 // bit[0]   ie_sad_soft_reset
-#define SAD_CONTROL                                ((0x1f43  << 2) + 0xff620000)
+#define SAD_CONTROL ((0x1f43 << 2) + 0xff620000)
 // bit[31:16] - ie_result_buff_count - read only
 // bit[14:12] -current_ie_result (pred_mode) - read only
 // bit[11]  top_control_data_buff_wr_ptr - rd/wr
 // bit[10]  top_control_data_buff_rd_ptr - rd/wr
 // bit[9:5] ie_result_buff_wr_ptr        - rd/wr
 // bit[4:0] ie_result_buff_rd_ptr        - rd/wr
-#define IE_RESULT_BUFFER                           ((0x1f44  << 2) + 0xff620000)
+#define IE_RESULT_BUFFER ((0x1f44 << 2) + 0xff620000)
 // bit[63:0] ie_i4_pred_mode
-#define IE_I4_PRED_MODE_HI                         ((0x1f45  << 2) + 0xff620000)
-#define IE_I4_PRED_MODE_LO                         ((0x1f46  << 2) + 0xff620000)
+#define IE_I4_PRED_MODE_HI ((0x1f45 << 2) + 0xff620000)
+#define IE_I4_PRED_MODE_LO ((0x1f46 << 2) + 0xff620000)
 // bit [31:9] reserved
 // bit [8:4] i_pred_block_number
 // bit [3:0] ie_c_pred_mode
-#define IE_C_PRED_MODE                             ((0x1f47  << 2) + 0xff620000)
+#define IE_C_PRED_MODE ((0x1f47 << 2) + 0xff620000)
 // 31:16 - Left, 0-select ie_pixel, 1-select mc_data_out
 // 15:0  - Top,  0-select ie_pixel, 1-select mc_data_out
-#define IE_CUR_REF_SEL                             ((0x1f48  << 2) + 0xff620000)
+#define IE_CUR_REF_SEL ((0x1f48 << 2) + 0xff620000)
 // bit[31]  enable_f_skip_1_step_3
 // bit[30]  enable_f_skip_1_step_2
 // bit[29]  enable_f_skip_1_step_1
@@ -2334,12 +2334,12 @@
 // bit[2]   me_done_int_enable
 // bit[1]   me_enable
 // bit[0]   me_soft_reset
-#define ME_CONTROL                                 ((0x1f49  << 2) + 0xff620000)
+#define ME_CONTROL ((0x1f49 << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:16] me_start_mby
 // bit[15:12] Reserved
 // bit[11:0]  me_start_mbx
-#define ME_START_POSITION                          ((0x1f4a  << 2) + 0xff620000)
+#define ME_START_POSITION ((0x1f4a << 2) + 0xff620000)
 // bit [31:28] me_status - Read only
 // bit [27:24] me_cb_status  // current buffer
 // bit [23:20] me_ab_status  // anc buffer
@@ -2348,49 +2348,49 @@
 // bit [15:4]  me_last_mbx
 // bit [3:1]   me_ab_rd_ptr  // read only
 // bit [0]     me_action
-#define ME_STATUS                                  ((0x1f4b  << 2) + 0xff620000)
+#define ME_STATUS ((0x1f4b << 2) + 0xff620000)
 // all Read-only
 // bit [31:28] Reserved
 // bit [27:16] me_ab_mbx
 // bit [15:14] me_cb_wr_ptr
 // bit [13:12] me_cb_rd_ptr
 // bit [11:0]  me_cb_mbx
-#define ME_DEBUG                                   ((0x1f4c  << 2) + 0xff620000)
+#define ME_DEBUG ((0x1f4c << 2) + 0xff620000)
 // bit[29:24] step_3_skip_line
 // bit[23:18] step_2_skip_line
 // bit[17:12] step_1_skip_line
 // bit[11:6]  step_0_skip_line
 // bit[5:0]   read_skip_line
-#define ME_SKIP_LINE                               ((0x1f4d  << 2) + 0xff620000)
+#define ME_SKIP_LINE ((0x1f4d << 2) + 0xff620000)
 // bit 15:13 Reserved
 // bit 12    A_urgent  // default : 0
 // bit 11:6  A_brst_num // default : 0x3f
 // bit 5:0   A_id  // default : 0x23
-#define ME_AB_MEM_CTL                              ((0x1f4e  << 2) + 0xff620000)
+#define ME_AB_MEM_CTL ((0x1f4e << 2) + 0xff620000)
 // bit[31:24] anc_pic_canvas
 // bit[23:12] max_me_mby_num
 // bit[11:0]  max_me_mbx_num
-#define ME_PIC_INFO                                ((0x1f4f  << 2) + 0xff620000)
+#define ME_PIC_INFO ((0x1f4f << 2) + 0xff620000)
 // bit [23:12] me_sad_enough_1
 // bit [11:0]  me_sad_enough_0
-#define ME_SAD_ENOUGH_01                           ((0x1f50  << 2) + 0xff620000)
+#define ME_SAD_ENOUGH_01 ((0x1f50 << 2) + 0xff620000)
 // bit [25:12] adv_mv_8x8_enough
 // bit [11:0]  me_sad_enough_2
-#define ME_SAD_ENOUGH_23                           ((0x1f51  << 2) + 0xff620000)
+#define ME_SAD_ENOUGH_23 ((0x1f51 << 2) + 0xff620000)
 // bit [21:10] me_step0_big_sad
 // bit [9:5] me_step0_close_mv_y
 // bit [4:0] me_step0_close_mv_x
-#define ME_STEP0_CLOSE_MV                          ((0x1f52  << 2) + 0xff620000)
+#define ME_STEP0_CLOSE_MV ((0x1f52 << 2) + 0xff620000)
 // bit[31:24] force_skip_sad_3
 // bit[23:16] force_skip_sad_2
 // bit[15:08] force_skip_sad_1
 // bit[07:00] force_skip_sad_0
-#define ME_F_SKIP_SAD                              ((0x1f53  << 2) + 0xff620000)
+#define ME_F_SKIP_SAD ((0x1f53 << 2) + 0xff620000)
 // bit[31:24] force_skip_weight_3
 // bit[23:16] force_skip_weight_2
 // bit[15:08] force_skip_weight_1
 // bit[07:00] force_skip_weight_0
-#define ME_F_SKIP_WEIGHT                           ((0x1f54  << 2) + 0xff620000)
+#define ME_F_SKIP_WEIGHT ((0x1f54 << 2) + 0xff620000)
 // Merge when (
 //              (flex & me_merge_flex_en) |
 //              (big_sad & me_merge_sad_en)|
@@ -2409,22 +2409,22 @@
 // bit[23:18] me_merge_mv_diff_16
 // bit[17:12] me_merge_mv_diff_8
 // bit[11:0] me_merge_min_sad
-#define ME_MV_MERGE_CTL                            ((0x1f55  << 2) + 0xff620000)
+#define ME_MV_MERGE_CTL ((0x1f55 << 2) + 0xff620000)
 // bit[31:24] mv_step_weight_1
 // bit[23:16] mv_pre_weight_1
 // bit [15:0] mv_step_weight_0
 // bit[7:0]   mv_pre_weight_0
-#define ME_MV_WEIGHT_01                            ((0x1f56  << 2) + 0xff620000)
+#define ME_MV_WEIGHT_01 ((0x1f56 << 2) + 0xff620000)
 // bit[31:24] mv_step_weight_3 (mv_step_weight_1_2nd)
 // bit[23:16] mv_pre_weight_3 (mv_pre_weight_1_2nd)
 // bit[15:8]  mv_step_weight_2
 // bit[7:0]   mv_pre_weight_2
-#define ME_MV_WEIGHT_23                            ((0x1f57  << 2) + 0xff620000)
+#define ME_MV_WEIGHT_23 ((0x1f57 << 2) + 0xff620000)
 // bit[31:24] me_sad_range_inc_3
 // bit[23:16] me_sad_range_inc_2
 // bit[15:8] me_sad_range_inc_1
 // bit[7:0] me_sad_range_inc_0
-#define ME_SAD_RANGE_INC                           ((0x1f58  << 2) + 0xff620000)
+#define ME_SAD_RANGE_INC ((0x1f58 << 2) + 0xff620000)
 // bit[31:19]  reserved
 // bit[18]     sub_relative_any_1_en
 // bit[17]     sub_relative_any_2_en
@@ -2438,35 +2438,35 @@
 // bit[3:2]    Reserved
 // bit[1]      sub_merge_enable_16
 // bit[0]      sub_merge_enable_8
-#define ME_SUB_MERGE_CTL                           ((0x1f59  << 2) + 0xff620000)
+#define ME_SUB_MERGE_CTL ((0x1f59 << 2) + 0xff620000)
 // bit[31:28]  sub_ref_mv_diff_near
 // bit[27:24]  sub_ref_mv_diff_near_flex
 // bit[23:20]  sub_ref_mv_diff
 // bit[19:16]  sub_ref_mv_diff_flex
 // bit[15:8]   sub_ref_mv_near_weight
 // bit[7:0]    sub_ref_mv_weight
-#define ME_SUB_REF_MV_CTL                          ((0x1f5a  << 2) + 0xff620000)
+#define ME_SUB_REF_MV_CTL ((0x1f5a << 2) + 0xff620000)
 // bit[31:24]  sub_weight_max_sad
 // bit[23:16]  sub_any_range_sad
 // bit[15:8]   sub_any_min_sad
 // bit[7:0]    sub_any_max_sad
-#define ME_SUB_ANY_WEIGHT_SAD                      ((0x1f5b  << 2) + 0xff620000)
+#define ME_SUB_ANY_WEIGHT_SAD ((0x1f5b << 2) + 0xff620000)
 // bit[31:24]  sub_fix_sad
 // bit[23:16]  sub_fix_diff_sad
 // bit[15:8]   sub_sad_flex_adj
 // bit[7:0]    sub_big_non_flex_fix_sad
-#define ME_SUB_FIX_SAD                             ((0x1f5c  << 2) + 0xff620000)
+#define ME_SUB_FIX_SAD ((0x1f5c << 2) + 0xff620000)
 // bit[31:24]  sub_fix_min_sad
 // bit[23:16]  sub_fix_min_diff_sad
 // bit[15:8]   sub_fix_min_sad_2
 // bit[7:0]    sub_fix_min_diff_sad_2
-#define ME_SUB_FIX_MIN_SAD                         ((0x1f5d  << 2) + 0xff620000)
+#define ME_SUB_FIX_MIN_SAD ((0x1f5d << 2) + 0xff620000)
 // bit[31:24]  sub_snap_to_ref_max_sad
 // bit[23]     sub_snap_to_ref_non_flex
 // bit[22:16]  sub_snap_to_ref_mv_diff
 // bit[15:4]   sub_glitch_mv_sad
 // bit[3:0]    sub_glitch_mv_diff
-#define ME_SUB_SNAP_GLITCH                         ((0x1f5e  << 2) + 0xff620000)
+#define ME_SUB_SNAP_GLITCH ((0x1f5e << 2) + 0xff620000)
 // bit[31:20]  sad_act_limit
 // bit[19:8]   s_a_any_sad
 // bit[7]      Reserved
@@ -2476,10 +2476,10 @@
 // bit[2]      Reserved
 // bit[1]      sub_act_en_16
 // bit[0]      sub_act_en
-#define ME_SUB_ACT_CTL                             ((0x1f5f  << 2) + 0xff620000)
+#define ME_SUB_ACT_CTL ((0x1f5f << 2) + 0xff620000)
 // bit[31:16]  reserved
 // bit[15:0]   me_weight
-#define ME_WEIGHT                                  ((0x1f60  << 2) + 0xff620000)
+#define ME_WEIGHT ((0x1f60 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2488,7 +2488,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_0
 // bit[15:0] me_sad_0
-#define ME_SAD_0                                   ((0x1f61  << 2) + 0xff620000)
+#define ME_SAD_0 ((0x1f61 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2497,7 +2497,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_1
 // bit[15:0] me_sad_1
-#define ME_SAD_1                                   ((0x1f62  << 2) + 0xff620000)
+#define ME_SAD_1 ((0x1f62 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2506,7 +2506,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_2
 // bit[15:0] me_sad_2
-#define ME_SAD_2                                   ((0x1f63  << 2) + 0xff620000)
+#define ME_SAD_2 ((0x1f63 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2515,7 +2515,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_3
 // bit[15:0] me_sad_3
-#define ME_SAD_3                                   ((0x1f64  << 2) + 0xff620000)
+#define ME_SAD_3 ((0x1f64 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2523,7 +2523,7 @@
 // bit[21]  ie_sad_ready_0
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_0
-#define IE_SAD_0                                   ((0x1f65  << 2) + 0xff620000)
+#define IE_SAD_0 ((0x1f65 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2531,7 +2531,7 @@
 // bit[21]  ie_sad_ready_1
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_1
-#define IE_SAD_1                                   ((0x1f66  << 2) + 0xff620000)
+#define IE_SAD_1 ((0x1f66 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2539,7 +2539,7 @@
 // bit[21]  ie_sad_ready_2
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_2
-#define IE_SAD_2                                   ((0x1f67  << 2) + 0xff620000)
+#define IE_SAD_2 ((0x1f67 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -2547,18 +2547,18 @@
 // bit[21]  ie_sad_ready_3
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_3
-#define IE_SAD_3                                   ((0x1f68  << 2) + 0xff620000)
+#define IE_SAD_3 ((0x1f68 << 2) + 0xff620000)
 // bit[31]   enable_large_diff_16x8
 // bit[30]   enable_large_diff_8x16
 // bit[29:16] adv_mv_8x8_weight
 // bit[15:14] reserved
 // bit[13:0] adv_mv_4x4x4_weight
-#define ADV_MV_CTL0                                ((0x1f69  << 2) + 0xff620000)
+#define ADV_MV_CTL0 ((0x1f69 << 2) + 0xff620000)
 // bit[31:16] adv_mv_16x16_weight
 // bit[15]   enable_large_diff_16x16
 // bit[14:0] adv_mv_16_8_weight
-#define ADV_MV_CTL1                                ((0x1f6a  << 2) + 0xff620000)
-#define ADV_MV_CTL2                                ((0x1f6b  << 2) + 0xff620000)
+#define ADV_MV_CTL1 ((0x1f6a << 2) + 0xff620000)
+#define ADV_MV_CTL2 ((0x1f6b << 2) + 0xff620000)
 // bit[31]    v3_skip_enable
 // bit[30]    v3_step_1_weight_enable // for step1, will only use pre_weight for block0, only step_weight for block 1,2,3
 // bit[29]    v3_l2_skip_only_use_l2_sad // set to 1 may allow l1 maybe not skip
@@ -2566,7 +2566,7 @@
 // bit[27]    v3_ipred_type_enable
 // bit[25:12] force_skip_sad_1
 // bit[11:0]  force_skip_sad_0
-#define V3_SKIP_CONTROL                            ((0x1f6c  << 2) + 0xff620000)
+#define V3_SKIP_CONTROL ((0x1f6c << 2) + 0xff620000)
 // bit[18:16] top_ipred_type_count
 // bit[15:14] Reserved
 // bit[13:12] top_ipred_type_rd_idx
@@ -2577,48 +2577,48 @@
 // bit[5:4] top_mv_idx
 // bit[3] - left_mv_ready
 // bit[2:0] top_mv_ready
-#define V3_TOP_LEFT_CTL                            ((0x1f6d  << 2) + 0xff620000)
-#define V3_TOP_MV                                  ((0x1f6e  << 2) + 0xff620000)
-#define V3_LEFT_MV                                 ((0x1f6f  << 2) + 0xff620000)
+#define V3_TOP_LEFT_CTL ((0x1f6d << 2) + 0xff620000)
+#define V3_TOP_MV ((0x1f6e << 2) + 0xff620000)
+#define V3_LEFT_MV ((0x1f6f << 2) + 0xff620000)
 // bit[31:30] reserved
 // bit[29:16] v3_skip_weight_1
 // bit[15:12] reserved
 // bit[11:0]  v3_skip_weight_0
-#define V3_SKIP_WEIGHT                             ((0x1f70  << 2) + 0xff620000)
+#define V3_SKIP_WEIGHT ((0x1f70 << 2) + 0xff620000)
 // bit[31:28] reserved
 // bit[27:16] v3_l1_f_skip_max_sad
 // bit[15:12] reserved
 // bit[11:0]  v3_l1_skip_max_sad
-#define V3_L1_SKIP_MAX_SAD                         ((0x1f71  << 2) + 0xff620000)
+#define V3_L1_SKIP_MAX_SAD ((0x1f71 << 2) + 0xff620000)
 // bit[31:16] force_skip_sad_2
 // bit[15:0]  v3_skip_weight_2
-#define V3_L2_SKIP_WEIGHT                          ((0x1f72  << 2) + 0xff620000)
+#define V3_L2_SKIP_WEIGHT ((0x1f72 << 2) + 0xff620000)
 // bit[21:16] v3_mv_sad_table_addr 0-15 table_step_0
 // bit[11:0]  v3_mv_sad
-#define V3_MV_SAD_TABLE                            ((0x1f73  << 2) + 0xff620000)
+#define V3_MV_SAD_TABLE ((0x1f73 << 2) + 0xff620000)
 // [31:16] v3_ie_f_zero_sad_i16
 // [15:0]  v3_ie_f_zero_sad_i4
-#define V3_F_ZERO_CTL_0                            ((0x1f74  << 2) + 0xff620000)
+#define V3_F_ZERO_CTL_0 ((0x1f74 << 2) + 0xff620000)
 // [25]    v3_no_ver_when_top_zero_en
 // [24]    v3_no_hor_when_left_zero_en
 // [23:16] v3_max_I16_H_num    // 0 means no break
 // [15:0]  v3_me_f_zero_sad
-#define V3_F_ZERO_CTL_1                            ((0x1f75  << 2) + 0xff620000)
-#define V3_TOP_INTRA_INFO                          ((0x1f76  << 2) + 0xff620000)
-#define V3_LEFT_INTRA_INFO                         ((0x1f77  << 2) + 0xff620000)
+#define V3_F_ZERO_CTL_1 ((0x1f75 << 2) + 0xff620000)
+#define V3_TOP_INTRA_INFO ((0x1f76 << 2) + 0xff620000)
+#define V3_LEFT_INTRA_INFO ((0x1f77 << 2) + 0xff620000)
 // [31:24]  C_ipred_weight_H
 // [23:16]  C_ipred_weight_V
 // [15:8]   I4_ipred_weight_else
 // [7:0]    I4_ipred_weight_most
-#define V3_IPRED_TYPE_WEIGHT_0                     ((0x1f78  << 2) + 0xff620000)
+#define V3_IPRED_TYPE_WEIGHT_0 ((0x1f78 << 2) + 0xff620000)
 // [31:24]  I16_ipred_weight_DC
 // [23:16]  I16_ipred_weight_H
 // [15:8]   I16_ipred_weight_V
 // [7:0]    C_ipred_weight_DC
-#define V3_IPRED_TYPE_WEIGHT_1                     ((0x1f79  << 2) + 0xff620000)
+#define V3_IPRED_TYPE_WEIGHT_1 ((0x1f79 << 2) + 0xff620000)
 // [31:16]  v3_left_small_max_me_sad
 // [15:0]   v3_left_small_max_ie_sad
-#define V3_LEFT_SMALL_MAX_SAD                      ((0x1f7a  << 2) + 0xff620000)
+#define V3_LEFT_SMALL_MAX_SAD ((0x1f7a << 2) + 0xff620000)
 // (qr==7) & (qp==15) means force zero block
 // [31:26]  v4_force_q_r_intra
 // [25:20]  v4_force_q_r_inter
@@ -2626,17 +2626,17 @@
 // [18:16]  v4_force_qr_y
 // [15:12]  v4_force_qp_y
 // [11:0]   v4_force_skip_sad
-#define V4_FORCE_SKIP_CFG                          ((0x1f7b  << 2) + 0xff620000)
+#define V4_FORCE_SKIP_CFG ((0x1f7b << 2) + 0xff620000)
 // v5 Complexity // Y(256 pixel per MB) and C(128 pixel per MB)
 // For every 4x4 block, calculate average and Add abs(pixel-average) together
 // bit[31:16] v5_diff_sum_C
 // bit[15:0]  v5_diff_sum_Y
-#define V5_MB_DIFF_SUM                             ((0x1f7c  << 2) + 0xff620000)
+#define V5_MB_DIFF_SUM ((0x1f7c << 2) + 0xff620000)
 // bit[31:24] v5_small_diff_cnt_C
 // bit[23:16] v5_small_diff_C
 // bit[15:8]  v5_small_diff_cnt_Y
 // bit[7:0]   v5_small_diff_Y
-#define V5_SMALL_DIFF_CNT                          ((0x1f7d  << 2) + 0xff620000)
+#define V5_SMALL_DIFF_CNT ((0x1f7d << 2) + 0xff620000)
 // bit[31:29] Reserved
 // bit[28:24] v5_simple_block_cnt // 0 -15 Y 16-23 C
 // bit[23:20] v5_simple_pixel_cnt
@@ -2652,7 +2652,7 @@
 // bit[2] v5_simple_mb_intra_en
 // bit[1] v5_simple_mb_C_en
 // bit[0] v5_simple_mb_Y_en
-#define V5_SIMPLE_MB_CTL                           ((0x1f7e  << 2) + 0xff620000)
+#define V5_SIMPLE_MB_CTL ((0x1f7e << 2) + 0xff620000)
 // bit[31:28] v5_simple_dq_shift
 // bit[27:24] v5_simple_dq_6(-7 to +7)
 // bit[23:20] v5_simple_dq_5(-7 to +7)
@@ -2661,7 +2661,7 @@
 // bit[11:08] v5_simple_dq_2(-7 to +7)
 // bit[07:04] v5_simple_dq_1(-7 to +7)
 // bit[03:00] v5_simple_dq_0(-7 to +7)
-#define V5_SIMPLE_MB_DQUANT                        ((0x1f7f  << 2) + 0xff620000)
+#define V5_SIMPLE_MB_DQUANT ((0x1f7f << 2) + 0xff620000)
 // bit[31:28] v5_simple_me_weight_shift
 // bit[27:24] v5_simple_me_weight_6(-7 to +7)
 // bit[23:20] v5_simple_me_weight_5(-7 to +7)
@@ -2670,7 +2670,7 @@
 // bit[11:08] v5_simple_me_weight_2(-7 to +7)
 // bit[07:04] v5_simple_me_weight_1(-7 to +7)
 // bit[03:00] v5_simple_me_weight_0(-7 to +7)
-#define V5_SIMPLE_MB_ME_WEIGHT                     ((0x1f80  << 2) + 0xff620000)
+#define V5_SIMPLE_MB_ME_WEIGHT ((0x1f80 << 2) + 0xff620000)
 //
 // Closing file:  qdct_regs.h
 //
@@ -2693,20 +2693,20 @@
 //`define HCODEC_MC_HALF_PEL_TWO     8'h04
 //`define HCODEC_POWER_CTL_MC        8'h05
 //
-//`define HCODEC_MC_CMD			    8'h06
-//`define HCODEC_MC_CTRL0			8'h07
-//`define HCODEC_MC_PIC_W_H  	    8'h08
-//`define HCODEC_MC_STATUS0		    8'h09
-//`define HCODEC_MC_STATUS1		    8'h0a
-//`define HCODEC_MC_CTRL1			8'h0b
-//`define HCODEC_MC_MIX_RATIO0	    8'h0c
-//`define HCODEC_MC_MIX_RATIO1	    8'h0d
-//`define HCODEC_MC_DP_MB_XY  	    8'h0e     //read only
-//`define HCODEC_MC_OM_MB_XY  	    8'h0f     //read only
+//`define HCODEC_MC_CMD             8'h06
+//`define HCODEC_MC_CTRL0           8'h07
+//`define HCODEC_MC_PIC_W_H         8'h08
+//`define HCODEC_MC_STATUS0         8'h09
+//`define HCODEC_MC_STATUS1         8'h0a
+//`define HCODEC_MC_CTRL1           8'h0b
+//`define HCODEC_MC_MIX_RATIO0      8'h0c
+//`define HCODEC_MC_MIX_RATIO1      8'h0d
+//`define HCODEC_MC_DP_MB_XY        8'h0e     //read only
+//`define HCODEC_MC_OM_MB_XY        8'h0f     //read only
 //
-//`define HCODEC_MC_MPORT_CTRL  	    8'h40
-//`define HCODEC_MC_MPORT_DAT  	    8'h41
-//`define HCODEC_MC_WT_PRED_CTRL  	8'h42
+//`define HCODEC_MC_MPORT_CTRL      8'h40
+//`define HCODEC_MC_MPORT_DAT       8'h41
+//`define HCODEC_MC_WT_PRED_CTRL    8'h42
 //`define HCODEC_MC_MBBOT_ST_EVEN_ADDR 8'h44
 //`define HCODEC_MC_MBBOT_ST_ODD_ADDR 8'h45
 //`define HCODEC_MC_DPDN_MB_XY        8'h46    //read only
@@ -3571,11 +3571,11 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HEVC_ASSIST_CBUS_BASE = 0x00
 // -----------------------------------------------
-#define HEVC_ASSIST_AFIFO_CTRL                     ((0x3001  << 2) + 0xff620000)
-#define HEVC_ASSIST_AFIFO_CTRL1                    ((0x3002  << 2) + 0xff620000)
-#define HEVC_ASSIST_GCLK_EN                        ((0x3003  << 2) + 0xff620000)
-#define HEVC_ASSIST_SW_RESET                       ((0x3004  << 2) + 0xff620000)
-#define HEVC_ASSIST_AFIFO_CTRL2                    ((0x3005  << 2) + 0xff620000)
+#define HEVC_ASSIST_AFIFO_CTRL ((0x3001 << 2) + 0xff620000)
+#define HEVC_ASSIST_AFIFO_CTRL1 ((0x3002 << 2) + 0xff620000)
+#define HEVC_ASSIST_GCLK_EN ((0x3003 << 2) + 0xff620000)
+#define HEVC_ASSIST_SW_RESET ((0x3004 << 2) + 0xff620000)
+#define HEVC_ASSIST_AFIFO_CTRL2 ((0x3005 << 2) + 0xff620000)
 // bit[31:28] - hed_wr_id (Write Only)
 // bit[31:16] - hed_fb_wr_total_page_num (Read Only)
 // bit[15:12] - hed_wr_map_addr_id
@@ -3585,7 +3585,7 @@
 // bit[6:2]   - wr_entry_pending_num(Read Only)
 // bit[1]     - hed_fb_wr_addr_auto_rd
 // bit[0]     - hed_fb_wr_en
-#define HEVC_ASSIST_HED_FB_W_CTL                   ((0x3006  << 2) + 0xff620000)
+#define HEVC_ASSIST_HED_FB_W_CTL ((0x3006 << 2) + 0xff620000)
 // bit[31:28] - hed_rd_id (Write Only)
 // bit[27:16] - hed_rd_map_auto_halt_num (Write Only)
 // bit[31:16] - hed_fb_rd_total_page_num (Read Only)
@@ -3596,7 +3596,7 @@
 // bit[6:2]   - rd_entry_pending_num
 // bit[1]     - hed_fb_rd_addr_auto_rd
 // bit[0]     - hed_fb_rd_en
-#define HEVC_ASSIST_HED_FB_R_CTL                   ((0x3007  << 2) + 0xff620000)
+#define HEVC_ASSIST_HED_FB_R_CTL ((0x3007 << 2) + 0xff620000)
 // WRITE
 // bit[31] - heb_fb_page_addr_target 0-wr_addr, 1-rd_addr
 // bit[30:20] - Reserved
@@ -3614,10 +3614,10 @@
 // bit[15:14] - hed_fb_write_status
 // bit[13:7] - hed_rdrsp_count
 // bit[6:0]  - hed_wrrsp_count
-#define HEVC_ASSIST_HED_FB_ADDR                    ((0x3008  << 2) + 0xff620000)
-#define HEVC_ASSIST_MMU_MAP_ADDR                   ((0x3009  << 2) + 0xff620000)
-#define HEVC_ASSIST_FB_MMU_MAP_ADDR                ((0x300a  << 2) + 0xff620000)
-#define HEVC_ASSIST_FBD_MMU_MAP_ADDR               ((0x300b  << 2) + 0xff620000)
+#define HEVC_ASSIST_HED_FB_ADDR ((0x3008 << 2) + 0xff620000)
+#define HEVC_ASSIST_MMU_MAP_ADDR ((0x3009 << 2) + 0xff620000)
+#define HEVC_ASSIST_FB_MMU_MAP_ADDR ((0x300a << 2) + 0xff620000)
+#define HEVC_ASSIST_FBD_MMU_MAP_ADDR ((0x300b << 2) + 0xff620000)
 // bit[31:20] -- fb_read_lcu_y // READ only
 // bit[19:8]  -- fb_read_lcu_x // READ only
 // bit[7]     -- fb_read_lcu_latch
@@ -3627,64 +3627,64 @@
 // bit[2]  -- fb_read_vp9_enable
 // bit[1]  -- fb_avs2_enable
 // bit[0]  -- fb_vp9_enable
-#define HEVC_ASSIST_HED_FB_CTL                     ((0x300c  << 2) + 0xff620000)
+#define HEVC_ASSIST_HED_FB_CTL ((0x300c << 2) + 0xff620000)
 // [31:16] height
 // [15:0] width
-#define HEVC_ASSIST_PIC_SIZE_FB_READ               ((0x300d  << 2) + 0xff620000)
-#define HEVC_ASSIST_MMU_MAP_ADDR2                  ((0x300e  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT0                      ((0x3025  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT1                      ((0x3026  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT2                      ((0x3027  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT3                      ((0x3028  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT4                      ((0x3029  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT5                      ((0x302a  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT6                      ((0x302b  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT7                      ((0x302c  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT8                      ((0x302d  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INT9                      ((0x302e  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTA                      ((0x302f  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTB                      ((0x3030  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTC                      ((0x3031  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTD                      ((0x3032  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTE                      ((0x3033  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR1_INTF                      ((0x3034  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT0                      ((0x3035  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT1                      ((0x3036  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT2                      ((0x3037  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT3                      ((0x3038  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT4                      ((0x3039  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT5                      ((0x303a  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT6                      ((0x303b  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT7                      ((0x303c  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT8                      ((0x303d  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INT9                      ((0x303e  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTA                      ((0x303f  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTB                      ((0x3040  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTC                      ((0x3041  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTD                      ((0x3042  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTE                      ((0x3043  << 2) + 0xff620000)
-#define HEVC_ASSIST_AMR2_INTF                      ((0x3044  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBX_SSEL                       ((0x3045  << 2) + 0xff620000)
-#define HEVC_ASSIST_TIMER0_LO                      ((0x3060  << 2) + 0xff620000)
-#define HEVC_ASSIST_TIMER0_HI                      ((0x3061  << 2) + 0xff620000)
-#define HEVC_ASSIST_TIMER1_LO                      ((0x3062  << 2) + 0xff620000)
-#define HEVC_ASSIST_TIMER1_HI                      ((0x3063  << 2) + 0xff620000)
-#define HEVC_ASSIST_DMA_INT                        ((0x3064  << 2) + 0xff620000)
-#define HEVC_ASSIST_DMA_INT_MSK                    ((0x3065  << 2) + 0xff620000)
-#define HEVC_ASSIST_DMA_INT2                       ((0x3066  << 2) + 0xff620000)
-#define HEVC_ASSIST_DMA_INT_MSK2                   ((0x3067  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX0_IRQ_REG                  ((0x3070  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX0_CLR_REG                  ((0x3071  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX0_MASK                     ((0x3072  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX0_FIQ_SEL                  ((0x3073  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX1_IRQ_REG                  ((0x3074  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX1_CLR_REG                  ((0x3075  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX1_MASK                     ((0x3076  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX1_FIQ_SEL                  ((0x3077  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX2_IRQ_REG                  ((0x3078  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX2_CLR_REG                  ((0x3079  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX2_MASK                     ((0x307a  << 2) + 0xff620000)
-#define HEVC_ASSIST_MBOX2_FIQ_SEL                  ((0x307b  << 2) + 0xff620000)
+#define HEVC_ASSIST_PIC_SIZE_FB_READ ((0x300d << 2) + 0xff620000)
+#define HEVC_ASSIST_MMU_MAP_ADDR2 ((0x300e << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT0 ((0x3025 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT1 ((0x3026 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT2 ((0x3027 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT3 ((0x3028 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT4 ((0x3029 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT5 ((0x302a << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT6 ((0x302b << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT7 ((0x302c << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT8 ((0x302d << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INT9 ((0x302e << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTA ((0x302f << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTB ((0x3030 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTC ((0x3031 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTD ((0x3032 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTE ((0x3033 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR1_INTF ((0x3034 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT0 ((0x3035 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT1 ((0x3036 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT2 ((0x3037 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT3 ((0x3038 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT4 ((0x3039 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT5 ((0x303a << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT6 ((0x303b << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT7 ((0x303c << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT8 ((0x303d << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INT9 ((0x303e << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTA ((0x303f << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTB ((0x3040 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTC ((0x3041 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTD ((0x3042 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTE ((0x3043 << 2) + 0xff620000)
+#define HEVC_ASSIST_AMR2_INTF ((0x3044 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBX_SSEL ((0x3045 << 2) + 0xff620000)
+#define HEVC_ASSIST_TIMER0_LO ((0x3060 << 2) + 0xff620000)
+#define HEVC_ASSIST_TIMER0_HI ((0x3061 << 2) + 0xff620000)
+#define HEVC_ASSIST_TIMER1_LO ((0x3062 << 2) + 0xff620000)
+#define HEVC_ASSIST_TIMER1_HI ((0x3063 << 2) + 0xff620000)
+#define HEVC_ASSIST_DMA_INT ((0x3064 << 2) + 0xff620000)
+#define HEVC_ASSIST_DMA_INT_MSK ((0x3065 << 2) + 0xff620000)
+#define HEVC_ASSIST_DMA_INT2 ((0x3066 << 2) + 0xff620000)
+#define HEVC_ASSIST_DMA_INT_MSK2 ((0x3067 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX0_IRQ_REG ((0x3070 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX0_CLR_REG ((0x3071 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX0_MASK ((0x3072 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX0_FIQ_SEL ((0x3073 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX1_IRQ_REG ((0x3074 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX1_CLR_REG ((0x3075 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX1_MASK ((0x3076 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX1_FIQ_SEL ((0x3077 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX2_IRQ_REG ((0x3078 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX2_CLR_REG ((0x3079 << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX2_MASK ((0x307a << 2) + 0xff620000)
+#define HEVC_ASSIST_MBOX2_FIQ_SEL ((0x307b << 2) + 0xff620000)
 // bit[31:24] - read request
 // bit[23:16] - write request
 // bit[15] - disable_aml_axi_clk_gating_b
@@ -3696,7 +3696,7 @@
 // bit[5] - aw_urgent_out_en
 // bit[4] - ar_urgent_out_en
 // bit[3:0] - arb_switch_cnt
-#define HEVC_ASSIST_AXI_CTRL                       ((0x307c  << 2) + 0xff620000)
+#define HEVC_ASSIST_AXI_CTRL ((0x307c << 2) + 0xff620000)
 // bit[31:24] - read arb result
 // bit[23:16] - write arb result
 // bit[15:12] - read_ar_cnt
@@ -3706,11 +3706,11 @@
 // bit[5] - awvalid_axi_s0
 // bit[4] - awready_axi_s0
 // bit[3:0] - write_fifo_cnt
-#define HEVC_ASSIST_AXI_STATUS                     ((0x307d  << 2) + 0xff620000)
+#define HEVC_ASSIST_AXI_STATUS ((0x307d << 2) + 0xff620000)
 // bit[31:24] - read request b
 // bit[23:16] - write request b
 // bit[15:0] - Reserved
-#define HEVC_ASSIST_AXI_STATUS2_HI                 ((0x307e  << 2) + 0xff620000)
+#define HEVC_ASSIST_AXI_STATUS2_HI ((0x307e << 2) + 0xff620000)
 // bit[31:24] - read arb result b
 // bit[23:16] - write arb result b
 // bit[15:12] - read_ar_cnt b
@@ -3720,31 +3720,31 @@
 // bit[5] - awvalid_axi_s0 b
 // bit[4] - awready_axi_s0 b
 // bit[3:0] - write_fifo_cnt b
-#define HEVC_ASSIST_AXI_STATUS2_LO                 ((0x307f  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_0                      ((0x30c0  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_1                      ((0x30c1  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_2                      ((0x30c2  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_3                      ((0x30c3  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_4                      ((0x30c4  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_5                      ((0x30c5  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_6                      ((0x30c6  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_7                      ((0x30c7  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_8                      ((0x30c8  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_9                      ((0x30c9  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_A                      ((0x30ca  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_B                      ((0x30cb  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_C                      ((0x30cc  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_D                      ((0x30cd  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_E                      ((0x30ce  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_F                      ((0x30cf  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_G                      ((0x30d0  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_H                      ((0x30d1  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_I                      ((0x30d2  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_J                      ((0x30d3  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_K                      ((0x30d4  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_L                      ((0x30d5  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_M                      ((0x30d6  << 2) + 0xff620000)
-#define HEVC_ASSIST_SCRATCH_N                      ((0x30d7  << 2) + 0xff620000)
+#define HEVC_ASSIST_AXI_STATUS2_LO ((0x307f << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_0 ((0x30c0 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_1 ((0x30c1 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_2 ((0x30c2 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_3 ((0x30c3 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_4 ((0x30c4 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_5 ((0x30c5 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_6 ((0x30c6 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_7 ((0x30c7 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_8 ((0x30c8 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_9 ((0x30c9 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_A ((0x30ca << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_B ((0x30cb << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_C ((0x30cc << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_D ((0x30cd << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_E ((0x30ce << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_F ((0x30cf << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_G ((0x30d0 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_H ((0x30d1 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_I ((0x30d2 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_J ((0x30d3 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_K ((0x30d4 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_L ((0x30d5 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_M ((0x30d6 << 2) + 0xff620000)
+#define HEVC_ASSIST_SCRATCH_N ((0x30d7 << 2) + 0xff620000)
 //------------------------------------------------------------------------------
 // HEVC_ASSIST module level register offset
 // Same as VDEC/HCODEC to avoid confusing software guy
@@ -3762,7 +3762,7 @@
 // CBUS_BASE:  DOS_HEVC_PARSER_CBUS_BASE = 0x01
 // -----------------------------------------------
 // [31:0] After reset version, can be used for test scratch register
-#define HEVC_PARSER_VERSION                        ((0x3100  << 2) + 0xff620000)
+#define HEVC_PARSER_VERSION ((0x3100 << 2) + 0xff620000)
 // [31:16] - axi_setting
 // [15]    - disable_stream_clock_gating
 // [14]    - wstrb_set
@@ -3772,14 +3772,14 @@
 // [2]     - use_parser_vbuf2_wp
 // [1]     - stream_fetch_busy - Read Only
 // [0]     - stream_fetch_enable
-#define HEVC_STREAM_CONTROL                        ((0x3101  << 2) + 0xff620000)
-#define HEVC_STREAM_START_ADDR                     ((0x3102  << 2) + 0xff620000)
-#define HEVC_STREAM_END_ADDR                       ((0x3103  << 2) + 0xff620000)
+#define HEVC_STREAM_CONTROL ((0x3101 << 2) + 0xff620000)
+#define HEVC_STREAM_START_ADDR ((0x3102 << 2) + 0xff620000)
+#define HEVC_STREAM_END_ADDR ((0x3103 << 2) + 0xff620000)
 // SW stream_buffer_wr_ptr
-#define HEVC_STREAM_WR_PTR                         ((0x3104  << 2) + 0xff620000)
-#define HEVC_STREAM_RD_PTR                         ((0x3105  << 2) + 0xff620000)
+#define HEVC_STREAM_WR_PTR ((0x3104 << 2) + 0xff620000)
+#define HEVC_STREAM_RD_PTR ((0x3105 << 2) + 0xff620000)
 //[31:0] stream_buffer_level - read only
-#define HEVC_STREAM_LEVEL                          ((0x3106  << 2) + 0xff620000)
+#define HEVC_STREAM_LEVEL ((0x3106 << 2) + 0xff620000)
 // [31:29] stream_buffer_hole 256*(4^0) bytes
 // [28:23] stream_fifo_hole
 // [22:16] stream_fifo_level
@@ -3787,7 +3787,7 @@
 // [14:8]  stream_fifo_wr_ptr
 // [7]     stream_fifo_rd_ptr_update_en
 // [6:0]   stream_fifo_rd_ptr
-#define HEVC_STREAM_FIFO_CTL                       ((0x3107  << 2) + 0xff620000)
+#define HEVC_STREAM_FIFO_CTL ((0x3107 << 2) + 0xff620000)
 // [31:26] - Reserved
 // [25]    - data_length_protect_lt_8
 // [24]    - align_to_emu_buffer // for AVS
@@ -3805,11 +3805,11 @@
 // [3]     - emulation_auto_on_startcode(Default : 0)
 // [2:1]   - start_code_length_sub_1(Default : 2)
 // [0]     - stream_shift_enable(Default : 0)
-#define HEVC_SHIFT_CONTROL                         ((0x3108  << 2) + 0xff620000)
+#define HEVC_SHIFT_CONTROL ((0x3108 << 2) + 0xff620000)
 // [31:0]  - max 4-bytes start code (Default : 0x00000100)
-#define HEVC_SHIFT_STARTCODE                       ((0x3109  << 2) + 0xff620000)
+#define HEVC_SHIFT_STARTCODE ((0x3109 << 2) + 0xff620000)
 // [31:0]  - max 4-bytes emulate code (Default : 0x00000300)
-#define HEVC_SHIFT_EMULATECODE                     ((0x310a  << 2) + 0xff620000)
+#define HEVC_SHIFT_EMULATECODE ((0x310a << 2) + 0xff620000)
 // Read
 // shift_buffer_ready,  // 31
 // stream_fifo_ready,   // 30
@@ -3829,11 +3829,11 @@
 // [2]     - startcode_searching
 // [1]     - emulation_check_on
 // [0]     - startcode_check_on
-#define HEVC_SHIFT_STATUS                          ((0x310b  << 2) + 0xff620000)
+#define HEVC_SHIFT_STATUS ((0x310b << 2) + 0xff620000)
 // [31:0] hevc_shifted_data - read only
-#define HEVC_SHIFTED_DATA                          ((0x310c  << 2) + 0xff620000)
+#define HEVC_SHIFTED_DATA ((0x310c << 2) + 0xff620000)
 // [31:0] shift_byte_count[31:0]
-#define HEVC_SHIFT_BYTE_COUNT                      ((0x310d  << 2) + 0xff620000)
+#define HEVC_SHIFT_BYTE_COUNT ((0x310d << 2) + 0xff620000)
 // [31:28] - shift_byte_count[35:32] -- READ
 // [27:20] - element_read_data[31:24] -- READ
 // [31:16] - av1_element_n
@@ -3847,11 +3847,11 @@
 // [8]     - start_element_read
 // [7]     - shift_busy
 // [6:0]   - shift_bits
-#define HEVC_SHIFT_COMMAND                         ((0x310e  << 2) + 0xff620000)
+#define HEVC_SHIFT_COMMAND ((0x310e << 2) + 0xff620000)
 // 31:8    - element_read_data[23:0]
 //  7:2    - element_read_length
 //  1:0    - element_read_state
-#define HEVC_ELEMENT_RESULT                        ((0x310f  << 2) + 0xff620000)
+#define HEVC_ELEMENT_RESULT ((0x310f << 2) + 0xff620000)
 // [31:16] - cabac_buffer
 // [15]    - cabac_buffer_init
 // [14]    - cabac_context_init
@@ -3872,7 +3872,7 @@
 // [2]     - VP9_init_partition
 // [1]     - VP9_key_frame
 // [0]     - cabac_enable(Default : 0)
-#define HEVC_CABAC_CONTROL                         ((0x3110  << 2) + 0xff620000)
+#define HEVC_CABAC_CONTROL ((0x3110 << 2) + 0xff620000)
 // [31:25] - chromaQPOffset_U
 // [24:18] - chromaQPOffset_V
 // [17:16] - MaxTrSize 0-4x4, 1-8x8, 2-16x16, 3-32x32
@@ -3894,15 +3894,15 @@
 // [8]     - slice_quant[6]
 // [7:2]   - slice_quant
 // [1:0]   - slice_type
-#define HEVC_PARSER_SLICE_INFO                     ((0x3111  << 2) + 0xff620000)
+#define HEVC_PARSER_SLICE_INFO ((0x3111 << 2) + 0xff620000)
 // bit[16]  - 0:command, 1:address(will auto increase when write command)
 // bit[15:0]- command or addr
-#define HEVC_PARSER_CMD_WRITE                      ((0x3112  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_WRITE ((0x3112 << 2) + 0xff620000)
 // [31:16] - parser_free_clock_enable
 // [15]    - disable_parser_core_clock_gating
 // [14:1]  - Reserved
 // [0]     - parser_core_enable(Default : 0)
-#define HEVC_PARSER_CORE_CONTROL                   ((0x3113  << 2) + 0xff620000)
+#define HEVC_PARSER_CORE_CONTROL ((0x3113 << 2) + 0xff620000)
 // [31:16] - pre_parser_cmd
 // [15]    - start_cmd_fetch/fetch_busy
 // [14]    - parser_cmd_ready
@@ -3910,11 +3910,11 @@
 // [12]    - do_not_wait_if_busy
 // [11:8]  - cmd_fetch_status // Read-only
 // [7:0]   - cmd_fetch_addr
-#define HEVC_PARSER_CMD_FETCH                      ((0x3114  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_FETCH ((0x3114 << 2) + 0xff620000)
 // [31:16] - parser_cmd
 // [9:5]   - parser_function
 // [4:0]   - cmd_status
-#define HEVC_PARSER_CMD_STATUS                     ((0x3115  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_STATUS ((0x3115 << 2) + 0xff620000)
 // [31]    - end_of_picture
 // [30]    - uiLeft
 // [39]    - uiTop
@@ -3922,7 +3922,7 @@
 // [27:24] - reserved
 // [23:12] - uiLin
 // [11:0]  - uiCol
-#define HEVC_PARSER_LCU_INFO                       ((0x3116  << 2) + 0xff620000)
+#define HEVC_PARSER_LCU_INFO ((0x3116 << 2) + 0xff620000)
 // 29:28 - min_cu_size_qp_delta
 // 27    - cu_qp_delta_enabled_flag
 // 26    - amp_enabled_flag
@@ -3936,11 +3936,11 @@
 // 2     - constrained_intra_pred_flag
 // 1     - transform_skip_enabled_flag
 // 0     - sign_data_hiding_flag
-#define HEVC_PARSER_HEADER_INFO                    ((0x3117  << 2) + 0xff620000)
-#define HEVC_PARSER_RESULT_0                       ((0x3118  << 2) + 0xff620000)
-#define HEVC_PARSER_RESULT_1                       ((0x3119  << 2) + 0xff620000)
-#define HEVC_PARSER_RESULT_2                       ((0x311a  << 2) + 0xff620000)
-#define HEVC_PARSER_RESULT_3                       ((0x311b  << 2) + 0xff620000)
+#define HEVC_PARSER_HEADER_INFO ((0x3117 << 2) + 0xff620000)
+#define HEVC_PARSER_RESULT_0 ((0x3118 << 2) + 0xff620000)
+#define HEVC_PARSER_RESULT_1 ((0x3119 << 2) + 0xff620000)
+#define HEVC_PARSER_RESULT_2 ((0x311a << 2) + 0xff620000)
+#define HEVC_PARSER_RESULT_3 ((0x311b << 2) + 0xff620000)
 // For HEVC
 // bit[31:24] - quant[47:40]
 // bit[23:16] - quant[39:32]
@@ -3952,14 +3952,14 @@
 // bit[6:3]   - SplitFlag_8
 // bit[2:1]   - SplitFlag_16
 // bit[0]     - SplitFlag_32
-#define HEVC_CABAC_TOP_INFO                        ((0x311c  << 2) + 0xff620000)
+#define HEVC_CABAC_TOP_INFO ((0x311c << 2) + 0xff620000)
 // For HEVC
 // bit[31:0]  - quant[31:0]
 // For VP9
 // bit [31:24] - vp9_top_eob_v
 // bit [23:16] - vp9_top_eob_u
 // bit [15:0] - vp9_top_eob_y
-#define HEVC_CABAC_TOP_INFO_2                      ((0x311d  << 2) + 0xff620000)
+#define HEVC_CABAC_TOP_INFO_2 ((0x311d << 2) + 0xff620000)
 // For HEVC
 // bit[31:24] - quant[47:40]
 // bit[23:16] - quant[39:32]
@@ -3971,14 +3971,14 @@
 // bit[6:3]   - SplitFlag_8
 // bit[2:1]   - SplitFlag_16
 // bit[0]     - SplitFlag_32
-#define HEVC_CABAC_LEFT_INFO                       ((0x311e  << 2) + 0xff620000)
+#define HEVC_CABAC_LEFT_INFO ((0x311e << 2) + 0xff620000)
 // For HEVC
 // bit[31:0]  - quant[31:0]
 // For VP9
 // bit [31:24] - vp9_left_eob_v
 // bit [23:16] - vp9_left_eob_u
 // bit [15:0] - vp9_left_eob_y
-#define HEVC_CABAC_LEFT_INFO_2                     ((0x311f  << 2) + 0xff620000)
+#define HEVC_CABAC_LEFT_INFO_2 ((0x311f << 2) + 0xff620000)
 // [31:29] - stream_buffer_empty_int_ctl (32bytes - 4k bytes) (default : 4 : 512 bytes interrupt)
 // [28:26] - stream_fifo_empty_int_ctl (0 - 128)(default : 0 - 0 byte interrupt)
 // [25]    - stream_buffer_empty_int_cpu_enable
@@ -3997,14 +3997,14 @@
 // [2]     - parser_int_cpu_level (default : 0(pulse))
 // [1]     - parser_int_amrisc_level (default : 0(pulse))
 // [0]     - parser_int_enable(Default : 0)
-#define HEVC_PARSER_INT_CONTROL                    ((0x3120  << 2) + 0xff620000)
+#define HEVC_PARSER_INT_CONTROL ((0x3120 << 2) + 0xff620000)
 // [7]     - stream_empty_int_cpu
 // [6]     - stream_empty_int_amrisc
 // [3]     - fed_fb_slice_done_int
 // [2]     - dec_done_int
 // [1]     - cmd_done_int
 // [0]     - startcode_found_int
-#define HEVC_PARSER_INT_STATUS                     ((0x3121  << 2) + 0xff620000)
+#define HEVC_PARSER_INT_STATUS ((0x3121 << 2) + 0xff620000)
 // [31]    - parser_mpred_if_busy  -- Read Only
 // [10]    - disable_parser_alf_if_clock_gating
 // [9]     - parser_alf_if_en
@@ -4017,15 +4017,15 @@
 // [2]     - parser_mpred_if_en
 // [1]     - disable_parser_scaler_if_clock_gating
 // [0]     - parser_scaler_if_en
-#define HEVC_PARSER_IF_CONTROL                     ((0x3122  << 2) + 0xff620000)
+#define HEVC_PARSER_IF_CONTROL ((0x3122 << 2) + 0xff620000)
 // [31:16] PicHeightInLumaSamples
 // [15:0]  PicWidthInLumaSamples
-#define HEVC_PARSER_PICTURE_SIZE                   ((0x3123  << 2) + 0xff620000)
+#define HEVC_PARSER_PICTURE_SIZE ((0x3123 << 2) + 0xff620000)
 // [31]    - start_lcu_mpred_cmd
 // [30]    - lcu_decoding_start
 // [29]    - do_not_wait_if_busy
 // [23:0]  - lcu_idx
-#define HEVC_PARSER_LCU_START                      ((0x3124  << 2) + 0xff620000)
+#define HEVC_PARSER_LCU_START ((0x3124 << 2) + 0xff620000)
 // [31:30] - bit_depth_chroma_minus8
 // [29:24] - MAX_QP
 // [23:20] - qpBdOffsetC
@@ -4037,7 +4037,7 @@
 // [3:2]   - bit_depth_luma_minus8
 // [1]     - enable_negtive_quant
 // [0]     - pcm_enabled_flag
-#define HEVC_PARSER_HEADER_INFO2                   ((0x3125  << 2) + 0xff620000)
+#define HEVC_PARSER_HEADER_INFO2 ((0x3125 << 2) + 0xff620000)
 // Read Only
 // bit[23]    - 1'b1
 // bit[22]    - Reserved
@@ -4048,21 +4048,21 @@
 // bit[7]     - 1'b1
 // bit[6]     - Reserved
 // bit[5:0]   - quant_Y
-#define HEVC_PARSER_QUANT_READ                     ((0x3126  << 2) + 0xff620000)
-#define HEVC_PARSER_RESERVED_27                    ((0x3127  << 2) + 0xff620000)
+#define HEVC_PARSER_QUANT_READ ((0x3126 << 2) + 0xff620000)
+#define HEVC_PARSER_RESERVED_27 ((0x3127 << 2) + 0xff620000)
 // bit[15:8]  - skip_addr_SaoOffData
 // bit[7:0]   - skip_addr_SaoMerge
-#define HEVC_PARSER_CMD_SKIP_0                     ((0x3128  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_SKIP_0 ((0x3128 << 2) + 0xff620000)
 // bit[31:24] - skip_point_coding_unit_slice_type_RET
 // bit[23:16] - skip_point_coding_unit_slice_type_B
 // bit[15:8]  - skip_point_coding_unit_slice_type_P
 // bit[7:0]   - skip_point_coding_unit_slice_type_I
-#define HEVC_PARSER_CMD_SKIP_1                     ((0x3129  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_SKIP_1 ((0x3129 << 2) + 0xff620000)
 // bit[31:24] - reserved
 // bit[23:16] - skip_point_coding_unit_pred_mode_RET
 // bit[15:8]  - skip_point_coding_unit_pred_mode_INTER
 // bit[7:0]   - skip_point_coding_unit_pred_mode_INTRA
-#define HEVC_PARSER_CMD_SKIP_2                     ((0x312a  << 2) + 0xff620000)
+#define HEVC_PARSER_CMD_SKIP_2 ((0x312a << 2) + 0xff620000)
 // Write :
 // [24:16] context_addr for dec_Bin
 // [15:0]  parser_cmd
@@ -4076,29 +4076,29 @@
 // cmd_status,                    // 20:16
 // cabac_manual_data              // 15:0
 //
-#define HEVC_PARSER_MANUAL_CMD                     ((0x312b  << 2) + 0xff620000)
-// bit [12:0] - Read adress :
+#define HEVC_PARSER_MANUAL_CMD ((0x312b << 2) + 0xff620000)
+// bit [12:0] - Read address :
 //          address 0-255 stream_fifo (128x64)
 //          address 256-319 context_mem (256x7)
 //          address 512-639 parser_cmd_mem (256x16)
 //          address 0x400-0xfff vp9_count_mem(768x96)
 //          address 0x1000-0x11ff vp9_prob_mem(512x32)
-#define HEVC_PARSER_MEM_RD_ADDR                    ((0x312c  << 2) + 0xff620000)
-// bit [9:0] - Write adress :
+#define HEVC_PARSER_MEM_RD_ADDR ((0x312c << 2) + 0xff620000)
+// bit [9:0] - Write address :
 //          address 0-255 stream_fifo (128x64)
 //          address 512-639 parser_cmd_mem (256x16)
 //          address 0x400-0xfff vp9_count_mem(768x96)
 //          address 0x1000-0x11ff vp9_prob_mem(512x32)
-#define HEVC_PARSER_MEM_WR_ADDR                    ((0x312d  << 2) + 0xff620000)
+#define HEVC_PARSER_MEM_WR_ADDR ((0x312d << 2) + 0xff620000)
 // bit[31:0] read/write data
-#define HEVC_PARSER_MEM_RW_DATA                    ((0x312e  << 2) + 0xff620000)
+#define HEVC_PARSER_MEM_RW_DATA ((0x312e << 2) + 0xff620000)
 // [31:20] sao_lcu_x
 // [19:8]  sao_lcu_y
 // [7] sao_lcu_xy_update
 // [6:2] reserved
 // [1] sao_wait_up_read
 // [0] sao_wait_write
-#define HEVC_SAO_IF_STATUS                         ((0x3130  << 2) + 0xff620000)
+#define HEVC_SAO_IF_STATUS ((0x3130 << 2) + 0xff620000)
 // Y_offset_3,    // 31:26
 // Y_offset_2,    // 25:20
 // Y_offset_1,    // 19:14
@@ -4106,10 +4106,10 @@
 // Y_typeAuxInfo[3:0], // 7:4
 // Y_typeIdc,     // 3:1 [0, 1, 2, 3]-EO, [4,5]-BO+Y_typeAuxInfo[4]
 // Y_modelIdc     // 0
-#define HEVC_SAO_IF_DATA_Y                         ((0x3131  << 2) + 0xff620000)
-#define HEVC_SAO_IF_DATA_U                         ((0x3132  << 2) + 0xff620000)
-#define HEVC_SAO_IF_DATA_V                         ((0x3133  << 2) + 0xff620000)
-#define HEVC_STREAM_SWAP_ADDR                      ((0x3134  << 2) + 0xff620000)
+#define HEVC_SAO_IF_DATA_Y ((0x3131 << 2) + 0xff620000)
+#define HEVC_SAO_IF_DATA_U ((0x3132 << 2) + 0xff620000)
+#define HEVC_SAO_IF_DATA_V ((0x3133 << 2) + 0xff620000)
+#define HEVC_STREAM_SWAP_ADDR ((0x3134 << 2) + 0xff620000)
 // bit[31:24] - swap_wrrsp_count
 // bit[23:16] - swap_d_count (Read Only)
 // bit[15:8]  - swap_a_count (Read Only) (7:0 or 9:2)
@@ -4119,19 +4119,19 @@
 // bit [2] - swap_wrrsp_count_update
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - swap active
-#define HEVC_STREAM_SWAP_CTRL                      ((0x3135  << 2) + 0xff620000)
-#define HEVC_IQIT_IF_WAIT_CNT                      ((0x3136  << 2) + 0xff620000)
-#define HEVC_MPRED_IF_WAIT_CNT                     ((0x3137  << 2) + 0xff620000)
-#define HEVC_SAO_IF_WAIT_CNT                       ((0x3138  << 2) + 0xff620000)
+#define HEVC_STREAM_SWAP_CTRL ((0x3135 << 2) + 0xff620000)
+#define HEVC_IQIT_IF_WAIT_CNT ((0x3136 << 2) + 0xff620000)
+#define HEVC_MPRED_IF_WAIT_CNT ((0x3137 << 2) + 0xff620000)
+#define HEVC_SAO_IF_WAIT_CNT ((0x3138 << 2) + 0xff620000)
 // [31:0] packet_length_count
-#define HEVC_STREAM_PACKET_LENGTH                  ((0x3139  << 2) + 0xff620000)
+#define HEVC_STREAM_PACKET_LENGTH ((0x3139 << 2) + 0xff620000)
 // [31]   data_length_protect_enable
 // [30]   data_protect_fill_00_enable
 // [29]   data_protect_fill_ff_enable
 // [28:0] data_length_protect_count
-#define HEVC_SHIFT_LENGTH_PROTECT                  ((0x313a  << 2) + 0xff620000)
+#define HEVC_SHIFT_LENGTH_PROTECT ((0x313a << 2) + 0xff620000)
 // [31:0] skip_count_blk44 -- RW
-#define HEVC_SKIP_COUNT_BLK44                      ((0x313b  << 2) + 0xff620000)
+#define HEVC_SKIP_COUNT_BLK44 ((0x313b << 2) + 0xff620000)
 // Write
 // bit[8] -- clear_all_quant_count
 // bit[2:0] -- read_idx
@@ -4146,11 +4146,11 @@
 //            4 - QUANT_2_COUNT
 //            5 - QUANT_3_COUNT
 //            6 - {quant_3_max, quant_3_min, quant_2_max, quant_2_min}
-#define HEVC_QUANT_COUNT_BLK44                     ((0x313c  << 2) + 0xff620000)
+#define HEVC_QUANT_COUNT_BLK44 ((0x313c << 2) + 0xff620000)
 // bit[3:0] parser_debug_idx
-#define HEVC_PARSER_DEBUG_IDX                      ((0x313e  << 2) + 0xff620000)
+#define HEVC_PARSER_DEBUG_IDX ((0x313e << 2) + 0xff620000)
 // bit[31:0] parser_debug_dat -- read only
-#define HEVC_PARSER_DEBUG_DAT                      ((0x313f  << 2) + 0xff620000)
+#define HEVC_PARSER_DEBUG_DAT ((0x313f << 2) + 0xff620000)
 // bit[31:27] - av1_status
 // bit[26] - change_av1_status
 // bit[25:23]  - Reserved
@@ -4165,7 +4165,7 @@
 // bit[2] - change_vp9_status
 // bit[1] - vp9_decode_start(W)/vp9_decode_busy
 // bit[0] - vp9_enable
-#define VP9_CONTROL                                ((0x3140  << 2) + 0xff620000)
+#define VP9_CONTROL ((0x3140 << 2) + 0xff620000)
 // bit[15:8]- vp9_emd_cmd_parameter
 // bit[3]   - vp9_emd_cmd_busy
 // bit[2:0] - vp9_emd_command (bit[7]-start/busy)
@@ -4194,15 +4194,15 @@
 //                              bit[31:30] - probs_common
 //                      output : bit[15:8] - prob)
 //                   )
-#define VP9_EMD_CMD                                ((0x3141  << 2) + 0xff620000)
+#define VP9_EMD_CMD ((0x3141 << 2) + 0xff620000)
 // vp9_top_y_mode[31:0]
-#define VP9_TOP_Y_MODE_0                           ((0x3142  << 2) + 0xff620000)
+#define VP9_TOP_Y_MODE_0 ((0x3142 << 2) + 0xff620000)
 // vp9_top_y_mode[63:32]
-#define VP9_TOP_Y_MODE_1                           ((0x3143  << 2) + 0xff620000)
+#define VP9_TOP_Y_MODE_1 ((0x3143 << 2) + 0xff620000)
 // vp9_left_y_mode[31:0]
-#define VP9_LEFT_Y_MODE_0                          ((0x3144  << 2) + 0xff620000)
+#define VP9_LEFT_Y_MODE_0 ((0x3144 << 2) + 0xff620000)
 // vp9_left_y_mode[63:32]
-#define VP9_LEFT_Y_MODE_1                          ((0x3145  << 2) + 0xff620000)
+#define VP9_LEFT_Y_MODE_1 ((0x3145 << 2) + 0xff620000)
 // bit[31] - 0:write_vp9_quant, 1:write_vp9/av1_seg_feature
 // For write_vp9_seg_feature:
 // bit[24:22] - seg_id
@@ -4229,27 +4229,27 @@
 // bit[19:16] - Write index : Seg_0_Y-0, Seg_0_UV-1, ... Seq_7_Y-14, Seq_7_UV-15
 // bit[15:8] - AC quant
 // bit[7:0]  - DC quant
-#define VP9_QUANT_WR                               ((0x3146  << 2) + 0xff620000)
+#define VP9_QUANT_WR ((0x3146 << 2) + 0xff620000)
 // bit [31:16] - vp9_inter_mode_top/{8'h0, vp9_seg_pred_top}
 // bit [15:0] - vp9_top_tx_mode (odd/even mi has same tx_mode)
-#define HEVC_CABAC_TOP_INFO_3                      ((0x3147  << 2) + 0xff620000)
+#define HEVC_CABAC_TOP_INFO_3 ((0x3147 << 2) + 0xff620000)
 // bit [31:16] - vp9_inter_mode_left/{8'h0, vp9_seg_pred_left}
 // bit [15:0] - vp9_left_tx_mode (odd/even mi has same tx_mode)
-#define HEVC_CABAC_LEFT_INFO_3                     ((0x3148  << 2) + 0xff620000)
+#define HEVC_CABAC_LEFT_INFO_3 ((0x3148 << 2) + 0xff620000)
 // bit [31:16] - ref_frame[1]
 // bit [15:0]  - ref_frame[0]
-#define HEVC_CABAC_TOP_INFO_4                      ((0x3149  << 2) + 0xff620000)
+#define HEVC_CABAC_TOP_INFO_4 ((0x3149 << 2) + 0xff620000)
 // bit [31:16] - ref_frame[1]
 // bit [15:0]  - ref_frame[0]
-#define HEVC_CABAC_LEFT_INFO_4                     ((0x314a  << 2) + 0xff620000)
+#define HEVC_CABAC_LEFT_INFO_4 ((0x314a << 2) + 0xff620000)
 // bit [31:16]  - interp_filter
 // bit [15:8]   - Reserved
 // bit [7:0]    - vp9_seg_pred_top
-#define HEVC_CABAC_TOP_INFO_5                      ((0x314b  << 2) + 0xff620000)
+#define HEVC_CABAC_TOP_INFO_5 ((0x314b << 2) + 0xff620000)
 // bit [31:16]  - interp_filter
 // bit [15:8]   - Reserved
 // bit [7:0]    - vp9_seg_pred_left
-#define HEVC_CABAC_LEFT_INFO_5                     ((0x314c  << 2) + 0xff620000)
+#define HEVC_CABAC_LEFT_INFO_5 ((0x314c << 2) + 0xff620000)
 // bit[31]    - operation start (read : busy)
 // bit[30:28] - operation_endian
 // bit[27:24] - Reserved
@@ -4257,7 +4257,7 @@
 // bit[21:20] - operation_cmd 0:clear, 1-store, 2-load
 // bit[19:10] - operation_end_addr
 // bit[9:0] - operation_start_addr
-#define VP9_MEM_OPERATION                          ((0x314d  << 2) + 0xff620000)
+#define VP9_MEM_OPERATION ((0x314d << 2) + 0xff620000)
 // bit[27]    - vp9_seg_pred_info_3
 // bit[26]    - vp9_seg_abs_delta
 // bit[25]    - vp9_seg_temporal
@@ -4278,14 +4278,14 @@
 // [5:4] - comp_var_ref[1]
 // [3:2] - comp_var_ref[0]
 // [1:0] - comp_fixed_ref
-#define VP9_DECODING_INFO                          ((0x314f  << 2) + 0xff620000)
+#define VP9_DECODING_INFO ((0x314f << 2) + 0xff620000)
 // [7]   -- segment_id_map_from_shadow
 // [6]   -- segment_id_map_to_shadow
 // [5]   -- shadow_rw_addr_update
 // [4:0] -- shadiw_rw_addr
-#define VP9_SHADOW_CTRL                            ((0x3150  << 2) + 0xff620000)
+#define VP9_SHADOW_CTRL ((0x3150 << 2) + 0xff620000)
 // [31:0] -- shadow_rw_data
-#define VP9_SHADOW_DATA                            ((0x3151  << 2) + 0xff620000)
+#define VP9_SHADOW_DATA ((0x3151 << 2) + 0xff620000)
 // bit[31:22]  - Reserved
 // bit[21]    - parser_mpred_if_busy_when_pu_mpred_busy
 // bit[20:11]  - Reserved
@@ -4296,7 +4296,7 @@
 // bit[2] - change_avs2_status
 // bit[1] - avs2_decode_start(W)/avs2_decode_busy
 // bit[0] - avs2_enable
-#define AVS2_CONTROL                               ((0x3152  << 2) + 0xff620000)
+#define AVS2_CONTROL ((0x3152 << 2) + 0xff620000)
 // bit[31] - reserved
 // bit[30:28] - avs2_num_of_references
 // bit[27] - background_pred_flag
@@ -4312,14 +4312,14 @@
 // bit[2] - slice_sao_enable_Y
 // bit[1] - slice_sao_enable_U
 // bit[0] - slice_sao_enable_V
-#define AVS2_DEC_INFO                              ((0x3153  << 2) + 0xff620000)
+#define AVS2_DEC_INFO ((0x3153 << 2) + 0xff620000)
 // bit[12:10] av1_CUSize
 // bit[9:5]   av1_CU_Y
 // bit[4:0]   av1_CU_X
-#define AV1_PARSER_RESULT_0                        ((0x3154  << 2) + 0xff620000)
-#define AV1_PARSER_RESULT_1                        ((0x3155  << 2) + 0xff620000)
-#define AV1_PARSER_RESULT_2                        ((0x3156  << 2) + 0xff620000)
-#define AV1_PARSER_RESULT_3                        ((0x3157  << 2) + 0xff620000)
+#define AV1_PARSER_RESULT_0 ((0x3154 << 2) + 0xff620000)
+#define AV1_PARSER_RESULT_1 ((0x3155 << 2) + 0xff620000)
+#define AV1_PARSER_RESULT_2 ((0x3156 << 2) + 0xff620000)
+#define AV1_PARSER_RESULT_3 ((0x3157 << 2) + 0xff620000)
 // bit[29]    - reference_mode
 // bit[28]    - segmentation_temporal_update
 // bit[27]    - allow_high_precision_mv
@@ -4346,20 +4346,20 @@
 // bit[2] - intra_only
 // bit[1] - disable_cdf_update
 // bit[0] - use_128x128_superblock
-#define AV1_DEC_INFO                               ((0x3158  << 2) + 0xff620000)
+#define AV1_DEC_INFO ((0x3158 << 2) + 0xff620000)
 // bit[31]    - enable_jnt_comp
 // bit[30]    - enable_masked_compound
 // bit[29]    - enable_dual_filter
 // bit[28:26] - frame_interp_filter
 // bit[25:13] - mi_rows/2
 // bit[12:0]  - mi_cols/2
-#define AV1_DEC_INFO_2                             ((0x3159  << 2) + 0xff620000)
+#define AV1_DEC_INFO_2 ((0x3159 << 2) + 0xff620000)
 // bit[31:10] reserved
 // bit [9] skip_mode_flag
 // bit [8] skip_mode_allowed // not used
 // bit [7:4] ref_frame_idx_1
 // bit [3:0] ref_frame_idx_0
-#define AV1_DEC_INFO_3                             ((0x315a  << 2) + 0xff620000)
+#define AV1_DEC_INFO_3 ((0x315a << 2) + 0xff620000)
 // bit[31]    - reset_delta_lf_01
 // bit[30]    - reset_xqd
 // bit[23]    - reserved
@@ -4371,7 +4371,7 @@
 // bit[10:9]  - delta_q_res
 // bit[8]     - delta_q_present
 // bit[7:0]   - base_qindex
-#define AV1_QUANT_Y                                ((0x315b  << 2) + 0xff620000)
+#define AV1_QUANT_Y ((0x315b << 2) + 0xff620000)
 // bit[31]    - reset_delta_lf_23
 // bit[30:24] - v_ac_delta_q
 // bit[23]    - reserved
@@ -4380,14 +4380,14 @@
 // bit[14:8]  - v_dc_delta_q
 // bit[7]    - reserved
 // bit[6:0]   - u_dc_delta_q
-#define AV1_QUANT_C                                ((0x315c  << 2) + 0xff620000)
+#define AV1_QUANT_C ((0x315c << 2) + 0xff620000)
 // bit[31]    - coded_lossless
 // bit[31]    - ref_coded_lossless
 // bit[29:17]  - Reserved
 // bit[16:12]  - seg_dma_last_cycle
 // bit[11:8]  - daala_top_dma_last_cycle
 // bit[7:0]   - current_qindex
-#define AV1_DEC_PROCESS                            ((0x315d  << 2) + 0xff620000)
+#define AV1_DEC_PROCESS ((0x315d << 2) + 0xff620000)
 // bit[31]    - disable_top_r_wrrsp_wait
 // bit[30]    - enable_reg_map_r_wrrsp_wait
 // bit[29:16]    - reserved
@@ -4407,8 +4407,8 @@
 // bit[2]    - start_seg_map_init(seg_init_busy when read)
 // bit[1]    - initial_left
 // bit[0]    - initial_top
-#define AV1_TOP_LEFT_CTL                           ((0x315e  << 2) + 0xff620000)
-#define AV1_DMA_ADDR                               ((0x315f  << 2) + 0xff620000)
+#define AV1_TOP_LEFT_CTL ((0x315e << 2) + 0xff620000)
+#define AV1_DMA_ADDR ((0x315f << 2) + 0xff620000)
 // bit[31:24] - wrrsp_count
 // bit[23] - Reserved
 // bit[22:16] - dma_d_count (Read) -- dma_count(Write)
@@ -4419,7 +4419,7 @@
 // bit [2] - wrrsp_count_update
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - dma  active
-#define AV1_DMA_CTRL                               ((0x3160  << 2) + 0xff620000)
+#define AV1_DMA_CTRL ((0x3160 << 2) + 0xff620000)
 // bit[31:8] hevc_axi_status (Read Only)
 // bit[31:24] - lcu_top_size (in 32Bytes Unit)
 // bit[23:16] - lcu_seg_map_size (in 32Bytes Unit)
@@ -4432,7 +4432,7 @@
 // bit[5] - aw_urgent_out_en
 // bit[4] - ar_urgent_out_en
 // bit[3:0] - arb_switch_cnt
-#define AV1_DMA_SETTING                            ((0x3161  << 2) + 0xff620000)
+#define AV1_DMA_SETTING ((0x3161 << 2) + 0xff620000)
 // av1_ref_frame_idx
 // 27:24 - 6
 // 22:20 - 5
@@ -4441,27 +4441,27 @@
 // 10:8 - 2
 //  6:4 - 1
 //  2:0 - 0
-#define AV1_REF_FRAME_IDX                          ((0x3162  << 2) + 0xff620000)
-#define AV1_TOP_W_ADDR                             ((0x3163  << 2) + 0xff620000)
-#define AV1_TOP_R_ADDR                             ((0x3164  << 2) + 0xff620000)
-#define AV1_SEG_W_ADDR                             ((0x3165  << 2) + 0xff620000)
-#define AV1_SEG_R_ADDR                             ((0x3166  << 2) + 0xff620000)
+#define AV1_REF_FRAME_IDX ((0x3162 << 2) + 0xff620000)
+#define AV1_TOP_W_ADDR ((0x3163 << 2) + 0xff620000)
+#define AV1_TOP_R_ADDR ((0x3164 << 2) + 0xff620000)
+#define AV1_SEG_W_ADDR ((0x3165 << 2) + 0xff620000)
+#define AV1_SEG_R_ADDR ((0x3166 << 2) + 0xff620000)
 // [31:16] -- av1_seg_r_addr_offset
 // [15:0]  -- av1_seg_w_addr_offset
-#define AV1_SEG_ADDR_OFFSET                        ((0x3167  << 2) + 0xff620000)
-#define RESTORATION_PARAMS                         ((0x3168  << 2) + 0xff620000)
+#define AV1_SEG_ADDR_OFFSET ((0x3167 << 2) + 0xff620000)
+#define RESTORATION_PARAMS ((0x3168 << 2) + 0xff620000)
 // 31:24 - Row 1
 // 23:16 - Col 1
 // 15:8 - Row 0
 //  7:0 - Col 0
-#define RESTORATION_CORNER_Y                       ((0x3169  << 2) + 0xff620000)
+#define RESTORATION_CORNER_Y ((0x3169 << 2) + 0xff620000)
 // 31:24 - Row 1
 // 23:16 - Col 1
 // 15:8 - Row 0
 //  7:0 - Col 0
-#define RESTORATION_CORNER_C                       ((0x316a  << 2) + 0xff620000)
+#define RESTORATION_CORNER_C ((0x316a << 2) + 0xff620000)
 // [7:0] av1_scale_enable
-#define PARSER_REF_SCALE_ENBL                      ((0x316b  << 2) + 0xff620000)
+#define PARSER_REF_SCALE_ENBL ((0x316b << 2) + 0xff620000)
 // 31    - prev_segmentation_enabled
 // 30    - prev_gmc_intra
 // 30:29 - Reserved
@@ -4470,12 +4470,12 @@
 //   8 - skip_mode_allowed
 // 7:4 - ref_frame_idx_1
 // 3:0 - ref_frame_idx_0
-#define AV1_SKIP_MODE_INFO                         ((0x316c  << 2) + 0xff620000)
-#define AV1_GMC_PARAM_BUFF_ADDR                    ((0x316d  << 2) + 0xff620000)
+#define AV1_SKIP_MODE_INFO ((0x316c << 2) + 0xff620000)
+#define AV1_GMC_PARAM_BUFF_ADDR ((0x316d << 2) + 0xff620000)
 // 31:16 - chroma
 // 15: 0 - luma
-#define AV1_UPSCALE_X0_QN                          ((0x316e  << 2) + 0xff620000)
-#define AV1_UPSCALE_STEP_QN                        ((0x316f  << 2) + 0xff620000)
+#define AV1_UPSCALE_X0_QN ((0x316e << 2) + 0xff620000)
+#define AV1_UPSCALE_STEP_QN ((0x316f << 2) + 0xff620000)
 // write --
 // 31:16 - tile_end
 //     3 -- disable_no_upscale_bypass
@@ -4486,12 +4486,12 @@
 // 31:16 - previous_ux_tiler
 // 15:1  - current_ux_tiler[15:1]
 //    0  - busy
-#define AV1_UPSCALE_INOUT                          ((0x3170  << 2) + 0xff620000)
+#define AV1_UPSCALE_INOUT ((0x3170 << 2) + 0xff620000)
 // bit[31:24] - av1_seg_q_en      -- Read Only
 // bit[23:16] - av1_seg_q_eq_0    -- Read Only
 // bit[15:8]  - av1_ref_seg_q_en      -- R/W
 // bit[7:0]   - av1_ref_seg_q_eq_0    -- R/W
-#define AV1_REF_SEG_INFO                           ((0x3171  << 2) + 0xff620000)
+#define AV1_REF_SEG_INFO ((0x3171 << 2) + 0xff620000)
 //
 // Closing file:  hevc_parser_regs.h
 //
@@ -4504,9 +4504,9 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HEVC_MPRED_CBUS_BASE = 0x02
 // -----------------------------------------------
-#define HEVC_MPRED_VERSION                         ((0x3200  << 2) + 0xff620000)
+#define HEVC_MPRED_VERSION ((0x3200 << 2) + 0xff620000)
 //  [31:0]  reversion               default:32'h00010001
-#define HEVC_MPRED_CTRL0                           ((0x3201  << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL0 ((0x3201 << 2) + 0xff620000)
 // [1:0]    slice_type[1:0]
 // [2]      new_pic
 // [3]      new_tile
@@ -4526,40 +4526,40 @@
 // [23:20]  cu_size_log2[3:0]
 // [26:24]  plevel[2:0]
 // [31:27]  reserved
-#define HEVC_MPRED_CTRL1                           ((0x3202  << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL1 ((0x3202 << 2) + 0xff620000)
 //  [3:0]   MERGE_MAX_NUM_CANDS[3:0]
 //  [7:4]   AMVP_MAX_NUM_CANDS[3:0]
 //  [23:8]  reserved
 //  [24]    clk_forceon
 //  [31:25] reserved
-#define HEVC_MPRED_INT_EN                          ((0x3203  << 2) + 0xff620000)
+#define HEVC_MPRED_INT_EN ((0x3203 << 2) + 0xff620000)
 //  [0]     mpred_int_enable
 //  [1]     mpred_int_amrisc_level
 //  [2]     mpred_int_cpu_level
 //  [3]     slice_done_int_amrisc_enable
 //  [4]     slice_done_int_cpu_enable
 //  [15]    disable_mpred_int_clock_gating
-#define HEVC_MPRED_INT_STATUS                      ((0x3204  << 2) + 0xff620000)
+#define HEVC_MPRED_INT_STATUS ((0x3204 << 2) + 0xff620000)
 //  [0]     slice_done IRQ
 //  [31]    write "1"=slice start(self clear,read always return "0")
-#define HEVC_MPRED_PIC_SIZE                        ((0x3205  << 2) + 0xff620000)
+#define HEVC_MPRED_PIC_SIZE ((0x3205 << 2) + 0xff620000)
 //  [15:0]  pic_width[15:0]
 //  [31:16] pic_height[15:0]
-#define HEVC_MPRED_PIC_SIZE_LCU                    ((0x3206  << 2) + 0xff620000)
+#define HEVC_MPRED_PIC_SIZE_LCU ((0x3206 << 2) + 0xff620000)
 //  [15:0]  lcu_x_num_1[15:0]   (=lcu_x_total-1)
 //  [31:16] lcu_y_num_1[15:0]   (=lcu_y_total-1)
-#define HEVC_MPRED_TILE_START                      ((0x3207  << 2) + 0xff620000)
+#define HEVC_MPRED_TILE_START ((0x3207 << 2) + 0xff620000)
 //  [15:0]  tile_start_lcu_x[15:0]
 //  [31:16] tile_start_lcu_y[15:0]
-#define HEVC_MPRED_TILE_SIZE_LCU                   ((0x3208  << 2) + 0xff620000)
+#define HEVC_MPRED_TILE_SIZE_LCU ((0x3208 << 2) + 0xff620000)
 //  [15:0]  tile_width_lcu[15:0]
 //  [31:16] tile_height_lcu[15:0]
-#define HEVC_MPRED_REF_NUM                         ((0x3209  << 2) + 0xff620000)
+#define HEVC_MPRED_REF_NUM ((0x3209 << 2) + 0xff620000)
 //  [3:0]   refNum_L0[3:0]
 //  [11:8]  refNum_L1[3:0]
 //  [19:16] col_refNum_L0[3:0]
 //  [27:24] col_refNum_L1[3:0]
-#define HEVC_MPRED_LT_REF                          ((0x320a  << 2) + 0xff620000)
+#define HEVC_MPRED_LT_REF ((0x320a << 2) + 0xff620000)
 //  [00]    LongTerm_L0_Ref00
 //  [01]    LongTerm_L0_Ref01
 //  ......
@@ -4568,7 +4568,7 @@
 //  [17]    LongTerm_L1_Ref01
 //  ......
 //  [31]    LongTerm_L1_Ref15
-#define HEVC_MPRED_LT_COLREF                       ((0x320b  << 2) + 0xff620000)
+#define HEVC_MPRED_LT_COLREF ((0x320b << 2) + 0xff620000)
 //  [00]    LongTerm_Col_L0_Ref00
 //  [01]    LongTerm_Col_L0_Ref01
 //  ......
@@ -4577,89 +4577,89 @@
 //  [17]    LongTerm_Col_L1_Ref01
 //  ......
 //  [31]    LongTerm_Col_L1_Ref15
-#define HEVC_MPRED_REF_EN_L0                       ((0x320c  << 2) + 0xff620000)
+#define HEVC_MPRED_REF_EN_L0 ((0x320c << 2) + 0xff620000)
 //  [00]    L0_ref00_en
 //  [01]    L0_ref01_en
 //  ......
 //  [15]    L0_ref15_en
-#define HEVC_MPRED_REF_EN_L1                       ((0x320d  << 2) + 0xff620000)
+#define HEVC_MPRED_REF_EN_L1 ((0x320d << 2) + 0xff620000)
 //  [00]    L1_ref00_en
 //  [01]    L1_ref01_en
 //  ......
 //  [15]    L1_ref15_en
-#define HEVC_MPRED_COLREF_EN_L0                    ((0x320e  << 2) + 0xff620000)
+#define HEVC_MPRED_COLREF_EN_L0 ((0x320e << 2) + 0xff620000)
 //  [00]    COL_L0_ref00_en
 //  [01]    COL_L0_ref01_en
 //  ......
 //  [15]    COL_L0_ref15_en
-#define HEVC_MPRED_COLREF_EN_L1                    ((0x320f  << 2) + 0xff620000)
+#define HEVC_MPRED_COLREF_EN_L1 ((0x320f << 2) + 0xff620000)
 //  [00]    COL_L1_ref00_en
 //  [01]    COL_L1_ref01_en
 //  ......
 //  [15]    COL_L1_ref15_en
-#define HEVC_MPRED_AXI_WCTRL                       ((0x3210  << 2) + 0xff620000)
+#define HEVC_MPRED_AXI_WCTRL ((0x3210 << 2) + 0xff620000)
 //  [11:8]  aw_id_set[3:0]
-#define HEVC_MPRED_AXI_RCTRL                       ((0x3211  << 2) + 0xff620000)
+#define HEVC_MPRED_AXI_RCTRL ((0x3211 << 2) + 0xff620000)
 //  [11:8]  ar_id_set[3:0]
-#define HEVC_MPRED_ABV_START_ADDR                  ((0x3212  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_WR_START_ADDR                ((0x3213  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RD_START_ADDR                ((0x3214  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_WPTR                         ((0x3215  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RPTR                         ((0x3216  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_WR_ROW_JUMP                  ((0x3217  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RD_ROW_JUMP                  ((0x3218  << 2) + 0xff620000)
-#define HEVC_MPRED_CURR_LCU                        ((0x3219  << 2) + 0xff620000)
-#define HEVC_MPRED_ABV_WPTR                        ((0x321a  << 2) + 0xff620000)
-#define HEVC_MPRED_ABV_RPTR                        ((0x321b  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL2                           ((0x321c  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL3                           ((0x321d  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_WLCUY                        ((0x321e  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RLCUY                        ((0x321f  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF00_POC                    ((0x3220  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF01_POC                    ((0x3221  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF02_POC                    ((0x3222  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF03_POC                    ((0x3223  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF04_POC                    ((0x3224  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF05_POC                    ((0x3225  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF06_POC                    ((0x3226  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF07_POC                    ((0x3227  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF08_POC                    ((0x3228  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF09_POC                    ((0x3229  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF10_POC                    ((0x322a  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF11_POC                    ((0x322b  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF12_POC                    ((0x322c  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF13_POC                    ((0x322d  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF14_POC                    ((0x322e  << 2) + 0xff620000)
-#define HEVC_MPRED_L0_REF15_POC                    ((0x322f  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF00_POC                    ((0x3230  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF01_POC                    ((0x3231  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF02_POC                    ((0x3232  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF03_POC                    ((0x3233  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF04_POC                    ((0x3234  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF05_POC                    ((0x3235  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF06_POC                    ((0x3236  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF07_POC                    ((0x3237  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF08_POC                    ((0x3238  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF09_POC                    ((0x3239  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF10_POC                    ((0x323a  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF11_POC                    ((0x323b  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF12_POC                    ((0x323c  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF13_POC                    ((0x323d  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF14_POC                    ((0x323e  << 2) + 0xff620000)
-#define HEVC_MPRED_L1_REF15_POC                    ((0x323f  << 2) + 0xff620000)
-#define HEVC_MPRED_PIC_SIZE_EXT                    ((0x3240  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_MODE0                       ((0x3241  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_MODE1                       ((0x3242  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG2_MODE                       ((0x3243  << 2) + 0xff620000)
-#define HEVC_MPRED_IMP_CMD0                        ((0x3244  << 2) + 0xff620000)
-#define HEVC_MPRED_IMP_CMD1                        ((0x3245  << 2) + 0xff620000)
-#define HEVC_MPRED_IMP_CMD2                        ((0x3246  << 2) + 0xff620000)
-#define HEVC_MPRED_IMP_CMD3                        ((0x3247  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG2_DATA_0                     ((0x3248  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG2_DATA_1                     ((0x3249  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG2_DATA_2                     ((0x324a  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG2_DATA_3                     ((0x324b  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL4                           ((0x324c  << 2) + 0xff620000)
+#define HEVC_MPRED_ABV_START_ADDR ((0x3212 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_WR_START_ADDR ((0x3213 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RD_START_ADDR ((0x3214 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_WPTR ((0x3215 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RPTR ((0x3216 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_WR_ROW_JUMP ((0x3217 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RD_ROW_JUMP ((0x3218 << 2) + 0xff620000)
+#define HEVC_MPRED_CURR_LCU ((0x3219 << 2) + 0xff620000)
+#define HEVC_MPRED_ABV_WPTR ((0x321a << 2) + 0xff620000)
+#define HEVC_MPRED_ABV_RPTR ((0x321b << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL2 ((0x321c << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL3 ((0x321d << 2) + 0xff620000)
+#define HEVC_MPRED_MV_WLCUY ((0x321e << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RLCUY ((0x321f << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF00_POC ((0x3220 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF01_POC ((0x3221 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF02_POC ((0x3222 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF03_POC ((0x3223 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF04_POC ((0x3224 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF05_POC ((0x3225 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF06_POC ((0x3226 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF07_POC ((0x3227 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF08_POC ((0x3228 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF09_POC ((0x3229 << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF10_POC ((0x322a << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF11_POC ((0x322b << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF12_POC ((0x322c << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF13_POC ((0x322d << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF14_POC ((0x322e << 2) + 0xff620000)
+#define HEVC_MPRED_L0_REF15_POC ((0x322f << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF00_POC ((0x3230 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF01_POC ((0x3231 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF02_POC ((0x3232 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF03_POC ((0x3233 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF04_POC ((0x3234 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF05_POC ((0x3235 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF06_POC ((0x3236 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF07_POC ((0x3237 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF08_POC ((0x3238 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF09_POC ((0x3239 << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF10_POC ((0x323a << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF11_POC ((0x323b << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF12_POC ((0x323c << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF13_POC ((0x323d << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF14_POC ((0x323e << 2) + 0xff620000)
+#define HEVC_MPRED_L1_REF15_POC ((0x323f << 2) + 0xff620000)
+#define HEVC_MPRED_PIC_SIZE_EXT ((0x3240 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_MODE0 ((0x3241 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_MODE1 ((0x3242 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG2_MODE ((0x3243 << 2) + 0xff620000)
+#define HEVC_MPRED_IMP_CMD0 ((0x3244 << 2) + 0xff620000)
+#define HEVC_MPRED_IMP_CMD1 ((0x3245 << 2) + 0xff620000)
+#define HEVC_MPRED_IMP_CMD2 ((0x3246 << 2) + 0xff620000)
+#define HEVC_MPRED_IMP_CMD3 ((0x3247 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG2_DATA_0 ((0x3248 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG2_DATA_1 ((0x3249 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG2_DATA_2 ((0x324a << 2) + 0xff620000)
+#define HEVC_MPRED_DBG2_DATA_3 ((0x324b << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL4 ((0x324c << 2) + 0xff620000)
 //  [0]     above intermedia data compress: 0=no-compress,1=compress;default:1'b0
 //  [1]     collocated MV intermedia data compress: 0=no-compress,1=compress;default:1'b0
 //  [2]     vp9_mode,0=hevc_mode,1=vp9_mode,default=0
@@ -4669,37 +4669,37 @@
 //  [12]    vp9_ref_sign_bias[1]        ref1(last) ref_sign_bias, default=0
 //  [13]    vp9_ref_sign_bias[2]        ref2(golden) ref_sign_bias,default=0
 //  [14]    vp9_ref_sign_bias[3]        ref3(altref) ref_sign_bias,default=0
-#define HEVC_MPRED_CTRL5                           ((0x324d  << 2) + 0xff620000)
-#define HEVC_MPRED_POC24_CTRL0                     ((0x324e  << 2) + 0xff620000)
-#define HEVC_MPRED_POC24_CTRL1                     ((0x324f  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_0                      ((0x3250  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_1                      ((0x3251  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_2                      ((0x3252  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_3                      ((0x3253  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_4                      ((0x3254  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_5                      ((0x3255  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_6                      ((0x3256  << 2) + 0xff620000)
-#define HEVC_MPRED_DBG_DATA_7                      ((0x3257  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL6                           ((0x3258  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL7                           ((0x3259  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL8                           ((0x325a  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL9                           ((0x325b  << 2) + 0xff620000)
-#define HEVC_MPRED_CTRL10                          ((0x325e  << 2) + 0xff620000)
-#define HEVC_MPRED_MCR_CNT_CTL                     ((0x325c  << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL5 ((0x324d << 2) + 0xff620000)
+#define HEVC_MPRED_POC24_CTRL0 ((0x324e << 2) + 0xff620000)
+#define HEVC_MPRED_POC24_CTRL1 ((0x324f << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_0 ((0x3250 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_1 ((0x3251 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_2 ((0x3252 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_3 ((0x3253 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_4 ((0x3254 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_5 ((0x3255 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_6 ((0x3256 << 2) + 0xff620000)
+#define HEVC_MPRED_DBG_DATA_7 ((0x3257 << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL6 ((0x3258 << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL7 ((0x3259 << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL8 ((0x325a << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL9 ((0x325b << 2) + 0xff620000)
+#define HEVC_MPRED_CTRL10 ((0x325e << 2) + 0xff620000)
+#define HEVC_MPRED_MCR_CNT_CTL ((0x325c << 2) + 0xff620000)
 // [3:0] mcr_cnt_rd_ptr
 // [7:4] mcr_cnt_extend_pixel_w -- default : 7
 // [11:8] mcr_cnt_extend_pixel_h -- default : 7
 // [14:12] - Reserved
 // [15]  mcr_cnt_clear
-#define HEVC_MPRED_MCR_CNT_DATA                    ((0x325d  << 2) + 0xff620000)
+#define HEVC_MPRED_MCR_CNT_DATA ((0x325d << 2) + 0xff620000)
 // read only
-#define HEVC_MPRED_CUR_POC                         ((0x3260  << 2) + 0xff620000)
-#define HEVC_MPRED_COL_POC                         ((0x3261  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RD_END_ADDR                  ((0x3262  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RPTR_1                       ((0x3263  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RPTR_2                       ((0x3264  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RLCUY_1                      ((0x3265  << 2) + 0xff620000)
-#define HEVC_MPRED_MV_RLCUY_2                      ((0x3266  << 2) + 0xff620000)
+#define HEVC_MPRED_CUR_POC ((0x3260 << 2) + 0xff620000)
+#define HEVC_MPRED_COL_POC ((0x3261 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RD_END_ADDR ((0x3262 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RPTR_1 ((0x3263 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RPTR_2 ((0x3264 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RLCUY_1 ((0x3265 << 2) + 0xff620000)
+#define HEVC_MPRED_MV_RLCUY_2 ((0x3266 << 2) + 0xff620000)
 //
 // Closing file:  hevc_mpred_regs.h
 //
@@ -4715,7 +4715,7 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HEVC_IPP_CBUS_BASE = 0x04
 // -----------------------------------------------
-#define HEVCD_IPP_TOP_CNTL                         ((0x3400  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_CNTL ((0x3400 << 2) + 0xff620000)
 // [0]      -- software reset ipp and mpp
 // [1]      -- enable ipp
 // [3:2]    -- reserved
@@ -4723,7 +4723,7 @@
 // [6]      -- intra_only_frame
 // [30:7]   -- reserved
 // [31]     -- mcr_intrabc_stall_disable
-#define HEVCD_IPP_TOP_STATUS                       ((0x3401  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_STATUS ((0x3401 << 2) + 0xff620000)
 // [0]      -- ready for next tile/frame
 // [1]      -- ready for next ctb
 // [2]      -- ready for next slice
@@ -4732,35 +4732,35 @@
 // [5]      -- ipp_axi_wr_idle
 // [6]      -- mpp_axi_rd_idle
 // [31:7]   -- reserved
-#define HEVCD_IPP_TOP_FRMCONFIG                    ((0x3402  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_FRMCONFIG ((0x3402 << 2) + 0xff620000)
 // [14:0]   -- frame width in luma pixels
 // [30:16]  -- frame height in luma pixels
-#define HEVCD_IPP_TOP_TILECONFIG1                  ((0x3403  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_TILECONFIG1 ((0x3403 << 2) + 0xff620000)
 // [11:0]   -- tile_width_in_lcu
 // [27:16]  -- tile_height_in_lcu
-#define HEVCD_IPP_TOP_TILECONFIG2                  ((0x3404  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_TILECONFIG2 ((0x3404 << 2) + 0xff620000)
 // [11:0]   -- tile_offset_x_in_lcu
 // [27:16]  -- tile_offset_y_in_lcu
-#define HEVCD_IPP_TOP_TILECONFIG3                  ((0x3405  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_TILECONFIG3 ((0x3405 << 2) + 0xff620000)
 // [0]      -- tiles_enabled_flag
 // [31:1]   -- reserved
-#define HEVCD_IPP_TOP_LCUCONFIG                    ((0x3406  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_LCUCONFIG ((0x3406 << 2) + 0xff620000)
 // [7:0]    -- lcu size in pixels
-#define HEVCD_IPP_TOP_FRMCTL                       ((0x3407  << 2) + 0xff620000)
+#define HEVCD_IPP_TOP_FRMCTL ((0x3407 << 2) + 0xff620000)
 // [x]      -- start ipp tile decode
-#define HEVCD_IPP_CONFIG                           ((0x3408  << 2) + 0xff620000)
+#define HEVCD_IPP_CONFIG ((0x3408 << 2) + 0xff620000)
 // [0]      -- ipp_strong_intra_smoothing_enable_flag
 // [1]      -- cfg_ipp_constrained_intra_pred_flag
 // [31:2]   -- reserved
-#define HEVCD_IPP_LINEBUFF_BASE                    ((0x3409  << 2) + 0xff620000)
+#define HEVCD_IPP_LINEBUFF_BASE ((0x3409 << 2) + 0xff620000)
 // [31:14]  -- intra-prediction line-buffer 16KByte axi address
 // [13:0]   -- reserved
-#define HEVCD_IPP_INTR_MASK                        ((0x340a  << 2) + 0xff620000)
+#define HEVCD_IPP_INTR_MASK ((0x340a << 2) + 0xff620000)
 // [0]      -- tile/frame ready
 // [1]      -- ctb ready
 // [2]      -- slice ready
 // [31:3]   -- reserved
-#define HEVCD_IPP_AXIIF_CONFIG                     ((0x340b  << 2) + 0xff620000)
+#define HEVCD_IPP_AXIIF_CONFIG ((0x340b << 2) + 0xff620000)
 // [3:0]    -- little_endian
 // [5:4]    -- address_format 00:linear 01:32x32 10:64x32
 // [7:6]    -- reserved
@@ -4768,46 +4768,46 @@
 // [11:10]  -- reserved
 // [12]     -- CbCr_byte_swap
 // [31:13]  -- reserved
-#define HEVCD_IPP_BITDEPTH_CONFIG                  ((0x340c  << 2) + 0xff620000)
+#define HEVCD_IPP_BITDEPTH_CONFIG ((0x340c << 2) + 0xff620000)
 // [1:0]    -- bit_depth_luma   00:8 01:9 10:10
 // [3:2]    -- bit_depth_chroma 00:8 01:9 10:10
 // [31:4]   -- reserved
-#define HEVCD_IPP_RTL_CONFIG                       ((0x340d  << 2) + 0xff620000)
+#define HEVCD_IPP_RTL_CONFIG ((0x340d << 2) + 0xff620000)
 // [0]      -- HEVC_ENABLE
 // [1]      -- VP9_ENABLE
 // [2]      -- AVS2_ENABLE
 // [3]      -- VDEC_MCR_IF_ENABLE
-#define HEVCD_IPP_SWMPREDIF_CONFIG                 ((0x3410  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_CONFIG ((0x3410 << 2) + 0xff620000)
 // [0]      -- swmpredif_enable
 // [31:1]   -- reserved
-#define HEVCD_IPP_SWMPREDIF_STATUS                 ((0x3411  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_STATUS ((0x3411 << 2) + 0xff620000)
 // [0]      -- swmpredif_rdy
 // [7:1]    -- reserved
 // [14:8]   -- swmpredif_fifospace
 // [31:15]  -- reserved
-#define HEVCD_IPP_SWMPREDIF_CTBINFO                ((0x3412  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_CTBINFO ((0x3412 << 2) + 0xff620000)
 // [10:0]   -- swmpredif_ctb_x
 // [15:11]  -- reserved
 // [26:16]  -- swmpredif_ctb_y
 // [30:27]  -- reserved
 // [31]     -- swmpredif_newslice
-#define HEVCD_IPP_SWMPREDIF_PUINFO0                ((0x3413  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO0 ((0x3413 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[31:0]
-#define HEVCD_IPP_SWMPREDIF_PUINFO1                ((0x3414  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO1 ((0x3414 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[63:32]
-#define HEVCD_IPP_SWMPREDIF_PUINFO2                ((0x3415  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO2 ((0x3415 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[95:64]
-#define HEVCD_IPP_SWMPREDIF_PUINFO3                ((0x3416  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO3 ((0x3416 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[127:96]
-#define HEVCD_IPP_SWMPREDIF_PUINFO4                ((0x3417  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO4 ((0x3417 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[159:128]
-#define HEVCD_IPP_SWMPREDIF_PUINFO5                ((0x3418  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO5 ((0x3418 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[191:160]
-#define HEVCD_IPP_SWMPREDIF_PUINFO6                ((0x3419  << 2) + 0xff620000)
+#define HEVCD_IPP_SWMPREDIF_PUINFO6 ((0x3419 << 2) + 0xff620000)
 // [31:0]   -- swmpredif_imp_cmd[199:192]
 //          writing to HEVCD_IPP_SWMPREDIF_PUINFO6
 //          completes command, should be last to write.
-#define HEVCD_IPP_DYNCLKGATE_CONFIG                ((0x3420  << 2) + 0xff620000)
+#define HEVCD_IPP_DYNCLKGATE_CONFIG ((0x3420 << 2) + 0xff620000)
 // [0]      -- mpp_wpredict_clkgate_disbl
 // [1]      -- mpp_ref_fetch_clkgate_disbl
 // [2]      -- mpp_interpol_top_clkgate_disbl
@@ -4838,7 +4838,7 @@
 // [29]     -- master_mpp_clkgate_disbl
 // [30]     -- master_ipp_clkgate_disbl
 // [31]     -- master_ipp_mpp_decomp_clkgate_disbl
-#define HEVCD_IPP_DYNCLKGATE_STATUS                ((0x3421  << 2) + 0xff620000)
+#define HEVCD_IPP_DYNCLKGATE_STATUS ((0x3421 << 2) + 0xff620000)
 // [0]      -- mpp_wpredict_clkgate
 // [1]      -- mpp_ref_fetch_clkgate
 // [2]      -- mpp_interpol_top_clkgate
@@ -4867,40 +4867,40 @@
 // [27]     -- reserved
 // [30:28]  -- reserved
 // [31]     -- mcrcc_axi_clkgate
-#define HEVCD_IPP_DBG_SEL                          ((0x3430  << 2) + 0xff620000)
+#define HEVCD_IPP_DBG_SEL ((0x3430 << 2) + 0xff620000)
 // [3:0]    -- module_level_sel
 // [7:4]    -- mpp_ipp_top_level
 // [8]      -- ipp_sel
 // [31:9]   -- reserved
-#define HEVCD_IPP_DBG_DATA                         ((0x3431  << 2) + 0xff620000)
+#define HEVCD_IPP_DBG_DATA ((0x3431 << 2) + 0xff620000)
 // [31:0]   -- Debug information
 //////////////////////////////////////////////////////////////////////////////
 ///// MPP Registers                                       ////////////////////
 //////////////////////////////////////////////////////////////////////////////
 // Canvas Anchor to Axi-Address translation table
-#define HEVCD_MPP_ANC2AXI_TBL_CONF_ADDR            ((0x3460  << 2) + 0xff620000)
+#define HEVCD_MPP_ANC2AXI_TBL_CONF_ADDR ((0x3460 << 2) + 0xff620000)
 // [0]      -- anc2axi canvas address translation table switch 0:sw 1:hw
 // [1]      -- access type 1:wr 0:rd
 // [2]      -- auto index increment
 // [7:3]    -- reserved
 // [15:8]   -- start index
 // [31:16]  -- reserved
-#define HEVCD_MPP_ANC2AXI_TBL_DATA                 ((0x3464  << 2) + 0xff620000)
+#define HEVCD_MPP_ANC2AXI_TBL_DATA ((0x3464 << 2) + 0xff620000)
 // [26:0]   -- anc2axi address r/w  32byte aligned
 // [31:27]  -- reserved
-#define HEVCD_MPP_WEIGHTPRED_CNTL_ADDR             ((0x347b  << 2) + 0xff620000)
+#define HEVCD_MPP_WEIGHTPRED_CNTL_ADDR ((0x347b << 2) + 0xff620000)
 // [0]      -- weighted_pred_flag
-#define HEVCD_MPP_L0_WEIGHT_FLAG_ADDR              ((0x347c  << 2) + 0xff620000)
+#define HEVCD_MPP_L0_WEIGHT_FLAG_ADDR ((0x347c << 2) + 0xff620000)
 // [15:0]   -- luma_weght_flag0[15:0], indexed by refidx0
 // [31:16]  -- chroma_weght_flag0[15:0], indexed by refidx0
-#define HEVCD_MPP_L1_WEIGHT_FLAG_ADDR              ((0x347d  << 2) + 0xff620000)
+#define HEVCD_MPP_L1_WEIGHT_FLAG_ADDR ((0x347d << 2) + 0xff620000)
 // [15:0]   -- luma_weght_flag1[15:0], indexed by refidx1
 // [31:16]  -- chroma_weght_flag1[15:0], indexed by refidx1
-#define HEVCD_MPP_YLOG2WGHTDENOM_ADDR              ((0x347e  << 2) + 0xff620000)
+#define HEVCD_MPP_YLOG2WGHTDENOM_ADDR ((0x347e << 2) + 0xff620000)
 // [3:0]    -- luma_log2_weight_denom
-#define HEVCD_MPP_DELTACLOG2WGHTDENOM_ADDR         ((0x347f  << 2) + 0xff620000)
+#define HEVCD_MPP_DELTACLOG2WGHTDENOM_ADDR ((0x347f << 2) + 0xff620000)
 // [4:0]    -- delta_chroma_log2_weight_denom
-#define HEVCD_MPP_WEIGHT_ADDR                      ((0x3480  << 2) + 0xff620000)
+#define HEVCD_MPP_WEIGHT_ADDR ((0x3480 << 2) + 0xff620000)
 // [5:0]    -- weight_rw_addr
 // [0]      -- DELTA_WEIGHT0
 // [1]      -- OFFSET0
@@ -4909,7 +4909,7 @@
 // ......
 // [62]     -- DELTA_WEIGHT31
 // [63]     -- OFFSET31
-#define HEVCD_MPP_WEIGHT_DATA                      ((0x3481  << 2) + 0xff620000)
+#define HEVCD_MPP_WEIGHT_DATA ((0x3481 << 2) + 0xff620000)
 // For DELTA_WEIGHT :
 // [7:0]    -- delta_y_weight for refidx0:0
 // [15:8]   -- delta_cb_weight for refidx0:0
@@ -4924,9 +4924,9 @@
 // [7:2]    reserved
 // [1]      auto_inc_read
 // [0]      auto_inc_write
-#define HEVCD_MPP_ANC_CANVAS_ACCCONFIG_ADDR        ((0x34c0  << 2) + 0xff620000)
+#define HEVCD_MPP_ANC_CANVAS_ACCCONFIG_ADDR ((0x34c0 << 2) + 0xff620000)
 // Id[4:0]  --> {orderhint[7:0],AnchorAddrCr[7:0],AnchorAddrCb[7:0],AnchorAddrY[7:0]}
-#define HEVCD_MPP_ANC_CANVAS_DATA_ADDR             ((0x34c1  << 2) + 0xff620000)
+#define HEVCD_MPP_ANC_CANVAS_DATA_ADDR ((0x34c1 << 2) + 0xff620000)
 // [0]       -- decomp_nocompress
 // [1]       -- decomp_dcache_bypass
 // [2]       -- reserved
@@ -4934,15 +4934,15 @@
 // [4]       -- decomp_paged_mem_mode
 // [30:5]    -- reserved
 // [31]      -- decomp_axif_lbmode888
-#define HEVCD_MPP_DECOMP_CTL1                      ((0x34c2  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_CTL1 ((0x34c2 << 2) + 0xff620000)
 // [23:0]    -- header1_offset : 32byte address from canvas base
 // [31:24]   -- reserved
-#define HEVCD_MPP_DECOMP_CTL2                      ((0x34c3  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_CTL2 ((0x34c3 << 2) + 0xff620000)
 // [9:0]     -- decomp_default_Y
 // [19:10]   -- decomp_default_Cb
 // [29:20]   -- decomp_dafault_Cr
 // [31:30]   -- bitdepth_sel 00:8bit 01:9bit 10:10bit
-#define HEVCD_MPP_DECOMP_CTL3                      ((0x34c4  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_CTL3 ((0x34c4 << 2) + 0xff620000)
 // HEVCD_MPP_DECOMP_PERFMON_CTL
 // [0]      percount_reset
 // [3:1]    perfcount_sel
@@ -4956,10 +4956,10 @@
 //     0                        fast_num_compburst
 //     1                        slow_num_compburst
 //     2,3                      raw_num_ncompburst
-#define HEVCD_MPP_DECOMP_PERFMON_CTL               ((0x34c5  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_PERFMON_CTL ((0x34c5 << 2) + 0xff620000)
 // HEVCD_MPP_DECOMP_PERFMON_DATA
 // [31:0]   percount_data
-#define HEVCD_MPP_DECOMP_PERFMON_DATA              ((0x34c6  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_PERFMON_DATA ((0x34c6 << 2) + 0xff620000)
 // HEVCD_MPP_DECOMP_AXIURG_CTL
 // [1:0]      -- decomp_hdrurg  00:Normal 01:Urgent 10:SuperUrgent
 // [2]        -- decomp_fpathurg_en 1->Urgent if below lo_thresh
@@ -4968,13 +4968,13 @@
 // [17:11]    -- decomp_fpathurg_hithresh [32byte steps : max 96]
 // [24:18]    -- decomp_spathurg_lothresh [32byte steps : max 64]
 // [31:25]    -- decomp_spathurg_hithresh [32byte steps : max 64]
-#define HEVCD_MPP_DECOMP_AXIURG_CTL                ((0x34c7  << 2) + 0xff620000)
+#define HEVCD_MPP_DECOMP_AXIURG_CTL ((0x34c7 << 2) + 0xff620000)
 // HEVCD_MPP_VDEC_MCR_CTL
 // [0]        -- mcr_mdec_mode : 1:mcr fetch used by vdec:mdec
 // [3:1]      -- reserved
 // [4]        -- mcr_mdec_8byte_endianess : 1:big 0:little
 // [31:5]     -- reserved
-#define HEVCD_MPP_VDEC_MCR_CTL                     ((0x34c8  << 2) + 0xff620000)
+#define HEVCD_MPP_VDEC_MCR_CTL ((0x34c8 << 2) + 0xff620000)
 //////////////////////////////////////////////////////////////////////////////
 ///// MCRCC_AXI Registers                                 ////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -4988,19 +4988,19 @@
 // 2     <cfg_field_pic>                           // not used for hevc
 // 1     <sw_rst>
 // 0     <bypass_en>
-#define HEVCD_MCRCC_CTL1                           ((0x34f0  << 2) + 0xff620000)
+#define HEVCD_MCRCC_CTL1 ((0x34f0 << 2) + 0xff620000)
 // HEVCD_MCRCC_CTL2
 // 31:24    <cfg_cache_anc01_c[7:0]>
 // 23:16    <cfg_cache_anc01_y[7:0]>
 // 15:8     <cfg_cache_anc00_c[7:0]>
 // 7:0      <cfg_cache_anc00_y[7:0]>
-#define HEVCD_MCRCC_CTL2                           ((0x34f1  << 2) + 0xff620000)
+#define HEVCD_MCRCC_CTL2 ((0x34f1 << 2) + 0xff620000)
 // HEVCD_MCRCC_CTL3
 // 31:24    <cfg_cache_anc11_c[7:0]>
 // 23:16    <cfg_cache_anc11_y[7:0]>
 // 15:8     <cfg_cache_anc10_c[7:0]>
 // 7:0      <cfg_cache_anc10_y[7:0]>
-#define HEVCD_MCRCC_CTL3                           ((0x34f2  << 2) + 0xff620000)
+#define HEVCD_MCRCC_CTL3 ((0x34f2 << 2) + 0xff620000)
 // HEVCD_MCRCC_PERFMON_CTL
 // [0]      percount_reset
 // [3:1]    perfcount_sel
@@ -5014,56 +5014,56 @@
 //     5                  miss_mcr_cnt_1
 //     6                  hit_mcr_cnt_0
 //     7                  hit_mcr_cnt_1
-#define HEVCD_MCRCC_PERFMON_CTL                    ((0x34f3  << 2) + 0xff620000)
+#define HEVCD_MCRCC_PERFMON_CTL ((0x34f3 << 2) + 0xff620000)
 // HEVCD_MCRCC_PERFMON_DATA
 // [31:0]   percount_data
-#define HEVCD_MCRCC_PERFMON_DATA                   ((0x34f4  << 2) + 0xff620000)
+#define HEVCD_MCRCC_PERFMON_DATA ((0x34f4 << 2) + 0xff620000)
 // HEVCD_MCRCC_STALL_ADJUST
 // [2:0]    datapath_lcu16_delay
 //          xx1         64 lcu16 or tilestart_y
 //          x10        128 lcu16 or tilestart_y
 //          100        256 lcu16 or tilestart_y
 //          else       no adjust
-#define HEVCD_MCRCC_STALL_ADJUST                   ((0x34f5  << 2) + 0xff620000)
+#define HEVCD_MCRCC_STALL_ADJUST ((0x34f5 << 2) + 0xff620000)
 //////////////////////////////////////////////////////////////////////////////
 ///// VP9 Decoder Registers                               ////////////////////
 //////////////////////////////////////////////////////////////////////////////
 // scale_xy :: REF_SCALE_SHIFT = 14
-    // VP9 :: (other_size << REF_SCALE_SHIFT) / this_size
-    // AV1 :: ((other_size << REF_SCALE_SHIFT) + this_size / 2) / this_size
+// VP9 :: (other_size << REF_SCALE_SHIFT) / this_size
+// AV1 :: ((other_size << REF_SCALE_SHIFT) + this_size / 2) / this_size
 // VP9D_MPP_INTERPOL_CFG0
 // [2:0]    VP9 MC Interpolation type
-            // 0-3:perframe type 4:per partition type
+// 0-3:perframe type 4:per partition type
 // [3]      reserved
 // [4]      V99 MV precision
-            // 1:high precision else  mv=mv*2
+// 1:high precision else  mv=mv*2
 // [31:5]   reserved
-#define VP9D_MPP_INTERPOL_CFG0                     ((0x3440  << 2) + 0xff620000)
+#define VP9D_MPP_INTERPOL_CFG0 ((0x3440 << 2) + 0xff620000)
 // VP9D_MPP_REF_SCALE_ENBL
 // [7:0]    VP9 MC reference scaled info
 // [15:0]   VP9 MC reference scaled dir 0:Dwn 1:Up
 // [31:16]  reserved
-#define VP9D_MPP_REF_SCALE_ENBL                    ((0x3441  << 2) + 0xff620000)
+#define VP9D_MPP_REF_SCALE_ENBL ((0x3441 << 2) + 0xff620000)
 // VP9D_MPP_REFINFO_TBL_ACCCONFIG
 // [1:0]    reserved
 // [2]      auto_inc_index/field
 // [5:3]    reference index   0:last 1:golden 2:altref[vp9] .... 6:altref[av1]
 // [8:6]    info field 0:<ref_width[14:0]> 1:<ref_height[14:0]>
-            //         2:<scale_x[26:0]  3:<scale_y[26:0]>
-            //         4:<decomp_header1_offset[23:0]> -- 32byte aligned
+//         2:<scale_x[26:0]  3:<scale_y[26:0]>
+//         4:<decomp_header1_offset[23:0]> -- 32byte aligned
 // [31:9]   reserved
-#define VP9D_MPP_REFINFO_TBL_ACCCONFIG             ((0x3442  << 2) + 0xff620000)
+#define VP9D_MPP_REFINFO_TBL_ACCCONFIG ((0x3442 << 2) + 0xff620000)
 // VP9D_MPP_REFINFO_DATA
 // [n:0]    refinfo_tbl[index]field]  wr_data/rd_data
-#define VP9D_MPP_REFINFO_DATA                      ((0x3443  << 2) + 0xff620000)
+#define VP9D_MPP_REFINFO_DATA ((0x3443 << 2) + 0xff620000)
 //////////////////////////////////////////////////////////////////////////////
 ///// AV1 Decoder Registers                               ////////////////////
 //////////////////////////////////////////////////////////////////////////////
-#define AV1D_IPP_DIR_CFG                           ((0x3490  << 2) + 0xff620000)
+#define AV1D_IPP_DIR_CFG ((0x3490 << 2) + 0xff620000)
 // [0]      -- edge_filter_enable
 // [31:1]   -- reserved
 // refid to global motion warped-mode matrix lookup table
-#define AV1D_MPP_REF2WMMAT_TBL_CONF_ADDR           ((0x3491  << 2) + 0xff620000)
+#define AV1D_MPP_REF2WMMAT_TBL_CONF_ADDR ((0x3491 << 2) + 0xff620000)
 // [0]      -- gm_wmmat lookup table switch 0:sw 1:hw : read and write
 // [1]      -- access type 1:wr 0:rd  : sw access type
 // [2]      -- auto index increment
@@ -5073,15 +5073,15 @@
 // [29:14]  -- reserved
 // [30]     -- wr-bank : 2-banks: possible ping-pong
 // [31]     -- rd-bank
-#define AV1D_MPP_REF2WMMAT_TBL_DATA                ((0x3492  << 2) + 0xff620000)
+#define AV1D_MPP_REF2WMMAT_TBL_DATA ((0x3492 << 2) + 0xff620000)
 // [26:0]   -- global motion warped-mode matrix  r/w  32byte aligned
 // [31:27]  -- reserved
-#define AV1D_MPP_ORDERHINT_CFG                     ((0x3493  << 2) + 0xff620000)
+#define AV1D_MPP_ORDERHINT_CFG ((0x3493 << 2) + 0xff620000)
 // [3:0]    current frame orderhintbits
 // [7:4]    reserved
 // [15:8]   current frame orderhint
 // [31:8]   reserved
-#define AV1D_MPP_MISC_CFG                          ((0x3494  << 2) + 0xff620000)
+#define AV1D_MPP_MISC_CFG ((0x3494 << 2) + 0xff620000)
 // [0]      -- frame_force_integer_mv
 // [31:1]   -- reserved
 //
@@ -5103,7 +5103,7 @@
 //cfg0[11:8];     //PU FIFO Threshold   , 0:16 1:1 ... 1:15
 //cfg0[15:12];    //TU FIFO Threshold>>4, 0:16<<4 1:1<<4 ... 1:15<<4
 //cfg0[29:16];    //clock_forced_on_submodules
-#define HEVC_DBLK_CFG0                             ((0x3500  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG0 ((0x3500 << 2) + 0xff620000)
 //cfg1[1:0];      //ctb_size 0:64x64 1:32x32 2:16x16
 //cfg1[2];        //ignore_out_of_boundary
 //cfg1[3];        //pcm_loop_filter_disabled_flag
@@ -5111,10 +5111,10 @@
 //cfg1[13:9];     //pps_cr_qp_offset (-12~12,inclusive)
 //cfg1[14];       //ctbx,y swap in pu i/f
 //cfg1[15];       //sao_corner_45_degree_all_software_control
-#define HEVC_DBLK_CFG1                             ((0x3501  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG1 ((0x3501 << 2) + 0xff620000)
 //cfg2[15:0];     //picture_size_width
 //cfg2[31:16];    //picture_size_height
-#define HEVC_DBLK_CFG2                             ((0x3502  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG2 ((0x3502 << 2) + 0xff620000)
 //cfg3[3:0];      //parameter_axi_arid
 //cfg3[7:4];      //parameter_axi_awid
 //cfg3[11:8];     //parameter_axi_wid
@@ -5123,56 +5123,56 @@
 //cfg3[23:20];    //data_axi_awid
 //cfg3[27:24];    //data_axi_wid
 //cfg3[28];       //data_axi_not_check_write_response
-#define HEVC_DBLK_CFG3                             ((0x3503  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG3 ((0x3503 << 2) + 0xff620000)
 //cfg4[31:0];     //parameter_axi_start_address
-#define HEVC_DBLK_CFG4                             ((0x3504  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG4 ((0x3504 << 2) + 0xff620000)
 //cfg5[31:0];     //data_axi_start_address
-#define HEVC_DBLK_CFG5                             ((0x3505  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG5 ((0x3505 << 2) + 0xff620000)
 //cfg6[9:0];      //tile_ctbx
 //cfg6[25:16];    //tile_ctby
 //cfg6[31];       //tile_enabled
-#define HEVC_DBLK_CFG6                             ((0x3506  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG6 ((0x3506 << 2) + 0xff620000)
 //cfg7[9:0];      //tile_ctbxsize
 //cfg7[25:16];    //tile_ctbysize
-#define HEVC_DBLK_CFG7                             ((0x3507  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG7 ((0x3507 << 2) + 0xff620000)
 //cfg8[9:0];      //start_ctbx, normally equals to tile_ctbx
 //cfg8[25:16];    //start_ctby, normally equals to tile_ctby
 //cfg8[31];       //start, self_cleared signal, normally set it at the begin of tile
-#define HEVC_DBLK_CFG8                             ((0x3508  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG8 ((0x3508 << 2) + 0xff620000)
 //cfg9[0]         //loop_filter_across_tiles_enabled_flag
 //cfg9[1]         //loop_filter_across_slices_enabled_flag
 //cfg9[2]         //deblocking_filter_disabled_flag
 //cfg9[6:3]       //beta_offset_div2 (-6~6,inclusive)
 //cfg9[10:7]      //tc_offset_div2 (-6~6,inclusive)
-#define HEVC_DBLK_CFG9                             ((0x3509  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG9 ((0x3509 << 2) + 0xff620000)
 //cfga[4:0]       //corner45degree{FIFO_CNT}
 //cfga[31:27]     //corner45degree{EN,FIFO_CLR,FIFO_PUSH,DATA,DATA_SEL}
-#define HEVC_DBLK_CFGA                             ((0x350a  << 2) + 0xff620000)
+#define HEVC_DBLK_CFGA ((0x350a << 2) + 0xff620000)
 //cfgb[3:0]       //0:HEVC 1:VP9 ...
-#define HEVC_DBLK_CFGB                             ((0x350b  << 2) + 0xff620000)
+#define HEVC_DBLK_CFGB ((0x350b << 2) + 0xff620000)
 //cfgc[31:0]      //cfg_addr_y1
-#define HEVC_DBLK_CFGC                             ((0x350c  << 2) + 0xff620000)
+#define HEVC_DBLK_CFGC ((0x350c << 2) + 0xff620000)
 //cfgd[31:0]      //cfg_alfpar
-#define HEVC_DBLK_CFGD                             ((0x350d  << 2) + 0xff620000)
+#define HEVC_DBLK_CFGD ((0x350d << 2) + 0xff620000)
 //cfge[31:0]
-#define HEVC_DBLK_CFGE                             ((0x350e  << 2) + 0xff620000)
-#define HEVC_DBLK_STS0                             ((0x350f  << 2) + 0xff620000)
-#define HEVC_DBLK_STS1                             ((0x3510  << 2) + 0xff620000)
+#define HEVC_DBLK_CFGE ((0x350e << 2) + 0xff620000)
+#define HEVC_DBLK_STS0 ((0x350f << 2) + 0xff620000)
+#define HEVC_DBLK_STS1 ((0x3510 << 2) + 0xff620000)
 //cfg11[31:0]
-#define HEVC_DBLK_CFG11                            ((0x3511  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG11 ((0x3511 << 2) + 0xff620000)
 //cfg12[31:0]
-#define HEVC_DBLK_CFG12                            ((0x3512  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG12 ((0x3512 << 2) + 0xff620000)
 //cfg13[31:0]
-#define HEVC_DBLK_CFG13                            ((0x3513  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG13 ((0x3513 << 2) + 0xff620000)
 //cfg14[31:0]
-#define HEVC_DBLK_CFG14                            ((0x3514  << 2) + 0xff620000)
+#define HEVC_DBLK_CFG14 ((0x3514 << 2) + 0xff620000)
 // cfgs for av1 cdef
-#define HEVC_DBLK_CDEF0                            ((0x3515  << 2) + 0xff620000)
-#define HEVC_DBLK_CDEF1                            ((0x3516  << 2) + 0xff620000)
-#define HEVC_DBLK_CDEF2                            ((0x3517  << 2) + 0xff620000)
-#define HEVC_DBLK_CDEF3                            ((0x3518  << 2) + 0xff620000)
-#define HEVC_DBLK_CDEF4                            ((0x3519  << 2) + 0xff620000)
-#define HEVC_DBLK_CDEF5                            ((0x351a  << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF0 ((0x3515 << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF1 ((0x3516 << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF2 ((0x3517 << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF3 ((0x3518 << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF4 ((0x3519 << 2) + 0xff620000)
+#define HEVC_DBLK_CDEF5 ((0x351a << 2) + 0xff620000)
 // cfgs for av1 upscaling
 // ups0[15:0] upscl_picsizex
 // ups0[16] use_superre::upscaling enable
@@ -5183,25 +5183,25 @@
 // ups3[29:0] x0_qn chroma
 // ups4[29:0] x_step luma
 // ups5[29:0] x_step luma
-#define HEVC_DBLK_UPS0                             ((0x351b  << 2) + 0xff620000)
-#define HEVC_DBLK_UPS1                             ((0x351c  << 2) + 0xff620000)
-#define HEVC_DBLK_UPS2                             ((0x351d  << 2) + 0xff620000)
-#define HEVC_DBLK_UPS3                             ((0x351e  << 2) + 0xff620000)
-#define HEVC_DBLK_UPS4                             ((0x351f  << 2) + 0xff620000)
-#define HEVC_DBLK_UPS5                             ((0x3520  << 2) + 0xff620000)
+#define HEVC_DBLK_UPS0 ((0x351b << 2) + 0xff620000)
+#define HEVC_DBLK_UPS1 ((0x351c << 2) + 0xff620000)
+#define HEVC_DBLK_UPS2 ((0x351d << 2) + 0xff620000)
+#define HEVC_DBLK_UPS3 ((0x351e << 2) + 0xff620000)
+#define HEVC_DBLK_UPS4 ((0x351f << 2) + 0xff620000)
+#define HEVC_DBLK_UPS5 ((0x3520 << 2) + 0xff620000)
 //cfgs for av1 lrf
 //lrf0[0] lrf_enable
 //lrf0[4:1] lrf_unitsize
 //lrf1[31:0] lrf_unitnum
-#define HEVC_DBLK_LRF0                             ((0x3521  << 2) + 0xff620000)
-#define HEVC_DBLK_LRF1                             ((0x3522  << 2) + 0xff620000)
+#define HEVC_DBLK_LRF0 ((0x3521 << 2) + 0xff620000)
+#define HEVC_DBLK_LRF1 ((0x3522 << 2) + 0xff620000)
 //cfgs for av1 dblk
 //dblk0[23:0] base_lvl
 //dblk1[6:0] for mode_ref_lvl
 //dblk2[31:0] for seg_lvl
-#define HEVC_DBLK_DBLK0                            ((0x3523  << 2) + 0xff620000)
-#define HEVC_DBLK_DBLK1                            ((0x3524  << 2) + 0xff620000)
-#define HEVC_DBLK_DBLK2                            ((0x3525  << 2) + 0xff620000)
+#define HEVC_DBLK_DBLK0 ((0x3523 << 2) + 0xff620000)
+#define HEVC_DBLK_DBLK1 ((0x3524 << 2) + 0xff620000)
+#define HEVC_DBLK_DBLK2 ((0x3525 << 2) + 0xff620000)
 //
 // Closing file:  hevc_dblk_regs.h
 //
@@ -5214,12 +5214,12 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HEVC_SAO_CBUS_BASE = 0x06
 // -----------------------------------------------
-#define HEVC_SAO_VERSION                           ((0x3600  << 2) + 0xff620000)
+#define HEVC_SAO_VERSION ((0x3600 << 2) + 0xff620000)
 //  [31:0]  reversion               default:32'h00010001
-#define HEVC_SAO_CTRL0                             ((0x3601  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL0 ((0x3601 << 2) + 0xff620000)
 //  [3:0]   lcu_size_log2
 //  [31]    above intermedia data compress: 0=no-compress,1=compress;default:1'b0
-#define HEVC_SAO_CTRL1                             ((0x3602  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL1 ((0x3602 << 2) + 0xff620000)
 //  [31:24] ar_fifo1_axi_thred
 //  [23:16] ar_fifo0_axi_thred
 //  [15:14] axi_linealign, 0-16bytes, 1-32bytes, 2-64bytes
@@ -5230,7 +5230,7 @@
 //  [2]     clk_forceon
 //  [1]     dw_disable:disable double write output
 //  [0]     cm_disable:disable compress output
-#define HEVC_SAO_INT_EN                            ((0x3603  << 2) + 0xff620000)
+#define HEVC_SAO_INT_EN ((0x3603 << 2) + 0xff620000)
 //  [0]     sao_int_enable
 //  [1]     sao_int_amrisc_level
 //  [2]     sao_int_cpu_level
@@ -5242,109 +5242,109 @@
 //  [29]    LPF_TO_OW_VALID:0=not valid,1=valid
 //  [30]    LPF_IS_DONE:0=LPF is ON/BUSY,1=LPF/DBLK is DONE/OFF
 //  [31]    OW_IS_ON:1=OW is ON/BUSY,0=OW is DONW/OFF
-#define HEVC_SAO_INT_STATUS                        ((0x3604  << 2) + 0xff620000)
+#define HEVC_SAO_INT_STATUS ((0x3604 << 2) + 0xff620000)
 //  [0]     slice_done IRQ
 //  [31]    write "1"=slice start(self clear,read always return "0")
-#define HEVC_SAO_PIC_SIZE                          ((0x3605  << 2) + 0xff620000)
+#define HEVC_SAO_PIC_SIZE ((0x3605 << 2) + 0xff620000)
 //  [15:0]  pic_width[15:0]
 //  [31:16] pic_height[15:0]
-#define HEVC_SAO_PIC_SIZE_LCU                      ((0x3606  << 2) + 0xff620000)
+#define HEVC_SAO_PIC_SIZE_LCU ((0x3606 << 2) + 0xff620000)
 //  [15:0]  lcu_x_num_1[15:0]   (=lcu_x_total-1)
 //  [31:16] lcu_y_num_1[15:0]   (=lcu_y_total-1)
-#define HEVC_SAO_TILE_START                        ((0x3607  << 2) + 0xff620000)
+#define HEVC_SAO_TILE_START ((0x3607 << 2) + 0xff620000)
 //  [15:0]  tile_start_lcu_x[15:0]
 //  [31:16] tile_start_lcu_y[15:0]
-#define HEVC_SAO_TILE_SIZE_LCU                     ((0x3608  << 2) + 0xff620000)
+#define HEVC_SAO_TILE_SIZE_LCU ((0x3608 << 2) + 0xff620000)
 //  [15:0]  tile_width_lcu[15:0]
 //  [31:16] tile_height_lcu[15:0]
-#define HEVC_SAO_AXI_WCTRL                         ((0x3609  << 2) + 0xff620000)
-#define HEVC_SAO_AXI_RCTRL                         ((0x360a  << 2) + 0xff620000)
-#define HEVC_SAO_Y_START_ADDR                      ((0x360b  << 2) + 0xff620000)
-#define HEVC_SAO_Y_LENGTH                          ((0x360c  << 2) + 0xff620000)
-#define HEVC_SAO_C_START_ADDR                      ((0x360d  << 2) + 0xff620000)
-#define HEVC_SAO_C_LENGTH                          ((0x360e  << 2) + 0xff620000)
-#define HEVC_SAO_Y_WPTR                            ((0x360f  << 2) + 0xff620000)
-#define HEVC_SAO_C_WPTR                            ((0x3610  << 2) + 0xff620000)
-#define HEVC_SAO_ABV_START_ADDR                    ((0x3611  << 2) + 0xff620000)
-#define HEVC_SAO_VB_WR_START_ADDR                  ((0x3612  << 2) + 0xff620000)
-#define HEVC_SAO_VB_RD_START_ADDR                  ((0x3613  << 2) + 0xff620000)
-#define HEVC_SAO_ABV_WPTR                          ((0x3614  << 2) + 0xff620000)
-#define HEVC_SAO_ABV_RPTR                          ((0x3615  << 2) + 0xff620000)
-#define HEVC_SAO_VB_WPTR                           ((0x3616  << 2) + 0xff620000)
-#define HEVC_SAO_VB_RPTR                           ((0x3617  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_MODE0                         ((0x361e  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_MODE1                         ((0x361f  << 2) + 0xff620000)
-#define HEVC_SAO_CTRL2                             ((0x3620  << 2) + 0xff620000)
-#define HEVC_SAO_CTRL3                             ((0x3621  << 2) + 0xff620000)
-#define HEVC_SAO_CTRL4                             ((0x3622  << 2) + 0xff620000)
+#define HEVC_SAO_AXI_WCTRL ((0x3609 << 2) + 0xff620000)
+#define HEVC_SAO_AXI_RCTRL ((0x360a << 2) + 0xff620000)
+#define HEVC_SAO_Y_START_ADDR ((0x360b << 2) + 0xff620000)
+#define HEVC_SAO_Y_LENGTH ((0x360c << 2) + 0xff620000)
+#define HEVC_SAO_C_START_ADDR ((0x360d << 2) + 0xff620000)
+#define HEVC_SAO_C_LENGTH ((0x360e << 2) + 0xff620000)
+#define HEVC_SAO_Y_WPTR ((0x360f << 2) + 0xff620000)
+#define HEVC_SAO_C_WPTR ((0x3610 << 2) + 0xff620000)
+#define HEVC_SAO_ABV_START_ADDR ((0x3611 << 2) + 0xff620000)
+#define HEVC_SAO_VB_WR_START_ADDR ((0x3612 << 2) + 0xff620000)
+#define HEVC_SAO_VB_RD_START_ADDR ((0x3613 << 2) + 0xff620000)
+#define HEVC_SAO_ABV_WPTR ((0x3614 << 2) + 0xff620000)
+#define HEVC_SAO_ABV_RPTR ((0x3615 << 2) + 0xff620000)
+#define HEVC_SAO_VB_WPTR ((0x3616 << 2) + 0xff620000)
+#define HEVC_SAO_VB_RPTR ((0x3617 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_MODE0 ((0x361e << 2) + 0xff620000)
+#define HEVC_SAO_DBG_MODE1 ((0x361f << 2) + 0xff620000)
+#define HEVC_SAO_CTRL2 ((0x3620 << 2) + 0xff620000)
+#define HEVC_SAO_CTRL3 ((0x3621 << 2) + 0xff620000)
+#define HEVC_SAO_CTRL4 ((0x3622 << 2) + 0xff620000)
 //pic_height_ext_r,pic_width_ext_r
-#define HEVC_SAO_CTRL5                             ((0x3623  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL5 ((0x3623 << 2) + 0xff620000)
 //[23:22]  dw_v1_ctrl   default:2'b11
 //[21:20]  dw_v0_ctrl   default:2'b11
 //[19:18]  dw_h1_ctrl   default:2'b11
 //[17:16]  dw_h0_ctrl   default:2'b11
-#define HEVC_SAO_CTRL6                             ((0x3624  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL6 ((0x3624 << 2) + 0xff620000)
 //pad_v_cbus[9:0]
 //pad_u_cbus[9:0]
 //pad_y_cbus[9:0]
-#define HEVC_SAO_CTRL7                             ((0x3625  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL7 ((0x3625 << 2) + 0xff620000)
 //ar_fifo5_axi_thred
 //aw_fifo5_axi_thred
 //aw_fifo4_axi_thred
 //aw_fifo3_axi_thred
-#define HEVC_CM_BODY_START_ADDR                    ((0x3626  << 2) + 0xff620000)
-#define HEVC_CM_BODY_LENGTH                        ((0x3627  << 2) + 0xff620000)
-#define HEVC_CM_HEADER_START_ADDR                  ((0x3628  << 2) + 0xff620000)
-#define HEVC_CM_HEADER_LENGTH                      ((0x3629  << 2) + 0xff620000)
-#define HEVC_CM_COLOR                              ((0x362a  << 2) + 0xff620000)
+#define HEVC_CM_BODY_START_ADDR ((0x3626 << 2) + 0xff620000)
+#define HEVC_CM_BODY_LENGTH ((0x3627 << 2) + 0xff620000)
+#define HEVC_CM_HEADER_START_ADDR ((0x3628 << 2) + 0xff620000)
+#define HEVC_CM_HEADER_LENGTH ((0x3629 << 2) + 0xff620000)
+#define HEVC_CM_COLOR ((0x362a << 2) + 0xff620000)
 //cm_color_v_cfg_cbus
 //cm_color_u_cfg_cbus
 //cm_color_y_cfg_cbus
-#define HEVC_CM_HEADER_OFFSET                      ((0x362b  << 2) + 0xff620000)
-#define HEVC_SAO_CTRL8                             ((0x362c  << 2) + 0xff620000)
+#define HEVC_CM_HEADER_OFFSET ((0x362b << 2) + 0xff620000)
+#define HEVC_SAO_CTRL8 ((0x362c << 2) + 0xff620000)
 //axi_idle_thred=sao_ctrl8[15:0]
-#define HEVC_SAO_CTRL9                             ((0x362d  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL9 ((0x362d << 2) + 0xff620000)
 //[10] dw_output_sel:0=nv21,1=compress,default=0
 //[11] fgs_bypass:0=bypass,1=not bypass,default=0
 //[16] fgs_table_disable:0=enable 1=diable,default=0
 //[17] fgs_dma_disable:0=enable 1=diable,default=0
 //[18] fgs_core_disable:0=enable 1=diable,default=0
 //[23:20] fgs_dma_axi_lendian
-#define HEVC_SAO_CTRL10                            ((0x362e  << 2) + 0xff620000)
-#define HEVC_SAO_CTRL11                            ((0x362f  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_0                        ((0x3630  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_1                        ((0x3631  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_2                        ((0x3632  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_3                        ((0x3633  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_4                        ((0x3634  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_5                        ((0x3635  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_6                        ((0x3636  << 2) + 0xff620000)
-#define HEVC_SAO_DBG_DATA_7                        ((0x3637  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_WR                            ((0x3638  << 2) + 0xff620000)
+#define HEVC_SAO_CTRL10 ((0x362e << 2) + 0xff620000)
+#define HEVC_SAO_CTRL11 ((0x362f << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_0 ((0x3630 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_1 ((0x3631 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_2 ((0x3632 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_3 ((0x3633 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_4 ((0x3634 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_5 ((0x3635 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_6 ((0x3636 << 2) + 0xff620000)
+#define HEVC_SAO_DBG_DATA_7 ((0x3637 << 2) + 0xff620000)
+#define HEVC_SAO_MMU_WR ((0x3638 << 2) + 0xff620000)
 //RO:mmu_cm_body_ddr_addr
-#define HEVC_SAO_MMU_STATUS                        ((0x3639  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_STATUS ((0x3639 << 2) + 0xff620000)
 //Read Only
 //[31:16]   mmu_cmd_rd_cnt[15:0]
 //[15:0]    reserved0[15:0]
-#define HEVC_SAO_MMU_VH0_ADDR                      ((0x363a  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_VH1_ADDR                      ((0x363b  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_WPTR                          ((0x363c  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_RPTR                          ((0x363d  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_DMA_CTRL                      ((0x363e  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_VH0_ADDR ((0x363a << 2) + 0xff620000)
+#define HEVC_SAO_MMU_VH1_ADDR ((0x363b << 2) + 0xff620000)
+#define HEVC_SAO_MMU_WPTR ((0x363c << 2) + 0xff620000)
+#define HEVC_SAO_MMU_RPTR ((0x363d << 2) + 0xff620000)
+#define HEVC_SAO_MMU_DMA_CTRL ((0x363e << 2) + 0xff620000)
 //[31:6] mmu_dma_base_address
 //[5:1]  reserved 0
 //[0]    mmu_dma_enable
-#define HEVC_SAO_MMU_DMA_STATUS                    ((0x363f  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_DMA_STATUS ((0x363f << 2) + 0xff620000)
 //[31:1] reserved0
 //[0]    dma_idle
-#define HEVC_CM_CORE_STATUS                        ((0x3640  << 2) + 0xff620000)
+#define HEVC_CM_CORE_STATUS ((0x3640 << 2) + 0xff620000)
 //[0]    tile_busy
 //[30:1] reserved 0
 //[31]   mmu_4kbuffer_empty
-#define HEVC_SAO_MMU_RESET_CTRL                    ((0x3641  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_RESET_CTRL ((0x3641 << 2) + 0xff620000)
 //[31:1] reserved 0
 //[0]    sw_rst_mmu
-#define HEVC_CM_LOSSY_QUANT_CTRL                   ((0x3642  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_QUANT_CTRL ((0x3642 << 2) + 0xff620000)
 //[0]    lossy_quant_enable
 //[3:1]  reserved 0
 //[7:4]  luma_bcleav_offset
@@ -5356,48 +5356,48 @@
 // [7:2]    reserved
 // [1]      auto_inc_read
 // [0]      auto_inc_write
-#define HEVC_CM_LOSSY_RQUANT_YCLUT_ACCCONFIG       ((0x3643  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_RQUANT_YCLUT_ACCCONFIG ((0x3643 << 2) + 0xff620000)
 // Id[3:0]  --> {chroma_rquant[3:0],luma_rquant[3:0]}
-#define HEVC_CM_LOSSY_RQUANT_YCLUT_DATA            ((0x3644  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_RQUANT_YCLUT_DATA ((0x3644 << 2) + 0xff620000)
 // ID to mintree quant lookup table 2x12
 // [31:12]  reserved
 // [11:8]   access_index
 // [7:2]    reserved
 // [1]      auto_inc_read
 // [0]      auto_inc_write
-#define HEVC_CM_LOSSY_IQUANT_YCLUT_ACCCONFIG       ((0x3645  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_IQUANT_YCLUT_ACCCONFIG ((0x3645 << 2) + 0xff620000)
 // Id[3:0]  --> {chroma_iquant[3:0],luma_iquant[3:0]}
-#define HEVC_CM_LOSSY_IQUANT_YCLUT_DATA            ((0x3646  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_IQUANT_YCLUT_DATA ((0x3646 << 2) + 0xff620000)
 // AV1 Tile info -- due to width superscaling in lpf
 // [15:0]   tile_start_x
 // [31:16]  tile_end_x
-#define HEVC_CM_AV1_TILE_LOC_X                     ((0x3647  << 2) + 0xff620000)
+#define HEVC_CM_AV1_TILE_LOC_X ((0x3647 << 2) + 0xff620000)
 // AV1 Tile info -- due to width superscaling in lpf
 // [15:0]   tile_start_y
 // [31:16]  tile_end_y
-#define HEVC_CM_AV1_TILE_LOC_Y                     ((0x3648  << 2) + 0xff620000)
+#define HEVC_CM_AV1_TILE_LOC_Y ((0x3648 << 2) + 0xff620000)
 // [0]      cfg_av1_loopfilter_bypass
 // [31:1]   reserved
-#define HEVC_CM_CORE_CTRL                          ((0x3649  << 2) + 0xff620000)
-#define HEVC_CM_HEADER_START_ADDR2                 ((0x364a  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_WR2                           ((0x364b  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_DMA_CTRL2                     ((0x364c  << 2) + 0xff620000)
+#define HEVC_CM_CORE_CTRL ((0x3649 << 2) + 0xff620000)
+#define HEVC_CM_HEADER_START_ADDR2 ((0x364a << 2) + 0xff620000)
+#define HEVC_SAO_MMU_WR2 ((0x364b << 2) + 0xff620000)
+#define HEVC_SAO_MMU_DMA_CTRL2 ((0x364c << 2) + 0xff620000)
 //[31:6] mmu_dma_base_address2
 //[5:1]  reserved 0
 //[0]    mmu_dma_enable2
-#define HEVC_SAO_MMU_VH0_ADDR2                     ((0x364d  << 2) + 0xff620000)
-#define HEVC_SAO_MMU_VH1_ADDR2                     ((0x364e  << 2) + 0xff620000)
-#define HEVC_CM_CORE_STATUS2                       ((0x364f  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_VH0_ADDR2 ((0x364d << 2) + 0xff620000)
+#define HEVC_SAO_MMU_VH1_ADDR2 ((0x364e << 2) + 0xff620000)
+#define HEVC_CM_CORE_STATUS2 ((0x364f << 2) + 0xff620000)
 //[0]    tile_busy
 //[30:1] reserved 0
 //[31]   mmu_4kbuffer_empty
 //
-#define HEVC_SAO_MMU_STATUS2                       ((0x3650  << 2) + 0xff620000)
+#define HEVC_SAO_MMU_STATUS2 ((0x3650 << 2) + 0xff620000)
 //Read Only
 //[31:16]   mmu_cmd_rd_cnt2[15:0]
 //[15:0]    reserved0[15:0]
 //
-#define HEVC_CM_LOSSY_QUANT_CTRL2                  ((0x3652  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_QUANT_CTRL2 ((0x3652 << 2) + 0xff620000)
 //[0]    lossy_quant_enable
 //[3:1]  reserved 0
 //[7:4]  luma_bcleav_offset
@@ -5409,49 +5409,49 @@
 // [7:2]    reserved
 // [1]      auto_inc_read
 // [0]      auto_inc_write
-#define HEVC_CM_LOSSY_RQUANT_YCLUT_ACCCONFIG2      ((0x3653  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_RQUANT_YCLUT_ACCCONFIG2 ((0x3653 << 2) + 0xff620000)
 // Id[3:0]  --> {chroma_rquant[3:0],luma_rquant[3:0]}
-#define HEVC_CM_LOSSY_RQUANT_YCLUT_DATA2           ((0x3654  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_RQUANT_YCLUT_DATA2 ((0x3654 << 2) + 0xff620000)
 // ID to mintree quant lookup table 2x12
 // [31:12]  reserved
 // [11:8]   access_index
 // [7:2]    reserved
 // [1]      auto_inc_read
 // [0]      auto_inc_write
-#define HEVC_CM_LOSSY_IQUANT_YCLUT_ACCCONFIG2      ((0x3655  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_IQUANT_YCLUT_ACCCONFIG2 ((0x3655 << 2) + 0xff620000)
 // Id[3:0]  --> {chroma_iquant[3:0],luma_iquant[3:0]}
-#define HEVC_CM_LOSSY_IQUANT_YCLUT_DATA2           ((0x3656  << 2) + 0xff620000)
+#define HEVC_CM_LOSSY_IQUANT_YCLUT_DATA2 ((0x3656 << 2) + 0xff620000)
 // AV1 Tile info -- due to width superscaling in lpf
 // [15:0]   tile_start_x
 // [31:16]  tile_end_x
-#define HEVC_CM_AV1_TILE_LOC_X2                    ((0x3657  << 2) + 0xff620000)
+#define HEVC_CM_AV1_TILE_LOC_X2 ((0x3657 << 2) + 0xff620000)
 // AV1 Tile info -- due to width superscaling in lpf
 // [15:0]   tile_start_y
 // [31:16]  tile_end_y
-#define HEVC_CM_AV1_TILE_LOC_Y2                    ((0x3658  << 2) + 0xff620000)
+#define HEVC_CM_AV1_TILE_LOC_Y2 ((0x3658 << 2) + 0xff620000)
 // [0]      cfg_av1_loopfilter_bypass
 // [31:0]   reserved
-#define HEVC_CM_CORE_CTRL2                         ((0x3659  << 2) + 0xff620000)
-#define HEVC_CM_BODY_START_ADDR2                   ((0x365a  << 2) + 0xff620000)
-#define HEVC_FORCE_YUV_CTRL                        ((0x365b  << 2) + 0xff620000)
+#define HEVC_CM_CORE_CTRL2 ((0x3659 << 2) + 0xff620000)
+#define HEVC_CM_BODY_START_ADDR2 ((0x365a << 2) + 0xff620000)
+#define HEVC_FORCE_YUV_CTRL ((0x365b << 2) + 0xff620000)
 //[0]	CM force Y: 0=off,1=on,default=0
 //[1]	CM force U: 0=off,1=on,default=0
 //[2]	CM force V: 0=off,1=on,default=0
 //[4]	DW force Y: 0=off,1=on,default=0
 //[5]	DW force U: 0=off,1=on,default=0
 //[6]	DW force V: 0=off,1=on,default=0
-#define HEVC_FORCE_YUV_0                           ((0x365c  << 2) + 0xff620000)
+#define HEVC_FORCE_YUV_0 ((0x365c << 2) + 0xff620000)
 //[9:0]	CM force Y value:default=10'h010
 //[19:10]	CM force U value:default=10'h080
 //[29:20]	CM force V value:default=10'h080
-#define HEVC_FORCE_YUV_1                           ((0x365d  << 2) + 0xff620000)
+#define HEVC_FORCE_YUV_1 ((0x365d << 2) + 0xff620000)
 //[9:0]	DW force Y value:default=10'h010
 //[19:10]	DW force U value:default=10'h080
 //[29:20]	DW force V value:default=10'h080
-#define HEVC_DW_VH0_ADDDR                          ((0x365e  << 2) + 0xff620000)
-#define HEVC_DW_VH1_ADDDR                          ((0x365f  << 2) + 0xff620000)
+#define HEVC_DW_VH0_ADDDR ((0x365e << 2) + 0xff620000)
+#define HEVC_DW_VH1_ADDDR ((0x365f << 2) + 0xff620000)
 // [5:0]  :  fgs_idx
-#define HEVC_FGS_IDX                               ((0x3660  << 2) + 0xff620000)
+#define HEVC_FGS_IDX ((0x3660 << 2) + 0xff620000)
 // fbs_idx :
 // 0 --
 //       bit[30]   - bit_depth_10
@@ -5484,7 +5484,7 @@
 //       bit[31:24]  - cr_mult
 //       bit[23:16]  - cr_luma_mult
 //       bit[15:7]   - cr_offset
-#define HEVC_FGS_DATA                              ((0x3661  << 2) + 0xff620000)
+#define HEVC_FGS_DATA ((0x3661 << 2) + 0xff620000)
 //       bit[31:16] - random_seed
 //       bit[06]   - apply_cr (RO) //assign  apply_cr        =num_cr_points>0 | chroma_scaling_from_luma;
 //       bit[05]   - apply_cb (RO) //assign  apply_cb        =num_cb_points>0 | chroma_scaling_from_luma;
@@ -5493,12 +5493,12 @@
 //       bit[02]   - update_parameters
 //       bit[01]   - apply_grain
 //       bit[00]   - film gran start
-#define HEVC_FGS_CTRL                              ((0x3662  << 2) + 0xff620000)
-#define HEVC_CM_BODY_LENGTH2                       ((0x3663  << 2) + 0xff620000)
-#define HEVC_CM_HEADER_OFFSET2                     ((0x3664  << 2) + 0xff620000)
-#define HEVC_CM_HEADER_LENGTH2                     ((0x3665  << 2) + 0xff620000)
-#define HEVC_FGS_TABLE_START                       ((0x3666  << 2) + 0xff620000)
-#define HEVC_FGS_TABLE_LENGTH                      ((0x3667  << 2) + 0xff620000)
+#define HEVC_FGS_CTRL ((0x3662 << 2) + 0xff620000)
+#define HEVC_CM_BODY_LENGTH2 ((0x3663 << 2) + 0xff620000)
+#define HEVC_CM_HEADER_OFFSET2 ((0x3664 << 2) + 0xff620000)
+#define HEVC_CM_HEADER_LENGTH2 ((0x3665 << 2) + 0xff620000)
+#define HEVC_FGS_TABLE_START ((0x3666 << 2) + 0xff620000)
+#define HEVC_FGS_TABLE_LENGTH ((0x3667 << 2) + 0xff620000)
 //
 // Closing file:  hevc_sao_regs.h
 //
@@ -5515,7 +5515,7 @@
 //                          1=Free running clock if something wrong with auto-gating.
 //                          Default 0.
 // [    1] RW enable_clk.   0=Disable clock; 1=Enable clock.        Default 0.
-#define HEVC_IQIT_CLK_RST_CTRL                     ((0x3700  << 2) + 0xff620000)
+#define HEVC_IQIT_CLK_RST_CTRL ((0x3700 << 2) + 0xff620000)
 // [ 5: 4] RW ctb_size.     0=8x8; 1=16x16; 2=32x32; 3=64x64.                       Default 0.
 // [    3] RW itr_skip_mode. For dealing with discrepancy between Spec and C model for transform_skip.
 //                          0=Follow Spec; 1=Follow C model.                        Default 0.
@@ -5525,15 +5525,15 @@
 //                          Default 0.
 // [    1] RW scalelist_en. 0=Use flat scale; 1=Use scaling factor list.            Default 0.
 // [    0] RW diagscan_en.  0=Linear lookup dQ table; 1=Diagonally lookup dQ table. Default 0.
-#define HEVC_IQIT_DEQUANT_CTRL                     ((0x3701  << 2) + 0xff620000)
+#define HEVC_IQIT_DEQUANT_CTRL ((0x3701 << 2) + 0xff620000)
 // [31:10] WR Reserved.                                 Default 0.
 // [ 9: 0] WR scalelut_addr.                            Default 0.
-#define HEVC_IQIT_SCALELUT_WR_ADDR                 ((0x3702  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_WR_ADDR ((0x3702 << 2) + 0xff620000)
 // [31:10] RD Reserved.                                 Default 0.
 // [ 9: 0] RD scalelut_addr.                            Default 0.
-#define HEVC_IQIT_SCALELUT_RD_ADDR                 ((0x3703  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_RD_ADDR ((0x3703 << 2) + 0xff620000)
 // [ 7: 0] RW LUT data.
-#define HEVC_IQIT_SCALELUT_DATA                    ((0x3704  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_DATA ((0x3704 << 2) + 0xff620000)
 //---------------------------------------------------
 // tab_idx [2:0] -
 //    0-5 use custom table index
@@ -5551,7 +5551,7 @@
 // [ 6: 4] 4x4 tab 1
 // [    3] reserved
 // [ 2: 0] 4x4 tab 0
-#define HEVC_IQIT_SCALELUT_IDX_4                   ((0x3705  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_IDX_4 ((0x3705 << 2) + 0xff620000)
 // [22:20] 8x8 tab 5
 // [   19] reserved
 // [18:16] 8x8 tab 4
@@ -5563,7 +5563,7 @@
 // [ 6: 4] 8x8 tab 1
 // [    3] reserved
 // [ 2: 0] 8x8 tab 0
-#define HEVC_IQIT_SCALELUT_IDX_8                   ((0x3706  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_IDX_8 ((0x3706 << 2) + 0xff620000)
 // [   31] reserved
 // [30:28] 32x32 tab 1
 // [   27] reserved
@@ -5580,18 +5580,18 @@
 // [ 6: 4] 16x16 tab 1
 // [    3] reserved
 // [ 2: 0] 16x16 tab 0
-#define HEVC_IQIT_SCALELUT_IDX_16_32               ((0x3707  << 2) + 0xff620000)
+#define HEVC_IQIT_SCALELUT_IDX_16_32 ((0x3707 << 2) + 0xff620000)
 // [ 8: 2] R  tuinfo_fifo_cnt.
 // [    1] R  fifo_has_room.
 // [    0] R  mem_init_done.
-#define HEVC_IQIT_STAT_GEN0                        ((0x3708  << 2) + 0xff620000)
+#define HEVC_IQIT_STAT_GEN0 ((0x3708 << 2) + 0xff620000)
 // [   23] RW cntl_qp_cr_valid.
 // [21:16] RW cntl_qp_cr.
 // [   15] RW cntl_qp_cb_valid.
 // [13: 8] RW cntl_qp_cb.
 // [    7] RW cntl_qp_y_valid.
 // [ 5: 0] RW cntl_qp_y.
-#define HEVC_QP_WRITE                              ((0x3709  << 2) + 0xff620000)
+#define HEVC_QP_WRITE ((0x3709 << 2) + 0xff620000)
 // [31:30] R  ipp_size.
 // [28:24] R  ipp_mem_ptr.
 // [23:22] R  itr2_size.
@@ -5600,25 +5600,25 @@
 // [12: 8] R  itr1_mem_ptr.
 // [ 7: 6] R  iq_size.
 // [ 4: 0] R  iq_mem_ptr.
-#define HEVC_IQIT_STAT_GEN1                        ((0x370a  << 2) + 0xff620000)
+#define HEVC_IQIT_STAT_GEN1 ((0x370a << 2) + 0xff620000)
 // [ 5: 4] RW cntl_bitdepth_c. 0=8-bit; 1=9-bit; 2=10-bit.
 // [ 1: 0] RW cntl_bitdepth_y. 0=8-bit; 1=9-bit; 2=10-bit.
-#define HEVC_IQIT_BITDEPTH                         ((0x370b  << 2) + 0xff620000)
+#define HEVC_IQIT_BITDEPTH ((0x370b << 2) + 0xff620000)
 // [   10] R  ipp_active.
 // [    9] R  itr2_active.
 // [    8] R  itr1_active.
 // [ 5: 0] R  mem_spare_num.
-#define HEVC_IQIT_STAT_GEN2                        ((0x370c  << 2) + 0xff620000)
-#define HEVC_IQIT_AVS2_WQP_0123                    ((0x370d  << 2) + 0xff620000)
-#define HEVC_IQIT_AVS2_WQP_45                      ((0x370e  << 2) + 0xff620000)
-#define HEVC_IQIT_AVS2_QP_DELTA                    ((0x370f  << 2) + 0xff620000)
+#define HEVC_IQIT_STAT_GEN2 ((0x370c << 2) + 0xff620000)
+#define HEVC_IQIT_AVS2_WQP_0123 ((0x370d << 2) + 0xff620000)
+#define HEVC_IQIT_AVS2_WQP_45 ((0x370e << 2) + 0xff620000)
+#define HEVC_IQIT_AVS2_QP_DELTA ((0x370f << 2) + 0xff620000)
 // bit[11]  -- mv_use_abs (only calculate abs)
 // bit[10]  -- mv_use_simple_mode (every size count has same weight)
 // bit[9]   -- use_simple_mode (every size count has same weight)
 // bit[8]   -- reseet_all_count // write only
 // bit[7:5] Reserved
 // bit[4:0] pic_quality_rd_idx
-#define HEVC_PIC_QUALITY_CTRL                      ((0x3710  << 2) + 0xff620000)
+#define HEVC_PIC_QUALITY_CTRL ((0x3710 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- blk44_y_count // 4k will use 20 bits
 //   1  -- qp_y_sum // 4k use 27 bits
@@ -5641,7 +5641,7 @@
 //  18  -- {mvy_L0_max, mvy_L0_min}
 //  19  -- {mvx_L1_max, mvx_L1_min}
 //  20  -- {mvy_L1_max, mvy_L1_min}
-#define HEVC_PIC_QUALITY_DATA                      ((0x3711  << 2) + 0xff620000)
+#define HEVC_PIC_QUALITY_DATA ((0x3711 << 2) + 0xff620000)
 // bit[15]  disable_ddr_r_count
 // bit[14]  disable_ddr_ar_count
 // bit[13]  disable_ddr_w_count
@@ -5653,7 +5653,7 @@
 // bit[3:2] Reserved
 // bit[1]   Clear all count
 // bit[0]   Enable/Disable monitor
-#define HEVC_PATH_MONITOR_CTRL                     ((0x3712  << 2) + 0xff620000)
+#define HEVC_PATH_MONITOR_CTRL ((0x3712 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- total_clock_count
 //   1  -- parser_iqit_transfer_count
@@ -5700,8 +5700,8 @@
 //		    iqit_ipp_valid,
 //		    parser_iqit_valid
 //                 };
-#define HEVC_PATH_MONITOR_DATA                     ((0x3713  << 2) + 0xff620000)
-#define HEVC_IQIT_STAT_GEN3                        ((0x3720  << 2) + 0xff620000)
+#define HEVC_PATH_MONITOR_DATA ((0x3713 << 2) + 0xff620000)
+#define HEVC_IQIT_STAT_GEN3 ((0x3720 << 2) + 0xff620000)
 //
 // Closing file:  hevc_iqit_regs.h
 //
@@ -5725,7 +5725,7 @@
 // [11] VDEC1 Reset vcpu's MCPU
 // [12] VDEC1 Reset vcpu's CCPU
 // [13] VDEC1 Reset mmc_pre_arb
-#define DOS_SW_RESET0                              ((0x3f00  << 2) + 0xff620000)
+#define DOS_SW_RESET0 ((0x3f00 << 2) + 0xff620000)
 // [31:27] reserved
 // [26] hcodec clk_en for henc assist
 // [25:22] reserved
@@ -5750,12 +5750,12 @@
 // [2] vdec clk_en for mdec iqidct
 // [1] vdec clk_en for mdec dblk
 // [0] vdec clk_en for mdec assist
-#define DOS_GCLK_EN0                               ((0x3f01  << 2) + 0xff620000)
-#define DOS_GEN_CTRL0                              ((0x3f02  << 2) + 0xff620000)
-#define DOS_APB_ERR_CTRL                           ((0x3f03  << 2) + 0xff620000)
-#define DOS_APB_ERR_STAT                           ((0x3f04  << 2) + 0xff620000)
-#define DOS_VDEC_INT_EN                            ((0x3f05  << 2) + 0xff620000)
-#define DOS_HCODEC_INT_EN                          ((0x3f06  << 2) + 0xff620000)
+#define DOS_GCLK_EN0 ((0x3f01 << 2) + 0xff620000)
+#define DOS_GEN_CTRL0 ((0x3f02 << 2) + 0xff620000)
+#define DOS_APB_ERR_CTRL ((0x3f03 << 2) + 0xff620000)
+#define DOS_APB_ERR_STAT ((0x3f04 << 2) + 0xff620000)
+#define DOS_VDEC_INT_EN ((0x3f05 << 2) + 0xff620000)
+#define DOS_HCODEC_INT_EN ((0x3f06 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  HCODEC Reset assist, hdec's CBUS
@@ -5773,7 +5773,7 @@
 // [14] HCODEC Reserved
 // [15] HCODEC Reserved
 // [16] HCODEC Reset henc's VLC
-#define DOS_SW_RESET1                              ((0x3f07  << 2) + 0xff620000)
+#define DOS_SW_RESET1 ((0x3f07 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  VDEC2 Reset assist, mdec's CBUS
@@ -5788,7 +5788,7 @@
 // [11] VDEC2 Reset vcpu's MCPU
 // [12] VDEC2 Reset vcpu's CCPU
 // [13] VDEC2 Reset mmc_pre_arb
-#define DOS_SW_RESET2                              ((0x3f08  << 2) + 0xff620000)
+#define DOS_SW_RESET2 ((0x3f08 << 2) + 0xff620000)
 // [31:10] Reserved
 // [9] vdec2 clk_en for assist and cbus.
 // [8] vdec2 clk_en for ddr;
@@ -5800,101 +5800,101 @@
 // [2] vdec2 clk_en for mdec iqidct
 // [1] vdec2 clk_en for mdec dblk
 // [0] vdec2 clk_en for mdec assist
-#define DOS_GCLK_EN1                               ((0x3f09  << 2) + 0xff620000)
-#define DOS_VDEC2_INT_EN                           ((0x3f0a  << 2) + 0xff620000)
-#define DOS_VDIN_LCNT                              ((0x3f0b  << 2) + 0xff620000)
-#define DOS_VDIN_FCNT                              ((0x3f0c  << 2) + 0xff620000)
-#define DOS_VDIN_CCTL                              ((0x3f0d  << 2) + 0xff620000)
-#define DOS_SCRATCH0                               ((0x3f10  << 2) + 0xff620000)
-#define DOS_SCRATCH1                               ((0x3f11  << 2) + 0xff620000)
-#define DOS_SCRATCH2                               ((0x3f12  << 2) + 0xff620000)
-#define DOS_SCRATCH3                               ((0x3f13  << 2) + 0xff620000)
-#define DOS_SCRATCH4                               ((0x3f14  << 2) + 0xff620000)
-#define DOS_SCRATCH5                               ((0x3f15  << 2) + 0xff620000)
-#define DOS_SCRATCH6                               ((0x3f16  << 2) + 0xff620000)
-#define DOS_SCRATCH7                               ((0x3f17  << 2) + 0xff620000)
-#define DOS_SCRATCH8                               ((0x3f18  << 2) + 0xff620000)
-#define DOS_SCRATCH9                               ((0x3f19  << 2) + 0xff620000)
-#define DOS_SCRATCH10                              ((0x3f1a  << 2) + 0xff620000)
-#define DOS_SCRATCH11                              ((0x3f1b  << 2) + 0xff620000)
-#define DOS_SCRATCH12                              ((0x3f1c  << 2) + 0xff620000)
-#define DOS_SCRATCH13                              ((0x3f1d  << 2) + 0xff620000)
-#define DOS_SCRATCH14                              ((0x3f1e  << 2) + 0xff620000)
-#define DOS_SCRATCH15                              ((0x3f1f  << 2) + 0xff620000)
-#define DOS_SCRATCH16                              ((0x3f20  << 2) + 0xff620000)
-#define DOS_SCRATCH17                              ((0x3f21  << 2) + 0xff620000)
-#define DOS_SCRATCH18                              ((0x3f22  << 2) + 0xff620000)
-#define DOS_SCRATCH19                              ((0x3f23  << 2) + 0xff620000)
-#define DOS_SCRATCH20                              ((0x3f24  << 2) + 0xff620000)
-#define DOS_SCRATCH21                              ((0x3f25  << 2) + 0xff620000)
-#define DOS_SCRATCH22                              ((0x3f26  << 2) + 0xff620000)
-#define DOS_SCRATCH23                              ((0x3f27  << 2) + 0xff620000)
-#define DOS_SCRATCH24                              ((0x3f28  << 2) + 0xff620000)
-#define DOS_SCRATCH25                              ((0x3f29  << 2) + 0xff620000)
-#define DOS_SCRATCH26                              ((0x3f2a  << 2) + 0xff620000)
-#define DOS_SCRATCH27                              ((0x3f2b  << 2) + 0xff620000)
-#define DOS_SCRATCH28                              ((0x3f2c  << 2) + 0xff620000)
-#define DOS_SCRATCH29                              ((0x3f2d  << 2) + 0xff620000)
-#define DOS_SCRATCH30                              ((0x3f2e  << 2) + 0xff620000)
-#define DOS_SCRATCH31                              ((0x3f2f  << 2) + 0xff620000)
-#define DOS_MEM_PD_VDEC                            ((0x3f30  << 2) + 0xff620000)
-#define DOS_MEM_PD_VDEC2                           ((0x3f31  << 2) + 0xff620000)
-#define DOS_MEM_PD_HCODEC                          ((0x3f32  << 2) + 0xff620000)
-#define DOS_MEM_PD_HEVC                            ((0x3f33  << 2) + 0xff620000)
-#define DOS_SW_RESET3                              ((0x3f34  << 2) + 0xff620000)
-#define DOS_GCLK_EN3                               ((0x3f35  << 2) + 0xff620000)
-#define DOS_HEVC_INT_EN                            ((0x3f36  << 2) + 0xff620000)
-#define DOS_SW_RESET4                              ((0x3f37  << 2) + 0xff620000)
-#define DOS_GCLK_EN4                               ((0x3f38  << 2) + 0xff620000)
-#define DOS_MEM_PD_WAVE420L                        ((0x3f39  << 2) + 0xff620000)
-#define DOS_WAVE420L_CNTL_STAT                     ((0x3f3a  << 2) + 0xff620000)
+#define DOS_GCLK_EN1 ((0x3f09 << 2) + 0xff620000)
+#define DOS_VDEC2_INT_EN ((0x3f0a << 2) + 0xff620000)
+#define DOS_VDIN_LCNT ((0x3f0b << 2) + 0xff620000)
+#define DOS_VDIN_FCNT ((0x3f0c << 2) + 0xff620000)
+#define DOS_VDIN_CCTL ((0x3f0d << 2) + 0xff620000)
+#define DOS_SCRATCH0 ((0x3f10 << 2) + 0xff620000)
+#define DOS_SCRATCH1 ((0x3f11 << 2) + 0xff620000)
+#define DOS_SCRATCH2 ((0x3f12 << 2) + 0xff620000)
+#define DOS_SCRATCH3 ((0x3f13 << 2) + 0xff620000)
+#define DOS_SCRATCH4 ((0x3f14 << 2) + 0xff620000)
+#define DOS_SCRATCH5 ((0x3f15 << 2) + 0xff620000)
+#define DOS_SCRATCH6 ((0x3f16 << 2) + 0xff620000)
+#define DOS_SCRATCH7 ((0x3f17 << 2) + 0xff620000)
+#define DOS_SCRATCH8 ((0x3f18 << 2) + 0xff620000)
+#define DOS_SCRATCH9 ((0x3f19 << 2) + 0xff620000)
+#define DOS_SCRATCH10 ((0x3f1a << 2) + 0xff620000)
+#define DOS_SCRATCH11 ((0x3f1b << 2) + 0xff620000)
+#define DOS_SCRATCH12 ((0x3f1c << 2) + 0xff620000)
+#define DOS_SCRATCH13 ((0x3f1d << 2) + 0xff620000)
+#define DOS_SCRATCH14 ((0x3f1e << 2) + 0xff620000)
+#define DOS_SCRATCH15 ((0x3f1f << 2) + 0xff620000)
+#define DOS_SCRATCH16 ((0x3f20 << 2) + 0xff620000)
+#define DOS_SCRATCH17 ((0x3f21 << 2) + 0xff620000)
+#define DOS_SCRATCH18 ((0x3f22 << 2) + 0xff620000)
+#define DOS_SCRATCH19 ((0x3f23 << 2) + 0xff620000)
+#define DOS_SCRATCH20 ((0x3f24 << 2) + 0xff620000)
+#define DOS_SCRATCH21 ((0x3f25 << 2) + 0xff620000)
+#define DOS_SCRATCH22 ((0x3f26 << 2) + 0xff620000)
+#define DOS_SCRATCH23 ((0x3f27 << 2) + 0xff620000)
+#define DOS_SCRATCH24 ((0x3f28 << 2) + 0xff620000)
+#define DOS_SCRATCH25 ((0x3f29 << 2) + 0xff620000)
+#define DOS_SCRATCH26 ((0x3f2a << 2) + 0xff620000)
+#define DOS_SCRATCH27 ((0x3f2b << 2) + 0xff620000)
+#define DOS_SCRATCH28 ((0x3f2c << 2) + 0xff620000)
+#define DOS_SCRATCH29 ((0x3f2d << 2) + 0xff620000)
+#define DOS_SCRATCH30 ((0x3f2e << 2) + 0xff620000)
+#define DOS_SCRATCH31 ((0x3f2f << 2) + 0xff620000)
+#define DOS_MEM_PD_VDEC ((0x3f30 << 2) + 0xff620000)
+#define DOS_MEM_PD_VDEC2 ((0x3f31 << 2) + 0xff620000)
+#define DOS_MEM_PD_HCODEC ((0x3f32 << 2) + 0xff620000)
+#define DOS_MEM_PD_HEVC ((0x3f33 << 2) + 0xff620000)
+#define DOS_SW_RESET3 ((0x3f34 << 2) + 0xff620000)
+#define DOS_GCLK_EN3 ((0x3f35 << 2) + 0xff620000)
+#define DOS_HEVC_INT_EN ((0x3f36 << 2) + 0xff620000)
+#define DOS_SW_RESET4 ((0x3f37 << 2) + 0xff620000)
+#define DOS_GCLK_EN4 ((0x3f38 << 2) + 0xff620000)
+#define DOS_MEM_PD_WAVE420L ((0x3f39 << 2) + 0xff620000)
+#define DOS_WAVE420L_CNTL_STAT ((0x3f3a << 2) + 0xff620000)
 // bit[31]    mcrcc_stall_en
 // bit[30:28] Reserved
 // bit[27:20] target_canvas
 // bit[19:10] target_mby
 // bit[ 9: 0] target_mbx
-#define DOS_VDEC_MCRCC_STALL_CTRL                  ((0x3f40  << 2) + 0xff620000)
-#define DOS_VDEC_MCRCC_STALL2_CTRL                 ((0x3f42  << 2) + 0xff620000)
-#define DOS_VDEC2_MCRCC_STALL_CTRL                 ((0x3f41  << 2) + 0xff620000)
-#define DOS_VDEC2_MCRCC_STALL2_CTRL                ((0x3f43  << 2) + 0xff620000)
-#define DOS_MEM_PD_HEVC2                           ((0x3f44  << 2) + 0xff620000)
-#define DOS_HEVC2_INT_EN                           ((0x3f45  << 2) + 0xff620000)
+#define DOS_VDEC_MCRCC_STALL_CTRL ((0x3f40 << 2) + 0xff620000)
+#define DOS_VDEC_MCRCC_STALL2_CTRL ((0x3f42 << 2) + 0xff620000)
+#define DOS_VDEC2_MCRCC_STALL_CTRL ((0x3f41 << 2) + 0xff620000)
+#define DOS_VDEC2_MCRCC_STALL2_CTRL ((0x3f43 << 2) + 0xff620000)
+#define DOS_MEM_PD_HEVC2 ((0x3f44 << 2) + 0xff620000)
+#define DOS_HEVC2_INT_EN ((0x3f45 << 2) + 0xff620000)
 // bit[1] s_clk off
 // bit[0] m_clk off
-#define DOS_CFG_CMPIF_BRIDGE                       ((0x3f48  << 2) + 0xff620000)
+#define DOS_CFG_CMPIF_BRIDGE ((0x3f48 << 2) + 0xff620000)
 // bit[31]    cfg_stall_en
 // bit[30]    co_mv_stall_en
 // bit[29]    cfg_stall_force
 // bit[28:24] reserved
 // bit[23:12] cfg_stall_tilestrt_ctb_y
 // bit[11: 0] cfg_stall_tilestrt_ctb_x
-#define DOS_HEVC_STALL_START                       ((0x3f50  << 2) + 0xff620000)
+#define DOS_HEVC_STALL_START ((0x3f50 << 2) + 0xff620000)
 // bit[31:24] cfg_stall_canvas
 // bit[23:12] cfg_stall_tileend_ctb_y
 // bit[11: 0] cfg_stall_tileend_ctb_x
-#define DOS_HEVC_STALL_END                         ((0x3f51  << 2) + 0xff620000)
+#define DOS_HEVC_STALL_END ((0x3f51 << 2) + 0xff620000)
 // bit[31:24] reserved
 // bit[23:12] cfg_stall_ctb_y
 // bit[11: 0] cfg_stall_ctb_x
-#define DOS_HEVC_STALL_POSITION                    ((0x3f52  << 2) + 0xff620000)
+#define DOS_HEVC_STALL_POSITION ((0x3f52 << 2) + 0xff620000)
 // bit[31]    cfg_stall_en
 // bit[30]    co_mv_stall_en
 // bit[29]    cfg_stall_force
 // bit[28:24] reserved
 // bit[23:12] cfg_stall_tilestrt_ctb_y
 // bit[11: 0] cfg_stall_tilestrt_ctb_x
-#define DOS_HEVC2_STALL_START                      ((0x3f53  << 2) + 0xff620000)
+#define DOS_HEVC2_STALL_START ((0x3f53 << 2) + 0xff620000)
 // bit[31:24] cfg_stall_canvas
 // bit[23:12] cfg_stall_tileend_ctb_y
 // bit[11: 0] cfg_stall_tileend_ctb_x
-#define DOS_HEVC2_STALL_END                        ((0x3f54  << 2) + 0xff620000)
+#define DOS_HEVC2_STALL_END ((0x3f54 << 2) + 0xff620000)
 // bit[31:24] reserved
 // bit[23:12] cfg_stall_ctb_y
 // bit[11: 0] cfg_stall_ctb_x
-#define DOS_HEVC2_STALL_POSITION                   ((0x3f55  << 2) + 0xff620000)
-#define DOS_SECURE_CTL_INDEX                       ((0x3f80  << 2) + 0xff620000)
-#define DOS_SECURE_CTL_DATA                        ((0x3f81  << 2) + 0xff620000)
-#define DOS_SECURE_REG_NULL                        ((0x3f82  << 2) + 0xff620000)
+#define DOS_HEVC2_STALL_POSITION ((0x3f55 << 2) + 0xff620000)
+#define DOS_SECURE_CTL_INDEX ((0x3f80 << 2) + 0xff620000)
+#define DOS_SECURE_CTL_DATA ((0x3f81 << 2) + 0xff620000)
+#define DOS_SECURE_REG_NULL ((0x3f82 << 2) + 0xff620000)
 //
 // Closing file:  ./dos_param.h
 //
@@ -5907,48 +5907,48 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_MDEC_CBUS_BASE = 0x09
 // -----------------------------------------------
-#define HCODEC_MC_CTRL_REG                         ((0x1900  << 2) + 0xff620000)
-#define HCODEC_MC_MB_INFO                          ((0x1901  << 2) + 0xff620000)
-#define HCODEC_MC_PIC_INFO                         ((0x1902  << 2) + 0xff620000)
-#define HCODEC_MC_HALF_PEL_ONE                     ((0x1903  << 2) + 0xff620000)
-#define HCODEC_MC_HALF_PEL_TWO                     ((0x1904  << 2) + 0xff620000)
-#define HCODEC_POWER_CTL_MC                        ((0x1905  << 2) + 0xff620000)
-#define HCODEC_MC_CMD                              ((0x1906  << 2) + 0xff620000)
-#define HCODEC_MC_CTRL0                            ((0x1907  << 2) + 0xff620000)
-#define HCODEC_MC_PIC_W_H                          ((0x1908  << 2) + 0xff620000)
-#define HCODEC_MC_STATUS0                          ((0x1909  << 2) + 0xff620000)
-#define HCODEC_MC_STATUS1                          ((0x190a  << 2) + 0xff620000)
-#define HCODEC_MC_CTRL1                            ((0x190b  << 2) + 0xff620000)
-#define HCODEC_MC_MIX_RATIO0                       ((0x190c  << 2) + 0xff620000)
-#define HCODEC_MC_MIX_RATIO1                       ((0x190d  << 2) + 0xff620000)
-#define HCODEC_MC_DP_MB_XY                         ((0x190e  << 2) + 0xff620000)
-#define HCODEC_MC_OM_MB_XY                         ((0x190f  << 2) + 0xff620000)
-#define HCODEC_PSCALE_RST                          ((0x1910  << 2) + 0xff620000)
-#define HCODEC_PSCALE_CTRL                         ((0x1911  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICI_W                       ((0x1912  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICI_H                       ((0x1913  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICO_W                       ((0x1914  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICO_H                       ((0x1915  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICO_START_X                 ((0x1916  << 2) + 0xff620000)
-#define HCODEC_PSCALE_PICO_START_Y                 ((0x1917  << 2) + 0xff620000)
-#define HCODEC_PSCALE_DUMMY                        ((0x1918  << 2) + 0xff620000)
-#define HCODEC_PSCALE_FILT0_COEF0                  ((0x1919  << 2) + 0xff620000)
-#define HCODEC_PSCALE_FILT0_COEF1                  ((0x191a  << 2) + 0xff620000)
-#define HCODEC_PSCALE_CMD_CTRL                     ((0x191b  << 2) + 0xff620000)
-#define HCODEC_PSCALE_CMD_BLK_X                    ((0x191c  << 2) + 0xff620000)
-#define HCODEC_PSCALE_CMD_BLK_Y                    ((0x191d  << 2) + 0xff620000)
-#define HCODEC_PSCALE_STATUS                       ((0x191e  << 2) + 0xff620000)
-#define HCODEC_PSCALE_BMEM_ADDR                    ((0x191f  << 2) + 0xff620000)
-#define HCODEC_PSCALE_BMEM_DAT                     ((0x1920  << 2) + 0xff620000)
-#define HCODEC_PSCALE_DRAM_BUF_CTRL                ((0x1921  << 2) + 0xff620000)
-#define HCODEC_PSCALE_MCMD_CTRL                    ((0x1922  << 2) + 0xff620000)
-#define HCODEC_PSCALE_MCMD_XSIZE                   ((0x1923  << 2) + 0xff620000)
-#define HCODEC_PSCALE_MCMD_YSIZE                   ((0x1924  << 2) + 0xff620000)
-#define HCODEC_PSCALE_RBUF_START_BLKX              ((0x1925  << 2) + 0xff620000)
-#define HCODEC_PSCALE_RBUF_START_BLKY              ((0x1926  << 2) + 0xff620000)
+#define HCODEC_MC_CTRL_REG ((0x1900 << 2) + 0xff620000)
+#define HCODEC_MC_MB_INFO ((0x1901 << 2) + 0xff620000)
+#define HCODEC_MC_PIC_INFO ((0x1902 << 2) + 0xff620000)
+#define HCODEC_MC_HALF_PEL_ONE ((0x1903 << 2) + 0xff620000)
+#define HCODEC_MC_HALF_PEL_TWO ((0x1904 << 2) + 0xff620000)
+#define HCODEC_POWER_CTL_MC ((0x1905 << 2) + 0xff620000)
+#define HCODEC_MC_CMD ((0x1906 << 2) + 0xff620000)
+#define HCODEC_MC_CTRL0 ((0x1907 << 2) + 0xff620000)
+#define HCODEC_MC_PIC_W_H ((0x1908 << 2) + 0xff620000)
+#define HCODEC_MC_STATUS0 ((0x1909 << 2) + 0xff620000)
+#define HCODEC_MC_STATUS1 ((0x190a << 2) + 0xff620000)
+#define HCODEC_MC_CTRL1 ((0x190b << 2) + 0xff620000)
+#define HCODEC_MC_MIX_RATIO0 ((0x190c << 2) + 0xff620000)
+#define HCODEC_MC_MIX_RATIO1 ((0x190d << 2) + 0xff620000)
+#define HCODEC_MC_DP_MB_XY ((0x190e << 2) + 0xff620000)
+#define HCODEC_MC_OM_MB_XY ((0x190f << 2) + 0xff620000)
+#define HCODEC_PSCALE_RST ((0x1910 << 2) + 0xff620000)
+#define HCODEC_PSCALE_CTRL ((0x1911 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICI_W ((0x1912 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICI_H ((0x1913 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICO_W ((0x1914 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICO_H ((0x1915 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICO_START_X ((0x1916 << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICO_START_Y ((0x1917 << 2) + 0xff620000)
+#define HCODEC_PSCALE_DUMMY ((0x1918 << 2) + 0xff620000)
+#define HCODEC_PSCALE_FILT0_COEF0 ((0x1919 << 2) + 0xff620000)
+#define HCODEC_PSCALE_FILT0_COEF1 ((0x191a << 2) + 0xff620000)
+#define HCODEC_PSCALE_CMD_CTRL ((0x191b << 2) + 0xff620000)
+#define HCODEC_PSCALE_CMD_BLK_X ((0x191c << 2) + 0xff620000)
+#define HCODEC_PSCALE_CMD_BLK_Y ((0x191d << 2) + 0xff620000)
+#define HCODEC_PSCALE_STATUS ((0x191e << 2) + 0xff620000)
+#define HCODEC_PSCALE_BMEM_ADDR ((0x191f << 2) + 0xff620000)
+#define HCODEC_PSCALE_BMEM_DAT ((0x1920 << 2) + 0xff620000)
+#define HCODEC_PSCALE_DRAM_BUF_CTRL ((0x1921 << 2) + 0xff620000)
+#define HCODEC_PSCALE_MCMD_CTRL ((0x1922 << 2) + 0xff620000)
+#define HCODEC_PSCALE_MCMD_XSIZE ((0x1923 << 2) + 0xff620000)
+#define HCODEC_PSCALE_MCMD_YSIZE ((0x1924 << 2) + 0xff620000)
+#define HCODEC_PSCALE_RBUF_START_BLKX ((0x1925 << 2) + 0xff620000)
+#define HCODEC_PSCALE_RBUF_START_BLKY ((0x1926 << 2) + 0xff620000)
 //`define PSCALE_RBUF_MB_WIDTH   8'h27
-#define HCODEC_PSCALE_PICO_SHIFT_XY                ((0x1928  << 2) + 0xff620000)
-#define HCODEC_PSCALE_CTRL1                        ((0x1929  << 2) + 0xff620000)
+#define HCODEC_PSCALE_PICO_SHIFT_XY ((0x1928 << 2) + 0xff620000)
+#define HCODEC_PSCALE_CTRL1 ((0x1929 << 2) + 0xff620000)
 //Bit 15, wmask enable
 //Bit 14:13, filt0 srckey_less,
 //Bit 12:11, filt1 srckey_less, in the case of the interpolated data is equal distance to
@@ -5956,48 +5956,48 @@
 //Bit 10:9, srckey mode, 00: equal, 01: less than or equal, 10: great than or equal
 //Bit 8, src key enable
 //Bit 7:0, y src key
-#define HCODEC_PSCALE_SRCKEY_CTRL0                 ((0x192a  << 2) + 0xff620000)
+#define HCODEC_PSCALE_SRCKEY_CTRL0 ((0x192a << 2) + 0xff620000)
 //Bit 15:8, cb src key
 //Bit 7:0, cr src key
-#define HCODEC_PSCALE_SRCKEY_CTRL1                 ((0x192b  << 2) + 0xff620000)
+#define HCODEC_PSCALE_SRCKEY_CTRL1 ((0x192b << 2) + 0xff620000)
 //Bit 22:16 canvas_rd_addr2
 //Bit 14:8 canvas_rd_addr1
 //Bit 6:0 canvas_rd_addr1
-#define HCODEC_PSCALE_CANVAS_RD_ADDR               ((0x192c  << 2) + 0xff620000)
+#define HCODEC_PSCALE_CANVAS_RD_ADDR ((0x192c << 2) + 0xff620000)
 //Bit 22:16 canvas_wr_addr2
 //Bit 14:8 canvas_wr_addr1
 //Bit 6:0 canvas_wr_addr1
-#define HCODEC_PSCALE_CANVAS_WR_ADDR               ((0x192d  << 2) + 0xff620000)
+#define HCODEC_PSCALE_CANVAS_WR_ADDR ((0x192d << 2) + 0xff620000)
 //bit 13:8 pscale thread ID and token
 //bit 7 disable write response count adding to busy bit
 //bit 5:0  pscale prearbitor burst num
-#define HCODEC_PSCALE_CTRL2                        ((0x192e  << 2) + 0xff620000)
+#define HCODEC_PSCALE_CTRL2 ((0x192e << 2) + 0xff620000)
 //   31 - use_omem_mb_xy_auto
 //23:16 - omem_max_mb_x
 //15:8  - omem_mb_y_auto
 // 7:0  - omem_mb_x_auto
-#define HCODEC_HDEC_MC_OMEM_AUTO                   ((0x1930  << 2) + 0xff620000)
-#define HCODEC_HDEC_MC_MBRIGHT_IDX                 ((0x1931  << 2) + 0xff620000)
-#define HCODEC_HDEC_MC_MBRIGHT_RD                  ((0x1932  << 2) + 0xff620000)
-#define HCODEC_MC_MPORT_CTRL                       ((0x1940  << 2) + 0xff620000)
-#define HCODEC_MC_MPORT_DAT                        ((0x1941  << 2) + 0xff620000)
-#define HCODEC_MC_WT_PRED_CTRL                     ((0x1942  << 2) + 0xff620000)
-#define HCODEC_MC_MBBOT_ST_EVEN_ADDR               ((0x1944  << 2) + 0xff620000)
-#define HCODEC_MC_MBBOT_ST_ODD_ADDR                ((0x1945  << 2) + 0xff620000)
-#define HCODEC_MC_DPDN_MB_XY                       ((0x1946  << 2) + 0xff620000)
-#define HCODEC_MC_OMDN_MB_XY                       ((0x1947  << 2) + 0xff620000)
-#define HCODEC_MC_HCMDBUF_H                        ((0x1948  << 2) + 0xff620000)
-#define HCODEC_MC_HCMDBUF_L                        ((0x1949  << 2) + 0xff620000)
-#define HCODEC_MC_HCMD_H                           ((0x194a  << 2) + 0xff620000)
-#define HCODEC_MC_HCMD_L                           ((0x194b  << 2) + 0xff620000)
-#define HCODEC_MC_IDCT_DAT                         ((0x194c  << 2) + 0xff620000)
-#define HCODEC_MC_CTRL_GCLK_CTRL                   ((0x194d  << 2) + 0xff620000)
-#define HCODEC_MC_OTHER_GCLK_CTRL                  ((0x194e  << 2) + 0xff620000)
+#define HCODEC_HDEC_MC_OMEM_AUTO ((0x1930 << 2) + 0xff620000)
+#define HCODEC_HDEC_MC_MBRIGHT_IDX ((0x1931 << 2) + 0xff620000)
+#define HCODEC_HDEC_MC_MBRIGHT_RD ((0x1932 << 2) + 0xff620000)
+#define HCODEC_MC_MPORT_CTRL ((0x1940 << 2) + 0xff620000)
+#define HCODEC_MC_MPORT_DAT ((0x1941 << 2) + 0xff620000)
+#define HCODEC_MC_WT_PRED_CTRL ((0x1942 << 2) + 0xff620000)
+#define HCODEC_MC_MBBOT_ST_EVEN_ADDR ((0x1944 << 2) + 0xff620000)
+#define HCODEC_MC_MBBOT_ST_ODD_ADDR ((0x1945 << 2) + 0xff620000)
+#define HCODEC_MC_DPDN_MB_XY ((0x1946 << 2) + 0xff620000)
+#define HCODEC_MC_OMDN_MB_XY ((0x1947 << 2) + 0xff620000)
+#define HCODEC_MC_HCMDBUF_H ((0x1948 << 2) + 0xff620000)
+#define HCODEC_MC_HCMDBUF_L ((0x1949 << 2) + 0xff620000)
+#define HCODEC_MC_HCMD_H ((0x194a << 2) + 0xff620000)
+#define HCODEC_MC_HCMD_L ((0x194b << 2) + 0xff620000)
+#define HCODEC_MC_IDCT_DAT ((0x194c << 2) + 0xff620000)
+#define HCODEC_MC_CTRL_GCLK_CTRL ((0x194d << 2) + 0xff620000)
+#define HCODEC_MC_OTHER_GCLK_CTRL ((0x194e << 2) + 0xff620000)
 //Bit 29:24, mbbot thread ID and token
 //Bit 21:16, mc read/write thread ID and token
 //Bit 13:8,  mbbot pre-arbitor burst number
 //Bit 5:0,   mc pre-arbitor burst number
-#define HCODEC_MC_CTRL2                            ((0x194f  << 2) + 0xff620000)
+#define HCODEC_MC_CTRL2 ((0x194f << 2) + 0xff620000)
 // `define DBLK_QUANT            8'h76 // ONLY for $ucode/real/amrisc/rv.s, reg value from apollo
 //`define ANC1_CANVAS_ADDR      8'h80
 //`define ANC2_CANVAS_ADDR      8'h81
@@ -6005,89 +6005,89 @@
 //`define MDEC_PIC_W          8'h8c
 //`define MDEC_PIC_H          8'h8d
 // mdec_pic_dc_mux_ctrl[31]  -- mcr_hevc_mode
-#define HCODEC_MDEC_PIC_DC_MUX_CTRL                ((0x198d  << 2) + 0xff620000)
-#define HCODEC_MDEC_PIC_DC_CTRL                    ((0x198e  << 2) + 0xff620000)
-#define HCODEC_MDEC_PIC_DC_STATUS                  ((0x198f  << 2) + 0xff620000)
-#define HCODEC_ANC0_CANVAS_ADDR                    ((0x1990  << 2) + 0xff620000)
-#define HCODEC_ANC1_CANVAS_ADDR                    ((0x1991  << 2) + 0xff620000)
-#define HCODEC_ANC2_CANVAS_ADDR                    ((0x1992  << 2) + 0xff620000)
-#define HCODEC_ANC3_CANVAS_ADDR                    ((0x1993  << 2) + 0xff620000)
-#define HCODEC_ANC4_CANVAS_ADDR                    ((0x1994  << 2) + 0xff620000)
-#define HCODEC_ANC5_CANVAS_ADDR                    ((0x1995  << 2) + 0xff620000)
-#define HCODEC_ANC6_CANVAS_ADDR                    ((0x1996  << 2) + 0xff620000)
-#define HCODEC_ANC7_CANVAS_ADDR                    ((0x1997  << 2) + 0xff620000)
-#define HCODEC_ANC8_CANVAS_ADDR                    ((0x1998  << 2) + 0xff620000)
-#define HCODEC_ANC9_CANVAS_ADDR                    ((0x1999  << 2) + 0xff620000)
-#define HCODEC_ANC10_CANVAS_ADDR                   ((0x199a  << 2) + 0xff620000)
-#define HCODEC_ANC11_CANVAS_ADDR                   ((0x199b  << 2) + 0xff620000)
-#define HCODEC_ANC12_CANVAS_ADDR                   ((0x199c  << 2) + 0xff620000)
-#define HCODEC_ANC13_CANVAS_ADDR                   ((0x199d  << 2) + 0xff620000)
-#define HCODEC_ANC14_CANVAS_ADDR                   ((0x199e  << 2) + 0xff620000)
-#define HCODEC_ANC15_CANVAS_ADDR                   ((0x199f  << 2) + 0xff620000)
-#define HCODEC_ANC16_CANVAS_ADDR                   ((0x19a0  << 2) + 0xff620000)
-#define HCODEC_ANC17_CANVAS_ADDR                   ((0x19a1  << 2) + 0xff620000)
-#define HCODEC_ANC18_CANVAS_ADDR                   ((0x19a2  << 2) + 0xff620000)
-#define HCODEC_ANC19_CANVAS_ADDR                   ((0x19a3  << 2) + 0xff620000)
-#define HCODEC_ANC20_CANVAS_ADDR                   ((0x19a4  << 2) + 0xff620000)
-#define HCODEC_ANC21_CANVAS_ADDR                   ((0x19a5  << 2) + 0xff620000)
-#define HCODEC_ANC22_CANVAS_ADDR                   ((0x19a6  << 2) + 0xff620000)
-#define HCODEC_ANC23_CANVAS_ADDR                   ((0x19a7  << 2) + 0xff620000)
-#define HCODEC_ANC24_CANVAS_ADDR                   ((0x19a8  << 2) + 0xff620000)
-#define HCODEC_ANC25_CANVAS_ADDR                   ((0x19a9  << 2) + 0xff620000)
-#define HCODEC_ANC26_CANVAS_ADDR                   ((0x19aa  << 2) + 0xff620000)
-#define HCODEC_ANC27_CANVAS_ADDR                   ((0x19ab  << 2) + 0xff620000)
-#define HCODEC_ANC28_CANVAS_ADDR                   ((0x19ac  << 2) + 0xff620000)
-#define HCODEC_ANC29_CANVAS_ADDR                   ((0x19ad  << 2) + 0xff620000)
-#define HCODEC_ANC30_CANVAS_ADDR                   ((0x19ae  << 2) + 0xff620000)
-#define HCODEC_ANC31_CANVAS_ADDR                   ((0x19af  << 2) + 0xff620000)
-#define HCODEC_DBKR_CANVAS_ADDR                    ((0x19b0  << 2) + 0xff620000)
-#define HCODEC_DBKW_CANVAS_ADDR                    ((0x19b1  << 2) + 0xff620000)
-#define HCODEC_REC_CANVAS_ADDR                     ((0x19b2  << 2) + 0xff620000)
+#define HCODEC_MDEC_PIC_DC_MUX_CTRL ((0x198d << 2) + 0xff620000)
+#define HCODEC_MDEC_PIC_DC_CTRL ((0x198e << 2) + 0xff620000)
+#define HCODEC_MDEC_PIC_DC_STATUS ((0x198f << 2) + 0xff620000)
+#define HCODEC_ANC0_CANVAS_ADDR ((0x1990 << 2) + 0xff620000)
+#define HCODEC_ANC1_CANVAS_ADDR ((0x1991 << 2) + 0xff620000)
+#define HCODEC_ANC2_CANVAS_ADDR ((0x1992 << 2) + 0xff620000)
+#define HCODEC_ANC3_CANVAS_ADDR ((0x1993 << 2) + 0xff620000)
+#define HCODEC_ANC4_CANVAS_ADDR ((0x1994 << 2) + 0xff620000)
+#define HCODEC_ANC5_CANVAS_ADDR ((0x1995 << 2) + 0xff620000)
+#define HCODEC_ANC6_CANVAS_ADDR ((0x1996 << 2) + 0xff620000)
+#define HCODEC_ANC7_CANVAS_ADDR ((0x1997 << 2) + 0xff620000)
+#define HCODEC_ANC8_CANVAS_ADDR ((0x1998 << 2) + 0xff620000)
+#define HCODEC_ANC9_CANVAS_ADDR ((0x1999 << 2) + 0xff620000)
+#define HCODEC_ANC10_CANVAS_ADDR ((0x199a << 2) + 0xff620000)
+#define HCODEC_ANC11_CANVAS_ADDR ((0x199b << 2) + 0xff620000)
+#define HCODEC_ANC12_CANVAS_ADDR ((0x199c << 2) + 0xff620000)
+#define HCODEC_ANC13_CANVAS_ADDR ((0x199d << 2) + 0xff620000)
+#define HCODEC_ANC14_CANVAS_ADDR ((0x199e << 2) + 0xff620000)
+#define HCODEC_ANC15_CANVAS_ADDR ((0x199f << 2) + 0xff620000)
+#define HCODEC_ANC16_CANVAS_ADDR ((0x19a0 << 2) + 0xff620000)
+#define HCODEC_ANC17_CANVAS_ADDR ((0x19a1 << 2) + 0xff620000)
+#define HCODEC_ANC18_CANVAS_ADDR ((0x19a2 << 2) + 0xff620000)
+#define HCODEC_ANC19_CANVAS_ADDR ((0x19a3 << 2) + 0xff620000)
+#define HCODEC_ANC20_CANVAS_ADDR ((0x19a4 << 2) + 0xff620000)
+#define HCODEC_ANC21_CANVAS_ADDR ((0x19a5 << 2) + 0xff620000)
+#define HCODEC_ANC22_CANVAS_ADDR ((0x19a6 << 2) + 0xff620000)
+#define HCODEC_ANC23_CANVAS_ADDR ((0x19a7 << 2) + 0xff620000)
+#define HCODEC_ANC24_CANVAS_ADDR ((0x19a8 << 2) + 0xff620000)
+#define HCODEC_ANC25_CANVAS_ADDR ((0x19a9 << 2) + 0xff620000)
+#define HCODEC_ANC26_CANVAS_ADDR ((0x19aa << 2) + 0xff620000)
+#define HCODEC_ANC27_CANVAS_ADDR ((0x19ab << 2) + 0xff620000)
+#define HCODEC_ANC28_CANVAS_ADDR ((0x19ac << 2) + 0xff620000)
+#define HCODEC_ANC29_CANVAS_ADDR ((0x19ad << 2) + 0xff620000)
+#define HCODEC_ANC30_CANVAS_ADDR ((0x19ae << 2) + 0xff620000)
+#define HCODEC_ANC31_CANVAS_ADDR ((0x19af << 2) + 0xff620000)
+#define HCODEC_DBKR_CANVAS_ADDR ((0x19b0 << 2) + 0xff620000)
+#define HCODEC_DBKW_CANVAS_ADDR ((0x19b1 << 2) + 0xff620000)
+#define HCODEC_REC_CANVAS_ADDR ((0x19b2 << 2) + 0xff620000)
 //28:24, read/write, current canvas idx, used in h264 only now
 //23:0, read only, current canvas address, 23:16, Cr canvas addr, 15:8, Cb canvas addr, 7:0, Y  canvas addr
-#define HCODEC_CURR_CANVAS_CTRL                    ((0x19b3  << 2) + 0xff620000)
-#define HCODEC_MDEC_PIC_DC_THRESH                  ((0x19b8  << 2) + 0xff620000)
-#define HCODEC_MDEC_PICR_BUF_STATUS                ((0x19b9  << 2) + 0xff620000)
-#define HCODEC_MDEC_PICW_BUF_STATUS                ((0x19ba  << 2) + 0xff620000)
-#define HCODEC_MCW_DBLK_WRRSP_CNT                  ((0x19bb  << 2) + 0xff620000)
-#define HCODEC_MC_MBBOT_WRRSP_CNT                  ((0x19bc  << 2) + 0xff620000)
-#define HCODEC_MDEC_PICW_BUF2_STATUS               ((0x19bd  << 2) + 0xff620000)
-#define HCODEC_WRRSP_FIFO_PICW_DBK                 ((0x19be  << 2) + 0xff620000)
-#define HCODEC_WRRSP_FIFO_PICW_MC                  ((0x19bf  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_0                        ((0x19c0  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_1                        ((0x19c1  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_2                        ((0x19c2  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_3                        ((0x19c3  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_4                        ((0x19c4  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_5                        ((0x19c5  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_6                        ((0x19c6  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_7                        ((0x19c7  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_8                        ((0x19c8  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_9                        ((0x19c9  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_A                        ((0x19ca  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_B                        ((0x19cb  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_C                        ((0x19cc  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_D                        ((0x19cd  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_E                        ((0x19ce  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_F                        ((0x19cf  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_G                        ((0x19d0  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_H                        ((0x19d1  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_I                        ((0x19d2  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_J                        ((0x19d3  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_K                        ((0x19d4  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_L                        ((0x19d5  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_M                        ((0x19d6  << 2) + 0xff620000)
-#define HCODEC_AV_SCRATCH_N                        ((0x19d7  << 2) + 0xff620000)
+#define HCODEC_CURR_CANVAS_CTRL ((0x19b3 << 2) + 0xff620000)
+#define HCODEC_MDEC_PIC_DC_THRESH ((0x19b8 << 2) + 0xff620000)
+#define HCODEC_MDEC_PICR_BUF_STATUS ((0x19b9 << 2) + 0xff620000)
+#define HCODEC_MDEC_PICW_BUF_STATUS ((0x19ba << 2) + 0xff620000)
+#define HCODEC_MCW_DBLK_WRRSP_CNT ((0x19bb << 2) + 0xff620000)
+#define HCODEC_MC_MBBOT_WRRSP_CNT ((0x19bc << 2) + 0xff620000)
+#define HCODEC_MDEC_PICW_BUF2_STATUS ((0x19bd << 2) + 0xff620000)
+#define HCODEC_WRRSP_FIFO_PICW_DBK ((0x19be << 2) + 0xff620000)
+#define HCODEC_WRRSP_FIFO_PICW_MC ((0x19bf << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_0 ((0x19c0 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_1 ((0x19c1 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_2 ((0x19c2 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_3 ((0x19c3 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_4 ((0x19c4 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_5 ((0x19c5 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_6 ((0x19c6 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_7 ((0x19c7 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_8 ((0x19c8 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_9 ((0x19c9 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_A ((0x19ca << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_B ((0x19cb << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_C ((0x19cc << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_D ((0x19cd << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_E ((0x19ce << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_F ((0x19cf << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_G ((0x19d0 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_H ((0x19d1 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_I ((0x19d2 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_J ((0x19d3 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_K ((0x19d4 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_L ((0x19d5 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_M ((0x19d6 << 2) + 0xff620000)
+#define HCODEC_AV_SCRATCH_N ((0x19d7 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_co_mb
 // bit[21:16] A_id_co_mb
 // bit[11:0] wrrsp_count_co_mb
-#define HCODEC_WRRSP_CO_MB                         ((0x19d8  << 2) + 0xff620000)
+#define HCODEC_WRRSP_CO_MB ((0x19d8 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_dcac
 // bit[21:16] A_id_dcac
 // bit[11:0] wrrsp_count_dcac
-#define HCODEC_WRRSP_DCAC                          ((0x19d9  << 2) + 0xff620000)
+#define HCODEC_WRRSP_DCAC ((0x19d9 << 2) + 0xff620000)
 // bit[11:0] wrrsp_count_vld
-#define HCODEC_WRRSP_VLD                           ((0x19da  << 2) + 0xff620000)
+#define HCODEC_WRRSP_VLD ((0x19da << 2) + 0xff620000)
 // doublew_cfg0[0];     //       Second Channel Enable, 1:Enable 0:Disable
 // doublew_cfg0[3:1];   // [2:0] Endian Control for Luma
 // doublew_cfg0[5:4];   // [1:0] Pixel sel by horizontal, 0x:1/2 10:left 11:right
@@ -6103,45 +6103,45 @@
 // doublew_cfg0[29:28]; // [1:0] 0x:select both top and bottom 10:select top 11:select bottom
 // doublew_cfg0[30];    //       0:no merge 1:automatic merge
 // doublew_cfg0[31];    //       0:Y addr no change 1:Y addr divided to half
-#define HCODEC_MDEC_DOUBLEW_CFG0                   ((0x19db  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG0 ((0x19db << 2) + 0xff620000)
 // doublew_cfg1[7:0];   // [7:0] DMA Canvas Address for Luma
 // doublew_cfg1[15:8];  // [7:0] DMA Canvas Address for Chroma
 // doublew_cfg1[16];    //       Disable 1st Write -
 // doublew_cfg1[17];    //       Reverse to original version -
 // doublew_cfg1[18];    //       DMA Address Mode - 0:Canvas Mode 1:Non-Canvas Mode
-#define HCODEC_MDEC_DOUBLEW_CFG1                   ((0x19dc  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG1 ((0x19dc << 2) + 0xff620000)
 // doublew_cfg2[11:0];  //[11:0] vertical flip initial value
 // doublew_cfg2[15];    //       vertical flip enable
 // doublew_cfg2[24:16]; // [8:0] horizontal flip initial value
 // doublew_cfg2[31];    //       horizontal flip enable
-#define HCODEC_MDEC_DOUBLEW_CFG2                   ((0x19dd  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG2 ((0x19dd << 2) + 0xff620000)
 // doublew_cfg3[31:0];  //[31:0] non-canvas start address for Luma -
-#define HCODEC_MDEC_DOUBLEW_CFG3                   ((0x19de  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG3 ((0x19de << 2) + 0xff620000)
 // doublew_cfg4[31:0];  //[31:0] non-canvas start address for Chroma -
-#define HCODEC_MDEC_DOUBLEW_CFG4                   ((0x19df  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG4 ((0x19df << 2) + 0xff620000)
 // doublew_cfg5[12:0];  //[12:0] non-canvas picture width for Luma -
 // doublew_cfg5[28:16]; //[12:0] non-canvas picture width for Chroma -
-#define HCODEC_MDEC_DOUBLEW_CFG5                   ((0x19e0  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG5 ((0x19e0 << 2) + 0xff620000)
 // doublew_cfg6: reserved
-#define HCODEC_MDEC_DOUBLEW_CFG6                   ((0x19e1  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG6 ((0x19e1 << 2) + 0xff620000)
 // doublew_cfg7: reserved
-#define HCODEC_MDEC_DOUBLEW_CFG7                   ((0x19e2  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_CFG7 ((0x19e2 << 2) + 0xff620000)
 // doublew_status[11:0];//[11:0] wrrsp_count_doublew
 // doublew_status[12];  //       doublew_status_busy
 // doublew_status[13];  //       doublew_status_error
-#define HCODEC_MDEC_DOUBLEW_STATUS                 ((0x19e3  << 2) + 0xff620000)
-#define HCODEC_MDEC_EXTIF_CFG0                     ((0x19e4  << 2) + 0xff620000)
-#define HCODEC_MDEC_EXTIF_CFG1                     ((0x19e5  << 2) + 0xff620000)
-#define HCODEC_MDEC_EXTIF_CFG2                     ((0x19e6  << 2) + 0xff620000)
-#define HCODEC_MDEC_EXTIF_STS0                     ((0x19e7  << 2) + 0xff620000)
-#define HCODEC_MDEC_PICW_BUFDW_CFG0                ((0x19e8  << 2) + 0xff620000)
-#define HCODEC_MDEC_PICW_BUFDW_CFG1                ((0x19e9  << 2) + 0xff620000)
+#define HCODEC_MDEC_DOUBLEW_STATUS ((0x19e3 << 2) + 0xff620000)
+#define HCODEC_MDEC_EXTIF_CFG0 ((0x19e4 << 2) + 0xff620000)
+#define HCODEC_MDEC_EXTIF_CFG1 ((0x19e5 << 2) + 0xff620000)
+#define HCODEC_MDEC_EXTIF_CFG2 ((0x19e6 << 2) + 0xff620000)
+#define HCODEC_MDEC_EXTIF_STS0 ((0x19e7 << 2) + 0xff620000)
+#define HCODEC_MDEC_PICW_BUFDW_CFG0 ((0x19e8 << 2) + 0xff620000)
+#define HCODEC_MDEC_PICW_BUFDW_CFG1 ((0x19e9 << 2) + 0xff620000)
 //======================================
 //  MC Control Register Bits
 //
 //======================================
 // For bits, just copy the defines...don't translate to addresses
-    //`define MC_RESET	    16'h0002
+//`define MC_RESET	    16'h0002
 //======================================
 //  MB Info Register Bits
 //
@@ -6153,45 +6153,45 @@
 //========================================================================
 // DBLK Register:  12'h950 - 12'h97f
 //========================================================================
-#define HCODEC_DBLK_RST                            ((0x1950  << 2) + 0xff620000)
-#define HCODEC_DBLK_CTRL                           ((0x1951  << 2) + 0xff620000)
-#define HCODEC_DBLK_MB_WID_HEIGHT                  ((0x1952  << 2) + 0xff620000)
-#define HCODEC_DBLK_STATUS                         ((0x1953  << 2) + 0xff620000)
-#define HCODEC_DBLK_CMD_CTRL                       ((0x1954  << 2) + 0xff620000)
-#define HCODEC_DBLK_MB_XY                          ((0x1955  << 2) + 0xff620000)
-#define HCODEC_DBLK_QP                             ((0x1956  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_BHFILT                       ((0x1957  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_BHFILT_HIGH                  ((0x1958  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_BVFILT                       ((0x1959  << 2) + 0xff620000)
-#define HCODEC_DBLK_CB_BFILT                       ((0x195a  << 2) + 0xff620000)
-#define HCODEC_DBLK_CR_BFILT                       ((0x195b  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_HFILT                        ((0x195c  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_HFILT_HIGH                   ((0x195d  << 2) + 0xff620000)
-#define HCODEC_DBLK_Y_VFILT                        ((0x195e  << 2) + 0xff620000)
-#define HCODEC_DBLK_CB_FILT                        ((0x195f  << 2) + 0xff620000)
-#define HCODEC_DBLK_CR_FILT                        ((0x1960  << 2) + 0xff620000)
-#define HCODEC_DBLK_BETAX_QP_SEL                   ((0x1961  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL0                     ((0x1962  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL1                     ((0x1963  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL2                     ((0x1964  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL3                     ((0x1965  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL4                     ((0x1966  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL5                     ((0x1967  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL6                     ((0x1968  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL7                     ((0x1969  << 2) + 0xff620000)
-#define HCODEC_DBLK_CLIP_CTRL8                     ((0x196a  << 2) + 0xff620000)
-#define HCODEC_DBLK_STATUS1                        ((0x196b  << 2) + 0xff620000)
-#define HCODEC_DBLK_GCLK_FREE                      ((0x196c  << 2) + 0xff620000)
-#define HCODEC_DBLK_GCLK_OFF                       ((0x196d  << 2) + 0xff620000)
-#define HCODEC_DBLK_AVSFLAGS                       ((0x196e  << 2) + 0xff620000)
+#define HCODEC_DBLK_RST ((0x1950 << 2) + 0xff620000)
+#define HCODEC_DBLK_CTRL ((0x1951 << 2) + 0xff620000)
+#define HCODEC_DBLK_MB_WID_HEIGHT ((0x1952 << 2) + 0xff620000)
+#define HCODEC_DBLK_STATUS ((0x1953 << 2) + 0xff620000)
+#define HCODEC_DBLK_CMD_CTRL ((0x1954 << 2) + 0xff620000)
+#define HCODEC_DBLK_MB_XY ((0x1955 << 2) + 0xff620000)
+#define HCODEC_DBLK_QP ((0x1956 << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_BHFILT ((0x1957 << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_BHFILT_HIGH ((0x1958 << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_BVFILT ((0x1959 << 2) + 0xff620000)
+#define HCODEC_DBLK_CB_BFILT ((0x195a << 2) + 0xff620000)
+#define HCODEC_DBLK_CR_BFILT ((0x195b << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_HFILT ((0x195c << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_HFILT_HIGH ((0x195d << 2) + 0xff620000)
+#define HCODEC_DBLK_Y_VFILT ((0x195e << 2) + 0xff620000)
+#define HCODEC_DBLK_CB_FILT ((0x195f << 2) + 0xff620000)
+#define HCODEC_DBLK_CR_FILT ((0x1960 << 2) + 0xff620000)
+#define HCODEC_DBLK_BETAX_QP_SEL ((0x1961 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL0 ((0x1962 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL1 ((0x1963 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL2 ((0x1964 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL3 ((0x1965 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL4 ((0x1966 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL5 ((0x1967 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL6 ((0x1968 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL7 ((0x1969 << 2) + 0xff620000)
+#define HCODEC_DBLK_CLIP_CTRL8 ((0x196a << 2) + 0xff620000)
+#define HCODEC_DBLK_STATUS1 ((0x196b << 2) + 0xff620000)
+#define HCODEC_DBLK_GCLK_FREE ((0x196c << 2) + 0xff620000)
+#define HCODEC_DBLK_GCLK_OFF ((0x196d << 2) + 0xff620000)
+#define HCODEC_DBLK_AVSFLAGS ((0x196e << 2) + 0xff620000)
 // bit 15:0
-#define HCODEC_DBLK_CBPY                           ((0x1970  << 2) + 0xff620000)
+#define HCODEC_DBLK_CBPY ((0x1970 << 2) + 0xff620000)
 // bit 11:8 -- deblk_cbpy_bottom
 // bit 7:4 -- deblk_cbpy_left
 // bit 3:0 -- deblk_cbpy_top
-#define HCODEC_DBLK_CBPY_ADJ                       ((0x1971  << 2) + 0xff620000)
+#define HCODEC_DBLK_CBPY_ADJ ((0x1971 << 2) + 0xff620000)
 // bit 7:0 -- deblk_cbpc
-#define HCODEC_DBLK_CBPC                           ((0x1972  << 2) + 0xff620000)
+#define HCODEC_DBLK_CBPC ((0x1972 << 2) + 0xff620000)
 // bit 15 -- bottom_mb
 // bit 14 -- left_mb
 // bit 13 -- top_mb
@@ -6199,10 +6199,10 @@
 // bit 11:8 -- deblk_cbpc_bottom
 // bit 7:4 -- deblk_cbpc_left
 // bit 3:0 -- deblk_cbpc_top
-#define HCODEC_DBLK_CBPC_ADJ                       ((0x1973  << 2) + 0xff620000)
+#define HCODEC_DBLK_CBPC_ADJ ((0x1973 << 2) + 0xff620000)
 // bit 15:8 -- deblk_hmvd   -- {left_1, left_0, below_1, below_0, block3-0}
 // bit 7:0 -- deblk_vmvd    -- {top_1, top_0, below_1, below_0, block3-0}
-#define HCODEC_DBLK_VHMVD                          ((0x1974  << 2) + 0xff620000)
+#define HCODEC_DBLK_VHMVD ((0x1974 << 2) + 0xff620000)
 // bit 13:12 -- right_vmvd
 // bit 11 -- right_above_vmvd
 // bit 10 -- left_below_hmvd
@@ -6216,40 +6216,40 @@
 // bit 2 -- s_left
 // bit 1 -- s_above
 // bit 0 -- s
-#define HCODEC_DBLK_STRONG                         ((0x1975  << 2) + 0xff620000)
+#define HCODEC_DBLK_STRONG ((0x1975 << 2) + 0xff620000)
 // bit 14:10 -- PQUANT
 // bit 9:5 -- left_PQUANT
 // bit 4:0 -- top_PQUANT
-#define HCODEC_DBLK_RV8_QUANT                      ((0x1976  << 2) + 0xff620000)
-#define HCODEC_DBLK_CBUS_HCMD2                     ((0x1977  << 2) + 0xff620000)
-#define HCODEC_DBLK_CBUS_HCMD1                     ((0x1978  << 2) + 0xff620000)
-#define HCODEC_DBLK_CBUS_HCMD0                     ((0x1979  << 2) + 0xff620000)
-#define HCODEC_DBLK_VLD_HCMD2                      ((0x197a  << 2) + 0xff620000)
-#define HCODEC_DBLK_VLD_HCMD1                      ((0x197b  << 2) + 0xff620000)
-#define HCODEC_DBLK_VLD_HCMD0                      ((0x197c  << 2) + 0xff620000)
-#define HCODEC_DBLK_OST_YBASE                      ((0x197d  << 2) + 0xff620000)
-#define HCODEC_DBLK_OST_CBCRDIFF                   ((0x197e  << 2) + 0xff620000)
+#define HCODEC_DBLK_RV8_QUANT ((0x1976 << 2) + 0xff620000)
+#define HCODEC_DBLK_CBUS_HCMD2 ((0x1977 << 2) + 0xff620000)
+#define HCODEC_DBLK_CBUS_HCMD1 ((0x1978 << 2) + 0xff620000)
+#define HCODEC_DBLK_CBUS_HCMD0 ((0x1979 << 2) + 0xff620000)
+#define HCODEC_DBLK_VLD_HCMD2 ((0x197a << 2) + 0xff620000)
+#define HCODEC_DBLK_VLD_HCMD1 ((0x197b << 2) + 0xff620000)
+#define HCODEC_DBLK_VLD_HCMD0 ((0x197c << 2) + 0xff620000)
+#define HCODEC_DBLK_OST_YBASE ((0x197d << 2) + 0xff620000)
+#define HCODEC_DBLK_OST_CBCRDIFF ((0x197e << 2) + 0xff620000)
 //13:8 dblk thread ID and token
 //5:0  dblk prearbitor burst num
-#define HCODEC_DBLK_CTRL1                          ((0x197f  << 2) + 0xff620000)
+#define HCODEC_DBLK_CTRL1 ((0x197f << 2) + 0xff620000)
 // MCRCC_CTL1
 // 31:3  <reserved[23:0]>
 // 2     <cfg_field_pic>
 // 1     <sw_rst>
 // 0     <bypass_en>
-#define HCODEC_MCRCC_CTL1                          ((0x1980  << 2) + 0xff620000)
+#define HCODEC_MCRCC_CTL1 ((0x1980 << 2) + 0xff620000)
 // MCRCC_CTL2
 // 31:24    <cfg_cache_anc01_c[7:0]>
 // 23:16    <cfg_cache_anc01_y[7:0]>
 // 15:8     <cfg_cache_anc00_c[7:0]>
 // 7:0      <cfg_cache_anc00_y[7:0]>
-#define HCODEC_MCRCC_CTL2                          ((0x1981  << 2) + 0xff620000)
+#define HCODEC_MCRCC_CTL2 ((0x1981 << 2) + 0xff620000)
 // MCRCC_CTL3
 // 31:24    <cfg_cache_anc11_c[7:0]>
 // 23:16    <cfg_cache_anc11_y[7:0]>
 // 15:8     <cfg_cache_anc10_c[7:0]>
 // 7:0      <cfg_cache_anc10_y[7:0]>
-#define HCODEC_MCRCC_CTL3                          ((0x1982  << 2) + 0xff620000)
+#define HCODEC_MCRCC_CTL3 ((0x1982 << 2) + 0xff620000)
 // bit[31:10] reserved
 // bit[9:0] sw_clock_gating control
 // [9] vdec clk_en for assist and cbus.
@@ -6262,7 +6262,7 @@
 // [2] vdec clk_en for pic_dc
 // [1] vdec clk_en for psc
 // [0] vdec clk_en for vld
-#define HCODEC_GCLK_EN                             ((0x1983  << 2) + 0xff620000)
+#define HCODEC_GCLK_EN ((0x1983 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  Reset assist, mdec's CBUS
@@ -6277,7 +6277,7 @@
 // [11] Reset vcpu's MCPU
 // [12] Reset vcpu's CCPU
 // [13] Reset mmc_pre_arb
-#define HCODEC_MDEC_SW_RESET                       ((0x1984  << 2) + 0xff620000)
+#define HCODEC_MDEC_SW_RESET ((0x1984 << 2) + 0xff620000)
 // [0]      dblkmerge_bypass
 // [2:1]    picture_structure
 // [3]      is_mbaff_frame
@@ -6285,12 +6285,12 @@
 // [6]      Reserved
 // [7]      write_mask_redge
 // [31:6]   Reserved
-#define HCODEC_MDEC_DBLKWMERGE_CTRL0               ((0x1985  << 2) + 0xff620000)
+#define HCODEC_MDEC_DBLKWMERGE_CTRL0 ((0x1985 << 2) + 0xff620000)
 // [12:0]   dblkwmerge_pic_w
 // [15:13]  Reserved
 // [28:16]  dblkwmerge_pic_h
 // [31:29]  Reserved
-#define HCODEC_MDEC_DBLKWMERGE_CTRL1               ((0x1986  << 2) + 0xff620000)
+#define HCODEC_MDEC_DBLKWMERGE_CTRL1 ((0x1986 << 2) + 0xff620000)
 //DBLK last address 12'h97f
 //
 // Closing file:  mdec_regs.h
@@ -6304,48 +6304,48 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_MDEC_CBUS_BASE = 0x09
 // -----------------------------------------------
-#define VDEC2_MC_CTRL_REG                          ((0x2900  << 2) + 0xff620000)
-#define VDEC2_MC_MB_INFO                           ((0x2901  << 2) + 0xff620000)
-#define VDEC2_MC_PIC_INFO                          ((0x2902  << 2) + 0xff620000)
-#define VDEC2_MC_HALF_PEL_ONE                      ((0x2903  << 2) + 0xff620000)
-#define VDEC2_MC_HALF_PEL_TWO                      ((0x2904  << 2) + 0xff620000)
-#define VDEC2_POWER_CTL_MC                         ((0x2905  << 2) + 0xff620000)
-#define VDEC2_MC_CMD                               ((0x2906  << 2) + 0xff620000)
-#define VDEC2_MC_CTRL0                             ((0x2907  << 2) + 0xff620000)
-#define VDEC2_MC_PIC_W_H                           ((0x2908  << 2) + 0xff620000)
-#define VDEC2_MC_STATUS0                           ((0x2909  << 2) + 0xff620000)
-#define VDEC2_MC_STATUS1                           ((0x290a  << 2) + 0xff620000)
-#define VDEC2_MC_CTRL1                             ((0x290b  << 2) + 0xff620000)
-#define VDEC2_MC_MIX_RATIO0                        ((0x290c  << 2) + 0xff620000)
-#define VDEC2_MC_MIX_RATIO1                        ((0x290d  << 2) + 0xff620000)
-#define VDEC2_MC_DP_MB_XY                          ((0x290e  << 2) + 0xff620000)
-#define VDEC2_MC_OM_MB_XY                          ((0x290f  << 2) + 0xff620000)
-#define VDEC2_PSCALE_RST                           ((0x2910  << 2) + 0xff620000)
-#define VDEC2_PSCALE_CTRL                          ((0x2911  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICI_W                        ((0x2912  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICI_H                        ((0x2913  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICO_W                        ((0x2914  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICO_H                        ((0x2915  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICO_START_X                  ((0x2916  << 2) + 0xff620000)
-#define VDEC2_PSCALE_PICO_START_Y                  ((0x2917  << 2) + 0xff620000)
-#define VDEC2_PSCALE_DUMMY                         ((0x2918  << 2) + 0xff620000)
-#define VDEC2_PSCALE_FILT0_COEF0                   ((0x2919  << 2) + 0xff620000)
-#define VDEC2_PSCALE_FILT0_COEF1                   ((0x291a  << 2) + 0xff620000)
-#define VDEC2_PSCALE_CMD_CTRL                      ((0x291b  << 2) + 0xff620000)
-#define VDEC2_PSCALE_CMD_BLK_X                     ((0x291c  << 2) + 0xff620000)
-#define VDEC2_PSCALE_CMD_BLK_Y                     ((0x291d  << 2) + 0xff620000)
-#define VDEC2_PSCALE_STATUS                        ((0x291e  << 2) + 0xff620000)
-#define VDEC2_PSCALE_BMEM_ADDR                     ((0x291f  << 2) + 0xff620000)
-#define VDEC2_PSCALE_BMEM_DAT                      ((0x2920  << 2) + 0xff620000)
-#define VDEC2_PSCALE_DRAM_BUF_CTRL                 ((0x2921  << 2) + 0xff620000)
-#define VDEC2_PSCALE_MCMD_CTRL                     ((0x2922  << 2) + 0xff620000)
-#define VDEC2_PSCALE_MCMD_XSIZE                    ((0x2923  << 2) + 0xff620000)
-#define VDEC2_PSCALE_MCMD_YSIZE                    ((0x2924  << 2) + 0xff620000)
-#define VDEC2_PSCALE_RBUF_START_BLKX               ((0x2925  << 2) + 0xff620000)
-#define VDEC2_PSCALE_RBUF_START_BLKY               ((0x2926  << 2) + 0xff620000)
+#define VDEC2_MC_CTRL_REG ((0x2900 << 2) + 0xff620000)
+#define VDEC2_MC_MB_INFO ((0x2901 << 2) + 0xff620000)
+#define VDEC2_MC_PIC_INFO ((0x2902 << 2) + 0xff620000)
+#define VDEC2_MC_HALF_PEL_ONE ((0x2903 << 2) + 0xff620000)
+#define VDEC2_MC_HALF_PEL_TWO ((0x2904 << 2) + 0xff620000)
+#define VDEC2_POWER_CTL_MC ((0x2905 << 2) + 0xff620000)
+#define VDEC2_MC_CMD ((0x2906 << 2) + 0xff620000)
+#define VDEC2_MC_CTRL0 ((0x2907 << 2) + 0xff620000)
+#define VDEC2_MC_PIC_W_H ((0x2908 << 2) + 0xff620000)
+#define VDEC2_MC_STATUS0 ((0x2909 << 2) + 0xff620000)
+#define VDEC2_MC_STATUS1 ((0x290a << 2) + 0xff620000)
+#define VDEC2_MC_CTRL1 ((0x290b << 2) + 0xff620000)
+#define VDEC2_MC_MIX_RATIO0 ((0x290c << 2) + 0xff620000)
+#define VDEC2_MC_MIX_RATIO1 ((0x290d << 2) + 0xff620000)
+#define VDEC2_MC_DP_MB_XY ((0x290e << 2) + 0xff620000)
+#define VDEC2_MC_OM_MB_XY ((0x290f << 2) + 0xff620000)
+#define VDEC2_PSCALE_RST ((0x2910 << 2) + 0xff620000)
+#define VDEC2_PSCALE_CTRL ((0x2911 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICI_W ((0x2912 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICI_H ((0x2913 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICO_W ((0x2914 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICO_H ((0x2915 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICO_START_X ((0x2916 << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICO_START_Y ((0x2917 << 2) + 0xff620000)
+#define VDEC2_PSCALE_DUMMY ((0x2918 << 2) + 0xff620000)
+#define VDEC2_PSCALE_FILT0_COEF0 ((0x2919 << 2) + 0xff620000)
+#define VDEC2_PSCALE_FILT0_COEF1 ((0x291a << 2) + 0xff620000)
+#define VDEC2_PSCALE_CMD_CTRL ((0x291b << 2) + 0xff620000)
+#define VDEC2_PSCALE_CMD_BLK_X ((0x291c << 2) + 0xff620000)
+#define VDEC2_PSCALE_CMD_BLK_Y ((0x291d << 2) + 0xff620000)
+#define VDEC2_PSCALE_STATUS ((0x291e << 2) + 0xff620000)
+#define VDEC2_PSCALE_BMEM_ADDR ((0x291f << 2) + 0xff620000)
+#define VDEC2_PSCALE_BMEM_DAT ((0x2920 << 2) + 0xff620000)
+#define VDEC2_PSCALE_DRAM_BUF_CTRL ((0x2921 << 2) + 0xff620000)
+#define VDEC2_PSCALE_MCMD_CTRL ((0x2922 << 2) + 0xff620000)
+#define VDEC2_PSCALE_MCMD_XSIZE ((0x2923 << 2) + 0xff620000)
+#define VDEC2_PSCALE_MCMD_YSIZE ((0x2924 << 2) + 0xff620000)
+#define VDEC2_PSCALE_RBUF_START_BLKX ((0x2925 << 2) + 0xff620000)
+#define VDEC2_PSCALE_RBUF_START_BLKY ((0x2926 << 2) + 0xff620000)
 //`define PSCALE_RBUF_MB_WIDTH   8'h27
-#define VDEC2_PSCALE_PICO_SHIFT_XY                 ((0x2928  << 2) + 0xff620000)
-#define VDEC2_PSCALE_CTRL1                         ((0x2929  << 2) + 0xff620000)
+#define VDEC2_PSCALE_PICO_SHIFT_XY ((0x2928 << 2) + 0xff620000)
+#define VDEC2_PSCALE_CTRL1 ((0x2929 << 2) + 0xff620000)
 //Bit 15, wmask enable
 //Bit 14:13, filt0 srckey_less,
 //Bit 12:11, filt1 srckey_less, in the case of the interpolated data is equal distance to
@@ -6353,48 +6353,48 @@
 //Bit 10:9, srckey mode, 00: equal, 01: less than or equal, 10: great than or equal
 //Bit 8, src key enable
 //Bit 7:0, y src key
-#define VDEC2_PSCALE_SRCKEY_CTRL0                  ((0x292a  << 2) + 0xff620000)
+#define VDEC2_PSCALE_SRCKEY_CTRL0 ((0x292a << 2) + 0xff620000)
 //Bit 15:8, cb src key
 //Bit 7:0, cr src key
-#define VDEC2_PSCALE_SRCKEY_CTRL1                  ((0x292b  << 2) + 0xff620000)
+#define VDEC2_PSCALE_SRCKEY_CTRL1 ((0x292b << 2) + 0xff620000)
 //Bit 22:16 canvas_rd_addr2
 //Bit 14:8 canvas_rd_addr1
 //Bit 6:0 canvas_rd_addr1
-#define VDEC2_PSCALE_CANVAS_RD_ADDR                ((0x292c  << 2) + 0xff620000)
+#define VDEC2_PSCALE_CANVAS_RD_ADDR ((0x292c << 2) + 0xff620000)
 //Bit 22:16 canvas_wr_addr2
 //Bit 14:8 canvas_wr_addr1
 //Bit 6:0 canvas_wr_addr1
-#define VDEC2_PSCALE_CANVAS_WR_ADDR                ((0x292d  << 2) + 0xff620000)
+#define VDEC2_PSCALE_CANVAS_WR_ADDR ((0x292d << 2) + 0xff620000)
 //bit 13:8 pscale thread ID and token
 //bit 7 disable write response count adding to busy bit
 //bit 5:0  pscale prearbitor burst num
-#define VDEC2_PSCALE_CTRL2                         ((0x292e  << 2) + 0xff620000)
+#define VDEC2_PSCALE_CTRL2 ((0x292e << 2) + 0xff620000)
 //   31 - use_omem_mb_xy_auto
 //23:16 - omem_max_mb_x
 //15:8  - omem_mb_y_auto
 // 7:0  - omem_mb_x_auto
-#define VDEC2_HDEC_MC_OMEM_AUTO                    ((0x2930  << 2) + 0xff620000)
-#define VDEC2_HDEC_MC_MBRIGHT_IDX                  ((0x2931  << 2) + 0xff620000)
-#define VDEC2_HDEC_MC_MBRIGHT_RD                   ((0x2932  << 2) + 0xff620000)
-#define VDEC2_MC_MPORT_CTRL                        ((0x2940  << 2) + 0xff620000)
-#define VDEC2_MC_MPORT_DAT                         ((0x2941  << 2) + 0xff620000)
-#define VDEC2_MC_WT_PRED_CTRL                      ((0x2942  << 2) + 0xff620000)
-#define VDEC2_MC_MBBOT_ST_EVEN_ADDR                ((0x2944  << 2) + 0xff620000)
-#define VDEC2_MC_MBBOT_ST_ODD_ADDR                 ((0x2945  << 2) + 0xff620000)
-#define VDEC2_MC_DPDN_MB_XY                        ((0x2946  << 2) + 0xff620000)
-#define VDEC2_MC_OMDN_MB_XY                        ((0x2947  << 2) + 0xff620000)
-#define VDEC2_MC_HCMDBUF_H                         ((0x2948  << 2) + 0xff620000)
-#define VDEC2_MC_HCMDBUF_L                         ((0x2949  << 2) + 0xff620000)
-#define VDEC2_MC_HCMD_H                            ((0x294a  << 2) + 0xff620000)
-#define VDEC2_MC_HCMD_L                            ((0x294b  << 2) + 0xff620000)
-#define VDEC2_MC_IDCT_DAT                          ((0x294c  << 2) + 0xff620000)
-#define VDEC2_MC_CTRL_GCLK_CTRL                    ((0x294d  << 2) + 0xff620000)
-#define VDEC2_MC_OTHER_GCLK_CTRL                   ((0x294e  << 2) + 0xff620000)
+#define VDEC2_HDEC_MC_OMEM_AUTO ((0x2930 << 2) + 0xff620000)
+#define VDEC2_HDEC_MC_MBRIGHT_IDX ((0x2931 << 2) + 0xff620000)
+#define VDEC2_HDEC_MC_MBRIGHT_RD ((0x2932 << 2) + 0xff620000)
+#define VDEC2_MC_MPORT_CTRL ((0x2940 << 2) + 0xff620000)
+#define VDEC2_MC_MPORT_DAT ((0x2941 << 2) + 0xff620000)
+#define VDEC2_MC_WT_PRED_CTRL ((0x2942 << 2) + 0xff620000)
+#define VDEC2_MC_MBBOT_ST_EVEN_ADDR ((0x2944 << 2) + 0xff620000)
+#define VDEC2_MC_MBBOT_ST_ODD_ADDR ((0x2945 << 2) + 0xff620000)
+#define VDEC2_MC_DPDN_MB_XY ((0x2946 << 2) + 0xff620000)
+#define VDEC2_MC_OMDN_MB_XY ((0x2947 << 2) + 0xff620000)
+#define VDEC2_MC_HCMDBUF_H ((0x2948 << 2) + 0xff620000)
+#define VDEC2_MC_HCMDBUF_L ((0x2949 << 2) + 0xff620000)
+#define VDEC2_MC_HCMD_H ((0x294a << 2) + 0xff620000)
+#define VDEC2_MC_HCMD_L ((0x294b << 2) + 0xff620000)
+#define VDEC2_MC_IDCT_DAT ((0x294c << 2) + 0xff620000)
+#define VDEC2_MC_CTRL_GCLK_CTRL ((0x294d << 2) + 0xff620000)
+#define VDEC2_MC_OTHER_GCLK_CTRL ((0x294e << 2) + 0xff620000)
 //Bit 29:24, mbbot thread ID and token
 //Bit 21:16, mc read/write thread ID and token
 //Bit 13:8,  mbbot pre-arbitor burst number
 //Bit 5:0,   mc pre-arbitor burst number
-#define VDEC2_MC_CTRL2                             ((0x294f  << 2) + 0xff620000)
+#define VDEC2_MC_CTRL2 ((0x294f << 2) + 0xff620000)
 // `define DBLK_QUANT            8'h76 // ONLY for $ucode/real/amrisc/rv.s, reg value from apollo
 //`define ANC1_CANVAS_ADDR      8'h80
 //`define ANC2_CANVAS_ADDR      8'h81
@@ -6402,89 +6402,89 @@
 //`define MDEC_PIC_W          8'h8c
 //`define MDEC_PIC_H          8'h8d
 // mdec_pic_dc_mux_ctrl[31]  -- mcr_hevc_mode
-#define VDEC2_MDEC_PIC_DC_MUX_CTRL                 ((0x298d  << 2) + 0xff620000)
-#define VDEC2_MDEC_PIC_DC_CTRL                     ((0x298e  << 2) + 0xff620000)
-#define VDEC2_MDEC_PIC_DC_STATUS                   ((0x298f  << 2) + 0xff620000)
-#define VDEC2_ANC0_CANVAS_ADDR                     ((0x2990  << 2) + 0xff620000)
-#define VDEC2_ANC1_CANVAS_ADDR                     ((0x2991  << 2) + 0xff620000)
-#define VDEC2_ANC2_CANVAS_ADDR                     ((0x2992  << 2) + 0xff620000)
-#define VDEC2_ANC3_CANVAS_ADDR                     ((0x2993  << 2) + 0xff620000)
-#define VDEC2_ANC4_CANVAS_ADDR                     ((0x2994  << 2) + 0xff620000)
-#define VDEC2_ANC5_CANVAS_ADDR                     ((0x2995  << 2) + 0xff620000)
-#define VDEC2_ANC6_CANVAS_ADDR                     ((0x2996  << 2) + 0xff620000)
-#define VDEC2_ANC7_CANVAS_ADDR                     ((0x2997  << 2) + 0xff620000)
-#define VDEC2_ANC8_CANVAS_ADDR                     ((0x2998  << 2) + 0xff620000)
-#define VDEC2_ANC9_CANVAS_ADDR                     ((0x2999  << 2) + 0xff620000)
-#define VDEC2_ANC10_CANVAS_ADDR                    ((0x299a  << 2) + 0xff620000)
-#define VDEC2_ANC11_CANVAS_ADDR                    ((0x299b  << 2) + 0xff620000)
-#define VDEC2_ANC12_CANVAS_ADDR                    ((0x299c  << 2) + 0xff620000)
-#define VDEC2_ANC13_CANVAS_ADDR                    ((0x299d  << 2) + 0xff620000)
-#define VDEC2_ANC14_CANVAS_ADDR                    ((0x299e  << 2) + 0xff620000)
-#define VDEC2_ANC15_CANVAS_ADDR                    ((0x299f  << 2) + 0xff620000)
-#define VDEC2_ANC16_CANVAS_ADDR                    ((0x29a0  << 2) + 0xff620000)
-#define VDEC2_ANC17_CANVAS_ADDR                    ((0x29a1  << 2) + 0xff620000)
-#define VDEC2_ANC18_CANVAS_ADDR                    ((0x29a2  << 2) + 0xff620000)
-#define VDEC2_ANC19_CANVAS_ADDR                    ((0x29a3  << 2) + 0xff620000)
-#define VDEC2_ANC20_CANVAS_ADDR                    ((0x29a4  << 2) + 0xff620000)
-#define VDEC2_ANC21_CANVAS_ADDR                    ((0x29a5  << 2) + 0xff620000)
-#define VDEC2_ANC22_CANVAS_ADDR                    ((0x29a6  << 2) + 0xff620000)
-#define VDEC2_ANC23_CANVAS_ADDR                    ((0x29a7  << 2) + 0xff620000)
-#define VDEC2_ANC24_CANVAS_ADDR                    ((0x29a8  << 2) + 0xff620000)
-#define VDEC2_ANC25_CANVAS_ADDR                    ((0x29a9  << 2) + 0xff620000)
-#define VDEC2_ANC26_CANVAS_ADDR                    ((0x29aa  << 2) + 0xff620000)
-#define VDEC2_ANC27_CANVAS_ADDR                    ((0x29ab  << 2) + 0xff620000)
-#define VDEC2_ANC28_CANVAS_ADDR                    ((0x29ac  << 2) + 0xff620000)
-#define VDEC2_ANC29_CANVAS_ADDR                    ((0x29ad  << 2) + 0xff620000)
-#define VDEC2_ANC30_CANVAS_ADDR                    ((0x29ae  << 2) + 0xff620000)
-#define VDEC2_ANC31_CANVAS_ADDR                    ((0x29af  << 2) + 0xff620000)
-#define VDEC2_DBKR_CANVAS_ADDR                     ((0x29b0  << 2) + 0xff620000)
-#define VDEC2_DBKW_CANVAS_ADDR                     ((0x29b1  << 2) + 0xff620000)
-#define VDEC2_REC_CANVAS_ADDR                      ((0x29b2  << 2) + 0xff620000)
+#define VDEC2_MDEC_PIC_DC_MUX_CTRL ((0x298d << 2) + 0xff620000)
+#define VDEC2_MDEC_PIC_DC_CTRL ((0x298e << 2) + 0xff620000)
+#define VDEC2_MDEC_PIC_DC_STATUS ((0x298f << 2) + 0xff620000)
+#define VDEC2_ANC0_CANVAS_ADDR ((0x2990 << 2) + 0xff620000)
+#define VDEC2_ANC1_CANVAS_ADDR ((0x2991 << 2) + 0xff620000)
+#define VDEC2_ANC2_CANVAS_ADDR ((0x2992 << 2) + 0xff620000)
+#define VDEC2_ANC3_CANVAS_ADDR ((0x2993 << 2) + 0xff620000)
+#define VDEC2_ANC4_CANVAS_ADDR ((0x2994 << 2) + 0xff620000)
+#define VDEC2_ANC5_CANVAS_ADDR ((0x2995 << 2) + 0xff620000)
+#define VDEC2_ANC6_CANVAS_ADDR ((0x2996 << 2) + 0xff620000)
+#define VDEC2_ANC7_CANVAS_ADDR ((0x2997 << 2) + 0xff620000)
+#define VDEC2_ANC8_CANVAS_ADDR ((0x2998 << 2) + 0xff620000)
+#define VDEC2_ANC9_CANVAS_ADDR ((0x2999 << 2) + 0xff620000)
+#define VDEC2_ANC10_CANVAS_ADDR ((0x299a << 2) + 0xff620000)
+#define VDEC2_ANC11_CANVAS_ADDR ((0x299b << 2) + 0xff620000)
+#define VDEC2_ANC12_CANVAS_ADDR ((0x299c << 2) + 0xff620000)
+#define VDEC2_ANC13_CANVAS_ADDR ((0x299d << 2) + 0xff620000)
+#define VDEC2_ANC14_CANVAS_ADDR ((0x299e << 2) + 0xff620000)
+#define VDEC2_ANC15_CANVAS_ADDR ((0x299f << 2) + 0xff620000)
+#define VDEC2_ANC16_CANVAS_ADDR ((0x29a0 << 2) + 0xff620000)
+#define VDEC2_ANC17_CANVAS_ADDR ((0x29a1 << 2) + 0xff620000)
+#define VDEC2_ANC18_CANVAS_ADDR ((0x29a2 << 2) + 0xff620000)
+#define VDEC2_ANC19_CANVAS_ADDR ((0x29a3 << 2) + 0xff620000)
+#define VDEC2_ANC20_CANVAS_ADDR ((0x29a4 << 2) + 0xff620000)
+#define VDEC2_ANC21_CANVAS_ADDR ((0x29a5 << 2) + 0xff620000)
+#define VDEC2_ANC22_CANVAS_ADDR ((0x29a6 << 2) + 0xff620000)
+#define VDEC2_ANC23_CANVAS_ADDR ((0x29a7 << 2) + 0xff620000)
+#define VDEC2_ANC24_CANVAS_ADDR ((0x29a8 << 2) + 0xff620000)
+#define VDEC2_ANC25_CANVAS_ADDR ((0x29a9 << 2) + 0xff620000)
+#define VDEC2_ANC26_CANVAS_ADDR ((0x29aa << 2) + 0xff620000)
+#define VDEC2_ANC27_CANVAS_ADDR ((0x29ab << 2) + 0xff620000)
+#define VDEC2_ANC28_CANVAS_ADDR ((0x29ac << 2) + 0xff620000)
+#define VDEC2_ANC29_CANVAS_ADDR ((0x29ad << 2) + 0xff620000)
+#define VDEC2_ANC30_CANVAS_ADDR ((0x29ae << 2) + 0xff620000)
+#define VDEC2_ANC31_CANVAS_ADDR ((0x29af << 2) + 0xff620000)
+#define VDEC2_DBKR_CANVAS_ADDR ((0x29b0 << 2) + 0xff620000)
+#define VDEC2_DBKW_CANVAS_ADDR ((0x29b1 << 2) + 0xff620000)
+#define VDEC2_REC_CANVAS_ADDR ((0x29b2 << 2) + 0xff620000)
 //28:24, read/write, current canvas idx, used in h264 only now
 //23:0, read only, current canvas address, 23:16, Cr canvas addr, 15:8, Cb canvas addr, 7:0, Y  canvas addr
-#define VDEC2_CURR_CANVAS_CTRL                     ((0x29b3  << 2) + 0xff620000)
-#define VDEC2_MDEC_PIC_DC_THRESH                   ((0x29b8  << 2) + 0xff620000)
-#define VDEC2_MDEC_PICR_BUF_STATUS                 ((0x29b9  << 2) + 0xff620000)
-#define VDEC2_MDEC_PICW_BUF_STATUS                 ((0x29ba  << 2) + 0xff620000)
-#define VDEC2_MCW_DBLK_WRRSP_CNT                   ((0x29bb  << 2) + 0xff620000)
-#define VDEC2_MC_MBBOT_WRRSP_CNT                   ((0x29bc  << 2) + 0xff620000)
-#define VDEC2_MDEC_PICW_BUF2_STATUS                ((0x29bd  << 2) + 0xff620000)
-#define VDEC2_WRRSP_FIFO_PICW_DBK                  ((0x29be  << 2) + 0xff620000)
-#define VDEC2_WRRSP_FIFO_PICW_MC                   ((0x29bf  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_0                         ((0x29c0  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_1                         ((0x29c1  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_2                         ((0x29c2  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_3                         ((0x29c3  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_4                         ((0x29c4  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_5                         ((0x29c5  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_6                         ((0x29c6  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_7                         ((0x29c7  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_8                         ((0x29c8  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_9                         ((0x29c9  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_A                         ((0x29ca  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_B                         ((0x29cb  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_C                         ((0x29cc  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_D                         ((0x29cd  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_E                         ((0x29ce  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_F                         ((0x29cf  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_G                         ((0x29d0  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_H                         ((0x29d1  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_I                         ((0x29d2  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_J                         ((0x29d3  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_K                         ((0x29d4  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_L                         ((0x29d5  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_M                         ((0x29d6  << 2) + 0xff620000)
-#define VDEC2_AV_SCRATCH_N                         ((0x29d7  << 2) + 0xff620000)
+#define VDEC2_CURR_CANVAS_CTRL ((0x29b3 << 2) + 0xff620000)
+#define VDEC2_MDEC_PIC_DC_THRESH ((0x29b8 << 2) + 0xff620000)
+#define VDEC2_MDEC_PICR_BUF_STATUS ((0x29b9 << 2) + 0xff620000)
+#define VDEC2_MDEC_PICW_BUF_STATUS ((0x29ba << 2) + 0xff620000)
+#define VDEC2_MCW_DBLK_WRRSP_CNT ((0x29bb << 2) + 0xff620000)
+#define VDEC2_MC_MBBOT_WRRSP_CNT ((0x29bc << 2) + 0xff620000)
+#define VDEC2_MDEC_PICW_BUF2_STATUS ((0x29bd << 2) + 0xff620000)
+#define VDEC2_WRRSP_FIFO_PICW_DBK ((0x29be << 2) + 0xff620000)
+#define VDEC2_WRRSP_FIFO_PICW_MC ((0x29bf << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_0 ((0x29c0 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_1 ((0x29c1 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_2 ((0x29c2 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_3 ((0x29c3 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_4 ((0x29c4 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_5 ((0x29c5 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_6 ((0x29c6 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_7 ((0x29c7 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_8 ((0x29c8 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_9 ((0x29c9 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_A ((0x29ca << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_B ((0x29cb << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_C ((0x29cc << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_D ((0x29cd << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_E ((0x29ce << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_F ((0x29cf << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_G ((0x29d0 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_H ((0x29d1 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_I ((0x29d2 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_J ((0x29d3 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_K ((0x29d4 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_L ((0x29d5 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_M ((0x29d6 << 2) + 0xff620000)
+#define VDEC2_AV_SCRATCH_N ((0x29d7 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_co_mb
 // bit[21:16] A_id_co_mb
 // bit[11:0] wrrsp_count_co_mb
-#define VDEC2_WRRSP_CO_MB                          ((0x29d8  << 2) + 0xff620000)
+#define VDEC2_WRRSP_CO_MB ((0x29d8 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_dcac
 // bit[21:16] A_id_dcac
 // bit[11:0] wrrsp_count_dcac
-#define VDEC2_WRRSP_DCAC                           ((0x29d9  << 2) + 0xff620000)
+#define VDEC2_WRRSP_DCAC ((0x29d9 << 2) + 0xff620000)
 // bit[11:0] wrrsp_count_vld
-#define VDEC2_WRRSP_VLD                            ((0x29da  << 2) + 0xff620000)
+#define VDEC2_WRRSP_VLD ((0x29da << 2) + 0xff620000)
 // doublew_cfg0[0];     //       Second Channel Enable, 1:Enable 0:Disable
 // doublew_cfg0[3:1];   // [2:0] Endian Control for Luma
 // doublew_cfg0[5:4];   // [1:0] Pixel sel by horizontal, 0x:1/2 10:left 11:right
@@ -6500,45 +6500,45 @@
 // doublew_cfg0[29:28]; // [1:0] 0x:select both top and bottom 10:select top 11:select bottom
 // doublew_cfg0[30];    //       0:no merge 1:automatic merge
 // doublew_cfg0[31];    //       0:Y addr no change 1:Y addr divided to half
-#define VDEC2_MDEC_DOUBLEW_CFG0                    ((0x29db  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG0 ((0x29db << 2) + 0xff620000)
 // doublew_cfg1[7:0];   // [7:0] DMA Canvas Address for Luma
 // doublew_cfg1[15:8];  // [7:0] DMA Canvas Address for Chroma
 // doublew_cfg1[16];    //       Disable 1st Write -
 // doublew_cfg1[17];    //       Reverse to original version -
 // doublew_cfg1[18];    //       DMA Address Mode - 0:Canvas Mode 1:Non-Canvas Mode
-#define VDEC2_MDEC_DOUBLEW_CFG1                    ((0x29dc  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG1 ((0x29dc << 2) + 0xff620000)
 // doublew_cfg2[11:0];  //[11:0] vertical flip initial value
 // doublew_cfg2[15];    //       vertical flip enable
 // doublew_cfg2[24:16]; // [8:0] horizontal flip initial value
 // doublew_cfg2[31];    //       horizontal flip enable
-#define VDEC2_MDEC_DOUBLEW_CFG2                    ((0x29dd  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG2 ((0x29dd << 2) + 0xff620000)
 // doublew_cfg3[31:0];  //[31:0] non-canvas start address for Luma -
-#define VDEC2_MDEC_DOUBLEW_CFG3                    ((0x29de  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG3 ((0x29de << 2) + 0xff620000)
 // doublew_cfg4[31:0];  //[31:0] non-canvas start address for Chroma -
-#define VDEC2_MDEC_DOUBLEW_CFG4                    ((0x29df  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG4 ((0x29df << 2) + 0xff620000)
 // doublew_cfg5[12:0];  //[12:0] non-canvas picture width for Luma -
 // doublew_cfg5[28:16]; //[12:0] non-canvas picture width for Chroma -
-#define VDEC2_MDEC_DOUBLEW_CFG5                    ((0x29e0  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG5 ((0x29e0 << 2) + 0xff620000)
 // doublew_cfg6: reserved
-#define VDEC2_MDEC_DOUBLEW_CFG6                    ((0x29e1  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG6 ((0x29e1 << 2) + 0xff620000)
 // doublew_cfg7: reserved
-#define VDEC2_MDEC_DOUBLEW_CFG7                    ((0x29e2  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_CFG7 ((0x29e2 << 2) + 0xff620000)
 // doublew_status[11:0];//[11:0] wrrsp_count_doublew
 // doublew_status[12];  //       doublew_status_busy
 // doublew_status[13];  //       doublew_status_error
-#define VDEC2_MDEC_DOUBLEW_STATUS                  ((0x29e3  << 2) + 0xff620000)
-#define VDEC2_MDEC_EXTIF_CFG0                      ((0x29e4  << 2) + 0xff620000)
-#define VDEC2_MDEC_EXTIF_CFG1                      ((0x29e5  << 2) + 0xff620000)
-#define VDEC2_MDEC_EXTIF_CFG2                      ((0x29e6  << 2) + 0xff620000)
-#define VDEC2_MDEC_EXTIF_STS0                      ((0x29e7  << 2) + 0xff620000)
-#define VDEC2_MDEC_PICW_BUFDW_CFG0                 ((0x29e8  << 2) + 0xff620000)
-#define VDEC2_MDEC_PICW_BUFDW_CFG1                 ((0x29e9  << 2) + 0xff620000)
+#define VDEC2_MDEC_DOUBLEW_STATUS ((0x29e3 << 2) + 0xff620000)
+#define VDEC2_MDEC_EXTIF_CFG0 ((0x29e4 << 2) + 0xff620000)
+#define VDEC2_MDEC_EXTIF_CFG1 ((0x29e5 << 2) + 0xff620000)
+#define VDEC2_MDEC_EXTIF_CFG2 ((0x29e6 << 2) + 0xff620000)
+#define VDEC2_MDEC_EXTIF_STS0 ((0x29e7 << 2) + 0xff620000)
+#define VDEC2_MDEC_PICW_BUFDW_CFG0 ((0x29e8 << 2) + 0xff620000)
+#define VDEC2_MDEC_PICW_BUFDW_CFG1 ((0x29e9 << 2) + 0xff620000)
 //======================================
 //  MC Control Register Bits
 //
 //======================================
 // For bits, just copy the defines...don't translate to addresses
-    //`define MC_RESET	    16'h0002
+//`define MC_RESET	    16'h0002
 //======================================
 //  MB Info Register Bits
 //
@@ -6550,45 +6550,45 @@
 //========================================================================
 // DBLK Register:  12'h950 - 12'h97f
 //========================================================================
-#define VDEC2_DBLK_RST                             ((0x2950  << 2) + 0xff620000)
-#define VDEC2_DBLK_CTRL                            ((0x2951  << 2) + 0xff620000)
-#define VDEC2_DBLK_MB_WID_HEIGHT                   ((0x2952  << 2) + 0xff620000)
-#define VDEC2_DBLK_STATUS                          ((0x2953  << 2) + 0xff620000)
-#define VDEC2_DBLK_CMD_CTRL                        ((0x2954  << 2) + 0xff620000)
-#define VDEC2_DBLK_MB_XY                           ((0x2955  << 2) + 0xff620000)
-#define VDEC2_DBLK_QP                              ((0x2956  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_BHFILT                        ((0x2957  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_BHFILT_HIGH                   ((0x2958  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_BVFILT                        ((0x2959  << 2) + 0xff620000)
-#define VDEC2_DBLK_CB_BFILT                        ((0x295a  << 2) + 0xff620000)
-#define VDEC2_DBLK_CR_BFILT                        ((0x295b  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_HFILT                         ((0x295c  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_HFILT_HIGH                    ((0x295d  << 2) + 0xff620000)
-#define VDEC2_DBLK_Y_VFILT                         ((0x295e  << 2) + 0xff620000)
-#define VDEC2_DBLK_CB_FILT                         ((0x295f  << 2) + 0xff620000)
-#define VDEC2_DBLK_CR_FILT                         ((0x2960  << 2) + 0xff620000)
-#define VDEC2_DBLK_BETAX_QP_SEL                    ((0x2961  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL0                      ((0x2962  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL1                      ((0x2963  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL2                      ((0x2964  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL3                      ((0x2965  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL4                      ((0x2966  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL5                      ((0x2967  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL6                      ((0x2968  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL7                      ((0x2969  << 2) + 0xff620000)
-#define VDEC2_DBLK_CLIP_CTRL8                      ((0x296a  << 2) + 0xff620000)
-#define VDEC2_DBLK_STATUS1                         ((0x296b  << 2) + 0xff620000)
-#define VDEC2_DBLK_GCLK_FREE                       ((0x296c  << 2) + 0xff620000)
-#define VDEC2_DBLK_GCLK_OFF                        ((0x296d  << 2) + 0xff620000)
-#define VDEC2_DBLK_AVSFLAGS                        ((0x296e  << 2) + 0xff620000)
+#define VDEC2_DBLK_RST ((0x2950 << 2) + 0xff620000)
+#define VDEC2_DBLK_CTRL ((0x2951 << 2) + 0xff620000)
+#define VDEC2_DBLK_MB_WID_HEIGHT ((0x2952 << 2) + 0xff620000)
+#define VDEC2_DBLK_STATUS ((0x2953 << 2) + 0xff620000)
+#define VDEC2_DBLK_CMD_CTRL ((0x2954 << 2) + 0xff620000)
+#define VDEC2_DBLK_MB_XY ((0x2955 << 2) + 0xff620000)
+#define VDEC2_DBLK_QP ((0x2956 << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_BHFILT ((0x2957 << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_BHFILT_HIGH ((0x2958 << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_BVFILT ((0x2959 << 2) + 0xff620000)
+#define VDEC2_DBLK_CB_BFILT ((0x295a << 2) + 0xff620000)
+#define VDEC2_DBLK_CR_BFILT ((0x295b << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_HFILT ((0x295c << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_HFILT_HIGH ((0x295d << 2) + 0xff620000)
+#define VDEC2_DBLK_Y_VFILT ((0x295e << 2) + 0xff620000)
+#define VDEC2_DBLK_CB_FILT ((0x295f << 2) + 0xff620000)
+#define VDEC2_DBLK_CR_FILT ((0x2960 << 2) + 0xff620000)
+#define VDEC2_DBLK_BETAX_QP_SEL ((0x2961 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL0 ((0x2962 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL1 ((0x2963 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL2 ((0x2964 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL3 ((0x2965 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL4 ((0x2966 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL5 ((0x2967 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL6 ((0x2968 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL7 ((0x2969 << 2) + 0xff620000)
+#define VDEC2_DBLK_CLIP_CTRL8 ((0x296a << 2) + 0xff620000)
+#define VDEC2_DBLK_STATUS1 ((0x296b << 2) + 0xff620000)
+#define VDEC2_DBLK_GCLK_FREE ((0x296c << 2) + 0xff620000)
+#define VDEC2_DBLK_GCLK_OFF ((0x296d << 2) + 0xff620000)
+#define VDEC2_DBLK_AVSFLAGS ((0x296e << 2) + 0xff620000)
 // bit 15:0
-#define VDEC2_DBLK_CBPY                            ((0x2970  << 2) + 0xff620000)
+#define VDEC2_DBLK_CBPY ((0x2970 << 2) + 0xff620000)
 // bit 11:8 -- deblk_cbpy_bottom
 // bit 7:4 -- deblk_cbpy_left
 // bit 3:0 -- deblk_cbpy_top
-#define VDEC2_DBLK_CBPY_ADJ                        ((0x2971  << 2) + 0xff620000)
+#define VDEC2_DBLK_CBPY_ADJ ((0x2971 << 2) + 0xff620000)
 // bit 7:0 -- deblk_cbpc
-#define VDEC2_DBLK_CBPC                            ((0x2972  << 2) + 0xff620000)
+#define VDEC2_DBLK_CBPC ((0x2972 << 2) + 0xff620000)
 // bit 15 -- bottom_mb
 // bit 14 -- left_mb
 // bit 13 -- top_mb
@@ -6596,10 +6596,10 @@
 // bit 11:8 -- deblk_cbpc_bottom
 // bit 7:4 -- deblk_cbpc_left
 // bit 3:0 -- deblk_cbpc_top
-#define VDEC2_DBLK_CBPC_ADJ                        ((0x2973  << 2) + 0xff620000)
+#define VDEC2_DBLK_CBPC_ADJ ((0x2973 << 2) + 0xff620000)
 // bit 15:8 -- deblk_hmvd   -- {left_1, left_0, below_1, below_0, block3-0}
 // bit 7:0 -- deblk_vmvd    -- {top_1, top_0, below_1, below_0, block3-0}
-#define VDEC2_DBLK_VHMVD                           ((0x2974  << 2) + 0xff620000)
+#define VDEC2_DBLK_VHMVD ((0x2974 << 2) + 0xff620000)
 // bit 13:12 -- right_vmvd
 // bit 11 -- right_above_vmvd
 // bit 10 -- left_below_hmvd
@@ -6613,40 +6613,40 @@
 // bit 2 -- s_left
 // bit 1 -- s_above
 // bit 0 -- s
-#define VDEC2_DBLK_STRONG                          ((0x2975  << 2) + 0xff620000)
+#define VDEC2_DBLK_STRONG ((0x2975 << 2) + 0xff620000)
 // bit 14:10 -- PQUANT
 // bit 9:5 -- left_PQUANT
 // bit 4:0 -- top_PQUANT
-#define VDEC2_DBLK_RV8_QUANT                       ((0x2976  << 2) + 0xff620000)
-#define VDEC2_DBLK_CBUS_HCMD2                      ((0x2977  << 2) + 0xff620000)
-#define VDEC2_DBLK_CBUS_HCMD1                      ((0x2978  << 2) + 0xff620000)
-#define VDEC2_DBLK_CBUS_HCMD0                      ((0x2979  << 2) + 0xff620000)
-#define VDEC2_DBLK_VLD_HCMD2                       ((0x297a  << 2) + 0xff620000)
-#define VDEC2_DBLK_VLD_HCMD1                       ((0x297b  << 2) + 0xff620000)
-#define VDEC2_DBLK_VLD_HCMD0                       ((0x297c  << 2) + 0xff620000)
-#define VDEC2_DBLK_OST_YBASE                       ((0x297d  << 2) + 0xff620000)
-#define VDEC2_DBLK_OST_CBCRDIFF                    ((0x297e  << 2) + 0xff620000)
+#define VDEC2_DBLK_RV8_QUANT ((0x2976 << 2) + 0xff620000)
+#define VDEC2_DBLK_CBUS_HCMD2 ((0x2977 << 2) + 0xff620000)
+#define VDEC2_DBLK_CBUS_HCMD1 ((0x2978 << 2) + 0xff620000)
+#define VDEC2_DBLK_CBUS_HCMD0 ((0x2979 << 2) + 0xff620000)
+#define VDEC2_DBLK_VLD_HCMD2 ((0x297a << 2) + 0xff620000)
+#define VDEC2_DBLK_VLD_HCMD1 ((0x297b << 2) + 0xff620000)
+#define VDEC2_DBLK_VLD_HCMD0 ((0x297c << 2) + 0xff620000)
+#define VDEC2_DBLK_OST_YBASE ((0x297d << 2) + 0xff620000)
+#define VDEC2_DBLK_OST_CBCRDIFF ((0x297e << 2) + 0xff620000)
 //13:8 dblk thread ID and token
 //5:0  dblk prearbitor burst num
-#define VDEC2_DBLK_CTRL1                           ((0x297f  << 2) + 0xff620000)
+#define VDEC2_DBLK_CTRL1 ((0x297f << 2) + 0xff620000)
 // MCRCC_CTL1
 // 31:3  <reserved[23:0]>
 // 2     <cfg_field_pic>
 // 1     <sw_rst>
 // 0     <bypass_en>
-#define VDEC2_MCRCC_CTL1                           ((0x2980  << 2) + 0xff620000)
+#define VDEC2_MCRCC_CTL1 ((0x2980 << 2) + 0xff620000)
 // MCRCC_CTL2
 // 31:24    <cfg_cache_anc01_c[7:0]>
 // 23:16    <cfg_cache_anc01_y[7:0]>
 // 15:8     <cfg_cache_anc00_c[7:0]>
 // 7:0      <cfg_cache_anc00_y[7:0]>
-#define VDEC2_MCRCC_CTL2                           ((0x2981  << 2) + 0xff620000)
+#define VDEC2_MCRCC_CTL2 ((0x2981 << 2) + 0xff620000)
 // MCRCC_CTL3
 // 31:24    <cfg_cache_anc11_c[7:0]>
 // 23:16    <cfg_cache_anc11_y[7:0]>
 // 15:8     <cfg_cache_anc10_c[7:0]>
 // 7:0      <cfg_cache_anc10_y[7:0]>
-#define VDEC2_MCRCC_CTL3                           ((0x2982  << 2) + 0xff620000)
+#define VDEC2_MCRCC_CTL3 ((0x2982 << 2) + 0xff620000)
 // bit[31:10] reserved
 // bit[9:0] sw_clock_gating control
 // [9] vdec clk_en for assist and cbus.
@@ -6659,7 +6659,7 @@
 // [2] vdec clk_en for pic_dc
 // [1] vdec clk_en for psc
 // [0] vdec clk_en for vld
-#define VDEC2_GCLK_EN                              ((0x2983  << 2) + 0xff620000)
+#define VDEC2_GCLK_EN ((0x2983 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  Reset assist, mdec's CBUS
@@ -6674,7 +6674,7 @@
 // [11] Reset vcpu's MCPU
 // [12] Reset vcpu's CCPU
 // [13] Reset mmc_pre_arb
-#define VDEC2_MDEC_SW_RESET                        ((0x2984  << 2) + 0xff620000)
+#define VDEC2_MDEC_SW_RESET ((0x2984 << 2) + 0xff620000)
 // [0]      dblkmerge_bypass
 // [2:1]    picture_structure
 // [3]      is_mbaff_frame
@@ -6682,12 +6682,12 @@
 // [6]      Reserved
 // [7]      write_mask_redge
 // [31:6]   Reserved
-#define VDEC2_MDEC_DBLKWMERGE_CTRL0                ((0x2985  << 2) + 0xff620000)
+#define VDEC2_MDEC_DBLKWMERGE_CTRL0 ((0x2985 << 2) + 0xff620000)
 // [12:0]   dblkwmerge_pic_w
 // [15:13]  Reserved
 // [28:16]  dblkwmerge_pic_h
 // [31:29]  Reserved
-#define VDEC2_MDEC_DBLKWMERGE_CTRL1                ((0x2986  << 2) + 0xff620000)
+#define VDEC2_MDEC_DBLKWMERGE_CTRL1 ((0x2986 << 2) + 0xff620000)
 //DBLK last address 12'h97f
 //
 // Closing file:  mdec_regs.h
@@ -6701,48 +6701,48 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_MDEC_CBUS_BASE = 0x09
 // -----------------------------------------------
-#define HEVC_MC_CTRL_REG                           ((0x3900  << 2) + 0xff620000)
-#define HEVC_MC_MB_INFO                            ((0x3901  << 2) + 0xff620000)
-#define HEVC_MC_PIC_INFO                           ((0x3902  << 2) + 0xff620000)
-#define HEVC_MC_HALF_PEL_ONE                       ((0x3903  << 2) + 0xff620000)
-#define HEVC_MC_HALF_PEL_TWO                       ((0x3904  << 2) + 0xff620000)
-#define HEVC_POWER_CTL_MC                          ((0x3905  << 2) + 0xff620000)
-#define HEVC_MC_CMD                                ((0x3906  << 2) + 0xff620000)
-#define HEVC_MC_CTRL0                              ((0x3907  << 2) + 0xff620000)
-#define HEVC_MC_PIC_W_H                            ((0x3908  << 2) + 0xff620000)
-#define HEVC_MC_STATUS0                            ((0x3909  << 2) + 0xff620000)
-#define HEVC_MC_STATUS1                            ((0x390a  << 2) + 0xff620000)
-#define HEVC_MC_CTRL1                              ((0x390b  << 2) + 0xff620000)
-#define HEVC_MC_MIX_RATIO0                         ((0x390c  << 2) + 0xff620000)
-#define HEVC_MC_MIX_RATIO1                         ((0x390d  << 2) + 0xff620000)
-#define HEVC_MC_DP_MB_XY                           ((0x390e  << 2) + 0xff620000)
-#define HEVC_MC_OM_MB_XY                           ((0x390f  << 2) + 0xff620000)
-#define HEVC_PSCALE_RST                            ((0x3910  << 2) + 0xff620000)
-#define HEVC_PSCALE_CTRL                           ((0x3911  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICI_W                         ((0x3912  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICI_H                         ((0x3913  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICO_W                         ((0x3914  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICO_H                         ((0x3915  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICO_START_X                   ((0x3916  << 2) + 0xff620000)
-#define HEVC_PSCALE_PICO_START_Y                   ((0x3917  << 2) + 0xff620000)
-#define HEVC_PSCALE_DUMMY                          ((0x3918  << 2) + 0xff620000)
-#define HEVC_PSCALE_FILT0_COEF0                    ((0x3919  << 2) + 0xff620000)
-#define HEVC_PSCALE_FILT0_COEF1                    ((0x391a  << 2) + 0xff620000)
-#define HEVC_PSCALE_CMD_CTRL                       ((0x391b  << 2) + 0xff620000)
-#define HEVC_PSCALE_CMD_BLK_X                      ((0x391c  << 2) + 0xff620000)
-#define HEVC_PSCALE_CMD_BLK_Y                      ((0x391d  << 2) + 0xff620000)
-#define HEVC_PSCALE_STATUS                         ((0x391e  << 2) + 0xff620000)
-#define HEVC_PSCALE_BMEM_ADDR                      ((0x391f  << 2) + 0xff620000)
-#define HEVC_PSCALE_BMEM_DAT                       ((0x3920  << 2) + 0xff620000)
-#define HEVC_PSCALE_DRAM_BUF_CTRL                  ((0x3921  << 2) + 0xff620000)
-#define HEVC_PSCALE_MCMD_CTRL                      ((0x3922  << 2) + 0xff620000)
-#define HEVC_PSCALE_MCMD_XSIZE                     ((0x3923  << 2) + 0xff620000)
-#define HEVC_PSCALE_MCMD_YSIZE                     ((0x3924  << 2) + 0xff620000)
-#define HEVC_PSCALE_RBUF_START_BLKX                ((0x3925  << 2) + 0xff620000)
-#define HEVC_PSCALE_RBUF_START_BLKY                ((0x3926  << 2) + 0xff620000)
+#define HEVC_MC_CTRL_REG ((0x3900 << 2) + 0xff620000)
+#define HEVC_MC_MB_INFO ((0x3901 << 2) + 0xff620000)
+#define HEVC_MC_PIC_INFO ((0x3902 << 2) + 0xff620000)
+#define HEVC_MC_HALF_PEL_ONE ((0x3903 << 2) + 0xff620000)
+#define HEVC_MC_HALF_PEL_TWO ((0x3904 << 2) + 0xff620000)
+#define HEVC_POWER_CTL_MC ((0x3905 << 2) + 0xff620000)
+#define HEVC_MC_CMD ((0x3906 << 2) + 0xff620000)
+#define HEVC_MC_CTRL0 ((0x3907 << 2) + 0xff620000)
+#define HEVC_MC_PIC_W_H ((0x3908 << 2) + 0xff620000)
+#define HEVC_MC_STATUS0 ((0x3909 << 2) + 0xff620000)
+#define HEVC_MC_STATUS1 ((0x390a << 2) + 0xff620000)
+#define HEVC_MC_CTRL1 ((0x390b << 2) + 0xff620000)
+#define HEVC_MC_MIX_RATIO0 ((0x390c << 2) + 0xff620000)
+#define HEVC_MC_MIX_RATIO1 ((0x390d << 2) + 0xff620000)
+#define HEVC_MC_DP_MB_XY ((0x390e << 2) + 0xff620000)
+#define HEVC_MC_OM_MB_XY ((0x390f << 2) + 0xff620000)
+#define HEVC_PSCALE_RST ((0x3910 << 2) + 0xff620000)
+#define HEVC_PSCALE_CTRL ((0x3911 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICI_W ((0x3912 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICI_H ((0x3913 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICO_W ((0x3914 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICO_H ((0x3915 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICO_START_X ((0x3916 << 2) + 0xff620000)
+#define HEVC_PSCALE_PICO_START_Y ((0x3917 << 2) + 0xff620000)
+#define HEVC_PSCALE_DUMMY ((0x3918 << 2) + 0xff620000)
+#define HEVC_PSCALE_FILT0_COEF0 ((0x3919 << 2) + 0xff620000)
+#define HEVC_PSCALE_FILT0_COEF1 ((0x391a << 2) + 0xff620000)
+#define HEVC_PSCALE_CMD_CTRL ((0x391b << 2) + 0xff620000)
+#define HEVC_PSCALE_CMD_BLK_X ((0x391c << 2) + 0xff620000)
+#define HEVC_PSCALE_CMD_BLK_Y ((0x391d << 2) + 0xff620000)
+#define HEVC_PSCALE_STATUS ((0x391e << 2) + 0xff620000)
+#define HEVC_PSCALE_BMEM_ADDR ((0x391f << 2) + 0xff620000)
+#define HEVC_PSCALE_BMEM_DAT ((0x3920 << 2) + 0xff620000)
+#define HEVC_PSCALE_DRAM_BUF_CTRL ((0x3921 << 2) + 0xff620000)
+#define HEVC_PSCALE_MCMD_CTRL ((0x3922 << 2) + 0xff620000)
+#define HEVC_PSCALE_MCMD_XSIZE ((0x3923 << 2) + 0xff620000)
+#define HEVC_PSCALE_MCMD_YSIZE ((0x3924 << 2) + 0xff620000)
+#define HEVC_PSCALE_RBUF_START_BLKX ((0x3925 << 2) + 0xff620000)
+#define HEVC_PSCALE_RBUF_START_BLKY ((0x3926 << 2) + 0xff620000)
 //`define PSCALE_RBUF_MB_WIDTH   8'h27
-#define HEVC_PSCALE_PICO_SHIFT_XY                  ((0x3928  << 2) + 0xff620000)
-#define HEVC_PSCALE_CTRL1                          ((0x3929  << 2) + 0xff620000)
+#define HEVC_PSCALE_PICO_SHIFT_XY ((0x3928 << 2) + 0xff620000)
+#define HEVC_PSCALE_CTRL1 ((0x3929 << 2) + 0xff620000)
 //Bit 15, wmask enable
 //Bit 14:13, filt0 srckey_less,
 //Bit 12:11, filt1 srckey_less, in the case of the interpolated data is equal distance to
@@ -6750,48 +6750,48 @@
 //Bit 10:9, srckey mode, 00: equal, 01: less than or equal, 10: great than or equal
 //Bit 8, src key enable
 //Bit 7:0, y src key
-#define HEVC_PSCALE_SRCKEY_CTRL0                   ((0x392a  << 2) + 0xff620000)
+#define HEVC_PSCALE_SRCKEY_CTRL0 ((0x392a << 2) + 0xff620000)
 //Bit 15:8, cb src key
 //Bit 7:0, cr src key
-#define HEVC_PSCALE_SRCKEY_CTRL1                   ((0x392b  << 2) + 0xff620000)
+#define HEVC_PSCALE_SRCKEY_CTRL1 ((0x392b << 2) + 0xff620000)
 //Bit 22:16 canvas_rd_addr2
 //Bit 14:8 canvas_rd_addr1
 //Bit 6:0 canvas_rd_addr1
-#define HEVC_PSCALE_CANVAS_RD_ADDR                 ((0x392c  << 2) + 0xff620000)
+#define HEVC_PSCALE_CANVAS_RD_ADDR ((0x392c << 2) + 0xff620000)
 //Bit 22:16 canvas_wr_addr2
 //Bit 14:8 canvas_wr_addr1
 //Bit 6:0 canvas_wr_addr1
-#define HEVC_PSCALE_CANVAS_WR_ADDR                 ((0x392d  << 2) + 0xff620000)
+#define HEVC_PSCALE_CANVAS_WR_ADDR ((0x392d << 2) + 0xff620000)
 //bit 13:8 pscale thread ID and token
 //bit 7 disable write response count adding to busy bit
 //bit 5:0  pscale prearbitor burst num
-#define HEVC_PSCALE_CTRL2                          ((0x392e  << 2) + 0xff620000)
+#define HEVC_PSCALE_CTRL2 ((0x392e << 2) + 0xff620000)
 //   31 - use_omem_mb_xy_auto
 //23:16 - omem_max_mb_x
 //15:8  - omem_mb_y_auto
 // 7:0  - omem_mb_x_auto
-#define HEVC_HDEC_MC_OMEM_AUTO                     ((0x3930  << 2) + 0xff620000)
-#define HEVC_HDEC_MC_MBRIGHT_IDX                   ((0x3931  << 2) + 0xff620000)
-#define HEVC_HDEC_MC_MBRIGHT_RD                    ((0x3932  << 2) + 0xff620000)
-#define HEVC_MC_MPORT_CTRL                         ((0x3940  << 2) + 0xff620000)
-#define HEVC_MC_MPORT_DAT                          ((0x3941  << 2) + 0xff620000)
-#define HEVC_MC_WT_PRED_CTRL                       ((0x3942  << 2) + 0xff620000)
-#define HEVC_MC_MBBOT_ST_EVEN_ADDR                 ((0x3944  << 2) + 0xff620000)
-#define HEVC_MC_MBBOT_ST_ODD_ADDR                  ((0x3945  << 2) + 0xff620000)
-#define HEVC_MC_DPDN_MB_XY                         ((0x3946  << 2) + 0xff620000)
-#define HEVC_MC_OMDN_MB_XY                         ((0x3947  << 2) + 0xff620000)
-#define HEVC_MC_HCMDBUF_H                          ((0x3948  << 2) + 0xff620000)
-#define HEVC_MC_HCMDBUF_L                          ((0x3949  << 2) + 0xff620000)
-#define HEVC_MC_HCMD_H                             ((0x394a  << 2) + 0xff620000)
-#define HEVC_MC_HCMD_L                             ((0x394b  << 2) + 0xff620000)
-#define HEVC_MC_IDCT_DAT                           ((0x394c  << 2) + 0xff620000)
-#define HEVC_MC_CTRL_GCLK_CTRL                     ((0x394d  << 2) + 0xff620000)
-#define HEVC_MC_OTHER_GCLK_CTRL                    ((0x394e  << 2) + 0xff620000)
+#define HEVC_HDEC_MC_OMEM_AUTO ((0x3930 << 2) + 0xff620000)
+#define HEVC_HDEC_MC_MBRIGHT_IDX ((0x3931 << 2) + 0xff620000)
+#define HEVC_HDEC_MC_MBRIGHT_RD ((0x3932 << 2) + 0xff620000)
+#define HEVC_MC_MPORT_CTRL ((0x3940 << 2) + 0xff620000)
+#define HEVC_MC_MPORT_DAT ((0x3941 << 2) + 0xff620000)
+#define HEVC_MC_WT_PRED_CTRL ((0x3942 << 2) + 0xff620000)
+#define HEVC_MC_MBBOT_ST_EVEN_ADDR ((0x3944 << 2) + 0xff620000)
+#define HEVC_MC_MBBOT_ST_ODD_ADDR ((0x3945 << 2) + 0xff620000)
+#define HEVC_MC_DPDN_MB_XY ((0x3946 << 2) + 0xff620000)
+#define HEVC_MC_OMDN_MB_XY ((0x3947 << 2) + 0xff620000)
+#define HEVC_MC_HCMDBUF_H ((0x3948 << 2) + 0xff620000)
+#define HEVC_MC_HCMDBUF_L ((0x3949 << 2) + 0xff620000)
+#define HEVC_MC_HCMD_H ((0x394a << 2) + 0xff620000)
+#define HEVC_MC_HCMD_L ((0x394b << 2) + 0xff620000)
+#define HEVC_MC_IDCT_DAT ((0x394c << 2) + 0xff620000)
+#define HEVC_MC_CTRL_GCLK_CTRL ((0x394d << 2) + 0xff620000)
+#define HEVC_MC_OTHER_GCLK_CTRL ((0x394e << 2) + 0xff620000)
 //Bit 29:24, mbbot thread ID and token
 //Bit 21:16, mc read/write thread ID and token
 //Bit 13:8,  mbbot pre-arbitor burst number
 //Bit 5:0,   mc pre-arbitor burst number
-#define HEVC_MC_CTRL2                              ((0x394f  << 2) + 0xff620000)
+#define HEVC_MC_CTRL2 ((0x394f << 2) + 0xff620000)
 // `define DBLK_QUANT            8'h76 // ONLY for $ucode/real/amrisc/rv.s, reg value from apollo
 //`define ANC1_CANVAS_ADDR      8'h80
 //`define ANC2_CANVAS_ADDR      8'h81
@@ -6799,89 +6799,89 @@
 //`define MDEC_PIC_W          8'h8c
 //`define MDEC_PIC_H          8'h8d
 // mdec_pic_dc_mux_ctrl[31]  -- mcr_hevc_mode
-#define HEVC_MDEC_PIC_DC_MUX_CTRL                  ((0x398d  << 2) + 0xff620000)
-#define HEVC_MDEC_PIC_DC_CTRL                      ((0x398e  << 2) + 0xff620000)
-#define HEVC_MDEC_PIC_DC_STATUS                    ((0x398f  << 2) + 0xff620000)
-#define HEVC_ANC0_CANVAS_ADDR                      ((0x3990  << 2) + 0xff620000)
-#define HEVC_ANC1_CANVAS_ADDR                      ((0x3991  << 2) + 0xff620000)
-#define HEVC_ANC2_CANVAS_ADDR                      ((0x3992  << 2) + 0xff620000)
-#define HEVC_ANC3_CANVAS_ADDR                      ((0x3993  << 2) + 0xff620000)
-#define HEVC_ANC4_CANVAS_ADDR                      ((0x3994  << 2) + 0xff620000)
-#define HEVC_ANC5_CANVAS_ADDR                      ((0x3995  << 2) + 0xff620000)
-#define HEVC_ANC6_CANVAS_ADDR                      ((0x3996  << 2) + 0xff620000)
-#define HEVC_ANC7_CANVAS_ADDR                      ((0x3997  << 2) + 0xff620000)
-#define HEVC_ANC8_CANVAS_ADDR                      ((0x3998  << 2) + 0xff620000)
-#define HEVC_ANC9_CANVAS_ADDR                      ((0x3999  << 2) + 0xff620000)
-#define HEVC_ANC10_CANVAS_ADDR                     ((0x399a  << 2) + 0xff620000)
-#define HEVC_ANC11_CANVAS_ADDR                     ((0x399b  << 2) + 0xff620000)
-#define HEVC_ANC12_CANVAS_ADDR                     ((0x399c  << 2) + 0xff620000)
-#define HEVC_ANC13_CANVAS_ADDR                     ((0x399d  << 2) + 0xff620000)
-#define HEVC_ANC14_CANVAS_ADDR                     ((0x399e  << 2) + 0xff620000)
-#define HEVC_ANC15_CANVAS_ADDR                     ((0x399f  << 2) + 0xff620000)
-#define HEVC_ANC16_CANVAS_ADDR                     ((0x39a0  << 2) + 0xff620000)
-#define HEVC_ANC17_CANVAS_ADDR                     ((0x39a1  << 2) + 0xff620000)
-#define HEVC_ANC18_CANVAS_ADDR                     ((0x39a2  << 2) + 0xff620000)
-#define HEVC_ANC19_CANVAS_ADDR                     ((0x39a3  << 2) + 0xff620000)
-#define HEVC_ANC20_CANVAS_ADDR                     ((0x39a4  << 2) + 0xff620000)
-#define HEVC_ANC21_CANVAS_ADDR                     ((0x39a5  << 2) + 0xff620000)
-#define HEVC_ANC22_CANVAS_ADDR                     ((0x39a6  << 2) + 0xff620000)
-#define HEVC_ANC23_CANVAS_ADDR                     ((0x39a7  << 2) + 0xff620000)
-#define HEVC_ANC24_CANVAS_ADDR                     ((0x39a8  << 2) + 0xff620000)
-#define HEVC_ANC25_CANVAS_ADDR                     ((0x39a9  << 2) + 0xff620000)
-#define HEVC_ANC26_CANVAS_ADDR                     ((0x39aa  << 2) + 0xff620000)
-#define HEVC_ANC27_CANVAS_ADDR                     ((0x39ab  << 2) + 0xff620000)
-#define HEVC_ANC28_CANVAS_ADDR                     ((0x39ac  << 2) + 0xff620000)
-#define HEVC_ANC29_CANVAS_ADDR                     ((0x39ad  << 2) + 0xff620000)
-#define HEVC_ANC30_CANVAS_ADDR                     ((0x39ae  << 2) + 0xff620000)
-#define HEVC_ANC31_CANVAS_ADDR                     ((0x39af  << 2) + 0xff620000)
-#define HEVC_DBKR_CANVAS_ADDR                      ((0x39b0  << 2) + 0xff620000)
-#define HEVC_DBKW_CANVAS_ADDR                      ((0x39b1  << 2) + 0xff620000)
-#define HEVC_REC_CANVAS_ADDR                       ((0x39b2  << 2) + 0xff620000)
+#define HEVC_MDEC_PIC_DC_MUX_CTRL ((0x398d << 2) + 0xff620000)
+#define HEVC_MDEC_PIC_DC_CTRL ((0x398e << 2) + 0xff620000)
+#define HEVC_MDEC_PIC_DC_STATUS ((0x398f << 2) + 0xff620000)
+#define HEVC_ANC0_CANVAS_ADDR ((0x3990 << 2) + 0xff620000)
+#define HEVC_ANC1_CANVAS_ADDR ((0x3991 << 2) + 0xff620000)
+#define HEVC_ANC2_CANVAS_ADDR ((0x3992 << 2) + 0xff620000)
+#define HEVC_ANC3_CANVAS_ADDR ((0x3993 << 2) + 0xff620000)
+#define HEVC_ANC4_CANVAS_ADDR ((0x3994 << 2) + 0xff620000)
+#define HEVC_ANC5_CANVAS_ADDR ((0x3995 << 2) + 0xff620000)
+#define HEVC_ANC6_CANVAS_ADDR ((0x3996 << 2) + 0xff620000)
+#define HEVC_ANC7_CANVAS_ADDR ((0x3997 << 2) + 0xff620000)
+#define HEVC_ANC8_CANVAS_ADDR ((0x3998 << 2) + 0xff620000)
+#define HEVC_ANC9_CANVAS_ADDR ((0x3999 << 2) + 0xff620000)
+#define HEVC_ANC10_CANVAS_ADDR ((0x399a << 2) + 0xff620000)
+#define HEVC_ANC11_CANVAS_ADDR ((0x399b << 2) + 0xff620000)
+#define HEVC_ANC12_CANVAS_ADDR ((0x399c << 2) + 0xff620000)
+#define HEVC_ANC13_CANVAS_ADDR ((0x399d << 2) + 0xff620000)
+#define HEVC_ANC14_CANVAS_ADDR ((0x399e << 2) + 0xff620000)
+#define HEVC_ANC15_CANVAS_ADDR ((0x399f << 2) + 0xff620000)
+#define HEVC_ANC16_CANVAS_ADDR ((0x39a0 << 2) + 0xff620000)
+#define HEVC_ANC17_CANVAS_ADDR ((0x39a1 << 2) + 0xff620000)
+#define HEVC_ANC18_CANVAS_ADDR ((0x39a2 << 2) + 0xff620000)
+#define HEVC_ANC19_CANVAS_ADDR ((0x39a3 << 2) + 0xff620000)
+#define HEVC_ANC20_CANVAS_ADDR ((0x39a4 << 2) + 0xff620000)
+#define HEVC_ANC21_CANVAS_ADDR ((0x39a5 << 2) + 0xff620000)
+#define HEVC_ANC22_CANVAS_ADDR ((0x39a6 << 2) + 0xff620000)
+#define HEVC_ANC23_CANVAS_ADDR ((0x39a7 << 2) + 0xff620000)
+#define HEVC_ANC24_CANVAS_ADDR ((0x39a8 << 2) + 0xff620000)
+#define HEVC_ANC25_CANVAS_ADDR ((0x39a9 << 2) + 0xff620000)
+#define HEVC_ANC26_CANVAS_ADDR ((0x39aa << 2) + 0xff620000)
+#define HEVC_ANC27_CANVAS_ADDR ((0x39ab << 2) + 0xff620000)
+#define HEVC_ANC28_CANVAS_ADDR ((0x39ac << 2) + 0xff620000)
+#define HEVC_ANC29_CANVAS_ADDR ((0x39ad << 2) + 0xff620000)
+#define HEVC_ANC30_CANVAS_ADDR ((0x39ae << 2) + 0xff620000)
+#define HEVC_ANC31_CANVAS_ADDR ((0x39af << 2) + 0xff620000)
+#define HEVC_DBKR_CANVAS_ADDR ((0x39b0 << 2) + 0xff620000)
+#define HEVC_DBKW_CANVAS_ADDR ((0x39b1 << 2) + 0xff620000)
+#define HEVC_REC_CANVAS_ADDR ((0x39b2 << 2) + 0xff620000)
 //28:24, read/write, current canvas idx, used in h264 only now
 //23:0, read only, current canvas address, 23:16, Cr canvas addr, 15:8, Cb canvas addr, 7:0, Y  canvas addr
-#define HEVC_CURR_CANVAS_CTRL                      ((0x39b3  << 2) + 0xff620000)
-#define HEVC_MDEC_PIC_DC_THRESH                    ((0x39b8  << 2) + 0xff620000)
-#define HEVC_MDEC_PICR_BUF_STATUS                  ((0x39b9  << 2) + 0xff620000)
-#define HEVC_MDEC_PICW_BUF_STATUS                  ((0x39ba  << 2) + 0xff620000)
-#define HEVC_MCW_DBLK_WRRSP_CNT                    ((0x39bb  << 2) + 0xff620000)
-#define HEVC_MC_MBBOT_WRRSP_CNT                    ((0x39bc  << 2) + 0xff620000)
-#define HEVC_MDEC_PICW_BUF2_STATUS                 ((0x39bd  << 2) + 0xff620000)
-#define HEVC_WRRSP_FIFO_PICW_DBK                   ((0x39be  << 2) + 0xff620000)
-#define HEVC_WRRSP_FIFO_PICW_MC                    ((0x39bf  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_0                          ((0x39c0  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_1                          ((0x39c1  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_2                          ((0x39c2  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_3                          ((0x39c3  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_4                          ((0x39c4  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_5                          ((0x39c5  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_6                          ((0x39c6  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_7                          ((0x39c7  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_8                          ((0x39c8  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_9                          ((0x39c9  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_A                          ((0x39ca  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_B                          ((0x39cb  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_C                          ((0x39cc  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_D                          ((0x39cd  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_E                          ((0x39ce  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_F                          ((0x39cf  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_G                          ((0x39d0  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_H                          ((0x39d1  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_I                          ((0x39d2  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_J                          ((0x39d3  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_K                          ((0x39d4  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_L                          ((0x39d5  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_M                          ((0x39d6  << 2) + 0xff620000)
-#define HEVC_AV_SCRATCH_N                          ((0x39d7  << 2) + 0xff620000)
+#define HEVC_CURR_CANVAS_CTRL ((0x39b3 << 2) + 0xff620000)
+#define HEVC_MDEC_PIC_DC_THRESH ((0x39b8 << 2) + 0xff620000)
+#define HEVC_MDEC_PICR_BUF_STATUS ((0x39b9 << 2) + 0xff620000)
+#define HEVC_MDEC_PICW_BUF_STATUS ((0x39ba << 2) + 0xff620000)
+#define HEVC_MCW_DBLK_WRRSP_CNT ((0x39bb << 2) + 0xff620000)
+#define HEVC_MC_MBBOT_WRRSP_CNT ((0x39bc << 2) + 0xff620000)
+#define HEVC_MDEC_PICW_BUF2_STATUS ((0x39bd << 2) + 0xff620000)
+#define HEVC_WRRSP_FIFO_PICW_DBK ((0x39be << 2) + 0xff620000)
+#define HEVC_WRRSP_FIFO_PICW_MC ((0x39bf << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_0 ((0x39c0 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_1 ((0x39c1 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_2 ((0x39c2 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_3 ((0x39c3 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_4 ((0x39c4 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_5 ((0x39c5 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_6 ((0x39c6 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_7 ((0x39c7 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_8 ((0x39c8 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_9 ((0x39c9 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_A ((0x39ca << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_B ((0x39cb << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_C ((0x39cc << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_D ((0x39cd << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_E ((0x39ce << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_F ((0x39cf << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_G ((0x39d0 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_H ((0x39d1 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_I ((0x39d2 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_J ((0x39d3 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_K ((0x39d4 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_L ((0x39d5 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_M ((0x39d6 << 2) + 0xff620000)
+#define HEVC_AV_SCRATCH_N ((0x39d7 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_co_mb
 // bit[21:16] A_id_co_mb
 // bit[11:0] wrrsp_count_co_mb
-#define HEVC_WRRSP_CO_MB                           ((0x39d8  << 2) + 0xff620000)
+#define HEVC_WRRSP_CO_MB ((0x39d8 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_dcac
 // bit[21:16] A_id_dcac
 // bit[11:0] wrrsp_count_dcac
-#define HEVC_WRRSP_DCAC                            ((0x39d9  << 2) + 0xff620000)
+#define HEVC_WRRSP_DCAC ((0x39d9 << 2) + 0xff620000)
 // bit[11:0] wrrsp_count_vld
-#define HEVC_WRRSP_VLD                             ((0x39da  << 2) + 0xff620000)
+#define HEVC_WRRSP_VLD ((0x39da << 2) + 0xff620000)
 // doublew_cfg0[0];     //       Second Channel Enable, 1:Enable 0:Disable
 // doublew_cfg0[3:1];   // [2:0] Endian Control for Luma
 // doublew_cfg0[5:4];   // [1:0] Pixel sel by horizontal, 0x:1/2 10:left 11:right
@@ -6897,45 +6897,45 @@
 // doublew_cfg0[29:28]; // [1:0] 0x:select both top and bottom 10:select top 11:select bottom
 // doublew_cfg0[30];    //       0:no merge 1:automatic merge
 // doublew_cfg0[31];    //       0:Y addr no change 1:Y addr divided to half
-#define HEVC_MDEC_DOUBLEW_CFG0                     ((0x39db  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG0 ((0x39db << 2) + 0xff620000)
 // doublew_cfg1[7:0];   // [7:0] DMA Canvas Address for Luma
 // doublew_cfg1[15:8];  // [7:0] DMA Canvas Address for Chroma
 // doublew_cfg1[16];    //       Disable 1st Write -
 // doublew_cfg1[17];    //       Reverse to original version -
 // doublew_cfg1[18];    //       DMA Address Mode - 0:Canvas Mode 1:Non-Canvas Mode
-#define HEVC_MDEC_DOUBLEW_CFG1                     ((0x39dc  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG1 ((0x39dc << 2) + 0xff620000)
 // doublew_cfg2[11:0];  //[11:0] vertical flip initial value
 // doublew_cfg2[15];    //       vertical flip enable
 // doublew_cfg2[24:16]; // [8:0] horizontal flip initial value
 // doublew_cfg2[31];    //       horizontal flip enable
-#define HEVC_MDEC_DOUBLEW_CFG2                     ((0x39dd  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG2 ((0x39dd << 2) + 0xff620000)
 // doublew_cfg3[31:0];  //[31:0] non-canvas start address for Luma -
-#define HEVC_MDEC_DOUBLEW_CFG3                     ((0x39de  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG3 ((0x39de << 2) + 0xff620000)
 // doublew_cfg4[31:0];  //[31:0] non-canvas start address for Chroma -
-#define HEVC_MDEC_DOUBLEW_CFG4                     ((0x39df  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG4 ((0x39df << 2) + 0xff620000)
 // doublew_cfg5[12:0];  //[12:0] non-canvas picture width for Luma -
 // doublew_cfg5[28:16]; //[12:0] non-canvas picture width for Chroma -
-#define HEVC_MDEC_DOUBLEW_CFG5                     ((0x39e0  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG5 ((0x39e0 << 2) + 0xff620000)
 // doublew_cfg6: reserved
-#define HEVC_MDEC_DOUBLEW_CFG6                     ((0x39e1  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG6 ((0x39e1 << 2) + 0xff620000)
 // doublew_cfg7: reserved
-#define HEVC_MDEC_DOUBLEW_CFG7                     ((0x39e2  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_CFG7 ((0x39e2 << 2) + 0xff620000)
 // doublew_status[11:0];//[11:0] wrrsp_count_doublew
 // doublew_status[12];  //       doublew_status_busy
 // doublew_status[13];  //       doublew_status_error
-#define HEVC_MDEC_DOUBLEW_STATUS                   ((0x39e3  << 2) + 0xff620000)
-#define HEVC_MDEC_EXTIF_CFG0                       ((0x39e4  << 2) + 0xff620000)
-#define HEVC_MDEC_EXTIF_CFG1                       ((0x39e5  << 2) + 0xff620000)
-#define HEVC_MDEC_EXTIF_CFG2                       ((0x39e6  << 2) + 0xff620000)
-#define HEVC_MDEC_EXTIF_STS0                       ((0x39e7  << 2) + 0xff620000)
-#define HEVC_MDEC_PICW_BUFDW_CFG0                  ((0x39e8  << 2) + 0xff620000)
-#define HEVC_MDEC_PICW_BUFDW_CFG1                  ((0x39e9  << 2) + 0xff620000)
+#define HEVC_MDEC_DOUBLEW_STATUS ((0x39e3 << 2) + 0xff620000)
+#define HEVC_MDEC_EXTIF_CFG0 ((0x39e4 << 2) + 0xff620000)
+#define HEVC_MDEC_EXTIF_CFG1 ((0x39e5 << 2) + 0xff620000)
+#define HEVC_MDEC_EXTIF_CFG2 ((0x39e6 << 2) + 0xff620000)
+#define HEVC_MDEC_EXTIF_STS0 ((0x39e7 << 2) + 0xff620000)
+#define HEVC_MDEC_PICW_BUFDW_CFG0 ((0x39e8 << 2) + 0xff620000)
+#define HEVC_MDEC_PICW_BUFDW_CFG1 ((0x39e9 << 2) + 0xff620000)
 //======================================
 //  MC Control Register Bits
 //
 //======================================
 // For bits, just copy the defines...don't translate to addresses
-    //`define MC_RESET	    16'h0002
+//`define MC_RESET	    16'h0002
 //======================================
 //  MB Info Register Bits
 //
@@ -6947,45 +6947,45 @@
 //========================================================================
 // DBLK Register:  12'h950 - 12'h97f
 //========================================================================
-#define HEVC_DBLK_RST                              ((0x3950  << 2) + 0xff620000)
-#define HEVC_DBLK_CTRL                             ((0x3951  << 2) + 0xff620000)
-#define HEVC_DBLK_MB_WID_HEIGHT                    ((0x3952  << 2) + 0xff620000)
-#define HEVC_DBLK_STATUS                           ((0x3953  << 2) + 0xff620000)
-#define HEVC_DBLK_CMD_CTRL                         ((0x3954  << 2) + 0xff620000)
-#define HEVC_DBLK_MB_XY                            ((0x3955  << 2) + 0xff620000)
-#define HEVC_DBLK_QP                               ((0x3956  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_BHFILT                         ((0x3957  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_BHFILT_HIGH                    ((0x3958  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_BVFILT                         ((0x3959  << 2) + 0xff620000)
-#define HEVC_DBLK_CB_BFILT                         ((0x395a  << 2) + 0xff620000)
-#define HEVC_DBLK_CR_BFILT                         ((0x395b  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_HFILT                          ((0x395c  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_HFILT_HIGH                     ((0x395d  << 2) + 0xff620000)
-#define HEVC_DBLK_Y_VFILT                          ((0x395e  << 2) + 0xff620000)
-#define HEVC_DBLK_CB_FILT                          ((0x395f  << 2) + 0xff620000)
-#define HEVC_DBLK_CR_FILT                          ((0x3960  << 2) + 0xff620000)
-#define HEVC_DBLK_BETAX_QP_SEL                     ((0x3961  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL0                       ((0x3962  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL1                       ((0x3963  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL2                       ((0x3964  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL3                       ((0x3965  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL4                       ((0x3966  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL5                       ((0x3967  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL6                       ((0x3968  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL7                       ((0x3969  << 2) + 0xff620000)
-#define HEVC_DBLK_CLIP_CTRL8                       ((0x396a  << 2) + 0xff620000)
-#define HEVC_DBLK_STATUS1                          ((0x396b  << 2) + 0xff620000)
-#define HEVC_DBLK_GCLK_FREE                        ((0x396c  << 2) + 0xff620000)
-#define HEVC_DBLK_GCLK_OFF                         ((0x396d  << 2) + 0xff620000)
-#define HEVC_DBLK_AVSFLAGS                         ((0x396e  << 2) + 0xff620000)
+#define HEVC_DBLK_RST ((0x3950 << 2) + 0xff620000)
+#define HEVC_DBLK_CTRL ((0x3951 << 2) + 0xff620000)
+#define HEVC_DBLK_MB_WID_HEIGHT ((0x3952 << 2) + 0xff620000)
+#define HEVC_DBLK_STATUS ((0x3953 << 2) + 0xff620000)
+#define HEVC_DBLK_CMD_CTRL ((0x3954 << 2) + 0xff620000)
+#define HEVC_DBLK_MB_XY ((0x3955 << 2) + 0xff620000)
+#define HEVC_DBLK_QP ((0x3956 << 2) + 0xff620000)
+#define HEVC_DBLK_Y_BHFILT ((0x3957 << 2) + 0xff620000)
+#define HEVC_DBLK_Y_BHFILT_HIGH ((0x3958 << 2) + 0xff620000)
+#define HEVC_DBLK_Y_BVFILT ((0x3959 << 2) + 0xff620000)
+#define HEVC_DBLK_CB_BFILT ((0x395a << 2) + 0xff620000)
+#define HEVC_DBLK_CR_BFILT ((0x395b << 2) + 0xff620000)
+#define HEVC_DBLK_Y_HFILT ((0x395c << 2) + 0xff620000)
+#define HEVC_DBLK_Y_HFILT_HIGH ((0x395d << 2) + 0xff620000)
+#define HEVC_DBLK_Y_VFILT ((0x395e << 2) + 0xff620000)
+#define HEVC_DBLK_CB_FILT ((0x395f << 2) + 0xff620000)
+#define HEVC_DBLK_CR_FILT ((0x3960 << 2) + 0xff620000)
+#define HEVC_DBLK_BETAX_QP_SEL ((0x3961 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL0 ((0x3962 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL1 ((0x3963 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL2 ((0x3964 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL3 ((0x3965 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL4 ((0x3966 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL5 ((0x3967 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL6 ((0x3968 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL7 ((0x3969 << 2) + 0xff620000)
+#define HEVC_DBLK_CLIP_CTRL8 ((0x396a << 2) + 0xff620000)
+#define HEVC_DBLK_STATUS1 ((0x396b << 2) + 0xff620000)
+#define HEVC_DBLK_GCLK_FREE ((0x396c << 2) + 0xff620000)
+#define HEVC_DBLK_GCLK_OFF ((0x396d << 2) + 0xff620000)
+#define HEVC_DBLK_AVSFLAGS ((0x396e << 2) + 0xff620000)
 // bit 15:0
-#define HEVC_DBLK_CBPY                             ((0x3970  << 2) + 0xff620000)
+#define HEVC_DBLK_CBPY ((0x3970 << 2) + 0xff620000)
 // bit 11:8 -- deblk_cbpy_bottom
 // bit 7:4 -- deblk_cbpy_left
 // bit 3:0 -- deblk_cbpy_top
-#define HEVC_DBLK_CBPY_ADJ                         ((0x3971  << 2) + 0xff620000)
+#define HEVC_DBLK_CBPY_ADJ ((0x3971 << 2) + 0xff620000)
 // bit 7:0 -- deblk_cbpc
-#define HEVC_DBLK_CBPC                             ((0x3972  << 2) + 0xff620000)
+#define HEVC_DBLK_CBPC ((0x3972 << 2) + 0xff620000)
 // bit 15 -- bottom_mb
 // bit 14 -- left_mb
 // bit 13 -- top_mb
@@ -6993,10 +6993,10 @@
 // bit 11:8 -- deblk_cbpc_bottom
 // bit 7:4 -- deblk_cbpc_left
 // bit 3:0 -- deblk_cbpc_top
-#define HEVC_DBLK_CBPC_ADJ                         ((0x3973  << 2) + 0xff620000)
+#define HEVC_DBLK_CBPC_ADJ ((0x3973 << 2) + 0xff620000)
 // bit 15:8 -- deblk_hmvd   -- {left_1, left_0, below_1, below_0, block3-0}
 // bit 7:0 -- deblk_vmvd    -- {top_1, top_0, below_1, below_0, block3-0}
-#define HEVC_DBLK_VHMVD                            ((0x3974  << 2) + 0xff620000)
+#define HEVC_DBLK_VHMVD ((0x3974 << 2) + 0xff620000)
 // bit 13:12 -- right_vmvd
 // bit 11 -- right_above_vmvd
 // bit 10 -- left_below_hmvd
@@ -7010,40 +7010,40 @@
 // bit 2 -- s_left
 // bit 1 -- s_above
 // bit 0 -- s
-#define HEVC_DBLK_STRONG                           ((0x3975  << 2) + 0xff620000)
+#define HEVC_DBLK_STRONG ((0x3975 << 2) + 0xff620000)
 // bit 14:10 -- PQUANT
 // bit 9:5 -- left_PQUANT
 // bit 4:0 -- top_PQUANT
-#define HEVC_DBLK_RV8_QUANT                        ((0x3976  << 2) + 0xff620000)
-#define HEVC_DBLK_CBUS_HCMD2                       ((0x3977  << 2) + 0xff620000)
-#define HEVC_DBLK_CBUS_HCMD1                       ((0x3978  << 2) + 0xff620000)
-#define HEVC_DBLK_CBUS_HCMD0                       ((0x3979  << 2) + 0xff620000)
-#define HEVC_DBLK_VLD_HCMD2                        ((0x397a  << 2) + 0xff620000)
-#define HEVC_DBLK_VLD_HCMD1                        ((0x397b  << 2) + 0xff620000)
-#define HEVC_DBLK_VLD_HCMD0                        ((0x397c  << 2) + 0xff620000)
-#define HEVC_DBLK_OST_YBASE                        ((0x397d  << 2) + 0xff620000)
-#define HEVC_DBLK_OST_CBCRDIFF                     ((0x397e  << 2) + 0xff620000)
+#define HEVC_DBLK_RV8_QUANT ((0x3976 << 2) + 0xff620000)
+#define HEVC_DBLK_CBUS_HCMD2 ((0x3977 << 2) + 0xff620000)
+#define HEVC_DBLK_CBUS_HCMD1 ((0x3978 << 2) + 0xff620000)
+#define HEVC_DBLK_CBUS_HCMD0 ((0x3979 << 2) + 0xff620000)
+#define HEVC_DBLK_VLD_HCMD2 ((0x397a << 2) + 0xff620000)
+#define HEVC_DBLK_VLD_HCMD1 ((0x397b << 2) + 0xff620000)
+#define HEVC_DBLK_VLD_HCMD0 ((0x397c << 2) + 0xff620000)
+#define HEVC_DBLK_OST_YBASE ((0x397d << 2) + 0xff620000)
+#define HEVC_DBLK_OST_CBCRDIFF ((0x397e << 2) + 0xff620000)
 //13:8 dblk thread ID and token
 //5:0  dblk prearbitor burst num
-#define HEVC_DBLK_CTRL1                            ((0x397f  << 2) + 0xff620000)
+#define HEVC_DBLK_CTRL1 ((0x397f << 2) + 0xff620000)
 // MCRCC_CTL1
 // 31:3  <reserved[23:0]>
 // 2     <cfg_field_pic>
 // 1     <sw_rst>
 // 0     <bypass_en>
-#define HEVC_MCRCC_CTL1                            ((0x3980  << 2) + 0xff620000)
+#define HEVC_MCRCC_CTL1 ((0x3980 << 2) + 0xff620000)
 // MCRCC_CTL2
 // 31:24    <cfg_cache_anc01_c[7:0]>
 // 23:16    <cfg_cache_anc01_y[7:0]>
 // 15:8     <cfg_cache_anc00_c[7:0]>
 // 7:0      <cfg_cache_anc00_y[7:0]>
-#define HEVC_MCRCC_CTL2                            ((0x3981  << 2) + 0xff620000)
+#define HEVC_MCRCC_CTL2 ((0x3981 << 2) + 0xff620000)
 // MCRCC_CTL3
 // 31:24    <cfg_cache_anc11_c[7:0]>
 // 23:16    <cfg_cache_anc11_y[7:0]>
 // 15:8     <cfg_cache_anc10_c[7:0]>
 // 7:0      <cfg_cache_anc10_y[7:0]>
-#define HEVC_MCRCC_CTL3                            ((0x3982  << 2) + 0xff620000)
+#define HEVC_MCRCC_CTL3 ((0x3982 << 2) + 0xff620000)
 // bit[31:10] reserved
 // bit[9:0] sw_clock_gating control
 // [9] vdec clk_en for assist and cbus.
@@ -7056,7 +7056,7 @@
 // [2] vdec clk_en for pic_dc
 // [1] vdec clk_en for psc
 // [0] vdec clk_en for vld
-#define HEVC_GCLK_EN                               ((0x3983  << 2) + 0xff620000)
+#define HEVC_GCLK_EN ((0x3983 << 2) + 0xff620000)
 // [0]  Reserved
 // [1]  Reserved
 // [2]  Reset assist, mdec's CBUS
@@ -7071,7 +7071,7 @@
 // [11] Reset vcpu's MCPU
 // [12] Reset vcpu's CCPU
 // [13] Reset mmc_pre_arb
-#define HEVC_MDEC_SW_RESET                         ((0x3984  << 2) + 0xff620000)
+#define HEVC_MDEC_SW_RESET ((0x3984 << 2) + 0xff620000)
 // [0]      dblkmerge_bypass
 // [2:1]    picture_structure
 // [3]      is_mbaff_frame
@@ -7079,12 +7079,12 @@
 // [6]      Reserved
 // [7]      write_mask_redge
 // [31:6]   Reserved
-#define HEVC_MDEC_DBLKWMERGE_CTRL0                 ((0x3985  << 2) + 0xff620000)
+#define HEVC_MDEC_DBLKWMERGE_CTRL0 ((0x3985 << 2) + 0xff620000)
 // [12:0]   dblkwmerge_pic_w
 // [15:13]  Reserved
 // [28:16]  dblkwmerge_pic_h
 // [31:29]  Reserved
-#define HEVC_MDEC_DBLKWMERGE_CTRL1                 ((0x3986  << 2) + 0xff620000)
+#define HEVC_MDEC_DBLKWMERGE_CTRL1 ((0x3986 << 2) + 0xff620000)
 //DBLK last address 12'h97f
 //
 // Closing file:  mdec_regs.h
@@ -7098,7 +7098,7 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VLD_CBUS_BASE = 0x0c
 // -----------------------------------------------
-#define HCODEC_VLD_STATUS_CTRL                     ((0x1c00  << 2) + 0xff620000)
+#define HCODEC_VLD_STATUS_CTRL ((0x1c00 << 2) + 0xff620000)
 //
 // bit 10 -- use_old_shift_en
 // bit 9 -- output_mv_not_pmv
@@ -7108,13 +7108,13 @@
 // bit 2 -- disable_m2_ac_coeff_one_cycle
 // bit 1 -- forced_reset  force reset pmv
 // bit 0 -- mpeg_type  0:mpeg1 1: mpeg2
-#define HCODEC_MPEG1_2_REG                         ((0x1c01  << 2) + 0xff620000)
-#define HCODEC_F_CODE_REG                          ((0x1c02  << 2) + 0xff620000)
-#define HCODEC_PIC_HEAD_INFO                       ((0x1c03  << 2) + 0xff620000)
-#define HCODEC_SLICE_VER_POS_PIC_TYPE              ((0x1c04  << 2) + 0xff620000)
-#define HCODEC_QP_VALUE_REG                        ((0x1c05  << 2) + 0xff620000)
-#define HCODEC_MBA_INC                             ((0x1c06  << 2) + 0xff620000)
-#define HCODEC_MB_MOTION_MODE                      ((0x1c07  << 2) + 0xff620000)
+#define HCODEC_MPEG1_2_REG ((0x1c01 << 2) + 0xff620000)
+#define HCODEC_F_CODE_REG ((0x1c02 << 2) + 0xff620000)
+#define HCODEC_PIC_HEAD_INFO ((0x1c03 << 2) + 0xff620000)
+#define HCODEC_SLICE_VER_POS_PIC_TYPE ((0x1c04 << 2) + 0xff620000)
+#define HCODEC_QP_VALUE_REG ((0x1c05 << 2) + 0xff620000)
+#define HCODEC_MBA_INC ((0x1c06 << 2) + 0xff620000)
+#define HCODEC_MB_MOTION_MODE ((0x1c07 << 2) + 0xff620000)
 //`define PACKET_BYTE_COUNT   8'h08
 // bit 15 -- force_search_startcode_en
 // bit 14 -- int_cpu_when_error (before do anything)
@@ -7122,26 +7122,26 @@
 // bit 12 -- return_on_slice_header
 // bit 6 -- jpeg_ff00_en
 // bit 5:0 -- vld_power_ctl
-#define HCODEC_POWER_CTL_VLD                       ((0x1c08  << 2) + 0xff620000)
-#define HCODEC_MB_WIDTH                            ((0x1c09  << 2) + 0xff620000)
-#define HCODEC_SLICE_QP                            ((0x1c0a  << 2) + 0xff620000)
+#define HCODEC_POWER_CTL_VLD ((0x1c08 << 2) + 0xff620000)
+#define HCODEC_MB_WIDTH ((0x1c09 << 2) + 0xff620000)
+#define HCODEC_SLICE_QP ((0x1c0a << 2) + 0xff620000)
 // `define MB_X_MB_Y           8'h0b   /* current MBX and MBY                  */
-#define HCODEC_PRE_START_CODE                      ((0x1c0b  << 2) + 0xff620000)
-#define HCODEC_SLICE_START_BYTE_01                 ((0x1c0c  << 2) + 0xff620000)
-#define HCODEC_SLICE_START_BYTE_23                 ((0x1c0d  << 2) + 0xff620000)
-#define HCODEC_RESYNC_MARKER_LENGTH                ((0x1c0e  << 2) + 0xff620000)
+#define HCODEC_PRE_START_CODE ((0x1c0b << 2) + 0xff620000)
+#define HCODEC_SLICE_START_BYTE_01 ((0x1c0c << 2) + 0xff620000)
+#define HCODEC_SLICE_START_BYTE_23 ((0x1c0d << 2) + 0xff620000)
+#define HCODEC_RESYNC_MARKER_LENGTH ((0x1c0e << 2) + 0xff620000)
 // bit[6:5] - frame/field info, 01 - top, 10 - bottom, 11 - frame
 // bit[4:0] - buffer ID
 // L0_BUFF_ID_0, L0_BUFF_ID_1, L1_BUFF_ID_0, L1_BUFF_ID_1
-#define HCODEC_DECODER_BUFFER_INFO                 ((0x1c0f  << 2) + 0xff620000)
-#define HCODEC_FST_FOR_MV_X                        ((0x1c10  << 2) + 0xff620000)
-#define HCODEC_FST_FOR_MV_Y                        ((0x1c11  << 2) + 0xff620000)
-#define HCODEC_SCD_FOR_MV_X                        ((0x1c12  << 2) + 0xff620000)
-#define HCODEC_SCD_FOR_MV_Y                        ((0x1c13  << 2) + 0xff620000)
-#define HCODEC_FST_BAK_MV_X                        ((0x1c14  << 2) + 0xff620000)
-#define HCODEC_FST_BAK_MV_Y                        ((0x1c15  << 2) + 0xff620000)
-#define HCODEC_SCD_BAK_MV_X                        ((0x1c16  << 2) + 0xff620000)
-#define HCODEC_SCD_BAK_MV_Y                        ((0x1c17  << 2) + 0xff620000)
+#define HCODEC_DECODER_BUFFER_INFO ((0x1c0f << 2) + 0xff620000)
+#define HCODEC_FST_FOR_MV_X ((0x1c10 << 2) + 0xff620000)
+#define HCODEC_FST_FOR_MV_Y ((0x1c11 << 2) + 0xff620000)
+#define HCODEC_SCD_FOR_MV_X ((0x1c12 << 2) + 0xff620000)
+#define HCODEC_SCD_FOR_MV_Y ((0x1c13 << 2) + 0xff620000)
+#define HCODEC_FST_BAK_MV_X ((0x1c14 << 2) + 0xff620000)
+#define HCODEC_FST_BAK_MV_Y ((0x1c15 << 2) + 0xff620000)
+#define HCODEC_SCD_BAK_MV_X ((0x1c16 << 2) + 0xff620000)
+#define HCODEC_SCD_BAK_MV_Y ((0x1c17 << 2) + 0xff620000)
 // Bit 24 -- spatial_scale_no_update_when_f_invalid // disable_fix
 // Bit 23 -- spatial_scale_no_update_when_f_zero // disable_fix
 // Bit 22 -- pure_jpeg_hw_en
@@ -7158,13 +7158,13 @@
 // bit 2 -- weighting_prediction
 // bit 1 -- mb_weighting_flag
 // bit 0 -- slice_weighting_flag
-#define HCODEC_VLD_DECODE_CONTROL                  ((0x1c18  << 2) + 0xff620000)
+#define HCODEC_VLD_DECODE_CONTROL ((0x1c18 << 2) + 0xff620000)
 // bit[15:0] - vld_jpeg_tab_addr
-#define HCODEC_VLD_JPEG_TAB_ADDR                   ((0x1c19  << 2) + 0xff620000)
-#define HCODEC_VIFF_BIT_CNT                        ((0x1c1a  << 2) + 0xff620000)
-#define HCODEC_BYTE_ALIGN_PEAK_HI                  ((0x1c1b  << 2) + 0xff620000)
-#define HCODEC_BYTE_ALIGN_PEAK_LO                  ((0x1c1c  << 2) + 0xff620000)
-#define HCODEC_NEXT_ALIGN_PEAK                     ((0x1c1d  << 2) + 0xff620000)
+#define HCODEC_VLD_JPEG_TAB_ADDR ((0x1c19 << 2) + 0xff620000)
+#define HCODEC_VIFF_BIT_CNT ((0x1c1a << 2) + 0xff620000)
+#define HCODEC_BYTE_ALIGN_PEAK_HI ((0x1c1b << 2) + 0xff620000)
+#define HCODEC_BYTE_ALIGN_PEAK_LO ((0x1c1c << 2) + 0xff620000)
+#define HCODEC_NEXT_ALIGN_PEAK ((0x1c1d << 2) + 0xff620000)
 // bit 31    : byte_aligned_zero_23_from_org // From GXM
 // bit 30    : force_shift_out_drop_flag_zero // From GXM
 // bit 29    : en_st_protect_from_org // From GXM
@@ -7192,40 +7192,40 @@
 // bit 3 : first_mode3
 // bit 2:1 : vc1_profile  0-SP, 1-MP, 2-reserved, 3-AP
 // bit 0   : vc1_enable
-#define HCODEC_VC1_CONTROL_REG                     ((0x1c1e  << 2) + 0xff620000)
-#define HCODEC_PMV1_X                              ((0x1c20  << 2) + 0xff620000)
-#define HCODEC_PMV1_Y                              ((0x1c21  << 2) + 0xff620000)
-#define HCODEC_PMV2_X                              ((0x1c22  << 2) + 0xff620000)
-#define HCODEC_PMV2_Y                              ((0x1c23  << 2) + 0xff620000)
-#define HCODEC_PMV3_X                              ((0x1c24  << 2) + 0xff620000)
-#define HCODEC_PMV3_Y                              ((0x1c25  << 2) + 0xff620000)
-#define HCODEC_PMV4_X                              ((0x1c26  << 2) + 0xff620000)
-#define HCODEC_PMV4_Y                              ((0x1c27  << 2) + 0xff620000)
+#define HCODEC_VC1_CONTROL_REG ((0x1c1e << 2) + 0xff620000)
+#define HCODEC_PMV1_X ((0x1c20 << 2) + 0xff620000)
+#define HCODEC_PMV1_Y ((0x1c21 << 2) + 0xff620000)
+#define HCODEC_PMV2_X ((0x1c22 << 2) + 0xff620000)
+#define HCODEC_PMV2_Y ((0x1c23 << 2) + 0xff620000)
+#define HCODEC_PMV3_X ((0x1c24 << 2) + 0xff620000)
+#define HCODEC_PMV3_Y ((0x1c25 << 2) + 0xff620000)
+#define HCODEC_PMV4_X ((0x1c26 << 2) + 0xff620000)
+#define HCODEC_PMV4_Y ((0x1c27 << 2) + 0xff620000)
 // Can't use the same address for different defines
 // Therefore, create a single define that covers both
 // Only appears to be used in micro-code since the VLD hardware is
 // hard coded.
 // `define M4_TABLE_SELECT     8'h28  // Does this exist in HW ? Added from register_mp2.h
 // `define M4_TABLE_OUTPUT     8'h28  // Does this exist in HW ? Added from register_mp2.h
-#define HCODEC_M4_TABLE_SELECT                     ((0x1c28  << 2) + 0xff620000)
-#define HCODEC_M4_CONTROL_REG                      ((0x1c29  << 2) + 0xff620000)
-#define HCODEC_BLOCK_NUM                           ((0x1c2a  << 2) + 0xff620000)
-#define HCODEC_PATTERN_CODE                        ((0x1c2b  << 2) + 0xff620000)
-#define HCODEC_MB_INFO                             ((0x1c2c  << 2) + 0xff620000)
-#define HCODEC_VLD_DC_PRED                         ((0x1c2d  << 2) + 0xff620000)
-#define HCODEC_VLD_ERROR_MASK                      ((0x1c2e  << 2) + 0xff620000)
-#define HCODEC_VLD_DC_PRED_C                       ((0x1c2f  << 2) + 0xff620000)
-#define HCODEC_LAST_SLICE_MV_ADDR                  ((0x1c30  << 2) + 0xff620000)
-#define HCODEC_LAST_MVX                            ((0x1c31  << 2) + 0xff620000)
-#define HCODEC_LAST_MVY                            ((0x1c32  << 2) + 0xff620000)
-#define HCODEC_VLD_C38                             ((0x1c38  << 2) + 0xff620000)
-#define HCODEC_VLD_C39                             ((0x1c39  << 2) + 0xff620000)
-#define HCODEC_VLD_STATUS                          ((0x1c3a  << 2) + 0xff620000)
-#define HCODEC_VLD_SHIFT_STATUS                    ((0x1c3b  << 2) + 0xff620000)
+#define HCODEC_M4_TABLE_SELECT ((0x1c28 << 2) + 0xff620000)
+#define HCODEC_M4_CONTROL_REG ((0x1c29 << 2) + 0xff620000)
+#define HCODEC_BLOCK_NUM ((0x1c2a << 2) + 0xff620000)
+#define HCODEC_PATTERN_CODE ((0x1c2b << 2) + 0xff620000)
+#define HCODEC_MB_INFO ((0x1c2c << 2) + 0xff620000)
+#define HCODEC_VLD_DC_PRED ((0x1c2d << 2) + 0xff620000)
+#define HCODEC_VLD_ERROR_MASK ((0x1c2e << 2) + 0xff620000)
+#define HCODEC_VLD_DC_PRED_C ((0x1c2f << 2) + 0xff620000)
+#define HCODEC_LAST_SLICE_MV_ADDR ((0x1c30 << 2) + 0xff620000)
+#define HCODEC_LAST_MVX ((0x1c31 << 2) + 0xff620000)
+#define HCODEC_LAST_MVY ((0x1c32 << 2) + 0xff620000)
+#define HCODEC_VLD_C38 ((0x1c38 << 2) + 0xff620000)
+#define HCODEC_VLD_C39 ((0x1c39 << 2) + 0xff620000)
+#define HCODEC_VLD_STATUS ((0x1c3a << 2) + 0xff620000)
+#define HCODEC_VLD_SHIFT_STATUS ((0x1c3b << 2) + 0xff620000)
 // `define VLD_SHIFT_INFO      8'h3b  // Does this exist in HW ? used in $ucode/mpeg4
-#define HCODEC_VOFF_STATUS                         ((0x1c3c  << 2) + 0xff620000)
-#define HCODEC_VLD_C3D                             ((0x1c3d  << 2) + 0xff620000)
-#define HCODEC_VLD_DBG_INDEX                       ((0x1c3e  << 2) + 0xff620000)
+#define HCODEC_VOFF_STATUS ((0x1c3c << 2) + 0xff620000)
+#define HCODEC_VLD_C3D ((0x1c3d << 2) + 0xff620000)
+#define HCODEC_VLD_DBG_INDEX ((0x1c3e << 2) + 0xff620000)
 // vld_buff_info -- (index == 0)
 // Bit11]    halt_decode_start_voff
 // Bit10]    C_pred_error
@@ -7305,20 +7305,20 @@
 // Bit[5] weight_cal_busy
 // Bit[4] weight_cal_not_finished
 // Bit[3:0] weight_process_state
-#define HCODEC_VLD_DBG_DATA                        ((0x1c3f  << 2) + 0xff620000)
+#define HCODEC_VLD_DBG_DATA ((0x1c3f << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO DDR Interface
 // --------------------------------------------
 // The VIFIFO start pointer into DDR memory is a 32-bit number
 // The Start pointer will automatically be truncated to land on
 // an 8-byte boundary.  That is, bits [2:0] = 0;
-#define HCODEC_VLD_MEM_VIFIFO_START_PTR            ((0x1c40  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_START_PTR ((0x1c40 << 2) + 0xff620000)
 // The current pointer points so some location between the START and END
 // pointers.  The current pointer is a BYTE pointer.  That is, you can
 // point to any BYTE address within the START/END range
-#define HCODEC_VLD_MEM_VIFIFO_CURR_PTR             ((0x1c41  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VIFIFO_END_PTR              ((0x1c42  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VIFIFO_BYTES_AVAIL          ((0x1c43  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_CURR_PTR ((0x1c41 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_END_PTR ((0x1c42 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_BYTES_AVAIL ((0x1c43 << 2) + 0xff620000)
 // VIFIFO FIFO Control
 // bit  [31:24] viff_empty_int_enable_cpu[7:0]
 // bit  [23:16] viff_empty_int_enable_amrisc[7:0]
@@ -7349,13 +7349,13 @@
 //                              and read masks, set this bit to 1 and then to 0
 //                              NOTE:  You don't need to pulse cntl_init if only the start address is
 //                              being changed
-#define HCODEC_VLD_MEM_VIFIFO_CONTROL              ((0x1c44  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_CONTROL ((0x1c44 << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO Buffer Level Manager
 // --------------------------------------------
-#define HCODEC_VLD_MEM_VIFIFO_WP                   ((0x1c45  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VIFIFO_RP                   ((0x1c46  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VIFIFO_LEVEL                ((0x1c47  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_WP ((0x1c45 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_RP ((0x1c46 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_LEVEL ((0x1c47 << 2) + 0xff620000)
 //
 // bit  [8]     use_parser_video2_wp
 // bit  [7]     vbuf2_out_manual
@@ -7365,7 +7365,7 @@
 // bit  [3:2]   reserved
 // bit  [1]     manual mode     Set to 1 for manual write pointer mode
 // bit  [0]     Init            Set high then low after everything has been initialized
-#define HCODEC_VLD_MEM_VIFIFO_BUF_CNTL             ((0x1c48  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_BUF_CNTL ((0x1c48 << 2) + 0xff620000)
 // bit 31:16 -- drop_bytes
 // bit 15:14 -- drop_status (Read-Only)
 // bit 13:12 -- sync_match_position (Read-Only)
@@ -7375,37 +7375,37 @@
 // bit 2 -- TIME_STAMP_length_enable
 // bit 1 -- TIME_STAMP_sync64_enable
 // bit 0 -- TIME_STAMP_enable
-#define HCODEC_VLD_TIME_STAMP_CNTL                 ((0x1c49  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_CNTL ((0x1c49 << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_0
-#define HCODEC_VLD_TIME_STAMP_SYNC_0               ((0x1c4a  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_SYNC_0 ((0x1c4a << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_1
-#define HCODEC_VLD_TIME_STAMP_SYNC_1               ((0x1c4b  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_SYNC_1 ((0x1c4b << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_0
-#define HCODEC_VLD_TIME_STAMP_0                    ((0x1c4c  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_0 ((0x1c4c << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_1
-#define HCODEC_VLD_TIME_STAMP_1                    ((0x1c4d  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_1 ((0x1c4d << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_2
-#define HCODEC_VLD_TIME_STAMP_2                    ((0x1c4e  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_2 ((0x1c4e << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_3
-#define HCODEC_VLD_TIME_STAMP_3                    ((0x1c4f  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_3 ((0x1c4f << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_LENGTH
-#define HCODEC_VLD_TIME_STAMP_LENGTH               ((0x1c50  << 2) + 0xff620000)
+#define HCODEC_VLD_TIME_STAMP_LENGTH ((0x1c50 << 2) + 0xff620000)
 // bit 15:0 vififo_rd_count
-#define HCODEC_VLD_MEM_VIFIFO_WRAP_COUNT           ((0x1c51  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_WRAP_COUNT ((0x1c51 << 2) + 0xff620000)
 // bit 29:24 A_brst_num
 // bit 21:16 A_id
 // bit 15:0 level_hold
-#define HCODEC_VLD_MEM_VIFIFO_MEM_CTL              ((0x1c52  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VBUF_RD_PTR                 ((0x1c53  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_VBUF2_RD_PTR                ((0x1c54  << 2) + 0xff620000)
-#define HCODEC_VLD_MEM_SWAP_ADDR                   ((0x1c55  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VIFIFO_MEM_CTL ((0x1c52 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VBUF_RD_PTR ((0x1c53 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_VBUF2_RD_PTR ((0x1c54 << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_SWAP_ADDR ((0x1c55 << 2) + 0xff620000)
 // bit[23:16] - swap_d_count (Read Only)
 // bit[15:8]  - swap_a_count (Read Only)
 // bit [7] - swap busy (Read Only)
 // bit [6:2] - reserved
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - swap active
-#define HCODEC_VLD_MEM_SWAP_CTL                    ((0x1c56  << 2) + 0xff620000)
+#define HCODEC_VLD_MEM_SWAP_CTL ((0x1c56 << 2) + 0xff620000)
 // bit[12]  -- zero_use_cbp_blk
 // bit[11]  -- mv_use_abs (only calculate abs)
 // bit[10]  -- mv_use_simple_mode (every size count has same weight)
@@ -7413,7 +7413,7 @@
 // bit[8]   -- reseet_all_count // write only
 // bit[7:5] Reserved
 // bit[4:0] pic_quality_rd_idx
-#define HCODEC_VDEC_PIC_QUALITY_CTRL               ((0x1c57  << 2) + 0xff620000)
+#define HCODEC_VDEC_PIC_QUALITY_CTRL ((0x1c57 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- blk88_y_count // 4k will use 20 bits
 //   1  -- qp_y_sum // 4k use 27 bits
@@ -7436,7 +7436,7 @@
 //  18  -- {mvy_L0_max, mvy_L0_min}
 //  19  -- {mvx_L1_max, mvx_L1_min}
 //  20  -- {mvy_L1_max, mvy_L1_min}
-#define HCODEC_VDEC_PIC_QUALITY_DATA               ((0x1c58  << 2) + 0xff620000)
+#define HCODEC_VDEC_PIC_QUALITY_DATA ((0x1c58 << 2) + 0xff620000)
 //
 // Closing file:  vld_regs.h
 //
@@ -7449,7 +7449,7 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VLD_CBUS_BASE = 0x0c
 // -----------------------------------------------
-#define VDEC2_VLD_STATUS_CTRL                      ((0x2c00  << 2) + 0xff620000)
+#define VDEC2_VLD_STATUS_CTRL ((0x2c00 << 2) + 0xff620000)
 //
 // bit 10 -- use_old_shift_en
 // bit 9 -- output_mv_not_pmv
@@ -7459,13 +7459,13 @@
 // bit 2 -- disable_m2_ac_coeff_one_cycle
 // bit 1 -- forced_reset  force reset pmv
 // bit 0 -- mpeg_type  0:mpeg1 1: mpeg2
-#define VDEC2_MPEG1_2_REG                          ((0x2c01  << 2) + 0xff620000)
-#define VDEC2_F_CODE_REG                           ((0x2c02  << 2) + 0xff620000)
-#define VDEC2_PIC_HEAD_INFO                        ((0x2c03  << 2) + 0xff620000)
-#define VDEC2_SLICE_VER_POS_PIC_TYPE               ((0x2c04  << 2) + 0xff620000)
-#define VDEC2_QP_VALUE_REG                         ((0x2c05  << 2) + 0xff620000)
-#define VDEC2_MBA_INC                              ((0x2c06  << 2) + 0xff620000)
-#define VDEC2_MB_MOTION_MODE                       ((0x2c07  << 2) + 0xff620000)
+#define VDEC2_MPEG1_2_REG ((0x2c01 << 2) + 0xff620000)
+#define VDEC2_F_CODE_REG ((0x2c02 << 2) + 0xff620000)
+#define VDEC2_PIC_HEAD_INFO ((0x2c03 << 2) + 0xff620000)
+#define VDEC2_SLICE_VER_POS_PIC_TYPE ((0x2c04 << 2) + 0xff620000)
+#define VDEC2_QP_VALUE_REG ((0x2c05 << 2) + 0xff620000)
+#define VDEC2_MBA_INC ((0x2c06 << 2) + 0xff620000)
+#define VDEC2_MB_MOTION_MODE ((0x2c07 << 2) + 0xff620000)
 //`define PACKET_BYTE_COUNT   8'h08
 // bit 15 -- force_search_startcode_en
 // bit 14 -- int_cpu_when_error (before do anything)
@@ -7473,26 +7473,26 @@
 // bit 12 -- return_on_slice_header
 // bit 6 -- jpeg_ff00_en
 // bit 5:0 -- vld_power_ctl
-#define VDEC2_POWER_CTL_VLD                        ((0x2c08  << 2) + 0xff620000)
-#define VDEC2_MB_WIDTH                             ((0x2c09  << 2) + 0xff620000)
-#define VDEC2_SLICE_QP                             ((0x2c0a  << 2) + 0xff620000)
+#define VDEC2_POWER_CTL_VLD ((0x2c08 << 2) + 0xff620000)
+#define VDEC2_MB_WIDTH ((0x2c09 << 2) + 0xff620000)
+#define VDEC2_SLICE_QP ((0x2c0a << 2) + 0xff620000)
 // `define MB_X_MB_Y           8'h0b   /* current MBX and MBY                  */
-#define VDEC2_PRE_START_CODE                       ((0x2c0b  << 2) + 0xff620000)
-#define VDEC2_SLICE_START_BYTE_01                  ((0x2c0c  << 2) + 0xff620000)
-#define VDEC2_SLICE_START_BYTE_23                  ((0x2c0d  << 2) + 0xff620000)
-#define VDEC2_RESYNC_MARKER_LENGTH                 ((0x2c0e  << 2) + 0xff620000)
+#define VDEC2_PRE_START_CODE ((0x2c0b << 2) + 0xff620000)
+#define VDEC2_SLICE_START_BYTE_01 ((0x2c0c << 2) + 0xff620000)
+#define VDEC2_SLICE_START_BYTE_23 ((0x2c0d << 2) + 0xff620000)
+#define VDEC2_RESYNC_MARKER_LENGTH ((0x2c0e << 2) + 0xff620000)
 // bit[6:5] - frame/field info, 01 - top, 10 - bottom, 11 - frame
 // bit[4:0] - buffer ID
 // L0_BUFF_ID_0, L0_BUFF_ID_1, L1_BUFF_ID_0, L1_BUFF_ID_1
-#define VDEC2_DECODER_BUFFER_INFO                  ((0x2c0f  << 2) + 0xff620000)
-#define VDEC2_FST_FOR_MV_X                         ((0x2c10  << 2) + 0xff620000)
-#define VDEC2_FST_FOR_MV_Y                         ((0x2c11  << 2) + 0xff620000)
-#define VDEC2_SCD_FOR_MV_X                         ((0x2c12  << 2) + 0xff620000)
-#define VDEC2_SCD_FOR_MV_Y                         ((0x2c13  << 2) + 0xff620000)
-#define VDEC2_FST_BAK_MV_X                         ((0x2c14  << 2) + 0xff620000)
-#define VDEC2_FST_BAK_MV_Y                         ((0x2c15  << 2) + 0xff620000)
-#define VDEC2_SCD_BAK_MV_X                         ((0x2c16  << 2) + 0xff620000)
-#define VDEC2_SCD_BAK_MV_Y                         ((0x2c17  << 2) + 0xff620000)
+#define VDEC2_DECODER_BUFFER_INFO ((0x2c0f << 2) + 0xff620000)
+#define VDEC2_FST_FOR_MV_X ((0x2c10 << 2) + 0xff620000)
+#define VDEC2_FST_FOR_MV_Y ((0x2c11 << 2) + 0xff620000)
+#define VDEC2_SCD_FOR_MV_X ((0x2c12 << 2) + 0xff620000)
+#define VDEC2_SCD_FOR_MV_Y ((0x2c13 << 2) + 0xff620000)
+#define VDEC2_FST_BAK_MV_X ((0x2c14 << 2) + 0xff620000)
+#define VDEC2_FST_BAK_MV_Y ((0x2c15 << 2) + 0xff620000)
+#define VDEC2_SCD_BAK_MV_X ((0x2c16 << 2) + 0xff620000)
+#define VDEC2_SCD_BAK_MV_Y ((0x2c17 << 2) + 0xff620000)
 // Bit 24 -- spatial_scale_no_update_when_f_invalid // disable_fix
 // Bit 23 -- spatial_scale_no_update_when_f_zero // disable_fix
 // Bit 22 -- pure_jpeg_hw_en
@@ -7509,13 +7509,13 @@
 // bit 2 -- weighting_prediction
 // bit 1 -- mb_weighting_flag
 // bit 0 -- slice_weighting_flag
-#define VDEC2_VLD_DECODE_CONTROL                   ((0x2c18  << 2) + 0xff620000)
+#define VDEC2_VLD_DECODE_CONTROL ((0x2c18 << 2) + 0xff620000)
 // bit[15:0] - vld_jpeg_tab_addr
-#define VDEC2_VLD_JPEG_TAB_ADDR                    ((0x2c19  << 2) + 0xff620000)
-#define VDEC2_VIFF_BIT_CNT                         ((0x2c1a  << 2) + 0xff620000)
-#define VDEC2_BYTE_ALIGN_PEAK_HI                   ((0x2c1b  << 2) + 0xff620000)
-#define VDEC2_BYTE_ALIGN_PEAK_LO                   ((0x2c1c  << 2) + 0xff620000)
-#define VDEC2_NEXT_ALIGN_PEAK                      ((0x2c1d  << 2) + 0xff620000)
+#define VDEC2_VLD_JPEG_TAB_ADDR ((0x2c19 << 2) + 0xff620000)
+#define VDEC2_VIFF_BIT_CNT ((0x2c1a << 2) + 0xff620000)
+#define VDEC2_BYTE_ALIGN_PEAK_HI ((0x2c1b << 2) + 0xff620000)
+#define VDEC2_BYTE_ALIGN_PEAK_LO ((0x2c1c << 2) + 0xff620000)
+#define VDEC2_NEXT_ALIGN_PEAK ((0x2c1d << 2) + 0xff620000)
 // bit 31    : byte_aligned_zero_23_from_org // From GXM
 // bit 30    : force_shift_out_drop_flag_zero // From GXM
 // bit 29    : en_st_protect_from_org // From GXM
@@ -7543,40 +7543,40 @@
 // bit 3 : first_mode3
 // bit 2:1 : vc1_profile  0-SP, 1-MP, 2-reserved, 3-AP
 // bit 0   : vc1_enable
-#define VDEC2_VC1_CONTROL_REG                      ((0x2c1e  << 2) + 0xff620000)
-#define VDEC2_PMV1_X                               ((0x2c20  << 2) + 0xff620000)
-#define VDEC2_PMV1_Y                               ((0x2c21  << 2) + 0xff620000)
-#define VDEC2_PMV2_X                               ((0x2c22  << 2) + 0xff620000)
-#define VDEC2_PMV2_Y                               ((0x2c23  << 2) + 0xff620000)
-#define VDEC2_PMV3_X                               ((0x2c24  << 2) + 0xff620000)
-#define VDEC2_PMV3_Y                               ((0x2c25  << 2) + 0xff620000)
-#define VDEC2_PMV4_X                               ((0x2c26  << 2) + 0xff620000)
-#define VDEC2_PMV4_Y                               ((0x2c27  << 2) + 0xff620000)
+#define VDEC2_VC1_CONTROL_REG ((0x2c1e << 2) + 0xff620000)
+#define VDEC2_PMV1_X ((0x2c20 << 2) + 0xff620000)
+#define VDEC2_PMV1_Y ((0x2c21 << 2) + 0xff620000)
+#define VDEC2_PMV2_X ((0x2c22 << 2) + 0xff620000)
+#define VDEC2_PMV2_Y ((0x2c23 << 2) + 0xff620000)
+#define VDEC2_PMV3_X ((0x2c24 << 2) + 0xff620000)
+#define VDEC2_PMV3_Y ((0x2c25 << 2) + 0xff620000)
+#define VDEC2_PMV4_X ((0x2c26 << 2) + 0xff620000)
+#define VDEC2_PMV4_Y ((0x2c27 << 2) + 0xff620000)
 // Can't use the same address for different defines
 // Therefore, create a single define that covers both
 // Only appears to be used in micro-code since the VLD hardware is
 // hard coded.
 // `define M4_TABLE_SELECT     8'h28  // Does this exist in HW ? Added from register_mp2.h
 // `define M4_TABLE_OUTPUT     8'h28  // Does this exist in HW ? Added from register_mp2.h
-#define VDEC2_M4_TABLE_SELECT                      ((0x2c28  << 2) + 0xff620000)
-#define VDEC2_M4_CONTROL_REG                       ((0x2c29  << 2) + 0xff620000)
-#define VDEC2_BLOCK_NUM                            ((0x2c2a  << 2) + 0xff620000)
-#define VDEC2_PATTERN_CODE                         ((0x2c2b  << 2) + 0xff620000)
-#define VDEC2_MB_INFO                              ((0x2c2c  << 2) + 0xff620000)
-#define VDEC2_VLD_DC_PRED                          ((0x2c2d  << 2) + 0xff620000)
-#define VDEC2_VLD_ERROR_MASK                       ((0x2c2e  << 2) + 0xff620000)
-#define VDEC2_VLD_DC_PRED_C                        ((0x2c2f  << 2) + 0xff620000)
-#define VDEC2_LAST_SLICE_MV_ADDR                   ((0x2c30  << 2) + 0xff620000)
-#define VDEC2_LAST_MVX                             ((0x2c31  << 2) + 0xff620000)
-#define VDEC2_LAST_MVY                             ((0x2c32  << 2) + 0xff620000)
-#define VDEC2_VLD_C38                              ((0x2c38  << 2) + 0xff620000)
-#define VDEC2_VLD_C39                              ((0x2c39  << 2) + 0xff620000)
-#define VDEC2_VLD_STATUS                           ((0x2c3a  << 2) + 0xff620000)
-#define VDEC2_VLD_SHIFT_STATUS                     ((0x2c3b  << 2) + 0xff620000)
+#define VDEC2_M4_TABLE_SELECT ((0x2c28 << 2) + 0xff620000)
+#define VDEC2_M4_CONTROL_REG ((0x2c29 << 2) + 0xff620000)
+#define VDEC2_BLOCK_NUM ((0x2c2a << 2) + 0xff620000)
+#define VDEC2_PATTERN_CODE ((0x2c2b << 2) + 0xff620000)
+#define VDEC2_MB_INFO ((0x2c2c << 2) + 0xff620000)
+#define VDEC2_VLD_DC_PRED ((0x2c2d << 2) + 0xff620000)
+#define VDEC2_VLD_ERROR_MASK ((0x2c2e << 2) + 0xff620000)
+#define VDEC2_VLD_DC_PRED_C ((0x2c2f << 2) + 0xff620000)
+#define VDEC2_LAST_SLICE_MV_ADDR ((0x2c30 << 2) + 0xff620000)
+#define VDEC2_LAST_MVX ((0x2c31 << 2) + 0xff620000)
+#define VDEC2_LAST_MVY ((0x2c32 << 2) + 0xff620000)
+#define VDEC2_VLD_C38 ((0x2c38 << 2) + 0xff620000)
+#define VDEC2_VLD_C39 ((0x2c39 << 2) + 0xff620000)
+#define VDEC2_VLD_STATUS ((0x2c3a << 2) + 0xff620000)
+#define VDEC2_VLD_SHIFT_STATUS ((0x2c3b << 2) + 0xff620000)
 // `define VLD_SHIFT_INFO      8'h3b  // Does this exist in HW ? used in $ucode/mpeg4
-#define VDEC2_VOFF_STATUS                          ((0x2c3c  << 2) + 0xff620000)
-#define VDEC2_VLD_C3D                              ((0x2c3d  << 2) + 0xff620000)
-#define VDEC2_VLD_DBG_INDEX                        ((0x2c3e  << 2) + 0xff620000)
+#define VDEC2_VOFF_STATUS ((0x2c3c << 2) + 0xff620000)
+#define VDEC2_VLD_C3D ((0x2c3d << 2) + 0xff620000)
+#define VDEC2_VLD_DBG_INDEX ((0x2c3e << 2) + 0xff620000)
 // vld_buff_info -- (index == 0)
 // Bit11]    halt_decode_start_voff
 // Bit10]    C_pred_error
@@ -7656,20 +7656,20 @@
 // Bit[5] weight_cal_busy
 // Bit[4] weight_cal_not_finished
 // Bit[3:0] weight_process_state
-#define VDEC2_VLD_DBG_DATA                         ((0x2c3f  << 2) + 0xff620000)
+#define VDEC2_VLD_DBG_DATA ((0x2c3f << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO DDR Interface
 // --------------------------------------------
 // The VIFIFO start pointer into DDR memory is a 32-bit number
 // The Start pointer will automatically be truncated to land on
 // an 8-byte boundary.  That is, bits [2:0] = 0;
-#define VDEC2_VLD_MEM_VIFIFO_START_PTR             ((0x2c40  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_START_PTR ((0x2c40 << 2) + 0xff620000)
 // The current pointer points so some location between the START and END
 // pointers.  The current pointer is a BYTE pointer.  That is, you can
 // point to any BYTE address within the START/END range
-#define VDEC2_VLD_MEM_VIFIFO_CURR_PTR              ((0x2c41  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VIFIFO_END_PTR               ((0x2c42  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VIFIFO_BYTES_AVAIL           ((0x2c43  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_CURR_PTR ((0x2c41 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_END_PTR ((0x2c42 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_BYTES_AVAIL ((0x2c43 << 2) + 0xff620000)
 // VIFIFO FIFO Control
 // bit  [31:24] viff_empty_int_enable_cpu[7:0]
 // bit  [23:16] viff_empty_int_enable_amrisc[7:0]
@@ -7700,13 +7700,13 @@
 //                              and read masks, set this bit to 1 and then to 0
 //                              NOTE:  You don't need to pulse cntl_init if only the start address is
 //                              being changed
-#define VDEC2_VLD_MEM_VIFIFO_CONTROL               ((0x2c44  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_CONTROL ((0x2c44 << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO Buffer Level Manager
 // --------------------------------------------
-#define VDEC2_VLD_MEM_VIFIFO_WP                    ((0x2c45  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VIFIFO_RP                    ((0x2c46  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VIFIFO_LEVEL                 ((0x2c47  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_WP ((0x2c45 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_RP ((0x2c46 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_LEVEL ((0x2c47 << 2) + 0xff620000)
 //
 // bit  [8]     use_parser_video2_wp
 // bit  [7]     vbuf2_out_manual
@@ -7716,7 +7716,7 @@
 // bit  [3:2]   reserved
 // bit  [1]     manual mode     Set to 1 for manual write pointer mode
 // bit  [0]     Init            Set high then low after everything has been initialized
-#define VDEC2_VLD_MEM_VIFIFO_BUF_CNTL              ((0x2c48  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_BUF_CNTL ((0x2c48 << 2) + 0xff620000)
 // bit 31:16 -- drop_bytes
 // bit 15:14 -- drop_status (Read-Only)
 // bit 13:12 -- sync_match_position (Read-Only)
@@ -7726,37 +7726,37 @@
 // bit 2 -- TIME_STAMP_length_enable
 // bit 1 -- TIME_STAMP_sync64_enable
 // bit 0 -- TIME_STAMP_enable
-#define VDEC2_VLD_TIME_STAMP_CNTL                  ((0x2c49  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_CNTL ((0x2c49 << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_0
-#define VDEC2_VLD_TIME_STAMP_SYNC_0                ((0x2c4a  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_SYNC_0 ((0x2c4a << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_1
-#define VDEC2_VLD_TIME_STAMP_SYNC_1                ((0x2c4b  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_SYNC_1 ((0x2c4b << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_0
-#define VDEC2_VLD_TIME_STAMP_0                     ((0x2c4c  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_0 ((0x2c4c << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_1
-#define VDEC2_VLD_TIME_STAMP_1                     ((0x2c4d  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_1 ((0x2c4d << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_2
-#define VDEC2_VLD_TIME_STAMP_2                     ((0x2c4e  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_2 ((0x2c4e << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_3
-#define VDEC2_VLD_TIME_STAMP_3                     ((0x2c4f  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_3 ((0x2c4f << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_LENGTH
-#define VDEC2_VLD_TIME_STAMP_LENGTH                ((0x2c50  << 2) + 0xff620000)
+#define VDEC2_VLD_TIME_STAMP_LENGTH ((0x2c50 << 2) + 0xff620000)
 // bit 15:0 vififo_rd_count
-#define VDEC2_VLD_MEM_VIFIFO_WRAP_COUNT            ((0x2c51  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_WRAP_COUNT ((0x2c51 << 2) + 0xff620000)
 // bit 29:24 A_brst_num
 // bit 21:16 A_id
 // bit 15:0 level_hold
-#define VDEC2_VLD_MEM_VIFIFO_MEM_CTL               ((0x2c52  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VBUF_RD_PTR                  ((0x2c53  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_VBUF2_RD_PTR                 ((0x2c54  << 2) + 0xff620000)
-#define VDEC2_VLD_MEM_SWAP_ADDR                    ((0x2c55  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VIFIFO_MEM_CTL ((0x2c52 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VBUF_RD_PTR ((0x2c53 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_VBUF2_RD_PTR ((0x2c54 << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_SWAP_ADDR ((0x2c55 << 2) + 0xff620000)
 // bit[23:16] - swap_d_count (Read Only)
 // bit[15:8]  - swap_a_count (Read Only)
 // bit [7] - swap busy (Read Only)
 // bit [6:2] - reserved
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - swap active
-#define VDEC2_VLD_MEM_SWAP_CTL                     ((0x2c56  << 2) + 0xff620000)
+#define VDEC2_VLD_MEM_SWAP_CTL ((0x2c56 << 2) + 0xff620000)
 // bit[12]  -- zero_use_cbp_blk
 // bit[11]  -- mv_use_abs (only calculate abs)
 // bit[10]  -- mv_use_simple_mode (every size count has same weight)
@@ -7764,7 +7764,7 @@
 // bit[8]   -- reseet_all_count // write only
 // bit[7:5] Reserved
 // bit[4:0] pic_quality_rd_idx
-#define VDEC2_VDEC_PIC_QUALITY_CTRL                ((0x2c57  << 2) + 0xff620000)
+#define VDEC2_VDEC_PIC_QUALITY_CTRL ((0x2c57 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- blk88_y_count // 4k will use 20 bits
 //   1  -- qp_y_sum // 4k use 27 bits
@@ -7787,7 +7787,7 @@
 //  18  -- {mvy_L0_max, mvy_L0_min}
 //  19  -- {mvx_L1_max, mvx_L1_min}
 //  20  -- {mvy_L1_max, mvy_L1_min}
-#define VDEC2_VDEC_PIC_QUALITY_DATA                ((0x2c58  << 2) + 0xff620000)
+#define VDEC2_VDEC_PIC_QUALITY_DATA ((0x2c58 << 2) + 0xff620000)
 //
 // Closing file:  vld_regs.h
 //
@@ -7800,7 +7800,7 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VLD_CBUS_BASE = 0x0c
 // -----------------------------------------------
-#define HEVC_VLD_STATUS_CTRL                       ((0x3c00  << 2) + 0xff620000)
+#define HEVC_VLD_STATUS_CTRL ((0x3c00 << 2) + 0xff620000)
 //
 // bit 10 -- use_old_shift_en
 // bit 9 -- output_mv_not_pmv
@@ -7810,13 +7810,13 @@
 // bit 2 -- disable_m2_ac_coeff_one_cycle
 // bit 1 -- forced_reset  force reset pmv
 // bit 0 -- mpeg_type  0:mpeg1 1: mpeg2
-#define HEVC_MPEG1_2_REG                           ((0x3c01  << 2) + 0xff620000)
-#define HEVC_F_CODE_REG                            ((0x3c02  << 2) + 0xff620000)
-#define HEVC_PIC_HEAD_INFO                         ((0x3c03  << 2) + 0xff620000)
-#define HEVC_SLICE_VER_POS_PIC_TYPE                ((0x3c04  << 2) + 0xff620000)
-#define HEVC_QP_VALUE_REG                          ((0x3c05  << 2) + 0xff620000)
-#define HEVC_MBA_INC                               ((0x3c06  << 2) + 0xff620000)
-#define HEVC_MB_MOTION_MODE                        ((0x3c07  << 2) + 0xff620000)
+#define HEVC_MPEG1_2_REG ((0x3c01 << 2) + 0xff620000)
+#define HEVC_F_CODE_REG ((0x3c02 << 2) + 0xff620000)
+#define HEVC_PIC_HEAD_INFO ((0x3c03 << 2) + 0xff620000)
+#define HEVC_SLICE_VER_POS_PIC_TYPE ((0x3c04 << 2) + 0xff620000)
+#define HEVC_QP_VALUE_REG ((0x3c05 << 2) + 0xff620000)
+#define HEVC_MBA_INC ((0x3c06 << 2) + 0xff620000)
+#define HEVC_MB_MOTION_MODE ((0x3c07 << 2) + 0xff620000)
 //`define PACKET_BYTE_COUNT   8'h08
 // bit 15 -- force_search_startcode_en
 // bit 14 -- int_cpu_when_error (before do anything)
@@ -7824,26 +7824,26 @@
 // bit 12 -- return_on_slice_header
 // bit 6 -- jpeg_ff00_en
 // bit 5:0 -- vld_power_ctl
-#define HEVC_POWER_CTL_VLD                         ((0x3c08  << 2) + 0xff620000)
-#define HEVC_MB_WIDTH                              ((0x3c09  << 2) + 0xff620000)
-#define HEVC_SLICE_QP                              ((0x3c0a  << 2) + 0xff620000)
+#define HEVC_POWER_CTL_VLD ((0x3c08 << 2) + 0xff620000)
+#define HEVC_MB_WIDTH ((0x3c09 << 2) + 0xff620000)
+#define HEVC_SLICE_QP ((0x3c0a << 2) + 0xff620000)
 // `define MB_X_MB_Y           8'h0b   /* current MBX and MBY                  */
-#define HEVC_PRE_START_CODE                        ((0x3c0b  << 2) + 0xff620000)
-#define HEVC_SLICE_START_BYTE_01                   ((0x3c0c  << 2) + 0xff620000)
-#define HEVC_SLICE_START_BYTE_23                   ((0x3c0d  << 2) + 0xff620000)
-#define HEVC_RESYNC_MARKER_LENGTH                  ((0x3c0e  << 2) + 0xff620000)
+#define HEVC_PRE_START_CODE ((0x3c0b << 2) + 0xff620000)
+#define HEVC_SLICE_START_BYTE_01 ((0x3c0c << 2) + 0xff620000)
+#define HEVC_SLICE_START_BYTE_23 ((0x3c0d << 2) + 0xff620000)
+#define HEVC_RESYNC_MARKER_LENGTH ((0x3c0e << 2) + 0xff620000)
 // bit[6:5] - frame/field info, 01 - top, 10 - bottom, 11 - frame
 // bit[4:0] - buffer ID
 // L0_BUFF_ID_0, L0_BUFF_ID_1, L1_BUFF_ID_0, L1_BUFF_ID_1
-#define HEVC_DECODER_BUFFER_INFO                   ((0x3c0f  << 2) + 0xff620000)
-#define HEVC_FST_FOR_MV_X                          ((0x3c10  << 2) + 0xff620000)
-#define HEVC_FST_FOR_MV_Y                          ((0x3c11  << 2) + 0xff620000)
-#define HEVC_SCD_FOR_MV_X                          ((0x3c12  << 2) + 0xff620000)
-#define HEVC_SCD_FOR_MV_Y                          ((0x3c13  << 2) + 0xff620000)
-#define HEVC_FST_BAK_MV_X                          ((0x3c14  << 2) + 0xff620000)
-#define HEVC_FST_BAK_MV_Y                          ((0x3c15  << 2) + 0xff620000)
-#define HEVC_SCD_BAK_MV_X                          ((0x3c16  << 2) + 0xff620000)
-#define HEVC_SCD_BAK_MV_Y                          ((0x3c17  << 2) + 0xff620000)
+#define HEVC_DECODER_BUFFER_INFO ((0x3c0f << 2) + 0xff620000)
+#define HEVC_FST_FOR_MV_X ((0x3c10 << 2) + 0xff620000)
+#define HEVC_FST_FOR_MV_Y ((0x3c11 << 2) + 0xff620000)
+#define HEVC_SCD_FOR_MV_X ((0x3c12 << 2) + 0xff620000)
+#define HEVC_SCD_FOR_MV_Y ((0x3c13 << 2) + 0xff620000)
+#define HEVC_FST_BAK_MV_X ((0x3c14 << 2) + 0xff620000)
+#define HEVC_FST_BAK_MV_Y ((0x3c15 << 2) + 0xff620000)
+#define HEVC_SCD_BAK_MV_X ((0x3c16 << 2) + 0xff620000)
+#define HEVC_SCD_BAK_MV_Y ((0x3c17 << 2) + 0xff620000)
 // Bit 24 -- spatial_scale_no_update_when_f_invalid // disable_fix
 // Bit 23 -- spatial_scale_no_update_when_f_zero // disable_fix
 // Bit 22 -- pure_jpeg_hw_en
@@ -7860,13 +7860,13 @@
 // bit 2 -- weighting_prediction
 // bit 1 -- mb_weighting_flag
 // bit 0 -- slice_weighting_flag
-#define HEVC_VLD_DECODE_CONTROL                    ((0x3c18  << 2) + 0xff620000)
+#define HEVC_VLD_DECODE_CONTROL ((0x3c18 << 2) + 0xff620000)
 // bit[15:0] - vld_jpeg_tab_addr
-#define HEVC_VLD_JPEG_TAB_ADDR                     ((0x3c19  << 2) + 0xff620000)
-#define HEVC_VIFF_BIT_CNT                          ((0x3c1a  << 2) + 0xff620000)
-#define HEVC_BYTE_ALIGN_PEAK_HI                    ((0x3c1b  << 2) + 0xff620000)
-#define HEVC_BYTE_ALIGN_PEAK_LO                    ((0x3c1c  << 2) + 0xff620000)
-#define HEVC_NEXT_ALIGN_PEAK                       ((0x3c1d  << 2) + 0xff620000)
+#define HEVC_VLD_JPEG_TAB_ADDR ((0x3c19 << 2) + 0xff620000)
+#define HEVC_VIFF_BIT_CNT ((0x3c1a << 2) + 0xff620000)
+#define HEVC_BYTE_ALIGN_PEAK_HI ((0x3c1b << 2) + 0xff620000)
+#define HEVC_BYTE_ALIGN_PEAK_LO ((0x3c1c << 2) + 0xff620000)
+#define HEVC_NEXT_ALIGN_PEAK ((0x3c1d << 2) + 0xff620000)
 // bit 31    : byte_aligned_zero_23_from_org // From GXM
 // bit 30    : force_shift_out_drop_flag_zero // From GXM
 // bit 29    : en_st_protect_from_org // From GXM
@@ -7894,40 +7894,40 @@
 // bit 3 : first_mode3
 // bit 2:1 : vc1_profile  0-SP, 1-MP, 2-reserved, 3-AP
 // bit 0   : vc1_enable
-#define HEVC_VC1_CONTROL_REG                       ((0x3c1e  << 2) + 0xff620000)
-#define HEVC_PMV1_X                                ((0x3c20  << 2) + 0xff620000)
-#define HEVC_PMV1_Y                                ((0x3c21  << 2) + 0xff620000)
-#define HEVC_PMV2_X                                ((0x3c22  << 2) + 0xff620000)
-#define HEVC_PMV2_Y                                ((0x3c23  << 2) + 0xff620000)
-#define HEVC_PMV3_X                                ((0x3c24  << 2) + 0xff620000)
-#define HEVC_PMV3_Y                                ((0x3c25  << 2) + 0xff620000)
-#define HEVC_PMV4_X                                ((0x3c26  << 2) + 0xff620000)
-#define HEVC_PMV4_Y                                ((0x3c27  << 2) + 0xff620000)
+#define HEVC_VC1_CONTROL_REG ((0x3c1e << 2) + 0xff620000)
+#define HEVC_PMV1_X ((0x3c20 << 2) + 0xff620000)
+#define HEVC_PMV1_Y ((0x3c21 << 2) + 0xff620000)
+#define HEVC_PMV2_X ((0x3c22 << 2) + 0xff620000)
+#define HEVC_PMV2_Y ((0x3c23 << 2) + 0xff620000)
+#define HEVC_PMV3_X ((0x3c24 << 2) + 0xff620000)
+#define HEVC_PMV3_Y ((0x3c25 << 2) + 0xff620000)
+#define HEVC_PMV4_X ((0x3c26 << 2) + 0xff620000)
+#define HEVC_PMV4_Y ((0x3c27 << 2) + 0xff620000)
 // Can't use the same address for different defines
 // Therefore, create a single define that covers both
 // Only appears to be used in micro-code since the VLD hardware is
 // hard coded.
 // `define M4_TABLE_SELECT     8'h28  // Does this exist in HW ? Added from register_mp2.h
 // `define M4_TABLE_OUTPUT     8'h28  // Does this exist in HW ? Added from register_mp2.h
-#define HEVC_M4_TABLE_SELECT                       ((0x3c28  << 2) + 0xff620000)
-#define HEVC_M4_CONTROL_REG                        ((0x3c29  << 2) + 0xff620000)
-#define HEVC_BLOCK_NUM                             ((0x3c2a  << 2) + 0xff620000)
-#define HEVC_PATTERN_CODE                          ((0x3c2b  << 2) + 0xff620000)
-#define HEVC_MB_INFO                               ((0x3c2c  << 2) + 0xff620000)
-#define HEVC_VLD_DC_PRED                           ((0x3c2d  << 2) + 0xff620000)
-#define HEVC_VLD_ERROR_MASK                        ((0x3c2e  << 2) + 0xff620000)
-#define HEVC_VLD_DC_PRED_C                         ((0x3c2f  << 2) + 0xff620000)
-#define HEVC_LAST_SLICE_MV_ADDR                    ((0x3c30  << 2) + 0xff620000)
-#define HEVC_LAST_MVX                              ((0x3c31  << 2) + 0xff620000)
-#define HEVC_LAST_MVY                              ((0x3c32  << 2) + 0xff620000)
-#define HEVC_VLD_C38                               ((0x3c38  << 2) + 0xff620000)
-#define HEVC_VLD_C39                               ((0x3c39  << 2) + 0xff620000)
-#define HEVC_VLD_STATUS                            ((0x3c3a  << 2) + 0xff620000)
-#define HEVC_VLD_SHIFT_STATUS                      ((0x3c3b  << 2) + 0xff620000)
+#define HEVC_M4_TABLE_SELECT ((0x3c28 << 2) + 0xff620000)
+#define HEVC_M4_CONTROL_REG ((0x3c29 << 2) + 0xff620000)
+#define HEVC_BLOCK_NUM ((0x3c2a << 2) + 0xff620000)
+#define HEVC_PATTERN_CODE ((0x3c2b << 2) + 0xff620000)
+#define HEVC_MB_INFO ((0x3c2c << 2) + 0xff620000)
+#define HEVC_VLD_DC_PRED ((0x3c2d << 2) + 0xff620000)
+#define HEVC_VLD_ERROR_MASK ((0x3c2e << 2) + 0xff620000)
+#define HEVC_VLD_DC_PRED_C ((0x3c2f << 2) + 0xff620000)
+#define HEVC_LAST_SLICE_MV_ADDR ((0x3c30 << 2) + 0xff620000)
+#define HEVC_LAST_MVX ((0x3c31 << 2) + 0xff620000)
+#define HEVC_LAST_MVY ((0x3c32 << 2) + 0xff620000)
+#define HEVC_VLD_C38 ((0x3c38 << 2) + 0xff620000)
+#define HEVC_VLD_C39 ((0x3c39 << 2) + 0xff620000)
+#define HEVC_VLD_STATUS ((0x3c3a << 2) + 0xff620000)
+#define HEVC_VLD_SHIFT_STATUS ((0x3c3b << 2) + 0xff620000)
 // `define VLD_SHIFT_INFO      8'h3b  // Does this exist in HW ? used in $ucode/mpeg4
-#define HEVC_VOFF_STATUS                           ((0x3c3c  << 2) + 0xff620000)
-#define HEVC_VLD_C3D                               ((0x3c3d  << 2) + 0xff620000)
-#define HEVC_VLD_DBG_INDEX                         ((0x3c3e  << 2) + 0xff620000)
+#define HEVC_VOFF_STATUS ((0x3c3c << 2) + 0xff620000)
+#define HEVC_VLD_C3D ((0x3c3d << 2) + 0xff620000)
+#define HEVC_VLD_DBG_INDEX ((0x3c3e << 2) + 0xff620000)
 // vld_buff_info -- (index == 0)
 // Bit11]    halt_decode_start_voff
 // Bit10]    C_pred_error
@@ -8007,20 +8007,20 @@
 // Bit[5] weight_cal_busy
 // Bit[4] weight_cal_not_finished
 // Bit[3:0] weight_process_state
-#define HEVC_VLD_DBG_DATA                          ((0x3c3f  << 2) + 0xff620000)
+#define HEVC_VLD_DBG_DATA ((0x3c3f << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO DDR Interface
 // --------------------------------------------
 // The VIFIFO start pointer into DDR memory is a 32-bit number
 // The Start pointer will automatically be truncated to land on
 // an 8-byte boundary.  That is, bits [2:0] = 0;
-#define HEVC_VLD_MEM_VIFIFO_START_PTR              ((0x3c40  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_START_PTR ((0x3c40 << 2) + 0xff620000)
 // The current pointer points so some location between the START and END
 // pointers.  The current pointer is a BYTE pointer.  That is, you can
 // point to any BYTE address within the START/END range
-#define HEVC_VLD_MEM_VIFIFO_CURR_PTR               ((0x3c41  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VIFIFO_END_PTR                ((0x3c42  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VIFIFO_BYTES_AVAIL            ((0x3c43  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_CURR_PTR ((0x3c41 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_END_PTR ((0x3c42 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_BYTES_AVAIL ((0x3c43 << 2) + 0xff620000)
 // VIFIFO FIFO Control
 // bit  [31:24] viff_empty_int_enable_cpu[7:0]
 // bit  [23:16] viff_empty_int_enable_amrisc[7:0]
@@ -8051,13 +8051,13 @@
 //                              and read masks, set this bit to 1 and then to 0
 //                              NOTE:  You don't need to pulse cntl_init if only the start address is
 //                              being changed
-#define HEVC_VLD_MEM_VIFIFO_CONTROL                ((0x3c44  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_CONTROL ((0x3c44 << 2) + 0xff620000)
 // --------------------------------------------
 // VIFIFO Buffer Level Manager
 // --------------------------------------------
-#define HEVC_VLD_MEM_VIFIFO_WP                     ((0x3c45  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VIFIFO_RP                     ((0x3c46  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VIFIFO_LEVEL                  ((0x3c47  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_WP ((0x3c45 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_RP ((0x3c46 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_LEVEL ((0x3c47 << 2) + 0xff620000)
 //
 // bit  [8]     use_parser_video2_wp
 // bit  [7]     vbuf2_out_manual
@@ -8067,7 +8067,7 @@
 // bit  [3:2]   reserved
 // bit  [1]     manual mode     Set to 1 for manual write pointer mode
 // bit  [0]     Init            Set high then low after everything has been initialized
-#define HEVC_VLD_MEM_VIFIFO_BUF_CNTL               ((0x3c48  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_BUF_CNTL ((0x3c48 << 2) + 0xff620000)
 // bit 31:16 -- drop_bytes
 // bit 15:14 -- drop_status (Read-Only)
 // bit 13:12 -- sync_match_position (Read-Only)
@@ -8077,37 +8077,37 @@
 // bit 2 -- TIME_STAMP_length_enable
 // bit 1 -- TIME_STAMP_sync64_enable
 // bit 0 -- TIME_STAMP_enable
-#define HEVC_VLD_TIME_STAMP_CNTL                   ((0x3c49  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_CNTL ((0x3c49 << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_0
-#define HEVC_VLD_TIME_STAMP_SYNC_0                 ((0x3c4a  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_SYNC_0 ((0x3c4a << 2) + 0xff620000)
 // bit 31:0 -- TIME_STAMP_SYNC_CODE_1
-#define HEVC_VLD_TIME_STAMP_SYNC_1                 ((0x3c4b  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_SYNC_1 ((0x3c4b << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_0
-#define HEVC_VLD_TIME_STAMP_0                      ((0x3c4c  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_0 ((0x3c4c << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_1
-#define HEVC_VLD_TIME_STAMP_1                      ((0x3c4d  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_1 ((0x3c4d << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_2
-#define HEVC_VLD_TIME_STAMP_2                      ((0x3c4e  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_2 ((0x3c4e << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_3
-#define HEVC_VLD_TIME_STAMP_3                      ((0x3c4f  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_3 ((0x3c4f << 2) + 0xff620000)
 // bit 31:0 TIME_STAMP_LENGTH
-#define HEVC_VLD_TIME_STAMP_LENGTH                 ((0x3c50  << 2) + 0xff620000)
+#define HEVC_VLD_TIME_STAMP_LENGTH ((0x3c50 << 2) + 0xff620000)
 // bit 15:0 vififo_rd_count
-#define HEVC_VLD_MEM_VIFIFO_WRAP_COUNT             ((0x3c51  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_WRAP_COUNT ((0x3c51 << 2) + 0xff620000)
 // bit 29:24 A_brst_num
 // bit 21:16 A_id
 // bit 15:0 level_hold
-#define HEVC_VLD_MEM_VIFIFO_MEM_CTL                ((0x3c52  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VBUF_RD_PTR                   ((0x3c53  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_VBUF2_RD_PTR                  ((0x3c54  << 2) + 0xff620000)
-#define HEVC_VLD_MEM_SWAP_ADDR                     ((0x3c55  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VIFIFO_MEM_CTL ((0x3c52 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VBUF_RD_PTR ((0x3c53 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_VBUF2_RD_PTR ((0x3c54 << 2) + 0xff620000)
+#define HEVC_VLD_MEM_SWAP_ADDR ((0x3c55 << 2) + 0xff620000)
 // bit[23:16] - swap_d_count (Read Only)
 // bit[15:8]  - swap_a_count (Read Only)
 // bit [7] - swap busy (Read Only)
 // bit [6:2] - reserved
 // bit [1] - 1 - STORE to Memory, 0 - LOAD from Memory
 // bit [0] - swap active
-#define HEVC_VLD_MEM_SWAP_CTL                      ((0x3c56  << 2) + 0xff620000)
+#define HEVC_VLD_MEM_SWAP_CTL ((0x3c56 << 2) + 0xff620000)
 // bit[12]  -- zero_use_cbp_blk
 // bit[11]  -- mv_use_abs (only calculate abs)
 // bit[10]  -- mv_use_simple_mode (every size count has same weight)
@@ -8115,7 +8115,7 @@
 // bit[8]   -- reseet_all_count // write only
 // bit[7:5] Reserved
 // bit[4:0] pic_quality_rd_idx
-#define HEVC_VDEC_PIC_QUALITY_CTRL                 ((0x3c57  << 2) + 0xff620000)
+#define HEVC_VDEC_PIC_QUALITY_CTRL ((0x3c57 << 2) + 0xff620000)
 // idx  -- read out
 //   0  -- blk88_y_count // 4k will use 20 bits
 //   1  -- qp_y_sum // 4k use 27 bits
@@ -8138,7 +8138,7 @@
 //  18  -- {mvy_L0_max, mvy_L0_min}
 //  19  -- {mvx_L1_max, mvx_L1_min}
 //  20  -- {mvy_L1_max, mvy_L1_min}
-#define HEVC_VDEC_PIC_QUALITY_DATA                 ((0x3c58  << 2) + 0xff620000)
+#define HEVC_VDEC_PIC_QUALITY_DATA ((0x3c58 << 2) + 0xff620000)
 //
 // Closing file:  vld_regs.h
 //
@@ -8151,26 +8151,26 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_IQIDCT_CBUS_BASE = 0x0e
 // -----------------------------------------------
-#define HCODEC_VCOP_CTRL_REG                       ((0x1e00  << 2) + 0xff620000)
-#define HCODEC_QP_CTRL_REG                         ((0x1e01  << 2) + 0xff620000)
-#define HCODEC_INTRA_QUANT_MATRIX                  ((0x1e02  << 2) + 0xff620000)
-#define HCODEC_NON_I_QUANT_MATRIX                  ((0x1e03  << 2) + 0xff620000)
-#define HCODEC_DC_SCALER                           ((0x1e04  << 2) + 0xff620000)
-#define HCODEC_DC_AC_CTRL                          ((0x1e05  << 2) + 0xff620000)
+#define HCODEC_VCOP_CTRL_REG ((0x1e00 << 2) + 0xff620000)
+#define HCODEC_QP_CTRL_REG ((0x1e01 << 2) + 0xff620000)
+#define HCODEC_INTRA_QUANT_MATRIX ((0x1e02 << 2) + 0xff620000)
+#define HCODEC_NON_I_QUANT_MATRIX ((0x1e03 << 2) + 0xff620000)
+#define HCODEC_DC_SCALER ((0x1e04 << 2) + 0xff620000)
+#define HCODEC_DC_AC_CTRL ((0x1e05 << 2) + 0xff620000)
 // `define RV_AI_CTRL          8'h05  // ONLY for $ucode/real/amrisc/rv.s reg value from apollo
-#define HCODEC_DC_AC_SCALE_MUL                     ((0x1e06  << 2) + 0xff620000)
-#define HCODEC_DC_AC_SCALE_DIV                     ((0x1e07  << 2) + 0xff620000)
+#define HCODEC_DC_AC_SCALE_MUL ((0x1e06 << 2) + 0xff620000)
+#define HCODEC_DC_AC_SCALE_DIV ((0x1e07 << 2) + 0xff620000)
 // `define DC_AC_SCALE_RESULT  8'h06
 // `define RESERVED_E07        8'h07
-#define HCODEC_POWER_CTL_IQIDCT                    ((0x1e08  << 2) + 0xff620000)
-#define HCODEC_RV_AI_Y_X                           ((0x1e09  << 2) + 0xff620000)
-#define HCODEC_RV_AI_U_X                           ((0x1e0a  << 2) + 0xff620000)
-#define HCODEC_RV_AI_V_X                           ((0x1e0b  << 2) + 0xff620000)
+#define HCODEC_POWER_CTL_IQIDCT ((0x1e08 << 2) + 0xff620000)
+#define HCODEC_RV_AI_Y_X ((0x1e09 << 2) + 0xff620000)
+#define HCODEC_RV_AI_U_X ((0x1e0a << 2) + 0xff620000)
+#define HCODEC_RV_AI_V_X ((0x1e0b << 2) + 0xff620000)
 // bit 15:0 will count up when rv_ai_mb finished when non zero
 // and rv_ai_mb_finished_int will be generate when this is not zero
-#define HCODEC_RV_AI_MB_COUNT                      ((0x1e0c  << 2) + 0xff620000)
+#define HCODEC_RV_AI_MB_COUNT ((0x1e0c << 2) + 0xff620000)
 // For H264 I in PB picture Use -- dma type : h264_next_intra_dma
-#define HCODEC_NEXT_INTRA_DMA_ADDRESS              ((0x1e0d  << 2) + 0xff620000)
+#define HCODEC_NEXT_INTRA_DMA_ADDRESS ((0x1e0d << 2) + 0xff620000)
 // Bit 18 -- neighbor_intra_dcac_do_not_use_reg
 // Bit 17 -- neighbor_intra_idct_use_reg
 // Bit 16 -- dcac_dma_read_cache_disable
@@ -8190,7 +8190,7 @@
 // Bit 2 -- disable_mb_aff_fix
 // Bit 1 -- canvas_addr_7
 // Bit 0 -- constrained_intra_pred_flag for H264
-#define HCODEC_IQIDCT_CONTROL                      ((0x1e0e  << 2) + 0xff620000)
+#define HCODEC_IQIDCT_CONTROL ((0x1e0e << 2) + 0xff620000)
 // Bit[31:19] Reserved
 // Bit[18] iq_waiting
 // Bit[17] iq_om_wr_idx
@@ -8207,9 +8207,9 @@
 // Bit[6] idx_fifo_7
 // Bit[5:3] idx_fifo_wp
 // Bit[2:0] idx_fifo_rp
-#define HCODEC_IQIDCT_DEBUG_INFO_0                 ((0x1e0f  << 2) + 0xff620000)
+#define HCODEC_IQIDCT_DEBUG_INFO_0 ((0x1e0f << 2) + 0xff620000)
 // For RTL Simulation Only
-#define HCODEC_DEBLK_CMD                           ((0x1e10  << 2) + 0xff620000)
+#define HCODEC_DEBLK_CMD ((0x1e10 << 2) + 0xff620000)
 // Bit[15+16] ds_mc_valid_2
 // Bit[14+16] new_idct1_rd_idx_2
 // Bit[13+16] new_idct1_wr_idx_2
@@ -8242,7 +8242,7 @@
 // Bit[2] idct2_en_1
 // Bit[1] new_idct2_busy_1
 // Bit[0] new_idct1_ready_1
-#define HCODEC_IQIDCT_DEBUG_IDCT                   ((0x1e11  << 2) + 0xff620000)
+#define HCODEC_IQIDCT_DEBUG_IDCT ((0x1e11 << 2) + 0xff620000)
 // bit 31 -- convas_enable
 // bit 30:24 -- convas_x_count ( 8 pixels / 64 bits )
 // bit 23:16 -- convas_y_count
@@ -8252,22 +8252,22 @@
 // bit 7    -- dcac_dma_rw
 // bit 6    -- dcac_skip_read_mode
 // bit 5:0  -- dcac_dma_offset
-#define HCODEC_DCAC_DMA_CTRL                       ((0x1e12  << 2) + 0xff620000)
+#define HCODEC_DCAC_DMA_CTRL ((0x1e12 << 2) + 0xff620000)
 // when (convas_enable == 0 )
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
 //   bit 24:12 convas_y_start ( 13 btis )
 //   bit 11:0  convas_x_start ( 12 btis )
-#define HCODEC_DCAC_DMA_ADDRESS                    ((0x1e13  << 2) + 0xff620000)
+#define HCODEC_DCAC_DMA_ADDRESS ((0x1e13 << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
-#define HCODEC_DCAC_CPU_ADDRESS                    ((0x1e14  << 2) + 0xff620000)
+#define HCODEC_DCAC_CPU_ADDRESS ((0x1e14 << 2) + 0xff620000)
 // bit 31:0 -- dcac_cpu_data
-#define HCODEC_DCAC_CPU_DATA                       ((0x1e15  << 2) + 0xff620000)
+#define HCODEC_DCAC_CPU_DATA ((0x1e15 << 2) + 0xff620000)
 // bit 31:19 -- reserved
 // bit 18:16 -- block_num_reg -- Read-Only
 // bit 15:0 -- dcac_mb_count
-#define HCODEC_DCAC_MB_COUNT                       ((0x1e16  << 2) + 0xff620000)
+#define HCODEC_DCAC_MB_COUNT ((0x1e16 << 2) + 0xff620000)
 // bit 31:18 -- reserved
 // For H264 :
 //   bit 17:2 -- h264_quant
@@ -8280,7 +8280,7 @@
 //   bit 11:6  -- AltPQuant
 //   bit  5:0  -- PQuant
 //
-#define HCODEC_IQ_QUANT                            ((0x1e17  << 2) + 0xff620000)
+#define HCODEC_IQ_QUANT ((0x1e17 << 2) + 0xff620000)
 // bit 31:24  -- bitplane_width
 // bit 23:16  -- bitplane_height
 // bit 15:14  -- bitplane_start_x
@@ -8288,21 +8288,21 @@
 // bit 11:4   -- reserved
 // bit 3:1    -- bitplane_type
 // bit 0      -- bitplane_busy
-#define HCODEC_VC1_BITPLANE_CTL                    ((0x1e18  << 2) + 0xff620000)
+#define HCODEC_VC1_BITPLANE_CTL ((0x1e18 << 2) + 0xff620000)
 // bit 24:16  -- wq_param1
 // bit  8: 0  -- wq_param0
-#define HCODEC_AVSP_IQ_WQ_PARAM_01                 ((0x1e19  << 2) + 0xff620000)
+#define HCODEC_AVSP_IQ_WQ_PARAM_01 ((0x1e19 << 2) + 0xff620000)
 // bit 24:16  -- wq_param3
 // bit  8: 0  -- wq_param2
-#define HCODEC_AVSP_IQ_WQ_PARAM_23                 ((0x1e1a  << 2) + 0xff620000)
+#define HCODEC_AVSP_IQ_WQ_PARAM_23 ((0x1e1a << 2) + 0xff620000)
 // bit 24:16  -- wq_param5
 // bit  8: 0  -- wq_param4
-#define HCODEC_AVSP_IQ_WQ_PARAM_45                 ((0x1e1b  << 2) + 0xff620000)
+#define HCODEC_AVSP_IQ_WQ_PARAM_45 ((0x1e1b << 2) + 0xff620000)
 // bit    31  -- weight_quant_en
 // bit 17:16  -- current_scene_model
 // bit 12: 8  -- chroma_qp_delta_cr
 // bit  4: 0  -- chroma_qp_delta_cb
-#define HCODEC_AVSP_IQ_CTL                         ((0x1e1c  << 2) + 0xff620000)
+#define HCODEC_AVSP_IQ_CTL ((0x1e1c << 2) + 0xff620000)
 // bit 30:28 - rd_buf_wr_addr // Read Only
 // bit 27    - Reserved
 // bit 26:24 - rd_buf_rd_addr // Read Only
@@ -8315,12 +8315,12 @@
 // bit  7:4  - wr_buf_cnt     // Read Only
 // bit  3:2  - rd_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:invalid_cache
 // bit  1:0  - wr_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:flush
-#define HCODEC_DCAC_DDR_BYTE64_CTL                 ((0x1e1d  << 2) + 0xff620000)
+#define HCODEC_DCAC_DDR_BYTE64_CTL ((0x1e1d << 2) + 0xff620000)
 //======================================
 //  VCOP Control Register Bits
 //
 //======================================
-    //`define IQIDCT_RESET	    16'h0001	    // Bit 0
+//`define IQIDCT_RESET	    16'h0001	    // Bit 0
 //======================================
 //  QP Control Register Bits
 //
@@ -8340,26 +8340,26 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_IQIDCT_CBUS_BASE = 0x0e
 // -----------------------------------------------
-#define VDEC2_VCOP_CTRL_REG                        ((0x2e00  << 2) + 0xff620000)
-#define VDEC2_QP_CTRL_REG                          ((0x2e01  << 2) + 0xff620000)
-#define VDEC2_INTRA_QUANT_MATRIX                   ((0x2e02  << 2) + 0xff620000)
-#define VDEC2_NON_I_QUANT_MATRIX                   ((0x2e03  << 2) + 0xff620000)
-#define VDEC2_DC_SCALER                            ((0x2e04  << 2) + 0xff620000)
-#define VDEC2_DC_AC_CTRL                           ((0x2e05  << 2) + 0xff620000)
+#define VDEC2_VCOP_CTRL_REG ((0x2e00 << 2) + 0xff620000)
+#define VDEC2_QP_CTRL_REG ((0x2e01 << 2) + 0xff620000)
+#define VDEC2_INTRA_QUANT_MATRIX ((0x2e02 << 2) + 0xff620000)
+#define VDEC2_NON_I_QUANT_MATRIX ((0x2e03 << 2) + 0xff620000)
+#define VDEC2_DC_SCALER ((0x2e04 << 2) + 0xff620000)
+#define VDEC2_DC_AC_CTRL ((0x2e05 << 2) + 0xff620000)
 // `define RV_AI_CTRL          8'h05  // ONLY for $ucode/real/amrisc/rv.s reg value from apollo
-#define VDEC2_DC_AC_SCALE_MUL                      ((0x2e06  << 2) + 0xff620000)
-#define VDEC2_DC_AC_SCALE_DIV                      ((0x2e07  << 2) + 0xff620000)
+#define VDEC2_DC_AC_SCALE_MUL ((0x2e06 << 2) + 0xff620000)
+#define VDEC2_DC_AC_SCALE_DIV ((0x2e07 << 2) + 0xff620000)
 // `define DC_AC_SCALE_RESULT  8'h06
 // `define RESERVED_E07        8'h07
-#define VDEC2_POWER_CTL_IQIDCT                     ((0x2e08  << 2) + 0xff620000)
-#define VDEC2_RV_AI_Y_X                            ((0x2e09  << 2) + 0xff620000)
-#define VDEC2_RV_AI_U_X                            ((0x2e0a  << 2) + 0xff620000)
-#define VDEC2_RV_AI_V_X                            ((0x2e0b  << 2) + 0xff620000)
+#define VDEC2_POWER_CTL_IQIDCT ((0x2e08 << 2) + 0xff620000)
+#define VDEC2_RV_AI_Y_X ((0x2e09 << 2) + 0xff620000)
+#define VDEC2_RV_AI_U_X ((0x2e0a << 2) + 0xff620000)
+#define VDEC2_RV_AI_V_X ((0x2e0b << 2) + 0xff620000)
 // bit 15:0 will count up when rv_ai_mb finished when non zero
 // and rv_ai_mb_finished_int will be generate when this is not zero
-#define VDEC2_RV_AI_MB_COUNT                       ((0x2e0c  << 2) + 0xff620000)
+#define VDEC2_RV_AI_MB_COUNT ((0x2e0c << 2) + 0xff620000)
 // For H264 I in PB picture Use -- dma type : h264_next_intra_dma
-#define VDEC2_NEXT_INTRA_DMA_ADDRESS               ((0x2e0d  << 2) + 0xff620000)
+#define VDEC2_NEXT_INTRA_DMA_ADDRESS ((0x2e0d << 2) + 0xff620000)
 // Bit 18 -- neighbor_intra_dcac_do_not_use_reg
 // Bit 17 -- neighbor_intra_idct_use_reg
 // Bit 16 -- dcac_dma_read_cache_disable
@@ -8379,7 +8379,7 @@
 // Bit 2 -- disable_mb_aff_fix
 // Bit 1 -- canvas_addr_7
 // Bit 0 -- constrained_intra_pred_flag for H264
-#define VDEC2_IQIDCT_CONTROL                       ((0x2e0e  << 2) + 0xff620000)
+#define VDEC2_IQIDCT_CONTROL ((0x2e0e << 2) + 0xff620000)
 // Bit[31:19] Reserved
 // Bit[18] iq_waiting
 // Bit[17] iq_om_wr_idx
@@ -8396,9 +8396,9 @@
 // Bit[6] idx_fifo_7
 // Bit[5:3] idx_fifo_wp
 // Bit[2:0] idx_fifo_rp
-#define VDEC2_IQIDCT_DEBUG_INFO_0                  ((0x2e0f  << 2) + 0xff620000)
+#define VDEC2_IQIDCT_DEBUG_INFO_0 ((0x2e0f << 2) + 0xff620000)
 // For RTL Simulation Only
-#define VDEC2_DEBLK_CMD                            ((0x2e10  << 2) + 0xff620000)
+#define VDEC2_DEBLK_CMD ((0x2e10 << 2) + 0xff620000)
 // Bit[15+16] ds_mc_valid_2
 // Bit[14+16] new_idct1_rd_idx_2
 // Bit[13+16] new_idct1_wr_idx_2
@@ -8431,7 +8431,7 @@
 // Bit[2] idct2_en_1
 // Bit[1] new_idct2_busy_1
 // Bit[0] new_idct1_ready_1
-#define VDEC2_IQIDCT_DEBUG_IDCT                    ((0x2e11  << 2) + 0xff620000)
+#define VDEC2_IQIDCT_DEBUG_IDCT ((0x2e11 << 2) + 0xff620000)
 // bit 31 -- convas_enable
 // bit 30:24 -- convas_x_count ( 8 pixels / 64 bits )
 // bit 23:16 -- convas_y_count
@@ -8441,22 +8441,22 @@
 // bit 7    -- dcac_dma_rw
 // bit 6    -- dcac_skip_read_mode
 // bit 5:0  -- dcac_dma_offset
-#define VDEC2_DCAC_DMA_CTRL                        ((0x2e12  << 2) + 0xff620000)
+#define VDEC2_DCAC_DMA_CTRL ((0x2e12 << 2) + 0xff620000)
 // when (convas_enable == 0 )
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
 //   bit 24:12 convas_y_start ( 13 btis )
 //   bit 11:0  convas_x_start ( 12 btis )
-#define VDEC2_DCAC_DMA_ADDRESS                     ((0x2e13  << 2) + 0xff620000)
+#define VDEC2_DCAC_DMA_ADDRESS ((0x2e13 << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
-#define VDEC2_DCAC_CPU_ADDRESS                     ((0x2e14  << 2) + 0xff620000)
+#define VDEC2_DCAC_CPU_ADDRESS ((0x2e14 << 2) + 0xff620000)
 // bit 31:0 -- dcac_cpu_data
-#define VDEC2_DCAC_CPU_DATA                        ((0x2e15  << 2) + 0xff620000)
+#define VDEC2_DCAC_CPU_DATA ((0x2e15 << 2) + 0xff620000)
 // bit 31:19 -- reserved
 // bit 18:16 -- block_num_reg -- Read-Only
 // bit 15:0 -- dcac_mb_count
-#define VDEC2_DCAC_MB_COUNT                        ((0x2e16  << 2) + 0xff620000)
+#define VDEC2_DCAC_MB_COUNT ((0x2e16 << 2) + 0xff620000)
 // bit 31:18 -- reserved
 // For H264 :
 //   bit 17:2 -- h264_quant
@@ -8469,7 +8469,7 @@
 //   bit 11:6  -- AltPQuant
 //   bit  5:0  -- PQuant
 //
-#define VDEC2_IQ_QUANT                             ((0x2e17  << 2) + 0xff620000)
+#define VDEC2_IQ_QUANT ((0x2e17 << 2) + 0xff620000)
 // bit 31:24  -- bitplane_width
 // bit 23:16  -- bitplane_height
 // bit 15:14  -- bitplane_start_x
@@ -8477,21 +8477,21 @@
 // bit 11:4   -- reserved
 // bit 3:1    -- bitplane_type
 // bit 0      -- bitplane_busy
-#define VDEC2_VC1_BITPLANE_CTL                     ((0x2e18  << 2) + 0xff620000)
+#define VDEC2_VC1_BITPLANE_CTL ((0x2e18 << 2) + 0xff620000)
 // bit 24:16  -- wq_param1
 // bit  8: 0  -- wq_param0
-#define VDEC2_AVSP_IQ_WQ_PARAM_01                  ((0x2e19  << 2) + 0xff620000)
+#define VDEC2_AVSP_IQ_WQ_PARAM_01 ((0x2e19 << 2) + 0xff620000)
 // bit 24:16  -- wq_param3
 // bit  8: 0  -- wq_param2
-#define VDEC2_AVSP_IQ_WQ_PARAM_23                  ((0x2e1a  << 2) + 0xff620000)
+#define VDEC2_AVSP_IQ_WQ_PARAM_23 ((0x2e1a << 2) + 0xff620000)
 // bit 24:16  -- wq_param5
 // bit  8: 0  -- wq_param4
-#define VDEC2_AVSP_IQ_WQ_PARAM_45                  ((0x2e1b  << 2) + 0xff620000)
+#define VDEC2_AVSP_IQ_WQ_PARAM_45 ((0x2e1b << 2) + 0xff620000)
 // bit    31  -- weight_quant_en
 // bit 17:16  -- current_scene_model
 // bit 12: 8  -- chroma_qp_delta_cr
 // bit  4: 0  -- chroma_qp_delta_cb
-#define VDEC2_AVSP_IQ_CTL                          ((0x2e1c  << 2) + 0xff620000)
+#define VDEC2_AVSP_IQ_CTL ((0x2e1c << 2) + 0xff620000)
 // bit 30:28 - rd_buf_wr_addr // Read Only
 // bit 27    - Reserved
 // bit 26:24 - rd_buf_rd_addr // Read Only
@@ -8504,12 +8504,12 @@
 // bit  7:4  - wr_buf_cnt     // Read Only
 // bit  3:2  - rd_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:invalid_cache
 // bit  1:0  - wr_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:flush
-#define VDEC2_DCAC_DDR_BYTE64_CTL                  ((0x2e1d  << 2) + 0xff620000)
+#define VDEC2_DCAC_DDR_BYTE64_CTL ((0x2e1d << 2) + 0xff620000)
 //======================================
 //  VCOP Control Register Bits
 //
 //======================================
-    //`define IQIDCT_RESET	    16'h0001	    // Bit 0
+//`define IQIDCT_RESET	    16'h0001	    // Bit 0
 //======================================
 //  QP Control Register Bits
 //
@@ -8529,26 +8529,26 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_IQIDCT_CBUS_BASE = 0x0e
 // -----------------------------------------------
-#define HEVC_VCOP_CTRL_REG                         ((0x3e00  << 2) + 0xff620000)
-#define HEVC_QP_CTRL_REG                           ((0x3e01  << 2) + 0xff620000)
-#define HEVC_INTRA_QUANT_MATRIX                    ((0x3e02  << 2) + 0xff620000)
-#define HEVC_NON_I_QUANT_MATRIX                    ((0x3e03  << 2) + 0xff620000)
-#define HEVC_DC_SCALER                             ((0x3e04  << 2) + 0xff620000)
-#define HEVC_DC_AC_CTRL                            ((0x3e05  << 2) + 0xff620000)
+#define HEVC_VCOP_CTRL_REG ((0x3e00 << 2) + 0xff620000)
+#define HEVC_QP_CTRL_REG ((0x3e01 << 2) + 0xff620000)
+#define HEVC_INTRA_QUANT_MATRIX ((0x3e02 << 2) + 0xff620000)
+#define HEVC_NON_I_QUANT_MATRIX ((0x3e03 << 2) + 0xff620000)
+#define HEVC_DC_SCALER ((0x3e04 << 2) + 0xff620000)
+#define HEVC_DC_AC_CTRL ((0x3e05 << 2) + 0xff620000)
 // `define RV_AI_CTRL          8'h05  // ONLY for $ucode/real/amrisc/rv.s reg value from apollo
-#define HEVC_DC_AC_SCALE_MUL                       ((0x3e06  << 2) + 0xff620000)
-#define HEVC_DC_AC_SCALE_DIV                       ((0x3e07  << 2) + 0xff620000)
+#define HEVC_DC_AC_SCALE_MUL ((0x3e06 << 2) + 0xff620000)
+#define HEVC_DC_AC_SCALE_DIV ((0x3e07 << 2) + 0xff620000)
 // `define DC_AC_SCALE_RESULT  8'h06
 // `define RESERVED_E07        8'h07
-#define HEVC_POWER_CTL_IQIDCT                      ((0x3e08  << 2) + 0xff620000)
-#define HEVC_RV_AI_Y_X                             ((0x3e09  << 2) + 0xff620000)
-#define HEVC_RV_AI_U_X                             ((0x3e0a  << 2) + 0xff620000)
-#define HEVC_RV_AI_V_X                             ((0x3e0b  << 2) + 0xff620000)
+#define HEVC_POWER_CTL_IQIDCT ((0x3e08 << 2) + 0xff620000)
+#define HEVC_RV_AI_Y_X ((0x3e09 << 2) + 0xff620000)
+#define HEVC_RV_AI_U_X ((0x3e0a << 2) + 0xff620000)
+#define HEVC_RV_AI_V_X ((0x3e0b << 2) + 0xff620000)
 // bit 15:0 will count up when rv_ai_mb finished when non zero
 // and rv_ai_mb_finished_int will be generate when this is not zero
-#define HEVC_RV_AI_MB_COUNT                        ((0x3e0c  << 2) + 0xff620000)
+#define HEVC_RV_AI_MB_COUNT ((0x3e0c << 2) + 0xff620000)
 // For H264 I in PB picture Use -- dma type : h264_next_intra_dma
-#define HEVC_NEXT_INTRA_DMA_ADDRESS                ((0x3e0d  << 2) + 0xff620000)
+#define HEVC_NEXT_INTRA_DMA_ADDRESS ((0x3e0d << 2) + 0xff620000)
 // Bit 18 -- neighbor_intra_dcac_do_not_use_reg
 // Bit 17 -- neighbor_intra_idct_use_reg
 // Bit 16 -- dcac_dma_read_cache_disable
@@ -8568,7 +8568,7 @@
 // Bit 2 -- disable_mb_aff_fix
 // Bit 1 -- canvas_addr_7
 // Bit 0 -- constrained_intra_pred_flag for H264
-#define HEVC_IQIDCT_CONTROL                        ((0x3e0e  << 2) + 0xff620000)
+#define HEVC_IQIDCT_CONTROL ((0x3e0e << 2) + 0xff620000)
 // Bit[31:19] Reserved
 // Bit[18] iq_waiting
 // Bit[17] iq_om_wr_idx
@@ -8585,9 +8585,9 @@
 // Bit[6] idx_fifo_7
 // Bit[5:3] idx_fifo_wp
 // Bit[2:0] idx_fifo_rp
-#define HEVC_IQIDCT_DEBUG_INFO_0                   ((0x3e0f  << 2) + 0xff620000)
+#define HEVC_IQIDCT_DEBUG_INFO_0 ((0x3e0f << 2) + 0xff620000)
 // For RTL Simulation Only
-#define HEVC_DEBLK_CMD                             ((0x3e10  << 2) + 0xff620000)
+#define HEVC_DEBLK_CMD ((0x3e10 << 2) + 0xff620000)
 // Bit[15+16] ds_mc_valid_2
 // Bit[14+16] new_idct1_rd_idx_2
 // Bit[13+16] new_idct1_wr_idx_2
@@ -8620,7 +8620,7 @@
 // Bit[2] idct2_en_1
 // Bit[1] new_idct2_busy_1
 // Bit[0] new_idct1_ready_1
-#define HEVC_IQIDCT_DEBUG_IDCT                     ((0x3e11  << 2) + 0xff620000)
+#define HEVC_IQIDCT_DEBUG_IDCT ((0x3e11 << 2) + 0xff620000)
 // bit 31 -- convas_enable
 // bit 30:24 -- convas_x_count ( 8 pixels / 64 bits )
 // bit 23:16 -- convas_y_count
@@ -8630,22 +8630,22 @@
 // bit 7    -- dcac_dma_rw
 // bit 6    -- dcac_skip_read_mode
 // bit 5:0  -- dcac_dma_offset
-#define HEVC_DCAC_DMA_CTRL                         ((0x3e12  << 2) + 0xff620000)
+#define HEVC_DCAC_DMA_CTRL ((0x3e12 << 2) + 0xff620000)
 // when (convas_enable == 0 )
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
 //   bit 24:12 convas_y_start ( 13 btis )
 //   bit 11:0  convas_x_start ( 12 btis )
-#define HEVC_DCAC_DMA_ADDRESS                      ((0x3e13  << 2) + 0xff620000)
+#define HEVC_DCAC_DMA_ADDRESS ((0x3e13 << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
-#define HEVC_DCAC_CPU_ADDRESS                      ((0x3e14  << 2) + 0xff620000)
+#define HEVC_DCAC_CPU_ADDRESS ((0x3e14 << 2) + 0xff620000)
 // bit 31:0 -- dcac_cpu_data
-#define HEVC_DCAC_CPU_DATA                         ((0x3e15  << 2) + 0xff620000)
+#define HEVC_DCAC_CPU_DATA ((0x3e15 << 2) + 0xff620000)
 // bit 31:19 -- reserved
 // bit 18:16 -- block_num_reg -- Read-Only
 // bit 15:0 -- dcac_mb_count
-#define HEVC_DCAC_MB_COUNT                         ((0x3e16  << 2) + 0xff620000)
+#define HEVC_DCAC_MB_COUNT ((0x3e16 << 2) + 0xff620000)
 // bit 31:18 -- reserved
 // For H264 :
 //   bit 17:2 -- h264_quant
@@ -8658,7 +8658,7 @@
 //   bit 11:6  -- AltPQuant
 //   bit  5:0  -- PQuant
 //
-#define HEVC_IQ_QUANT                              ((0x3e17  << 2) + 0xff620000)
+#define HEVC_IQ_QUANT ((0x3e17 << 2) + 0xff620000)
 // bit 31:24  -- bitplane_width
 // bit 23:16  -- bitplane_height
 // bit 15:14  -- bitplane_start_x
@@ -8666,21 +8666,21 @@
 // bit 11:4   -- reserved
 // bit 3:1    -- bitplane_type
 // bit 0      -- bitplane_busy
-#define HEVC_VC1_BITPLANE_CTL                      ((0x3e18  << 2) + 0xff620000)
+#define HEVC_VC1_BITPLANE_CTL ((0x3e18 << 2) + 0xff620000)
 // bit 24:16  -- wq_param1
 // bit  8: 0  -- wq_param0
-#define HEVC_AVSP_IQ_WQ_PARAM_01                   ((0x3e19  << 2) + 0xff620000)
+#define HEVC_AVSP_IQ_WQ_PARAM_01 ((0x3e19 << 2) + 0xff620000)
 // bit 24:16  -- wq_param3
 // bit  8: 0  -- wq_param2
-#define HEVC_AVSP_IQ_WQ_PARAM_23                   ((0x3e1a  << 2) + 0xff620000)
+#define HEVC_AVSP_IQ_WQ_PARAM_23 ((0x3e1a << 2) + 0xff620000)
 // bit 24:16  -- wq_param5
 // bit  8: 0  -- wq_param4
-#define HEVC_AVSP_IQ_WQ_PARAM_45                   ((0x3e1b  << 2) + 0xff620000)
+#define HEVC_AVSP_IQ_WQ_PARAM_45 ((0x3e1b << 2) + 0xff620000)
 // bit    31  -- weight_quant_en
 // bit 17:16  -- current_scene_model
 // bit 12: 8  -- chroma_qp_delta_cr
 // bit  4: 0  -- chroma_qp_delta_cb
-#define HEVC_AVSP_IQ_CTL                           ((0x3e1c  << 2) + 0xff620000)
+#define HEVC_AVSP_IQ_CTL ((0x3e1c << 2) + 0xff620000)
 // bit 30:28 - rd_buf_wr_addr // Read Only
 // bit 27    - Reserved
 // bit 26:24 - rd_buf_rd_addr // Read Only
@@ -8693,12 +8693,12 @@
 // bit  7:4  - wr_buf_cnt     // Read Only
 // bit  3:2  - rd_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:invalid_cache
 // bit  1:0  - wr_start_mode - 0:64Bytes, 1:32Bytes, 2:pass_through 3:flush
-#define HEVC_DCAC_DDR_BYTE64_CTL                   ((0x3e1d  << 2) + 0xff620000)
+#define HEVC_DCAC_DDR_BYTE64_CTL ((0x3e1d << 2) + 0xff620000)
 //======================================
 //  VCOP Control Register Bits
 //
 //======================================
-    //`define IQIDCT_RESET	    16'h0001	    // Bit 0
+//`define IQIDCT_RESET	    16'h0001	    // Bit 0
 //======================================
 //  QP Control Register Bits
 //
@@ -8718,91 +8718,91 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VCPU_CBUS_BASE = 0x03
 // -----------------------------------------------
-#define HCODEC_MSP                                 ((0x1300  << 2) + 0xff620000)
-#define HCODEC_MPSR                                ((0x1301  << 2) + 0xff620000)
-#define HCODEC_MINT_VEC_BASE                       ((0x1302  << 2) + 0xff620000)
-#define HCODEC_MCPU_INTR_GRP                       ((0x1303  << 2) + 0xff620000)
-#define HCODEC_MCPU_INTR_MSK                       ((0x1304  << 2) + 0xff620000)
-#define HCODEC_MCPU_INTR_REQ                       ((0x1305  << 2) + 0xff620000)
-#define HCODEC_MPC_P                               ((0x1306  << 2) + 0xff620000)
-#define HCODEC_MPC_D                               ((0x1307  << 2) + 0xff620000)
-#define HCODEC_MPC_E                               ((0x1308  << 2) + 0xff620000)
-#define HCODEC_MPC_W                               ((0x1309  << 2) + 0xff620000)
-#define HCODEC_MINDEX0_REG                         ((0x130a  << 2) + 0xff620000)
-#define HCODEC_MINDEX1_REG                         ((0x130b  << 2) + 0xff620000)
-#define HCODEC_MINDEX2_REG                         ((0x130c  << 2) + 0xff620000)
-#define HCODEC_MINDEX3_REG                         ((0x130d  << 2) + 0xff620000)
-#define HCODEC_MINDEX4_REG                         ((0x130e  << 2) + 0xff620000)
-#define HCODEC_MINDEX5_REG                         ((0x130f  << 2) + 0xff620000)
-#define HCODEC_MINDEX6_REG                         ((0x1310  << 2) + 0xff620000)
-#define HCODEC_MINDEX7_REG                         ((0x1311  << 2) + 0xff620000)
-#define HCODEC_MMIN_REG                            ((0x1312  << 2) + 0xff620000)
-#define HCODEC_MMAX_REG                            ((0x1313  << 2) + 0xff620000)
-#define HCODEC_MBREAK0_REG                         ((0x1314  << 2) + 0xff620000)
-#define HCODEC_MBREAK1_REG                         ((0x1315  << 2) + 0xff620000)
-#define HCODEC_MBREAK2_REG                         ((0x1316  << 2) + 0xff620000)
-#define HCODEC_MBREAK3_REG                         ((0x1317  << 2) + 0xff620000)
-#define HCODEC_MBREAK_TYPE                         ((0x1318  << 2) + 0xff620000)
-#define HCODEC_MBREAK_CTRL                         ((0x1319  << 2) + 0xff620000)
-#define HCODEC_MBREAK_STAUTS                       ((0x131a  << 2) + 0xff620000)
-#define HCODEC_MDB_ADDR_REG                        ((0x131b  << 2) + 0xff620000)
-#define HCODEC_MDB_DATA_REG                        ((0x131c  << 2) + 0xff620000)
-#define HCODEC_MDB_CTRL                            ((0x131d  << 2) + 0xff620000)
-#define HCODEC_MSFTINT0                            ((0x131e  << 2) + 0xff620000)
-#define HCODEC_MSFTINT1                            ((0x131f  << 2) + 0xff620000)
-#define HCODEC_CSP                                 ((0x1320  << 2) + 0xff620000)
-#define HCODEC_CPSR                                ((0x1321  << 2) + 0xff620000)
-#define HCODEC_CINT_VEC_BASE                       ((0x1322  << 2) + 0xff620000)
-#define HCODEC_CCPU_INTR_GRP                       ((0x1323  << 2) + 0xff620000)
-#define HCODEC_CCPU_INTR_MSK                       ((0x1324  << 2) + 0xff620000)
-#define HCODEC_CCPU_INTR_REQ                       ((0x1325  << 2) + 0xff620000)
-#define HCODEC_CPC_P                               ((0x1326  << 2) + 0xff620000)
-#define HCODEC_CPC_D                               ((0x1327  << 2) + 0xff620000)
-#define HCODEC_CPC_E                               ((0x1328  << 2) + 0xff620000)
-#define HCODEC_CPC_W                               ((0x1329  << 2) + 0xff620000)
-#define HCODEC_CINDEX0_REG                         ((0x132a  << 2) + 0xff620000)
-#define HCODEC_CINDEX1_REG                         ((0x132b  << 2) + 0xff620000)
-#define HCODEC_CINDEX2_REG                         ((0x132c  << 2) + 0xff620000)
-#define HCODEC_CINDEX3_REG                         ((0x132d  << 2) + 0xff620000)
-#define HCODEC_CINDEX4_REG                         ((0x132e  << 2) + 0xff620000)
-#define HCODEC_CINDEX5_REG                         ((0x132f  << 2) + 0xff620000)
-#define HCODEC_CINDEX6_REG                         ((0x1330  << 2) + 0xff620000)
-#define HCODEC_CINDEX7_REG                         ((0x1331  << 2) + 0xff620000)
-#define HCODEC_CMIN_REG                            ((0x1332  << 2) + 0xff620000)
-#define HCODEC_CMAX_REG                            ((0x1333  << 2) + 0xff620000)
-#define HCODEC_CBREAK0_REG                         ((0x1334  << 2) + 0xff620000)
-#define HCODEC_CBREAK1_REG                         ((0x1335  << 2) + 0xff620000)
-#define HCODEC_CBREAK2_REG                         ((0x1336  << 2) + 0xff620000)
-#define HCODEC_CBREAK3_REG                         ((0x1337  << 2) + 0xff620000)
-#define HCODEC_CBREAK_TYPE                         ((0x1338  << 2) + 0xff620000)
-#define HCODEC_CBREAK_CTRL                         ((0x1339  << 2) + 0xff620000)
-#define HCODEC_CBREAK_STAUTS                       ((0x133a  << 2) + 0xff620000)
-#define HCODEC_CDB_ADDR_REG                        ((0x133b  << 2) + 0xff620000)
-#define HCODEC_CDB_DATA_REG                        ((0x133c  << 2) + 0xff620000)
-#define HCODEC_CDB_CTRL                            ((0x133d  << 2) + 0xff620000)
-#define HCODEC_CSFTINT0                            ((0x133e  << 2) + 0xff620000)
-#define HCODEC_CSFTINT1                            ((0x133f  << 2) + 0xff620000)
-#define HCODEC_IMEM_DMA_CTRL                       ((0x1340  << 2) + 0xff620000)
-#define HCODEC_IMEM_DMA_ADR                        ((0x1341  << 2) + 0xff620000)
-#define HCODEC_IMEM_DMA_COUNT                      ((0x1342  << 2) + 0xff620000)
+#define HCODEC_MSP ((0x1300 << 2) + 0xff620000)
+#define HCODEC_MPSR ((0x1301 << 2) + 0xff620000)
+#define HCODEC_MINT_VEC_BASE ((0x1302 << 2) + 0xff620000)
+#define HCODEC_MCPU_INTR_GRP ((0x1303 << 2) + 0xff620000)
+#define HCODEC_MCPU_INTR_MSK ((0x1304 << 2) + 0xff620000)
+#define HCODEC_MCPU_INTR_REQ ((0x1305 << 2) + 0xff620000)
+#define HCODEC_MPC_P ((0x1306 << 2) + 0xff620000)
+#define HCODEC_MPC_D ((0x1307 << 2) + 0xff620000)
+#define HCODEC_MPC_E ((0x1308 << 2) + 0xff620000)
+#define HCODEC_MPC_W ((0x1309 << 2) + 0xff620000)
+#define HCODEC_MINDEX0_REG ((0x130a << 2) + 0xff620000)
+#define HCODEC_MINDEX1_REG ((0x130b << 2) + 0xff620000)
+#define HCODEC_MINDEX2_REG ((0x130c << 2) + 0xff620000)
+#define HCODEC_MINDEX3_REG ((0x130d << 2) + 0xff620000)
+#define HCODEC_MINDEX4_REG ((0x130e << 2) + 0xff620000)
+#define HCODEC_MINDEX5_REG ((0x130f << 2) + 0xff620000)
+#define HCODEC_MINDEX6_REG ((0x1310 << 2) + 0xff620000)
+#define HCODEC_MINDEX7_REG ((0x1311 << 2) + 0xff620000)
+#define HCODEC_MMIN_REG ((0x1312 << 2) + 0xff620000)
+#define HCODEC_MMAX_REG ((0x1313 << 2) + 0xff620000)
+#define HCODEC_MBREAK0_REG ((0x1314 << 2) + 0xff620000)
+#define HCODEC_MBREAK1_REG ((0x1315 << 2) + 0xff620000)
+#define HCODEC_MBREAK2_REG ((0x1316 << 2) + 0xff620000)
+#define HCODEC_MBREAK3_REG ((0x1317 << 2) + 0xff620000)
+#define HCODEC_MBREAK_TYPE ((0x1318 << 2) + 0xff620000)
+#define HCODEC_MBREAK_CTRL ((0x1319 << 2) + 0xff620000)
+#define HCODEC_MBREAK_STAUTS ((0x131a << 2) + 0xff620000)
+#define HCODEC_MDB_ADDR_REG ((0x131b << 2) + 0xff620000)
+#define HCODEC_MDB_DATA_REG ((0x131c << 2) + 0xff620000)
+#define HCODEC_MDB_CTRL ((0x131d << 2) + 0xff620000)
+#define HCODEC_MSFTINT0 ((0x131e << 2) + 0xff620000)
+#define HCODEC_MSFTINT1 ((0x131f << 2) + 0xff620000)
+#define HCODEC_CSP ((0x1320 << 2) + 0xff620000)
+#define HCODEC_CPSR ((0x1321 << 2) + 0xff620000)
+#define HCODEC_CINT_VEC_BASE ((0x1322 << 2) + 0xff620000)
+#define HCODEC_CCPU_INTR_GRP ((0x1323 << 2) + 0xff620000)
+#define HCODEC_CCPU_INTR_MSK ((0x1324 << 2) + 0xff620000)
+#define HCODEC_CCPU_INTR_REQ ((0x1325 << 2) + 0xff620000)
+#define HCODEC_CPC_P ((0x1326 << 2) + 0xff620000)
+#define HCODEC_CPC_D ((0x1327 << 2) + 0xff620000)
+#define HCODEC_CPC_E ((0x1328 << 2) + 0xff620000)
+#define HCODEC_CPC_W ((0x1329 << 2) + 0xff620000)
+#define HCODEC_CINDEX0_REG ((0x132a << 2) + 0xff620000)
+#define HCODEC_CINDEX1_REG ((0x132b << 2) + 0xff620000)
+#define HCODEC_CINDEX2_REG ((0x132c << 2) + 0xff620000)
+#define HCODEC_CINDEX3_REG ((0x132d << 2) + 0xff620000)
+#define HCODEC_CINDEX4_REG ((0x132e << 2) + 0xff620000)
+#define HCODEC_CINDEX5_REG ((0x132f << 2) + 0xff620000)
+#define HCODEC_CINDEX6_REG ((0x1330 << 2) + 0xff620000)
+#define HCODEC_CINDEX7_REG ((0x1331 << 2) + 0xff620000)
+#define HCODEC_CMIN_REG ((0x1332 << 2) + 0xff620000)
+#define HCODEC_CMAX_REG ((0x1333 << 2) + 0xff620000)
+#define HCODEC_CBREAK0_REG ((0x1334 << 2) + 0xff620000)
+#define HCODEC_CBREAK1_REG ((0x1335 << 2) + 0xff620000)
+#define HCODEC_CBREAK2_REG ((0x1336 << 2) + 0xff620000)
+#define HCODEC_CBREAK3_REG ((0x1337 << 2) + 0xff620000)
+#define HCODEC_CBREAK_TYPE ((0x1338 << 2) + 0xff620000)
+#define HCODEC_CBREAK_CTRL ((0x1339 << 2) + 0xff620000)
+#define HCODEC_CBREAK_STAUTS ((0x133a << 2) + 0xff620000)
+#define HCODEC_CDB_ADDR_REG ((0x133b << 2) + 0xff620000)
+#define HCODEC_CDB_DATA_REG ((0x133c << 2) + 0xff620000)
+#define HCODEC_CDB_CTRL ((0x133d << 2) + 0xff620000)
+#define HCODEC_CSFTINT0 ((0x133e << 2) + 0xff620000)
+#define HCODEC_CSFTINT1 ((0x133f << 2) + 0xff620000)
+#define HCODEC_IMEM_DMA_CTRL ((0x1340 << 2) + 0xff620000)
+#define HCODEC_IMEM_DMA_ADR ((0x1341 << 2) + 0xff620000)
+#define HCODEC_IMEM_DMA_COUNT ((0x1342 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_imem
 // bit[21:16] A_id_imem
 // bit[11:0] wrrsp_count_imem (reserved)
-#define HCODEC_WRRSP_IMEM                          ((0x1343  << 2) + 0xff620000)
-#define HCODEC_LMEM_DMA_CTRL                       ((0x1350  << 2) + 0xff620000)
-#define HCODEC_LMEM_DMA_ADR                        ((0x1351  << 2) + 0xff620000)
-#define HCODEC_LMEM_DMA_COUNT                      ((0x1352  << 2) + 0xff620000)
+#define HCODEC_WRRSP_IMEM ((0x1343 << 2) + 0xff620000)
+#define HCODEC_LMEM_DMA_CTRL ((0x1350 << 2) + 0xff620000)
+#define HCODEC_LMEM_DMA_ADR ((0x1351 << 2) + 0xff620000)
+#define HCODEC_LMEM_DMA_COUNT ((0x1352 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_lmem
 // bit[21:16] A_id_lmem
 // bit[11:0] wrrsp_count_lmem
-#define HCODEC_WRRSP_LMEM                          ((0x1353  << 2) + 0xff620000)
-#define HCODEC_MAC_CTRL1                           ((0x1360  << 2) + 0xff620000)
-#define HCODEC_ACC0REG1                            ((0x1361  << 2) + 0xff620000)
-#define HCODEC_ACC1REG1                            ((0x1362  << 2) + 0xff620000)
-#define HCODEC_MAC_CTRL2                           ((0x1370  << 2) + 0xff620000)
-#define HCODEC_ACC0REG2                            ((0x1371  << 2) + 0xff620000)
-#define HCODEC_ACC1REG2                            ((0x1372  << 2) + 0xff620000)
-#define HCODEC_CPU_TRACE                           ((0x1380  << 2) + 0xff620000)
+#define HCODEC_WRRSP_LMEM ((0x1353 << 2) + 0xff620000)
+#define HCODEC_MAC_CTRL1 ((0x1360 << 2) + 0xff620000)
+#define HCODEC_ACC0REG1 ((0x1361 << 2) + 0xff620000)
+#define HCODEC_ACC1REG1 ((0x1362 << 2) + 0xff620000)
+#define HCODEC_MAC_CTRL2 ((0x1370 << 2) + 0xff620000)
+#define HCODEC_ACC0REG2 ((0x1371 << 2) + 0xff620000)
+#define HCODEC_ACC1REG2 ((0x1372 << 2) + 0xff620000)
+#define HCODEC_CPU_TRACE ((0x1380 << 2) + 0xff620000)
 //
 // Closing file:  vcpu_regs.h
 //
@@ -8815,91 +8815,91 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VCPU_CBUS_BASE = 0x03
 // -----------------------------------------------
-#define VDEC2_MSP                                  ((0x2300  << 2) + 0xff620000)
-#define VDEC2_MPSR                                 ((0x2301  << 2) + 0xff620000)
-#define VDEC2_MINT_VEC_BASE                        ((0x2302  << 2) + 0xff620000)
-#define VDEC2_MCPU_INTR_GRP                        ((0x2303  << 2) + 0xff620000)
-#define VDEC2_MCPU_INTR_MSK                        ((0x2304  << 2) + 0xff620000)
-#define VDEC2_MCPU_INTR_REQ                        ((0x2305  << 2) + 0xff620000)
-#define VDEC2_MPC_P                                ((0x2306  << 2) + 0xff620000)
-#define VDEC2_MPC_D                                ((0x2307  << 2) + 0xff620000)
-#define VDEC2_MPC_E                                ((0x2308  << 2) + 0xff620000)
-#define VDEC2_MPC_W                                ((0x2309  << 2) + 0xff620000)
-#define VDEC2_MINDEX0_REG                          ((0x230a  << 2) + 0xff620000)
-#define VDEC2_MINDEX1_REG                          ((0x230b  << 2) + 0xff620000)
-#define VDEC2_MINDEX2_REG                          ((0x230c  << 2) + 0xff620000)
-#define VDEC2_MINDEX3_REG                          ((0x230d  << 2) + 0xff620000)
-#define VDEC2_MINDEX4_REG                          ((0x230e  << 2) + 0xff620000)
-#define VDEC2_MINDEX5_REG                          ((0x230f  << 2) + 0xff620000)
-#define VDEC2_MINDEX6_REG                          ((0x2310  << 2) + 0xff620000)
-#define VDEC2_MINDEX7_REG                          ((0x2311  << 2) + 0xff620000)
-#define VDEC2_MMIN_REG                             ((0x2312  << 2) + 0xff620000)
-#define VDEC2_MMAX_REG                             ((0x2313  << 2) + 0xff620000)
-#define VDEC2_MBREAK0_REG                          ((0x2314  << 2) + 0xff620000)
-#define VDEC2_MBREAK1_REG                          ((0x2315  << 2) + 0xff620000)
-#define VDEC2_MBREAK2_REG                          ((0x2316  << 2) + 0xff620000)
-#define VDEC2_MBREAK3_REG                          ((0x2317  << 2) + 0xff620000)
-#define VDEC2_MBREAK_TYPE                          ((0x2318  << 2) + 0xff620000)
-#define VDEC2_MBREAK_CTRL                          ((0x2319  << 2) + 0xff620000)
-#define VDEC2_MBREAK_STAUTS                        ((0x231a  << 2) + 0xff620000)
-#define VDEC2_MDB_ADDR_REG                         ((0x231b  << 2) + 0xff620000)
-#define VDEC2_MDB_DATA_REG                         ((0x231c  << 2) + 0xff620000)
-#define VDEC2_MDB_CTRL                             ((0x231d  << 2) + 0xff620000)
-#define VDEC2_MSFTINT0                             ((0x231e  << 2) + 0xff620000)
-#define VDEC2_MSFTINT1                             ((0x231f  << 2) + 0xff620000)
-#define VDEC2_CSP                                  ((0x2320  << 2) + 0xff620000)
-#define VDEC2_CPSR                                 ((0x2321  << 2) + 0xff620000)
-#define VDEC2_CINT_VEC_BASE                        ((0x2322  << 2) + 0xff620000)
-#define VDEC2_CCPU_INTR_GRP                        ((0x2323  << 2) + 0xff620000)
-#define VDEC2_CCPU_INTR_MSK                        ((0x2324  << 2) + 0xff620000)
-#define VDEC2_CCPU_INTR_REQ                        ((0x2325  << 2) + 0xff620000)
-#define VDEC2_CPC_P                                ((0x2326  << 2) + 0xff620000)
-#define VDEC2_CPC_D                                ((0x2327  << 2) + 0xff620000)
-#define VDEC2_CPC_E                                ((0x2328  << 2) + 0xff620000)
-#define VDEC2_CPC_W                                ((0x2329  << 2) + 0xff620000)
-#define VDEC2_CINDEX0_REG                          ((0x232a  << 2) + 0xff620000)
-#define VDEC2_CINDEX1_REG                          ((0x232b  << 2) + 0xff620000)
-#define VDEC2_CINDEX2_REG                          ((0x232c  << 2) + 0xff620000)
-#define VDEC2_CINDEX3_REG                          ((0x232d  << 2) + 0xff620000)
-#define VDEC2_CINDEX4_REG                          ((0x232e  << 2) + 0xff620000)
-#define VDEC2_CINDEX5_REG                          ((0x232f  << 2) + 0xff620000)
-#define VDEC2_CINDEX6_REG                          ((0x2330  << 2) + 0xff620000)
-#define VDEC2_CINDEX7_REG                          ((0x2331  << 2) + 0xff620000)
-#define VDEC2_CMIN_REG                             ((0x2332  << 2) + 0xff620000)
-#define VDEC2_CMAX_REG                             ((0x2333  << 2) + 0xff620000)
-#define VDEC2_CBREAK0_REG                          ((0x2334  << 2) + 0xff620000)
-#define VDEC2_CBREAK1_REG                          ((0x2335  << 2) + 0xff620000)
-#define VDEC2_CBREAK2_REG                          ((0x2336  << 2) + 0xff620000)
-#define VDEC2_CBREAK3_REG                          ((0x2337  << 2) + 0xff620000)
-#define VDEC2_CBREAK_TYPE                          ((0x2338  << 2) + 0xff620000)
-#define VDEC2_CBREAK_CTRL                          ((0x2339  << 2) + 0xff620000)
-#define VDEC2_CBREAK_STAUTS                        ((0x233a  << 2) + 0xff620000)
-#define VDEC2_CDB_ADDR_REG                         ((0x233b  << 2) + 0xff620000)
-#define VDEC2_CDB_DATA_REG                         ((0x233c  << 2) + 0xff620000)
-#define VDEC2_CDB_CTRL                             ((0x233d  << 2) + 0xff620000)
-#define VDEC2_CSFTINT0                             ((0x233e  << 2) + 0xff620000)
-#define VDEC2_CSFTINT1                             ((0x233f  << 2) + 0xff620000)
-#define VDEC2_IMEM_DMA_CTRL                        ((0x2340  << 2) + 0xff620000)
-#define VDEC2_IMEM_DMA_ADR                         ((0x2341  << 2) + 0xff620000)
-#define VDEC2_IMEM_DMA_COUNT                       ((0x2342  << 2) + 0xff620000)
+#define VDEC2_MSP ((0x2300 << 2) + 0xff620000)
+#define VDEC2_MPSR ((0x2301 << 2) + 0xff620000)
+#define VDEC2_MINT_VEC_BASE ((0x2302 << 2) + 0xff620000)
+#define VDEC2_MCPU_INTR_GRP ((0x2303 << 2) + 0xff620000)
+#define VDEC2_MCPU_INTR_MSK ((0x2304 << 2) + 0xff620000)
+#define VDEC2_MCPU_INTR_REQ ((0x2305 << 2) + 0xff620000)
+#define VDEC2_MPC_P ((0x2306 << 2) + 0xff620000)
+#define VDEC2_MPC_D ((0x2307 << 2) + 0xff620000)
+#define VDEC2_MPC_E ((0x2308 << 2) + 0xff620000)
+#define VDEC2_MPC_W ((0x2309 << 2) + 0xff620000)
+#define VDEC2_MINDEX0_REG ((0x230a << 2) + 0xff620000)
+#define VDEC2_MINDEX1_REG ((0x230b << 2) + 0xff620000)
+#define VDEC2_MINDEX2_REG ((0x230c << 2) + 0xff620000)
+#define VDEC2_MINDEX3_REG ((0x230d << 2) + 0xff620000)
+#define VDEC2_MINDEX4_REG ((0x230e << 2) + 0xff620000)
+#define VDEC2_MINDEX5_REG ((0x230f << 2) + 0xff620000)
+#define VDEC2_MINDEX6_REG ((0x2310 << 2) + 0xff620000)
+#define VDEC2_MINDEX7_REG ((0x2311 << 2) + 0xff620000)
+#define VDEC2_MMIN_REG ((0x2312 << 2) + 0xff620000)
+#define VDEC2_MMAX_REG ((0x2313 << 2) + 0xff620000)
+#define VDEC2_MBREAK0_REG ((0x2314 << 2) + 0xff620000)
+#define VDEC2_MBREAK1_REG ((0x2315 << 2) + 0xff620000)
+#define VDEC2_MBREAK2_REG ((0x2316 << 2) + 0xff620000)
+#define VDEC2_MBREAK3_REG ((0x2317 << 2) + 0xff620000)
+#define VDEC2_MBREAK_TYPE ((0x2318 << 2) + 0xff620000)
+#define VDEC2_MBREAK_CTRL ((0x2319 << 2) + 0xff620000)
+#define VDEC2_MBREAK_STAUTS ((0x231a << 2) + 0xff620000)
+#define VDEC2_MDB_ADDR_REG ((0x231b << 2) + 0xff620000)
+#define VDEC2_MDB_DATA_REG ((0x231c << 2) + 0xff620000)
+#define VDEC2_MDB_CTRL ((0x231d << 2) + 0xff620000)
+#define VDEC2_MSFTINT0 ((0x231e << 2) + 0xff620000)
+#define VDEC2_MSFTINT1 ((0x231f << 2) + 0xff620000)
+#define VDEC2_CSP ((0x2320 << 2) + 0xff620000)
+#define VDEC2_CPSR ((0x2321 << 2) + 0xff620000)
+#define VDEC2_CINT_VEC_BASE ((0x2322 << 2) + 0xff620000)
+#define VDEC2_CCPU_INTR_GRP ((0x2323 << 2) + 0xff620000)
+#define VDEC2_CCPU_INTR_MSK ((0x2324 << 2) + 0xff620000)
+#define VDEC2_CCPU_INTR_REQ ((0x2325 << 2) + 0xff620000)
+#define VDEC2_CPC_P ((0x2326 << 2) + 0xff620000)
+#define VDEC2_CPC_D ((0x2327 << 2) + 0xff620000)
+#define VDEC2_CPC_E ((0x2328 << 2) + 0xff620000)
+#define VDEC2_CPC_W ((0x2329 << 2) + 0xff620000)
+#define VDEC2_CINDEX0_REG ((0x232a << 2) + 0xff620000)
+#define VDEC2_CINDEX1_REG ((0x232b << 2) + 0xff620000)
+#define VDEC2_CINDEX2_REG ((0x232c << 2) + 0xff620000)
+#define VDEC2_CINDEX3_REG ((0x232d << 2) + 0xff620000)
+#define VDEC2_CINDEX4_REG ((0x232e << 2) + 0xff620000)
+#define VDEC2_CINDEX5_REG ((0x232f << 2) + 0xff620000)
+#define VDEC2_CINDEX6_REG ((0x2330 << 2) + 0xff620000)
+#define VDEC2_CINDEX7_REG ((0x2331 << 2) + 0xff620000)
+#define VDEC2_CMIN_REG ((0x2332 << 2) + 0xff620000)
+#define VDEC2_CMAX_REG ((0x2333 << 2) + 0xff620000)
+#define VDEC2_CBREAK0_REG ((0x2334 << 2) + 0xff620000)
+#define VDEC2_CBREAK1_REG ((0x2335 << 2) + 0xff620000)
+#define VDEC2_CBREAK2_REG ((0x2336 << 2) + 0xff620000)
+#define VDEC2_CBREAK3_REG ((0x2337 << 2) + 0xff620000)
+#define VDEC2_CBREAK_TYPE ((0x2338 << 2) + 0xff620000)
+#define VDEC2_CBREAK_CTRL ((0x2339 << 2) + 0xff620000)
+#define VDEC2_CBREAK_STAUTS ((0x233a << 2) + 0xff620000)
+#define VDEC2_CDB_ADDR_REG ((0x233b << 2) + 0xff620000)
+#define VDEC2_CDB_DATA_REG ((0x233c << 2) + 0xff620000)
+#define VDEC2_CDB_CTRL ((0x233d << 2) + 0xff620000)
+#define VDEC2_CSFTINT0 ((0x233e << 2) + 0xff620000)
+#define VDEC2_CSFTINT1 ((0x233f << 2) + 0xff620000)
+#define VDEC2_IMEM_DMA_CTRL ((0x2340 << 2) + 0xff620000)
+#define VDEC2_IMEM_DMA_ADR ((0x2341 << 2) + 0xff620000)
+#define VDEC2_IMEM_DMA_COUNT ((0x2342 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_imem
 // bit[21:16] A_id_imem
 // bit[11:0] wrrsp_count_imem (reserved)
-#define VDEC2_WRRSP_IMEM                           ((0x2343  << 2) + 0xff620000)
-#define VDEC2_LMEM_DMA_CTRL                        ((0x2350  << 2) + 0xff620000)
-#define VDEC2_LMEM_DMA_ADR                         ((0x2351  << 2) + 0xff620000)
-#define VDEC2_LMEM_DMA_COUNT                       ((0x2352  << 2) + 0xff620000)
+#define VDEC2_WRRSP_IMEM ((0x2343 << 2) + 0xff620000)
+#define VDEC2_LMEM_DMA_CTRL ((0x2350 << 2) + 0xff620000)
+#define VDEC2_LMEM_DMA_ADR ((0x2351 << 2) + 0xff620000)
+#define VDEC2_LMEM_DMA_COUNT ((0x2352 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_lmem
 // bit[21:16] A_id_lmem
 // bit[11:0] wrrsp_count_lmem
-#define VDEC2_WRRSP_LMEM                           ((0x2353  << 2) + 0xff620000)
-#define VDEC2_MAC_CTRL1                            ((0x2360  << 2) + 0xff620000)
-#define VDEC2_ACC0REG1                             ((0x2361  << 2) + 0xff620000)
-#define VDEC2_ACC1REG1                             ((0x2362  << 2) + 0xff620000)
-#define VDEC2_MAC_CTRL2                            ((0x2370  << 2) + 0xff620000)
-#define VDEC2_ACC0REG2                             ((0x2371  << 2) + 0xff620000)
-#define VDEC2_ACC1REG2                             ((0x2372  << 2) + 0xff620000)
-#define VDEC2_CPU_TRACE                            ((0x2380  << 2) + 0xff620000)
+#define VDEC2_WRRSP_LMEM ((0x2353 << 2) + 0xff620000)
+#define VDEC2_MAC_CTRL1 ((0x2360 << 2) + 0xff620000)
+#define VDEC2_ACC0REG1 ((0x2361 << 2) + 0xff620000)
+#define VDEC2_ACC1REG1 ((0x2362 << 2) + 0xff620000)
+#define VDEC2_MAC_CTRL2 ((0x2370 << 2) + 0xff620000)
+#define VDEC2_ACC0REG2 ((0x2371 << 2) + 0xff620000)
+#define VDEC2_ACC1REG2 ((0x2372 << 2) + 0xff620000)
+#define VDEC2_CPU_TRACE ((0x2380 << 2) + 0xff620000)
 //
 // Closing file:  vcpu_regs.h
 //
@@ -8912,91 +8912,91 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_VDEC_VCPU_CBUS_BASE = 0x03
 // -----------------------------------------------
-#define HEVC_MSP                                   ((0x3300  << 2) + 0xff620000)
-#define HEVC_MPSR                                  ((0x3301  << 2) + 0xff620000)
-#define HEVC_MINT_VEC_BASE                         ((0x3302  << 2) + 0xff620000)
-#define HEVC_MCPU_INTR_GRP                         ((0x3303  << 2) + 0xff620000)
-#define HEVC_MCPU_INTR_MSK                         ((0x3304  << 2) + 0xff620000)
-#define HEVC_MCPU_INTR_REQ                         ((0x3305  << 2) + 0xff620000)
-#define HEVC_MPC_P                                 ((0x3306  << 2) + 0xff620000)
-#define HEVC_MPC_D                                 ((0x3307  << 2) + 0xff620000)
-#define HEVC_MPC_E                                 ((0x3308  << 2) + 0xff620000)
-#define HEVC_MPC_W                                 ((0x3309  << 2) + 0xff620000)
-#define HEVC_MINDEX0_REG                           ((0x330a  << 2) + 0xff620000)
-#define HEVC_MINDEX1_REG                           ((0x330b  << 2) + 0xff620000)
-#define HEVC_MINDEX2_REG                           ((0x330c  << 2) + 0xff620000)
-#define HEVC_MINDEX3_REG                           ((0x330d  << 2) + 0xff620000)
-#define HEVC_MINDEX4_REG                           ((0x330e  << 2) + 0xff620000)
-#define HEVC_MINDEX5_REG                           ((0x330f  << 2) + 0xff620000)
-#define HEVC_MINDEX6_REG                           ((0x3310  << 2) + 0xff620000)
-#define HEVC_MINDEX7_REG                           ((0x3311  << 2) + 0xff620000)
-#define HEVC_MMIN_REG                              ((0x3312  << 2) + 0xff620000)
-#define HEVC_MMAX_REG                              ((0x3313  << 2) + 0xff620000)
-#define HEVC_MBREAK0_REG                           ((0x3314  << 2) + 0xff620000)
-#define HEVC_MBREAK1_REG                           ((0x3315  << 2) + 0xff620000)
-#define HEVC_MBREAK2_REG                           ((0x3316  << 2) + 0xff620000)
-#define HEVC_MBREAK3_REG                           ((0x3317  << 2) + 0xff620000)
-#define HEVC_MBREAK_TYPE                           ((0x3318  << 2) + 0xff620000)
-#define HEVC_MBREAK_CTRL                           ((0x3319  << 2) + 0xff620000)
-#define HEVC_MBREAK_STAUTS                         ((0x331a  << 2) + 0xff620000)
-#define HEVC_MDB_ADDR_REG                          ((0x331b  << 2) + 0xff620000)
-#define HEVC_MDB_DATA_REG                          ((0x331c  << 2) + 0xff620000)
-#define HEVC_MDB_CTRL                              ((0x331d  << 2) + 0xff620000)
-#define HEVC_MSFTINT0                              ((0x331e  << 2) + 0xff620000)
-#define HEVC_MSFTINT1                              ((0x331f  << 2) + 0xff620000)
-#define HEVC_CSP                                   ((0x3320  << 2) + 0xff620000)
-#define HEVC_CPSR                                  ((0x3321  << 2) + 0xff620000)
-#define HEVC_CINT_VEC_BASE                         ((0x3322  << 2) + 0xff620000)
-#define HEVC_CCPU_INTR_GRP                         ((0x3323  << 2) + 0xff620000)
-#define HEVC_CCPU_INTR_MSK                         ((0x3324  << 2) + 0xff620000)
-#define HEVC_CCPU_INTR_REQ                         ((0x3325  << 2) + 0xff620000)
-#define HEVC_CPC_P                                 ((0x3326  << 2) + 0xff620000)
-#define HEVC_CPC_D                                 ((0x3327  << 2) + 0xff620000)
-#define HEVC_CPC_E                                 ((0x3328  << 2) + 0xff620000)
-#define HEVC_CPC_W                                 ((0x3329  << 2) + 0xff620000)
-#define HEVC_CINDEX0_REG                           ((0x332a  << 2) + 0xff620000)
-#define HEVC_CINDEX1_REG                           ((0x332b  << 2) + 0xff620000)
-#define HEVC_CINDEX2_REG                           ((0x332c  << 2) + 0xff620000)
-#define HEVC_CINDEX3_REG                           ((0x332d  << 2) + 0xff620000)
-#define HEVC_CINDEX4_REG                           ((0x332e  << 2) + 0xff620000)
-#define HEVC_CINDEX5_REG                           ((0x332f  << 2) + 0xff620000)
-#define HEVC_CINDEX6_REG                           ((0x3330  << 2) + 0xff620000)
-#define HEVC_CINDEX7_REG                           ((0x3331  << 2) + 0xff620000)
-#define HEVC_CMIN_REG                              ((0x3332  << 2) + 0xff620000)
-#define HEVC_CMAX_REG                              ((0x3333  << 2) + 0xff620000)
-#define HEVC_CBREAK0_REG                           ((0x3334  << 2) + 0xff620000)
-#define HEVC_CBREAK1_REG                           ((0x3335  << 2) + 0xff620000)
-#define HEVC_CBREAK2_REG                           ((0x3336  << 2) + 0xff620000)
-#define HEVC_CBREAK3_REG                           ((0x3337  << 2) + 0xff620000)
-#define HEVC_CBREAK_TYPE                           ((0x3338  << 2) + 0xff620000)
-#define HEVC_CBREAK_CTRL                           ((0x3339  << 2) + 0xff620000)
-#define HEVC_CBREAK_STAUTS                         ((0x333a  << 2) + 0xff620000)
-#define HEVC_CDB_ADDR_REG                          ((0x333b  << 2) + 0xff620000)
-#define HEVC_CDB_DATA_REG                          ((0x333c  << 2) + 0xff620000)
-#define HEVC_CDB_CTRL                              ((0x333d  << 2) + 0xff620000)
-#define HEVC_CSFTINT0                              ((0x333e  << 2) + 0xff620000)
-#define HEVC_CSFTINT1                              ((0x333f  << 2) + 0xff620000)
-#define HEVC_IMEM_DMA_CTRL                         ((0x3340  << 2) + 0xff620000)
-#define HEVC_IMEM_DMA_ADR                          ((0x3341  << 2) + 0xff620000)
-#define HEVC_IMEM_DMA_COUNT                        ((0x3342  << 2) + 0xff620000)
+#define HEVC_MSP ((0x3300 << 2) + 0xff620000)
+#define HEVC_MPSR ((0x3301 << 2) + 0xff620000)
+#define HEVC_MINT_VEC_BASE ((0x3302 << 2) + 0xff620000)
+#define HEVC_MCPU_INTR_GRP ((0x3303 << 2) + 0xff620000)
+#define HEVC_MCPU_INTR_MSK ((0x3304 << 2) + 0xff620000)
+#define HEVC_MCPU_INTR_REQ ((0x3305 << 2) + 0xff620000)
+#define HEVC_MPC_P ((0x3306 << 2) + 0xff620000)
+#define HEVC_MPC_D ((0x3307 << 2) + 0xff620000)
+#define HEVC_MPC_E ((0x3308 << 2) + 0xff620000)
+#define HEVC_MPC_W ((0x3309 << 2) + 0xff620000)
+#define HEVC_MINDEX0_REG ((0x330a << 2) + 0xff620000)
+#define HEVC_MINDEX1_REG ((0x330b << 2) + 0xff620000)
+#define HEVC_MINDEX2_REG ((0x330c << 2) + 0xff620000)
+#define HEVC_MINDEX3_REG ((0x330d << 2) + 0xff620000)
+#define HEVC_MINDEX4_REG ((0x330e << 2) + 0xff620000)
+#define HEVC_MINDEX5_REG ((0x330f << 2) + 0xff620000)
+#define HEVC_MINDEX6_REG ((0x3310 << 2) + 0xff620000)
+#define HEVC_MINDEX7_REG ((0x3311 << 2) + 0xff620000)
+#define HEVC_MMIN_REG ((0x3312 << 2) + 0xff620000)
+#define HEVC_MMAX_REG ((0x3313 << 2) + 0xff620000)
+#define HEVC_MBREAK0_REG ((0x3314 << 2) + 0xff620000)
+#define HEVC_MBREAK1_REG ((0x3315 << 2) + 0xff620000)
+#define HEVC_MBREAK2_REG ((0x3316 << 2) + 0xff620000)
+#define HEVC_MBREAK3_REG ((0x3317 << 2) + 0xff620000)
+#define HEVC_MBREAK_TYPE ((0x3318 << 2) + 0xff620000)
+#define HEVC_MBREAK_CTRL ((0x3319 << 2) + 0xff620000)
+#define HEVC_MBREAK_STAUTS ((0x331a << 2) + 0xff620000)
+#define HEVC_MDB_ADDR_REG ((0x331b << 2) + 0xff620000)
+#define HEVC_MDB_DATA_REG ((0x331c << 2) + 0xff620000)
+#define HEVC_MDB_CTRL ((0x331d << 2) + 0xff620000)
+#define HEVC_MSFTINT0 ((0x331e << 2) + 0xff620000)
+#define HEVC_MSFTINT1 ((0x331f << 2) + 0xff620000)
+#define HEVC_CSP ((0x3320 << 2) + 0xff620000)
+#define HEVC_CPSR ((0x3321 << 2) + 0xff620000)
+#define HEVC_CINT_VEC_BASE ((0x3322 << 2) + 0xff620000)
+#define HEVC_CCPU_INTR_GRP ((0x3323 << 2) + 0xff620000)
+#define HEVC_CCPU_INTR_MSK ((0x3324 << 2) + 0xff620000)
+#define HEVC_CCPU_INTR_REQ ((0x3325 << 2) + 0xff620000)
+#define HEVC_CPC_P ((0x3326 << 2) + 0xff620000)
+#define HEVC_CPC_D ((0x3327 << 2) + 0xff620000)
+#define HEVC_CPC_E ((0x3328 << 2) + 0xff620000)
+#define HEVC_CPC_W ((0x3329 << 2) + 0xff620000)
+#define HEVC_CINDEX0_REG ((0x332a << 2) + 0xff620000)
+#define HEVC_CINDEX1_REG ((0x332b << 2) + 0xff620000)
+#define HEVC_CINDEX2_REG ((0x332c << 2) + 0xff620000)
+#define HEVC_CINDEX3_REG ((0x332d << 2) + 0xff620000)
+#define HEVC_CINDEX4_REG ((0x332e << 2) + 0xff620000)
+#define HEVC_CINDEX5_REG ((0x332f << 2) + 0xff620000)
+#define HEVC_CINDEX6_REG ((0x3330 << 2) + 0xff620000)
+#define HEVC_CINDEX7_REG ((0x3331 << 2) + 0xff620000)
+#define HEVC_CMIN_REG ((0x3332 << 2) + 0xff620000)
+#define HEVC_CMAX_REG ((0x3333 << 2) + 0xff620000)
+#define HEVC_CBREAK0_REG ((0x3334 << 2) + 0xff620000)
+#define HEVC_CBREAK1_REG ((0x3335 << 2) + 0xff620000)
+#define HEVC_CBREAK2_REG ((0x3336 << 2) + 0xff620000)
+#define HEVC_CBREAK3_REG ((0x3337 << 2) + 0xff620000)
+#define HEVC_CBREAK_TYPE ((0x3338 << 2) + 0xff620000)
+#define HEVC_CBREAK_CTRL ((0x3339 << 2) + 0xff620000)
+#define HEVC_CBREAK_STAUTS ((0x333a << 2) + 0xff620000)
+#define HEVC_CDB_ADDR_REG ((0x333b << 2) + 0xff620000)
+#define HEVC_CDB_DATA_REG ((0x333c << 2) + 0xff620000)
+#define HEVC_CDB_CTRL ((0x333d << 2) + 0xff620000)
+#define HEVC_CSFTINT0 ((0x333e << 2) + 0xff620000)
+#define HEVC_CSFTINT1 ((0x333f << 2) + 0xff620000)
+#define HEVC_IMEM_DMA_CTRL ((0x3340 << 2) + 0xff620000)
+#define HEVC_IMEM_DMA_ADR ((0x3341 << 2) + 0xff620000)
+#define HEVC_IMEM_DMA_COUNT ((0x3342 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_imem
 // bit[21:16] A_id_imem
 // bit[11:0] wrrsp_count_imem (reserved)
-#define HEVC_WRRSP_IMEM                            ((0x3343  << 2) + 0xff620000)
-#define HEVC_LMEM_DMA_CTRL                         ((0x3350  << 2) + 0xff620000)
-#define HEVC_LMEM_DMA_ADR                          ((0x3351  << 2) + 0xff620000)
-#define HEVC_LMEM_DMA_COUNT                        ((0x3352  << 2) + 0xff620000)
+#define HEVC_WRRSP_IMEM ((0x3343 << 2) + 0xff620000)
+#define HEVC_LMEM_DMA_CTRL ((0x3350 << 2) + 0xff620000)
+#define HEVC_LMEM_DMA_ADR ((0x3351 << 2) + 0xff620000)
+#define HEVC_LMEM_DMA_COUNT ((0x3352 << 2) + 0xff620000)
 // bit[29:24] A_brst_num_lmem
 // bit[21:16] A_id_lmem
 // bit[11:0] wrrsp_count_lmem
-#define HEVC_WRRSP_LMEM                            ((0x3353  << 2) + 0xff620000)
-#define HEVC_MAC_CTRL1                             ((0x3360  << 2) + 0xff620000)
-#define HEVC_ACC0REG1                              ((0x3361  << 2) + 0xff620000)
-#define HEVC_ACC1REG1                              ((0x3362  << 2) + 0xff620000)
-#define HEVC_MAC_CTRL2                             ((0x3370  << 2) + 0xff620000)
-#define HEVC_ACC0REG2                              ((0x3371  << 2) + 0xff620000)
-#define HEVC_ACC1REG2                              ((0x3372  << 2) + 0xff620000)
-#define HEVC_CPU_TRACE                             ((0x3380  << 2) + 0xff620000)
+#define HEVC_WRRSP_LMEM ((0x3353 << 2) + 0xff620000)
+#define HEVC_MAC_CTRL1 ((0x3360 << 2) + 0xff620000)
+#define HEVC_ACC0REG1 ((0x3361 << 2) + 0xff620000)
+#define HEVC_ACC1REG1 ((0x3362 << 2) + 0xff620000)
+#define HEVC_MAC_CTRL2 ((0x3370 << 2) + 0xff620000)
+#define HEVC_ACC0REG2 ((0x3371 << 2) + 0xff620000)
+#define HEVC_ACC1REG2 ((0x3372 << 2) + 0xff620000)
+#define HEVC_CPU_TRACE ((0x3380 << 2) + 0xff620000)
 //
 // Closing file:  vcpu_regs.h
 //
@@ -9009,32 +9009,32 @@
 // -----------------------------------------------
 // CBUS_BASE:  DOS_HCODEC_HENC_CBUS_BASE = 0x0a
 // -----------------------------------------------
-#define HCODEC_HENC_SCRATCH_0                      ((0x1ac0  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_1                      ((0x1ac1  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_2                      ((0x1ac2  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_3                      ((0x1ac3  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_4                      ((0x1ac4  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_5                      ((0x1ac5  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_6                      ((0x1ac6  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_7                      ((0x1ac7  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_8                      ((0x1ac8  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_9                      ((0x1ac9  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_A                      ((0x1aca  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_B                      ((0x1acb  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_C                      ((0x1acc  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_D                      ((0x1acd  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_E                      ((0x1ace  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_F                      ((0x1acf  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_G                      ((0x1ad0  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_H                      ((0x1ad1  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_I                      ((0x1ad2  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_J                      ((0x1ad3  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_K                      ((0x1ad4  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_L                      ((0x1ad5  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_M                      ((0x1ad6  << 2) + 0xff620000)
-#define HCODEC_HENC_SCRATCH_N                      ((0x1ad7  << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_0 ((0x1ac0 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_1 ((0x1ac1 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_2 ((0x1ac2 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_3 ((0x1ac3 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_4 ((0x1ac4 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_5 ((0x1ac5 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_6 ((0x1ac6 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_7 ((0x1ac7 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_8 ((0x1ac8 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_9 ((0x1ac9 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_A ((0x1aca << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_B ((0x1acb << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_C ((0x1acc << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_D ((0x1acd << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_E ((0x1ace << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_F ((0x1acf << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_G ((0x1ad0 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_H ((0x1ad1 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_I ((0x1ad2 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_J ((0x1ad3 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_K ((0x1ad4 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_L ((0x1ad5 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_M ((0x1ad6 << 2) + 0xff620000)
+#define HCODEC_HENC_SCRATCH_N ((0x1ad7 << 2) + 0xff620000)
 // bit [7:0] data_feed_buff_id
-#define HCODEC_IE_DATA_FEED_BUFF_INFO              ((0x1ad8  << 2) + 0xff620000)
+#define HCODEC_IE_DATA_FEED_BUFF_INFO ((0x1ad8 << 2) + 0xff620000)
 //
 // Closing file:  henc_regs.h
 //
@@ -9058,7 +9058,7 @@
 // Bit[2] - hcmd_enable
 // Bit[1] - vlc_control_enable (0 will treat as soft_reset)
 // Bit[0] - vlc_input_enable (enable input interface)
-#define HCODEC_VLC_STATUS_CTRL                     ((0x1d00  << 2) + 0xff620000)
+#define HCODEC_VLC_STATUS_CTRL ((0x1d00 << 2) + 0xff620000)
 // Bit [31]  - small_luma_ignore_chroma
 // Bit[30:16] - Reserved
 // Bit [15]  - enable_free_clk_mc_hcmd_buff
@@ -9077,18 +9077,18 @@
 // Bit [2]   - use_set_b8_mode ( not used now)
 // Bit [1]   - use_set_mb_skip_run
 // Bit [0]   - pop_coeff_even_all_zero
-#define HCODEC_VLC_CONFIG                          ((0x1d01  << 2) + 0xff620000)
+#define HCODEC_VLC_CONFIG ((0x1d01 << 2) + 0xff620000)
 // --------------------------------------------
 // Bitstream DDR Interface
 // --------------------------------------------
-#define HCODEC_VLC_VB_START_PTR                    ((0x1d10  << 2) + 0xff620000)
-#define HCODEC_VLC_VB_END_PTR                      ((0x1d11  << 2) + 0xff620000)
-#define HCODEC_VLC_VB_WR_PTR                       ((0x1d12  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_START_PTR ((0x1d10 << 2) + 0xff620000)
+#define HCODEC_VLC_VB_END_PTR ((0x1d11 << 2) + 0xff620000)
+#define HCODEC_VLC_VB_WR_PTR ((0x1d12 << 2) + 0xff620000)
 // Read Only, VLC_VB_SW_RD_PTR or VLC_VB_HW_RD_PTR
-#define HCODEC_VLC_VB_RD_PTR                       ((0x1d13  << 2) + 0xff620000)
-#define HCODEC_VLC_VB_SW_RD_PTR                    ((0x1d14  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_RD_PTR ((0x1d13 << 2) + 0xff620000)
+#define HCODEC_VLC_VB_SW_RD_PTR ((0x1d14 << 2) + 0xff620000)
 // Read Only
-#define HCODEC_VLC_VB_LEFT                         ((0x1d15  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_LEFT ((0x1d15 << 2) + 0xff620000)
 // VB FIFO Control
 // bit  [31:24] vb_full_int_enable_cpu[7:0]
 // bit  [23:16] vb_full_int_enable_amrisc[7:0]
@@ -9114,39 +9114,39 @@
 // bit  [2]     vb_write_busy   Read Only - indicate DDR write busy
 // bit  [1]     vb_write_en     Set to 1 to enable writing data to DDR memory
 // bit  [0]     vb_soft_reset   Soft reset
-#define HCODEC_VLC_VB_CONTROL                      ((0x1d16  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_CONTROL ((0x1d16 << 2) + 0xff620000)
 // bit 31    transfer_length 0 - 32x64 Bits per request, 1 - 16x64 Bits per request  // default : 0
 // bit 30    A_urgent  // default : 0
 // bit 29:24 A_brst_num // default : 0x3f
 // bit 23:22 reserved
 // bit 21:16 A_id  // default : 0x20
 // bit 15:0  vb_left_hold // default : 0
-#define HCODEC_VLC_VB_MEM_CTL                      ((0x1d17  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_MEM_CTL ((0x1d17 << 2) + 0xff620000)
 // vb_wr_ptr address to generate interrupt
-#define HCODEC_VLC_VB_INT_PTR                      ((0x1d18  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_INT_PTR ((0x1d18 << 2) + 0xff620000)
 // bit[31:12] reserved
 // bit[11:0] vlc_wrrsp_count
-#define HCODEC_VLC_WRRSP                           ((0x1d19  << 2) + 0xff620000)
-#define HCODEC_VLC_TOTAL_BYTES                     ((0x1d1a  << 2) + 0xff620000)
+#define HCODEC_VLC_WRRSP ((0x1d19 << 2) + 0xff620000)
+#define HCODEC_VLC_TOTAL_BYTES ((0x1d1a << 2) + 0xff620000)
 // bit  [31:26] reserved
 // bit  [25]    vb_flush
 // bit  [24]    vb_reg_ready
 // bit  [23:16] vb_buff_left     -- Read only
 // bit  [15:8]  vb_buff_wr_point -- RW
 // bit  [7:0]   vb_buff_rd_point -- RW
-#define HCODEC_VLC_VB_BUFF                         ((0x1d1b  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_BUFF ((0x1d1b << 2) + 0xff620000)
 // bit[31]    flush_vlc_pre_buff
 // bit[30:27] reserved
 // bit[26:24] vb_pre_buff_level
 // bit[23:0]  vb_pre_buff_data[55:32]
-#define HCODEC_VLC_VB_PRE_BUFF_HI                  ((0x1d1c  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_PRE_BUFF_HI ((0x1d1c << 2) + 0xff620000)
 // bit[31:0] vb_pre_buff_data[31:0]
-#define HCODEC_VLC_VB_PRE_BUFF_LOW                 ((0x1d1d  << 2) + 0xff620000)
+#define HCODEC_VLC_VB_PRE_BUFF_LOW ((0x1d1d << 2) + 0xff620000)
 // bit[31]    stream_encap_enable  // 0x0000(00-03) will be changed to 0x000003(00-03) if enabled
 // bit[30:29] stream_encap_delay   // delay bytes for encap used
 // bit[28:24] stream_buff_point
 // bit[23:0]  stream_buff_data
-#define HCODEC_VLC_STREAM_BUFF                     ((0x1d1e  << 2) + 0xff620000)
+#define HCODEC_VLC_STREAM_BUFF ((0x1d1e << 2) + 0xff620000)
 // bit[31]    push_stream_block - Read Only (Will set if vb_buff full)
 // bit[30]    push_stream_busy  - Read Only (busy when output one byte from stream_buf (max 2 clocks for 8 bits push)
 // bit[29:28] stream_encap_status - Read Only
@@ -9160,12 +9160,12 @@
 // Short Mode : (Amrisc can use mtspi to push stream directely)
 //   bit[7:5] push_stream_short_length (0-5 : short length, else - invalid)
 //   bit[4:0]  push_stream_data
-#define HCODEC_VLC_PUSH_STREAM                     ((0x1d1f  << 2) + 0xff620000)
+#define HCODEC_VLC_PUSH_STREAM ((0x1d1f << 2) + 0xff620000)
 // bit[15:8] ELEMENT_LENGTH
 // bit[7:1]  reserved
 // bit[0]  Write - push start, Read - Push Busy
-#define HCODEC_VLC_PUSH_ELEMENT                    ((0x1d20  << 2) + 0xff620000)
-#define HCODEC_VLC_ELEMENT_DATA                    ((0x1d21  << 2) + 0xff620000)
+#define HCODEC_VLC_PUSH_ELEMENT ((0x1d20 << 2) + 0xff620000)
+#define HCODEC_VLC_ELEMENT_DATA ((0x1d21 << 2) + 0xff620000)
 // bit[9] reset_last_dquant_ne_zero
 // bit[8] set_last_dquant_ne_zero
 // bit[7] hcmd_intra_use_sw_info
@@ -9176,18 +9176,18 @@
 // bit[2] reset_top_mb_wr
 // bit[1] set_left_mb_wr
 // bit[0] set_top_mb_wr
-#define HCODEC_VLC_SPECIAL_CTL                     ((0x1d22  << 2) + 0xff620000)
+#define HCODEC_VLC_SPECIAL_CTL ((0x1d22 << 2) + 0xff620000)
 // bit[28]    left_intra
 // bit[27:22] left_quant
 // bit[21:16] left_quant_c
 // bit[12]    top_intra
 // bit[11:6]  top_quant
 // bit[5:0]   top_quant_c
-#define HCODEC_VLC_HCMD_T_L_INFO                   ((0x1d23  << 2) + 0xff620000)
+#define HCODEC_VLC_HCMD_T_L_INFO ((0x1d23 << 2) + 0xff620000)
 // bit[12]    cur_intra
 // bit[11:6]  cur_quant
 // bit[5:0]   cur_quant_c
-#define HCODEC_VLC_HCMD_CUR_INFO                   ((0x1d24  << 2) + 0xff620000)
+#define HCODEC_VLC_HCMD_CUR_INFO ((0x1d24 << 2) + 0xff620000)
 // bit[13]    top_left_info_in_data_mv_cal
 // bit[12]    only_use_info_0_top_left_in_I
 // bit[11]    top_left_info_in_data
@@ -9202,14 +9202,14 @@
 // bit[2]     hcmd_use_q_info
 // bit[1]     use_q_delta_quant
 // bit[0]     detect_I16_from_I4
-#define HCODEC_VLC_ADV_CONFIG                      ((0x1d25  << 2) + 0xff620000)
+#define HCODEC_VLC_ADV_CONFIG ((0x1d25 << 2) + 0xff620000)
 //   31 - use_hcmd_mb_xy_auto
 //23:16 - hcmd_max_mb_x
 //15:8  - hcmd_mb_y_auto
 // 7:0  - hcmd_mb_x_auto
-#define HCODEC_VLC_HCMD_MBXY_AUTO                  ((0x1d26  << 2) + 0xff620000)
+#define HCODEC_VLC_HCMD_MBXY_AUTO ((0x1d26 << 2) + 0xff620000)
 // bit[31:0] vlc_int_control_inter -- will be used when use_seperate_int_control is set
-#define HCODEC_VLC_INT_CONTROL_INTER               ((0x1d2f  << 2) + 0xff620000)
+#define HCODEC_VLC_INT_CONTROL_INTER ((0x1d2f << 2) + 0xff620000)
 // --------------------------------------------
 // Picture VLC
 // --------------------------------------------
@@ -9246,18 +9246,18 @@
 // bit[2]     AND interrupt Enable for c_ipred_mode_ready
 // bit[1]     AND interrupt Enable for ipred_mode_ready
 // bit[0]     AND interrupt Enable for mb_info_ready
-#define HCODEC_VLC_INT_CONTROL                     ((0x1d30  << 2) + 0xff620000)
+#define HCODEC_VLC_INT_CONTROL ((0x1d30 << 2) + 0xff620000)
 // Bit[31:16] picture_height
 // Bit[15:0]  picture_width
-#define HCODEC_VLC_PIC_SIZE                        ((0x1d31  << 2) + 0xff620000)
+#define HCODEC_VLC_PIC_SIZE ((0x1d31 << 2) + 0xff620000)
 // [31:16] Reserved
 // [15:3] pic_width_in_mbs_minus1
 // [2:0]  picture_type
-#define HCODEC_VLC_PIC_INFO                        ((0x1d32  << 2) + 0xff620000)
+#define HCODEC_VLC_PIC_INFO ((0x1d32 << 2) + 0xff620000)
 // Bit[31:16] MB_NR
 // Bit[15:8] MBY
 // Bit[7:0] MBX
-#define HCODEC_VLC_PIC_POSITION                    ((0x1d33  << 2) + 0xff620000)
+#define HCODEC_VLC_PIC_POSITION ((0x1d33 << 2) + 0xff620000)
 // Bit[31] MV_busy
 // Bit[30:6] Reserved
 // Bit[15] Reserved
@@ -9276,12 +9276,12 @@
 // Bit[2] c_ipred_mode
 // Bit[1] ipred_mode
 // Bit[0] mb_info ( mb_type, mb_x, mb_y)
-#define HCODEC_VLC_INPUT_STATUS                    ((0x1d34  << 2) + 0xff620000)
+#define HCODEC_VLC_INPUT_STATUS ((0x1d34 << 2) + 0xff620000)
 // Bit[31:28] detected_mb_type
 // Bit[27:16] mb_y
 // Bit[15:4]  mb_x
 // Bit[3:0]   mb_type
-#define HCODEC_VLC_MB_INFO                         ((0x1d35  << 2) + 0xff620000)
+#define HCODEC_VLC_MB_INFO ((0x1d35 << 2) + 0xff620000)
 // commnad 0 -- no pending
 // normal command + 1 is pending command
 //
@@ -9293,46 +9293,46 @@
 // bit 11:8  -- pending command 2
 // bit  7:4  -- pending command 1
 // bit  3:0  -- pending command 0
-#define HCODEC_VLC_ENC_PEND_CMD                    ((0x1d36  << 2) + 0xff620000)
+#define HCODEC_VLC_ENC_PEND_CMD ((0x1d36 << 2) + 0xff620000)
 // For I Slice
 // Bit[31:16] Reserved
 // Bit[15:0] IntraType
-#define HCODEC_HENC_TOP_INFO_0                     ((0x1d37  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_INFO_0                    ((0x1d38  << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_INFO_0 ((0x1d37 << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_INFO_0 ((0x1d38 << 2) + 0xff620000)
 // For I Slice
 // Bit[31:24] V_nnz
 // Bit[23:16] U_nnz
 // Bit[15:0]  Y_nnz
-#define HCODEC_HENC_TOP_INFO_1                     ((0x1d39  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_INFO_1                    ((0x1d3a  << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_INFO_1 ((0x1d39 << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_INFO_1 ((0x1d3a << 2) + 0xff620000)
 // bit[63:0] ipred_mode
-#define HCODEC_VLC_IPRED_MODE_HI                   ((0x1d3b  << 2) + 0xff620000)
-#define HCODEC_VLC_IPRED_MODE_LO                   ((0x1d3c  << 2) + 0xff620000)
+#define HCODEC_VLC_IPRED_MODE_HI ((0x1d3b << 2) + 0xff620000)
+#define HCODEC_VLC_IPRED_MODE_LO ((0x1d3c << 2) + 0xff620000)
 // bit[15:8] SE delta quant
 // bit[7:0]  UE delta quant
-#define HCODEC_VLC_DELTA_QP                        ((0x1d3d  << 2) + 0xff620000)
+#define HCODEC_VLC_DELTA_QP ((0x1d3d << 2) + 0xff620000)
 // bit[31:16] Reserved
 // bit[15:12] Reserved
 // bit[11:8] c_ipred_mode
 // bit[7:0] cbp
-#define HCODEC_VLC_MB_HEADER_INFO                  ((0x1d3e  << 2) + 0xff620000)
+#define HCODEC_VLC_MB_HEADER_INFO ((0x1d3e << 2) + 0xff620000)
 // bit[31:16] mb_skip_run
 // bit[15:0]  b8_mode
-#define HCODEC_VLC_P_MB_HEADER_INFO                ((0x1d3f  << 2) + 0xff620000)
+#define HCODEC_VLC_P_MB_HEADER_INFO ((0x1d3f << 2) + 0xff620000)
 // bit[31]    write_ptr_update
 // bit[30]    read_ptr_update
 // bit[29:20] coeff_buf_level
 // bit[19:10] coeff_buf_write_ptr
 // bit[9:0]   coeff_buf_read_ptr
-#define HCODEC_VLC_COEFF_BUF_STATUS                ((0x1d40  << 2) + 0xff620000)
+#define HCODEC_VLC_COEFF_BUF_STATUS ((0x1d40 << 2) + 0xff620000)
 // bit[31:10] Reserved
 // bit[9:0] read_req_addr
-#define HCODEC_VLC_COEFF_RD_REQ                    ((0x1d41  << 2) + 0xff620000)
+#define HCODEC_VLC_COEFF_RD_REQ ((0x1d41 << 2) + 0xff620000)
 // bit[20]   - coeff_buf_read_finished
 // bit[19]   - coeff_first
 // bit[18:4] - coeff_level
 // bit[3:0]  - coeff_run
-#define HCODEC_VLC_COEFF                           ((0x1d42  << 2) + 0xff620000)
+#define HCODEC_VLC_COEFF ((0x1d42 << 2) + 0xff620000)
 // bit[31]    - coeff_info_ready
 // bit[30:25] - Reserved
 // bit[24:15] - block_begin_addr
@@ -9340,7 +9340,7 @@
 // bit[10:6]  - total_coeff
 // bit[5:4]   - trailing_ones
 // bit[3:0]   - total_zeros
-#define HCODEC_VLC_COEFF_INFO                      ((0x1d43  << 2) + 0xff620000)
+#define HCODEC_VLC_COEFF_INFO ((0x1d43 << 2) + 0xff620000)
 // bit[31]    write_ptr_update
 // bit[30]    read_ptr_update
 // bit[29:25] Reserved
@@ -9349,16 +9349,16 @@
 // bit[14:10] dc_buf_write_ptr
 // bit[9:5]   Reserved
 // bit[4:0]   dc_buf_read_ptr
-#define HCODEC_VLC_DC_BUF_STATUS                   ((0x1d44  << 2) + 0xff620000)
+#define HCODEC_VLC_DC_BUF_STATUS ((0x1d44 << 2) + 0xff620000)
 // bit[31:10] Reserved
 // bit[9:4]   Reserved
 // bit[3:0]   read_req_addr
-#define HCODEC_VLC_DC_RD_REQ                       ((0x1d45  << 2) + 0xff620000)
+#define HCODEC_VLC_DC_RD_REQ ((0x1d45 << 2) + 0xff620000)
 // bit[31:17] - Reserved
 // bit[16]   - dc_first
 // bit[15:1] - dc_level
 // bit[0]    - dc_type  0 - CDC, 1 - LDC
-#define HCODEC_VLC_DC                              ((0x1d46  << 2) + 0xff620000)
+#define HCODEC_VLC_DC ((0x1d46 << 2) + 0xff620000)
 // bit[31]    - dc_info_ready
 // bit[30:25] - Reserved
 // bit[24:20] - Reserved
@@ -9367,44 +9367,44 @@
 // bit[10:6]  - dc_total_coeff
 // bit[5:4]   - dc_trailing_ones
 // bit[3:0]   - dc_total_zeros
-#define HCODEC_VLC_DC_INFO                         ((0x1d47  << 2) + 0xff620000)
+#define HCODEC_VLC_DC_INFO ((0x1d47 << 2) + 0xff620000)
 // bit[31:4]  - Reserved
 // bit[3:0]   - mv_rw_idx  (auto increment when read/write VLC_MV)
-#define HCODEC_VLC_MV_INDEX                        ((0x1d48  << 2) + 0xff620000)
+#define HCODEC_VLC_MV_INDEX ((0x1d48 << 2) + 0xff620000)
 // bit[31:16] - MVY
 // bit[15:0]  - MVX
-#define HCODEC_VLC_MV                              ((0x1d49  << 2) + 0xff620000)
+#define HCODEC_VLC_MV ((0x1d49 << 2) + 0xff620000)
 // bit[31:16] - MVY
 // bitp15:0]  - MVX
 // Write to HENC_TOP_MV_0 will cause previous U->UL, UR->U, and UR write
 // Read will read U MV only
-#define HCODEC_HENC_TOP_MV_0                       ((0x1d4a  << 2) + 0xff620000)
-#define HCODEC_HENC_TOP_MV_1                       ((0x1d4b  << 2) + 0xff620000)
-#define HCODEC_HENC_TOP_MV_2                       ((0x1d4c  << 2) + 0xff620000)
-#define HCODEC_HENC_TOP_MV_3                       ((0x1d4d  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_MV_0                      ((0x1d4e  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_MV_1                      ((0x1d4f  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_MV_2                      ((0x1d50  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_MV_3                      ((0x1d51  << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_MV_0 ((0x1d4a << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_MV_1 ((0x1d4b << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_MV_2 ((0x1d4c << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_MV_3 ((0x1d4d << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_MV_0 ((0x1d4e << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_MV_1 ((0x1d4f << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_MV_2 ((0x1d50 << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_MV_3 ((0x1d51 << 2) + 0xff620000)
 // Bit[31:1] Reserved
 // Bit[0] top_left_mv_ready
-#define HCODEC_TOP_LEFT_READY                      ((0x1d52  << 2) + 0xff620000)
+#define HCODEC_TOP_LEFT_READY ((0x1d52 << 2) + 0xff620000)
 // Bit[31:16] Reserved
 // Bit[15:0] mb_skip_run
-#define HCODEC_MB_SKIP_RUN                         ((0x1d53  << 2) + 0xff620000)
+#define HCODEC_MB_SKIP_RUN ((0x1d53 << 2) + 0xff620000)
 // Bit[31:16] Reserved
 // Bit[15]    Reserved
 // Bit[14:13] rd_struct // 00 - frame, 10 - top field, 11 - bottom field
 // Bit[12:11] wr_struct // 00 - frame, 10 - top field, 11 - bottom field
 // Bit[10:5]  mv_buff_id
 // Bit[4:0]   mv_ref
-#define HCODEC_VLC_HCMD_CONFIG                     ((0x1d54  << 2) + 0xff620000)
+#define HCODEC_VLC_HCMD_CONFIG ((0x1d54 << 2) + 0xff620000)
 // Bit[9:0] h264_dblk_info
-#define HCODEC_VLC_HCMD_DBLK_INFO                  ((0x1d55  << 2) + 0xff620000)
+#define HCODEC_VLC_HCMD_DBLK_INFO ((0x1d55 << 2) + 0xff620000)
 // Bit[3:0] vlc_dbg_idx
-#define HCODEC_VLC_DBG_IDX                         ((0x1d56  << 2) + 0xff620000)
+#define HCODEC_VLC_DBG_IDX ((0x1d56 << 2) + 0xff620000)
 // Read Only
-#define HCODEC_VLC_DBG_READ                        ((0x1d57  << 2) + 0xff620000)
+#define HCODEC_VLC_DBG_READ ((0x1d57 << 2) + 0xff620000)
 // [   29] RW jpeg_comp2_ac_table_sel.                                                      Default 0.
 // [   28] RW jpeg_comp2_dc_table_sel.                                                      Default 0.
 // [26:25] RW jpeg_comp2_cnt_max.                                                           Default 0.
@@ -9419,24 +9419,24 @@
 // [    8] RW jpeg_comp0_en. Set 1 if the scan will include component 0 (Y).                Default 0.
 // [    1] W  jpeg_coeff_init. Write 1 to this bit to initialize JPEG run length encoder.
 // [    0] RW jpeg_en. 0=Disable JPEG encoder; 1=Enable JPEG encoder.                       Default 0.
-#define HCODEC_VLC_JPEG_CTRL                       ((0x1d58  << 2) + 0xff620000)
+#define HCODEC_VLC_JPEG_CTRL ((0x1d58 << 2) + 0xff620000)
 // [   13] RW jpeg_coeff_buf_overfl. Write this bit to 1 to clear overfl.
 // [   12] RW jpeg_coeff_buf_undrfl. Write this bit to 1 to clear undrfl.
 // [   11] R  jpeg_coeff_buf_full.
 // [   10] R  jpeg_coeff_buf_empty.
 // [ 8: 0] R  jpeg_coeff_buf_level.
-#define HCODEC_VLC_JPEG_COEFF_BUF_STAT             ((0x1d59  << 2) + 0xff620000)
+#define HCODEC_VLC_JPEG_COEFF_BUF_STAT ((0x1d59 << 2) + 0xff620000)
 // [   16] RW JPEG HUFFMAN table access mode. 0=Write; 1=Read.  Default 1.
 // [ 8: 0] RW JPEG HUFFMAN table addr.                          Default 0.
-#define HCODEC_VLC_HUFFMAN_ADDR                    ((0x1d5a  << 2) + 0xff620000)
+#define HCODEC_VLC_HUFFMAN_ADDR ((0x1d5a << 2) + 0xff620000)
 // [19: 0] RW JPEG HUFFMAN table data.
-#define HCODEC_VLC_HUFFMAN_DATA                    ((0x1d5b  << 2) + 0xff620000)
+#define HCODEC_VLC_HUFFMAN_DATA ((0x1d5b << 2) + 0xff620000)
 // bit[31:0] enc_mv_bits - including b8_mode and mvd
-#define HCODEC_VLC_ENC_MV_BITS                     ((0x1d5c  << 2) + 0xff620000)
+#define HCODEC_VLC_ENC_MV_BITS ((0x1d5c << 2) + 0xff620000)
 // bit[31:0] enc_coeff_bits - including cbp, token, trailing_sign, coeff_enc, h264_totzeros, h264_run
-#define HCODEC_VLC_ENC_COEFF_BITS                  ((0x1d5d  << 2) + 0xff620000)
-#define HCODEC_VLC_RESERVED_5E                     ((0x1d5e  << 2) + 0xff620000)
-#define HCODEC_VLC_RESERVED_5F                     ((0x1d5f  << 2) + 0xff620000)
+#define HCODEC_VLC_ENC_COEFF_BITS ((0x1d5d << 2) + 0xff620000)
+#define HCODEC_VLC_RESERVED_5E ((0x1d5e << 2) + 0xff620000)
+#define HCODEC_VLC_RESERVED_5F ((0x1d5f << 2) + 0xff620000)
 // ----------------------------------------------------------
 // CABAC
 // ----------------------------------------------------------
@@ -9448,12 +9448,12 @@
 // [7]      reserved
 // [6]      cabac_en
 // [5:0]    slice_quant
-#define HCODEC_VLC_SLICE_QP                        ((0x1d60  << 2) + 0xff620000)
+#define HCODEC_VLC_SLICE_QP ((0x1d60 << 2) + 0xff620000)
 // For save mvd[12:0] {mvd_y[6:0], mvd_x[5:0]}
-#define HCODEC_HENC_TOP_INFO_2                     ((0x1d61  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_INFO_2                    ((0x1d62  << 2) + 0xff620000)
-#define HCODEC_HENC_TOP_INFO_3                     ((0x1d63  << 2) + 0xff620000)
-#define HCODEC_HENC_LEFT_INFO_3                    ((0x1d64  << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_INFO_2 ((0x1d61 << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_INFO_2 ((0x1d62 << 2) + 0xff620000)
+#define HCODEC_HENC_TOP_INFO_3 ((0x1d63 << 2) + 0xff620000)
+#define HCODEC_HENC_LEFT_INFO_3 ((0x1d64 << 2) + 0xff620000)
 //
 // Closing file:  vlc_regs.h
 //
@@ -9467,7 +9467,7 @@
 // CBUS_BASE:  DOS_HCODEC_QDCT_CBUS_BASE = 0x0f
 // -----------------------------------------------
 // bit[31:28] - mb_info_state
-#define HCODEC_QDCT_STATUS_CTRL                    ((0x1f00  << 2) + 0xff620000)
+#define HCODEC_QDCT_STATUS_CTRL ((0x1f00 << 2) + 0xff620000)
 // bit[18]    - enable_free_clk_sad_top
 // bit[17]    - enable_free_clk_ie_top
 // bit[16]    - enable_free_clk_ie_sub
@@ -9487,7 +9487,7 @@
 // bit[2]     - not_ignore_dc
 // bit[1]     - ignore_small_lac_intra
 // bit[0]     - disable_fast_zero_block
-#define HCODEC_QDCT_CONFIG                         ((0x1f01  << 2) + 0xff620000)
+#define HCODEC_QDCT_CONFIG ((0x1f01 << 2) + 0xff620000)
 // bit[31]    - ignore_lac_coeff_en
 // bit[30:26] - ignore_lac_coeff_else
 // bit[25:21] - ignore_lac_coeff_2
@@ -9496,7 +9496,7 @@
 // bit[14:10] - ignore_cac_coeff_else
 // bit[9:5]   - ignore_cac_coeff_2
 // bit[4:0]   - ignore_cac_coeff_1
-#define HCODEC_IGNORE_CONFIG                       ((0x1f02  << 2) + 0xff620000)
+#define HCODEC_IGNORE_CONFIG ((0x1f02 << 2) + 0xff620000)
 // bit[31]    - ignore_t_lac_coeff_en
 // bit[30:26] - ignore_t_lac_coeff_else
 // bit[25:21] - ignore_t_lac_coeff_2
@@ -9513,15 +9513,15 @@
 // bit[4]     - ignore_cdc_only_when_one_empty_intra
 // bit[3:2]   - ignore_cdc_range_max_intra // 0-0, 1-1, 2,-2, 3-3
 // bit[1:0]   - ignore_cdc_abs_max_intra // 0-1, 1-2, 2,-3, 3-4
-#define HCODEC_IGNORE_CONFIG_2                     ((0x1f03  << 2) + 0xff620000)
+#define HCODEC_IGNORE_CONFIG_2 ((0x1f03 << 2) + 0xff620000)
 // --------------------------------------------
 // MB DATA DDR Interface
 // --------------------------------------------
-#define HCODEC_QDCT_MB_START_PTR                   ((0x1f10  << 2) + 0xff620000)
-#define HCODEC_QDCT_MB_END_PTR                     ((0x1f11  << 2) + 0xff620000)
-#define HCODEC_QDCT_MB_WR_PTR                      ((0x1f12  << 2) + 0xff620000)
-#define HCODEC_QDCT_MB_RD_PTR                      ((0x1f13  << 2) + 0xff620000)
-#define HCODEC_QDCT_MB_LEVEL                       ((0x1f14  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_START_PTR ((0x1f10 << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_END_PTR ((0x1f11 << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_WR_PTR ((0x1f12 << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_RD_PTR ((0x1f13 << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_LEVEL ((0x1f14 << 2) + 0xff620000)
 // bit  [31]    disable_mbxy_ie_save
 // bit  [30]    no_wait_after_q_cdc
 // bit  [29]    ie_start_int_enable
@@ -9552,7 +9552,7 @@
 // bit  [2]     mb_read_busy   Read Only - indicate DDR read busy
 // bit  [1]     mb_read_en     Set to 1 to enable reading data from DDR memory
 // bit  [0]     mb_soft_reset   Soft reset
-#define HCODEC_QDCT_MB_CONTROL                     ((0x1f15  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_CONTROL ((0x1f15 << 2) + 0xff620000)
 // bit 31    transfer_length 0 - 32x64 Bits per request, 1 - 16x64 Bits per request  // default : 0
 // bit 30    A_urgent  // default : 0
 // bit 29:24 A_brst_num // default : 0x3f
@@ -9560,14 +9560,14 @@
 // bit 22    read_till_zero
 // bit 21:16 A_id  // default : 0x21
 // bit 15:0  mb_level_hold // default : 0
-#define HCODEC_QDCT_MB_MEM_CTL                     ((0x1f16  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_MEM_CTL ((0x1f16 << 2) + 0xff620000)
 // bit  [31:24] reserved
 // bit  [23:16] vb_buff_level     -- Read only
 // bit  [15:8]  vb_buff_wr_point -- RW
 // bit  [7:0]   vb_buff_rd_point -- RW
-#define HCODEC_QDCT_MB_BUFF                        ((0x1f17  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_BUFF ((0x1f17 << 2) + 0xff620000)
 // bit [31:0] mb infor data begin magic word - default : 0xa55aaa55
-#define HCODEC_QDCT_MB_MAGIC_WORD                  ((0x1f18  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_MAGIC_WORD ((0x1f18 << 2) + 0xff620000)
 // Read Only Register
 // bit[19]   dct_ready_1
 // bit[18]   dct_ready_0
@@ -9579,16 +9579,16 @@
 // bit[12:8] dct_block_number
 // bit[7:4]  dct_rw_addr
 // bit[3:0]  dct_status
-#define HCODEC_QDCT_DCT_STATUS                     ((0x1f19  << 2) + 0xff620000)
+#define HCODEC_QDCT_DCT_STATUS ((0x1f19 << 2) + 0xff620000)
 // bit[24:23]  vlc_quant_count
 // bit[22:16]  vlc_delta_quant_data
 // bit[15:10]  vlc_quant_data
 // bit[9:4]    vlc_prev_quant_data
 // bit[3:0]    q_status
-#define HCODEC_QDCT_Q_STATUS                       ((0x1f1a  << 2) + 0xff620000)
+#define HCODEC_QDCT_Q_STATUS ((0x1f1a << 2) + 0xff620000)
 // bit[31:3] Reserved
 // bit[2:0]  picture_type
-#define HCODEC_QDCT_PIC_INFO                       ((0x1f1b  << 2) + 0xff620000)
+#define HCODEC_QDCT_PIC_INFO ((0x1f1b << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:22] I_pic_quant_c
 // bit[21:16] I_pic_quant
@@ -9598,7 +9598,7 @@
 // bit[7]     reserved
 // bit[6:4]   quant_rem
 // bit[3:0]   quant_per
-#define HCODEC_QDCT_Q_QUANT_I                      ((0x1f1c  << 2) + 0xff620000)
+#define HCODEC_QDCT_Q_QUANT_I ((0x1f1c << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:22] P_pic_quant_c
 // bit[21:16] P_pic_quant
@@ -9608,11 +9608,11 @@
 // bit[7]     reserved
 // bit[6:4]   quant_rem
 // bit[3:0]   quant_per
-#define HCODEC_QDCT_Q_QUANT_P                      ((0x1f1d  << 2) + 0xff620000)
+#define HCODEC_QDCT_Q_QUANT_P ((0x1f1d << 2) + 0xff620000)
 // bit[31]    mb_info_pause
 // bit[30:16] pause_mby
 // bit[15:0]  pause_mbx
-#define HCODEC_QDCT_MB_PAUSE_CTL                   ((0x1f1e  << 2) + 0xff620000)
+#define HCODEC_QDCT_MB_PAUSE_CTL ((0x1f1e << 2) + 0xff620000)
 // bit[31]   top_control_ready_i_pred
 // bit[30:28]top_dma_status
 // bit[27]   top_control_ready_ie
@@ -9626,20 +9626,20 @@
 // bit[5:4]  i_pred_ref_idx_UL
 // bit[3:2]  i_pred_ref_idx_U
 // bit[1:0]  i_pred_ref_idx_UR
-#define HCODEC_QDCT_TOP_CONTROL                    ((0x1f1f  << 2) + 0xff620000)
+#define HCODEC_QDCT_TOP_CONTROL ((0x1f1f << 2) + 0xff620000)
 // bit[31:0] top_base_addr - DDR Memory start address for save top Pixel
-#define HCODEC_QDCT_TOP_BASE_MEM                   ((0x1f20  << 2) + 0xff620000)
+#define HCODEC_QDCT_TOP_BASE_MEM ((0x1f20 << 2) + 0xff620000)
 // bit 15:13 Reserved
 // bit 12    A_urgent  // default : 0
 // bit 11:6  A_brst_num // default : 0x3f
 // bit 5:0   A_id  // default : 0x22
-#define HCODEC_QDCT_TOP_MEM_CTL                    ((0x1f21  << 2) + 0xff620000)
+#define HCODEC_QDCT_TOP_MEM_CTL ((0x1f21 << 2) + 0xff620000)
 // bit [11:0] top_wrrsp_count
-#define HCODEC_QDCT_TOP_WRRSP                      ((0x1f22  << 2) + 0xff620000)
+#define HCODEC_QDCT_TOP_WRRSP ((0x1f22 << 2) + 0xff620000)
 // Bit[3:0] qdct_dbg_idx
-#define HCODEC_QDCT_DBG_IDX                        ((0x1f23  << 2) + 0xff620000)
+#define HCODEC_QDCT_DBG_IDX ((0x1f23 << 2) + 0xff620000)
 // Read Only
-#define HCODEC_QDCT_DBG_READ                       ((0x1f24  << 2) + 0xff620000)
+#define HCODEC_QDCT_DBG_READ ((0x1f24 << 2) + 0xff620000)
 // [19:18] RW jdct_inflow_ctrl. JPEG DCT input flow control.                                Default 0.
 //            0=No halt;
 //            1=DCT halts request at end of each 8x8 block;
@@ -9670,51 +9670,51 @@
 //            5=Intr at end of each MCU of DCT output;
 //            6=Intr at end of a scan of DCT output.
 // [    0] RW jpeg_en. 0=Disable JPEG QDCT; 1=Enable JPEG QDCT.                             Default 0.
-#define HCODEC_QDCT_JPEG_CTRL                      ((0x1f25  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_CTRL ((0x1f25 << 2) + 0xff620000)
 // [29:16] RW jpeg_x_end.   Picture X end.      Default 0.
 // [13: 0] RW jpeg_x_start. Picture X start.    Default 0.
-#define HCODEC_QDCT_JPEG_X_START_END               ((0x1f26  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_X_START_END ((0x1f26 << 2) + 0xff620000)
 // [29:16] RW jpeg_y_end.   Picture Y end.      Default 0.
 // [13: 0] RW jpeg_y_start. Picture Y start.    Default 0.
-#define HCODEC_QDCT_JPEG_Y_START_END               ((0x1f27  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_Y_START_END ((0x1f27 << 2) + 0xff620000)
 // [    8] RW JPEG QUANT table access mode. 0=Write; 1=Read.    Default 1.
 // [ 5: 0] RW JPEG QUANT table addr.                            Default 0.
-#define HCODEC_QDCT_JPEG_QUANT_ADDR                ((0x1f28  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_QUANT_ADDR ((0x1f28 << 2) + 0xff620000)
 // [31: 0] RW JPEG QUANT table data.
-#define HCODEC_QDCT_JPEG_QUANT_DATA                ((0x1f29  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_QUANT_DATA ((0x1f29 << 2) + 0xff620000)
 // [    1] W  resume_jdct.
 //            Write 1 to this bit will resume JPEG input engine when previously
 //            it is halted by QDCT_JPEG_CTRL.jdct_inflow_ctrl.
 // [    0] W  jpeg_sof.
 //            Write 1 to this bit will start JPEG input engine.
-#define HCODEC_QDCT_JPEG_SOF_RESUME                ((0x1f2a  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_SOF_RESUME ((0x1f2a << 2) + 0xff620000)
 // [31:30] R  dct_st.       jdct_ctrl state. 0=IDLE; 1=WAIT; 2=DCT_REQ.
 // [29:28] R  mfdin_comp.   Current component at pixel request to MFDIN.
 // [27:14] R  mfdin_y.      Current Y at pixel request to MFDIN.
 // [13: 0] R  mfdin_x.      Current X at pixel request to MFDIN.
-#define HCODEC_QDCT_JPEG_DCT_STATUS0               ((0x1f2b  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_STATUS0 ((0x1f2b << 2) + 0xff620000)
 // [15:12] R  JPEG Quant read MEM select.
 // [11: 8] R  JPEG DCT2 write MEM select.
 // [ 7: 4] R  JPEG DCT2 read MEM select.
 // [ 3: 0] R  JPEG DCT1 write MEM select.
-#define HCODEC_QDCT_JPEG_DCT_STATUS1               ((0x1f2c  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_STATUS1 ((0x1f2c << 2) + 0xff620000)
 // [28:16] RW jdct_coeff1.  Default 13'h1D90; // 7568 = 4096 * sqrt(2) * (cos(Pi/8) + sin(Pi/8)) // 7569
 // [12: 0] RW jdct_coeff0.  Default 13'h16A1; // 5793 = 4096 * sqrt(2)
-#define HCODEC_QDCT_JPEG_DCT_COEFF01               ((0x1f2d  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_COEFF01 ((0x1f2d << 2) + 0xff620000)
 // [28:16] RW jdct_coeff3.  Default 13'h0C3F; // 3135 = 4096 * sqrt(2) * (cos(Pi/8) - sin(Pi/8))
 // [12: 0] RW jdct_coeff2.  Default 13'h08A9; // 2217 = 4096 * sqrt(2) * sin(Pi/8) // 2215
-#define HCODEC_QDCT_JPEG_DCT_COEFF23               ((0x1f2e  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_COEFF23 ((0x1f2e << 2) + 0xff620000)
 // [28:16] RW jdct_coeff5.  Default 13'h046A; // 1130 = 4096 * (cos(3Pi/16) - sin(3Pi/16))
 // [12: 0] RW jdct_coeff4.  Default 13'h1631; // 5681 = 4096 * (cos(3Pi/16) + sin(3Pi/16)) // 5682
-#define HCODEC_QDCT_JPEG_DCT_COEFF45               ((0x1f2f  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_COEFF45 ((0x1f2f << 2) + 0xff620000)
 // [28:16] RW jdct_coeff7.  Default 13'h0C92; // 3218 = 4096 * (cos(Pi/16) - sin(Pi/16))
 // [12: 0] RW jdct_coeff6.  Default 13'h12D0; // 4816 = 4096 * (cos(Pi/16) + sin(Pi/16))
-#define HCODEC_QDCT_JPEG_DCT_COEFF67               ((0x1f30  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_COEFF67 ((0x1f30 << 2) + 0xff620000)
 // [28:16] RW jdct_coeff9.  Default 13'h0FB1; // 4017 = 4096 * cos(Pi/16)
 // [12: 0] RW jdct_coeff8.  Default 13'h0D4E; // 3406 = 4096 * cos(3Pi/16)
-#define HCODEC_QDCT_JPEG_DCT_COEFF89               ((0x1f31  << 2) + 0xff620000)
-#define HCODEC_QDCT_I_PRED_REF_WR_IDX              ((0x1f32  << 2) + 0xff620000)
-#define HCODEC_QDCT_I_PRED_REF_WR_DATA             ((0x1f33  << 2) + 0xff620000)
+#define HCODEC_QDCT_JPEG_DCT_COEFF89 ((0x1f31 << 2) + 0xff620000)
+#define HCODEC_QDCT_I_PRED_REF_WR_IDX ((0x1f32 << 2) + 0xff620000)
+#define HCODEC_QDCT_I_PRED_REF_WR_DATA ((0x1f33 << 2) + 0xff620000)
 // bit[29]  mb_info_latch_no_I16_pred_mode
 // bit[28]  ie_dma_mbxy_use_i_pred
 // bit[27]  ie_dma_read_write_use_ip_idx
@@ -9744,10 +9744,10 @@
 // bit[3]   ie_not_wait_ref_busy
 // bit[2]   ie_I16_enable
 // bit[1:0] ie_done_sel (0, 1, 2, -1)
-#define HCODEC_QDCT_ADV_CONFIG                     ((0x1f34  << 2) + 0xff620000)
+#define HCODEC_QDCT_ADV_CONFIG ((0x1f34 << 2) + 0xff620000)
 // bit [31:16] I16x16_weight
 // bit [15:0]  I4x4_weight
-#define HCODEC_IE_WEIGHT                           ((0x1f35  << 2) + 0xff620000)
+#define HCODEC_IE_WEIGHT ((0x1f35 << 2) + 0xff620000)
 // bit [31]  reserved
 // bit [30] q_I16MB
 // bit [29]  reserved
@@ -9761,24 +9761,24 @@
 // bit [7:2] quant
 // bit [1] update_rem_per
 // bit [0] clear_wait_status
-#define HCODEC_Q_QUANT_CONTROL                     ((0x1f36  << 2) + 0xff620000)
-#define HCODEC_MBBOT_EVEN_ADDR                     ((0x1f37  << 2) + 0xff620000)
-#define HCODEC_MBBOT_ODD_ADDR                      ((0x1f38  << 2) + 0xff620000)
+#define HCODEC_Q_QUANT_CONTROL ((0x1f36 << 2) + 0xff620000)
+#define HCODEC_MBBOT_EVEN_ADDR ((0x1f37 << 2) + 0xff620000)
+#define HCODEC_MBBOT_ODD_ADDR ((0x1f38 << 2) + 0xff620000)
 // bit [29:24] quant_table_data_3
 // bit [21:16] quant_table_data_2
 // bit [13:8]  quant_table_data_1
 // bit [5:0]   quant_table_data_0
-#define HCODEC_QUANT_TABLE_DATA                    ((0x1f39  << 2) + 0xff620000)
+#define HCODEC_QUANT_TABLE_DATA ((0x1f39 << 2) + 0xff620000)
 // bit [31:16] ie_sad_offset_I16
 // bit [15:0] ie_sad_offset_I4
-#define HCODEC_SAD_CONTROL_0                       ((0x1f3a  << 2) + 0xff620000)
+#define HCODEC_SAD_CONTROL_0 ((0x1f3a << 2) + 0xff620000)
 // bit [31]     sad_soft_reset
 // bit [30:27]  reserved
 // bit [26:24]  ie_sad_shift_I16
 // bit [22:20]  ie_sad_shift_I4
 // bit [18:16]  me_sad_shift_INTER
 // bit [15:0]   me_sad_offset_INTER
-#define HCODEC_SAD_CONTROL_1                       ((0x1f3b  << 2) + 0xff620000)
+#define HCODEC_SAD_CONTROL_1 ((0x1f3b << 2) + 0xff620000)
 // bit [31]     vlc_quant_rd_ptr
 // bit [30]     vlc_quant_rd_ptr_update
 // bit [29]     vlc_quant_wr_ptr
@@ -9788,7 +9788,7 @@
 // bit [18:13]  vlc_quant_1
 // bit [12:6]   vlc_delta_quant_0
 // bit [5:0]    vlc_quant_0
-#define HCODEC_QDCT_VLC_QUANT_CTL_0                ((0x1f3c  << 2) + 0xff620000)
+#define HCODEC_QDCT_VLC_QUANT_CTL_0 ((0x1f3c << 2) + 0xff620000)
 // bit [31:30]  me_sad_rd_idx
 // bit [29]     me_sad_rd_idx_update
 // bit [28:27]  me_sad_wr_idx
@@ -9800,16 +9800,16 @@
 // bit [19:12]  Reserved
 // bit [11:6]   vlc_max_delta_q_neg
 // bit [5:0]    vlc_max_delta_q_pos
-#define HCODEC_QDCT_VLC_QUANT_CTL_1                ((0x1f3d  << 2) + 0xff620000)
+#define HCODEC_QDCT_VLC_QUANT_CTL_1 ((0x1f3d << 2) + 0xff620000)
 // bit[4] jdct_int
 // bit[3] quant_latch
 // bit[2] me_done
 // bit[1] ie_start
 // bit[0] i_pred_start
-#define HCODEC_QDCT_INT_STATUS                     ((0x1f3e  << 2) + 0xff620000)
+#define HCODEC_QDCT_INT_STATUS ((0x1f3e << 2) + 0xff620000)
 // bit[3]   mix_i_pred_wait_left_en
 // bit[2:0] mc_pending_mb_count
-#define HCODEC_QDCT_MIX_I_PRED_STATUS              ((0x1f3f  << 2) + 0xff620000)
+#define HCODEC_QDCT_MIX_I_PRED_STATUS ((0x1f3f << 2) + 0xff620000)
 // IE/ME share same cbus_base as QDCT
 //
 // bit[31]  active_ur_block
@@ -9832,37 +9832,37 @@
 // bit[2]   reserved
 // bit[1]   ie_enable
 // bit[0]   ie_soft_reset
-#define HCODEC_IE_CONTROL                          ((0x1f40  << 2) + 0xff620000)
+#define HCODEC_IE_CONTROL ((0x1f40 << 2) + 0xff620000)
 // bit[31:12] Reserved
 // bit[11:0]  mb_y
-#define HCODEC_IE_MB_POSITION                      ((0x1f41  << 2) + 0xff620000)
+#define HCODEC_IE_MB_POSITION ((0x1f41 << 2) + 0xff620000)
 // bit[31:16] me_skip_run
 // bit[15:8]  reserved
 // bit [7:4]  me_b8_mode
 // bit [3:0]  ie_me_mb_type
-#define HCODEC_IE_ME_MB_INFO                       ((0x1f42  << 2) + 0xff620000)
+#define HCODEC_IE_ME_MB_INFO ((0x1f42 << 2) + 0xff620000)
 // bit[3]   ie_result_buff_enable
 // bit[2]   ie_result_buff_soft_reset
 // bit[1]   sad_enable
 // bit[0]   ie_sad_soft_reset
-#define HCODEC_SAD_CONTROL                         ((0x1f43  << 2) + 0xff620000)
+#define HCODEC_SAD_CONTROL ((0x1f43 << 2) + 0xff620000)
 // bit[31:16] - ie_result_buff_count - read only
 // bit[14:12] -current_ie_result (pred_mode) - read only
 // bit[11]  top_control_data_buff_wr_ptr - rd/wr
 // bit[10]  top_control_data_buff_rd_ptr - rd/wr
 // bit[9:5] ie_result_buff_wr_ptr        - rd/wr
 // bit[4:0] ie_result_buff_rd_ptr        - rd/wr
-#define HCODEC_IE_RESULT_BUFFER                    ((0x1f44  << 2) + 0xff620000)
+#define HCODEC_IE_RESULT_BUFFER ((0x1f44 << 2) + 0xff620000)
 // bit[63:0] ie_i4_pred_mode
-#define HCODEC_IE_I4_PRED_MODE_HI                  ((0x1f45  << 2) + 0xff620000)
-#define HCODEC_IE_I4_PRED_MODE_LO                  ((0x1f46  << 2) + 0xff620000)
+#define HCODEC_IE_I4_PRED_MODE_HI ((0x1f45 << 2) + 0xff620000)
+#define HCODEC_IE_I4_PRED_MODE_LO ((0x1f46 << 2) + 0xff620000)
 // bit [31:9] reserved
 // bit [8:4] i_pred_block_number
 // bit [3:0] ie_c_pred_mode
-#define HCODEC_IE_C_PRED_MODE                      ((0x1f47  << 2) + 0xff620000)
+#define HCODEC_IE_C_PRED_MODE ((0x1f47 << 2) + 0xff620000)
 // 31:16 - Left, 0-select ie_pixel, 1-select mc_data_out
 // 15:0  - Top,  0-select ie_pixel, 1-select mc_data_out
-#define HCODEC_IE_CUR_REF_SEL                      ((0x1f48  << 2) + 0xff620000)
+#define HCODEC_IE_CUR_REF_SEL ((0x1f48 << 2) + 0xff620000)
 // bit[31]  enable_f_skip_1_step_3
 // bit[30]  enable_f_skip_1_step_2
 // bit[29]  enable_f_skip_1_step_1
@@ -9885,12 +9885,12 @@
 // bit[2]   me_done_int_enable
 // bit[1]   me_enable
 // bit[0]   me_soft_reset
-#define HCODEC_ME_CONTROL                          ((0x1f49  << 2) + 0xff620000)
+#define HCODEC_ME_CONTROL ((0x1f49 << 2) + 0xff620000)
 // bit[31:28] Reserved
 // bit[27:16] me_start_mby
 // bit[15:12] Reserved
 // bit[11:0]  me_start_mbx
-#define HCODEC_ME_START_POSITION                   ((0x1f4a  << 2) + 0xff620000)
+#define HCODEC_ME_START_POSITION ((0x1f4a << 2) + 0xff620000)
 // bit [31:28] me_status - Read only
 // bit [27:24] me_cb_status  // current buffer
 // bit [23:20] me_ab_status  // anc buffer
@@ -9899,49 +9899,49 @@
 // bit [15:4]  me_last_mbx
 // bit [3:1]   me_ab_rd_ptr  // read only
 // bit [0]     me_action
-#define HCODEC_ME_STATUS                           ((0x1f4b  << 2) + 0xff620000)
+#define HCODEC_ME_STATUS ((0x1f4b << 2) + 0xff620000)
 // all Read-only
 // bit [31:28] Reserved
 // bit [27:16] me_ab_mbx
 // bit [15:14] me_cb_wr_ptr
 // bit [13:12] me_cb_rd_ptr
 // bit [11:0]  me_cb_mbx
-#define HCODEC_ME_DEBUG                            ((0x1f4c  << 2) + 0xff620000)
+#define HCODEC_ME_DEBUG ((0x1f4c << 2) + 0xff620000)
 // bit[29:24] step_3_skip_line
 // bit[23:18] step_2_skip_line
 // bit[17:12] step_1_skip_line
 // bit[11:6]  step_0_skip_line
 // bit[5:0]   read_skip_line
-#define HCODEC_ME_SKIP_LINE                        ((0x1f4d  << 2) + 0xff620000)
+#define HCODEC_ME_SKIP_LINE ((0x1f4d << 2) + 0xff620000)
 // bit 15:13 Reserved
 // bit 12    A_urgent  // default : 0
 // bit 11:6  A_brst_num // default : 0x3f
 // bit 5:0   A_id  // default : 0x23
-#define HCODEC_ME_AB_MEM_CTL                       ((0x1f4e  << 2) + 0xff620000)
+#define HCODEC_ME_AB_MEM_CTL ((0x1f4e << 2) + 0xff620000)
 // bit[31:24] anc_pic_canvas
 // bit[23:12] max_me_mby_num
 // bit[11:0]  max_me_mbx_num
-#define HCODEC_ME_PIC_INFO                         ((0x1f4f  << 2) + 0xff620000)
+#define HCODEC_ME_PIC_INFO ((0x1f4f << 2) + 0xff620000)
 // bit [23:12] me_sad_enough_1
 // bit [11:0]  me_sad_enough_0
-#define HCODEC_ME_SAD_ENOUGH_01                    ((0x1f50  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_ENOUGH_01 ((0x1f50 << 2) + 0xff620000)
 // bit [25:12] adv_mv_8x8_enough
 // bit [11:0]  me_sad_enough_2
-#define HCODEC_ME_SAD_ENOUGH_23                    ((0x1f51  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_ENOUGH_23 ((0x1f51 << 2) + 0xff620000)
 // bit [21:10] me_step0_big_sad
 // bit [9:5] me_step0_close_mv_y
 // bit [4:0] me_step0_close_mv_x
-#define HCODEC_ME_STEP0_CLOSE_MV                   ((0x1f52  << 2) + 0xff620000)
+#define HCODEC_ME_STEP0_CLOSE_MV ((0x1f52 << 2) + 0xff620000)
 // bit[31:24] force_skip_sad_3
 // bit[23:16] force_skip_sad_2
 // bit[15:08] force_skip_sad_1
 // bit[07:00] force_skip_sad_0
-#define HCODEC_ME_F_SKIP_SAD                       ((0x1f53  << 2) + 0xff620000)
+#define HCODEC_ME_F_SKIP_SAD ((0x1f53 << 2) + 0xff620000)
 // bit[31:24] force_skip_weight_3
 // bit[23:16] force_skip_weight_2
 // bit[15:08] force_skip_weight_1
 // bit[07:00] force_skip_weight_0
-#define HCODEC_ME_F_SKIP_WEIGHT                    ((0x1f54  << 2) + 0xff620000)
+#define HCODEC_ME_F_SKIP_WEIGHT ((0x1f54 << 2) + 0xff620000)
 // Merge when (
 //              (flex & me_merge_flex_en) |
 //              (big_sad & me_merge_sad_en)|
@@ -9960,22 +9960,22 @@
 // bit[23:18] me_merge_mv_diff_16
 // bit[17:12] me_merge_mv_diff_8
 // bit[11:0] me_merge_min_sad
-#define HCODEC_ME_MV_MERGE_CTL                     ((0x1f55  << 2) + 0xff620000)
+#define HCODEC_ME_MV_MERGE_CTL ((0x1f55 << 2) + 0xff620000)
 // bit[31:24] mv_step_weight_1
 // bit[23:16] mv_pre_weight_1
 // bit [15:0] mv_step_weight_0
 // bit[7:0]   mv_pre_weight_0
-#define HCODEC_ME_MV_WEIGHT_01                     ((0x1f56  << 2) + 0xff620000)
+#define HCODEC_ME_MV_WEIGHT_01 ((0x1f56 << 2) + 0xff620000)
 // bit[31:24] mv_step_weight_3 (mv_step_weight_1_2nd)
 // bit[23:16] mv_pre_weight_3 (mv_pre_weight_1_2nd)
 // bit[15:8]  mv_step_weight_2
 // bit[7:0]   mv_pre_weight_2
-#define HCODEC_ME_MV_WEIGHT_23                     ((0x1f57  << 2) + 0xff620000)
+#define HCODEC_ME_MV_WEIGHT_23 ((0x1f57 << 2) + 0xff620000)
 // bit[31:24] me_sad_range_inc_3
 // bit[23:16] me_sad_range_inc_2
 // bit[15:8] me_sad_range_inc_1
 // bit[7:0] me_sad_range_inc_0
-#define HCODEC_ME_SAD_RANGE_INC                    ((0x1f58  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_RANGE_INC ((0x1f58 << 2) + 0xff620000)
 // bit[31:19]  reserved
 // bit[18]     sub_relative_any_1_en
 // bit[17]     sub_relative_any_2_en
@@ -9989,35 +9989,35 @@
 // bit[3:2]    Reserved
 // bit[1]      sub_merge_enable_16
 // bit[0]      sub_merge_enable_8
-#define HCODEC_ME_SUB_MERGE_CTL                    ((0x1f59  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_MERGE_CTL ((0x1f59 << 2) + 0xff620000)
 // bit[31:28]  sub_ref_mv_diff_near
 // bit[27:24]  sub_ref_mv_diff_near_flex
 // bit[23:20]  sub_ref_mv_diff
 // bit[19:16]  sub_ref_mv_diff_flex
 // bit[15:8]   sub_ref_mv_near_weight
 // bit[7:0]    sub_ref_mv_weight
-#define HCODEC_ME_SUB_REF_MV_CTL                   ((0x1f5a  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_REF_MV_CTL ((0x1f5a << 2) + 0xff620000)
 // bit[31:24]  sub_weight_max_sad
 // bit[23:16]  sub_any_range_sad
 // bit[15:8]   sub_any_min_sad
 // bit[7:0]    sub_any_max_sad
-#define HCODEC_ME_SUB_ANY_WEIGHT_SAD               ((0x1f5b  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_ANY_WEIGHT_SAD ((0x1f5b << 2) + 0xff620000)
 // bit[31:24]  sub_fix_sad
 // bit[23:16]  sub_fix_diff_sad
 // bit[15:8]   sub_sad_flex_adj
 // bit[7:0]    sub_big_non_flex_fix_sad
-#define HCODEC_ME_SUB_FIX_SAD                      ((0x1f5c  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_FIX_SAD ((0x1f5c << 2) + 0xff620000)
 // bit[31:24]  sub_fix_min_sad
 // bit[23:16]  sub_fix_min_diff_sad
 // bit[15:8]   sub_fix_min_sad_2
 // bit[7:0]    sub_fix_min_diff_sad_2
-#define HCODEC_ME_SUB_FIX_MIN_SAD                  ((0x1f5d  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_FIX_MIN_SAD ((0x1f5d << 2) + 0xff620000)
 // bit[31:24]  sub_snap_to_ref_max_sad
 // bit[23]     sub_snap_to_ref_non_flex
 // bit[22:16]  sub_snap_to_ref_mv_diff
 // bit[15:4]   sub_glitch_mv_sad
 // bit[3:0]    sub_glitch_mv_diff
-#define HCODEC_ME_SUB_SNAP_GLITCH                  ((0x1f5e  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_SNAP_GLITCH ((0x1f5e << 2) + 0xff620000)
 // bit[31:20]  sad_act_limit
 // bit[19:8]   s_a_any_sad
 // bit[7]      Reserved
@@ -10027,10 +10027,10 @@
 // bit[2]      Reserved
 // bit[1]      sub_act_en_16
 // bit[0]      sub_act_en
-#define HCODEC_ME_SUB_ACT_CTL                      ((0x1f5f  << 2) + 0xff620000)
+#define HCODEC_ME_SUB_ACT_CTL ((0x1f5f << 2) + 0xff620000)
 // bit[31:16]  reserved
 // bit[15:0]   me_weight
-#define HCODEC_ME_WEIGHT                           ((0x1f60  << 2) + 0xff620000)
+#define HCODEC_ME_WEIGHT ((0x1f60 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10039,7 +10039,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_0
 // bit[15:0] me_sad_0
-#define HCODEC_ME_SAD_0                            ((0x1f61  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_0 ((0x1f61 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10048,7 +10048,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_1
 // bit[15:0] me_sad_1
-#define HCODEC_ME_SAD_1                            ((0x1f62  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_1 ((0x1f62 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10057,7 +10057,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_2
 // bit[15:0] me_sad_2
-#define HCODEC_ME_SAD_2                            ((0x1f63  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_2 ((0x1f63 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10066,7 +10066,7 @@
 // bit[20:18]  Reserved
 // bit[17:16]  me_sad_mv_type_3
 // bit[15:0] me_sad_3
-#define HCODEC_ME_SAD_3                            ((0x1f64  << 2) + 0xff620000)
+#define HCODEC_ME_SAD_3 ((0x1f64 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10074,7 +10074,7 @@
 // bit[21]  ie_sad_ready_0
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_0
-#define HCODEC_IE_SAD_0                            ((0x1f65  << 2) + 0xff620000)
+#define HCODEC_IE_SAD_0 ((0x1f65 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10082,7 +10082,7 @@
 // bit[21]  ie_sad_ready_1
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_1
-#define HCODEC_IE_SAD_1                            ((0x1f66  << 2) + 0xff620000)
+#define HCODEC_IE_SAD_1 ((0x1f66 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10090,7 +10090,7 @@
 // bit[21]  ie_sad_ready_2
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_2
-#define HCODEC_IE_SAD_2                            ((0x1f67  << 2) + 0xff620000)
+#define HCODEC_IE_SAD_2 ((0x1f67 << 2) + 0xff620000)
 // bit[31]  ready_update
 // bit[30]  data_update
 // bit[29:28] reserved
@@ -10098,18 +10098,18 @@
 // bit[21]  ie_sad_ready_3
 // bit[20]   I4/I16 (0-I4MB, 1-I16MB)
 // bit[19:0] ie_sad_3
-#define HCODEC_IE_SAD_3                            ((0x1f68  << 2) + 0xff620000)
+#define HCODEC_IE_SAD_3 ((0x1f68 << 2) + 0xff620000)
 // bit[31]   enable_large_diff_16x8
 // bit[30]   enable_large_diff_8x16
 // bit[29:16] adv_mv_8x8_weight
 // bit[15:14] reserved
 // bit[13:0] adv_mv_4x4x4_weight
-#define HCODEC_ADV_MV_CTL0                         ((0x1f69  << 2) + 0xff620000)
+#define HCODEC_ADV_MV_CTL0 ((0x1f69 << 2) + 0xff620000)
 // bit[31:16] adv_mv_16x16_weight
 // bit[15]   enable_large_diff_16x16
 // bit[14:0] adv_mv_16_8_weight
-#define HCODEC_ADV_MV_CTL1                         ((0x1f6a  << 2) + 0xff620000)
-#define HCODEC_ADV_MV_CTL2                         ((0x1f6b  << 2) + 0xff620000)
+#define HCODEC_ADV_MV_CTL1 ((0x1f6a << 2) + 0xff620000)
+#define HCODEC_ADV_MV_CTL2 ((0x1f6b << 2) + 0xff620000)
 // bit[31]    v3_skip_enable
 // bit[30]    v3_step_1_weight_enable // for step1, will only use pre_weight for block0, only step_weight for block 1,2,3
 // bit[29]    v3_l2_skip_only_use_l2_sad // set to 1 may allow l1 maybe not skip
@@ -10117,7 +10117,7 @@
 // bit[27]    v3_ipred_type_enable
 // bit[25:12] force_skip_sad_1
 // bit[11:0]  force_skip_sad_0
-#define HCODEC_V3_SKIP_CONTROL                     ((0x1f6c  << 2) + 0xff620000)
+#define HCODEC_V3_SKIP_CONTROL ((0x1f6c << 2) + 0xff620000)
 // bit[18:16] top_ipred_type_count
 // bit[15:14] Reserved
 // bit[13:12] top_ipred_type_rd_idx
@@ -10128,48 +10128,48 @@
 // bit[5:4] top_mv_idx
 // bit[3] - left_mv_ready
 // bit[2:0] top_mv_ready
-#define HCODEC_V3_TOP_LEFT_CTL                     ((0x1f6d  << 2) + 0xff620000)
-#define HCODEC_V3_TOP_MV                           ((0x1f6e  << 2) + 0xff620000)
-#define HCODEC_V3_LEFT_MV                          ((0x1f6f  << 2) + 0xff620000)
+#define HCODEC_V3_TOP_LEFT_CTL ((0x1f6d << 2) + 0xff620000)
+#define HCODEC_V3_TOP_MV ((0x1f6e << 2) + 0xff620000)
+#define HCODEC_V3_LEFT_MV ((0x1f6f << 2) + 0xff620000)
 // bit[31:30] reserved
 // bit[29:16] v3_skip_weight_1
 // bit[15:12] reserved
 // bit[11:0]  v3_skip_weight_0
-#define HCODEC_V3_SKIP_WEIGHT                      ((0x1f70  << 2) + 0xff620000)
+#define HCODEC_V3_SKIP_WEIGHT ((0x1f70 << 2) + 0xff620000)
 // bit[31:28] reserved
 // bit[27:16] v3_l1_f_skip_max_sad
 // bit[15:12] reserved
 // bit[11:0]  v3_l1_skip_max_sad
-#define HCODEC_V3_L1_SKIP_MAX_SAD                  ((0x1f71  << 2) + 0xff620000)
+#define HCODEC_V3_L1_SKIP_MAX_SAD ((0x1f71 << 2) + 0xff620000)
 // bit[31:16] force_skip_sad_2
 // bit[15:0]  v3_skip_weight_2
-#define HCODEC_V3_L2_SKIP_WEIGHT                   ((0x1f72  << 2) + 0xff620000)
+#define HCODEC_V3_L2_SKIP_WEIGHT ((0x1f72 << 2) + 0xff620000)
 // bit[21:16] v3_mv_sad_table_addr 0-15 table_step_0
 // bit[11:0]  v3_mv_sad
-#define HCODEC_V3_MV_SAD_TABLE                     ((0x1f73  << 2) + 0xff620000)
+#define HCODEC_V3_MV_SAD_TABLE ((0x1f73 << 2) + 0xff620000)
 // [31:16] v3_ie_f_zero_sad_i16
 // [15:0]  v3_ie_f_zero_sad_i4
-#define HCODEC_V3_F_ZERO_CTL_0                     ((0x1f74  << 2) + 0xff620000)
+#define HCODEC_V3_F_ZERO_CTL_0 ((0x1f74 << 2) + 0xff620000)
 // [25]    v3_no_ver_when_top_zero_en
 // [24]    v3_no_hor_when_left_zero_en
 // [23:16] v3_max_I16_H_num    // 0 means no break
 // [15:0]  v3_me_f_zero_sad
-#define HCODEC_V3_F_ZERO_CTL_1                     ((0x1f75  << 2) + 0xff620000)
-#define HCODEC_V3_TOP_INTRA_INFO                   ((0x1f76  << 2) + 0xff620000)
-#define HCODEC_V3_LEFT_INTRA_INFO                  ((0x1f77  << 2) + 0xff620000)
+#define HCODEC_V3_F_ZERO_CTL_1 ((0x1f75 << 2) + 0xff620000)
+#define HCODEC_V3_TOP_INTRA_INFO ((0x1f76 << 2) + 0xff620000)
+#define HCODEC_V3_LEFT_INTRA_INFO ((0x1f77 << 2) + 0xff620000)
 // [31:24]  C_ipred_weight_H
 // [23:16]  C_ipred_weight_V
 // [15:8]   I4_ipred_weight_else
 // [7:0]    I4_ipred_weight_most
-#define HCODEC_V3_IPRED_TYPE_WEIGHT_0              ((0x1f78  << 2) + 0xff620000)
+#define HCODEC_V3_IPRED_TYPE_WEIGHT_0 ((0x1f78 << 2) + 0xff620000)
 // [31:24]  I16_ipred_weight_DC
 // [23:16]  I16_ipred_weight_H
 // [15:8]   I16_ipred_weight_V
 // [7:0]    C_ipred_weight_DC
-#define HCODEC_V3_IPRED_TYPE_WEIGHT_1              ((0x1f79  << 2) + 0xff620000)
+#define HCODEC_V3_IPRED_TYPE_WEIGHT_1 ((0x1f79 << 2) + 0xff620000)
 // [31:16]  v3_left_small_max_me_sad
 // [15:0]   v3_left_small_max_ie_sad
-#define HCODEC_V3_LEFT_SMALL_MAX_SAD               ((0x1f7a  << 2) + 0xff620000)
+#define HCODEC_V3_LEFT_SMALL_MAX_SAD ((0x1f7a << 2) + 0xff620000)
 // (qr==7) & (qp==15) means force zero block
 // [31:26]  v4_force_q_r_intra
 // [25:20]  v4_force_q_r_inter
@@ -10177,17 +10177,17 @@
 // [18:16]  v4_force_qr_y
 // [15:12]  v4_force_qp_y
 // [11:0]   v4_force_skip_sad
-#define HCODEC_V4_FORCE_SKIP_CFG                   ((0x1f7b  << 2) + 0xff620000)
+#define HCODEC_V4_FORCE_SKIP_CFG ((0x1f7b << 2) + 0xff620000)
 // v5 Complexity // Y(256 pixel per MB) and C(128 pixel per MB)
 // For every 4x4 block, calculate average and Add abs(pixel-average) together
 // bit[31:16] v5_diff_sum_C
 // bit[15:0]  v5_diff_sum_Y
-#define HCODEC_V5_MB_DIFF_SUM                      ((0x1f7c  << 2) + 0xff620000)
+#define HCODEC_V5_MB_DIFF_SUM ((0x1f7c << 2) + 0xff620000)
 // bit[31:24] v5_small_diff_cnt_C
 // bit[23:16] v5_small_diff_C
 // bit[15:8]  v5_small_diff_cnt_Y
 // bit[7:0]   v5_small_diff_Y
-#define HCODEC_V5_SMALL_DIFF_CNT                   ((0x1f7d  << 2) + 0xff620000)
+#define HCODEC_V5_SMALL_DIFF_CNT ((0x1f7d << 2) + 0xff620000)
 // bit[31:29] Reserved
 // bit[28:24] v5_simple_block_cnt // 0 -15 Y 16-23 C
 // bit[23:20] v5_simple_pixel_cnt
@@ -10203,7 +10203,7 @@
 // bit[2] v5_simple_mb_intra_en
 // bit[1] v5_simple_mb_C_en
 // bit[0] v5_simple_mb_Y_en
-#define HCODEC_V5_SIMPLE_MB_CTL                    ((0x1f7e  << 2) + 0xff620000)
+#define HCODEC_V5_SIMPLE_MB_CTL ((0x1f7e << 2) + 0xff620000)
 // bit[31:28] v5_simple_dq_shift
 // bit[27:24] v5_simple_dq_6(-7 to +7)
 // bit[23:20] v5_simple_dq_5(-7 to +7)
@@ -10212,7 +10212,7 @@
 // bit[11:08] v5_simple_dq_2(-7 to +7)
 // bit[07:04] v5_simple_dq_1(-7 to +7)
 // bit[03:00] v5_simple_dq_0(-7 to +7)
-#define HCODEC_V5_SIMPLE_MB_DQUANT                 ((0x1f7f  << 2) + 0xff620000)
+#define HCODEC_V5_SIMPLE_MB_DQUANT ((0x1f7f << 2) + 0xff620000)
 // bit[31:28] v5_simple_me_weight_shift
 // bit[27:24] v5_simple_me_weight_6(-7 to +7)
 // bit[23:20] v5_simple_me_weight_5(-7 to +7)
@@ -10221,10 +10221,9 @@
 // bit[11:08] v5_simple_me_weight_2(-7 to +7)
 // bit[07:04] v5_simple_me_weight_1(-7 to +7)
 // bit[03:00] v5_simple_me_weight_0(-7 to +7)
-#define HCODEC_V5_SIMPLE_MB_ME_WEIGHT              ((0x1f80  << 2) + 0xff620000)
+#define HCODEC_V5_SIMPLE_MB_ME_WEIGHT ((0x1f80 << 2) + 0xff620000)
 //
 // Closing file:  qdct_regs.h
 //
 
 #endif // DOS_REGISTER_H
-

@@ -13,29 +13,28 @@
 ///////////////////////////////////////////////////////////////////
 /////// ECLIC relevant functions
 ///////
-void eclic_init ( uint32_t num_irq );
+void eclic_init(uint32_t num_irq);
 
-void eclic_enable_interrupt (uint32_t source);
-void eclic_disable_interrupt (uint32_t source);
+void eclic_enable_interrupt(uint32_t source);
+void eclic_disable_interrupt(uint32_t source);
 
 void eclic_set_pending(uint32_t source);
 void eclic_clear_pending(uint32_t source);
 
-void eclic_set_intctrl (uint32_t source, uint8_t intctrl);
-uint8_t eclic_get_intctrl  (uint32_t source);
+void eclic_set_intctrl(uint32_t source, uint8_t intctrl);
+uint8_t eclic_get_intctrl(uint32_t source);
 
-void eclic_set_intattr (uint32_t source, uint8_t intattr);
-uint8_t eclic_get_intattr  (uint32_t source);
+void eclic_set_intattr(uint32_t source, uint8_t intattr);
+uint8_t eclic_get_intattr(uint32_t source);
 
-void eclic_set_cliccfg (uint8_t cliccfg);
-uint8_t eclic_get_cliccfg (void);
+void eclic_set_cliccfg(uint8_t cliccfg);
+uint8_t eclic_get_cliccfg(void);
 
-void eclic_set_mth (uint8_t mth);
+void eclic_set_mth(uint8_t mth);
 uint8_t eclic_get_mth(void);
 
 //sets nlbits
 void eclic_set_nlbits(uint8_t nlbits);
-
 
 //get nlbits
 uint8_t eclic_get_nlbits(void);
@@ -64,5 +63,7 @@ void print_eclic(void);
 void clean_int_src(void);
 int int_src_sel(uint32_t ulIrq, uint32_t src);
 int int_src_clean(uint32_t ulIrq);
+
+extern uint32_t vector_base;
 
 #endif

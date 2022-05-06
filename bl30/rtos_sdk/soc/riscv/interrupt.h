@@ -7,7 +7,7 @@
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
-typedef void (*function_ptr_t) (void);
+typedef void (*function_ptr_t)(void);
 
 void wfe(void);
 

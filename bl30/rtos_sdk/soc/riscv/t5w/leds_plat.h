@@ -17,7 +17,7 @@ extern "C" {
 
 #define LED_BREATH_MAX_COUNT 4
 
-extern LedDevice_t MesonLeds[];
+extern struct LedDevice MesonLeds[];
 
 enum led_pwm_id {
 	LED_PWM_A = 0,
@@ -36,9 +36,9 @@ enum led_id {
 
 int32_t get_led_breath_len(uint32_t breath_id);
 int32_t vLedPinmuxInit(void);
-int32_t vLedPlatInit(int32_t ** stickmem);
+int32_t vLedPlatInit(int32_t **stickmem);
 
 #ifdef __cplusplus
 }
 #endif
-#endif	/* _MESON_PWM_PLAT_H_ */
+#endif /* _MESON_PWM_PLAT_H_ */

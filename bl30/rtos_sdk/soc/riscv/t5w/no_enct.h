@@ -298,6 +298,4 @@
 #define VSYNC_VE_ADDR L_VSYNC_VE_ADDR
 #define LCD_MCU_CTL L_LCD_MCU_CTL
 
-
-
 #endif

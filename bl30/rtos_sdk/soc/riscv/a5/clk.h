@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-typedef enum {
+enum PLL_TYPE {
 	PLL_SYS,
 	PLL_GP0,
 	PLL_GP1,
@@ -19,7 +19,7 @@ typedef enum {
 	PLL_HIFI,
 	PLL_RTC,
 	PLL_DDR
-} PLL_TYPE;
+};
 
 void disable_pll(int id);
 void set_time(uint32_t val);

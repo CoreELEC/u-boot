@@ -11,6 +11,7 @@ __BEGIN_DECLS
 
 #include "n200_timer.h"
 #include "interrupt_control.h"
+#include "gcc_compiler_attributes.h"
 
 void pmp_open_all_space(void);
 
@@ -30,7 +31,7 @@ uint64_t get_cycle_value(void);
 
 uint32_t get_cpu_freq(void);
 
-uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n);
+uint32_t __noinline measure_cpu_freq(size_t n);
 
 void wfe(void);
 

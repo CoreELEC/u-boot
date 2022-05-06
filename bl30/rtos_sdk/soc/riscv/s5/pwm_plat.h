@@ -12,7 +12,7 @@ extern "C" {
 #endif
 #include <register.h>
 
-#define PwmMesonVolt_Duty	1
+#define PwmMesonVolt_Duty 1
 
 /* There are 3 pwm controllers in t5d */
 enum pwm_chip_id {
@@ -28,26 +28,26 @@ enum pwm_voltage_id {
 	VDDCPU_VOLT,
 };
 
-typedef struct xPwmMesonVoltage {
+struct xPwmMesonVoltage {
 	uint32_t Voltage_mv;
 	uint32_t Duty_reg;
-} xPwmMesonVoltage_t;
+};
 
-typedef struct xPwmMesonChip {
+struct xPwmMesonChip {
 	uint32_t chip_id;
 	unsigned long addr;
 	uint32_t mask;
 	/*transfers the clk div, clk gate, and clk mux to the clktree.*/
 	unsigned long clk_addr;
-} xPwmMesonChip_t;
+};
 
 uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id);
 uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id);
-xPwmMesonVoltage_t *vPwmMesonGetVoltTable(uint32_t voltage_id);
+struct xPwmMesonVoltage *vPwmMesonGetVoltTable(uint32_t voltage_id);
 uint32_t vPwmMesonGetVoltTableSize(uint32_t voltage_id);
-xPwmMesonChip_t *prvIdToPwmChip(uint32_t chip_id);
+struct xPwmMesonChip *prvIdToPwmChip(uint32_t chip_id);
 
 #ifdef __cplusplus
 }
 #endif
-#endif	/* _MESON_PWM_PLAT_H_ */
+#endif /* _MESON_PWM_PLAT_H_ */

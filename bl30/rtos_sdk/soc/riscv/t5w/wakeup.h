@@ -14,8 +14,8 @@ inline void wakeup_ap(void)
 	/*set alarm timer*/
 	REG32(ISA_TIMERB) = 1;
 	value = REG32(ISA_TIMER_MUX);
-	value &= ~((1 << 17) |(1 << 13)| (0x3 << 2));
-	value |= ((1 << 17) |(0 << 13)| (0x3 << 2));
+	value &= ~((1 << 17) | (1 << 13) | (0x3 << 2));
+	value |= ((1 << 17) | (0 << 13) | (0x3 << 2));
 	REG32(ISA_TIMER_MUX) = value;
 	vTaskDelay(1);
 }
@@ -25,9 +25,8 @@ inline void clear_wakeup_trigger(void)
 	uint32_t value;
 
 	value = REG32(ISA_TIMER_MUX);
-	value &= ~((1 << 17) |(1 << 13)| (0x3 << 2));
+	value &= ~((1 << 17) | (1 << 13) | (0x3 << 2));
 	REG32(ISA_TIMER_MUX) = value;
-
 }
 
 inline void watchdog_reset_system(void)
@@ -37,6 +36,5 @@ inline void watchdog_reset_system(void)
 		//pdMS_TO_TICKS(2);
 	}
 }
-
 
 #endif

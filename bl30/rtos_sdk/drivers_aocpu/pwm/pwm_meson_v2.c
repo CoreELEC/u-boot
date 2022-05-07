@@ -10,34 +10,32 @@
 #include <register.h>
 #include <task.h>
 
-#define pwm_readl(reg)				(*((volatile uint32_t *)(reg)))
-#define CLK_24M					24000000UL
-#define USEC_PER_SEC				1000000000ULL
+#define pwm_readl(reg) (*((volatile uint32_t *)(reg)))
+#define CLK_24M 24000000UL
+#define USEC_PER_SEC 1000000000ULL
 
-#define DIV_ROUND_UP(x, y) (((x) + ((y) - 1)) / (y))
+#define DIV_ROUND_UP(x, y) (((x) + ((y)-1)) / (y))
 #define DIV_ROUND_NEAREST(x, y) (((x) + ((y) / 2)) / (y))
-#define DIV_ROUND_CLOSEST(x, divisor)(                  \
-{                                                       \
-        typeof(x) __x = x;                              \
-        typeof(divisor) __d = divisor;                  \
-        (((typeof(x))-1) > 0 ||                         \
-         ((typeof(divisor))-1) > 0 || (__x) > 0) ?      \
-                (((__x) + ((__d) / 2)) / (__d)) :       \
-                (((__x) - ((__d) / 2)) / (__d));        \
-}                                                       \
-)
+#define DIV_ROUND_CLOSEST(x, divisor)                                                              \
+	({                                                                                         \
+		typeof(x) __x = x;                                                                 \
+		typeof(divisor) __d = divisor;                                                     \
+		(((typeof(x)) -1) > 0 || ((typeof(divisor)) -1) > 0 || (__x) > 0) ?              \
+			(((__x) + ((__d) / 2)) / (__d)) :                                          \
+			(((__x) - ((__d) / 2)) / (__d));                                           \
+	})
 
 /*pwm register att*/
-typedef struct xPwmMesonRegs {
-	uint32_t  dar; /* A Duty Register */
-	uint32_t  dbr; /* B Duty Register */
-	uint32_t  miscr; /* misc Register */
-	uint32_t  dsr;/*DS Register*/
-	uint32_t  tr;/*times Register*/
-	uint32_t  da2r; /* A2 Duty Register */
-	uint32_t  db2r; /* B2 Duty Register */
-	uint32_t  br; /*Blink Register*/
-} xPwmMesonRegs_t;
+struct xPwmMesonRegs {
+	uint32_t dar; /* A Duty Register */
+	uint32_t dbr; /* B Duty Register */
+	uint32_t miscr; /* misc Register */
+	uint32_t dsr; /*DS Register*/
+	uint32_t tr; /*times Register*/
+	uint32_t da2r; /* A2 Duty Register */
+	uint32_t db2r; /* B2 Duty Register */
+	uint32_t br; /*Blink Register*/
+};
 
 static void prvPwmEnterCritical(UBaseType_t *uxIsr)
 {
@@ -68,21 +66,20 @@ static void prvPwmRegWrite(uint32_t addr, uint32_t mask, uint32_t val)
 	prvPwmExitCritical(uxSavedIsr);
 }
 
-static xPwmMesonRegs_t *prvDeviceToRegs(xPwmMesondevice_t *pwm)
+static struct xPwmMesonRegs *prvDeviceToRegs(struct xPwmMesondevice *pwm)
 {
-	return (xPwmMesonRegs_t *) pwm->chip->addr;
+	return (struct xPwmMesonRegs *)pwm->chip->addr;
 }
 
-static uint32_t vPwmMesonVolttoDuty(xPwmMesonVoltage_t *vtable,
-				 uint32_t vtable_size,
-				 uint32_t voltage_mv)
+static uint32_t vPwmMesonVolttoDuty(struct xPwmMesonVoltage *vtable, uint32_t vtable_size,
+				    uint32_t voltage_mv)
 {
 	uint32_t i;
 
 	if ((voltage_mv < vtable[0].Voltage_mv) ||
 	    (voltage_mv > vtable[vtable_size - 1].Voltage_mv)) {
-		printf("volt: %dmv out of set range [%dmv - %dmv]\n",
-			voltage_mv, vtable[0].Voltage_mv, vtable[vtable_size - 1].Voltage_mv);
+		printf("volt: %dmv out of set range [%dmv - %dmv]\n", voltage_mv,
+		       vtable[0].Voltage_mv, vtable[vtable_size - 1].Voltage_mv);
 		return 0;
 	}
 
@@ -94,9 +91,8 @@ static uint32_t vPwmMesonVolttoDuty(xPwmMesonVoltage_t *vtable,
 	return 0;
 }
 
-static int32_t vPwmMesonDutytoVolt(xPwmMesonVoltage_t *vtable,
-				 uint32_t vtable_size,
-				 uint32_t duty)
+static int32_t vPwmMesonDutytoVolt(struct xPwmMesonVoltage *vtable, uint32_t vtable_size,
+				   uint32_t duty)
 {
 	uint32_t i;
 
@@ -107,14 +103,14 @@ static int32_t vPwmMesonDutytoVolt(xPwmMesonVoltage_t *vtable,
 	return -1;
 }
 
-void vPwmMesonPwmDebug(xPwmMesondevice_t *pwm)
+void vPwmMesonPwmDebug(struct xPwmMesondevice *pwm)
 {
 	uint32_t tmp = 0;
 	uint32_t i;
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
-	printf("pwm debug info chip_id = %d channel_id = %d addr = %p\n",
-		pwm->chip->chip_id, pwm->hwpwm, reg);
+	printf("pwm debug info chip_id = %d channel_id = %d addr = %p\n", pwm->chip->chip_id,
+	       pwm->hwpwm, reg);
 
 	for (i = 0; i <= 7; i++) {
 		tmp = pwm_readl(&reg->dar + i);
@@ -122,9 +118,9 @@ void vPwmMesonPwmDebug(xPwmMesondevice_t *pwm)
 	}
 }
 
-void vPwmConstantDisable(xPwmMesondevice_t *pwm)
+void vPwmConstantDisable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -143,9 +139,9 @@ void vPwmConstantDisable(xPwmMesondevice_t *pwm)
 	}
 }
 
-void vPwmConstantEnable(xPwmMesondevice_t *pwm)
+void vPwmConstantEnable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -164,10 +160,10 @@ void vPwmConstantEnable(xPwmMesondevice_t *pwm)
 	}
 }
 
-static uint32_t prvPwmGetPolarity(xPwmMesondevice_t *pwm)
+static uint32_t prvPwmGetPolarity(struct xPwmMesondevice *pwm)
 {
 	uint32_t tmp, val;
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -193,7 +189,7 @@ static uint32_t prvPwmGetPolarity(xPwmMesondevice_t *pwm)
 		return 1;
 }
 
-static void prvPwmMesonClockSet(xPwmMesondevice_t *pwm)
+static void prvPwmMesonClockSet(struct xPwmMesondevice *pwm)
 {
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -212,7 +208,7 @@ static void prvPwmMesonClockSet(xPwmMesondevice_t *pwm)
 	}
 }
 
-static int32_t prvPwmCalc(xPwmMesondevice_t *pwm, uint32_t duty, uint32_t period)
+static int32_t prvPwmCalc(struct xPwmMesondevice *pwm, uint32_t duty, uint32_t period)
 {
 	uint32_t pre_div, cnt, duty_cnt;
 	uint32_t fin_freq, fin_ns;
@@ -275,34 +271,42 @@ static int32_t prvPwmCalc(xPwmMesondevice_t *pwm, uint32_t duty, uint32_t period
 	return 0;
 }
 
-static void prvMesonConfig(xPwmMesondevice_t *pwm)
+static void prvMesonConfig(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr) {
 			/* If using clktree */
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)), ((pwm->pwm_pre_div << 0) | (1 << 8)));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
+				       ((pwm->pwm_pre_div << 0) | (1 << 8)));
 		} else {
-			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 4) | (0x7f << 8) | (1 << 15)), (((pwm->pwm_pre_div << 8)) | (1 << 15)));
+			prvPwmRegWrite((uint32_t)&reg->miscr,
+				       ((0x3 << 4) | (0x7f << 8) | (1 << 15)),
+				       (((pwm->pwm_pre_div << 8)) | (1 << 15)));
 		}
 
 		/*set duty */
-		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
+		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff,
+			       ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	case MESON_PWM_1:
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr) {
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)), ((pwm->pwm_pre_div << 16) | (1 << 24)));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 24)));
 		} else {
-			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 6) | (0x7f << 16) | (1 << 23)),  ((pwm->pwm_pre_div << 16) | (1 << 23)));
+			prvPwmRegWrite((uint32_t)&reg->miscr,
+				       ((0x3 << 6) | (0x7f << 16) | (1 << 23)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 23)));
 		}
 
 		/*set duty */
-		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
+		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff,
+			       ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	default:
@@ -311,29 +315,37 @@ static void prvMesonConfig(xPwmMesondevice_t *pwm)
 	}
 }
 
-static void prvMesonConfigExt(xPwmMesondevice_t *pwm)
+static void prvMesonConfigExt(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_2:
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr)
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)), ((pwm->pwm_pre_div) | (1 << 8)));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
+				       ((pwm->pwm_pre_div) | (1 << 8)));
 		else
-			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 4) | (0x7f << 8) | (1 << 15)), ((pwm->pwm_pre_div << 8) | (1 << 15)));
+			prvPwmRegWrite((uint32_t)&reg->miscr,
+				       ((0x3 << 4) | (0x7f << 8) | (1 << 15)),
+				       ((pwm->pwm_pre_div << 8) | (1 << 15)));
 		/*set duty */
-		prvPwmRegWrite((uint32_t)&reg->da2r, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
+		prvPwmRegWrite((uint32_t)&reg->da2r, 0xffffffff,
+			       ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 
 	case MESON_PWM_3:
 		/*set div and clock enable */
 		if (pwm->chip->clk_addr)
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)), ((pwm->pwm_pre_div << 16) | (1 << 24)));
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 24)));
 		else
-			prvPwmRegWrite((uint32_t)&reg->miscr, ((0x3 << 6) | (0x7f << 16) | (1 << 23)), ((pwm->pwm_pre_div << 16) | (1 << 23)));
+			prvPwmRegWrite((uint32_t)&reg->miscr,
+				       ((0x3 << 6) | (0x7f << 16) | (1 << 23)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 23)));
 		/*set duty */
-		prvPwmRegWrite((uint32_t)&reg->db2r, 0xffffffff, ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
+		prvPwmRegWrite((uint32_t)&reg->db2r, 0xffffffff,
+			       ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
 		break;
 	default:
 		printf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
@@ -341,8 +353,7 @@ static void prvMesonConfigExt(xPwmMesondevice_t *pwm)
 	}
 }
 
-int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns,
-			uint32_t period_ns)
+int32_t xPwmMesonConfig(struct xPwmMesondevice *pwm, uint32_t duty_ns, uint32_t period_ns)
 {
 	int32_t tmp;
 
@@ -355,9 +366,8 @@ int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns,
 	if (pwm->chip->clk_addr)
 		prvPwmMesonClockSet(pwm);
 	tmp = prvPwmCalc(pwm, duty_ns, period_ns);
-	if (tmp != 0) {
+	if (tmp != 0)
 		printf("calc pwm freq err error");
-	}
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -378,9 +388,9 @@ int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns,
 	return 0;
 }
 
-void vPwmMesonDisable(xPwmMesondevice_t *pwm)
+void vPwmMesonDisable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -403,16 +413,15 @@ void vPwmMesonDisable(xPwmMesondevice_t *pwm)
 		printf("%s Id:%d is invalid!\n", __func__, pwm->hwpwm);
 		break;
 	}
-	return;
 }
 
 /**
  * pwm_meson_enable() - enable pwm output
  * @pwm: pwm channel to choose
  */
-void vPwmMesonEnable(xPwmMesondevice_t *pwm)
+void vPwmMesonEnable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -437,9 +446,9 @@ void vPwmMesonEnable(xPwmMesondevice_t *pwm)
 	}
 }
 
-void vPwmMesonSetTimes(xPwmMesondevice_t *pwm, uint32_t times)
+void vPwmMesonSetTimes(struct xPwmMesondevice *pwm, uint32_t times)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	times--;
 	switch (pwm->hwpwm) {
@@ -465,9 +474,9 @@ void vPwmMesonSetTimes(xPwmMesondevice_t *pwm, uint32_t times)
 	}
 }
 
-void vPwmMesonSetBlinkTimes(xPwmMesondevice_t *pwm, uint32_t times)
+void vPwmMesonSetBlinkTimes(struct xPwmMesondevice *pwm, uint32_t times)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	times--;
 	switch (pwm->hwpwm) {
@@ -485,9 +494,9 @@ void vPwmMesonSetBlinkTimes(xPwmMesondevice_t *pwm, uint32_t times)
 	}
 }
 
-void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm)
+void vPwmMesonBlinkEnable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -504,9 +513,9 @@ void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm)
 	}
 }
 
-void vPwmMesonBlinkDisable(xPwmMesondevice_t *pwm)
+void vPwmMesonBlinkDisable(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -523,9 +532,9 @@ void vPwmMesonBlinkDisable(xPwmMesondevice_t *pwm)
 	}
 }
 
-int32_t xPwmMesonIsBlinkComplete(xPwmMesondevice_t *pwm)
+int32_t xPwmMesonIsBlinkComplete(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 	uint32_t a1, val;
 
 	switch (pwm->hwpwm) {
@@ -550,9 +559,9 @@ int32_t xPwmMesonIsBlinkComplete(xPwmMesondevice_t *pwm)
 		return 0;
 }
 
-void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val)
+void vPwmMesonSetPolarity(struct xPwmMesondevice *pwm, uint32_t val)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -575,9 +584,9 @@ void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val)
 	}
 }
 
-void vPwmMesonClear(xPwmMesondevice_t *pwm)
+void vPwmMesonClear(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonRegs_t *reg = prvDeviceToRegs(pwm);
+	struct xPwmMesonRegs *reg = prvDeviceToRegs(pwm);
 
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
@@ -603,10 +612,10 @@ void vPwmMesonClear(xPwmMesondevice_t *pwm)
  * @channel_id: pwm channel to choose,like MESON_PWM_0,
  * MESON_PWM_1 MESON_PWM_2 MESON_PWM_3
  */
-xPwmMesondevice_t *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id)
+struct xPwmMesondevice *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id)
 {
-	xPwmMesondevice_t *pwm;
-	xPwmMesonChip_t *chip;
+	struct xPwmMesondevice *pwm;
+	struct xPwmMesonChip *chip;
 
 	if (chip_id >= PWM_MUX) {
 		printf("pwm chip id is invail!\n");
@@ -629,7 +638,7 @@ xPwmMesondevice_t *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id)
 		return NULL;
 	}
 
-	pwm = (xPwmMesondevice_t *)pvPortMalloc(sizeof(*pwm));
+	pwm = (struct xPwmMesondevice *)pvPortMalloc(sizeof(*pwm));
 	if (!pwm) {
 		printf("pwm channel malloc fail!\n");
 		return NULL;
@@ -646,9 +655,9 @@ xPwmMesondevice_t *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id)
  * vPwmMesonChannelFree() - free pwm channel
  * @pwm: pwm channel to choose,return by pwm_channel_apply
  */
-void vPwmMesonChannelFree(xPwmMesondevice_t *pwm)
+void vPwmMesonChannelFree(struct xPwmMesondevice *pwm)
 {
-	xPwmMesonChip_t *chip = pwm->chip;
+	struct xPwmMesonChip *chip = pwm->chip;
 
 	if (!(chip->mask & (1 << pwm->hwpwm))) {
 		printf("pwm channel is free already\n");
@@ -661,10 +670,10 @@ void vPwmMesonChannelFree(xPwmMesondevice_t *pwm)
 
 int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 {
-	xPwmMesondevice_t *pwm;
-	xPwmMesonVoltage_t *vtable;
+	struct xPwmMesondevice *pwm;
+	struct xPwmMesonVoltage *vtable;
 #if PwmMesonVolt_Duty
-	xPwmMesonRegs_t *reg;
+	struct xPwmMesonRegs *reg;
 #endif
 	uint32_t chip_id, channel_id, duty, vtable_size, max_value, min_value;
 
@@ -699,7 +708,7 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 	}
 
 	min_value = vtable[0].Voltage_mv;
-	max_value = vtable[vtable_size-1].Voltage_mv;
+	max_value = vtable[vtable_size - 1].Voltage_mv;
 
 	pwm = xPwmMesonChannelApply(chip_id, channel_id);
 	if (!pwm) {
@@ -712,18 +721,18 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 	reg = prvDeviceToRegs(pwm);
 	if (channel_id == MESON_PWM_0) {
 		prvPwmRegWrite((uint32_t)&reg->dar, 0xffffffff, duty);
-		/*Vddee outputs the maximum or minimum voltage, pwm outputs all high or all low, the
-		 corresponding register should be cleared*/
+		//Vddee outputs the maximum or minimum voltage, pwm outputs all high or all low, the
+		//corresponding register should be cleared
 		if ((voltage_mv == max_value) || (voltage_mv == min_value))
-			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<28), (1<<28));
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 28), (1 << 28));
 		else
-			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<28), (0<<28));
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 28), (0 << 28));
 	} else {
 		prvPwmRegWrite((uint32_t)&reg->dbr, 0xffffffff, duty);
 		if ((voltage_mv == max_value) || (voltage_mv == min_value))
-			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<29), (1<<29));
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 29), (1 << 29));
 		else
-			prvPwmRegWrite((uint32_t)&reg->miscr, (1<<29), (0<<29));
+			prvPwmRegWrite((uint32_t)&reg->miscr, (1 << 29), (0 << 29));
 	}
 #else
 	pwm->pwm_hi = duty >> 16;
@@ -738,9 +747,9 @@ int32_t vPwmMesonsetvoltage(uint32_t voltage_id, uint32_t voltage_mv)
 
 int32_t vPwmMesongetvoltage(uint32_t voltage_id)
 {
-	xPwmMesondevice_t *pwm;
-	xPwmMesonVoltage_t *vtable;
-	xPwmMesonRegs_t *reg;
+	struct xPwmMesondevice *pwm;
+	struct xPwmMesonVoltage *vtable;
+	struct xPwmMesonRegs *reg;
 	uint32_t chip_id, channel_id, duty, vtable_size;
 	int32_t voltage_mv;
 
@@ -790,4 +799,3 @@ int32_t vPwmMesongetvoltage(uint32_t voltage_id)
 
 	return voltage_mv;
 }
-

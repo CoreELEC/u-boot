@@ -12,14 +12,14 @@
 uint32_t ethIrq;
 void eth_handler(void)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 
 	buf[0] = ETH_PMT_WAKEUP;
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 	DisableIrq(ethIrq);
 }
 
-void vETHInit(uint32_t ulIrq,function_ptr_t handler)
+void vETHInit(uint32_t ulIrq, function_ptr_t handler)
 {
 	ethIrq = ulIrq;
 	RegisterIrq(ulIrq, 2, handler);
@@ -32,10 +32,11 @@ void vETHDeint(void)
 	UnRegisterIrq(ethIrq);
 }
 
-int eth_deinit = 0;
+int eth_deinit;
 void eth_handler_t5(void)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
+
 	if (eth_deinit == 0) {
 		buf[0] = ETH_PMT_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);

@@ -36,8 +36,7 @@ static void prvExitCritical(UBaseType_t uxSaveIsr)
 	}
 };
 
-static inline void prvGpioRegWrite(uint32_t addr,
-				   uint32_t mask, uint32_t val)
+static inline void prvGpioRegWrite(uint32_t addr, uint32_t mask, uint32_t val)
 {
 	UBaseType_t uxSavedIsr;
 
@@ -46,20 +45,16 @@ static inline void prvGpioRegWrite(uint32_t addr,
 	prvExitCritical(uxSavedIsr);
 }
 
-static inline void prvGpioCalcRegAndBit(const GpioBank_t *bk,
-					uint8_t offset,
-					enum GpioRegType regType,
-					uint16_t *reg, uint8_t *bit)
+static inline void prvGpioCalcRegAndBit(const struct GpioBank *bk, uint8_t offset,
+					enum GpioRegType regType, uint16_t *reg, uint8_t *bit)
 {
 	*reg = bk->regs[regType].reg << 2;
 	*bit = bk->regs[regType].bit + offset;
 }
 
-static inline void prvGpioGetBankAndOffset(uint16_t gpio,
-					   const GpioBank_t **bk,
-					   uint8_t *off)
+static inline void prvGpioGetBankAndOffset(uint16_t gpio, const struct GpioBank **bk, uint8_t *off)
 {
-	const GpioBank_t *gpk;
+	const struct GpioBank *gpk;
 
 	gpk = pGetGpioBank();
 	*bk = &gpk[gpio >> 5];
@@ -71,11 +66,10 @@ int xGpioSetDir(uint16_t gpio, enum GpioDirType dir)
 	uint16_t reg;
 	uint8_t bit;
 	uint8_t offset;
-	const GpioBank_t *bk;
+	const struct GpioBank *bk;
 
 	if (dir >= GPIO_DIR_INVALID) {
-		printf("%s: invalid DIR [OUT=0, IN=1]: %d\n", DRIVER_NAME,
-			dir);
+		printf("%s: invalid DIR [OUT=0, IN=1]: %d\n", DRIVER_NAME, dir);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -93,11 +87,10 @@ int xGpioSetValue(uint16_t gpio, enum GpioOutLevelType level)
 	uint16_t reg;
 	uint8_t bit;
 	uint8_t offset;
-	const GpioBank_t *bk;
+	const struct GpioBank *bk;
 
 	if (level >= GPIO_LEVEL_INVALID) {
-		printf("%s: invalid output level [LOW=1, HIGH=0]: %d\n",
-			DRIVER_NAME, level);
+		printf("%s: invalid output level [LOW=1, HIGH=0]: %d\n", DRIVER_NAME, level);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -105,8 +98,7 @@ int xGpioSetValue(uint16_t gpio, enum GpioOutLevelType level)
 
 	prvGpioCalcRegAndBit(bk, offset, REG_OUT, &reg, &bit);
 
-	prvGpioRegWrite(bk->domain->rGpio + reg, BIT(bit),
-			level ? BIT(bit) : 0);
+	prvGpioRegWrite(bk->domain->rGpio + reg, BIT(bit), level ? BIT(bit) : 0);
 
 	return 0;
 }
@@ -116,7 +108,7 @@ int xGpioGetValue(uint16_t gpio)
 	uint16_t reg;
 	uint8_t bit;
 	uint8_t offset;
-	const GpioBank_t *bk;
+	const struct GpioBank *bk;
 
 	prvGpioGetBankAndOffset(gpio, &bk, &offset);
 
@@ -131,8 +123,8 @@ int xPinconfSet(uint16_t gpio, uint32_t flags)
 	uint8_t bit;
 	uint8_t offset;
 	uint8_t ds_value = 0;
-	const GpioBank_t *bk;
-	const GpioRegDesc_t *desc;
+	const struct GpioBank *bk;
+	const struct GpioRegDesc *desc;
 
 	prvGpioGetBankAndOffset(gpio, &bk, &offset);
 
@@ -140,20 +132,17 @@ int xPinconfSet(uint16_t gpio, uint32_t flags)
 
 	if (flags & PINF_CONFIG_BIAS_DISABLE) {
 		prvGpioRegWrite(bk->domain->rPullen + reg, BIT(bit), 0);
-	} else if (flags &
-		   (PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_BIAS_PULL_DOWN)) {
+	} else if (flags & (PINF_CONFIG_BIAS_PULL_UP | PINF_CONFIG_BIAS_PULL_DOWN)) {
 		prvGpioRegWrite(bk->domain->rPullen + reg, BIT(bit), BIT(bit));
 
 		prvGpioCalcRegAndBit(bk, offset, REG_PULL, &reg, &bit);
 		if (flags & PINF_CONFIG_BIAS_PULL_UP)
-			prvGpioRegWrite(bk->domain->rPull + reg, BIT(bit),
-					BIT(bit));
+			prvGpioRegWrite(bk->domain->rPull + reg, BIT(bit), BIT(bit));
 		else
 			prvGpioRegWrite(bk->domain->rPull + reg, BIT(bit), 0);
 	}
 
 	if ((flags & PINF_CONFIG_DRV_MASK) && &bk->regs[REG_DRV] != 0) {
-
 		prvGpioCalcRegAndBit(bk, offset, REG_DRV, &reg, &bit);
 		desc = &bk->regs[REG_DRV];
 
@@ -169,8 +158,7 @@ int xPinconfSet(uint16_t gpio, uint32_t flags)
 		else if (flags & PINF_CONFIG_DRV_STRENGTH_3)
 			ds_value = 3;
 
-		prvGpioRegWrite(bk->domain->rDrv + (reg << 2), 0x3 << bit,
-				ds_value << bit);
+		prvGpioRegWrite(bk->domain->rDrv + (reg << 2), 0x3 << bit, ds_value << bit);
 	}
 
 	return 0;
@@ -181,12 +169,12 @@ int xPinmuxSet(uint16_t gpio, enum PinMuxType func)
 	uint16_t reg;
 	uint8_t bit;
 	uint8_t offset;
-	const GpioBank_t *bk;
-	const GpioRegDesc_t *desc;
+	const struct GpioBank *bk;
+	const struct GpioRegDesc *desc;
 
 	if (func >= PIN_FUNC_INVALID) {
-		printf("%s: invalid pin Function [0 - %d]: %d\n",
-			DRIVER_NAME, PIN_FUNC_INVALID - 1, func);
+		printf("%s: invalid pin Function [0 - %d]: %d\n", DRIVER_NAME, PIN_FUNC_INVALID - 1,
+		       func);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 

@@ -12,38 +12,38 @@ extern "C" {
 #endif
 #include <pwm_plat.h>
 
-#define	MESON_PWM_0			0
-#define	MESON_PWM_1			1
-#define	MESON_PWM_2			2
-#define	MESON_PWM_3			3
+#define MESON_PWM_0 0
+#define MESON_PWM_1 1
+#define MESON_PWM_2 2
+#define MESON_PWM_3 3
 
-typedef struct xPwmMesondevice {
-	xPwmMesonChip_t *chip;
+struct xPwmMesondevice {
+	struct xPwmMesonChip *chip;
 	uint32_t hwpwm;
 	void *chip_data;
 	uint32_t pwm_hi;
 	uint32_t pwm_lo;
 	uint32_t pwm_pre_div;
-} xPwmMesondevice_t;
+};
 
 /**
  * vPwmMesonPwmDebug() - Dump pwm register
  * @pwm: pwm channel
  */
-extern void vPwmMesonPwmDebug(xPwmMesondevice_t *pwm);
+extern void vPwmMesonPwmDebug(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonClear() - Clean pwm register
  * @pwm: pwm channel
  */
-extern void vPwmMesonClear(xPwmMesondevice_t *pwm);
+extern void vPwmMesonClear(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonSetPolarity() - Set pwm polarity
  * @pwm: pwm channel
  * @val: pwm polarity
  */
-extern void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val);
+extern void vPwmMesonSetPolarity(struct xPwmMesondevice *pwm, uint32_t val);
 
 /**
  * xPwmMesonIsBlinkComplete() - Check blink complete
@@ -51,59 +51,59 @@ extern void vPwmMesonSetPolarity(xPwmMesondevice_t *pwm, uint32_t val);
  *
  * Returns 0 on blink complete.
  */
-extern int32_t xPwmMesonIsBlinkComplete(xPwmMesondevice_t *pwm);
+extern int32_t xPwmMesonIsBlinkComplete(struct xPwmMesondevice *pwm);
 
 /**
  * prvPwmConstantDisable() - Disable constant function
  * @pwm: pwm channel
  *
  */
-extern void  vPwmConstantDisable(xPwmMesondevice_t *pwm);
+extern void vPwmConstantDisable(struct xPwmMesondevice *pwm);
 
 /**
  * prvPwmConstantEnable() - Enable constant function
  * @pwm: pwm channel
  *
  */
-extern void vPwmConstantEnable(xPwmMesondevice_t *pwm);
+extern void vPwmConstantEnable(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonBlinkEnable() - Enable blink function
  * @pwm: pwm channel
  */
-extern void vPwmMesonBlinkEnable(xPwmMesondevice_t *pwm);
+extern void vPwmMesonBlinkEnable(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonBlinkDisable() - Disabled blink function
  * @pwm: pwm channel
  */
-extern void vPwmMesonBlinkDisable(xPwmMesondevice_t *pwm);
+extern void vPwmMesonBlinkDisable(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonSetBlinkTimes() - Set blink times
  * @pwm: pwm channel
  * @times: blink times
  */
-extern void vPwmMesonSetBlinkTimes(xPwmMesondevice_t *pwm, uint32_t times);
+extern void vPwmMesonSetBlinkTimes(struct xPwmMesondevice *pwm, uint32_t times);
 
 /**
  * vPwmMesonSetTimes() - Set times
  * @pwm: pwm channel
  * @times: times
  */
-extern void vPwmMesonSetTimes(xPwmMesondevice_t *pwm, uint32_t times);
+extern void vPwmMesonSetTimes(struct xPwmMesondevice *pwm, uint32_t times);
 
 /**
  * vPwmMesonEnable() - Enabled a pwm channel
  * @pwm: pwm channel
  */
-extern void vPwmMesonEnable(xPwmMesondevice_t *pwm);
+extern void vPwmMesonEnable(struct xPwmMesondevice *pwm);
 
 /**
  * vPwmMesonDisable() - Disabled a pwm channel
  * @pwm: pwm channel
  */
-extern void vPwmMesonDisable(xPwmMesondevice_t *pwm);
+extern void vPwmMesonDisable(struct xPwmMesondevice *pwm);
 
 /**
  * xPwmMesonConfig() - Config a pwm channel
@@ -113,13 +113,13 @@ extern void vPwmMesonDisable(xPwmMesondevice_t *pwm);
  *
  * Returns 0 on success, negative value on error.
  */
-extern int32_t xPwmMesonConfig(xPwmMesondevice_t *pwm, uint32_t duty_ns, uint32_t period_ns);
+extern int32_t xPwmMesonConfig(struct xPwmMesondevice *pwm, uint32_t duty_ns, uint32_t period_ns);
 
 /**
  * vPwmMesonChannelFree() - Free a pwm channel
  * @pwm: pwm channel
  */
-extern void vPwmMesonChannelFree(xPwmMesondevice_t *pwm);
+extern void vPwmMesonChannelFree(struct xPwmMesondevice *pwm);
 
 /**
  * xPwmMesonChannelApply() - Apply a pwm channel
@@ -128,7 +128,7 @@ extern void vPwmMesonChannelFree(xPwmMesondevice_t *pwm);
  *
  * Returns a pwm channel.
  */
-extern xPwmMesondevice_t *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id);
+extern struct xPwmMesondevice *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel_id);
 
 /**
  * vPwmMesonsetvoltage() - Set voltage

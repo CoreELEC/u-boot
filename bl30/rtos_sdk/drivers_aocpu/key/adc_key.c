@@ -45,17 +45,14 @@ static void prAdcKeyProcess(TimerHandle_t xTimer)
 	struct xAdcKeyInfo *adcKeyInfo;
 
 	(void)xTimer;
-	for (xPassBtn = xHeadKey; xPassBtn != NULL;
-						xPassBtn = xPassBtn->xNext) {
+	for (xPassBtn = xHeadKey; xPassBtn != NULL; xPassBtn = xPassBtn->xNext) {
 		adcKeyInfo = xPassBtn->adcKeyInfo;
 		ret = xAdcGetSample(&usAdcData, 1, &(adcKeyInfo->xAdcDecp));
 		if (ret < 0)
 			continue;
 		if (xPassBtn->keyState == UP) {
-			if ((usAdcData >= adcKeyInfo->ulValue -
-						SAMPLE_DEVIATION)
-			    && (usAdcData <=
-				adcKeyInfo->ulValue + SAMPLE_DEVIATION)) {
+			if ((usAdcData >= adcKeyInfo->ulValue - SAMPLE_DEVIATION) &&
+			    (usAdcData <= adcKeyInfo->ulValue + SAMPLE_DEVIATION)) {
 				if (jitterCount < KEY_JITTER_COUNT) {
 					jitterCount++;
 					return;
@@ -66,10 +63,8 @@ static void prAdcKeyProcess(TimerHandle_t xTimer)
 			}
 
 		} else if (xPassBtn->keyState == DOWN) {
-			if (((usAdcData <= adcKeyInfo->ulValue -
-							SAMPLE_DEVIATION)
-			     || (usAdcData >=
-				 adcKeyInfo->ulValue + SAMPLE_DEVIATION))) {
+			if (((usAdcData <= adcKeyInfo->ulValue - SAMPLE_DEVIATION) ||
+			     (usAdcData >= adcKeyInfo->ulValue + SAMPLE_DEVIATION))) {
 				if (jitterCount < KEY_JITTER_COUNT) {
 					jitterCount++;
 					return;
@@ -97,12 +92,9 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 	struct xAdcKeyInfo *adcKeyInfo;
 
 	if (!xAdcKeyCycleTimer) {
-		xAdcKeyCycleTimer = xTimerCreate((const char *)"xAdcKeyTimer",
-						 pdMS_TO_TICKS
-						 (TIMER_CYCLE_TIME), pdTRUE,
-						 (void *)1,
-						 (TimerCallbackFunction_t)
-						 prAdcKeyProcess);
+		xAdcKeyCycleTimer =
+			xTimerCreate((const char *)"xAdcKeyTimer", pdMS_TO_TICKS(TIMER_CYCLE_TIME),
+				     pdTRUE, (void *)1, (TimerCallbackFunction_t)prAdcKeyProcess);
 		if (!xAdcKeyCycleTimer) {
 			printf("adc timer create failed!\n");
 			return;
@@ -168,16 +160,14 @@ void vAdcKeyEnable(void)
 	vAdcInit();
 	vAdcHwEnable();
 
-	if (xAdcKeyCycleTimer) {
+	if (xAdcKeyCycleTimer)
 		xTimerStart(xAdcKeyCycleTimer, 0);
-	}
 }
 
 void vAdcKeyDisable(void)
 {
-	if (xAdcKeyCycleTimer) {
+	if (xAdcKeyCycleTimer)
 		xTimerStop(xAdcKeyCycleTimer, pdMS_TO_TICKS(TIMER_CYCLE_TIME));
-	}
 
 	vAdcHwDisable();
 	vAdcDeinit();

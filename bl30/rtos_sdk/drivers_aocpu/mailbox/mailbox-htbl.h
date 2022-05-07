@@ -17,11 +17,13 @@
  *
  * For now, ARM and DSP have only one htbl at each side.
  */
+typedef void *(*handler_t)(void *);
+
 void mailbox_htbl_init(void **pHTbl);
 void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen);
-uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, void *(handler)(void *));
-uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd,
-                              void *(*handler)(void *), uint8_t needFdBak);
+uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, handler_t handler);
+uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd, handler_t handle,
+				   uint8_t needFdBak);
 uint32_t mailbox_htbl_unreg(void *pHTbl, uint32_t cmd);
 uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg);
 
@@ -42,9 +44,9 @@ uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg);
 // defect:
 // - fixed payload length
 // - it have to copy to Q when pushing, copy from Q when poping
-#define PAYLOAD_LEN         24
+#define PAYLOAD_LEN 24
 struct event {
-    uint32_t cmd;
-    uint8_t arg[PAYLOAD_LEN];
+	uint32_t cmd;
+	uint8_t arg[PAYLOAD_LEN];
 };
 #endif

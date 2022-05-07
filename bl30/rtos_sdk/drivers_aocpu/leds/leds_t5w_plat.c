@@ -13,29 +13,13 @@
 static int32_t LedStickMem0;
 //static int32_t LedStickMem1;
 
-static LedCoord_t BreathInflections0[] = {
-	{0, 0},
-	{2500, 255},
-	{5000, 0}
-};
+static LedCoord_t BreathInflections0[] = { { 0, 0 }, { 2500, 255 }, { 5000, 0 } };
 
-static LedCoord_t BreathInflections1[] = {
-	{0, 0},
-	{5000, 255},
-	{10000, 0}
-};
+static LedCoord_t BreathInflections1[] = { { 0, 0 }, { 5000, 255 }, { 10000, 0 } };
 
-static LedCoord_t BreathInflections2[] = {
-	{0, 0},
-	{10000, 255},
-	{20000, 0}
-};
+static LedCoord_t BreathInflections2[] = { { 0, 0 }, { 10000, 255 }, { 20000, 0 } };
 
-static LedCoord_t BreathInflections3[] = {
-	{0, 0},
-	{20000, 255},
-	{40000, 0}
-};
+static LedCoord_t BreathInflections3[] = { { 0, 0 }, { 20000, 255 }, { 40000, 0 } };
 
 LedCoord_t *BreathInflections[LED_BREATH_MAX_COUNT] = {
 	BreathInflections0,
@@ -44,7 +28,7 @@ LedCoord_t *BreathInflections[LED_BREATH_MAX_COUNT] = {
 	BreathInflections3,
 };
 
-LedDevice_t MesonLeds[] = {
+struct LedDevice MesonLeds[] = {
 	{
 		.id = LED_ID_0,
 		.type = LED_TYPE_PWM,
@@ -58,14 +42,14 @@ LedDevice_t MesonLeds[] = {
 int32_t get_led_breath_len(uint32_t breath_id)
 {
 	switch (breath_id) {
-		case 0:
-			return sizeof(BreathInflections0)/sizeof(LedCoord_t);
-		case 1:
-			return sizeof(BreathInflections1)/sizeof(LedCoord_t);
-		case 2:
-			return sizeof(BreathInflections2)/sizeof(LedCoord_t);
-		case 3:
-			return sizeof(BreathInflections3)/sizeof(LedCoord_t);
+	case 0:
+		return sizeof(BreathInflections0) / sizeof(LedCoord_t);
+	case 1:
+		return sizeof(BreathInflections1) / sizeof(LedCoord_t);
+	case 2:
+		return sizeof(BreathInflections2) / sizeof(LedCoord_t);
+	case 3:
+		return sizeof(BreathInflections3) / sizeof(LedCoord_t);
 	} /* end swith */
 
 	iprintf("%s: id: %ld leds state init!\n", DRIVER_NAME, breath_id);
@@ -73,7 +57,7 @@ int32_t get_led_breath_len(uint32_t breath_id)
 	return -pdFREERTOS_ERRNO_EINVAL;
 }
 
-int32_t vLedPlatInit(int32_t ** stickmem)
+int32_t vLedPlatInit(int32_t **stickmem)
 {
 	/* TODO: Here is initialization stickmem, but not doing so now */
 	*stickmem = &LedStickMem0;
@@ -87,4 +71,3 @@ int32_t vLedPinmuxInit(void)
 	/* set pinmux */
 	return xPinmuxSet(GPIOD_7, PIN_FUNC2);
 }
-

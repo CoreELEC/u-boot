@@ -6,10 +6,10 @@
 
 #include <stdio.h>
 #include "FreeRTOS.h" /* Must come first. */
-#include "task.h"     /* RTOS task related API prototypes. */
-#include "queue.h"    /* RTOS queue related API prototypes. */
-#include "timers.h"   /* Software timer related API prototypes. */
-#include "semphr.h"   /* Semaphore related API prototypes. */
+#include "task.h" /* RTOS task related API prototypes. */
+#include "queue.h" /* RTOS queue related API prototypes. */
+#include "timers.h" /* Software timer related API prototypes. */
+#include "semphr.h" /* Semaphore related API prototypes. */
 
 #include <unistd.h>
 #include <string.h>
@@ -17,6 +17,7 @@
 #include "n200_func.h"
 #include "common.h"
 #include "riscv_encoding.h"
+#include "gcc_compiler_attributes.h"
 #include "suspend.h"
 #include "power.h"
 
@@ -28,24 +29,13 @@
 #include "stick_mem.h"
 #include "pm.h"
 
-void system_resume(uint32_t pm);
-void system_suspend(uint32_t pm);
-void set_reason_flag(char exit_reason);
-void create_str_task(void);
-uint32_t get_reason_flag(void);
-uint32_t get_stick_reboot_flag(void);
-void *xMboxGetWakeupReason(void *msg);
-void *xMboxClrWakeupReason(void *msg);
-void *xMboxGetStickRebootFlag(void *msg);
-void set_suspend_flag(void);
-
-SemaphoreHandle_t xSTRSemaphore = NULL;
-QueueHandle_t xSTRQueue = NULL;
-SemaphoreHandle_t xSTRFlagSem = NULL;
+SemaphoreHandle_t xSTRSemaphore;
+QueueHandle_t xSTRQueue;
+SemaphoreHandle_t xSTRFlagSem;
 uint32_t suspend_flag;
 uint32_t power_mode;
 
-WakeUp_Reason vWakeupReason[] = {
+struct WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
 	[CHARGING_WAKEUP] = { .name = "charging" },
 	[REMOTE_WAKEUP] = { .name = "remote" },
@@ -68,44 +58,45 @@ void set_suspend_flag(void)
 	suspend_flag = 1;
 	taskEXIT_CRITICAL();
 }
-__attribute__((weak)) void vDDR_suspend(uint32_t st_f)
+
+__weak void vDDR_suspend(uint32_t st_f)
 {
-	st_f = st_f;
+	(void)st_f;
 }
 
-__attribute__((weak)) void vDDR_resume(uint32_t st_f)
+__weak void vDDR_resume(uint32_t st_f)
 {
-	st_f = st_f;
+	(void)st_f;
 }
 
-__attribute__((weak)) void alarm_set(void)
-{
-}
-
-__attribute__((weak)) void alarm_clr(void)
+__weak void alarm_set(void)
 {
 }
 
-__attribute__((weak)) void vRTC_update(void)
+__weak void alarm_clr(void)
 {
 }
 
-__attribute__((weak)) void vCreat_alarm_timer(void)
+__weak void vRTC_update(void)
 {
 }
 
-__attribute__((weak)) void store_rtc(void)
+__weak void vCreat_alarm_timer(void)
 {
 }
 
-__attribute__((weak)) void vCLK_suspend(uint32_t st_f)
+__weak void store_rtc(void)
 {
-	st_f = st_f;
 }
 
-__attribute__((weak)) void vCLK_resume(uint32_t st_f)
+__weak void vCLK_suspend(uint32_t st_f)
 {
-	st_f = st_f;
+	(void)st_f;
+}
+
+__weak void vCLK_resume(uint32_t st_f)
+{
+	(void)st_f;
 }
 
 void system_resume(uint32_t pm)
@@ -179,7 +170,7 @@ void *xMboxGetWakeupReason(void *msg)
 
 void *xMboxClrWakeupReason(void *msg)
 {
-	msg = msg;
+	(void)msg;
 	return NULL;
 }
 
@@ -193,6 +184,7 @@ void *xMboxGetStickRebootFlag(void *msg)
 void STR_Start_Sem_Give_FromISR(void)
 {
 	BaseType_t xHigherPriorityTaskWoken;
+
 	xSemaphoreGiveFromISR(xSTRSemaphore, &xHigherPriorityTaskWoken);
 }
 
@@ -200,7 +192,6 @@ void STR_Start_Sem_Give(void)
 {
 	xSemaphoreGive(xSTRSemaphore);
 }
-
 
 void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src)
 {
@@ -238,36 +229,35 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
-	printf("power_mode=0x%x\n",power_mode);
+	printf("power_mode=0x%x\n", power_mode);
 	STR_Start_Sem_Give();
 
 	return NULL;
 }
 
-#define FREEZE_ENTER	0x01
-#define FREEZE_EXIT	0x02
+#define FREEZE_ENTER 0x01
+#define FREEZE_EXIT 0x02
 
 void *xMboxpm_sem(void *msg);
 void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
 
-	if (mode == FREEZE_ENTER) {
+	if (mode == FREEZE_ENTER)
 		pm_enter();
-	} else if (mode == FREEZE_EXIT) {
+	else if (mode == FREEZE_EXIT)
 		wakeup_ap_from_kernel();
-	}
 
 	return NULL;
 }
 
-static void vSTRTask( void *pvParameters )
+static void vSTRTask(void *pvParameters)
 {
 	/*make compiler happy*/
 	uint32_t buffer = UDEFINED_WAKEUP;
 	uint32_t exit_reason = 0;
 
-	pvParameters = pvParameters;
+	(void)pvParameters;
 	xSTRQueue = xQueueCreate(STR_QUEUE_LENGTH, STR_QUEUE_ITEM_SIZE);
 	configASSERT(xSTRQueue);
 	xSTRSemaphore = xSemaphoreCreateBinary();
@@ -276,55 +266,55 @@ static void vSTRTask( void *pvParameters )
 	while (1) {
 		xSemaphoreTake(xSTRSemaphore, portMAX_DELAY);
 		system_suspend(power_mode);
-		while (xQueueReceive(xSTRQueue, &buffer, portMAX_DELAY))
-		{
-			switch (buffer)
-			{
-				case REMOTE_WAKEUP:
-					exit_reason = REMOTE_WAKEUP;
-					break;
-				case RTC_WAKEUP:
-					exit_reason = RTC_WAKEUP;
-					break;
-				case BT_WAKEUP:
-					exit_reason = BT_WAKEUP;
-					break;
-				case CEC_WAKEUP:
-					exit_reason = CEC_WAKEUP;
-					break;
-				case CECB_WAKEUP:
-					exit_reason = CECB_WAKEUP;
-					break;
-				case REMOTE_CUS_WAKEUP:
-					exit_reason = REMOTE_CUS_WAKEUP;
-					break;
-				case POWER_KEY_WAKEUP:
-					exit_reason = POWER_KEY_WAKEUP;
-					break;
-				case ETH_PMT_WAKEUP:
-					exit_reason = ETH_PMT_WAKEUP;
-					break;
-				case WIFI_WAKEUP:
-					exit_reason = WIFI_WAKEUP;
-					break;
-				case VAD_WAKEUP:
-					exit_reason = VAD_WAKEUP;
-					break;
-				case HDMI_RX_WAKEUP:
-					exit_reason = HDMI_RX_WAKEUP;
-					break;
-				default:
-					break;
+		while (xQueueReceive(xSTRQueue, &buffer, portMAX_DELAY)) {
+			switch (buffer) {
+			case REMOTE_WAKEUP:
+				exit_reason = REMOTE_WAKEUP;
+				break;
+			case RTC_WAKEUP:
+				exit_reason = RTC_WAKEUP;
+				break;
+			case BT_WAKEUP:
+				exit_reason = BT_WAKEUP;
+				break;
+			case CEC_WAKEUP:
+				exit_reason = CEC_WAKEUP;
+				break;
+			case CECB_WAKEUP:
+				exit_reason = CECB_WAKEUP;
+				break;
+			case REMOTE_CUS_WAKEUP:
+				exit_reason = REMOTE_CUS_WAKEUP;
+				break;
+			case POWER_KEY_WAKEUP:
+				exit_reason = POWER_KEY_WAKEUP;
+				break;
+			case ETH_PMT_WAKEUP:
+				exit_reason = ETH_PMT_WAKEUP;
+				break;
+			case WIFI_WAKEUP:
+				exit_reason = WIFI_WAKEUP;
+				break;
+			case VAD_WAKEUP:
+				exit_reason = VAD_WAKEUP;
+				break;
+			case HDMI_RX_WAKEUP:
+				exit_reason = HDMI_RX_WAKEUP;
+				break;
+			default:
+				break;
 			}
 			if (exit_reason) {
-				printf("exit_reason=%d, %s\n",exit_reason, vWakeupReason[exit_reason].name);
+				printf("exit_reason=%d, %s\n", exit_reason,
+				       vWakeupReason[exit_reason].name);
 				set_reason_flag((char)exit_reason);
 				exit_reason = 0;
 				system_resume(power_mode);
 				goto loop;
 			}
 		}
-		loop: continue;
+loop:
+		continue;
 	}
 }
 
@@ -332,31 +322,31 @@ void create_str_task(void)
 {
 	int ret;
 
-	if (xTaskCreate( vSTRTask, "STR_task", configMINIMAL_STACK_SIZE, NULL, 3, NULL ) < 0)
+	if (xTaskCreate(vSTRTask, "STR_task", configMINIMAL_STACK_SIZE, NULL, 3, NULL) < 0)
 		printf("STR_task create fail!!\n");
 
 	vCreat_alarm_timer();
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
-						xMboxSuspend_Sem, 0);
+						    xMboxSuspend_Sem, 0);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SUSPEND);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_REASON,
-					xMboxGetWakeupReason, 1);
+						    xMboxGetWakeupReason, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_REASON);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_REASON,
-					xMboxClrWakeupReason, 0);
+						    xMboxClrWakeupReason, 0);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_STICK_REBOOT_FLAG,
-					xMboxGetStickRebootFlag, 1);
+						    xMboxGetStickRebootFlag, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE,
-					xMboxpm_sem, 1);
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE, xMboxpm_sem,
+						    1);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_PM_FREEZE);
 }

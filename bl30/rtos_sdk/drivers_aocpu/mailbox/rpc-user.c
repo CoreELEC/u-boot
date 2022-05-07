@@ -21,12 +21,9 @@
 #include "mailbox-api.h"
 
 #define MBTAG "AOCPU"
-#define PRINT_DBG(...)  printf(__VA_ARGS__)
-#define PRINT_ERR(...)  printf(__VA_ARGS__)
-#define PRINT(...)	printf(__VA_ARGS__)
-
-/*ARM 2 AOCPU mailbox*/
-void vRpcUserCmdInit(void);
+#define PRINT_DBG(...) printf(__VA_ARGS__)
+#define PRINT_ERR(...) printf(__VA_ARGS__)
+#define PRINT(...) printf(__VA_ARGS__)
 
 struct Uintcase {
 	char data[20];
@@ -64,7 +61,6 @@ static void xMboxUintReeTestCase(void *msg)
 	mbmemcpy(msg, back, sizeof(back));
 
 	PRINT("[%s]: delay after %ld\n", MBTAG, pdata->ulTaskDelay);
-
 }
 
 static void xMboxUintTeeTestCase(void *msg)
@@ -72,7 +68,6 @@ static void xMboxUintTeeTestCase(void *msg)
 	char *s = msg;
 
 	PRINT("[%s]: from tee: %s\n", MBTAG, s);
-
 }
 
 static void vRegisterRpcCallBack(void)
@@ -82,7 +77,7 @@ static void vRegisterRpcCallBack(void)
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
 						    (void *)xMboxUintReeTestCase, 1);
 	if (ret == MBOX_CALL_MAX)
-		PRINT("[%s]: mbox cmd 0x%x register fail\n",MBTAG, MBX_CMD_RPCUINTREE_TEST);
+		PRINT("[%s]: mbox cmd 0x%x register fail\n", MBTAG, MBX_CMD_RPCUINTREE_TEST);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
 						    (void *)xMboxUintTeeTestCase, 0);
@@ -92,5 +87,5 @@ static void vRegisterRpcCallBack(void)
 
 void vRpcUserCmdInit(void)
 {
-        vRegisterRpcCallBack();
+	vRegisterRpcCallBack();
 }

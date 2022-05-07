@@ -5,10 +5,10 @@
  */
 
 #include "FreeRTOS.h" /* Must come first. */
-#include "task.h"     /* RTOS task related API prototypes. */
-#include "queue.h"    /* RTOS queue related API prototypes. */
-#include "timers.h"   /* Software timer related API prototypes. */
-#include "semphr.h"   /* Semaphore related API prototypes. */
+#include "task.h" /* RTOS task related API prototypes. */
+#include "queue.h" /* RTOS queue related API prototypes. */
+#include "timers.h" /* Software timer related API prototypes. */
+#include "semphr.h" /* Semaphore related API prototypes. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,16 +21,10 @@
 
 /* todo: wait for stick mem ready */
 static int32_t *PLedStickMem[LED_ID_MAX];
-extern LedCoord_t *BreathInflections[];
 
-uint32_t LedMask[STICK_LED_INVAIL] = {
-	STICK_LED_STATE_MASK,
-	STICK_LED_BRIGHTNESS_MASK,
-	STICK_LED_BREATH_ID_MASK,
-	STICK_LED_BLINK_TIMES_MASK,
-	STICK_LED_BLINK_HIHG_MASK,
-	STICK_LED_BLINK_LOW_MASK
-};
+uint32_t LedMask[STICK_LED_INVAIL] = { STICK_LED_STATE_MASK,	  STICK_LED_BRIGHTNESS_MASK,
+				       STICK_LED_BREATH_ID_MASK,  STICK_LED_BLINK_TIMES_MASK,
+				       STICK_LED_BLINK_HIHG_MASK, STICK_LED_BLINK_LOW_MASK };
 
 static int32_t prvStickMemLedRead(uint32_t id, enum StickMemLedIdx index, uint32_t *data)
 {
@@ -101,7 +95,7 @@ static int32_t prvPwmLedSetBrightness(uint32_t id, uint32_t brightness)
 
 static int32_t prvPwmledblinktimes(uint32_t id, uint32_t times, uint32_t high_cnt, uint32_t low_cnt)
 {
-	uint32_t duty1 ,duty2;
+	uint32_t duty1, duty2;
 
 	/* TODO: blink brightness */
 	duty1 = 50000000; // 50ms
@@ -131,23 +125,22 @@ static int32_t prvPwmledblinktimes(uint32_t id, uint32_t times, uint32_t high_cn
 	return 0;
 }
 
-static uint32_t prvCurveApproximate(LedCoord_t *c, uint32_t num, uint32_t x)
+static uint32_t prvCurveApproximate(struct LedCoord *c, uint32_t num, uint32_t x)
 {
-	uint32_t i, x0, y0, x1, y1, y=0;
+	uint32_t i, x0, y0, x1, y1, y = 0;
 
 	for (i = 1; i <= num; i++) {
 		if (x < c[i].x) {
-			x0 = c[i-1].x;
-			y0 = c[i-1].y;
+			x0 = c[i - 1].x;
+			y0 = c[i - 1].y;
 			x1 = c[i].x;
 			y1 = c[i].y;
-			if (y1 == y0) {
+			if (y1 == y0)
 				y = y0;
-			} else if (y1 > y0) {
-				y = y0 + (y1-y0)*(x-x0)/(x1-x0);
-			} else {
-				y = y0 - (y0-y1)*(x-x0)/(x1-x0);
-			}
+			else if (y1 > y0)
+				y = y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+			else
+				y = y0 - (y0 - y1) * (x - x0) / (x1 - x0);
 			break;
 		}
 	}
@@ -158,7 +151,7 @@ static void prvLedBreath(uint32_t id, uint32_t breath_id)
 {
 	int32_t num = 0;
 	uint32_t brightness;
-	LedCoord_t *co;
+	struct LedCoord *co;
 
 	/*init breath_inflections parameters*/
 	num = get_led_breath_len(breath_id);
@@ -167,7 +160,7 @@ static void prvLedBreath(uint32_t id, uint32_t breath_id)
 		return;
 	}
 	co = BreathInflections[breath_id];
-	if (MesonLeds[id].breathtime > co[num-1].x)
+	if (MesonLeds[id].breathtime > co[num - 1].x)
 		MesonLeds[id].breathtime = 0;
 	brightness = prvCurveApproximate(co, num, MesonLeds[id].breathtime);
 	prvPwmLedSetBrightness(id, brightness);
@@ -178,7 +171,6 @@ static void prvSetLedStateToDefault(uint32_t id)
 {
 	prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_DEFAULT);
 }
-
 
 static uint32_t prvGetLedBlinkHigh(uint32_t id)
 {
@@ -265,88 +257,80 @@ static enum LedState prvGetLastLedState(uint32_t id)
 
 static void prvLedStateMachine(enum LedState state, uint32_t id)
 {
-	static int blinkflag = 0;
+	static int blinkflag;
+
 	prvSetLedState(state, id);
 
 	switch (state) {
-		/*
-		 * led breath use the same timer task to handle breathe.
-		 * so don't set the new state.
-		 */
-		case LED_STATE_BRIGHTNESS:
-			prvPwmLedSetBrightness(id, prvGetLedBrightness(id));
+	/*
+	 * led breath use the same timer task to handle breathe.
+	 * so don't set the new state.
+	 */
+	case LED_STATE_BRIGHTNESS:
+		prvPwmLedSetBrightness(id, prvGetLedBrightness(id));
+		prvSetLedStateToDefault(id);
+		blinkflag = 0;
+		break;
+	case LED_STATE_BREATH:
+		prvLedBreath(id, prvGetLedBreathId(id));
+		blinkflag = 0;
+		break;
+	case LED_STATE_BLINK_ON:
+		if (blinkflag == 0) {
+			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id),
+					    prvGetLedBlinkLow(id));
+			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
+			blinkflag++;
+		} else if (prvPwmledIsBlinkedComplete(id)) {
+			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id),
+					    prvGetLedBlinkLow(id));
+			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
+		}
+		break;
+	case LED_STATE_BLINK_OFF:
+		if (blinkflag == 0) {
+			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id),
+					    prvGetLedBlinkLow(id));
+			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
+			blinkflag++;
+		} else if (prvPwmledIsBlinkedComplete(id)) {
+			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id),
+					    prvGetLedBlinkLow(id));
+			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
+		}
+		break;
+	case LED_STATE_BLINK_BREATH:
+		prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id),
+				    prvGetLedBlinkLow(id));
+		prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_BREATH_HANDLE);
+		break;
+	case LED_STATE_BLINK_ON_HANDLE:
+		if ((prvPwmledIsBlinkedComplete(id) == 1) ||
+		    (prvGetLastLedState(id) == LED_STATE_DEFAULT)) {
+			prvPwmLedSetBrightness(id, LED_FULL);
 			prvSetLedStateToDefault(id);
 			blinkflag = 0;
-			break;
-		case LED_STATE_BREATH:
-			prvLedBreath(id, prvGetLedBreathId(id));
+		}
+		break;
+	case LED_STATE_BLINK_OFF_HANDLE:
+		if ((prvPwmledIsBlinkedComplete(id) == 1) ||
+		    (prvGetLastLedState(id) == LED_STATE_DEFAULT)) {
+			prvPwmLedSetBrightness(id, LED_OFF);
+			prvSetLedStateToDefault(id);
 			blinkflag = 0;
-			break;
-		case LED_STATE_BLINK_ON:
-			if (blinkflag == 0) {
-				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
-				blinkflag++;
-			} else if (prvPwmledIsBlinkedComplete(id)) {
-				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_ON_HANDLE);
-			}
-			break;
-		case LED_STATE_BLINK_OFF:
-			if (blinkflag == 0) {
-				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
-				blinkflag++;
-			} else if (prvPwmledIsBlinkedComplete(id)) {
-				prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_OFF_HANDLE);
-			}
-			break;
-		case LED_STATE_BLINK_BREATH:
-			prvPwmledblinktimes(id, prvGetLedBlinkTimes(id), prvGetLedBlinkHigh(id), prvGetLedBlinkLow(id));
-			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BLINK_BREATH_HANDLE);
-			break;
-		case LED_STATE_BLINK_ON_HANDLE:
-			if ((prvPwmledIsBlinkedComplete(id) == 1)
-				|| (prvGetLastLedState(id)==LED_STATE_DEFAULT)) {
-				prvPwmLedSetBrightness(id, LED_FULL);
-				prvSetLedStateToDefault(id);
-				blinkflag = 0;
-			}
-			break;
-		case LED_STATE_BLINK_OFF_HANDLE:
-			if ((prvPwmledIsBlinkedComplete(id) == 1)
-				|| (prvGetLastLedState(id)==LED_STATE_DEFAULT)) {
-				prvPwmLedSetBrightness(id, LED_OFF);
-				prvSetLedStateToDefault(id);
-				blinkflag = 0;
-			}
-			break;
-		case LED_STATE_BLINK_BREATH_HANDLE:
-			if ((prvPwmledIsBlinkedComplete(id) == 1)
-				|| (prvGetLastLedState(id)==LED_STATE_DEFAULT)) {
-				prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BREATH);
-			}
-			break;
-#if 0
-		/* TODO: Expansion of auxiliary functions */
-		case LED_STATE_SET_MAX_BRIGHTNESS:
-			break;
-		case LED_STATE_CLEAR_PINMUX:
-			break;
-		case LED_STATE_SET_PINMUX:
-			break;
-		case LED_STATE_INFO:
-			break;
-		case LED_STATE_DEBUG:
-			break;
-#endif
-		case LED_STATE_INVALID:
-			break;
-		case LED_STATE_DEFAULT:
-			break;
+		}
+		break;
+	case LED_STATE_BLINK_BREATH_HANDLE:
+		if ((prvPwmledIsBlinkedComplete(id) == 1) ||
+		    (prvGetLastLedState(id) == LED_STATE_DEFAULT)) {
+			prvStickMemLedWrite(id, STICK_LED_STATE, LED_STATE_BREATH);
+		}
+		break;
+	case LED_STATE_INVALID:
+		break;
+	case LED_STATE_DEFAULT:
+		break;
 	} /* end swith */
-
 }
 
 static void *prvLedGetInfo(void *msg)
@@ -356,80 +340,71 @@ static void *prvLedGetInfo(void *msg)
 	id = *(u32 *)msg;
 	state = *(((u32 *)msg) + 1);
 	switch (state) {
-			/*
-			 * led breath use the same timer task to handle breathe.
-			 * so don't set the new state.
-			 */
-			case LED_STATE_BRIGHTNESS:
-				brightness = *(((u32 *)msg) + 2);
-				xLedsStateSetBrightness(id, brightness);
-				break;
-			case LED_STATE_BREATH:
-				breath = *(((u32 *)msg) + 2);
-				xLedsStateSetBreath(id, breath);
-				break;
-			case LED_STATE_BLINK_ON:
-				blink_times = *(((u32 *)msg) + 2);
-				blink_high = *(((u32 *)msg) + 3);
-				blink_low = *(((u32 *)msg) + 4);
-				xLedsStateSetBlinkOn(id, blink_times, blink_high, blink_low, 0, 0);
-				break;
-			case LED_STATE_BLINK_OFF:
-				blink_times = *(((u32 *)msg) + 2);
-				blink_high = *(((u32 *)msg) + 3);
-				blink_low = *(((u32 *)msg) + 4);
-				xLedsStateSetBlinkOff(id, blink_times, blink_high, blink_low, 0, 0);
-				break;
-			case LED_STATE_BLINK_BREATH:
-				blink_times = *(((u32 *)msg) + 2);
-				blink_high = *(((u32 *)msg) + 3);
-				blink_low = *(((u32 *)msg) + 4);
-				xLedsStateSetBlinkBreath(id, blink_times, blink_high, blink_low, 0, 0);
-				break;
-#if 0
-			/* TODO: Expansion of auxiliary functions */
-			case LED_STATE_SET_MAX_BRIGHTNESS:
-				break;
-			case LED_STATE_CLEAR_PINMUX:
-				break;
-			case LED_STATE_SET_PINMUX:
-				break;
-			case LED_STATE_INFO:
-				break;
-			case LED_STATE_DEBUG:
-				break;
-#endif
-			case LED_STATE_INVALID:
-				break;
-			case LED_STATE_DEFAULT:
-				break;
-		} /* end swith */
+	/*
+	 * led breath use the same timer task to handle breathe.
+	 * so don't set the new state.
+	 */
+	case LED_STATE_BRIGHTNESS:
+		brightness = *(((u32 *)msg) + 2);
+		xLedsStateSetBrightness(id, brightness);
+		break;
+	case LED_STATE_BREATH:
+		breath = *(((u32 *)msg) + 2);
+		xLedsStateSetBreath(id, breath);
+		break;
+	case LED_STATE_BLINK_ON:
+		blink_times = *(((u32 *)msg) + 2);
+		blink_high = *(((u32 *)msg) + 3);
+		blink_low = *(((u32 *)msg) + 4);
+		xLedsStateSetBlinkOn(id, blink_times, blink_high, blink_low, 0, 0);
+		break;
+	case LED_STATE_BLINK_OFF:
+		blink_times = *(((u32 *)msg) + 2);
+		blink_high = *(((u32 *)msg) + 3);
+		blink_low = *(((u32 *)msg) + 4);
+		xLedsStateSetBlinkOff(id, blink_times, blink_high, blink_low, 0, 0);
+		break;
+	case LED_STATE_BLINK_BREATH:
+		blink_times = *(((u32 *)msg) + 2);
+		blink_high = *(((u32 *)msg) + 3);
+		blink_low = *(((u32 *)msg) + 4);
+		xLedsStateSetBlinkBreath(id, blink_times, blink_high, blink_low, 0, 0);
+		break;
+	case LED_STATE_INVALID:
+		break;
+	case LED_STATE_DEFAULT:
+		break;
+	} /* end switth */
 
 	return NULL;
 }
 
 static void vPrintLedsStatus(TimerHandle_t xTimer)
 {
-	xTimer = xTimer;
 	uint32_t i, state = 0;
 
+	(void)xTimer;
 	//taskENTER_CRITICAL();
 	for (i = 0; i < LED_ID_MAX; i++) {
-		prvStickMemLedRead(i , STICK_LED_STATE, &state);
+		prvStickMemLedRead(i, STICK_LED_STATE, &state);
 		prvLedStateMachine(state, i);
 	}
 	//taskEXIT_CRITICAL();
 }
 
-int32_t xLedsStateSetBlinkBreath(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms, uint32_t high_br, uint32_t low_br)
+int32_t xLedsStateSetBlinkBreath(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms,
+				 uint32_t high_br, uint32_t low_br)
 {
 	if ((id >= LED_ID_MAX) || (times > LED_MAX_BLINK_CNT)) {
-		iprintf("%s: id: %ld times: %ld set blink breath fail! maxid: %d maxtime: %d\n", DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
+		iprintf("%s: id: %ld times: %ld set blink breath fail! maxid: %d maxtime: %d\n",
+			DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink breath fail! maxhigh: %dms maxlow: %dms\n", DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
+		iprintf("%s: high: %ldms low: %ldms set blink breath fail!
+			maxhigh: %dms maxlow: %dms\n",
+			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -445,15 +420,19 @@ int32_t xLedsStateSetBlinkBreath(uint32_t id, uint32_t times, uint32_t high_ms, 
 	return 0;
 }
 
-int32_t xLedsStateSetBlinkOn(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms, uint32_t high_br, uint32_t low_br)
+int32_t xLedsStateSetBlinkOn(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms,
+			     uint32_t high_br, uint32_t low_br)
 {
 	if ((id >= LED_ID_MAX) || (times > LED_MAX_BLINK_CNT)) {
-		iprintf("%s: id: %ld times: %ld set blink on fail! maxid: %d maxtime: %d\n", DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
+		iprintf("%s: id: %ld times: %ld set blink on fail! maxid: %d maxtime: %d\n",
+			DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink on fail! maxhigh: %dms maxlow: %dms\n", DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
+		iprintf("%s: high: %ldms low: %ldms set blink on fail!
+			maxhigh: %dms maxlow: %dms\n",
+			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -469,15 +448,19 @@ int32_t xLedsStateSetBlinkOn(uint32_t id, uint32_t times, uint32_t high_ms, uint
 	return 0;
 }
 
-int32_t xLedsStateSetBlinkOff(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms, uint32_t high_br, uint32_t low_br)
+int32_t xLedsStateSetBlinkOff(uint32_t id, uint32_t times, uint32_t high_ms, uint32_t low_ms,
+			      uint32_t high_br, uint32_t low_br)
 {
 	if ((id >= LED_ID_MAX) || (times > LED_MAX_BLINK_CNT)) {
-		iprintf("%s: id: %ld times: %ld set blink off fail! maxid: %d maxtime: %d\n", DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
+		iprintf("%s: id: %ld times: %ld set blink off fail! maxid: %d maxtime: %d\n",
+			DRIVER_NAME, id, times, LED_ID_MAX - 1, LED_MAX_BLINK_CNT);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink off fail! maxhigh: %dms maxlow: %dms\n", DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
+		iprintf("%s: high: %ldms low: %ldms set blink off fail!
+			maxhigh: %dms maxlow: %dms\n",
+			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -496,7 +479,8 @@ int32_t xLedsStateSetBlinkOff(uint32_t id, uint32_t times, uint32_t high_ms, uin
 int32_t xLedsStateSetBreath(uint32_t id, uint32_t breath_id)
 {
 	if ((id >= LED_ID_MAX) || (breath_id >= LED_BREATH_MAX_COUNT)) {
-		iprintf("%s: id: %ld breath id: %ld set breath fail! maxid: %d maxbreath id: %d\n", DRIVER_NAME, id, breath_id, LED_ID_MAX - 1, LED_BREATH_MAX_COUNT - 1);
+		iprintf("%s: id: %ld breath id: %ld set breath fail! maxid: %d maxbreath id: %d\n",
+			DRIVER_NAME, id, breath_id, LED_ID_MAX - 1, LED_BREATH_MAX_COUNT - 1);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -510,7 +494,9 @@ int32_t xLedsStateSetBreath(uint32_t id, uint32_t breath_id)
 int32_t xLedsStateSetBrightness(uint32_t id, uint32_t brightness)
 {
 	if ((id >= LED_ID_MAX) || (brightness > LED_FULL)) {
-		iprintf("%s: id: %ld brightness: %ld set brightness fail! maxid: %d maxbrightness: %d\n", DRIVER_NAME, id, brightness, LED_ID_MAX - 1, LED_FULL);
+		iprintf("%s: id: %ld brightness: %ld set brightness fail!
+			maxid: %d maxbrightness: %d\n",
+			DRIVER_NAME, id, brightness, LED_ID_MAX - 1, LED_FULL);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -529,14 +515,22 @@ int32_t xLedsStateInit(void)
 	/* TODO: free */
 	/* apply pwm */
 	for (i = 0; i < LED_ID_MAX; i++) {
-		MesonLeds[i].pwm = xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT, MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
+		MesonLeds[i].pwm =
+			xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+					      MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
 		if (!MesonLeds[i].pwm) {
-			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n", DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT, MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
+			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n",
+				DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
-		MesonLeds[i].pwm_sub= xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT, MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
+		MesonLeds[i].pwm_sub = xPwmMesonChannelApply(
+			MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+			MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
 		if (!MesonLeds[i].pwm_sub) {
-			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n", DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT, MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
+			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n",
+				DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
 	}
@@ -552,11 +546,11 @@ int32_t xLedsStateInit(void)
 	/* initialization status */
 	vLedPlatInit(PLedStickMem);
 	/* creat led timer */
-	xLedsTimer = xTimerCreate("Timer", pdMS_TO_TICKS(LED_TASK_TIME_MS), pdTRUE, NULL, vPrintLedsStatus);
+	xLedsTimer = xTimerCreate("Timer", pdMS_TO_TICKS(LED_TASK_TIME_MS), pdTRUE, NULL,
+				  vPrintLedsStatus);
 	iprintf("%s: Starting leds task ...\n", DRIVER_NAME);
 	xTimerStart(xLedsTimer, 0);
 
 	/* pinmux needs setting at the end */
 	return vLedPinmuxInit();
 }
-

@@ -7,8 +7,7 @@
 #ifndef __STICK_MEM_H_
 #define __STICK_MEM_H_
 
-enum stick_mem_idx
-{
+enum stick_mem_idx {
 	STICK_WAKEUP_REASON = 0,
 	STICK_VRTC = 1,
 	STICK_REBOOT_FLAG = 2,

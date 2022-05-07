@@ -30,45 +30,38 @@ enum GPioAOIRQLineType {
 	GPIO_AO_IRQ_LINE_INVALID,
 };
 
-
-typedef struct ParentIRQDesc {
+struct ParentIRQDesc {
 	GpioIRQHandler_t phandler;
 	uint32_t flags;
 	uint16_t owner;
 	uint16_t irq;
-} ParentIRQDesc_t;
+};
 
-typedef struct GpioIRQBank {
+struct GpioIRQBank {
 	const char *name;
-	ParentIRQDesc_t *parentIRQs;
+	struct ParentIRQDesc *parentIRQs;
 	uint16_t gpioIRQBase;
 	uint8_t parentIRQNum;
-} GpioIRQBank_t;
+};
 
-#define LEN_NAME		32
+#define LEN_NAME 32
 
 #ifdef PADCTRL_GPIO_IRQ_CTRL0
-#define GPIO_EE_IRQ_BASE	PADCTRL_GPIO_IRQ_CTRL0
+#define GPIO_EE_IRQ_BASE PADCTRL_GPIO_IRQ_CTRL0
 #else
-#define GPIO_EE_IRQ_BASE	(0xffd00000 + (0x3c20  << 2))
+#define GPIO_EE_IRQ_BASE (0xffd00000 + (0x3c20 << 2))
 #endif
 
-#define PARENT_IRQ_BK(p, f, o, n)					\
-{									\
-	.phandler = p,							\
-	.flags    = f,							\
-	.owner    = o,							\
-	.irq      = n,							\
-}
+#define PARENT_IRQ_BK(p, f, o, n)                                                                  \
+	{                                                                                          \
+		.phandler = p, .flags = f, .owner = o, .irq = n,                                   \
+	}
 
-#define GPIO_IRQ_BK(n, b, i, in)					\
-{									\
-	.name		= n,						\
-	.gpioIRQBase	= b,						\
-	.parentIRQs	= i,						\
-	.parentIRQNum	= in,						\
-}
+#define GPIO_IRQ_BK(n, b, i, in)                                                                   \
+	{                                                                                          \
+		.name = n, .gpioIRQBase = b, .parentIRQs = i, .parentIRQNum = in,                  \
+	}
 
-const GpioIRQBank_t *pGetGpioIrqBank(void);
+const struct GpioIRQBank *pGetGpioIrqBank(void);
 void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags);
 #endif

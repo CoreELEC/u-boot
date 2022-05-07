@@ -14,19 +14,19 @@
 #include "mailbox-api.h"
 
 /*KEY ID*/
-#define GPIO_KEY_ID_POWER	GPIOD_3
+#define GPIO_KEY_ID_POWER GPIOD_3
 
-#define ADC_KEY_ID_HOME		520
+#define ADC_KEY_ID_HOME 520
 
 static void vKeyCallBack(struct xReportEvent event)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 
 	buf[0] = POWER_KEY_WAKEUP;
 	STR_Wakeup_src_Queue_Send(buf);
 
-	printf("dynamic key event 0x%x, key code %d, responseTicks %d\n",
-		event.event, event.ulCode, event.responseTime);
+	printf("dynamic key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
+	       event.responseTime);
 }
 
 static void *xMboxSetKeypad(void *msg)
@@ -57,11 +57,9 @@ static void *xMboxSetKeypad(void *msg)
 			return NULL;
 		}
 
-		struct xAdcKeyInfo adcKey[1] = {
-			ADC_KEY_INFO(key_info[0], key_info[1],
-				     (enum AdcChannelType)key_info[2],
-				     key_info[3], vKeyCallBack, NULL)
-		};
+		struct xAdcKeyInfo adcKey[1] = { ADC_KEY_INFO(key_info[0], key_info[1],
+							      (enum AdcChannelType)key_info[2],
+							      key_info[3], vKeyCallBack, NULL) };
 
 		vCreateAdcKey(adcKey, 1);
 	} else if (key_info[0] < ADCKEY_ID_BASE) {
@@ -70,10 +68,8 @@ static void *xMboxSetKeypad(void *msg)
 			return NULL;
 		}
 
-		struct xGpioKeyInfo gpioKey[1] = {
-			GPIO_KEY_INFO(key_info[0], key_info[1], key_info[2],
-					vKeyCallBack, NULL)
-		};
+		struct xGpioKeyInfo gpioKey[1] = { GPIO_KEY_INFO(key_info[0], key_info[1],
+								 key_info[2], vKeyCallBack, NULL) };
 
 		vCreateGpioKey(gpioKey, 1);
 	}
@@ -85,9 +81,8 @@ void vDynamicKeypadInit(void)
 {
 	int ret;
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
-							CMD_SET_KEYPAD,
-							xMboxSetKeypad, 0);
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, CMD_SET_KEYPAD, xMboxSetKeypad,
+						    0);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", CMD_SET_KEYPAD);
 }

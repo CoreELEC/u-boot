@@ -22,7 +22,7 @@
 
 static void vRTCInterruptHandler(void)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 	uint32_t alarm0_int_status;
 	uint32_t reg_val;
 
@@ -74,9 +74,8 @@ static int get_rtc(uint32_t *val)
 {
 	if (!REG32(VRTC_STICKY_REG))
 		return -1;
-	else
-		*(val) = REG32(VRTC_STICKY_REG);
 
+	*(val) = REG32(VRTC_STICKY_REG);
 	return 0;
 }
 
@@ -96,7 +95,8 @@ void store_rtc(void)
 void *MboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
-	printf("[%s]: MboxSetRTC val=0x%x \n", TAG, val);
+
+	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
 	set_rtc(val);
 
 	return NULL;
@@ -110,7 +110,7 @@ void *MboxGetRTC(void *msg)
 	memset(msg, 0, MBOX_BUF_LEN);
 	*(uint32_t *)msg = val;
 
-	printf("[%s]: MboxGetRTC val=0x%x\n", TAG, val);
+	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
 
 	return NULL;
 }
@@ -126,13 +126,11 @@ void rtc_init(void)
 		printf("[%s]: RegisterIrq error, ret = %d\n", TAG, ret);
 	EnableIrq(RTC_IRQ);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC,
-						MboxSetRTC, 0);
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, MboxSetRTC, 0);
 	if (ret == MBOX_CALL_MAX)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_SET_RTC);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC,
-						MboxGetRTC, 1);
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC, MboxGetRTC, 1);
 	if (ret == MBOX_CALL_MAX)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
 
@@ -140,4 +138,3 @@ void rtc_init(void)
 	if (reboot_mode == COLD_REBOOT)
 		reset_rtc();
 }
-

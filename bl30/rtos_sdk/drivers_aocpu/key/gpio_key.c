@@ -40,9 +40,7 @@ static void prReportEvent(struct xGpioKeyInfo *xKey, uint32_t event)
 static void prRunPollFromISR(void)
 {
 	if (xGpioKeyCycleTimer)
-		xTimerChangePeriodFromISR(xGpioKeyCycleTimer,
-					  1,
-					  NULL);
+		xTimerChangePeriodFromISR(xGpioKeyCycleTimer, 1, NULL);
 }
 
 static void prvDetectGpioKey(TimerHandle_t xTimer)
@@ -53,13 +51,11 @@ static void prvDetectGpioKey(TimerHandle_t xTimer)
 	struct xGpioKeyInfo *gpioKeyInfo;
 
 	(void)xTimer;
-	for (xPassBtn = xHeadKey; xPassBtn != NULL;
-						xPassBtn = xPassBtn->xNext) {
+	for (xPassBtn = xHeadKey; xPassBtn != NULL; xPassBtn = xPassBtn->xNext) {
 		gpioKeyInfo = xPassBtn->gpioKeyInfo;
 
 		uiValue = xGpioGetValue(gpioKeyInfo->keyInitInfo.ulKeyId);
-		if (uiValue != gpioKeyInfo->ulInitLevel
-					&& xPassBtn->keyState == UP) {
+		if (uiValue != gpioKeyInfo->ulInitLevel && xPassBtn->keyState == UP) {
 			isPressingKey = 1;
 
 			if (xPassBtn->keyJitterCount < KEY_JITTER_COUNT) {
@@ -69,9 +65,7 @@ static void prvDetectGpioKey(TimerHandle_t xTimer)
 			xPassBtn->keyJitterCount = 0;
 			xPassBtn->keyState = DOWN;
 			prReportEvent(xPassBtn->gpioKeyInfo, EVENT_SHORT);
-		} else if (uiValue == gpioKeyInfo->ulInitLevel
-			   && xPassBtn->keyState == DOWN) {
-
+		} else if (uiValue == gpioKeyInfo->ulInitLevel && xPassBtn->keyState == DOWN) {
 			if (xPassBtn->keyJitterCount < KEY_JITTER_COUNT) {
 				xPassBtn->keyJitterCount++;
 				isPressingKey = 1;
@@ -79,17 +73,13 @@ static void prvDetectGpioKey(TimerHandle_t xTimer)
 			}
 			xPassBtn->keyJitterCount = 0;
 			xPassBtn->keyState = UP;
-		} else if (uiValue != gpioKeyInfo->ulInitLevel
-			   && xPassBtn->keyState == DOWN) {
+		} else if (uiValue != gpioKeyInfo->ulInitLevel && xPassBtn->keyState == DOWN) {
 			isPressingKey = 1;
 		}
 	}
 
-	if (isPressingKey) {
-		xTimerChangePeriod(xGpioKeyCycleTimer,
-				   pdMS_TO_TICKS(TIMER_CYCLE_TIME),
-				   0);
-	}
+	if (isPressingKey)
+		xTimerChangePeriod(xGpioKeyCycleTimer, pdMS_TO_TICKS(TIMER_CYCLE_TIME), 0);
 }
 
 static void prvAddGpioKey(struct xOneGpioKeyInfo *xKey)
@@ -116,12 +106,9 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 	uint16_t i;
 
 	if (!xGpioKeyCycleTimer) {
-		xGpioKeyCycleTimer = xTimerCreate((const char *)"xGpioKeyTimer",
-						  1,
-						  pdFALSE,
-						  (void *)1,
-						  (TimerCallbackFunction_t)
-						  prvDetectGpioKey);
+		xGpioKeyCycleTimer =
+			xTimerCreate((const char *)"xGpioKeyTimer", 1, pdFALSE, (void *)1,
+				     (TimerCallbackFunction_t)prvDetectGpioKey);
 		if (!xGpioKeyCycleTimer) {
 			printf("gpio timer create failed!\n");
 			return;
@@ -144,8 +131,7 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 		xOneKey->gpioKeyInfo = gpioKeyInfo;
 		prvAddGpioKey(xOneKey);
 
-		printf("keypad: add gpio key [%ld]\n",
-			xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
+		printf("keypad: add gpio key [%ld]\n", xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
 	}
 
 	return;
@@ -182,19 +168,18 @@ void vGpioKeyEnable(void)
 	struct xOneGpioKeyInfo *xPassBtn = xHeadKey;
 	struct xKeyInitInfo *keyInitInfo;
 
-	for (xPassBtn = xHeadKey; xPassBtn != NULL;
-						xPassBtn = xPassBtn->xNext) {
+	for (xPassBtn = xHeadKey; xPassBtn != NULL; xPassBtn = xPassBtn->xNext) {
 		keyInitInfo = &(xPassBtn->gpioKeyInfo->keyInitInfo);
 
 		xPinmuxSet(keyInitInfo->ulKeyId, PIN_FUNC0);
 		xGpioSetDir(keyInitInfo->ulKeyId, GPIO_DIR_IN);
-		xPinconfSet(keyInitInfo->ulKeyId,
-				(xPassBtn->gpioKeyInfo->ulInitLevel == HIGH) ?
-				PINF_CONFIG_BIAS_PULL_UP :
-				PINF_CONFIG_BIAS_PULL_DOWN);
+		xPinconfSet(keyInitInfo->ulKeyId, (xPassBtn->gpioKeyInfo->ulInitLevel == HIGH) ?
+							  PINF_CONFIG_BIAS_PULL_UP :
+							  PINF_CONFIG_BIAS_PULL_DOWN);
 		xRequestGpioIRQ(keyInitInfo->ulKeyId, prvGpioKeyHandler,
 				(xPassBtn->gpioKeyInfo->ulInitLevel == HIGH) ?
-				IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING);
+					IRQF_TRIGGER_FALLING :
+					IRQF_TRIGGER_RISING);
 	}
 }
 
@@ -203,8 +188,7 @@ void vGpioKeyDisable(void)
 	struct xOneGpioKeyInfo *xPassBtn = xHeadKey;
 	struct xKeyInitInfo *keyInitInfo;
 
-	for (xPassBtn = xHeadKey; xPassBtn != NULL;
-						xPassBtn = xPassBtn->xNext) {
+	for (xPassBtn = xHeadKey; xPassBtn != NULL; xPassBtn = xPassBtn->xNext) {
 		keyInitInfo = &(xPassBtn->gpioKeyInfo->keyInitInfo);
 
 		vFreeGpioIRQ(keyInitInfo->ulKeyId);

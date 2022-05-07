@@ -12,19 +12,16 @@
 
 #define NULL1 ((void *)0)
 
-#define PMIC_ENBALE   1
-#define PMIC_DISABLE  0
+#define PMIC_ENBALE 1
+#define PMIC_DISABLE 0
 #define PMIC_OSC_ENABLE 1
 #define PMIC_OSC_DISENABLE 0
 #define PMIC_MAXNUM 5
 
-#define REGULATOR_LINEAR_RANGE(_min_uV, _min_sel, _max_sel, _step_uV)	\
-{									\
-	.min_uV		= _min_uV,					\
-	.min_sel	= _min_sel,					\
-	.max_sel	= _max_sel,					\
-	.uV_step	= _step_uV,					\
-}
+#define REGULATOR_LINEAR_RANGE(_min_uV, _min_sel, _max_sel, _step_uV)                              \
+	{                                                                                          \
+		.min_uV = _min_uV, .min_sel = _min_sel, .max_sel = _max_sel, .uV_step = _step_uV,  \
+	}
 
 /*
  * Regulators can either control voltage or current.
@@ -39,15 +36,15 @@ struct regulator_desc {
 	int id;
 	const struct regulator_ops *ops;
 
-/* buck ctrl reg */
+	/* buck ctrl reg */
 	unsigned int enable_reg;
 	unsigned int enable_mask;
 	unsigned int enable_val;
 	unsigned int disable_val;
-/* buck out */
+	/* buck out */
 	unsigned int vsel_reg;
 	unsigned int vsel_mask;
-/* ldo ctrl */
+	/* ldo ctrl */
 	unsigned int ldo_reg;
 	unsigned int ldo_mask_ctrl;
 	unsigned int ldo_val_ctrl;
@@ -61,9 +58,9 @@ struct regulator_desc {
 
 struct regulator_ops {
 	/* enable/disable regulator */
-	int (*ctrl) (struct regulator_desc *rdev,int status);
+	int (*ctrl)(struct regulator_desc *rdev, int status);
 	/* get/set regulator voltage */
-	int (*set_voltage) (struct regulator_desc *rdev,unsigned int sel);
+	int (*set_voltage)(struct regulator_desc *rdev, unsigned int sel);
 };
 
 struct regulator_linear_range {
@@ -94,7 +91,7 @@ struct pmic_regulator {
  *@ pmic_regulators_register() - Pmic i2c config and enable
  *@ dev_id: regulator dev_id
  */
-extern void pmic_i2c_init(int dev_id,struct pmic_i2c *pmic_i2c);
+extern void pmic_i2c_init(int dev_id, struct pmic_i2c *pmic_i2c);
 
 /**
  * pmic_regulators_register() - Pmic regulators register
@@ -102,7 +99,6 @@ extern void pmic_i2c_init(int dev_id,struct pmic_i2c *pmic_i2c);
  * @dev_id: regulator dev_id
  */
 extern int pmic_regulators_register(struct pmic_regulator *PmicRegulator, int *dev_id);
-
 
 /**
  * pmic_regulator_ctrl() - Pmic regulators enable/disable
@@ -113,14 +109,13 @@ extern int pmic_regulators_register(struct pmic_regulator *PmicRegulator, int *d
 
 extern int pmic_regulator_ctrl(int dev_id, int id, int status);
 
-
 /**
  * pmic_regulator_set_voltage() - Pmic regulators set voltage
  * @dev_id: regulator dev_id
  * @id: buck/ldo id
  * @sel: buck/ldo voltage(uv)
  */
-extern int pmic_regulator_set_voltage(int dev_id, int id,int sel);
+extern int pmic_regulator_set_voltage(int dev_id, int id, int sel);
 
 /**
  * pmic_osc() - Pmic Crystal oscillator

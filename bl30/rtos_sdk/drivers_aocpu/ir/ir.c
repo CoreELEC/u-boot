@@ -18,17 +18,16 @@
 #include "ir_drv.h"
 
 static uint8_t ucIsDebugEnable;
-static IRPowerKey_t prvKeyCodeList[MAX_KEY_NUM] = {};
+static struct IRPowerKey prvKeyCodeList[MAX_KEY_NUM] = {};
 static uint32_t key_cnt;
 
-#define IRDebug(fmt, x...)						\
-do {									\
-	if (ucIsDebugEnable)						\
-		printf("%sDebug: %s: "fmt, DRIVE_NAME, __func__,  ##x);\
-} while (0)
+#define IRDebug(fmt, x...)                                                                         \
+	do {                                                                                       \
+		if (ucIsDebugEnable)                                                               \
+			printf("%sDebug: %s: " fmt, DRIVE_NAME, __func__, ##x);                    \
+	} while (0)
 
-#define IRError(fmt, x...)						\
-	printf("%sError: %s: "fmt, DRIVE_NAME, __func__,  ##x);
+#define IRError(fmt, x...) printf("%sError: %s: " fmt, DRIVE_NAME, __func__, ##x)
 
 static inline void prvIRRegWrite(uint8_t ucCTL, uint8_t ucAddr, uint32_t ulval)
 {
@@ -58,8 +57,7 @@ static inline uint32_t prvIRRegRead(uint8_t ucCTL, uint8_t ucAddr)
 	return REG32(ulRegBase + ucAddr);
 }
 
-static inline void prvIRRegUpdateBit(uint8_t ucCTL, uint8_t ucAddr,
-				     uint32_t ulMask, uint32_t ulVal)
+static inline void prvIRRegUpdateBit(uint8_t ucCTL, uint8_t ucAddr, uint32_t ulMask, uint32_t ulVal)
 {
 	uint32_t ulRegBase = 0;
 
@@ -126,7 +124,7 @@ void vInitIRWorkMode(uint16_t usWorkMode)
 static void prvCheckPowerKey(void)
 {
 	struct xIRDrvData *xDrvData;
-	IRPowerKey_t *ulPowerKeyList;
+	struct IRPowerKey *ulPowerKeyList;
 	uint8_t ucIndex = 0;
 
 	xDrvData = pGetIRDrvData();
@@ -138,10 +136,9 @@ static void prvCheckPowerKey(void)
 
 	IRDebug("receive key code :0x%x\n", xDrvData->ulFrameCode);
 	/* search power key list */
-	for ( ;ucIndex < xDrvData->ucPowerKeyNum; ucIndex++)
+	for (; ucIndex < xDrvData->ucPowerKeyNum; ucIndex++)
 		if (ulPowerKeyList[ucIndex].code == xDrvData->ulFrameCode) {
-			printf("receive the right power key:0x%x\n",
-				xDrvData->ulFrameCode);
+			printf("receive the right power key:0x%x\n", xDrvData->ulFrameCode);
 			if (xDrvData->vIRHandler)
 				xDrvData->vIRHandler(&ulPowerKeyList[ucIndex]);
 		}
@@ -158,7 +155,7 @@ static void vIRIntteruptHandler(void)
 	ucCurWorkMode = xDrvData->ucCurWorkMode;
 
 	/*choose controller */
-	for (; ucIndex < (ENABLE_LEGACY_CTL(ucCurWorkMode) ? 2:1); ucIndex++) {
+	for (; ucIndex < (ENABLE_LEGACY_CTL(ucCurWorkMode) ? 2 : 1); ucIndex++) {
 		ulDecodeStatus = prvIRRegRead(ucIndex, REG_STATUS);
 		if (ulDecodeStatus & 0x08) {
 			xDrvData->ucWorkCTL = ucIndex;
@@ -180,7 +177,6 @@ static void vIRIntteruptHandler(void)
 	xDrvData->ulFrameCode = prvIRRegRead(xDrvData->ucWorkCTL, REG_FRAME);
 
 	prvCheckPowerKey();
-
 }
 
 int8_t ucIsIRInit(void)
@@ -192,8 +188,8 @@ int8_t ucIsIRInit(void)
 }
 
 void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
-	     IRPowerKey_t *ulPowerKeyList, uint8_t ucPowerKeyNum,
-	     void (*vIRHandler)(IRPowerKey_t *pkey))
+	     struct IRPowerKey *ulPowerKeyList, uint8_t ucPowerKeyNum,
+	     void (*vIRHandler)(struct IRPowerKey *pkey))
 {
 	struct xIRDrvData *xDrvData;
 
@@ -244,10 +240,10 @@ void vIRDeint(void)
 	UnRegisterIrq(IRQ_NUM_IRIN);
 }
 
-void vIRGetKeyCode(IRPowerKey_t *PowerKeyList)
+void vIRGetKeyCode(struct IRPowerKey *PowerKeyList)
 {
-	IRPowerKey_t *Keydest = PowerKeyList;
-	IRPowerKey_t *KeyList = prvKeyCodeList;
+	struct IRPowerKey *Keydest = PowerKeyList;
+	struct IRPowerKey *KeyList = prvKeyCodeList;
 
 	while (key_cnt--)
 		*Keydest++ = *KeyList++;
@@ -255,9 +251,9 @@ void vIRGetKeyCode(IRPowerKey_t *PowerKeyList)
 
 static void *prvIRGetInfo(void *msg)
 {
-
 	uint32_t key_num, i;
 	uint32_t *key_code, *key_type;
+
 	key_num = *(u32 *)msg;
 	key_code = ((u32 *)msg) + 1;
 	key_type = ((u32 *)msg) + key_num / 2 + 1;
@@ -271,8 +267,6 @@ static void *prvIRGetInfo(void *msg)
 
 	key_cnt = i;
 	return NULL;
-
-
 }
 
 void vIRMailboxEnable(void)
@@ -286,4 +280,3 @@ void vIRMailboxEnable(void)
 		return;
 	}
 }
-

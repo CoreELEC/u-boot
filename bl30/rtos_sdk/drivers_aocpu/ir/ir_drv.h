@@ -10,43 +10,43 @@
 #include "register.h"
 #include "irq.h"
 
-#define	DRIVE_NAME		"[ir]"
+#define DRIVE_NAME "[ir]"
 
 /* only for sc2 now */
-#define	IR_INTERRUPT_NUM	22
+#define IR_INTERRUPT_NUM 22
 
 #ifndef IR_INTERRUPT_NUM
-#define IR_INTERRUPT_NUM	0
+#define IR_INTERRUPT_NUM 0
 #endif
 
 #ifndef IRQ_NUM_IRIN
-#define IRQ_NUM_IRIN		0
+#define IRQ_NUM_IRIN 0
 #endif
 
 #ifdef IRCTRL_IR_DEC_LDR_ACTIVE
-#define	IR_BASE_ADDR_OLD	IRCTRL_IR_DEC_LDR_ACTIVE
+#define IR_BASE_ADDR_OLD IRCTRL_IR_DEC_LDR_ACTIVE
 #else
 #ifdef AO_IR_DEC_LDR_ACTIVE
-#define	IR_BASE_ADDR_OLD	AO_IR_DEC_LDR_ACTIVE
+#define IR_BASE_ADDR_OLD AO_IR_DEC_LDR_ACTIVE
 #else
-#define	IR_BASE_ADDR_OLD	0
+#define IR_BASE_ADDR_OLD 0
 #endif
 #endif
 
 #ifdef IRCTRL_MF_IR_DEC_LDR_ACTIVE
-#define	IR_BASE_ADDR		IRCTRL_MF_IR_DEC_LDR_ACTIVE
+#define IR_BASE_ADDR IRCTRL_MF_IR_DEC_LDR_ACTIVE
 #else
 #ifdef AO_MF_IR_DEC_LDR_ACTIVE
-#define	IR_BASE_ADDR		AO_MF_IR_DEC_LDR_ACTIVE
+#define IR_BASE_ADDR AO_MF_IR_DEC_LDR_ACTIVE
 #else
-#define	IR_BASE_ADDR		0
+#define IR_BASE_ADDR 0
 #endif
 #endif
 
-#define	IS_LEGACY_CTRL(x)	((x) ? (IR_BASE_ADDR_OLD) : (IR_BASE_ADDR))
-#define	ENABLE_LEGACY_CTL(x)	(((x) >> 8) & 0xff)
-#define	LEGACY_IR_CTL_MASK(x)	ENABLE_LEGACY_CTL(x)
-#define	MULTI_IR_CTL_MASK(x)	((x) & 0xff)
+#define IS_LEGACY_CTRL(x) ((x) ? (IR_BASE_ADDR_OLD) : (IR_BASE_ADDR))
+#define ENABLE_LEGACY_CTL(x) (((x) >> 8) & 0xff)
+#define LEGACY_IR_CTL_MASK(x) ENABLE_LEGACY_CTL(x)
+#define MULTI_IR_CTL_MASK(x) ((x)&0xff)
 
 /*frame status*/
 enum {
@@ -101,25 +101,25 @@ struct xRegList {
 };
 
 /* protocol-->register */
-typedef struct xRegProtocolMethod {
+struct xRegProtocolMethod {
 	uint8_t ucProtocol;
 	uint8_t ucRegNum;
 	struct xRegList *RegList;
-} xRegProtocolMethod;
+};
 
 /*IR Driver data*/
 struct xIRDrvData {
-	uint8_t ucWorkCTL:1;
-	uint8_t ucIsInit:1;
-	uint8_t ucIRStatus:4;
+	uint8_t ucWorkCTL : 1;
+	uint8_t ucIsInit : 1;
+	uint8_t ucIRStatus : 4;
 	uint8_t ucPowerKeyNum;
 	uint16_t ucCurWorkMode;
 	uint32_t ulFrameCode;
-	IRPowerKey_t *ulPowerKeyList;
-	void (*vIRHandler)(IRPowerKey_t *pkey);
+	struct IRPowerKey *ulPowerKeyList;
+	void (*vIRHandler)(struct IRPowerKey *pkey);
 };
 
-const xRegProtocolMethod **pGetSupportProtocol(void);
+const struct xRegProtocolMethod **pGetSupportProtocol(void);
 struct xIRDrvData *pGetIRDrvData(void);
 
 #endif

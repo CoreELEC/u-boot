@@ -14,4 +14,3 @@ void vDDR_suspend(uint32_t st_f);
 void vDDR_resume(uint32_t st_f);
 
 #endif
-

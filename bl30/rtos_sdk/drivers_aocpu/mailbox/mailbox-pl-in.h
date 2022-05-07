@@ -9,84 +9,82 @@
 
 #include "mailbox.h"
 #include "mailbox-api.h"
+#include "gcc_compiler_attributes.h"
 
-#define UNUSED(x)           (void)(x)
+#define UNUSED(x) ((void)(x))
 
-#define ACK_OK				1
-#define ACK_FAIL			2
-#define QUEUE_LENGTH		20
-#define	TASK_POOL_SIZE		3
-#if( configMAX_PRIORITIES < 2 )
-	#error configMAX_PRIORITIES should no less than 3
+#define ACK_OK 1
+#define ACK_FAIL 2
+#define QUEUE_LENGTH 20
+#define TASK_POOL_SIZE 3
+#if (configMAX_PRIORITIES < 2)
+#error configMAX_PRIORITIES should no less than 3
 #endif
-#define MHU_MB_TASK_PRIORITIES	configMAX_PRIORITIES - 2
+#define MHU_MB_TASK_PRIORITIES (configMAX_PRIORITIES - 2)
 
-#define MAILBOX_BUFFER_SIZE             MHU_MAX_SIZE
-#define MAILBOX_CMD_MAX                 0xFFFF
+#define MAILBOX_BUFFER_SIZE MHU_MAX_SIZE
+#define MAILBOX_CMD_MAX 0xFFFF
 
-#define PRINT_DBG(...)			//printf(__VA_ARGS__)
-#define aml_writel32(val, reg)		(REG32(reg) = val)
-#define aml_readl32(reg)		(REG32(reg))
+#define PRINT_DBG(...) //printf(__VA_ARGS__)
+#define aml_writel32(val, reg) (REG32(reg) = val)
+#define aml_readl32(reg) (REG32(reg))
 
 enum sync_type {
 	MB_ASYNC = 1,
 	MB_SYNC,
 };
 
-typedef struct {
-	uint32_t cmd:16;
-	uint32_t size:9;
-	uint32_t sync:7;
-} MbStat_t;
+struct MbStat {
+	uint32_t cmd : 16;
+	uint32_t size : 9;
+	uint32_t sync : 7;
+};
 
-typedef union {
-	MbStat_t st;
+union MbStat_in {
+	struct MbStat st;
 	uint32_t reg;
-} MbStat_in_t;
+};
 
-typedef struct __attribute__((__packed__)) {
+struct __packed mbHeadInfo {
 	uint32_t status;
 	uint64_t taskid;
 	uint64_t complete;
 	uint64_t ullclt;
-}mbHeadInfo;
+};
 
-typedef struct __attribute__((__packed__)) {
+struct __packed mboxData {
 	uint32_t status;
 	uint64_t taskid;
 	uint64_t complete;
 	uint64_t ullclt;
 	uint8_t data[MHU_DATA_SIZE];
-}mboxData;
+};
 
-typedef struct __attribute__((__packed__)) {
-	mboxData mbdata;	// hack to pass more data
+struct __packed mbPackInfo {
+	struct mboxData mbdata; // hack to pass more data
 	uint32_t ulCmd;
 	uint32_t ulSize;
 	uint32_t ulChan;
-}mbPackInfo;
+};
 
-#define VALID_CMD_SIZE(cmd, size) \
-    configASSERT(cmd <= MAILBOX_CMD_MAX && size <= MAILBOX_BUFFER_SIZE)
+#define VALID_CMD_SIZE(cmd, size)                                                                  \
+	configASSERT(cmd <= MAILBOX_CMD_MAX && size <= MAILBOX_BUFFER_SIZE)
 
-#define VALID_CHANNEL(chan) \
-    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL)
+#define VALID_CHANNEL(chan) configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL)
 
-#define VALID_BUFFER_SIZE(size) \
-    configASSERT(size <= MAILBOX_BUFFER_SIZE)
+#define VALID_BUFFER_SIZE(size) configASSERT(size <= MAILBOX_BUFFER_SIZE)
 
-
-static inline MbStat_t xGetMboxStats(uint32_t reg)
+static inline struct MbStat xGetMboxStats(uint32_t reg)
 {
-	MbStat_in_t stat;
+	union MbStat_in stat;
 
 	stat.reg = aml_readl32(reg);
 	return stat.st;
 }
 
-static inline void vSetMboxStats(uint32_t reg, MbStat_t st)
+static inline void vSetMboxStats(uint32_t reg, struct MbStat st)
 {
-	MbStat_in_t stat;
+	union MbStat_in stat;
 
 	stat.st = st;
 	aml_writel32(stat.reg, reg);
@@ -200,21 +198,18 @@ static inline void vGetPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("get payload: addr:0x%x, 0x%x\n", addr, size);
-	if (data != NULL) {
+	PRINT_DBG("%s: addr:0x%x, 0x%x\n", __func__, addr, size);
+	if (data != NULL)
 		mbmemcpy(data, addr, size);
-	}
-
 }
 
 static inline void vBuildPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("vBuildPayload: addr:0x%x\n", addr);
-	if (data != NULL) {
+	PRINT_DBG("%s: addr:0x%x\n", __func__, addr);
+	if (data != NULL)
 		mbmemcpy(addr, data, size);
-	}
 }
 
 static inline void vReBuildPayload(void *addr, void *data, size_t size)

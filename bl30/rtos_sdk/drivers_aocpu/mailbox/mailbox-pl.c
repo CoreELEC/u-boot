@@ -21,13 +21,14 @@
 #include "mailbox-pl-in.h"
 #include "mailbox-htbl.h"
 #include "mailbox-api.h"
+#include "rpc-user.h"
 
-#define MBTAG		"AOCPU"
-#define PRINT_DBG(...)	//printf(__VA_ARGS__)
-#define PRINT_ERR(...)	printf(__VA_ARGS__)
-#define PRINT(...)	printf(__VA_ARGS__)
+#define MBTAG "AOCPU"
+#define PRINT_DBG(...) //printf(__VA_ARGS__)
+#define PRINT_ERR(...) printf(__VA_ARGS__)
+#define PRINT(...) printf(__VA_ARGS__)
 
-#define AO_MBOX_ONLY_SYNC	1
+#define AO_MBOX_ONLY_SYNC 1
 
 void *g_tbl_ao;
 
@@ -35,29 +36,26 @@ TaskHandle_t mbTeeHandler;
 TaskHandle_t mbReeHandler;
 static uint32_t ulTeeSyncTaskWake;
 static uint32_t ulReeSyncTaskWake;
-mbPackInfo syncTeeMbInfo;
-mbPackInfo syncReeMbInfo;
-
-extern void vRpcUserCmdInit(void);
+struct mbPackInfo syncTeeMbInfo;
+struct mbPackInfo syncReeMbInfo;
 
 static void vEnterCritical(void)
 {
-        taskENTER_CRITICAL();
+	taskENTER_CRITICAL();
 }
 
 static void vExitCritical(void)
 {
-        taskEXIT_CRITICAL();
+	taskEXIT_CRITICAL();
 }
-
 
 /*ARM 2 AOCPU mailbox*/
 static void vAoRevTeeMbHandler(uint32_t inmbox)
 {
 	//BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = inmbox;
-	mbPackInfo mbInfo;
-	MbStat_t st;
+	struct mbPackInfo mbInfo;
+	struct MbStat st;
 	uint32_t *addr = NULL;
 	uint32_t ulMbCmd, ulSize, ulSync;
 
@@ -96,7 +94,8 @@ static void vAoRevTeeMbHandler(uint32_t inmbox)
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
-		mbmemcpy(&syncTeeMbInfo, &mbInfo, sizeof(syncTeeMbInfo));;
+		mbmemcpy(&syncTeeMbInfo, &mbInfo, sizeof(syncTeeMbInfo));
+		;
 		vTaskNotifyGiveFromISR(mbTeeHandler, NULL);
 		//portYIELD_FROM_ISR(xYieldRequired);
 		break;
@@ -123,7 +122,7 @@ static void vTeeSyncTask(void *pvParameters)
 	uint32_t mbox = 0;
 	int index = 0;
 
-	pvParameters = pvParameters;
+	(void)pvParameters;
 	while (1) {
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 		PRINT_DBG("[%s]:TeeSyncTask\n", MBTAG);
@@ -135,14 +134,18 @@ static void vTeeSyncTask(void *pvParameters)
 		PRINT_DBG("[%s]:MbSyncTask mbox:%d\n", MBTAG, mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				mbmemset(&syncTeeMbInfo.mbdata.data, 0, sizeof(syncTeeMbInfo.mbdata.data));
+				mbmemset(&syncTeeMbInfo.mbdata.data, 0,
+					 sizeof(syncTeeMbInfo.mbdata.data));
 				syncTeeMbInfo.mbdata.status = ACK_FAIL;
-				vReBuildPayload(addr, &syncTeeMbInfo.mbdata, sizeof(syncTeeMbInfo.mbdata));
+				vReBuildPayload(addr, &syncTeeMbInfo.mbdata,
+						sizeof(syncTeeMbInfo.mbdata));
 				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
 			} else {
-				PRINT_DBG("[%s]:MbSyncTask re len:%d\n", MBTAG, sizeof(syncTeeMbInfo.mbdata));
+				PRINT_DBG("[%s]:MbSyncTask re len:%d\n", MBTAG,
+					  sizeof(syncTeeMbInfo.mbdata));
 				syncTeeMbInfo.mbdata.status = ACK_OK;
-				vReBuildPayload(addr, &syncTeeMbInfo.mbdata, sizeof(syncTeeMbInfo.mbdata));
+				vReBuildPayload(addr, &syncTeeMbInfo.mbdata,
+						sizeof(syncTeeMbInfo.mbdata));
 			}
 		}
 
@@ -156,14 +159,12 @@ static void vTeeSyncTask(void *pvParameters)
 	}
 }
 
-
-
 static void vAoRevReeMbHandler(uint32_t inmbox)
 {
 	//BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = inmbox;
-	mbPackInfo mbInfo;
-	MbStat_t st;
+	struct mbPackInfo mbInfo;
+	struct MbStat st;
 	uint32_t *addr = NULL;
 	uint32_t ulMbCmd, ulSize, ulSync;
 
@@ -202,7 +203,8 @@ static void vAoRevReeMbHandler(uint32_t inmbox)
 		mbInfo.ulCmd = ulMbCmd;
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
-		mbmemcpy(&syncReeMbInfo, &mbInfo, sizeof(syncReeMbInfo));;
+		mbmemcpy(&syncReeMbInfo, &mbInfo, sizeof(syncReeMbInfo));
+		;
 		vTaskNotifyGiveFromISR(mbReeHandler, NULL);
 		//portYIELD_FROM_ISR(xYieldRequired);
 		break;
@@ -229,7 +231,7 @@ static void vReeSyncTask(void *pvParameters)
 	uint32_t mbox = 0;
 	int index = 0;
 
-	pvParameters = pvParameters;
+	(void)pvParameters;
 	while (1) {
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 		PRINT_DBG("[%s]:ReeSyncTask\n", MBTAG);
@@ -241,14 +243,18 @@ static void vReeSyncTask(void *pvParameters)
 		PRINT_DBG("[%s]:MbSyncTask mbox:%d\n", MBTAG, mbox);
 		if (index != 0) {
 			if (index == MAX_ENTRY_NUM) {
-				mbmemset(&syncReeMbInfo.mbdata.data, 0, sizeof(syncReeMbInfo.mbdata.data));
+				mbmemset(&syncReeMbInfo.mbdata.data, 0,
+					 sizeof(syncReeMbInfo.mbdata.data));
 				syncReeMbInfo.mbdata.status = ACK_FAIL;
-				vReBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
+				vReBuildPayload(addr, &syncReeMbInfo.mbdata,
+						sizeof(syncReeMbInfo.mbdata));
 				PRINT_DBG("[%s]: undefine cmd or no callback\n", MBTAG);
 			} else {
-				PRINT_DBG("[%s]:MbSyncTask re len:%d\n", MBTAG, sizeof(syncReeMbInfo.mbdata));
+				PRINT_DBG("[%s]:MbSyncTask re len:%d\n", MBTAG,
+					  sizeof(syncReeMbInfo.mbdata));
 				syncReeMbInfo.mbdata.status = ACK_OK;
-				vReBuildPayload(addr, &syncReeMbInfo.mbdata, sizeof(syncReeMbInfo.mbdata));
+				vReBuildPayload(addr, &syncReeMbInfo.mbdata,
+						sizeof(syncReeMbInfo.mbdata));
 			}
 		}
 
@@ -261,7 +267,6 @@ static void vReeSyncTask(void *pvParameters)
 		vExitCritical();
 	}
 }
-
 
 static void vMbHandleReeIsr(void);
 static void vMbHandleReeIsr(void)
@@ -287,27 +292,18 @@ void vMbInit(void)
 	EnableIrq(MAILBOX_AOCPU_REE_IRQ);
 	EnableIrq(MAILBOX_AOCPU_TEE_IRQ);
 
-	xTaskCreate(vTeeSyncTask,
-		    "AoTeeSyncTask",
-		    configMINIMAL_STACK_SIZE,
-		    0,
-		    MHU_MB_TASK_PRIORITIES,
-		    (TaskHandle_t *)&mbTeeHandler);
+	xTaskCreate(vTeeSyncTask, "AoTeeSyncTask", configMINIMAL_STACK_SIZE, 0,
+		    MHU_MB_TASK_PRIORITIES, (TaskHandle_t *)&mbTeeHandler);
 
-	xTaskCreate(vReeSyncTask,
-		    "AoReeSyncTask",
-		    configMINIMAL_STACK_SIZE,
-		    0,
-		    MHU_MB_TASK_PRIORITIES,
-		    (TaskHandle_t *)&mbReeHandler);
+	xTaskCreate(vReeSyncTask, "AoReeSyncTask", configMINIMAL_STACK_SIZE, 0,
+		    MHU_MB_TASK_PRIORITIES, (TaskHandle_t *)&mbReeHandler);
 
 	vRpcUserCmdInit();
 	PRINT("[%s]: mailbox -v1 init end\n", MBTAG);
 }
 
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
-						 void *(handler) (void *),
-						 uint8_t needFdBak)
+						 void *(handler)(void *), uint8_t needFdBak)
 {
 	VALID_CHANNEL(ulChan);
 	UNUSED(ulChan);

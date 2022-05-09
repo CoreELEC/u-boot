@@ -21,10 +21,10 @@
 #include "suspend.h"
 #include "rtc.h"
 
-#define INT_TEST_NEST_DEPTH  6
-#define INT_TEST_GPIO_NUM  6
-#define INT_TEST_TASK_DELAY  50 // ms
-#define TASK_TEST_STACK_DEPTH  200
+#define INT_TEST_NEST_DEPTH 6
+#define INT_TEST_GPIO_NUM 6
+#define INT_TEST_TASK_DELAY 50 // ms
+#define TASK_TEST_STACK_DEPTH 200
 
 //#define GPIO_INT_SOURCE(x) (SOC_PIC_INT_GPIO_BASE + x)
 
@@ -32,42 +32,27 @@
  *   Board under test :        SIGNAL_BOARD_ENABLE     0
  *   Signal generation board : SIGNAL_BOARD_ENABLE     1
  */
-#define SIGNAL_BOARD_ENABLE       0
+#define SIGNAL_BOARD_ENABLE 0
 
-#define INT_TEST_INT_WAVE_ENABLE  1
+#define INT_TEST_INT_WAVE_ENABLE 1
 
 #if INT_TEST_INT_WAVE_ENABLE
-    #define INT_TEST_TIMER_PERIOD  500    // ms
-    #define INT_TEST_INT_DELAY    10    // ms
+#define INT_TEST_TIMER_PERIOD 500 // ms
+#define INT_TEST_INT_DELAY 10 // ms
 #else
-    #define INT_TEST_TIMER_PERIOD  500    // ms
-    #define INT_TEST_INT_DELAY    0x3ff    // ms
+#define INT_TEST_TIMER_PERIOD 500 // ms
+#define INT_TEST_INT_DELAY 0x3ff // ms
 #endif
 
-#define INT_TEST_MAX_TIMER_PERIOD	100 // ms
-#define INT_TEST_MIN_TIMER_PERIOD	50 // ms
-#define INT_TEST_MUTE_TIMER_PERIOD	200 // ms
+#define INT_TEST_MAX_TIMER_PERIOD 100 // ms
+#define INT_TEST_MIN_TIMER_PERIOD 50 // ms
+#define INT_TEST_MUTE_TIMER_PERIOD 200 // ms
 
-/* Interrupt handler */
-void DefaultInterruptHandler(void);
-void GPIOInterruptHandler( uint32_t num, uint32_t priority );
-void vApplicationIdleHook( void );
-void config_eclic_irqs ( void );
-void vApplicationIdleHook( void );
-void vApplicationMallocFailedHook( void );
-void power_on_off_cpu(void);
-
-extern void create_str_task(void);
-
-void config_eclic_irqs (void)
+void config_eclic_irqs(void)
 {
-	eclic_init (ECLIC_NUM_INTERRUPTS);
+	eclic_init(ECLIC_NUM_INTERRUPTS);
 	eclic_set_nlbits(0);
 }
-
-extern void vMbInit(void);
-extern void vCoreFsmIdleInit(void);
-extern void create_str_task(void);
 
 void hw_business_process(void)
 {
@@ -76,13 +61,10 @@ void hw_business_process(void)
 	printf("AOCPU image version='%s'\n", CONFIG_COMPILE_TIME);
 	config_eclic_irqs();
 	for (i = 0; i < 4; ++i)
-	{
-		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
-	}
+		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 	vMbInit();
-//	vCecCallbackInit(CEC_CHIP_SC2);
-//	vRtcInit();
+	//	vCecCallbackInit(CEC_CHIP_SC2);
+	//	vRtcInit();
 	rtc_init();
 	create_str_task();
 }
-

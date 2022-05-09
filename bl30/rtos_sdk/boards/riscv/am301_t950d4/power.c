@@ -16,6 +16,7 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 #include "hdmi_cec.h"
+#include "power.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
 
@@ -25,56 +26,49 @@
 #include "irq.h"
 #endif
 
-static TaskHandle_t cecTask = NULL;
+static TaskHandle_t cecTask;
 static int vdd_ee;
 static int vdd_cpu;
 
-static IRPowerKey_t prvPowerKeyList[] = {
-	{ 0xef10fe01, IR_NORMAL}, /* ref tv pwr */
-	{ 0xba45bd02, IR_NORMAL}, /* small ir pwr */
-	{ 0xef10fb04, IR_NORMAL}, /* old ref tv pwr */
-	{ 0xf20dfe01, IR_NORMAL},
-	{ 0xe51afb04, IR_NORMAL},
-	{ 0xff00fe06, IR_NORMAL},
-	{ 0x3ac5bd02, IR_CUSTOM},
+static struct IRPowerKey prvPowerKeyList[] = {
+	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
+	{ 0xba45bd02, IR_NORMAL }, /* small ir pwr */
+	{ 0xef10fb04, IR_NORMAL }, /* old ref tv pwr */
+	{ 0xf20dfe01, IR_NORMAL },
+	{ 0xe51afb04, IR_NORMAL },
+	{ 0xff00fe06, IR_NORMAL },
+	{ 0x3ac5bd02, IR_CUSTOM },
 	{}
-        /* add more */
+	/* add more */
 };
 
-static void vIRHandler(IRPowerKey_t *pkey)
+static void vIRHandler(struct IRPowerKey *pkey)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
+
 	if (pkey->type == IR_NORMAL)
 		buf[0] = REMOTE_WAKEUP;
 	else if (pkey->type == IR_CUSTOM)
 		buf[0] = REMOTE_CUS_WAKEUP;
 
-        /* do sth below  to wakeup*/
+	/* do sth below  to wakeup*/
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
-
-void str_hw_init(void);
-void str_hw_disable(void);
-void str_power_on(int shutdown_flag);
-void str_power_off(int shutdown_flag);
-void Bt_GpioIRQRegister(void);
-void Bt_GpioIRQFree(void);
 
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+		vIRHandler);
 #ifdef CONFIG_ETH_WAKEUP
-	vETHInit(IRQ_ETH_PMT_NUM,eth_handler_t5);
+	vETHInit(IRQ_ETH_PMT_NUM, eth_handler_t5);
 #endif
-	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-		    NULL, CEC_TASK_PRI, &cecTask);
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
 	Bt_GpioIRQRegister();
 }
-
 
 void str_hw_disable(void)
 {
@@ -97,27 +91,27 @@ void str_power_on(int shutdown_flag)
 	int ret;
 
 	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,vdd_ee);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
 
 	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,vdd_cpu);
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
 	if (ret < 0) {
 		printf("vdd_CPU pwm set fail\n");
 		return;
 	}
 
 	/***power on vcc3.3***/
-	ret = xGpioSetDir(GPIOD_10,GPIO_DIR_OUT);
+	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc3.3 set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIOD_10,GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vcc3.3 set gpio val fail\n");
 		return;
@@ -125,13 +119,13 @@ void str_power_on(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power on VDDQ/VDDCPU***/
-		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
+		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("VDDCPU/VDDQ set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_HIGH);
+		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_HIGH);
 		if (ret < 0) {
 			printf("VDDCPU/VDDQ set gpio val fail\n");
 			return;
@@ -155,13 +149,13 @@ void str_power_off(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power off VDDQ/VDDCPU***/
-		ret = xGpioSetDir(GPIOD_4,GPIO_DIR_OUT);
+		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("VDDCPU/VDDQ set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_4,GPIO_LEVEL_LOW);
+		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_LOW);
 		if (ret < 0) {
 			printf("VDDCPU/VDDQ set gpio val fail\n");
 			return;
@@ -169,14 +163,14 @@ void str_power_off(int shutdown_flag)
 	}
 
 	/***power off vcc3.3***/
-	ret = xGpioSetDir(GPIOD_10,GPIO_DIR_OUT);
+	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc3.3 set gpio dir fail\n");
 		return;
 	}
 
 #ifndef CONFIG_ETH_WAKEUP
-	ret= xGpioSetValue(GPIOD_10,GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vcc3.3 set gpio val fail\n");
 		return;
@@ -190,7 +184,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT,700);
+	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, 700);
 	if (ret < 0) {
 		printf("vdd_CPU pwm set fail\n");
 		return;
@@ -203,7 +197,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT,770);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;
@@ -211,4 +205,3 @@ void str_power_off(int shutdown_flag)
 
 	//REG32( ((0x0000 << 2) + 0xff638c00)) = 0;
 }
-

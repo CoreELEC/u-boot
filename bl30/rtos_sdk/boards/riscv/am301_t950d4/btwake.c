@@ -11,20 +11,16 @@
 #include "task.h"
 #include "gpio.h"
 
-#include "queue.h"    /* RTOS queue related API prototypes. */
-#include "timers.h"   /* Software timer related API prototypes. */
-#include "semphr.h"   /* Semaphore related API prototypes. */
+#include "queue.h" /* RTOS queue related API prototypes. */
+#include "timers.h" /* Software timer related API prototypes. */
+#include "semphr.h" /* Semaphore related API prototypes. */
 
-#define BT_WAKE_HOST GPIOB_13  //bt_wake_host pin
+#define BT_WAKE_HOST GPIOB_13 //bt_wake_host pin
 #define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
-
-void Bt_IRQHandle(void);
-void Bt_GpioIRQRegister(void);
-void Bt_GpioIRQFree(void);
 
 void Bt_IRQHandle(void)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 
 	INFO("bt resume");
 	vDisableGpioIRQ(BT_WAKE_HOST);
@@ -46,5 +42,3 @@ void Bt_GpioIRQFree(void)
 {
 	vFreeGpioIRQ(BT_WAKE_HOST);
 }
-
-

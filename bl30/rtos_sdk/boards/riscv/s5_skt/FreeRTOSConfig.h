@@ -19,7 +19,7 @@
 #define configUSE_PREEMPTION 1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE 0
-#define configCPU_CLOCK_HZ 24000000  // 32768
+#define configCPU_CLOCK_HZ 24000000 // 32768
 #define configTICK_RATE_HZ 50
 #define configMAX_PRIORITIES 4
 #define configMINIMAL_STACK_SIZE 450
@@ -78,14 +78,14 @@
 #define portCRITICAL_NESTING_IN_TCB 1
 
 /* Define to trap errors during development. */
-#define configASSERT(x)                                        \
-	do { \
-		if ((x) == 0) {                                        \
-			taskDISABLE_INTERRUPTS();                      \
-			printf("ASSERT: %s %d\n", __FILE__, __LINE__); \
-			for (;;)                                       \
-				;                                      \
-		} \
+#define configASSERT(x)                                                                            \
+	do {                                                                                       \
+		if ((x) == 0) {                                                                    \
+			taskDISABLE_INTERRUPTS();                                                  \
+			printf("ASSERT: %s %d\n", __FILE__, __LINE__);                             \
+			for (;;)                                                                   \
+				;                                                                  \
+		}                                                                                  \
 	} while (0)
 
 /* FreeRTOS MPU specific definitions. */

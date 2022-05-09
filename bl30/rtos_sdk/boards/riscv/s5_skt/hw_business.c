@@ -22,7 +22,7 @@
 
 #define INT_TEST_NEST_DEPTH 6
 #define INT_TEST_GPIO_NUM 6
-#define INT_TEST_TASK_DELAY 50	// ms
+#define INT_TEST_TASK_DELAY 50 // ms
 #define TASK_TEST_STACK_DEPTH 200
 
 #define TASK_TEST_QUEUE_NUM 2
@@ -39,16 +39,16 @@
 #define INT_TEST_INT_WAVE_ENABLE 1
 
 #if INT_TEST_INT_WAVE_ENABLE
-#define INT_TEST_TIMER_PERIOD 500  // ms
-#define INT_TEST_INT_DELAY 10	   // ms
+#define INT_TEST_TIMER_PERIOD 500 // ms
+#define INT_TEST_INT_DELAY 10 // ms
 #else
-#define INT_TEST_TIMER_PERIOD 500  // ms
-#define INT_TEST_INT_DELAY 0x3ff   // ms
+#define INT_TEST_TIMER_PERIOD 500 // ms
+#define INT_TEST_INT_DELAY 0x3ff // ms
 #endif
 
-#define INT_TEST_MAX_TIMER_PERIOD 100	// ms
-#define INT_TEST_MIN_TIMER_PERIOD 50	// ms
-#define INT_TEST_MUTE_TIMER_PERIOD 200	// ms
+#define INT_TEST_MAX_TIMER_PERIOD 100 // ms
+#define INT_TEST_MIN_TIMER_PERIOD 50 // ms
+#define INT_TEST_MUTE_TIMER_PERIOD 200 // ms
 
 /* Interrupt handler */
 //void GPIOInterruptHandler(uint32_t num, uint32_t priority);

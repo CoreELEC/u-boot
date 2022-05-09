@@ -16,7 +16,6 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 #include "hdmi_cec.h"
-
 #include "power.h"
 
 /*#define CONFIG_ETH_WAKEUP*/
@@ -31,21 +30,21 @@ static TaskHandle_t cecTask;
 static int vdd_ee;
 static int vdd_cpu;
 
-static IRPowerKey_t prvPowerKeyList[] = {
-	{0xef10fe01, IR_NORMAL}, /* ref tv pwr */
-	{0xba45bd02, IR_NORMAL}, /* small ir pwr */
-	{0xef10fb04, IR_NORMAL}, /* old ref tv pwr */
-	{0xf20dfe01, IR_NORMAL},
-	{0xe51afb04, IR_NORMAL},
-	{0xff00fe06, IR_NORMAL},
-	{0x3ac5bd02, IR_CUSTOM},
+static struct IRPowerKey prvPowerKeyList[] = {
+	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
+	{ 0xba45bd02, IR_NORMAL }, /* small ir pwr */
+	{ 0xef10fb04, IR_NORMAL }, /* old ref tv pwr */
+	{ 0xf20dfe01, IR_NORMAL },
+	{ 0xe51afb04, IR_NORMAL },
+	{ 0xff00fe06, IR_NORMAL },
+	{ 0x3ac5bd02, IR_CUSTOM },
 	{}
-    /* add more */
+	/* add more */
 };
 
-static void vIRHandler(IRPowerKey_t *pkey)
+static void vIRHandler(struct IRPowerKey *pkey)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 
 	if (pkey->type == IR_NORMAL)
 		buf[0] = REMOTE_WAKEUP;
@@ -66,13 +65,12 @@ static void vIRHandler(IRPowerKey_t *pkey)
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList,
-		ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+		vIRHandler);
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM, eth_handler_t5);
 #endif
-	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI,
-		    &cecTask);
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();

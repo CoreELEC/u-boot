@@ -18,7 +18,7 @@
 
 static void vAdcKeyCallBack(struct xReportEvent event)
 {
-	uint32_t buf[4] = {0};
+	uint32_t buf[4] = { 0 };
 
 	switch (event.ulCode) {
 	case ADC_KEY_ID_HOME:
@@ -29,12 +29,12 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 		break;
 	}
 
-	printf("ADC key event 0x%x, key code %d, responseTicks %d\n", event.event,
-	       event.ulCode, event.responseTime);
+	printf("ADC key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
+	       event.responseTime);
 }
 
-struct xAdcKeyInfo adcKeyInfo[] = {
-	ADC_KEY_INFO(ADC_KEY_ID_HOME, 0, SARADC_CH1, EVENT_SHORT, vAdcKeyCallBack, NULL)};
+struct xAdcKeyInfo adcKeyInfo[] = { ADC_KEY_INFO(ADC_KEY_ID_HOME, 0, SARADC_CH1, EVENT_SHORT,
+						 vAdcKeyCallBack, NULL) };
 
 void vKeyPadCreate(void)
 {
@@ -46,8 +46,7 @@ void vKeyPadCreate(void)
 void vKeyPadInit(void)
 {
 	if (vAdcKeyIsEmpty())
-		vCreateAdcKey(adcKeyInfo,
-			      sizeof(adcKeyInfo) / sizeof(struct xAdcKeyInfo));
+		vCreateAdcKey(adcKeyInfo, sizeof(adcKeyInfo) / sizeof(struct xAdcKeyInfo));
 
 	vAdcKeyEnable();
 	vGpioKeyEnable();

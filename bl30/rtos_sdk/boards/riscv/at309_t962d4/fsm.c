@@ -5,10 +5,10 @@
  */
 
 #include "FreeRTOS.h" /* Must come first. */
-#include "task.h"     /* RTOS task related API prototypes. */
-#include "queue.h"    /* RTOS queue related API prototypes. */
-#include "timers.h"   /* Software timer related API prototypes. */
-#include "semphr.h"   /* Semaphore related API prototypes. */
+#include "task.h" /* RTOS task related API prototypes. */
+#include "queue.h" /* RTOS queue related API prototypes. */
+#include "timers.h" /* Software timer related API prototypes. */
+#include "semphr.h" /* Semaphore related API prototypes. */
 
 #include <stdio.h>
 #include <unistd.h>
@@ -19,37 +19,38 @@
 #include "mailbox-api.h"
 #include "irq.h"
 
-typedef enum a {
-    PM_CPU_PWR,
-    PM_CPU_CORE0,
-    PM_CPU_CORE1,
-    PM_CPU_CORE2,
-    PM_CPU_CORE3,
-} PM_E;
+
+enum PM_E {
+	PM_CPU_PWR,
+	PM_CPU_CORE0,
+	PM_CPU_CORE1,
+	PM_CPU_CORE2,
+	PM_CPU_CORE3,
+};
 
 static void *xMboxCoreFsmIdle(void *msg)
 {
-	PM_E domain = *(uint32_t *)msg;
+	enum PM_E domain = *(uint32_t *)msg;
 
 	switch (domain) {
-		case PM_CPU_CORE0:
-			REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 0), 0);
-			EnableIrq(IRQ_NUM_OUT_0);
-			break;
-		case PM_CPU_CORE1:
-			REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 1), 0);
-			EnableIrq(IRQ_NUM_OUT_1);
-			break;
-		case PM_CPU_CORE2:
-			REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 2), 0);
-			EnableIrq(IRQ_NUM_OUT_2);
-			break;
-		case PM_CPU_CORE3:
-			REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 3), 0);
-			EnableIrq(IRQ_NUM_OUT_3);
-			break;
-		default:
-			break;
+	case PM_CPU_CORE0:
+		REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 0), 0);
+		EnableIrq(IRQ_NUM_OUT_0);
+		break;
+	case PM_CPU_CORE1:
+		REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 1), 0);
+		EnableIrq(IRQ_NUM_OUT_1);
+		break;
+	case PM_CPU_CORE2:
+		REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 2), 0);
+		EnableIrq(IRQ_NUM_OUT_2);
+		break;
+	case PM_CPU_CORE3:
+		REG32_UPDATE_BITS(ISA_SOFT_IRQ, (1 << 3), 0);
+		EnableIrq(IRQ_NUM_OUT_3);
+		break;
+	default:
+		break;
 	}
 	return NULL;
 }
@@ -82,42 +83,12 @@ static void xCore3FsmIdleHandleIsr(void)
 	DisableIrq(IRQ_NUM_OUT_3);
 }
 
-#if 0
-#define     PWRCTRL_CPU1_FSM_STS0   (0xff644000 + (0x097 << 2))
-void checkstatus(void)
-{
-	unsigned value;
-
-	printf("\n\n");
-	value = REG32(PWRCTRL_CPU0_FSM_STS0);
-	value = ((value >> 12) & 0x1f);
-	if (value != 0)
-		printf("sts0:%x\n", value);
-
-	value = REG32(PWRCTRL_CPU1_FSM_STS0);
-	value = ((value >> 12) & 0x1f);
-	if (value != 0)
-		printf("sts1:%x\n", value);
-
-	value = REG32(PWRCTRL_CPU2_FSM_STS0);
-	value = ((value >> 12) & 0x1f);
-	if (value != 0)
-		printf("sts2:%x\n", value);
-
-	value = REG32(PWRCTRL_CPU3_FSM_STS0);
-	value = ((value >> 12) & 0x1f);
-	if (value != 0)
-		printf("sts3:%x\n", value);
-}
-#endif
-
-void vCoreFsmIdleInit(void);
 void vCoreFsmIdleInit(void)
 {
 	int ret;
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_CPU_FSM_IDLE,
-						xMboxCoreFsmIdle, 0);
+						    xMboxCoreFsmIdle, 0);
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CPU_FSM_IDLE);
 

@@ -71,33 +71,31 @@ struct xGpioKeyInfo {
 
 struct xAdcKeyInfo {
 	int32_t ulValue;
-	AdcInstanceConfig_t xAdcDecp;
+	struct AdcInstanceConfig xAdcDecp;
 	struct xKeyInitInfo keyInitInfo;
 };
 
-#define KEY_INIT_INFO(_ulKeyId, _eventMask, _repeatTimeMs, _repeatDelayTimeMs,          \
-		      _longDTTMs, _doubleDTTMs, _combLongDTTMs, _combDTTMs, _CallBack,  \
-		      _data)                                                            \
-	{                                                                               \
-		.ulKeyId = _ulKeyId, .eventMask = _eventMask,                           \
-		.repeatTimeMs = _repeatTimeMs, .repeatDelayTimeMs = _repeatDelayTimeMs, \
-		.longDTTMs = _longDTTMs, .doubleDTTMs = _doubleDTTMs,                   \
-		.combLongDTTMs = _combLongDTTMs, .combDTTMs = _combDTTMs,               \
-		.CallBack = _CallBack, .data = _data,                                   \
+#define KEY_INIT_INFO(_ulKeyId, _eventMask, _repeatTimeMs, _repeatDelayTimeMs, _longDTTMs,         \
+		      _doubleDTTMs, _combLongDTTMs, _combDTTMs, _CallBack, _data)                  \
+	{                                                                                          \
+		.ulKeyId = _ulKeyId, .eventMask = _eventMask, .repeatTimeMs = _repeatTimeMs,       \
+		.repeatDelayTimeMs = _repeatDelayTimeMs, .longDTTMs = _longDTTMs,                  \
+		.doubleDTTMs = _doubleDTTMs, .combLongDTTMs = _combLongDTTMs,                      \
+		.combDTTMs = _combDTTMs, .CallBack = _CallBack, .data = _data,                     \
 	}
 
-#define GPIO_KEY_INFO(_ulKeyId, _ulInitLevel, _eventMask, _CallBack, _data)          \
-	{                                                                            \
-		.ulInitLevel = _ulInitLevel,                                         \
-		.keyInitInfo = KEY_INIT_INFO(_ulKeyId, _eventMask, 0, 0, 0, 0, 0, 0, \
-					     _CallBack, _data),                      \
+#define GPIO_KEY_INFO(_ulKeyId, _ulInitLevel, _eventMask, _CallBack, _data)                        \
+	{                                                                                          \
+		.ulInitLevel = _ulInitLevel,                                                       \
+		.keyInitInfo =                                                                     \
+			KEY_INIT_INFO(_ulKeyId, _eventMask, 0, 0, 0, 0, 0, 0, _CallBack, _data),   \
 	}
 
-#define ADC_KEY_INFO(_ulKeyId, _ulValue, _adcChan, _eventMask, _CallBack, _data)     \
-	{                                                                            \
-		.ulValue = _ulValue, .xAdcDecp = {_adcChan, NO_AVERAGING, 1},        \
-		.keyInitInfo = KEY_INIT_INFO(_ulKeyId, _eventMask, 0, 0, 0, 0, 0, 0, \
-					     _CallBack, _data),                      \
+#define ADC_KEY_INFO(_ulKeyId, _ulValue, _adcChan, _eventMask, _CallBack, _data)                   \
+	{                                                                                          \
+		.ulValue = _ulValue, .xAdcDecp = { _adcChan, NO_AVERAGING, 1 },                    \
+		.keyInitInfo =                                                                     \
+			KEY_INIT_INFO(_ulKeyId, _eventMask, 0, 0, 0, 0, 0, 0, _CallBack, _data),   \
 	}
 
 void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum);

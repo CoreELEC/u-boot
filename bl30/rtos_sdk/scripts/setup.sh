@@ -91,6 +91,7 @@ cat <<EOF > $kconfig_file
 EOF
 
 # Figure out the $relative_dir and its column
+[ -z "$REPO_DIR" ] && REPO_DIR=$PWD
 pattern="path="
 i=0
 keyline=`grep "path=\".*$build_dir\"" $RTOS_SDK_MANIFEST_FILE`
@@ -100,7 +101,7 @@ for keyword in $keyline; do
 		repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 		relative_dir=`dirname $repo_path`
 		# Filter current project
-		if [[ $PWD == *$relative_dir ]]; then
+		if [[ $REPO_DIR == *$relative_dir ]]; then
 			break
 		fi
 	fi
@@ -118,9 +119,7 @@ sort -k $i $RTOS_SDK_MANIFEST_FILE -o $RTOS_SDK_MANIFEST_FILE
 while IFS= read -r line
 do
 	keyline=`echo "$line" | grep "$pattern"`
-	if [ -z "$keyline" ]; then
-		continue
-	fi
+	[ -z "$keyline" ] && continue
 
 	for keyword in $keyline; do
 		if [[ $keyword == path=* ]]; then

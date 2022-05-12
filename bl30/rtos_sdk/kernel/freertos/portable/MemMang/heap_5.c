@@ -82,7 +82,7 @@ task.h is included from an application file. */
 #include <printk.h>
 #include "sys_printf.h"
 #if CONFIG_BACKTRACE
-#include "stacktrace_64.h"
+#include "stack_trace.h"
 #endif
 #endif
 

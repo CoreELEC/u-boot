@@ -537,7 +537,7 @@ uint32_t ulReturn;
 #endif /* configASSERT_DEFINED */
 
 #if CONFIG_BACKTRACE
-#include "stacktrace_64.h"
+#include "stack_trace.h"
 int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
 {
 	StackType_t *pxTopOfStack;

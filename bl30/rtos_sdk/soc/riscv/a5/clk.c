@@ -9,6 +9,7 @@
 #include "register.h"
 #include "uart.h"
 #include <task.h>
+#include "soc.h"
 #include "timer_source.h"
 #include "clk.h"
 #include "clk_util.h"
@@ -327,6 +328,7 @@ void vCLK_resume(uint32_t st_f)
 	REG32(CLKCTRL_OSCIN_CTRL) = oscin_ctrl_reg | (1<<31);
 	udelay(9000);
 
+	clear_dsp_wakeup_trigger();
 	/* switching tick timer (using osc_clk) */
 	alt_timebase(0);
 

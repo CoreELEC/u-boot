@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 

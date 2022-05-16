@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "common.h"
 #include "gpio.h"
 #include "ir.h"
+#include "soc.h"
 #include "suspend.h"
 #include "task.h"
 #include "gpio.h"

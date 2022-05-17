@@ -6,7 +6,7 @@ set(CURRENT_LIBRARY_TYPE STATIC)
 set(CURRENT_LIBRARY drivers)
 message(STATUS "@@${CURRENT_LIBRARY_TYPE}: ${CURRENT_LIBRARY}")
 
-add_library(${CURRENT_LIBRARY} ${CURRENT_LIBRARY_TYPE})
+aml_add_library_spec(${CURRENT_LIBRARY} ${CURRENT_LIBRARY_TYPE})
 
 add_subdirectory_if_kconfig(stick_mem)
 add_subdirectory_if_kconfig(uart)

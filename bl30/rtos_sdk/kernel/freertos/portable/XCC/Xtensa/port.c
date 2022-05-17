@@ -29,7 +29,7 @@
 
 #include <stdlib.h>
 #include <xtensa/config/core.h>
-
+#include "xtbsp.h"
 #include "xtensa_rtos.h"
 
 #include "FreeRTOS.h"
@@ -249,9 +249,12 @@ void vPortStoreTaskMPUSettings( xMPU_SETTINGS *xMPUSettings, const struct xMEMOR
 	#if XCHAL_CP_NUM > 0
 	//xMPUSettings->coproc_area = (StackType_t*)((((uint32_t)(pxBottomOfStack + ulStackDepth - 1)) - XT_CP_SIZE ) & ~0xf);
 
-	xMPUSettings->coproc_area = (StackType_t*)((uint32_t)(pxBottomOfStack + ulStackDepth - 1)) ;
-	xMPUSettings->coproc_area = (StackType_t*)( ( ( portPOINTER_SIZE_TYPE ) xMPUSettings->coproc_area ) & ( ~( ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) ) ) ;
-	xMPUSettings->coproc_area = ((uint32_t)xMPUSettings->coproc_area - XT_CP_SIZE )  & ~0xf;
+	xMPUSettings->coproc_area = (StackType_t *)((uint32_t)(pxBottomOfStack + ulStackDepth - 1));
+	xMPUSettings->coproc_area = (StackType_t *)
+		(((portPOINTER_SIZE_TYPE)xMPUSettings->coproc_area)
+		& (~((portPOINTER_SIZE_TYPE)portBYTE_ALIGNMENT_MASK)));
+	xMPUSettings->coproc_area = (StackType_t *)
+		(((uint32_t)xMPUSettings->coproc_area - XT_CP_SIZE) & ~0xf);
 
 	/* NOTE: we cannot initialize the coprocessor save area here because FreeRTOS is going to
          * clear the stack area after we return. This is done in pxPortInitialiseStack().

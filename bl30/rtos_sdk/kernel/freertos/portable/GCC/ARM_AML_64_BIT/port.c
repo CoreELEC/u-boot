@@ -562,7 +562,7 @@ void vPortConfigLogBuf(uint32_t pa, uint32_t len)
 {
 	xRtosInfo.logbuf_phy = pa;
 	xRtosInfo.logbuf_len = len;
-	vCacheFlushDcacheRange((uint64_t)&xRtosInfo, sizeof(xRtosInfo));
+	vCacheFlushDcacheRange(((unsigned long))&xRtosInfo, sizeof(xRtosInfo));
 }
 #endif
 /*-----------------------------------------------------------*/

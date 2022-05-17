@@ -9,9 +9,15 @@
 #include "FreeRTOS.h"
 #include "arm-smccc.h"
 #include "rtosinfo.h"
+#include "gic.h"
 #include "task.h"
 
+
 #define portMAX_IRQ_NUM 1024
+
+#ifndef configPREPARE_CPU_HALT
+#define configPREPARE_CPU_HALT()
+#endif
 
 extern xRtosInfo_t xRtosInfo;
 
@@ -76,7 +82,7 @@ void vPortRemoveIrq(uint32_t irq_num)
 void vPortRtosInfoUpdateStatus(uint32_t status)
 {
 	xRtosInfo.status = status;
-	vCacheFlushDcacheRange((uint64_t)&xRtosInfo, sizeof(xRtosInfo));
+	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
 }
 
 void vPortHaltSystem(Halt_Action_e act)

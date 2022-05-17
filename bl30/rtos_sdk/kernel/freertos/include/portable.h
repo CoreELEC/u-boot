@@ -202,6 +202,8 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 void vPortConfigLogBuf(uint32_t pa, uint32_t len);
 void prvSleep( TickType_t xExpectedIdleTime );
 
+#include "aml_portable_ext.h"
+
 #ifdef __cplusplus
 }
 #endif

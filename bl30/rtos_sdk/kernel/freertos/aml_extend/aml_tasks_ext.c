@@ -95,7 +95,7 @@ void vTaskDumpStack(void* pvTaskHandle)
 	p = pxTCB->pxStack+pxTCB->uStackDepth-1;
 	printf("Dump Stack:\n");
 	while (p >= pxTCB->pxStack) {
-		printf("%08p:",(unsigned long)p);
+		printf("%p:", p);
 		for (i = 0; i < 8 && p >= pxTCB->pxStack; i++)
 			printf(" %08x",*p--);
 		printf("\n");

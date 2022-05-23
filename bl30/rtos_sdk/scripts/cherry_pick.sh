@@ -34,7 +34,9 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 			cmd=`echo $line | sed -e 's/ssh:\/\/.*@scgit.amlogic.com/ssh:\/\/scgit.amlogic.com/'`
 			eval $cmd
 			if [ "$?" -ne 0 ]; then
-				echo -e "-------- Applying patch failed! --------\n"
+				git status
+				git log -1
+				echo -e "-------- Failed to apply patch! --------"
 				exit 1
 			fi
 			popd > /dev/null
@@ -113,6 +115,8 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 			git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
 			git cherry-pick FETCH_HEAD
 			if [ "$?" -ne 0 ]; then
+				git status
+				git log -1
 				echo -e "-------- Failed to apply patch! --------"
 				exit 1
 			fi

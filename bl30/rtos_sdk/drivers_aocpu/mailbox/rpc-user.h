@@ -29,28 +29,29 @@
 /*******************************************************************************
  * Define function here, 10bits valid
  ******************************************************************************/
-/*SYSTEM*/
-#define CMD_UNDEFINE 0x0
-#define CMD_SUSPEND 0x4
-#define CMD_SYSTEM_POWER_STATE 0x8
-#define CMD_CPU_FSM_IDLE 0x9
-#define CMD_SET_RTC 0x11
-#define CMD_GET_RTC 0x12
-#define CMD_RPCUINTREE_TEST 0x6
-#define CMD_RPCUINTTEE_TEST 0x7
-#define CMD_GET_CEC_INFO1 0xB4
-#define CMD_GET_CEC_INFO2 0xB5
-#define CMD_SET_CEC_DATA 0xB6
-#define SCPI_CMD_GET_CEC_OTP_MSG 0xBB
-#define SCPI_CMD_GET_CEC_AS_MSG 0xBC
-#define CMD_GET_WAKEUP_REASON 0x30
-#define CMD_CLR_WAKEUP_REASON 0x31
-#define CMD_GET_STICK_REBOOT_FLAG 0x40
-#define CMD_GET_LED_INFO 0xF7
-#define CMD_VAD_AWE_WAKEUP 0x62
-#define CMD_SET_KEYPAD 0xF6
-#define CMD_GET_IR_INFO 0xF8
-#define CMD_PM_FREEZE 0xf9
+	 /*SYSTEM*/
+#define CMD_UNDEFINE            0x0
+#define CMD_SUSPEND             0x4
+#define CMD_SYSTEM_POWER_STATE  0x8
+#define CMD_CPU_FSM_IDLE   0x9
+#define CMD_SET_RTC             0x11
+#define CMD_GET_RTC             0x12
+#define CMD_RPCUINTREE_TEST     0x6
+#define CMD_RPCUINTTEE_TEST     0x7
+#define CMD_GET_CEC_INFO1	0xB4
+#define CMD_GET_CEC_INFO2	0xB5
+#define CMD_SET_CEC_DATA	0xB6
+#define SCPI_CMD_GET_CEC_OTP_MSG	0xBB
+#define SCPI_CMD_GET_CEC_AS_MSG	0xBC
+#define CMD_GET_WAKEUP_REASON   0x30
+#define CMD_CLR_WAKEUP_REASON   0x31
+#define CMD_GET_STICK_REBOOT_FLAG  0x40
+#define CMD_GET_LED_INFO        0xF7
+#define CMD_VAD_AWE_WAKEUP      0x62
+#define CMD_SET_KEYPAD          0xF6
+#define CMD_GET_IR_INFO		0xF8
+#define CMD_PM_FREEZE		0xf9
+#define CMD_SUSPEND_WITH_DSP    0x66
 
 /*******************************************************************************
  * Mssage Comopsition
@@ -74,7 +75,5 @@
 #define MBX_CMD_SET_KEYPAD __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_KEYPAD)
 #define MBX_CMD_GET_IR_INFO __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_IR_INFO)
 #define MBX_CMD_GET_STICK_REBOOT_FLAG __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_STICK_REBOOT_FLAG)
-
-void vRpcUserCmdInit(void);
-
+#define MBX_CMD_SUSPEND_WITH_DSP __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SUSPEND_WITH_DSP)
 #endif

@@ -29,6 +29,9 @@
 #ifndef MAILBOX_DSPA2AO
 #define MAILBOX_DSPA2AO 0xc
 #endif
+#ifndef MAILBOX_AO2DSPA
+#define MAILBOX_AO2DSPA 0xd
+#endif
 
 enum sync_type {
 	MB_ASYNC = 1,
@@ -128,10 +131,10 @@ static inline uint32_t xGetRevMbox(uint32_t ulChan)
 static inline uint32_t xGetSendMbox(uint32_t ulChan)
 {
 	switch (ulChan) {
+	case AODSPA_CHANNEL:
+		return MAILBOX_AO2DSPA;
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:
-	case AODSPA_CHANNEL:
-		configASSERT(0);
 	default:
 		configASSERT(0);
 	}

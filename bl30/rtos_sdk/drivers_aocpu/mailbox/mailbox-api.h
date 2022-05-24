@@ -32,7 +32,10 @@ extern "C" {
 BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(*handler)(void *), uint8_t needFdBak);
 
-BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd);
+BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan,
+					   int32_t cmd);
+BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+				 void *data, size_t size);
 
 void vMbInit(void);
 #if __cplusplus

@@ -315,3 +315,15 @@ BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
 	UNUSED(ulChan);
 	return mailbox_htbl_unreg(g_tbl_ao, cmd);
 }
+
+BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+				 void *data, size_t size)
+{
+
+	UNUSED(ulChan);
+	UNUSED(ulCmd);
+	UNUSED(data);
+	UNUSED(size);
+	PRINT("[%s]: mailbox pl not suppot transfer Async\n", MBTAG);
+	return 0;
+}

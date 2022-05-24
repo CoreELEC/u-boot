@@ -122,7 +122,7 @@ extern void vTraceEnInterrupt(void);
 	__asm volatile ( "ISB SY" ); \
 	vTraceEnInterrupt();
 
-#if ENABLE_MODULE_LOGBUF
+#if CONFIG_LOG_BUFFER
 #define __CMPXCHG_CASE(w, sz, name, mb, acq, rel, cl)			\
 static inline unsigned long __cmpxchg_case_##name(volatile void *ptr,		\
 				     unsigned long old,			\

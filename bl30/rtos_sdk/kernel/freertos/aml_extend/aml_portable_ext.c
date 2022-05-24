@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "aml_portable_ext.h"
-
-#include "FreeRTOS.h"
-#include "arm-smccc.h"
-#include "rtosinfo.h"
+#include <FreeRTOS.h>
 #include "gic.h"
 #include "task.h"
-
+#include "common.h"
+#include "rtosinfo.h"
+#include "arm-smccc.h"
+#include "aml_portable_ext.h"
 
 #define portMAX_IRQ_NUM 1024
 
@@ -22,7 +21,7 @@
 extern xRtosInfo_t xRtosInfo;
 
 static unsigned char irq_mask[portMAX_IRQ_NUM / 8];
-
+/*-----------------------------------------------------------*/
 static void pvPortSetIrqMask(uint32_t irq_num, int val)
 {
 	int idx, bit;
@@ -38,6 +37,7 @@ static void pvPortSetIrqMask(uint32_t irq_num, int val)
 	portIRQ_RESTORE(flags);
 }
 
+/*-----------------------------------------------------------*/
 static unsigned long prvCorePowerDown(void)
 {
 	struct arm_smccc_res res;
@@ -46,6 +46,7 @@ static unsigned long prvCorePowerDown(void)
 	return res.a0;
 }
 
+/*-----------------------------------------------------------*/
 void vLowPowerSystem(void)
 {
 	taskENTER_CRITICAL();
@@ -57,6 +58,7 @@ void vLowPowerSystem(void)
 	}
 }
 
+/*-----------------------------------------------------------*/
 uint8_t xPortIsIsrContext(void)
 {
 #if CONFIG_ARM64
@@ -66,12 +68,15 @@ uint8_t xPortIsIsrContext(void)
 #endif
 }
 
+/*-----------------------------------------------------------*/
 void vPortAddIrq(uint32_t irq_num)
 {
 	if (irq_num >= portMAX_IRQ_NUM)
 		return;
 	pvPortSetIrqMask(irq_num, 1);
 }
+
+/*-----------------------------------------------------------*/
 void vPortRemoveIrq(uint32_t irq_num)
 {
 	if (irq_num >= portMAX_IRQ_NUM)
@@ -79,12 +84,14 @@ void vPortRemoveIrq(uint32_t irq_num)
 	pvPortSetIrqMask(irq_num, 0);
 }
 
+/*-----------------------------------------------------------*/
 void vPortRtosInfoUpdateStatus(uint32_t status)
 {
 	xRtosInfo.status = status;
 	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
 }
 
+/*-----------------------------------------------------------*/
 void vPortHaltSystem(Halt_Action_e act)
 {
 	uint32_t irq = 0, i;
@@ -117,3 +124,36 @@ void vPortHaltSystem(Halt_Action_e act)
 #endif
 	}
 }
+
+/*-----------------------------------------------------------*/
+#if CONFIG_BACKTRACE
+#include "stack_trace.h"
+int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
+{
+	StackType_t *pxTopOfStack;
+	int i;
+
+	if (!task || task == xTaskGetCurrentTaskHandle())
+		return -1;
+	pxTopOfStack = *(StackType_t **)task;
+	reg->sp = (unsigned long)pxTopOfStack;
+	if (*pxTopOfStack)
+		pxTopOfStack += 64;
+	pxTopOfStack += 2;
+	reg->elr = *pxTopOfStack++;
+	reg->spsr = *pxTopOfStack++;
+	for (i = 0; i < 31; i++)
+		reg->regs[i] = pxTopOfStack[31 - (i ^ 1)];
+	return 0;
+}
+#endif
+
+/*-----------------------------------------------------------*/
+#if CONFIG_LOG_BUFFER
+void vPortConfigLogBuf(uint32_t pa, uint32_t len)
+{
+	xRtosInfo.logbuf_phy = pa;
+	xRtosInfo.logbuf_len = len;
+	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
+}
+#endif

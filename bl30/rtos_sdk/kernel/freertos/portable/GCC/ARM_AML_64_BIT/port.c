@@ -34,7 +34,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "secure_apb.h"
-#include <rtosinfo.h>
 #include <cache.h>
 #include "common.h"
 #include "hwtimer.h"
@@ -535,36 +534,6 @@ uint32_t ulReturn;
 	}
 
 #endif /* configASSERT_DEFINED */
-
-#if CONFIG_BACKTRACE
-#include "stack_trace.h"
-int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
-{
-	StackType_t *pxTopOfStack;
-	int i;
-	if (!task || task == xTaskGetCurrentTaskHandle())
-		return -1;
-	pxTopOfStack=*(StackType_t **)task;
-	reg->sp = (unsigned long)pxTopOfStack;
-	if (*pxTopOfStack) pxTopOfStack += 64;
-	pxTopOfStack += 2;
-	reg->elr = *pxTopOfStack++;
-	reg->spsr = *pxTopOfStack++;
-	for (i=0; i<31; i++) {
-		reg->regs[i]=pxTopOfStack[31-(i^1)];
-	}
-	return 0;
-}
-#endif
-
-#if ENABLE_MODULE_LOGBUF
-void vPortConfigLogBuf(uint32_t pa, uint32_t len)
-{
-	xRtosInfo.logbuf_phy = pa;
-	xRtosInfo.logbuf_len = len;
-	vCacheFlushDcacheRange(((unsigned long))&xRtosInfo, sizeof(xRtosInfo));
-}
-#endif
 /*-----------------------------------------------------------*/
 
 #if configUSE_TICKLESS_IDLE == 1

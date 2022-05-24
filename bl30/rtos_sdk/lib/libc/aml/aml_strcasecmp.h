@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef __AML_FREE_H__
-#define __AML_FREE_H__
+#ifndef __AML_STRCASECMP_H__
+#define __AML_STRCASECMP_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void free(void *ptr);
+int strcasecmp(const char *s1, const char *s2);
 
 #ifdef __cplusplus
 }

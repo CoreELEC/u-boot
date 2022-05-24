@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef __AML_FREE_H__
-#define __AML_FREE_H__
+#ifndef __AML_ISDIGIT_H__
+#define __AML_ISDIGIT_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void free(void *ptr);
+int isdigit(int c);
 
 #ifdef __cplusplus
 }

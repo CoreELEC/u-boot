@@ -12,11 +12,11 @@ void *memset(void *dest, int c, size_t len)
 	uint32_t cccc;
 	uint32_t *dw;
 	char *head;
-	char * const tail = (char *)dest + len;
+	char *const tail = (char *)dest + len;
 	/* Set 'body' to the last word boundary */
-	uint32_t * const body = (uint32_t *)((uintptr_t)tail & ~3);
+	uint32_t *const body = (uint32_t *)((uintptr_t)tail & ~3);
 
-	c &= 0xff;	/* Clear upper bits before ORing below */
+	c &= 0xff; /* Clear upper bits before ORing below */
 	cccc = c | (c << 8) | (c << 16) | (c << 24);
 
 	if ((uintptr_t)tail < (((uintptr_t)d + 3) & ~3))
@@ -42,4 +42,3 @@ void *memset(void *dest, int c, size_t len)
 
 	return dest;
 }
-

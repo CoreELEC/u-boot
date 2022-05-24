@@ -15,10 +15,8 @@ extern "C" {
 
 void *malloc(size_t size);
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

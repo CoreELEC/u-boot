@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "aml_scanf.h"
+#include "aml_isspace.h"
 
-int scanf(const char *format, ...)
+int isspace(int c)
 {
-	return -1;
+	return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }

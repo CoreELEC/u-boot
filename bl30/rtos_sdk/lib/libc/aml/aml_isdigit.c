@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "aml_scanf.h"
+#include "aml_isdigit.h"
 
-int scanf(const char *format, ...)
+int isdigit(int c)
 {
-	return -1;
+	return c >= '0' && c <= '9';
 }

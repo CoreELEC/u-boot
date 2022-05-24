@@ -4,14 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef __AML_FREE_H__
-#define __AML_FREE_H__
+#ifndef __AML_MEMMOVE_H__
+#define __AML_MEMMOVE_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void free(void *ptr);
+#include <stddef.h>
+
+void *memmove(void *dest, const void *src, size_t n);
 
 #ifdef __cplusplus
 }

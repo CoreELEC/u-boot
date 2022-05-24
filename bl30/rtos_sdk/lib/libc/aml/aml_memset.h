@@ -16,10 +16,8 @@ extern "C" {
 
 void *memset(void *dest, int c, size_t len);
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

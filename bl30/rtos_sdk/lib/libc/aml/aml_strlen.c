@@ -7,7 +7,7 @@
 #include "aml_strlen.h"
 
 #if (1 == CONFIG_ARM64)
-size_t  strlen (const char *s)
+size_t strlen(const char *s)
 #else
 int strlen(const char *s)
 #endif
@@ -19,4 +19,3 @@ int strlen(const char *s)
 
 	return len;
 }
-

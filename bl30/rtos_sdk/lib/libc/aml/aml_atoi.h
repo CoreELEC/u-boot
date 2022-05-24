@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef __AML_FREE_H__
-#define __AML_FREE_H__
+#ifndef __AML_ATOI_H__
+#define __AML_ATOI_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void free(void *ptr);
+int atoi(const char *nptr);
 
 #ifdef __cplusplus
 }

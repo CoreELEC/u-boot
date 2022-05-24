@@ -11,9 +11,18 @@ aml_library_sources(
 	aml_printf.c
 	aml_malloc.c
 	aml_free.c
+	aml_atoi.c
+	aml_isspace.c
+	aml_isdigit.c
+	aml_tolower.c
 	aml_memcpy.c
 	aml_memset.c
+	aml_memmove.c
+	aml_memcmp.c
 	aml_strlen.c
+	aml_strncpy.c
+	aml_strcasecmp.c
+	aml_strncasecmp.c
 	)
 
 aml_library_link_libraries(kernel__${KERNEL})

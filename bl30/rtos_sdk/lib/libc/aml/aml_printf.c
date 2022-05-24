@@ -10,22 +10,21 @@
 #include <task.h>
 #include "aml_printf.h"
 #if (1 == CONFIG_ARM64)
-	#include "serial.h"
+#include "serial.h"
 #else
-	#include "uart.h"
+#include "uart.h"
 #endif
 static const char error_str[] = "ERROR";
 
-#define MAX_FORMAT 1024		/* Maximum chars in a single format field */
+#define MAX_FORMAT 1024 /* Maximum chars in a single format field */
 static char printbuffer[512];
 
 #ifndef MAX
-#define MAX(a, b)					\
-	({						\
-		__typeof__(a) temp_a = (a);		\
-		__typeof__(b) temp_b = (b);		\
-							\
-		temp_a > temp_b ? temp_a : temp_b;	\
+#define MAX(a, b)                                                                                \
+	({                                                                                       \
+		__typeof__(a) temp_a = (a);                                                      \
+		__typeof__(b) temp_b = (b);                                                      \
+		temp_a > temp_b ? temp_a : temp_b;                                               \
 	})
 #endif
 
@@ -69,6 +68,7 @@ static int uint64divmod(uint64_t *n, int d)
 	/* If v fits in 32-bit, we're done. */
 	if (*n <= 0xffffffff) {
 		uint32_t v32 = *n;
+
 		r = v32 % d;
 		*n = v32 / d;
 		return r;
@@ -89,13 +89,13 @@ static int uint64divmod(uint64_t *n, int d)
 }
 
 /* Flags for vfnprintf() flags */
-#define PF_LEFT		(1 << 0)	/* Left-justify */
-#define PF_PADZERO	(1 << 1)	/* Pad with 0's not spaces */
-#define PF_NEGATIVE	(1 << 2)	/* Number is negative */
-#define PF_64BIT	(1 << 3)	/* Number is 64-bit */
-#if 1
-int vfnprintf(int (*addchar)(void *context, int c), void *context,
-	      const char *format, va_list args)
+#define PF_LEFT (1 << 0) /* Left-justify */
+#define PF_PADZERO (1 << 1) /* Pad with 0's not spaces */
+#define PF_NEGATIVE (1 << 2) /* Number is negative */
+#define PF_64BIT (1 << 3) /* Number is 64-bit */
+
+int vfnprintf(int (*addchar)(void *context, int c), void *context, const char *format,
+	      va_list args)
 {
 	/*
 	 * Longest uint64 in decimal = 20
@@ -195,8 +195,8 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 		if (c == 's') {
 			vstr = va_arg(args, char *);
 
-			if (vstr == NULL) {	/*Fix me */
-				;	//vstr = "(NULL)";
+			if (vstr == NULL) { /*Fix me */
+				; // vstr = "(NULL)";
 			}
 		} else if (c == 'h') {
 			/* Hex dump output */
@@ -226,13 +226,13 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 				c = *format++;
 				if (c == 'l') {
 					flags |= PF_64BIT;
-					c = *format++;	// long long is 64bit at LP64
+					c = *format++; // long long is 64bit at LP64
 				}
 			}
 
 			/* Special-case: %T = current time */
 			if (c == 'T') {
-				//v = get_time().val;
+				// v = get_time().val;
 				flags |= PF_64BIT;
 				precision = 6;
 			} else if (flags & PF_64BIT) {
@@ -244,16 +244,14 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 			switch (c) {
 			case 'd':
 				if (flags & PF_64BIT) {
-					if ((int64_t) v < 0) {
+					if ((int64_t)v < 0) {
 						flags |= PF_NEGATIVE;
-						if (v != (1ULL << 63))
-							v = -v;
+						v = (v != (1ULL << 63)) ? -v : v;
 					}
 				} else {
 					if ((int)v < 0) {
 						flags |= PF_NEGATIVE;
-						if (v != (1ULL << 31))
-							v = -(int)v;
+						v = (v != (1ULL << 31)) ? -(int)v : v;
 					}
 				}
 				break;
@@ -272,7 +270,7 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 				format = error_str;
 			}
 			if (format == error_str)
-				continue;	/* Bad format specifier */
+				continue; /* Bad format specifier */
 
 			/*
 			 * Convert integer to string, starting at end of
@@ -356,7 +354,7 @@ int vfnprintf(int (*addchar)(void *context, int c), void *context,
 	/* If we're still here, we consumed all output */
 	return pdFREERTOS_ERRNO_NONE;
 }
-#endif
+
 /* Context for snprintf() */
 struct snprintf_context {
 	char *str;
@@ -392,7 +390,7 @@ int sPrintf_ext(char *str, size_t size, const char *format, va_list args)
 		return pdFREERTOS_ERRNO_EINVAL;
 
 	ctx.str = str;
-	ctx.size = size - 1;	/* Reserve space for terminating '\0' */
+	ctx.size = size - 1; /* Reserve space for terminating '\0' */
 
 	rv = vfnprintf(snprintf_addchar, &ctx, format, args);
 
@@ -435,7 +433,7 @@ int iprintf(const char *fmt, ...)
 		vUartPuts(printbuffer);
 #endif
 	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 	return i;
 }
 
@@ -459,7 +457,7 @@ int printk(const char *fmt, ...)
 		vUartPuts(printbuffer);
 #endif
 	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 	return i;
 }
 
@@ -483,7 +481,7 @@ int printf(const char *fmt, ...)
 		vUartPuts(printbuffer);
 #endif
 	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 	return i;
 }
 
@@ -510,4 +508,3 @@ int puts(const char *str)
 
 	return 0;
 }
-

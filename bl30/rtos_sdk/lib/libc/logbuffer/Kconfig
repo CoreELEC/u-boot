@@ -1,0 +1,19 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config LOG_BUFFER
+    bool "Ram Log Interface"
+	select KERNEL
+    help
+      Enable ram log function.
+
+if LOG_BUFFER
+
+config LOG_BUFFER_CACHE_LEN
+	int "Log Buffer Cache Len"
+	default 4096
+	help
+	  Maximum log cache length configuration.
+
+endif

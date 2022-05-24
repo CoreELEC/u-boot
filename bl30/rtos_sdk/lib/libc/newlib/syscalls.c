@@ -10,8 +10,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <FreeRTOS.h>
+#if defined(CONFIG_LOG_BUFFER)
+#include "logbuffer.h"
+#endif
 #if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
 #include <serial.h>
 #else
@@ -256,7 +258,7 @@ int _write (int file, const void * ptr, size_t len)
 	}
 
 	if (file == STDERR_FILENO || file == STDOUT_FILENO) {
-#if ENABLE_MODULE_LOGBUF
+#if CONFIG_LOG_BUFFER
 		if (logbuf_is_enable()) {
 			return logbuf_output_len(ptr, len);
 		}

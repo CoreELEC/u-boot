@@ -104,6 +104,7 @@ typedef unsigned portBASE_TYPE	UBaseType_t;
 
 // portbenchmark
 #include "portbenchmark.h"
+#include "portASM.h"
 
 /* Critical section management. NW-TODO: replace XTOS_SET_INTLEVEL with more efficient version, if any? */
 // These cannot be nested. They should be used with a lot of care and cannot be called from interrupt level.

@@ -31,13 +31,8 @@
 #include <xtensa/config/core.h>
 #include "xtbsp.h"
 #include "xtensa_rtos.h"
-
 #include "FreeRTOS.h"
 #include "task.h"
-
-
-/* Defined in portasm.h */
-extern void _frxt_tick_timer_init(void);
 
 /* Defined in xtensa_context.S */
 extern void _xt_coproc_init(void);

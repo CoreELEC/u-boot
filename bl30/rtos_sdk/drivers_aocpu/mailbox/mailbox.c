@@ -24,6 +24,7 @@
 #include "mailbox-in.h"
 #include "mailbox-htbl.h"
 #include "mailbox-api.h"
+#include "mailbox-rpc-test.h"
 
 #define MBTAG "AOCPU"
 #define PRINT_DBG(...) //printf(__VA_ARGS__)

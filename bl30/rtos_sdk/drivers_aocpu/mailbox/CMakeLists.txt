@@ -8,14 +8,14 @@ aml_library_sources_ifdef(
 	mailbox.c
 	mailbox-irq.c
 	mailbox-htbl.c
-	rpc-user.c
+	mailbox-rpc-test.c
 )
 else()
 aml_library_sources_ifdef(
 	CONFIG_MAILBOX
 	mailbox-pl.c
 	mailbox-htbl.c
-	rpc-user.c
+	mailbox-rpc-test.c
 )
 endif()
 

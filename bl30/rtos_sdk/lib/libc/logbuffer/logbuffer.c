@@ -130,7 +130,7 @@ int logbuf_output_char(const char ch)
 
 void logbuffer_init(void)
 {
-	if (logbuf != NULL) {
+	if (!logbuf_is_enable()) {
 		logbuf = malloc(CONFIG_LOG_BUFFER_CACHE_LEN);
 		if (logbuf) {
 			logbuf_setting((uint32_t)(uint64_t)logbuf,

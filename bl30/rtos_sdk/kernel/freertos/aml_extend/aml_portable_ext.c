@@ -59,7 +59,7 @@ void vLowPowerSystem(void)
 }
 
 /*-----------------------------------------------------------*/
-uint8_t xPortIsIsrContext(void)
+unsigned int xPortIsIsrContext(void)
 {
 #if CONFIG_ARM64
 	return ullPortInterruptNesting == 0 ? 0 : 1;

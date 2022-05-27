@@ -58,7 +58,7 @@ static inline void _irq_restore(unsigned long flags)
 
 void vLowPowerSystem(void);
 
-uint8_t xPortIsIsrContext( void );
+unsigned int xPortIsIsrContext(void);
 
 void vPortAddIrq(uint32_t irq_num);
 

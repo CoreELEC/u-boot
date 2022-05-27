@@ -342,6 +342,14 @@ int _close(int file)
 	return 0;
 }
 
+int __wrap__kill_r(int pid, int sig)
+{
+  UNUSED(pid);
+  UNUSED(sig);
+  errno = ENOTSUP;
+  return -1;
+}
+
 int fcntl(int fd, int cmd, ...)
 {
 	int ret = -1;
@@ -369,6 +377,11 @@ int fcntl(int fd, int cmd, ...)
 #endif
 	va_end(args);
 	return ret;
+}
+
+pid_t __wrap__getpid_r(void)
+{
+  return (pid_t)1;
 }
 
 int ioctl(int fd, int cmd, ...)
@@ -427,22 +440,6 @@ int statfs(const char *path, struct statfs *buf)
 }
 #endif
 
-int _kill(int pid, int sig)
-{
-	UNUSED(pid);
-	UNUSED(sig);
-	errno = ENOTSUP;
-	return -1;
-}
-
-void _exit(int status)
-{
-	UNUSED(status);
-	errno = ENOTSUP;
-	while (1)
-		;
-}
-
 pid_t _getpid(void)
 {
 	return (pid_t)1;
@@ -466,8 +463,6 @@ void *__wrap__calloc_r(struct _reent *reent, size_t nmemb, size_t size)
 		return NULL;
 	return memset(p, 0, total);
 }
-
-extern void *xPortRealloc(void *ptr, size_t size);
 
 void *__wrap__realloc_r(struct _reent *reent, void *ptr, size_t size)
 {

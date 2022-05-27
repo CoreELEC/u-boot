@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 config LOG_BUFFER
-    bool "Ram Log Interface"
+    bool "RAM Log Interface"
 	select KERNEL
     help
-      Enable ram log function.
+      Enable RAM log function.
 
 if LOG_BUFFER
 

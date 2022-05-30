@@ -37,7 +37,7 @@ while IFS= read -r LINE; do
 	make distclean
 	[ "$?" -ne 0 ] && echo "Failed to make distclean!" && exit 2
 	make
-	[ "$?" -ne 0 ] && echo "Failed to make!" && exit 3
+	[ "$?" -ne 0 ] && echo "Failed to build!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		publish_images
 		[ "$?" -ne 0 ] && echo "Failed to publish images!" && exit 4

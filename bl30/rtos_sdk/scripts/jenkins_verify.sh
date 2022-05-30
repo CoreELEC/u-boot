@@ -152,11 +152,13 @@ else
 	echo "========= Building all projects ========"
 	./scripts/build_all.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
+		grep -qr "warning: " $BUILD_LOG
+		[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!" && exit 1
 		[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG
-		echo -e "\nAborted!"
+		echo -e "\nAborted with errors!"
 		exit 1
 	fi
 fi

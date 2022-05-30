@@ -56,12 +56,21 @@ if [ ! -d "$WORK_DIR" ]; then
 else
 	echo -e "\n======== Syncing source code ========"
 	cd $WORK_DIR
-	repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+	if [ -n "$REPO_SYNC_IPATTERN" ]; then
+		repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+	else
+		repo forall -c git reset -q --hard origin/$BRANCH_NAME
+	fi
 	repo manifest -r -o $LAST_MANIFEST_FILE
 fi
 
 repo sync -cq -j8
-repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+[ "$?" -ne 0 ] && cd - && echo "Sync error! will do fresh download next time" && exit 1
+if [ -n "$REPO_SYNC_IPATTERN" ]; then
+	repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+else
+	repo forall -c git reset -q --hard origin/$BRANCH_NAME
+fi
 repo manifest -r -o $CURRENT_MANIFEST_FILE
 echo -e "======== Done ========\n"
 

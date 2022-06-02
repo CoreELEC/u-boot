@@ -125,7 +125,7 @@ do
 		if [[ $keyword == path=* ]]; then
 			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
 
-			if [[ $repo_path == drivers* ]] || [[ $repo_path == third_party* ]]; then
+			if [[ $repo_path == drivers* ]] || [[ $repo_path == benchmark* ]] || [[ $repo_path == third_party* ]]; then
 				category=`basename $repo_path | sed 's/_/ /g'`
 				category=`echo $category | sed "s/ $PRODUCT//g"`
 			else

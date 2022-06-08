@@ -18,13 +18,17 @@ publish_docoment() {
 	done
 }
 
-BUILD_DATE=$(date +%F)
 LOCAL_OUTPUT_PATH=output
 LOCAL_PACKAGES_PATH=$LOCAL_OUTPUT_PATH/packages
+
+BUILD_DATE=$(date +%F)
+LATEST_REMOTE_PATH=/data/shanghai/image/RTOS/latest
+REMOTE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE
+REMOTE_IMAGES_PATH=$REMOTE_PATH/images
+REMOTE_PACKAGES_PATH=$REMOTE_PATH/packages
+
 FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
-REMOTE_IMAGES_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/images
-REMOTE_PACKAGES_PATH=/data/shanghai/image/RTOS/$BUILD_DATE/packages
 
 publish_images() {
 	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
@@ -58,7 +62,11 @@ post_publish_images() {
 		echo "Remote image path: $REMOTE_IMAGES_PATH"
 	fi
 	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
+	[ -f $LOCAL_OUTPUT_PATH/gerrit_trigger.txt ] && LOCAL_FILES+=" $LOCAL_OUTPUT_PATH/gerrit_trigger.txt"
 	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGES_PATH
+
+	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "rm -f $LATEST_REMOTE_PATH"
+	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "ln -s $REMOTE_PATH $LATEST_REMOTE_PATH"
 	echo "Post publish images done."
 }
 

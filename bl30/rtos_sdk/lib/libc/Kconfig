@@ -2,6 +2,9 @@
 
 # SPDX-License-Identifier: MIT
 
+menu "libc selection"
 rsource "aml/Kconfig"
-rsource "logbuffer/Kconfig"
 rsource "newlib/Kconfig"
+endmenu
+
+rsource "logbuffer/Kconfig"

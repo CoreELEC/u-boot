@@ -680,7 +680,7 @@ function process_blx() {
 	else
 		echo "Warning: local bl30"
 		#dd if=/dev/random of=${BUILD_PATH}/bl30.bin bs=4096 count=1
-		dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin &> /dev/null
+		#dd if=bl30/bin/sc2/bl30.bin of=${BUILD_PATH}/bl30.bin &> /dev/null
 	fi
 	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc &> /dev/null

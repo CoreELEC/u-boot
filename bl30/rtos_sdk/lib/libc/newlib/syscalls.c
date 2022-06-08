@@ -12,7 +12,7 @@
 #include <string.h>
 #include <FreeRTOS.h>
 #if CONFIG_VFS
-#include <esp_vfs.h>
+#include <sys_vfs.h>
 #else
 #include <stdarg.h>
 #endif
@@ -154,7 +154,7 @@ int _fstat(int file, struct stat *st)
 
 #if CONFIG_VFS
 	if (_file_type(file) == FILE_TYPE_VFS)
-		return esp_vfs_fstat(myhan, st);
+		return vfs_fstat(myhan, st);
 #endif
 	return -1;
 }
@@ -162,7 +162,7 @@ int _fstat(int file, struct stat *st)
 int _stat(const char *fname, struct stat *st)
 {
 #if CONFIG_VFS
-	return esp_vfs_stat(fname, st);
+	return vfs_stat(fname, st);
 #else
 	UNUSED(fname);
 	UNUSED(st);
@@ -188,7 +188,7 @@ off_t _lseek(int file, off_t ptr, int dir)
 
 #if CONFIG_VFS
 	if (_file_type(file) == FILE_TYPE_VFS)
-		return esp_vfs_lseek(myhan, ptr, dir);
+		return vfs_lseek(myhan, ptr, dir);
 #endif
 
 	return -1;
@@ -220,7 +220,7 @@ int _read(int file, void *ptr, size_t len)
 
 #if CONFIG_VFS
 	if (_file_type(file) == FILE_TYPE_VFS)
-		return esp_vfs_read(myhan, ptr, len);
+		return vfs_read(myhan, ptr, len);
 #endif
 
 #if ENABLE_MODULE_LWIP
@@ -246,7 +246,7 @@ int _open(const char *path, int flags, ...)
 
 	va_start(args, flags);
 #if CONFIG_VFS
-	_fhandle = esp_vfs_open(path, flags, va_arg(args, int));
+	_fhandle = vfs_open(path, flags, va_arg(args, int));
 #endif
 	va_end(args);
 
@@ -305,7 +305,7 @@ int _write(int file, const void *ptr, size_t len)
 
 #if CONFIG_VFS
 	if (_file_type(file) == FILE_TYPE_VFS)
-		return esp_vfs_write(myhan, ptr, len);
+		return vfs_write(myhan, ptr, len);
 #endif
 #if ENABLE_MODULE_LWIP
 	if (_file_type(file) == FILE_TYPE_SOCKET)
@@ -327,7 +327,7 @@ int _close(int file)
 
 #if CONFIG_VFS
 	if (_file_type(file) == FILE_TYPE_VFS)
-		esp_vfs_close(myhan);
+		vfs_close(myhan);
 #endif
 
 #if ENABLE_MODULE_LWIP
@@ -358,7 +358,7 @@ int fcntl(int fd, int cmd, ...)
 	va_start(args, cmd);
 #if CONFIG_VFS
 	if (_file_type(fd) == FILE_TYPE_VFS)
-		ret = esp_vfs_vfcntl(myhan, cmd, args);
+		ret = vfs_vfcntl(myhan, cmd, args);
 #endif
 #if ENABLE_MODULE_LWIP
 	if (_file_type(fd) == FILE_TYPE_SOCKET)
@@ -387,7 +387,7 @@ int ioctl(int fd, int cmd, ...)
 	va_start(args, cmd);
 #if CONFIG_VFS
 	if (_file_type(fd) == FILE_TYPE_VFS)
-		ret = esp_vfs_vioctl(myhan, cmd, args);
+		ret = vfs_vioctl(myhan, cmd, args);
 #endif
 #if ENABLE_MODULE_LWIP
 	if (_file_type(fd) == FILE_TYPE_SOCKET)
@@ -412,13 +412,13 @@ int fsync(int fd)
 
 #if CONFIG_VFS
 	if (_file_type(fd) == FILE_TYPE_VFS)
-		ret = esp_vfs_fsync(myhan);
+		ret = vfs_fsync(myhan);
 #endif
 	return ret;
 }
 
 #if CONFIG_VFS
-int statfs(const char *path, struct statfs *buf) { return esp_vfs_statfs(path, buf); }
+int statfs(const char *path, struct statfs *buf) { return vfs_statfs(path, buf); }
 #endif
 
 int _kill(int pid, int sig)

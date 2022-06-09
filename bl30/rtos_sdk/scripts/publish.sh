@@ -62,7 +62,7 @@ post_publish_images() {
 		echo "Remote image path: $REMOTE_IMAGES_PATH"
 	fi
 	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
-	[ -f $LOCAL_OUTPUT_PATH/gerrit_trigger.txt ] && LOCAL_FILES+=" $LOCAL_OUTPUT_PATH/gerrit_trigger.txt"
+	[ -f $LOCAL_OUTPUT_PATH/gerrit_trigger.txt ] && LOCAL_FILES+=" $LOCAL_OUTPUT_PATH/jenkins_trigger.txt"
 	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGES_PATH
 
 	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "rm -f $LATEST_REMOTE_PATH"

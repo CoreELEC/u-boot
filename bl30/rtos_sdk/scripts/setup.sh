@@ -14,6 +14,7 @@ kconfig_file="$PWD/Kconfig"
 build_dir="build_system"
 exclude_dirs="boot products docs"
 special_dirs="arch soc boards"
+toolchain_dir="arch/$ARCH/toolchain"
 
 DEFAULT_RTOS_SDK_MANIFEST="$PWD/products/$PRODUCT/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
@@ -89,6 +90,15 @@ EOF
 # Clear Kconfig
 cat <<EOF > $kconfig_file
 EOF
+
+# Write the toolchain options to Kconfig
+if [ -f $toolchain_dir/Kconfig ]; then
+	category=`basename $toolchain_dir`
+	toolchain_kconfig_path="arch/\${ARCH}/toolchain"
+	echo "menu \"${category^} Options\"" > $kconfig_file
+	echo "source \"$toolchain_kconfig_path/Kconfig\"" >> $kconfig_file
+	echo -e "endmenu\n" >> $kconfig_file
+fi
 
 # Figure out the $relative_dir and its column
 [ -z "$REPO_DIR" ] && REPO_DIR=$PWD
@@ -167,7 +177,7 @@ do
 						echo -e "endmenu\n" >> $kconfig_file
 					fi
 
-					if [ "$category" == "wcn" ]; then
+					if [ "$category" == "wcn" -o "$category" == "soc" ]; then
 						echo "menu \"${category^^} Options\"" >> $kconfig_file
 					else
 						echo "menu \"${category^} Options\"" >> $kconfig_file

@@ -30,9 +30,13 @@ BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
 OUTPUT_DIR=$WORK_DIR/output
 
-LAST_MANIFEST_FILE="$OUTPUT_DIR/manifest_last.xml"
-CURRENT_MANIFEST_FILE="$OUTPUT_DIR/manifest.xml"
-DIFF_MANIFEST_FILE="$OUTPUT_DIR/updates.xml"
+LAST_FULL_MANIFEST="$OUTPUT_DIR/manifest_last.xml"
+CURRENT_FULL_MANIFEST="$OUTPUT_DIR/manifest.xml"
+DIFF_FULL_MANIFEST="$OUTPUT_DIR/updates.xml"
+LAST_MANIFEST="$OUTPUT_DIR/tmp_manifest_last.xml"
+CURRENT_MANIFEST="$OUTPUT_DIR/tmp_manifest.xml"
+DIFF_MANIFEST="$OUTPUT_DIR/tmp_updates.xml"
+JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 BUILD_LOG="$OUTPUT_DIR/build.log"
 
 if [ -n "$EXCLUDE_REPOS" ]; then
@@ -61,23 +65,25 @@ else
 	else
 		repo forall -c git reset -q --hard origin/$BRANCH_NAME
 	fi
-	repo manifest -r -o $LAST_MANIFEST_FILE
+	repo manifest -r -o $LAST_FULL_MANIFEST
+	repo manifest -o $LAST_MANIFEST
 fi
 
-repo sync -cq -j8
+repo sync -cq -j8 --prune
 [ "$?" -ne 0 ] && cd - && echo "Sync error! will do fresh download next time" && exit 1
 if [ -n "$REPO_SYNC_IPATTERN" ]; then
 	repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
 else
 	repo forall -c git reset -q --hard origin/$BRANCH_NAME
 fi
-repo manifest -r -o $CURRENT_MANIFEST_FILE
+repo manifest -r -o $CURRENT_FULL_MANIFEST
+repo manifest -o $CURRENT_MANIFEST
 echo -e "======== Done ========\n"
 
-if [ -f $LAST_MANIFEST_FILE ] && [ -f $CURRENT_MANIFEST_FILE ]; then
-	comm -23 <(sort $LAST_MANIFEST_FILE) <(sort $CURRENT_MANIFEST_FILE) > $DIFF_MANIFEST_FILE
+if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
+	comm -23 <(sort $LAST_FULL_MANIFEST) <(sort $CURRENT_FULL_MANIFEST) > $DIFF_FULL_MANIFEST
 
-	if [ -s $DIFF_MANIFEST_FILE ]; then
+	if [ -s $DIFF_FULL_MANIFEST ]; then
 		echo "======== Recent Changes ========"
 
 		while IFS= read -r line
@@ -96,16 +102,48 @@ if [ -f $LAST_MANIFEST_FILE ] && [ -f $CURRENT_MANIFEST_FILE ]; then
 				git log $repo_version..HEAD
 				popd > /dev/null
 			fi
-		done < $DIFF_MANIFEST_FILE
+		done < $DIFF_FULL_MANIFEST
 	else
 		echo -e "======== Nothing changed since last build ========"
 	fi
-	rm -f $DIFF_MANIFEST_FILE
+	rm -f $DIFF_FULL_MANIFEST
+fi
+
+gen_jenkins_trigger() {
+	if [ -s $DIFF_MANIFEST ]; then
+		echo "======== Generate Jenkins Trigger ========"
+
+		rm -f $JENKINS_TRIGGER
+
+		while IFS= read -r line
+		do
+			keyline=`echo "$line" | grep 'name=.* path='`
+			unset repo_name
+			for keyword in $keyline; do
+				[[ $keyword == name=* ]] && repo_name=`echo ${keyword#*name=} | sed 's/\"//g'`
+			done
+
+			if [ -n "$repo_name" ]; then
+				echo "p=$repo_name" >> $JENKINS_TRIGGER
+				echo "b=projects/amlogic-dev" >> $JENKINS_TRIGGER
+			fi
+		done < $DIFF_MANIFEST
+	fi
+	rm -f $LAST_MANIFEST $CURRENT_MANIFEST $DIFF_MANIFEST
+}
+
+if [ ! -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
+	cp $CURRENT_MANIFEST $DIFF_MANIFEST
+	gen_jenkins_trigger
+fi
+if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
+	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
+	gen_jenkins_trigger
 fi
 
 if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then
 	echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_FULL_MANIFEST`
 
 	for keyword in $keyline; do
 		if [[ $keyword == path=* ]]; then

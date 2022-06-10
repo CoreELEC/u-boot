@@ -22,9 +22,8 @@ aml_library_link_libraries(lib__vfs)
 endif()
 aml_library_link_libraries(kernel__${KERNEL})
 aml_library_link_libraries(drivers)
-target_link_libraries(${TARGET_NAME} -lc)
-target_link_libraries(${TARGET_NAME} libc__newlib)
-target_link_libraries(${TARGET_NAME} -lc)
+
+aml_link_libraries()
 
 endif()
 

@@ -194,7 +194,10 @@ off_t _lseek(int file, off_t ptr, int dir)
 	return -1;
 }
 
-int _isatty(int fd) { return _is_stdio(fd); }
+int _isatty(int fd)
+{
+	return _is_stdio(fd);
+}
 
 int _read(int file, void *ptr, size_t len)
 {
@@ -418,7 +421,10 @@ int fsync(int fd)
 }
 
 #if CONFIG_VFS
-int statfs(const char *path, struct statfs *buf) { return vfs_statfs(path, buf); }
+int statfs(const char *path, struct statfs *buf)
+{
+	return vfs_statfs(path, buf);
+}
 #endif
 
 int _kill(int pid, int sig)
@@ -437,7 +443,10 @@ void _exit(int status)
 		;
 }
 
-pid_t _getpid(void) { return (pid_t)1; }
+pid_t _getpid(void)
+{
+	return (pid_t)1;
+}
 
 void *__wrap__malloc_r(struct _reent *reent, size_t size)
 {
@@ -471,3 +480,11 @@ void __wrap__free_r(struct _reent *reent, void *ptr)
 	UNUSED(reent);
 	vPortFree(ptr);
 }
+
+int _unlink(const char *__path)
+{
+	errno = ENOENT;
+
+	return -1;
+}
+

@@ -39,7 +39,7 @@ task.h is included from an application file. */
 #include "task.h"
 #include "timers.h"
 #include "stack_macros.h"
-#if ENABLE_FTRACE
+#if CONFIG_FTRACE
 #include "ftrace.h"
 #endif
 
@@ -3046,17 +3046,8 @@ void vTaskSwitchContext( void )
 			if( ulTotalRunTime > ulTaskSwitchedInTime )
 			{
 				pxCurrentTCB->ulRunTimeCounter += ( ulTotalRunTime - ulTaskSwitchedInTime );
-#if ENABLE_FTRACE
-				int ret = vGetFtraceIndex();
-				struct ftrace_node *p = NULL;
-				if (ret >= 0) {
-					p = &ptracer->pnode[ret];
-					p->runtime = (uint32_t)(ulTotalRunTime - ulTaskSwitchedInTime);
-					p->starttime = ulTaskSwitchedInTime;
-					p->pid = (uint32_t)pxCurrentTCB->uxTCBNumber;
-					p->irqnum = 500;
-					p->type = running;
-				}
+#if CONFIG_FTRACE
+				vTraceSwitchContext((uint32_t)pxCurrentTCB->uxTCBNumber);
 #endif
 			}
 			else

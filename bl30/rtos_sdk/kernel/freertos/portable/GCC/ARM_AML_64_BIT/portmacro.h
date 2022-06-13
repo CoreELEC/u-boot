@@ -101,7 +101,7 @@ extern UBaseType_t uxPortSetInterruptMask( void );
 extern void vPortClearInterruptMask( UBaseType_t uxNewMaskValue );
 extern void vPortInstallFreeRTOSVectorTable( void );
 
-#if ENABLE_FTRACE
+#if CONFIG_FTRACE
 extern void vTraceDisInterrupt(void);
 extern void vTraceEnInterrupt(void);
 #else

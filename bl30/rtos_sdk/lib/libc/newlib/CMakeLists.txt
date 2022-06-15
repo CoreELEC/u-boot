@@ -14,11 +14,11 @@ aml_library_sources(
 	syscalls.c
 )
 
-if(CONFIG_LOG_BUFFER)
-aml_library_link_libraries(libc__logbuffer)
-endif()
 if(CONFIG_VFS)
 aml_library_link_libraries(lib__vfs)
+endif()
+if(CONFIG_LOG_BUFFER)
+aml_library_link_libraries(utilities__logbuffer)
 endif()
 aml_library_link_libraries(kernel__${KERNEL})
 aml_library_link_libraries(drivers)

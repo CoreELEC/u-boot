@@ -110,7 +110,7 @@ if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
 fi
 
 gen_jenkins_trigger() {
-	if [ -s $DIFF_MANIFEST ]; then
+	if [ -s $CURRENT_MANIFEST ]; then
 		echo "======== Generate Jenkins Trigger ========"
 
 		rm -f $JENKINS_TRIGGER
@@ -124,21 +124,21 @@ gen_jenkins_trigger() {
 			done
 
 			if [ -n "$repo_name" ]; then
+				echo "$repo_name"
 				echo "p=$repo_name" >> $JENKINS_TRIGGER
 				echo "b=projects/amlogic-dev" >> $JENKINS_TRIGGER
 			fi
-		done < $DIFF_MANIFEST
+		done < $CURRENT_MANIFEST
 	fi
 	rm -f $LAST_MANIFEST $CURRENT_MANIFEST $DIFF_MANIFEST
 }
 
 if [ ! -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
-	cp $CURRENT_MANIFEST $DIFF_MANIFEST
 	gen_jenkins_trigger
 fi
 if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
 	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
-	gen_jenkins_trigger
+	[ -s $DIFF_MANIFEST ] && gen_jenkins_trigger
 fi
 
 if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then

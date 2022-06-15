@@ -9,16 +9,14 @@
 
 #include <stdint.h>
 
-void vTaskRename( void* pvTaskHandle, const char *pcName);
+void vTaskRename(void *pvTaskHandle, const char *pcName);
 
-uint8_t pcTaskSetName( void *pvTaskHandle, const char *pcName );
+uint8_t pcTaskSetName(void *pvTaskHandle, const char *pcName);
 
-void vTaskDumpStack(void* pvTaskHandle);
+void vTaskDumpStack(void *pvTaskHandle);
 
-void* xGetTaskHandleOfNum(uint32_t uxTaskNumber);
-
-#if ( configUSE_TRACE_FACILITY == 1 )
-void* pvGetTaskHandleOfNum(uint32_t tasknum);
+#if (configUSE_TRACE_FACILITY == 1)
+void *pvGetTaskHandleOfNum(uint32_t tasknum);
 #endif
 
 #endif

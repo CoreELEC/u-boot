@@ -159,6 +159,7 @@ struct MemLeak {
 #endif
 
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
+int xCheckMallocNodeIsOver(void *node);
 int xPortCheckIntegrity(void);
 int xPortMemoryScan(void);
 #endif

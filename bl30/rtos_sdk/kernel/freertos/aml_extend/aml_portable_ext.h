@@ -14,6 +14,11 @@ typedef enum Halt_Action{
 	HLTACT_SHUTDOWN_SYSTEM
 }Halt_Action_e;
 
+#if CONFIG_FTRACE
+extern void vTraceDisInterrupt(void);
+extern void vTraceEnInterrupt(void);
+#endif
+
 #ifdef CONFIG_ARM64
 static inline unsigned long _irq_save(void)
 {
@@ -25,7 +30,9 @@ static inline unsigned long _irq_save(void)
 		: "=r" (flags)
 		:
 		: "memory");
-
+#if CONFIG_FTRACE
+	vTraceDisInterrupt();
+#endif
 	return flags;
 }
 static inline void _irq_restore(unsigned long flags)
@@ -35,6 +42,10 @@ static inline void _irq_restore(unsigned long flags)
 	:
 	: "r" (flags)
 	: "memory");
+#if CONFIG_FTRACE
+	if ((flags & 0x2) == 0)
+		vTraceEnInterrupt();
+#endif
 }
 
 #define portIRQ_SAVE(flags) 			\

@@ -341,6 +341,93 @@ static void vPortRmFromList(size_t pointer)
 		}
 	}
 }
+// Check memory node for overflow?
+int xCheckMallocNodeIsOver(void *node)
+{
+	unsigned long flags;
+	size_t pos = 0, ret = 0;
+	size_t buffer_address, buffer_size;
+	BlockLink_t *allocHandle = NULL;
+
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
+	portIRQ_SAVE(flags);
+#else
+	vTaskSuspendAll();
+#endif
+
+	/* get node handle */
+	allocHandle = (BlockLink_t *)((size_t)(node)-xHeapStructSize);
+
+	/* Find node buffer pool */
+	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
+		if (allocList[pos].allocHandle == allocHandle)
+			break;
+		pos++;
+	}
+
+	/* Header integrity check */
+	if (HEAD_CANARY(allocHandle) != HEAD_CANARY_PATTERN) {
+		printk("ERROR!!! detected buffer overflow(HEAD)\r\n");
+		buffer_address = (size_t)node;
+		buffer_size = allocHandle->xBlockSize & ~xBlockAllocatedBit;
+		/* Get monitoring nodes */
+		if (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
+			if (allocList[pos].xOwner) {
+				TaskStatus_t status;
+
+				vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
+				printk(
+					"\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+				    status.pcTaskName, buffer_address, allocList[pos].requestSize,
+					buffer_size);
+			} else {
+				printk(
+				    "\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+				    buffer_address, allocList[pos].requestSize, buffer_size);
+			}
+			print_traceitem(allocList[pos].backTrace);
+		}
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
+		print_memory_site_info((uint8_t *)buffer_address);
+#endif
+		ret = 1;
+	}
+	/* Tail integrity check */
+	if (TAIL_CANARY(allocHandle, allocHandle->xBlockSize) != TAIL_CANARY_PATTERN) {
+		printk("ERROR!!! detected buffer overflow(TAIL)\r\n");
+		buffer_address = (size_t)node;
+		buffer_size = allocHandle->xBlockSize & ~xBlockAllocatedBit;
+		/* Get monitoring nodes */
+		if (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
+			if (allocList[pos].xOwner) {
+				TaskStatus_t status;
+
+				vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
+				printk(
+				    "\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+				    status.pcTaskName, buffer_address, allocList[pos].requestSize,
+					buffer_size);
+			} else {
+				printk(
+				    "\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
+				    buffer_address, allocList[pos].requestSize, buffer_size);
+			}
+			print_traceitem(allocList[pos].backTrace);
+		}
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
+		print_memory_site_info((uint8_t *)buffer_address);
+#endif
+		ret = 1;
+	}
+
+#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
+	portIRQ_RESTORE(flags);
+#else
+	(void)xTaskResumeAll();
+#endif
+
+	return ret;
+}
 // Check for out of bounds memory
 int xPortCheckIntegrity(void)
 {

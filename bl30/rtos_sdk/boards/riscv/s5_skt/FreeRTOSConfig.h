@@ -19,7 +19,7 @@
 #define configUSE_PREEMPTION 1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE 0
-#define configCPU_CLOCK_HZ 24000000 // 32768
+#define configCPU_CLOCK_HZ 1000000 //24000000
 #define configTICK_RATE_HZ 50
 #define configMAX_PRIORITIES 4
 #define configMINIMAL_STACK_SIZE 450
@@ -36,18 +36,19 @@
 #define configUSE_NEWLIB_REENTRANT 0
 #define configENABLE_BACKWARD_COMPATIBILITY 0
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 5
+#define configSOC_TIMER_AS_TICK 1
 
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION 0
 #define configSUPPORT_DYNAMIC_ALLOCATION 1
-#define configTOTAL_HEAP_SIZE (22 * 1024)
+#define configTOTAL_HEAP_SIZE (30 * 1024)
 #define configAPPLICATION_ALLOCATED_HEAP 0
 
 /* Hook function related definitions. */
-#define configUSE_IDLE_HOOK 0
+#define configUSE_IDLE_HOOK 1
 #define configUSE_TICK_HOOK 0
-#define configCHECK_FOR_STACK_OVERFLOW 0
-#define configUSE_MALLOC_FAILED_HOOK 0
+#define configCHECK_FOR_STACK_OVERFLOW 1
+#define configUSE_MALLOC_FAILED_HOOK 1
 #define configUSE_DAEMON_TASK_STARTUP_HOOK 0
 
 /* Run time and task stats gathering related definitions. */
@@ -70,10 +71,9 @@
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 6
 #define configMAX_API_CALL_INTERRUPT_PRIORITY 6
 
-#define configDEFAULT_HEAP_ADDR 0xfffc0000
-#define configDEFAULT_HEAP_SIZE (26 * 1024)
+#define configDEFAULT_HEAP_ADDR 0x10000000
+#define configDEFAULT_HEAP_SIZE (32 * 1024)
 #define configSTICK_REG_ADDR (configDEFAULT_HEAP_ADDR + configDEFAULT_HEAP_SIZE)
-#define configSTICK_REG_SIZE 128
 
 #define portCRITICAL_NESTING_IN_TCB 1
 
@@ -110,7 +110,6 @@
 #define INCLUDE_xTaskGetHandle 1
 #define INCLUDE_xTaskResumeFromISR 1
 
-#define configCLINT_BASE_ADDRESS 0x02000000UL
 /* A header file that defines trace macro can be included here. */
 
 #endif /* FREERTOS_CONFIG_H */

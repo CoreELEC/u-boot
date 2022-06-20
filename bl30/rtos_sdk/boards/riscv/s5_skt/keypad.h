@@ -51,6 +51,8 @@ struct xReportEvent {
 	void *data;
 };
 
+typedef void (*CallBack_t)(struct xReportEvent arg);
+
 struct xKeyInitInfo {
 	uint32_t ulKeyId;
 	uint32_t eventMask;
@@ -60,7 +62,7 @@ struct xKeyInitInfo {
 	uint32_t doubleDTTMs;
 	uint32_t combLongDTTMs;
 	uint32_t combDTTMs;
-	void (*CallBack)(struct xReportEvent p);
+	CallBack_t CallBack;
 	void *data;
 };
 

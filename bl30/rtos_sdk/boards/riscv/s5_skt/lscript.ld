@@ -4,31 +4,32 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
               "elf32-littleriscv")
 OUTPUT_ARCH("riscv")
 ENTRY( _start )
 MEMORY
 {
-    ram (rw) : ORIGIN = 0x10000000, LENGTH = (64 * 1024)
+    ram (rw) : ORIGIN = 0xf7018000, LENGTH = (64 * 1024)
 }
 SECTIONS
 {
     __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
     .text :
     {
- KEEP (*(SORT_NONE(.init)))
         . = ALIGN(4);
-        *(.text)
-        *(.rodata*)
-        _etext = .;
+ PROVIDE( _text = . );
+ *(.init)
+        *(.text* .rodata*)
+        . = ALIGN(0x100);
+        PROVIDE( _etext = . );
+ *(.vtable)
     } > ram
     .data :
     {
         _data = .;
         *(vtable)
-        *(.data)
+        *(.sdata* .data*)
         _edata = .;
     } > ram
     .bss :
@@ -43,13 +44,9 @@ SECTIONS
     } > ram
     .stack :
     {
-
+        PROVIDE( _stack = . );
  . = ALIGN(1024);
         . += __stack_size;
-        _sp = .;
-    } >ram
-    .init :
-    {
-     KEEP (*(SORT_NONE(.init)))
+        PROVIDE( _sp = . );
     } >ram
 }

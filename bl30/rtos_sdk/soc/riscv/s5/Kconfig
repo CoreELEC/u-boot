@@ -7,11 +7,4 @@ config SOC_S5
 	select RISCV
 	help
 	  Enable S5 SOC of RISCV.
-choice
-	prompt "Serial"
-	default N200_REVA
-	config N200_REVA
-	bool "N200 REVA"
-	help
-	  Enable N200 REVA serial of RISCV.
-endchoice
+

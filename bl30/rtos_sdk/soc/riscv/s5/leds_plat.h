@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
+/*
+ * platform related header file
+ */
+
 #ifndef _MESON_LEDS_PLAT_H_
 #define _MESON_LEDS_PLAT_H_
 
@@ -11,7 +15,7 @@
 extern "C" {
 #endif
 /*
- * pwm SC2 leds config
+ * pwm S4 leds config
  */
 #include <leds_state.h>
 
@@ -26,6 +30,10 @@ enum led_pwm_id {
 	LED_PWM_D,
 	LED_PWM_E,
 	LED_PWM_F,
+	LED_PWM_G,
+	LED_PWM_H,
+	LED_PWM_I,
+	LED_PWM_J,
 	LED_PWM_INVALID,
 };
 

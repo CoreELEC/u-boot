@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
+/*
+ * platform related header file
+ */
+
 #ifndef _MESON_PWM_PLAT_H_
 #define _MESON_PWM_PLAT_H_
 
@@ -14,15 +18,16 @@ extern "C" {
 
 #define PwmMesonVolt_Duty 1
 
-/* There are 3 pwm controllers in t5d */
+/* There are 4 pwm controllers in a5 */
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
+	PWM_GH,
 	PWM_MUX,
 };
 
-/* VDDEE VDDCPU in t5d */
+/* VDDEE VDDCPU in s4 */
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
 	VDDCPU_VOLT,

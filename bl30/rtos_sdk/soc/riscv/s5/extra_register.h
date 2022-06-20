@@ -88,5 +88,12 @@
 #define SEC_AO_CEC_STICKY_DATA7 (0xff800000 + (0x0d1 << 2))
 #define P_AO_CEC_STICKY_DATA7 ((volatile uint32_t *)(0xff800000 + (0x0d1 << 2)))
 
+
+#define RTC_INT_MASK ((0x0008 << 2) + 0xfe09a000)
+#define RTC_INT_CLR ((0x0009 << 2) + 0xfe09a000)
+#define RTC_REAL_TIME ((0x000d << 2) + 0xfe09a000)
+#define RTC_INT_STATUS ((0x000c << 2) + 0xfe09a000)
+#define RTC_ALARM0_REG ((0x0002 << 2) + 0xfe09a000)
+
 #endif // EXTRA_REGISTER_H
 

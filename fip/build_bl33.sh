@@ -64,6 +64,7 @@ function build_uboot() {
 
 	if [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then
 		echo ""
+		set -e
 		echo "ramdump enable, build bl33z.bin for soc [${SOCNAME}] ..."
 		if [ -z "${SOCNAME}" ];then
 			SOCNAME=p1
@@ -90,6 +91,7 @@ function build_uboot() {
 		else
 			echo "Error: bl33z proj is not exist... abort"
 		fi
+		set +e
 		echo ""
 	fi
 	ret=$?

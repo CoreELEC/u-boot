@@ -85,6 +85,17 @@ function package_env_config() {
         ;;
     esac
 
+    #Xip config
+    case $DSP_BOARD in
+    'ad401_a113l_hifi4a_lowpower')
+        if [ $UBOOT_BOARDNAME == 'a1_ad401_nor_rtos' ]; then
+            RTOS_XIP=1
+        fi
+        ;;
+    *) ;;
+
+    esac
+
     #Arch prefix settings
     if [ -n "$RTOS_ARCH" ]; then
         ARCH_PREFIX="${RTOS_ARCH}""-"
@@ -118,11 +129,27 @@ function build_rtos_image() {
 
     source scripts/env.sh ${RTOS_ARCH} ${RTOS_SOC} ${RTOS_BOARD} ${RTOS_PRODUCT}
 
+    if [ -n "$RTOS_XIP" ]; then
+        sed -i -e 's/CONFIG_XIP .*$/CONFIG_XIP 1/' $RTOS_XIP_CONFIG_FILE
+    fi
+
     if [ -n "$1" ] &&
         [ $1 == "backtrace" ]; then
         make backtrace
+        if [ -n "$RTOS_XIP" ]; then
+            make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
+            cp ${RTOS_SDK_OUT_PATH}/${KERNEL}/${KERNEL}.bin ${RTOS_SDK_SINGED_BIN_FILE}
+        fi
     else
         make
+        if [ -n "$RTOS_XIP" ]; then
+            make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
+            cp ${RTOS_SDK_OUT_PATH}/${KERNEL}/${KERNEL}.bin ${RTOS_SDK_SINGED_BIN_FILE}
+        fi
+    fi
+
+    if [ -n "$RTOS_XIP" ]; then
+        sed -i -e 's/CONFIG_XIP .*$/CONFIG_XIP 0/' $RTOS_XIP_CONFIG_FILE
     fi
 
     if [ $? -ne 0 ]; then
@@ -130,9 +157,16 @@ function build_rtos_image() {
         popd
         exit 1
     else
-        mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
-        test -f ${RTOS_SDK_IMAGE_PATH}/rtos-uImage && cp ${RTOS_SDK_IMAGE_PATH}/rtos-uImage $PROJECT_BUILD_OUT_IMAGE_PATH/rtos-uImage
-        rm -rf $RTOS_SDK_OUT_PATH
+        if [ -z "$RTOS_XIP" ]; then
+            mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
+            test -f ${RTOS_SDK_IMAGE_PATH}/rtos-uImage && cp ${RTOS_SDK_IMAGE_PATH}/rtos-uImage $PROJECT_BUILD_OUT_IMAGE_PATH/rtos-uImage
+            rm -rf $RTOS_SDK_OUT_PATH
+        else
+            mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
+            cp ${RTOS_SDK_OUT_PATH}/freertos/freertos_b.bin ${RTOS_SDK_IMAGE_PATH}/rtos-xipA
+            cp ${RTOS_SDK_IMAGE_PATH}/* $PROJECT_BUILD_OUT_IMAGE_PATH/
+            rm -rf $RTOS_SDK_OUT_PATH
+        fi
     fi
 
     popd
@@ -147,8 +181,13 @@ function build_aml_image() {
         install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
         $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package_ndsp.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
     else
-        install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
-        $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
+        if [ -z "$RTOS_XIP" ]; then
+            install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
+            $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
+        else
+            install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
+            $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package_xip.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
+        fi
     fi
 
     cd $PROJECT_BUILD_OUT_IMAGE_PATH && rm $(ls | grep -v "aml_upgrade_package.img")
@@ -170,6 +209,8 @@ function build_uboot() {
 package_target_verify
 package_env_config $RTOS_BOARD
 
+export BUILD_SYSTEM_DIR=${RTOS_BUILD_DIR}/build_system
+export RTOS_XIP_CONFIG_FILE=${RTOS_BUILD_DIR}/boards/${RTOS_ARCH}/${RTOS_BOARD}/lscript.h
 export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}
 
 export RTOS_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}

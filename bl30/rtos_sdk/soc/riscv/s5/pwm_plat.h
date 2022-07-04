@@ -24,6 +24,7 @@ enum pwm_chip_id {
 	PWM_CD,
 	PWM_EF,
 	PWM_GH,
+	PWM_IJ,
 	PWM_MUX,
 };
 

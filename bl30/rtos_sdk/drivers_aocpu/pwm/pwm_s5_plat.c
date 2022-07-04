@@ -9,9 +9,11 @@
 #include <pwm.h>
 
 struct xPwmMesonChip meson_pwm_chip[] = {
-	{ PWM_AB, PWM_PWM_A, 0, 0 },
-	{ PWM_CD, PWM_PWM_C, 0, 0 },
-	{ PWM_EF, PWM_PWM_E, 0, 0 },
+	{ PWM_AB, PWMAB_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL },
+	{ PWM_CD, PWMCD_PWM_A, 0, CLKCTRL_PWM_CLK_CD_CTRL },
+	{ PWM_EF, PWMEF_PWM_A, 0, CLKCTRL_PWM_CLK_EF_CTRL },
+	{ PWM_GH, PWMGH_PWM_A, 0, CLKCTRL_PWM_CLK_GH_CTRL },
+	{ PWM_IJ, PWMIJ_PWM_A, 0, CLKCTRL_PWM_CLK_IJ_CTRL },
 };
 
 /* VDDEE voltage table  volt must ascending */

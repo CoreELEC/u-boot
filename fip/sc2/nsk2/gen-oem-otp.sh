@@ -37,6 +37,8 @@ function read_csv_and_generate() {
     local binary_string_hash=$(mktemp -p .)
 
     echo "reading $input, Generating $output"
+    dos2unix $input
+    sed -i -e '$a\' $input
 
     #Generate empty efuse pattern bytes array
     dd if=/dev/zero of=$patt count=4096 bs=1 &> /dev/null

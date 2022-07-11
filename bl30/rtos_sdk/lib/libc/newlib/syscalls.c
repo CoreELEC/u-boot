@@ -478,8 +478,11 @@ void __wrap__free_r(struct _reent *reent, void *ptr)
 
 int _unlink(const char *__path)
 {
+#if CONFIG_VFS
+	return vfs_remove(__path);
+#else
 	errno = ENOENT;
-
 	return -1;
+#endif
 }
 

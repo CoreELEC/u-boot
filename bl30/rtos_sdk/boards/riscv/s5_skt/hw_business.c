@@ -56,7 +56,6 @@ void config_eclic_irqs(void)
 
 void hw_business_process(void)
 {
-#ifdef BUSINESS_USED
 	uint8_t i = 0;
 
 	printf("AOCPU image version='%s'\n", CONFIG_COMPILE_TIME);
@@ -66,7 +65,6 @@ void hw_business_process(void)
 	vMbInit();
 	//	vCecCallbackInit(CEC_CHIP_SC2);
 	//	vRtcInit();
-	rtc_init();
-	create_str_task();
-#endif
+	//rtc_init();
+	//create_str_task();
 }

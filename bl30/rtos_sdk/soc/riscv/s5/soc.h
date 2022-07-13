@@ -13,7 +13,7 @@
 #include "register.h"
 #endif
 
-#define SOC_ECLIC_NUM_INTERRUPTS 32
+#define SOC_ECLIC_NUM_INTERRUPTS 16
 #define SOC_TIMER_FREQ           configCPU_CLOCK_HZ
 #define SOC_ECLIC_CTRL_ADDR      0x0C000000UL
 #define SOC_TIMER_CTRL_ADDR      0x02000000UL

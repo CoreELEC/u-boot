@@ -144,25 +144,6 @@ int vPrintFreeListAfterMallocFail(void);
 /*
  * Map to the memory management routines required for the port.
  */
-#ifdef CONFIG_DMALLOC
-struct MemLeak {
-	char TaskName[20];
-	int TaskNum;
-	int WantSize;
-	int FreeSize;
-	int WantTotalSize;
-	int FreeTotalSize;
-	int MallocCount;
-	int FreeCount;
-	int Flag;
-};
-#endif
-
-#ifdef CONFIG_MEMORY_ERROR_DETECTION
-int xCheckMallocNodeIsOver(void *node);
-int xPortCheckIntegrity(void);
-int xPortMemoryScan(void);
-#endif
 
 void *pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION;
 void *pvPortMallocAlign( size_t xWantedSize , size_t xAlignMsk)PRIVILEGED_FUNCTION;

@@ -1102,9 +1102,6 @@ UBaseType_t x;
 	}
 }
 /*-----------------------------------------------------------*/
-#ifdef CONFIG_DMALLOC
-extern struct MemLeak MemLeak_t[CONFIG_DMALLOC_SIZE];
-#endif
 
 static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 {
@@ -1153,25 +1150,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 		}
 
-#ifdef CONFIG_DMALLOC
-		int i = 0;
-
-		if ( xSchedulerRunning != pdFALSE ) {
-			for (i = 1; i < CONFIG_DMALLOC_SIZE; i ++) {
-				if (MemLeak_t[i].Flag == 0) {
-					uxTaskNumber = i;
-					break;
-				}
-			}
-
-			configASSERT( i < CONFIG_DMALLOC_SIZE );
-		} else {
-			uxTaskNumber ++;
-		}
-		MemLeak_t[uxTaskNumber].Flag = 1;
-#else
 		uxTaskNumber++;
-#endif
 
 		#if ( configUSE_TRACE_FACILITY == 1 )
 		{
@@ -1277,17 +1256,9 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			}
 
 			traceTASK_DELETE( pxTCB );
+
 #ifdef CONFIG_DMALLOC
-			MemLeak_t[pxTCB->uxTCBNumber].Flag = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].TaskNum = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].WantSize = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].WantTotalSize = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].MallocCount = 0;
-			if (MemLeak_t[pxTCB->uxTCBNumber].TaskName)
-				memset(MemLeak_t[pxTCB->uxTCBNumber].TaskName, 0, 20);
-			MemLeak_t[pxTCB->uxTCBNumber].FreeSize = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].FreeTotalSize = 0;
-			MemLeak_t[pxTCB->uxTCBNumber].FreeCount = 0;
+			xClearSpecDmallocNode(pxTCB->uxTCBNumber);
 #endif
 		}
 		taskEXIT_CRITICAL();

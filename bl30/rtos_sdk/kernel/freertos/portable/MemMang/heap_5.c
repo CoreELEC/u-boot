@@ -78,13 +78,6 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
-#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
-#include <printk.h>
-#include "sys_printf.h"
-#if CONFIG_BACKTRACE
-#include "stack_trace.h"
-#endif
-#endif
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -160,451 +153,13 @@ static HeapRegion_t xDefRegion[MAX_REGION_CNT + 1] =
 #endif
 
 /*-----------------------------------------------------------*/
-#ifdef CONFIG_DMALLOC
-struct MemLeak MemLeak_t[CONFIG_DMALLOC_SIZE];
-#endif
 
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
-
-#define UNWIND_DEPTH 5
-#define RAM_REGION_NUMS 2
-#define HEAD_CANARY_PATTERN (size_t)0x5051525354555657
-#define TAIL_CANARY_PATTERN (size_t)0x6061626364656667
-#define HEAD_CANARY(x) ((x)->head_canary)
-#define TAIL_CANARY(x, y) *(size_t *)((size_t)(x) + ((y) & ~xBlockAllocatedBit) - sizeof(size_t))
-
-/* Used to define the bss and data segments in the program. */
-typedef struct
-{
-	size_t *startAddress;
-	size_t size;
-} tMemoryRegion;
-/* Assignment Process Tracker */
-typedef struct
-{
-	BlockLink_t *allocHandle;
-	TaskHandle_t xOwner;
-	size_t blockSize;
-	size_t requestSize;
-	unsigned long backTrace[UNWIND_DEPTH];
-} allocTraceBlock_t;
-
-/* allocation buffer pool tracking alloc */
-allocTraceBlock_t allocList[CONFIG_MEMORY_ERROR_DETECTION_SIZE] = {NULL};
-
-#if CONFIG_N200_REVA
-// NOTHING
-#else
-extern uint8_t _bss_start[];
-extern uint8_t _bss_len[];
-extern uint8_t _data_start[];
-extern uint8_t _data_len[];
-tMemoryRegion globalRam[RAM_REGION_NUMS] = {
-	{(size_t *)_bss_start, (size_t)_bss_len},
-	{(size_t *)_data_start, (size_t)_data_len}};
+#include "aml_med_ext.c"
 #endif
 
-/* For pinpointing the location of anomalies(dump stack) */
-// print_traceitem
-static void print_traceitem(unsigned long *trace)
-{
-#if CONFIG_BACKTRACE
-	printk("\tCallTrace:\n");
-	for (int i = 0; i < UNWIND_DEPTH; i++)
-	{
-		printk("\t");
-		print_symbol(*(trace + i));
-	}
-#endif
-	return;
-}
-// get_calltrace
-static void get_calltrace(unsigned long *trace)
-{
-#if CONFIG_BACKTRACE
-#define CT_SKIP 2
-	int32_t ret, i;
-	unsigned long _trace[32];
-	ret = get_backtrace(NULL, _trace, UNWIND_DEPTH + CT_SKIP);
-	if (ret)
-	{
-		for (i = 0; i < UNWIND_DEPTH; i++)
-		{
-			trace[i] = _trace[i + CT_SKIP];
-		}
-	}
-#endif
-}
-// On-site printing from memory
-#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
-static void print_memory_site_info(uint8_t *address)
-{
-#define STEP_VALUE_FOR_MEMORY 8
-
-	int step;
-
-	printk("Memory Request Address Field Details (ADDRESS:0x%08x)\n", (size_t)address);
-	printk("\t ADDRESS -%d\n", STEP_VALUE_FOR_MEMORY * sizeof(size_t));
-
-	for (step = (STEP_VALUE_FOR_MEMORY - 1); step >= 0; step--){
-		printk("\t");
-		for (int loops = sizeof(size_t); loops > 0; loops--){
-			printk("%02x ", *(address - loops - step * sizeof(size_t)));
-		}
-		printk("\n");
-	}
-
-	printk("\t ADDRESS\n");
-
-	for (step = 0; step < STEP_VALUE_FOR_MEMORY; step++){
-		printk("\t");
-		for (int loops = 0; loops < sizeof(size_t); loops++){
-			printk("%02x ", *(address + loops + step * sizeof(size_t)));
-		}
-		printk("\n");
-	}
-}
-#endif
-/* Additional functions to scan memory (buffer overflow, memory leaks) */
-// vPortUpdateFreeBlockList
-static void vPortUpdateFreeBlockList(void)
-{
-	BlockLink_t *start = &xStart;
-	do
-	{
-		HEAD_CANARY(start) = HEAD_CANARY_PATTERN;
-		start = start->pxNextFreeBlock;
-	} while (start->pxNextFreeBlock != NULL);
-}
-// vPortAddToList
-static void vPortAddToList(size_t pointer, size_t tureSize)
-{
-	size_t pos = 0;
-	/* Set up an out-of-bounds protected area */
-	BlockLink_t *temp = (BlockLink_t *)pointer;
-	HEAD_CANARY(temp) = HEAD_CANARY_PATTERN;
-	TAIL_CANARY(temp, temp->xBlockSize) = TAIL_CANARY_PATTERN;
-	/* Fill Tracking Info Block */
-	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
-	{
-		if (!allocList[pos].allocHandle)
-		{
-			allocList[pos].requestSize = tureSize;
-			/* cache block size */
-			allocList[pos].blockSize = temp->xBlockSize;
-			/* mount malloc point */
-			allocList[pos].allocHandle = (BlockLink_t *)pointer;
-			/* get call stack info */
-			get_calltrace(allocList[pos].backTrace);
-			/* Current task owener */
-			if (xTaskGetCurrentTaskHandle() && xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
-			{
-				allocList[pos].xOwner = xTaskGetCurrentTaskHandle();
-			}
-			else
-			{
-				allocList[pos].xOwner = NULL;
-			}
-			break;
-		}
-		/* increment */
-		pos++;
-	}
-	/* update free block list */
-	vPortUpdateFreeBlockList();
-}
-// vPortRmFromList
-static void vPortRmFromList(size_t pointer)
-{
-	size_t pos;
-	/* The allocated address of the current block */
-	size_t allocatedAddress = xHeapStructSize + pointer;
-	/* Check if the task is freed */
-	for (pos = 0; pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE; pos++)
-	{
-		if (((size_t)(allocList[pos].xOwner)) == allocatedAddress)
-		{
-			allocList[pos].xOwner = NULL;
-		}
-	}
-	/* Release the specified tracking block */
-	for (pos = 0; pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE; pos++)
-	{
-		if (allocList[pos].allocHandle == (BlockLink_t *)pointer)
-		{
-			allocList[pos].xOwner = NULL;
-			allocList[pos].blockSize = 0;
-			allocList[pos].requestSize = 0;
-			allocList[pos].allocHandle = NULL;
-			memset(allocList[pos].backTrace, 0, sizeof(allocList[pos].backTrace));
-			break;
-		}
-	}
-}
-// Check memory node for overflow?
-int xCheckMallocNodeIsOver(void *node)
-{
-	unsigned long flags;
-	size_t pos = 0, ret = 0;
-	size_t buffer_address, buffer_size;
-	BlockLink_t *allocHandle = NULL;
-
-#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
-	portIRQ_SAVE(flags);
-#else
-	vTaskSuspendAll();
-#endif
-
-	/* get node handle */
-	allocHandle = (BlockLink_t *)((size_t)(node)-xHeapStructSize);
-
-	/* Find node buffer pool */
-	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
-		if (allocList[pos].allocHandle == allocHandle)
-			break;
-		pos++;
-	}
-
-	/* Header integrity check */
-	if (HEAD_CANARY(allocHandle) != HEAD_CANARY_PATTERN) {
-		printk("ERROR!!! detected buffer overflow(HEAD)\r\n");
-		buffer_address = (size_t)node;
-		buffer_size = allocHandle->xBlockSize & ~xBlockAllocatedBit;
-		/* Get monitoring nodes */
-		if (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
-			if (allocList[pos].xOwner) {
-				TaskStatus_t status;
-
-				vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-				printk(
-					"\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-				    status.pcTaskName, buffer_address, allocList[pos].requestSize,
-					buffer_size);
-			} else {
-				printk(
-				    "\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-				    buffer_address, allocList[pos].requestSize, buffer_size);
-			}
-			print_traceitem(allocList[pos].backTrace);
-		}
-#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
-		print_memory_site_info((uint8_t *)buffer_address);
-#endif
-		ret = 1;
-	}
-	/* Tail integrity check */
-	if (TAIL_CANARY(allocHandle, allocHandle->xBlockSize) != TAIL_CANARY_PATTERN) {
-		printk("ERROR!!! detected buffer overflow(TAIL)\r\n");
-		buffer_address = (size_t)node;
-		buffer_size = allocHandle->xBlockSize & ~xBlockAllocatedBit;
-		/* Get monitoring nodes */
-		if (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE) {
-			if (allocList[pos].xOwner) {
-				TaskStatus_t status;
-
-				vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-				printk(
-				    "\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-				    status.pcTaskName, buffer_address, allocList[pos].requestSize,
-					buffer_size);
-			} else {
-				printk(
-				    "\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-				    buffer_address, allocList[pos].requestSize, buffer_size);
-			}
-			print_traceitem(allocList[pos].backTrace);
-		}
-#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
-		print_memory_site_info((uint8_t *)buffer_address);
-#endif
-		ret = 1;
-	}
-
-#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
-	portIRQ_RESTORE(flags);
-#else
-	(void)xTaskResumeAll();
-#endif
-
-	return ret;
-}
-// Check for out of bounds memory
-int xPortCheckIntegrity(void)
-{
-	int result = 0;
-	size_t pos = 0;
-
-	/* Scan free memory list integrity */
-	BlockLink_t *start = &xStart;
-	do
-	{
-		configASSERT(HEAD_CANARY(start) == HEAD_CANARY_PATTERN);
-		start = start->pxNextFreeBlock;
-	} while (start->pxNextFreeBlock != NULL);
-
-	/* Scan allocated memory integrity */
-	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
-	{
-		if (allocList[pos].allocHandle)
-		{
-			/* Header integrity check */
-			if (HEAD_CANARY(allocList[pos].allocHandle) != HEAD_CANARY_PATTERN)
-			{
-				printk("ERROR!!! detected buffer overflow(HEAD)\r\n");
-
-				size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
-				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
-
-				if (allocList[pos].xOwner)
-				{
-					TaskStatus_t status;
-					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   status.pcTaskName, buffer_address, allocList[pos].requestSize, buffer_size);
-				}
-				else
-				{
-					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   buffer_address, allocList[pos].requestSize, buffer_size);
-				}
-
-				print_traceitem(allocList[pos].backTrace);
-#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
-				print_memory_site_info((uint8_t *)buffer_address);
-#endif
-				result++;
-			}
-			/* Tail integrity check */
-			if (TAIL_CANARY(allocList[pos].allocHandle, allocList[pos].blockSize) != TAIL_CANARY_PATTERN)
-			{
-				printk("ERROR!!! detected buffer overflow(TAIL)\r\n");
-
-				size_t buffer_address = (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
-				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
-
-				if (allocList[pos].xOwner)
-				{
-					TaskStatus_t status;
-					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   status.pcTaskName, buffer_address, allocList[pos].requestSize, buffer_size);
-				}
-				else
-				{
-					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   buffer_address, allocList[pos].requestSize, buffer_size);
-				}
-
-				print_traceitem(allocList[pos].backTrace);
-#ifdef CONFIG_MEMORY_ERROR_DETECTION_PRINT
-				print_memory_site_info((uint8_t *)buffer_address);
-#endif
-				result++;
-			}
-		}
-		/* Judging whether the inspection is over */
-		pos++;
-	}
-
-	return result;
-}
-// Check for orphaned memory(memleak detection)
-int xPortMemoryScan(void)
-{
-	int result = 0;
-	size_t pos = 0, idx = 0;
-	size_t found, allocatedAddress;
-	size_t *tempEndAddress;
-	size_t *tempStartAddress;
-	size_t *jumpStartAddress = (size_t *)(&allocList[0]);
-	size_t *jumpEndAddress = (size_t *)((size_t)jumpStartAddress + sizeof(allocList));
-
-	/* memory leak scan */
-	while (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
-	{
-		idx = 0;
-		found = 0;
-		/* Scan the specified memory mount point */
-		if (allocList[pos].allocHandle)
-		{
-			/* Set target address */
-			allocatedAddress = xHeapStructSize + (size_t)(allocList[pos].allocHandle);
-			/* Scan all dynamic memory -1 */
-			while (idx < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
-			{
-				if ((pos != idx) && (allocList[idx].allocHandle))
-				{
-					/* Calculate the current thread stack address range */
-					tempStartAddress = (size_t *)(xHeapStructSize + (size_t)(allocList[idx].allocHandle));
-					tempEndAddress = (size_t *)(allocList[idx].requestSize + (size_t)tempStartAddress);
-					/* scan other memory ( include thread stack & list etc ) */
-					while (tempStartAddress < tempEndAddress)
-					{
-						if (*tempStartAddress == allocatedAddress)
-						{
-							found = 1;
-							break;
-						}
-						/* Increase address by size_t */
-						tempStartAddress++;
-					}
-				}
-				idx++;
-			}
-			/* Scan all static memory area -2 */
-#ifndef CONFIG_N200_REVA
-			if (!found)
-			{
-				for (int i = 0; i < RAM_REGION_NUMS; i++)
-				{
-					/* Calculate the address range of the static memory area */
-					tempStartAddress = globalRam[i].startAddress;
-					tempEndAddress = (size_t *)((size_t)(tempStartAddress) + globalRam[i].size);
-					/* scan bss & data segment */
-					while (tempStartAddress < tempEndAddress)
-					{
-						if ((*tempStartAddress == allocatedAddress) &&
-							((tempStartAddress < jumpStartAddress) || (tempStartAddress > jumpEndAddress)))
-						{
-							found = 1;
-							break;
-						}
-						tempStartAddress++;
-					}
-				}
-			}
-#endif
-			/* Didn't found any references to a pointer */
-			if (!found)
-			{
-				printk("WARNING!!! detected buffer leak\r\n");
-
-				size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
-
-				if (allocList[pos].xOwner)
-				{
-					TaskStatus_t status;
-					vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
-					printk("\tTask owner:(%s) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   status.pcTaskName, allocatedAddress, allocList[pos].requestSize, buffer_size);
-					print_traceitem(allocList[pos].backTrace);
-				}
-				else
-				{
-					printk("\tTask owner:(NULL) buffer address:(%lx) request size:(%lu) block size:(%lu)\r\n",
-						   allocatedAddress, allocList[pos].requestSize, buffer_size);
-					print_traceitem(allocList[pos].backTrace);
-				}
-
-				result++;
-			}
-		}
-		/* next */
-		pos++;
-	}
-
-	return result;
-}
+#ifdef CONFIG_DMALLOC
+#include "aml_dmalloc_ext.c"
 #endif
 
 void *pvPortMalloc(size_t xWantedSize)
@@ -615,14 +170,6 @@ void *pvPortMalloc(size_t xWantedSize)
 
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
 	size_t dMallocsz = xWantedSize;
-#endif
-
-#ifdef CONFIG_DMALLOC
-	int len = 0;
-	int MemTaskNum = 0;
-	char *taskname = pcTaskGetName(NULL);
-	if (taskname != NULL)
-		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
 #endif
 
 	if (xWantedSize <= 0)
@@ -743,35 +290,15 @@ void *pvPortMalloc(size_t xWantedSize)
 					pxBlock->pxNextFreeBlock = NULL;
 
 #ifdef CONFIG_MEMORY_ERROR_DETECTION
-					/* memory request record */
+					/* memory request record by med */
 					vPortAddToList((size_t)(((uint8_t *)pvReturn) - xHeapStructSize), dMallocsz);
 #endif
 
 #ifdef CONFIG_DMALLOC
-					if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
-					{
-						MemLeak_t[0].Flag = 1;
-						MemLeak_t[0].TaskNum = 0;
-						MemLeak_t[0].WantSize = xWantedSize;
-						MemLeak_t[0].WantTotalSize += xWantedSize;
-						MemLeak_t[0].MallocCount++;
-						strncpy(MemLeak_t[0].TaskName, "not_in_task", 20);
-						MemLeak_t[0].TaskName[sizeof(MemLeak_t[0].TaskName) - 1] = '\0';
-					}
-					else
-					{
-						if (taskname != NULL)
-						{
-							MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
-							MemLeak_t[MemTaskNum].WantSize = xWantedSize;
-							MemLeak_t[MemTaskNum].WantTotalSize += xWantedSize;
-							MemLeak_t[MemTaskNum].MallocCount++;
-							len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
-							strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
-							MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
-						}
-					}
+					/* memory request record by dmalloc */
+					vdRecordMalloc(xWantedSize);
 #endif
+
 				}
 				else
 				{
@@ -1048,14 +575,6 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 	size_t dMallocsz = xWantedSize;
 #endif
 
-#ifdef CONFIG_DMALLOC
-	int len = 0;
-	int MemTaskNum = 0;
-	char *taskname = pcTaskGetName(NULL);
-	if (taskname != NULL)
-		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
-#endif
-
 	if (xWantedSize <= 0)
 		return pvReturn;
 
@@ -1193,29 +712,8 @@ void *pvPortMallocAlign(size_t xWantedSize, size_t xAlignMsk)
 #endif
 
 #ifdef CONFIG_DMALLOC
-					if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
-					{
-						MemLeak_t[0].Flag = 1;
-						MemLeak_t[0].TaskNum = 0;
-						MemLeak_t[0].WantSize = xWantedSize;
-						MemLeak_t[0].WantTotalSize += xWantedSize;
-						MemLeak_t[0].MallocCount++;
-						strncpy(MemLeak_t[0].TaskName, "not_in_task", 20);
-						MemLeak_t[0].TaskName[sizeof(MemLeak_t[0].TaskName) - 1] = '\0';
-					}
-					else
-					{
-						if (taskname != NULL)
-						{
-							MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
-							MemLeak_t[MemTaskNum].WantSize = xWantedSize;
-							MemLeak_t[MemTaskNum].WantTotalSize += xWantedSize;
-							MemLeak_t[MemTaskNum].MallocCount++;
-							len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
-							strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
-							MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
-						}
-					}
+					/* memory request record by dmalloc */
+					vdRecordMalloc(xWantedSize);
 #endif
 				}
 				else
@@ -1265,14 +763,6 @@ void vPortFree(void *pv)
 	BlockLink_t *pxLink;
 	unsigned long flags;
 
-#ifdef CONFIG_DMALLOC
-	int len = 0;
-	int MemTaskNum = 0;
-	char *taskname = pcTaskGetName(NULL);
-	if (taskname != NULL)
-		MemTaskNum = uxTaskGetTaskNumber(xTaskGetHandle(taskname));
-#endif
-
 	if (pv != NULL)
 	{
 		/* The memory being freed will have an BlockLink_t structure immediately
@@ -1287,25 +777,8 @@ void vPortFree(void *pv)
 		configASSERT(pxLink->pxNextFreeBlock == NULL);
 
 #ifdef CONFIG_DMALLOC
-		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
-		{
-			MemLeak_t[0].FreeSize = pxLink->xBlockSize;
-			MemLeak_t[0].FreeTotalSize += pxLink->xBlockSize;
-			MemLeak_t[0].FreeCount++;
-		}
-		else
-		{
-			if (taskname != NULL)
-			{
-				MemLeak_t[MemTaskNum].TaskNum = MemTaskNum;
-				MemLeak_t[MemTaskNum].FreeSize = pxLink->xBlockSize;
-				MemLeak_t[MemTaskNum].FreeTotalSize += pxLink->xBlockSize;
-				MemLeak_t[MemTaskNum].FreeCount++;
-				len = sizeof(MemLeak_t[MemTaskNum].TaskName) > strlen(taskname) ? strlen(taskname) : sizeof(MemLeak_t[MemTaskNum].TaskName);
-				strncpy(MemLeak_t[MemTaskNum].TaskName, taskname, len);
-				MemLeak_t[MemTaskNum].TaskName[sizeof(MemLeak_t[MemTaskNum].TaskName) - 1] = '\0';
-			}
-		}
+		/* memory request record by dmalloc */
+		vdRecordFree(pxLink->xBlockSize);
 #endif
 
 		if ((pxLink->xBlockSize & xBlockAllocatedBit) != 0)

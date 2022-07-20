@@ -20,5 +20,6 @@ config BOARD_AX201_S928X
 	select SARADC
 	select IR
 	select VRTC
+	select HWSPINLOCK
 	help
 	  Enable Amlogic AX201 Board.

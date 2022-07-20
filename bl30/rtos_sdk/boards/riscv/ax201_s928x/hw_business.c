@@ -20,6 +20,7 @@
 #include "sdk_ver.h"
 #include "suspend.h"
 #include "vrtc.h"
+#include "hwspinlock.h"
 
 #define INT_TEST_NEST_DEPTH 6
 #define INT_TEST_GPIO_NUM 6
@@ -63,7 +64,9 @@ void hw_business_process(void)
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 	vMbInit();
+
 	//	vCecCallbackInit(CEC_CHIP_SC2);
 	vRtcInit();
 	//create_str_task();
+	vHwLockInit(HW_SPIN_LOCK0, 0);
 }

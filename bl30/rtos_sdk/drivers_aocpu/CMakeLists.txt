@@ -22,6 +22,7 @@ add_subdirectory_if_kconfig(pwm)
 add_subdirectory_if_kconfig(timer_source)
 add_subdirectory_if_kconfig(saradc)
 add_subdirectory_if_kconfig(ir)
+add_subdirectory_if_kconfig(hwspinlock)
 
 aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/stick_mem
@@ -38,6 +39,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/timer_source
 	${SDK_BASE}/drivers_aocpu/saradc
 	${SDK_BASE}/drivers_aocpu/ir
+	${SDK_BASE}/drivers_aocpu/hwspinlock
 )
 
 aml_library_link_libraries(arch__${ARCH})

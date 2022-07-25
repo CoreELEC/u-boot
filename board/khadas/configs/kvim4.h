@@ -356,7 +356,7 @@
 			"run recovery_from_flash_base;"\
 			"\0"\
         "load_bmp_logo="\
-            "if load mmc 0:2 ${loadaddr} /usr/share/fenix/logo/logo.bmp || load mmc 1:2 ${loadaddr} /usr/share/fenix/logo/logo.bmp || load mmc 1:3 ${loadaddr} /usr/share/fenix/logo/logo.bmp; then "\
+            "if load mmc 0:1 ${loadaddr} boot-logo-1080.bmp.gz || load mmc 1:1 ${loadaddr} boot-logo-1080.bmp.gz; then "\
                 "bmp display ${loadaddr};"\
                 "bmp scale;"\
             "fi;"\

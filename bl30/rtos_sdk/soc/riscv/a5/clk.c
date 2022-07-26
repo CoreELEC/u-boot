@@ -7,6 +7,7 @@
 #include "FreeRTOS.h"
 #include <common.h>
 #include "register.h"
+#include "p_register.h"
 #include "uart.h"
 #include <task.h>
 #include "soc.h"
@@ -17,6 +18,7 @@
 #include "power_domain.h"
 #include "mailbox-api.h"
 #include "suspend.h"
+#include "uart.h"
 
 extern uint32_t get_reason_flag(void);
 
@@ -62,15 +64,14 @@ void alt_timebase(int use_clk_src)
 		REG32(CLKCTRL_TIMEBASE_CTRL0) = 0x20018;
 	else if (use_clk_src == 1) {
 		//select sys_clk (rtc_pll) clk_div1
-		//when sys_clk < 32MHz
-		//if sys_clk is 30MHz
-		clk_div = 30;
-		REG32(CLKCTRL_TIMEBASE_CTRL0) = (1 << 17) | (clk_div << 19) | (0x2aa << 6);
+		//if sys_clk is 11.171MHz
+		clk_div = 11;
+		REG32(CLKCTRL_TIMEBASE_CTRL0) = (clk_div << 19) | (0x2aa << 6);
 	} else if (use_clk_src == 2) {
 		//select sys_clk (rtc_pll) clk_div2 when sys_clk < 256MHz
 		//if sys_clk is 122.88MHz
-		clk_div = 122;
-		REG32(CLKCTRL_TIMEBASE_CTRL0) = (1 << 17) | (clk_div << 24) | (0x3ff << 6);
+		clk_div = 123;
+		REG32(CLKCTRL_TIMEBASE_CTRL0) = (clk_div << 24) | (0x3ff << 6);
 	} else {
 		//select rtc clk
 		// 32k/32 = 1k
@@ -317,35 +318,35 @@ void vCLK_resume(uint32_t st_f)
 {
 	int xIdx = 0;
 
-	if (get_reason_flag() != VAD_WAKEUP) {
+	if ((!st_f) && (get_reason_flag() != VAD_WAKEUP)) {
 		wakeup_dsp();
 		vTaskDelay(pdMS_TO_TICKS(90));
 		xIdx = WAKEUP_FROM_OTHER_KEY;
 		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
+		clear_dsp_wakeup_trigger();
 	}
-	/* switch osc_clk back*/
-	REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
-	REG32(CLKCTRL_OSCIN_CTRL) = oscin_ctrl_reg | (1 << 31);
-	udelay(9000);
-
-	clear_dsp_wakeup_trigger();
-	/* switching tick timer (using osc_clk) */
-	alt_timebase(0);
-
-	set_sys_div_clk(0, 0); // osc_clk
-	set_axi_div_clk(0, 0); // osc_clk
-
-
-	xIdx = WAIT_SWITCH_TO_24MHZ;
-	xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-
-	vTaskDelay(pdMS_TO_TICKS(90));
-	disable_pll(PLL_RTC);
 
 	if (st_f) {
+		/* switch osc_clk back*/
+		REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
+		REG32(CLKCTRL_OSCIN_CTRL) = oscin_ctrl_reg | (1 << 31);
+		udelay(2000);
+		/* switching tick timer (using osc_clk) */
+		alt_timebase(0);
+
+		set_sys_div_clk(0, 0); // osc_clk
+		set_axi_div_clk(0, 0); // osc_clk
+		vUartChangeBaudrate_resume(921600);
+		udelay(1000);
+		disable_pll(PLL_RTC);
 		power_switch_to_wraper(PWR_ON);
 		/* open mem_pd of srama and sramb */
 		REG32(PWRCTRL_MEM_PD2) = 0x0;
+	} else {
+
+		xIdx = WAIT_SWITCH_TO_24MHZ;
+		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
+		vTaskDelay(pdMS_TO_TICKS(90));
 	}
 
 	// In a55 boot code
@@ -356,30 +357,33 @@ void vCLK_suspend(uint32_t st_f)
 {
 	int xIdx = 0;
 
+	printf("[AOCPU]: enter vCLK_suspend.\n");
+
 	if (st_f) {
 		/* close mem_pd of srama and sramb */
 		REG32(PWRCTRL_MEM_PD2) = 0xfffffffc;
 		/* poweroff wrapper */
 		power_switch_to_wraper(PWR_OFF);
+		udelay(2000);
+		/* switch to RTC pll */
+		set_sys_div_clk(6, 10); // rtc pll (11.171MHz)
+		set_axi_div_clk(6, 0); // rtc pll (122.88MHz)
+		alt_timebase(1); // 1us/10us/100us/1ms/xtal3 = 1 us tick  11.171/11
+
+		udelay(2000);
+		vUartChangeBaudrate_suspend(11171000, 921600);
+		udelay(1000);
+
+		/* power off osc_clk */
+		REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
+		oscin_ctrl_reg = REG32(CLKCTRL_OSCIN_CTRL);
+		REG32(CLKCTRL_OSCIN_CTRL) = 0;
+		printf("[AOCPU]: running at 11.171MHz, 24MHz osc clk power off.\n");
+
+	} else {
+		xIdx = WAIT_SWITCH_TO_RTC_PLL;
+		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
+		vTaskDelay(pdMS_TO_TICKS(90));
+		printf("[AOCPU]: running at 24MHz, 24MHz osc clk power off.\n");
 	}
-
-	printf("[AOCPU]: enter vCLK_suspend.\n");
-	udelay(2000);
-	/* switch to RTC pll */
-	set_sys_div_clk(6, 3); // rtc pll (30.72MHz)
-	set_axi_div_clk(6, 0); // rtc pll (122.88MHz)
-	alt_timebase(1); // 1us/10us/100us/1ms/xtal3 = 1 us tick  30.72/30
-
-	udelay(2000);
-
-	xIdx = WAIT_SWITCH_TO_RTC_PLL;
-	xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-	vTaskDelay(pdMS_TO_TICKS(90));
-	/* power off osc_clk */
-	REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
-	oscin_ctrl_reg = REG32(CLKCTRL_OSCIN_CTRL);
-	REG32(CLKCTRL_OSCIN_CTRL) = 0;
-
-	printf("[AOCPU]: running at 30.72MHz, 24MHz osc clk power off.\n");
-	udelay(9000);
 }

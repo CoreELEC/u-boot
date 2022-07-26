@@ -18,6 +18,9 @@ extern void vUartTxStart(void);
 extern void vUartTxStop(void);
 extern long lUartTxReady(void);
 extern void vUartWriteChar(char c);
+extern void vUart_Debug(void);
+extern void vUartChangeBaudrate_suspend(unsigned long source, unsigned long baud);
+extern void vUartChangeBaudrate_resume(unsigned long baud);
 
 #ifdef __cplusplus
 }

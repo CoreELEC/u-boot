@@ -30,6 +30,10 @@ REMOTE_PACKAGES_PATH=$REMOTE_PATH/packages
 FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
 
+make_image() {
+	mkimage -A $ARCH -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d output/$ARCH-$BOARD-$PRODUCT/images/freertos-signed.bin output/$ARCH-$BOARD-$PRODUCT/images/rtos-uImage
+}
+
 publish_images() {
 	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 	REMOTE_IMAGE_PATH=$REMOTE_IMAGES_PATH/$ARCH-$BOARD-$PRODUCT

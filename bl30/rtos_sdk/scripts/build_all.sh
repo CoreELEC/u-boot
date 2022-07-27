@@ -39,6 +39,9 @@ while IFS= read -r LINE; do
 	make
 	[ "$?" -ne 0 ] && echo "Failed to build!" && exit 3
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
+			if [[ "$BOARD" == "ad403_a113l" ]] && [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then
+				make_image
+			fi
 		publish_images
 		[ "$?" -ne 0 ] && echo "Failed to publish images!" && exit 4
 	fi

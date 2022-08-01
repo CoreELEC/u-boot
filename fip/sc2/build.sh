@@ -617,6 +617,16 @@ function process_blx() {
 	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc &> /dev/null
 
+	if [ "1" == "${CONFIG_NASC_NAGRA_TIER_1}" ]; then
+		nocs_size=`expr ${blx_size} + 15`
+		rem=`expr ${nocs_size} % 16`
+		nocs_size=`expr ${nocs_size} - ${rem}`
+		echo ==== align bl33 size ${blx_size} to ${nocs_size} ====
+		# Nocs should sign bl33-payload-nocs.bin with it's size alaigned
+		dd if=/dev/zero of=${BUILD_PATH}/bl33-payload-nocs.bin bs=${nocs_size} count=1 &> /dev/null
+		dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload-nocs.bin conv=notrunc &> /dev/null
+	fi
+
 	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
 		echo "Warning: local bl40"
 		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}

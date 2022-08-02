@@ -231,18 +231,29 @@ void str_power_off(int shutdown_flag)
 
 extern int set_platform_power_ops(struct platform_power_ops *ops);
 
-
 static int platform_power_begin(void)
 {
-	logi("%s, power off\n", __func__);
-	str_power_off(0);
+	logi("%s, power off and don't touch ee.\n", __func__);
+#ifndef CONFIG_ETH_WAKEUP
+	/***power off vcc3v3***/
+	power_off_vcc3v3();
+#endif
+	power_off_vcc5v();
+
 	return 0;
 }
 
 static int platform_power_end(void)
 {
 	logi("%s, power on\n", __func__);
-	str_power_on(0);
+#ifndef CONFIG_ETH_WAKEUP
+	/***power on vcc3v3***/
+	power_on_vcc3v3();
+#endif
+	/***power on vcc5v***/
+	power_on_vcc5v();
+	/*Wait 10ms for statble*/
+	vTaskDelay(pdMS_TO_TICKS(10));
 	return 0;
 }
 

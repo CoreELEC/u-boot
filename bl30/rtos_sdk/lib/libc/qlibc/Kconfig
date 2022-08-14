@@ -1,0 +1,16 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config QLIBC
+	bool "qlibc"
+	select POSIX
+	help
+	  Providing generic data structures and algorithms
+
+if QLIBC
+config QLIBC_TEST
+	bool "qlibc TEST"
+	help
+	  QLIBC unit test cases
+endif

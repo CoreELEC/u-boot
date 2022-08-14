@@ -5,4 +5,5 @@
 menu "libc selection"
 rsource "aml/Kconfig"
 rsource "newlib/Kconfig"
+rsource "qlibc/Kconfig"
 endmenu

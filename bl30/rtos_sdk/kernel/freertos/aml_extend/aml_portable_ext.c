@@ -120,13 +120,23 @@ void vPortHaltSystem(Halt_Action_e act)
 #ifdef CONFIG_SOC_T7
 		/* viu1_line_n_int */
 		plat_gic_irq_register_with_core(
-		    227, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0x01);
+		    227, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
 		/* ge2d_int */
 		plat_gic_irq_register_with_core(
-		    249, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0x01);
+		    249, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
 		/* dwap_irq */
 		plat_gic_irq_register_with_core(
-		    91, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0x01);
+		    91, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
+
+		/* isp adapter frontend0 irq */
+		plat_gic_irq_register_with_core(
+		    345, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
+
+		/* isp adapter frontend2 irq */
+		plat_gic_irq_register_with_core(
+		    343, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
+
+		printk("freertos register irqs back to android");
 
 		prvCorePowerDown();
 #else

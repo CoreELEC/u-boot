@@ -757,10 +757,6 @@ function process_blx() {
 
 function build_signed() {
 
-	#generate ddrfw
-	./${FIP_FOLDER}${CUR_SOC}/bin/gen-ddrfw.sh  --ddr_param ${BUILD_PATH}/ddr_param.bin \
-		--output ${BUILD_PATH}/ddrfw_data.bin --soc ${CUR_SOC} --ddr_type ${DDRFW_TYPE}
-
 	process_blx $@
 
 	# package ddr-fip.bin

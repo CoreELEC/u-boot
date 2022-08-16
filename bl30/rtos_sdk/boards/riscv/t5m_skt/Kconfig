@@ -1,0 +1,25 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_SKT_T5M
+	bool "Amlogic T5M SKT Board"
+	select SOC_T5M
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select VRTC
+	select HWSPINLOCK
+	help
+	  Enable Amlogic T5M SKT Board.

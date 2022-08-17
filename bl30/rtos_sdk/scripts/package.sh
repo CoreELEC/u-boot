@@ -117,6 +117,8 @@ function build_rtos_dsp() {
     make
 
     test -f ${DSP_SDK_SINGED_BIN_FILE} && cp ${DSP_SDK_SINGED_BIN_FILE} $PROJECT_BUILD_OUT_IMAGE_PATH/dspboot.bin
+    test -f ${DSP_SDK_DEBUG_FILE_PREFIX}.lst && cp ${DSP_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${DSP_ARCH}-${DSP_BOARD}.lst
+    test -f ${DSP_SDK_DEBUG_FILE_PREFIX}.map && cp ${DSP_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${DSP_ARCH}-${DSP_BOARD}.map
     rm -rf $DSP_SDK_OUT_PATH
 
     popd
@@ -160,11 +162,15 @@ function build_rtos_image() {
         if [ -z "$RTOS_XIP" ]; then
             mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
             test -f ${RTOS_SDK_IMAGE_PATH}/rtos-uImage && cp ${RTOS_SDK_IMAGE_PATH}/rtos-uImage $PROJECT_BUILD_OUT_IMAGE_PATH/rtos-uImage
+            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.lst
+            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.map && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.map
             rm -rf $RTOS_SDK_OUT_PATH
         else
             mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
             cp ${RTOS_SDK_OUT_PATH}/freertos/freertos_b.bin ${RTOS_SDK_IMAGE_PATH}/rtos-xipA
             cp ${RTOS_SDK_IMAGE_PATH}/* $PROJECT_BUILD_OUT_IMAGE_PATH/
+            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.lst
+            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.map && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.map
             rm -rf $RTOS_SDK_OUT_PATH
         fi
     fi
@@ -190,7 +196,7 @@ function build_aml_image() {
         fi
     fi
 
-    cd $PROJECT_BUILD_OUT_IMAGE_PATH && rm $(ls | grep -v "aml_upgrade_package.img")
+    cd $PROJECT_BUILD_OUT_IMAGE_PATH && rm $(ls | grep -v ".lst" | grep -v ".map" | grep -v ".img")
 }
 
 #build uboot
@@ -216,10 +222,12 @@ export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PR
 export RTOS_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}
 export RTOS_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images
 export RTOS_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images/${KERNEL}-signed.bin
+export RTOS_SDK_DEBUG_FILE_PREFIX=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/${KERNEL}/${KERNEL}
 
 export DSP_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}
 export DSP_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images
 export DSP_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images/${KERNEL}-signed.bin
+export DSP_SDK_DEBUG_FILE_PREFIX=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/${KERNEL}/${KERNEL}
 
 test -n "$BUILD_CLEAN" && rm -fr $DSP_SDK_OUT_PATH
 test -n "$BUILD_CLEAN" && rm -fr $RTOS_SDK_OUT_PATH

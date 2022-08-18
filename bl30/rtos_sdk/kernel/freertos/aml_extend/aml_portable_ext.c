@@ -136,8 +136,6 @@ void vPortHaltSystem(Halt_Action_e act)
 		plat_gic_irq_register_with_core(
 		    343, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
 
-		printk("freertos register irqs back to android");
-
 		prvCorePowerDown();
 #else
 		__asm volatile("wfi");

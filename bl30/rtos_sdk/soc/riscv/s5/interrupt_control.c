@@ -315,7 +315,7 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 		return -1;
 	}
 
-	if (src > 0xff) {
+	if (src > 0x1ff) {
 		printf("Error src!\n");
 		return -2;
 	}

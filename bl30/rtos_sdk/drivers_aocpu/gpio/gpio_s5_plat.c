@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+/*
+ * gpio driver platform data
+ */
 #include "FreeRTOS.h"
 #include <register.h>
 #include <common.h>
@@ -13,67 +16,66 @@
 #include "gpio_irq.h"
 #include "portmacro.h"
 
-/* gpio irq controller EE */
-#define IRQ_GPIO0_NUM 67
-#define IRQ_GPIO1_NUM 68
-#define IRQ_GPIO2_NUM 69
-#define IRQ_GPIO3_NUM 70
+/* gpio irq controller */
+#define IRQ_GPIO0_NUM 288
+#define IRQ_GPIO1_NUM 289
+#define IRQ_GPIO2_NUM 290
+#define IRQ_GPIO3_NUM 291
+#define IRQ_GPIO4_NUM 292
+#define IRQ_GPIO5_NUM 293
+#define IRQ_GPIO6_NUM 294
+#define IRQ_GPIO7_NUM 295
 
-/* gpio irq controller AO */
-#define IRQ_AO_GPIO0_NUM 17
-#define IRQ_AO_GPIO1_NUM 18
+#define REG_PIN_P1_SEL			0x10
+#define REG_EDGE_SINGLE			0x04
+#define REG_POL_LOW			0x08
+#define REG_EDGE_BOTH			0x0c
+#define GPIO_IRQ_FILTER_SHIFT(x)	(((x) % 2 == 0) ? 8 : 24)
+#define GPIO_IRQ_POL_SHIFT(x)		(BIT(0 + (x)))
+#define GPIO_IRQ_EDGE_SHIFT(x)		(BIT(0 + (x)))
+#define GPIO_IRQ_BOTH_SHIFT(x)		(BIT(0 + (x)))
 
-#define EE_IRQ_REG_EDGE_POL 0x00
-#define EE_IRQ_REG_PIN_03_SEL 0x04
-#define EE_IRQ_REG_PIN_47_SEL 0x08
-#define EE_IRQ_REG_FILTER_SEL 0x0c
-
-#define EE_GPIO_IRQ_POL_EDGE_MASK(x) (BIT(x) | BIT(16 + x))
-#define EE_GPIO_IRQ_POL(x) BIT(16 + (x))
-#define EE_GPIO_IRQ_EDGE(x) BIT(x)
-#define EE_GPIO_IRQ_FILTER_SHIFT(x) ((x) << 2)
-#define EE_GPIO_IRQ_SEL_SHIFT(x) (((x) << 3) % 32)
-#define EE_GPIO_IRQ_BOTH(x) BIT(8 + (x))
-
-#define AO_GPIO_NUM 10
-#define AO_GPIO_IRQ_POL_EDGE_MASK(x) (BIT(16 + x) | BIT(18 + x))
-#define AO_GPIO_IRQ_POL(x) BIT(16 + (x))
-#define AO_GPIO_IRQ_EDGE(x) BIT(18 + (x))
-#define AO_GPIO_IRQ_FILTER_SHIFT(x) (8 + ((x) << 2))
-#define AO_GPIO_IRQ_SEL_SHIFT(x) ((x) << 2)
-#define AO_GPIO_IRQ_BOTH(x) (BIT((x) + 20))
-
-static const struct GpioDomain aoDomain = {
-	.name = "AO",
-	.rPullen = AO_GPIO_O_EN_N,
-	.rPull = AO_GPIO_O_EN_N,
-	.rGpio = AO_GPIO_O_EN_N,
-	.rMux = AO_RTI_PINMUX_REG0,
-	.rDrv = AO_PAD_DS_A,
+static const struct GpioDomain stDomain = {
+	.name = "ST",
+	.rPullen = PADCTRL_GPIOB_I,
+	.rPull = PADCTRL_GPIOB_I,
+	.rGpio = PADCTRL_GPIOB_I,
+	.rMux = PADCTRL_PIN_MUX_REG10,
+	.rDrv = PADCTRL_GPIOB_I,
 };
 
 static const struct GpioDomain eeDomain = {
 	.name = "EE",
-	.rPullen = PAD_PULL_UP_EN_REG0,
-	.rPull = PAD_PULL_UP_REG0,
-	.rGpio = PREG_PAD_GPIO0_EN_N,
-	.rMux = PERIPHS_PIN_MUX_0,
-	.rDrv = PAD_DS_REG0A,
+	.rPullen = PADCTRL_TESTN_I,
+	.rPull = PADCTRL_TESTN_I,
+	.rGpio = PADCTRL_TESTN_I,
+	.rMux = PADCTRL_PIN_MUX_REG0,
+	.rDrv = PADCTRL_TESTN_I,
 };
 
 static const struct GpioBank gpioBanks[BANK_NUM_MAX] = {
-	/* pullen pull  dir    out   in     mux   drv*/
-	BANK("D", &aoDomain, 3, 0, 2, 0, 0, 0, 4, 0, 1, 0, 0, 0, 0, 0),
-	BANK("H", &eeDomain, 2, 0, 2, 0, 6, 0, 7, 0, 8, 0, 5, 0, 3, 0),
-	BANK("B", &eeDomain, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0),
-	BANK("Z1", &eeDomain, 1, 0, 1, 0, 3, 0, 4, 0, 5, 0, 4, 0, 1, 0),
-	BANK("Z2", &eeDomain, 1, 7, 1, 7, 3, 7, 4, 7, 5, 7, 8, 0, 1, 14),
-	BANK("W", &eeDomain, 3, 0, 3, 0, 9, 0, 10, 0, 11, 0, 2, 0, 5, 0),
-	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 16),
-	BANK("M", &eeDomain, 4, 0, 4, 0, 12, 0, 13, 0, 14, 0, 0xa, 0, 6, 0),
-	BANK("C1", &eeDomain, 5, 0, 5, 0, 16, 0, 17, 0, 18, 0, 0xf, 0, 0x28, 0),
-	BANK("C2", &eeDomain, 4, 8, 4, 8, 16, 8, 17, 8, 18, 8, 0x2a, 0, 0x28, 8),
-	BANK("H2", &eeDomain, 2, 24, 2, 24, 6, 24, 7, 24, 8, 24, 0x2b, 0, 3, 24),
+			/* pullen   pull    dir       out      in      mux */
+	BANK("A", &eeDomain, 0x13, 0, 0x14, 0, 0x12, 0, 0x11, 0, 0x10, 0, 0x00,
+	        /* drv */
+	     0, 0x17, 0),
+	BANK("C", &eeDomain, 0x23, 0, 0x24, 0, 0x22, 0, 0x21, 0, 0x20, 0, 0x03,
+	     0, 0x27, 0),
+	BANK("D", &eeDomain, 0x33, 0, 0x34, 0, 0x32, 0, 0x31, 0, 0x30, 0, 0x05,
+	     0, 0x37, 0),
+	BANK("E", &eeDomain, 0x43, 0, 0x44, 0, 0x42, 0, 0x41, 0, 0x40, 0, 0x07,
+	     0, 0x47, 0),
+	BANK("H", &eeDomain, 0x53, 0, 0x54, 0, 0x52, 0, 0x51, 0, 0x50, 0, 0x08,
+	     0, 0x57, 0),
+	BANK("B", &stDomain, 0x03, 0, 0x04, 0, 0x02, 0, 0x01, 0, 0x00, 0, 0x00,
+	     0, 0x07, 0),
+	BANK("T", &eeDomain, 0x73, 0, 0x74, 0, 0x72, 0, 0x71, 0, 0x70, 0, 0x0a,
+	     0, 0x77, 0),
+	BANK("X", &eeDomain, 0x83, 0, 0x84, 0, 0x82, 0, 0x81, 0, 0x80, 0, 0x0e,
+	     0, 0x87, 0),
+	BANK("Z", &eeDomain, 0x93, 0, 0x94, 0, 0x92, 0, 0x91, 0, 0x90, 0, 0x11,
+	     0, 0x97, 0),
+	BANK("TEST_N", &eeDomain, 0x03, 0, 0x04, 0, 0x02, 0, 0x01, 0, 0x00, 0, 0x0a,
+	0, 0x07, 0),
 };
 
 static struct ParentIRQDesc eeIRQs[] = {
@@ -81,26 +83,23 @@ static struct ParentIRQDesc eeIRQs[] = {
 	[GPIO_EE_IRQ_L1] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO1_NUM),
 	[GPIO_EE_IRQ_L2] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO2_NUM),
 	[GPIO_EE_IRQ_L3] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO3_NUM),
-};
-
-static struct ParentIRQDesc aoIRQs[] = {
-	[GPIO_AO_IRQ_L0] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_AO_GPIO0_NUM),
-	[GPIO_AO_IRQ_L1] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_AO_GPIO1_NUM),
-
+	[GPIO_EE_IRQ_L4] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO4_NUM),
+	[GPIO_EE_IRQ_L5] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO5_NUM),
+	[GPIO_EE_IRQ_L6] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO6_NUM),
+	[GPIO_EE_IRQ_L7] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_GPIO7_NUM),
 };
 
 static const struct GpioIRQBank irqBanks[BANK_NUM_MAX] = {
-	GPIO_IRQ_BK("D", 0, aoIRQs, ARRAY_SIZE(aoIRQs)),
-	GPIO_IRQ_BK("H", 11, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("B", 52, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z1", 66, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z2", 74, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("W", 86, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("E", 99, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("M", 101, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("C1", 37, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("C2", 45, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("H2", 35, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("A", 13,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("C", 24,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("D", 32,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("E", 44,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("H", 49,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("B", 0,   eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("T", 58,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("X", 83,  eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z", 103, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("TEST_N", 119, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };
 
 const struct GpioBank *pGetGpioBank(void)
@@ -113,66 +112,44 @@ const struct GpioIRQBank *pGetGpioIrqBank(void)
 	return irqBanks;
 }
 
-static void prvGpioEEsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
-{
-	uint32_t val = 0;
-
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + EE_IRQ_REG_FILTER_SEL,
-			  0x7 << EE_GPIO_IRQ_FILTER_SHIFT(line),
-			  0x7 << EE_GPIO_IRQ_FILTER_SHIFT(line));
-
-	if (flags & IRQF_TRIGGER_BOTH) {
-		val |= EE_GPIO_IRQ_BOTH(line);
-		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE, EE_GPIO_IRQ_BOTH(line), val);
-		goto out;
-	}
-
-	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
-		val |= EE_GPIO_IRQ_EDGE(line);
-
-	if (flags & (IRQF_TRIGGER_LOW | IRQF_TRIGGER_FALLING))
-		val |= EE_GPIO_IRQ_POL(line);
-
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE, EE_GPIO_IRQ_POL_EDGE_MASK(line), val);
-
-out:
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + ((line > GPIO_EE_IRQ_L3) ? EE_IRQ_REG_PIN_47_SEL :
-									EE_IRQ_REG_PIN_03_SEL),
-			  0xff << EE_GPIO_IRQ_SEL_SHIFT(line),
-			  irqNum << EE_GPIO_IRQ_SEL_SHIFT(line));
-}
-
-static void prvGpioAOsetupIRQ(uint16_t irqNum, uint8_t line, uint32_t flags)
-{
-	uint32_t val = 0;
-
-	if (flags & IRQF_TRIGGER_BOTH)
-		val |= AO_GPIO_IRQ_BOTH(line);
-
-	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
-		val |= AO_GPIO_IRQ_EDGE(line);
-
-	if (flags & (IRQF_TRIGGER_LOW | IRQF_TRIGGER_FALLING))
-		val |= AO_GPIO_IRQ_POL(line);
-
-	val |= (0x7 << AO_GPIO_IRQ_FILTER_SHIFT(line));
-
-	val |= (irqNum << AO_GPIO_IRQ_SEL_SHIFT(line));
-
-	if (GPIO_AO_IRQ_BASE == 0)
-		return;
-
-	REG32_UPDATE_BITS(GPIO_AO_IRQ_BASE,
-			  (AO_GPIO_IRQ_POL_EDGE_MASK(line) | (AO_GPIO_IRQ_BOTH(line)) |
-			   (0x7 << AO_GPIO_IRQ_FILTER_SHIFT(line)) |
-			   (0xf << AO_GPIO_IRQ_SEL_SHIFT(line))),
-			  val);
-}
-
 void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags)
 {
-	if (irqNum > AO_GPIO_NUM)
-		prvGpioEEsetupIRQ(irqNum, line, flags);
-	else
-		prvGpioAOsetupIRQ(irqNum, line, flags);
+	uint32_t val = 0;
+	uint32_t reg_offset = 0;
+	uint16_t bit_offset = 0;
+
+	bit_offset = ((line % 2) == 0) ? 0 : 16;
+	reg_offset = REG_PIN_P1_SEL + ((line / 2) << 2);
+
+	/* clear both edge */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_BOTH,
+			  GPIO_IRQ_BOTH_SHIFT(line), 0);
+	/* set filter */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0x7 << GPIO_IRQ_FILTER_SHIFT(line),
+			  0x7 << GPIO_IRQ_FILTER_SHIFT(line));
+
+	/* select trigger pin */
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0xff << bit_offset, irqNum << bit_offset);
+
+	/* set trigger both type */
+	if (flags & IRQF_TRIGGER_BOTH) {
+		val |= GPIO_IRQ_BOTH_SHIFT(line);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_BOTH,
+				  GPIO_IRQ_BOTH_SHIFT(line), val);
+		return;
+	}
+
+	/* set trigger single edge or level  type */
+	if (flags & (IRQF_TRIGGER_LOW | IRQF_TRIGGER_FALLING)) {
+		val |= GPIO_IRQ_POL_SHIFT(line);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_POL_LOW, GPIO_IRQ_POL_SHIFT(line), val);
+	}
+
+	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
+		val = 0;
+		val |= GPIO_IRQ_EDGE_SHIFT(line);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_SINGLE, GPIO_IRQ_EDGE_SHIFT(line), val);
+	}
 }

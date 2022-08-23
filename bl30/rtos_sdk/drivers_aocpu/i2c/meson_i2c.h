@@ -35,12 +35,13 @@ struct xMesonI2cPlatdata {
 #define I2C_M_RD 0x0001
 #define MESON_I2C_CLK_RATE 166666667
 
-void meson_i2c_plat_init(void);
 int32_t xI2cMesonPortInit(uint32_t id);
 int32_t xI2cMesonSetBusSpeed(uint32_t speed);
 int32_t xI2cMesonXfer(struct xI2cMsg *msg, uint32_t nmsgs);
 int32_t xI2cMesonRead(uint32_t addr, uint8_t offset, uint8_t *buffer, uint32_t len);
 int32_t xI2cMesonWrite(uint32_t addr, uint8_t offset, uint8_t *buffer, uint32_t len);
+int32_t xI2cMesonRead16(uint32_t addr, unsigned int offset, uint8_t *buffer, uint32_t len);
+int32_t xI2cMesonWrite16(uint32_t addr, unsigned int offset, uint8_t *buffer, uint32_t len);
 void xI2cDumpRegs(void);
 void xI2cSetCurrentId(uint32_t id);
 

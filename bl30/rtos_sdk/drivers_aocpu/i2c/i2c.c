@@ -9,8 +9,9 @@
 #include "FreeRTOS.h"
 #include <task.h>
 #include "meson_i2c.h"
-#include <util.h>
+#include <i2c_plat.h>
 #include "timer_source.h"
+#include <string.h>
 
 #define BIT(nr) (1UL << (nr))
 #define GENMASK(h, l) (((~0UL) << (l)) & (~0UL >> (BITS_PER_LONG - 1 - (h))))
@@ -28,6 +29,14 @@
 #define REG_CTRL_CLKDIVEXT_MASK GENMASK(29, 28)
 
 #define I2C_DEBUG 0
+
+#define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
+#define MIN(X, Y)\
+({\
+	typeof(X) x_ = (X);\
+	typeof(Y) y_ = (Y);\
+	(x_ < y_) ? x_ : y_;\
+})
 
 enum bool {
 	false,
@@ -58,7 +67,7 @@ struct xI2cRegs {
 struct xMesonI2c {
 	struct xI2cRegs *regs;
 	struct xI2cMsg *msg; /* Current I2C message */
-	bool last; /* Whether the message is the last */
+	enum bool last; /* Whether the message is the last */
 	uint32_t count; /* Number of bytes in the current transfer */
 	uint32_t pos; /* Position of current transfer in message */
 	uint32_t tokens[2]; /* Sequence of tokens to be written */
@@ -75,32 +84,6 @@ struct xMesonI2cPlatdata *plat;
 uint32_t current_id;
 
 #define DEFAULT_CLK81 0
-
-/* AXG/G12A/G12B/SM1/TM2 i2c data */
-struct xMesonI2cPlatdata AxgI2cData[] = {
-	{ 0, 0xffd1f000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 },
-	{ 1, 0xffd1e000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 },
-	{ 2, 0xffd1d000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 },
-	{ 3, 0xffd1c000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 },
-	{ 4, 0xff805000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 },
-};
-
-/* A1 i2c data */
-struct xMesonI2cPlatdata A1I2cData[] = {
-	{ 0, 0xfe001400, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0 }, /* i2c A */
-	{ 1, 0xfe005c00, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0 }, /* i2c B */
-	{ 2, 0xfe006800, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0 }, /* i2c C */
-	{ 3, 0xfe006c00, 3, 15, 100000, 64000000, DEFAULT_CLK81, 0 }, /* i2c D */
-};
-
-/* C1 i2c data */
-struct xMesonI2cPlatdata C1I2cData[] = {
-	{ 0, 0xfe001400, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 }, /* i2c A */
-	{ 1, 0xfe005c00, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 }, /* i2c B */
-	{ 2, 0xfe006800, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 }, /* i2c C */
-	{ 3, 0xfe006c00, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 }, /* i2c D */
-	{ 4, 0xfe00b000, 3, 15, 100000, MESON_I2C_CLK_RATE, DEFAULT_CLK81, 0 }, /* i2c E */
-};
 
 static void prvSetBitsLe32(uint32_t *reg, uint32_t set)
 {
@@ -229,7 +212,7 @@ static void prvMesonI2cPutData(uint8_t *buf, uint32_t len)
  */
 static void prvMesonI2cPrepareXfer(void)
 {
-	bool write = !(i2cs[current_id].msg->flags & I2C_M_RD);
+	enum bool write = !(i2cs[current_id].msg->flags & I2C_M_RD);
 	uint32_t i;
 
 	i2cs[current_id].count = MIN(i2cs[current_id].msg->len - i2cs[current_id].pos, 8u);
@@ -416,6 +399,67 @@ int32_t xI2cMesonWrite(uint32_t addr, uint8_t offset, uint8_t *buffer, uint32_t 
 	return 0;
 }
 
+int32_t xI2cMesonRead16(uint32_t addr, unsigned int offset, uint8_t *buffer, uint32_t len)
+{
+	struct xI2cMsg msg[2], *ptr;
+	char offset_buf[2];
+	unsigned int msg_count;
+	int ret;
+
+	if (!len) {
+		iprintf("invalid length\n");
+		return -1;
+	}
+
+	offset_buf[0] = offset >> 8;
+	offset_buf[1] = offset & 0xff;
+	ptr = msg;
+
+	ptr->addr = addr;
+	ptr->flags = 0;
+	ptr->len = 2;
+	ptr->buf = offset_buf;
+	ptr++;
+
+	ptr->addr = addr;
+	ptr->flags = I2C_M_RD;
+	ptr->len = len;
+	ptr->buf = buffer;
+	ptr++;
+
+	msg_count = ptr - msg;
+	ret = xI2cMesonXfer(msg, msg_count);
+	if (ret < 0) {
+		iprintf("meson i2c: read failed\n");
+		return ret;
+	}
+
+	return 0;
+}
+
+int32_t xI2cMesonWrite16(uint32_t addr, unsigned int offset, uint8_t *buffer, uint32_t len)
+{
+	struct xI2cMsg msg[1];
+	int ret = 0;
+	unsigned char buf[len + 2];
+
+	buf[0] = offset >> 8;
+	buf[1] = offset & 0xff;
+	msg->addr = addr;
+	msg->len = len + 2;/* addr's length + len */
+	msg->buf = buf;
+	msg->flags = 0;
+
+	memcpy(&buf[2], buffer, len);
+	ret = xI2cMesonXfer(msg, 1);
+	if (ret < 0) {
+		iprintf("meson i2c: write failed\n");
+		return ret;
+	}
+
+	return 0;
+}
+
 extern uint32_t suspend_flag;
 /*
  *i2c master platform data init
@@ -425,7 +469,7 @@ int32_t xI2cMesonPortInit(uint32_t id)
 	struct xMesonI2cPlatdata *cur_plat = NULL;
 
 	/* get the global i2c plat  data */
-	meson_i2c_plat_init();
+	plat = i2c_plat_data;
 	cur_plat = &plat[id];
 
 	i2cs[id].regs = (struct xI2cRegs *)cur_plat->reg;

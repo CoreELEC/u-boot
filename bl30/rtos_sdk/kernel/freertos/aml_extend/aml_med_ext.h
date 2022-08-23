@@ -13,6 +13,9 @@
 int xCheckMallocNodeIsOver(void *node);
 int xPortCheckIntegrity(void);
 int xPortMemoryScan(void);
+#ifdef CONFIG_MEMORY_ERROR_DETECTION_BENCHMARKS
+void med_benchmarks(uint32_t nodeNums);
+#endif
 #endif
 
 #endif

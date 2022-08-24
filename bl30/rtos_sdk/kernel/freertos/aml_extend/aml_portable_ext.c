@@ -128,10 +128,6 @@ void vPortHaltSystem(Halt_Action_e act)
 		plat_gic_irq_register_with_core(
 		    91, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
 
-		/* isp adapter frontend0 irq */
-		plat_gic_irq_register_with_core(
-		    345, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
-
 		/* isp adapter frontend2 irq */
 		plat_gic_irq_register_with_core(
 		    343, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);

@@ -32,7 +32,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Update VMX Device tempalte bb1st
+       Update VMX Device template bb1st
 
        $(basename $0)
                 --vmx-cert-path <VMX cert path> \\

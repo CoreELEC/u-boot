@@ -87,7 +87,7 @@ function init_variable_late() {
 		source "${CONFIG_FILE_TMP}" &> /dev/null
 		rm ${CONFIG_FILE_TMP}
 	fi
-	if [ "y" == "${CONFIG_SUPPORT_CUSOTMER_BOARD}" ]; then
+	if [ "y" == "${CONFIG_SUPPORT_CUSTOMER_BOARD}" ]; then
 		BOARD_DIR="customer/board/${CONFIG_SYS_BOARD}"
 	else
 		BOARD_DIR="${CONFIG_BOARDDIR}"

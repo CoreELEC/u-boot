@@ -32,7 +32,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Generate Amlogic SC2 chipset Device Vendor Secure Chipset Startup (SCS) root hash and tempalte
+       Generate Amlogic SC2 chipset Device Vendor Secure Chipset Startup (SCS) root hash and template
 
        $(basename $0)
 		--template-dir <template-dir> \\

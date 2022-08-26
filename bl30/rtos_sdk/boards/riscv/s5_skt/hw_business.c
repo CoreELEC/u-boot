@@ -19,7 +19,7 @@
 #include "stick_mem.h"
 #include "sdk_ver.h"
 #include "suspend.h"
-#include "rtc.h"
+#include "vrtc.h"
 
 #define INT_TEST_NEST_DEPTH 6
 #define INT_TEST_GPIO_NUM 6
@@ -64,7 +64,6 @@ void hw_business_process(void)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 	vMbInit();
 	//	vCecCallbackInit(CEC_CHIP_SC2);
-	//	vRtcInit();
-	//rtc_init();
+	vRtcInit();
 	//create_str_task();
 }

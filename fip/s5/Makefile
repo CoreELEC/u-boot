@@ -3,10 +3,10 @@
 # Rules
 #
 
-DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/sc2/device/
+DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/s5/device/
 DEVICE_ROOTRSA_INDEX ?= 0
-PROJECT ?= azp1
-SOC_FAMILY ?= p1
+PROJECT ?= s928x
+SOC_FAMILY ?= s5
 DEVICE_SCS_SEGID ?= 0x0
 DEVICE_VENDOR_SEGID ?= 0x0
 DEVICE_SCS_VERS ?= 0x0

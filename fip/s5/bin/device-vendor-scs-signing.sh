@@ -86,18 +86,18 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
-	dateStamp=SC2-`date +%Y%m%d%H%M%S`
+	dateStamp=S5-${part}-`date +%y%m%d%H%M%S`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null
 	nItemNum=5
 	nSizeHDR=$[64+nItemNum*16]
-	printf "01 %02x %02x %02x 00 00 00 00" $[(nItemNum)&0xFF] $[(nSizeHDR)&0xFF] $[((nSizeHDR)>>8)&0xFF] \
+	printf "02 %02x %02x %02x" $[(nItemNum)&0xFF] $[(nSizeHDR)&0xFF] $[((nSizeHDR)>>8)&0xFF] \
 		| xxd -r -ps > ${file_info_cfg_temp}
 	cat ${file_info_cfg_temp} >> ${file_info_cfg}
 
 	echo ${dateStamp} > ${file_info_cfg_temp}
-	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=16 oflag=append conv=notrunc &> /dev/null
+	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=20 oflag=append conv=notrunc &> /dev/null
 
 	index=0
 	arrPayload=("BBST" "BL2E" "BL2X" "DDRF" "DEVF");
@@ -131,7 +131,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=796 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=404 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		total_size=$[total_size+512]
@@ -293,9 +293,12 @@ if [ -s "${fw_arb_cfg}" ]; then
 	export DEVICE_REE_VERS=${DEVICE_REE_VERS}
 fi
 
-export DEVICE_SCS_KEY_TOP=$(pwd)/${key_dir}
-export DEVICE_INPUT_PATH=$(pwd)/${input_dir}
-export DEVICE_OUTPUT_PATH=$(pwd)/${input_dir}
+#export DEVICE_SCS_KEY_TOP=$(pwd)/${key_dir}
+#export DEVICE_INPUT_PATH=$(pwd)/${input_dir}
+#export DEVICE_OUTPUT_PATH=$(pwd)/${input_dir}
+export DEVICE_SCS_KEY_TOP=$(readlink -f ${key_dir})
+export DEVICE_INPUT_PATH=$(readlink -f ${input_dir})
+export DEVICE_OUTPUT_PATH=$(readlink -f ${input_dir})
 export PROJECT=${part}
 export DEVICE_ROOTRSA_INDEX=${rootkey_index}
 

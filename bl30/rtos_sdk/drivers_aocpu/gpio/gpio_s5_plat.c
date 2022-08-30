@@ -56,7 +56,7 @@ static const struct GpioDomain eeDomain = {
 static const struct GpioBank gpioBanks[BANK_NUM_MAX] = {
 			/* pullen   pull    dir       out      in      mux */
 	BANK("A", &eeDomain, 0x13, 0, 0x14, 0, 0x12, 0, 0x11, 0, 0x10, 0, 0x00,
-	        /* drv */
+		/* drv */
 	     0, 0x17, 0),
 	BANK("C", &eeDomain, 0x23, 0, 0x24, 0, 0x22, 0, 0x21, 0, 0x20, 0, 0x03,
 	     0, 0x27, 0),
@@ -150,6 +150,7 @@ void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags)
 	if (flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
 		val = 0;
 		val |= GPIO_IRQ_EDGE_SHIFT(line);
-		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_SINGLE, GPIO_IRQ_EDGE_SHIFT(line), val);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_SINGLE,
+				  GPIO_IRQ_EDGE_SHIFT(line), val);
 	}
 }

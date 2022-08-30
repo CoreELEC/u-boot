@@ -28,6 +28,8 @@
 #include "interrupt_control.h"
 #include "eth.h"
 #endif
+#include "hdmi_cec.h"
+static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO	GPIOC_7
 #define VCC3V3_GPIO	GPIOD_10
@@ -80,6 +82,8 @@ void str_hw_init(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHInit(IRQ_ETH_PMT_NUM, eth_handler);
 #endif
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -93,6 +97,10 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+	}
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();

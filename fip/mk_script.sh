@@ -296,7 +296,10 @@ function build() {
 	if [ ! $CONFIG_FASTBOOT_WRITING_CMD ]; then
 		CONFIG_FASTBOOT_WRITING_CMD=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD}
+	if [ ! $CONFIG_AVB2_RECOVERY ]; then
+		CONFIG_AVB2_RECOVERY=null
+	fi
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -621,6 +624,11 @@ function bin_path_parser() {
 				CONFIG_FASTBOOT_WRITING_CMD=1
 				echo "export CONFIG_FASTBOOT_WRITING_CMD"
 				export CONFIG_FASTBOOT_WRITING_CMD=1
+				continue ;;
+			--avb2-recovery)
+				CONFIG_AVB2_RECOVERY=1
+				echo "export CONFIG_AVB2_RECOVERY"
+				export CONFIG_AVB2_RECOVERY=1
 				continue ;;
 				*)
 		esac

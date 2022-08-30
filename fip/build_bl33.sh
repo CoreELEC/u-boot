@@ -45,7 +45,7 @@ function pre_build_uboot() {
 }
 
 function build_uboot() {
-	echo "Build uboot...Please Wait...$1...$2...$3...$4..."
+	echo "Build uboot...Please Wait...$1...$2...$3...$4...$5"
 	mkdir -p ${FIP_BUILD_FOLDER}
 	cd ${UBOOT_SRC_FOLDER}
 	if [[ "${SCRIPT_ARG_CHIPSET_VARIANT}" =~ "nocs" ]] || [[ "${CONFIG_CHIPSET_VARIANT}" =~ "nocs" ]]; then
@@ -55,11 +55,11 @@ function build_uboot() {
 	if [ "${CONFIG_MDUMP_COMPRESS}" = "1" ]; then
 		CONFIG_MDUMP_COMPRESS=1
 		echo "### BL33 CONFIG_MDUMP_COMPRESS = 1 ###"
-		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 FASTBOOTMODE=$4 CHIPMODE=${CONFIG_CHIP_NOCS} \
+		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 FASTBOOTMODE=$4 AVB2RECOVERY=$5 CHIPMODE=${CONFIG_CHIP_NOCS} \
 			CONFIG_MDUMP_COMPRESS=${CONFIG_MDUMP_COMPRESS} # &> /dev/null
 	else
 		echo "### BL33 CONFIG_MDUMP_COMPRESS = 0 ###"
-		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 FASTBOOTMODE=$4 CHIPMODE=${CONFIG_CHIP_NOCS} # &> /dev/null
+		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 FASTBOOTMODE=$4 AVB2RECOVERY=$5 CHIPMODE=${CONFIG_CHIP_NOCS} # &> /dev/null
 	fi
 
 	if [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then

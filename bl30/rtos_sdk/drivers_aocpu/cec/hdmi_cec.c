@@ -261,6 +261,39 @@ unsigned int cec_reg_tab[] = {
 
 #endif
 
+#ifdef CEC_CHIP_SEL_S5
+/*s5 register enum cec_reg_idx */
+unsigned int cec_reg_tab[] = {
+	0xffff,/*CLKCTRL_CECA_CTRL0,*/
+	0xffff,/*CLKCTRL_CECA_CTRL1,*/
+	0xffff,/*CECA_GEN_CNTL,*/
+	0xffff,/*CECA_RW_REG,*/
+	0xffff,/*CECA_INTR_MASKN,*/
+	0xffff,/*CECA_INTR_CLR,*/
+	0xffff,/*CECA_INTR_STAT,*/
+
+	CLKCTRL_CECB_CTRL0,
+	CLKCTRL_CECB_CTRL1,
+	CECB_GEN_CNTL,
+	CECB_RW_REG,
+	CECB_INTR_MASKN,
+	CECB_INTR_CLR,
+	CECB_INTR_STAT,
+
+	SYSCTRL_STATUS_REG0,
+	SYSCTRL_STATUS_REG1,
+
+	0xffff,//AO_CEC_STICKY_DATA0,
+	0xffff,//AO_CEC_STICKY_DATA1,
+	0xffff,//AO_CEC_STICKY_DATA2,
+	0xffff,//AO_CEC_STICKY_DATA3,
+	0xffff,//AO_CEC_STICKY_DATA4,
+	0xffff,//AO_CEC_STICKY_DATA5,
+	0xffff,//AO_CEC_STICKY_DATA6,
+	0xffff,//AO_CEC_STICKY_DATA7,
+};
+#endif
+
 #if CEC_REG_DEBUG
 static const char *const ceca_reg_name1[] = {
 	"CEC_TX_MSG_LENGTH", "CEC_TX_MSG_CMD",	  "CEC_TX_WRITE_BUF",  "CEC_TX_CLEAR_BUF",
@@ -643,12 +676,8 @@ static u32 cec_set_pin_mux(u32 chip)
 {
 	u32 chip_type = chip;
 
-#if CONFIG_SOC_S5
-	printf("%s pin mux: FIX ME\n", __func__);
-#else
 	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
 	printf("%s pin mux:0x%x func:0x%x\n", __func__, CEC_PIN_MX, CEC_PIN_FUNC);
-#endif
 	return chip_type;
 }
 

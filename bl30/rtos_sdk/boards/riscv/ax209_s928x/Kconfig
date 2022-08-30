@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_SKT_S5
-	bool "Amlogic SKT Board"
+config BOARD_AX209_S5
+	bool "Amlogic AX209 Board"
 	select SOC_S5
 	help
-	  Enable Amlogic SKT Board.
+	  Enable Amlogic AX209 Board.

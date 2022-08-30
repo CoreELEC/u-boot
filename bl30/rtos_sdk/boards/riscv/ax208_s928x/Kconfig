@@ -1,0 +1,9 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_AX208_S5
+	bool "Amlogic AX208 Board"
+	select SOC_S5
+	help
+	  Enable Amlogic AX208 Board.

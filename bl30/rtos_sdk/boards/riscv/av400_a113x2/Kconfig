@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_AV400_A5
+config BOARD_AV400_A113X2
 	bool "Amlogic AV400 Board"
 	select SOC_A5
 	help

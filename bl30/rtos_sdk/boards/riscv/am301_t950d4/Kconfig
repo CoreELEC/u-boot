@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_AM301_T5D
+config BOARD_AM301_T950D4
 	bool "Amlogic AM301 Board"
 	select SOC_T5D
 	help

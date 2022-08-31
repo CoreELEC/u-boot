@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_AX201_S5
+config BOARD_AX201_S928X
 	bool "Amlogic AX201 Board"
 	select SOC_S5
 	help

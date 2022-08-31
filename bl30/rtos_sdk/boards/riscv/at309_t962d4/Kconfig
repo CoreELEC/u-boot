@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_AT309_T5W
+config BOARD_AT309_T962D4
 	bool "Amlogic AT309 Board"
 	select SOC_T5W
 	help

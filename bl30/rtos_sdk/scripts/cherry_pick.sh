@@ -93,8 +93,13 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_CHANGE_REFS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
+	echo "CURRENT_MANIFEST_FILE $CURRENT_MANIFEST_FILE"
+	echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
 	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
+	[ -z "$CURRENT_MANIFEST_FILE" ] && echo "got here" && CURRENT_MANIFEST_FILE="manifest.xml"
 	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
+	echo "CURRENT_MANIFEST_FILE $CURRENT_MANIFEST_FILE"
+	echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
 	echo -e "\n======== Applying manual changes ========"
 
 	i=1

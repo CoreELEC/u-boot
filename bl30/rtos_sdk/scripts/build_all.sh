@@ -29,6 +29,7 @@ i=0
 while IFS= read -r LINE; do
 	[[ "$i" -ne 0 ]] && echo ""
 	i=$((i + 1))
+	echo BUILD_LOG $BUILD_LOG
 
 	check_project "$LINE"
 	[ "$?" -ne 0 ] && continue

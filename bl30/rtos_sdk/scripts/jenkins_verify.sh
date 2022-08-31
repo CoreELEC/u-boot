@@ -170,7 +170,7 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 fi
 
 # Manually cherry pick patches
-./scripts/cherry_pick.sh
+source scripts/cherry_pick.sh
 
 # Include publish functions
 source scripts/publish.sh
@@ -188,7 +188,7 @@ if [[ "$SUBMIT_TYPE" == "release" ]]; then
 	fi
 else
 	echo "========= Building all projects ========"
-	./scripts/build_all.sh > $BUILD_LOG 2>&1
+	source scripts/build_all.sh #> $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		grep -qr "warning: " $BUILD_LOG
 		[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!" && exit 1

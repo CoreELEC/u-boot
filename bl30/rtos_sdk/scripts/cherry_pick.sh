@@ -5,10 +5,12 @@
 # SPDX-License-Identifier: MIT
 #
 
-if [ -n "$GIT_CHERRY_PICK" ]; then
-	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
-	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
+echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
+[ -z "$CURRENT_MANIFEST" ] && echo "got here" && CURRENT_MANIFEST="curr_manifest.xml"
+[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
 
+if [ -n "$GIT_CHERRY_PICK" ]; then
 	while IFS= read -r line
 	do
 		pattern=":29418/"
@@ -20,7 +22,7 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 		done
 
 		echo -e "\n-------- Applying manual patch on Project $GIT_PROJECT --------"
-		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST`
 
 		for keyword in $keyline; do
 			if [[ $keyword == path=* ]]; then
@@ -56,11 +58,8 @@ if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 	GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_CHANGE_REF=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
-	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
-	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
-
 	echo -e "\n-------- Applying manual patch on Project $GERRIT_PROJECT --------"
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
 
 	for keyword in $keyline; do
 		if [[ $keyword == path=* ]]; then
@@ -93,19 +92,12 @@ if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_CHANGE_REFS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
-	echo "CURRENT_MANIFEST_FILE $CURRENT_MANIFEST_FILE"
-	echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
-	[ -z "$CURRENT_MANIFEST_FILE" ] && CURRENT_MANIFEST_FILE="manifest.xml"
-	[ -z "$CURRENT_MANIFEST_FILE" ] && echo "got here" && CURRENT_MANIFEST_FILE="manifest.xml"
-	[ ! -f $CURRENT_MANIFEST_FILE ] && repo manifest -r -o $CURRENT_MANIFEST_FILE
-	echo "CURRENT_MANIFEST_FILE $CURRENT_MANIFEST_FILE"
-	echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
 	echo -e "\n======== Applying manual changes ========"
 
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
 		echo -e "\n-------- Applying manual patch $i on Project $GERRIT_PROJECT --------"
-		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST_FILE`
+		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
 
 		for keyword in $keyline; do
 			if [[ $keyword == path=* ]]; then

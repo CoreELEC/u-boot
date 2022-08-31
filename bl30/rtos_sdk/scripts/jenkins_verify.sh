@@ -111,7 +111,7 @@ fi
 
 gen_jenkins_trigger() {
 	if [ -s $CURRENT_MANIFEST ]; then
-		echo "======== Generate Jenkins Trigger ========"
+		echo -e "\n======== Generate Jenkins Trigger ========"
 
 		rm -f $JENKINS_TRIGGER
 
@@ -158,7 +158,7 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 		git fetch ssh://scgit.amlogic.com:29418/${GERRIT_PROJECT} refs/changes/${l2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}
 		git cherry-pick FETCH_HEAD
 		if [ "$?" -ne 0 ]; then
-			echo -e "======== Applying patch failed! ========\n"
+			echo "======== Applying patch failed! ========"
 			exit 1
 		fi
 		popd > /dev/null
@@ -166,7 +166,7 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 		echo "No such directory! $repo_path"
 		exit 1
 	fi
-	echo -e "======== Done ========\n"
+	echo "======== Done ========"
 fi
 
 # Manually cherry pick patches
@@ -176,27 +176,27 @@ source scripts/cherry_pick.sh
 source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
-	echo "======== Building all packages ========"
+	echo -e "\n======== Building all packages ========"
 	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		post_publish_packages >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG
-		echo -e "\nAborted!"
+		echo "Aborted!"
 		exit 1
 	fi
 else
-	echo "======== Building all projects ========"
-	source scripts/build_all.sh #> $BUILD_LOG 2>&1
+	echo -e "\n======== Building all projects ========"
+	source scripts/build_all.sh
 	if [ "$?" -eq 0 ]; then
 		grep -qr "warning: " $BUILD_LOG
-		[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!" && exit 1
+		[ "$?" -eq 0 ] && cat $BUILD_LOG && echo "Aborted with warnings!" && exit 1
 		[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
 		echo "======== Done ========"
 	else
 		cat $BUILD_LOG
-		echo -e "\nAborted with errors!"
+		echo "Aborted with errors!"
 		exit 1
 	fi
 fi

@@ -5,10 +5,8 @@
 # SPDX-License-Identifier: MIT
 #
 
-echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
-[ -z "$CURRENT_MANIFEST" ] && echo "got here" && CURRENT_MANIFEST="curr_manifest.xml"
+[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="curr_manifest.xml"
 [ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
-echo "CURRENT_MANIFEST $CURRENT_MANIFEST"
 
 if [ -n "$GIT_CHERRY_PICK" ]; then
 	while IFS= read -r line

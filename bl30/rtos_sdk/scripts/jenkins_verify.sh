@@ -158,7 +158,7 @@ if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT
 		git fetch ssh://scgit.amlogic.com:29418/${GERRIT_PROJECT} refs/changes/${l2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}
 		git cherry-pick FETCH_HEAD
 		if [ "$?" -ne 0 ]; then
-			echo -e "========= Applying patch failed! =========\n"
+			echo -e "======== Applying patch failed! ========\n"
 			exit 1
 		fi
 		popd > /dev/null
@@ -176,7 +176,7 @@ source scripts/cherry_pick.sh
 source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
-	echo "========= Building all packages ========"
+	echo "======== Building all packages ========"
 	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		post_publish_packages >> $BUILD_LOG 2>&1
@@ -187,7 +187,7 @@ if [[ "$SUBMIT_TYPE" == "release" ]]; then
 		exit 1
 	fi
 else
-	echo "========= Building all projects ========"
+	echo "======== Building all projects ========"
 	source scripts/build_all.sh #> $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		grep -qr "warning: " $BUILD_LOG

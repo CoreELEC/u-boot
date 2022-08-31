@@ -52,7 +52,7 @@ if [ -n "$1" ] && [ $1 == "-h" ]; then
 	return 0
 elif [ $# -eq 4 ]; then
 	PROJECT="$1 $2 $3 $4"
-	echo "Choose project:$PROJECT"
+	echo "Choose project: $PROJECT"
 else
 	unset ARRAY
 

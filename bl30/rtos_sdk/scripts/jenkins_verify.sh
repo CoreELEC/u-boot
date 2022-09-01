@@ -175,8 +175,10 @@ source scripts/cherry_pick.sh
 # Include publish functions
 source scripts/publish.sh
 
+echo ""
+
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
-	echo -e "\n======== Building all packages ========"
+	echo "======== Building all packages ========"
 	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
 	if [ "$?" -eq 0 ]; then
 		post_publish_packages >> $BUILD_LOG 2>&1
@@ -187,16 +189,5 @@ if [[ "$SUBMIT_TYPE" == "release" ]]; then
 		exit 1
 	fi
 else
-	echo -e "\n======== Building all projects ========"
 	source scripts/build_all.sh
-	if [ "$?" -eq 0 ]; then
-		grep -qr "warning: " $BUILD_LOG
-		[ "$?" -eq 0 ] && cat $BUILD_LOG && echo "Aborted with warnings!" && exit 1
-		[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
-		echo "======== Done ========"
-	else
-		cat $BUILD_LOG
-		echo "Aborted with errors!"
-		exit 1
-	fi
 fi

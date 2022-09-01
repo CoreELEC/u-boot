@@ -5,30 +5,35 @@
 # SPDX-License-Identifier: MIT
 #
 
+[ -z "$BUILD_LOG" ] && BUILD_LOG="output/build.log"
+# Clear build log
+cat <<EOF > $BUILD_LOG
+EOF
+
 source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
-	make docs
+echo "======== Building document ========" | tee $BUILD_LOG
+
+	make docs >> $BUILD_LOG 2>&1
 	if [ -d $LOCAL_DOC_PATH ]; then
 		pushd $LOCAL_DOC_PATH >/dev/null
 		publish_docoment
 		if [ $? -ne 0 ]; then
-			echo "Failed to update document"
+			echo "Failed to update document!"
 		else
-			echo "Document updated!"
+			echo "Document updated."
 		fi
 		popd >/dev/null
 	else
 		echo "$LOCAL_DOC_PATH not exist!"
 	fi
+echo -e "======== Done ========\n" | tee $BUILD_LOG
 fi
 
-source scripts/gen_build_combination.sh
+echo "======== Building all projects ========" | tee $BUILD_LOG
 
-[ -z "$BUILD_LOG" ] && BUILD_LOG="output/build.log"
-# Clear build log
-cat <<EOF > $BUILD_LOG
-EOF
+source scripts/gen_build_combination.sh
 
 nr=0
 while IFS= read -r LINE; do
@@ -42,10 +47,12 @@ while IFS= read -r LINE; do
 	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && exit 2
 	echo -n "$nr. Building $LINE ... "
 	make >> $BUILD_LOG 2>&1
-	[ "$?" -ne 0 ] && echo "failed!" && exit 3
-	echo "OK!"
+	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!" && exit 3
+	grep -qr "warning: " $BUILD_LOG
+	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!" && exit 1
+	echo "OK."
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
-		if [[ "$BOARD" == "ad403_a113l" ]] && [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then
+		if [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then
 			make_image >> $BUILD_LOG 2>&1
 		fi
 		publish_images >> $BUILD_LOG 2>&1
@@ -53,4 +60,6 @@ while IFS= read -r LINE; do
 	fi
 done <"$BUILD_COMBINATION"
 
-echo "Build completed!"
+[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
+
+echo -e "======== Done ========\n" | tee $BUILD_LOG

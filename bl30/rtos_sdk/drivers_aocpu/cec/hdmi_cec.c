@@ -643,9 +643,12 @@ static u32 cec_set_pin_mux(u32 chip)
 {
 	u32 chip_type = chip;
 
-	//xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
-	//printf("%s pin mux:0x%x func:0x%x\n", __func__, CEC_PIN_MX, CEC_PIN_FUNC);
+#if CONFIG_SOC_S5
 	printf("%s pin mux: FIX ME\n", __func__);
+#else
+	xPinmuxSet(CEC_PIN_MX, CEC_PIN_FUNC);
+	printf("%s pin mux:0x%x func:0x%x\n", __func__, CEC_PIN_MX, CEC_PIN_FUNC);
+#endif
 	return chip_type;
 }
 

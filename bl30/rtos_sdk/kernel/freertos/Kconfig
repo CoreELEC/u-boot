@@ -33,35 +33,35 @@ config DMALLOC
 	help
 	  Enable the memory allocation statistics of tasks..
 
+if DMALLOC
 config DMALLOC_SIZE
 	hex "Debug Memory Allocation Buffer Size"
-	depends on DMALLOC
 	default 128
 	help
 	  Set the buffer size of memory allocation statistics.
+endif # DMALLOC
 
 config MEMORY_ERROR_DETECTION
 	bool "Memory Error Detection"
 	help
 	  Enable detecting out-of-bounds access, memory leaks.
 
+if MEMORY_ERROR_DETECTION
 config MEMORY_ERROR_DETECTION_SIZE
 	hex "Memory Error Detection Buffer Size"
-	depends on MEMORY_ERROR_DETECTION
 	default 1000
 	help
 	  Set the buffer size of memory error detection.
 
 config MEMORY_ERROR_DETECTION_PRINT
 	bool "Memory Error Detection Print"
-	depends on MEMORY_ERROR_DETECTION
 	help
 	  Print details of memory error field.
 
 config MEMORY_ERROR_DETECTION_BENCHMARKS
 	bool "Memory Error Detection Benchmarks Test"
-	depends on MEMORY_ERROR_DETECTION
 	help
 	  Memory error detection tool performance test.
+endif # MEMORY_ERROR_DETECTION
 
 endif # KERNEL

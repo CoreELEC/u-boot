@@ -78,7 +78,7 @@ static void vBTWakeup(void)
 static void bt_task_create(void)
 {
 	int ret = 0;
-	ret = xTaskCreate(bt_wakeup_Task, "btwakeup", configMINIMAL_STACK_SIZE, NULL, 2, &btTask);
+	ret = xTaskCreate(bt_wakeup_Task, "bt_wakeup", configMINIMAL_STACK_SIZE, NULL, 2, &btTask);
 	if (ret != pdPASS)
 		INFO("bt_wakeup_Task create failed!");
 }

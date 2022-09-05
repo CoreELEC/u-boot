@@ -314,7 +314,7 @@ static unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enab
 	if ((dmc_test_sts & 0x40000000))
 		dmc_error = 1;
 	else
-	if (dmc_test_sts & 0x40000001)         //can not deter write triger ,or can not guickly recover dmc with phy? 2016_12_12
+	if (dmc_test_sts & 0x40000001)         //can not deter write triger ,or can not quickly recover dmc with phy? 2016_12_12
 		dmc_error = 1;
 
 	dmc_error = dmc_error + (rd_reg(DMC_TEST_ERR_CNT));
@@ -323,7 +323,7 @@ static unsigned int dmc_ddr_test(unsigned int start_add, unsigned int write_enab
 	if (dmc_error) {
 		for (unsigned int counter1 = 0; counter1 < (DMC_TEST_RDRSP_ADDR+4-DMC_TEST_STA); )
 		{
-		printf( "\ncounter %08x %08x",counter1,(rd_reg(DMC_TEST_STA+(counter1))));
+		printf("\n counter %08x %08x",counter1,(rd_reg(DMC_TEST_STA+(counter1))));
 		counter1=counter1+4;
 		}
 		wr_reg(DMC_SOFT_RST, (rd_reg(DMC_SOFT_RST)) & (~((1 << 29) | (1 << 24))));  //clear read buffer dmc test reset

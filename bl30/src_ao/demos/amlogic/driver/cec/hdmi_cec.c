@@ -946,7 +946,7 @@ static int cec_queue_tx_msg(unsigned char *msg, unsigned char len)
 	return 0;
 }
 
-static int cecb_triggle_tx(unsigned char *msg, unsigned char len)
+static int cecb_trigger_tx(unsigned char *msg, unsigned char len)
 {
 	int i = 0, lock;
 
@@ -981,7 +981,7 @@ static int cecb_triggle_tx(unsigned char *msg, unsigned char len)
 	return 0;
 }
 
-static int ceca_triggle_tx(unsigned char *msg, unsigned char len)
+static int ceca_trigger_tx(unsigned char *msg, unsigned char len)
 {
 	int i = 0/*, lock*/;
 	unsigned int j = 40;
@@ -1024,14 +1024,14 @@ static int ceca_triggle_tx(unsigned char *msg, unsigned char len)
 	return 0;
 }
 
-static int cec_triggle_tx(unsigned char *msg, unsigned char len)
+static int cec_trigger_tx(unsigned char *msg, unsigned char len)
 {
 	int ret;
 
 	if (cec_ip == CEC_B)
-		ret = cecb_triggle_tx(msg, len);
+		ret = cecb_trigger_tx(msg, len);
 	else
-		ret = ceca_triggle_tx(msg, len);
+		ret = ceca_trigger_tx(msg, len);
 
 	return ret;
 }
@@ -1041,7 +1041,7 @@ static int remote_cec_ll_tx(unsigned char *msg, unsigned char len)
 	int ret = 0;
 
 	cec_queue_tx_msg(msg, len);
-	ret = cec_triggle_tx(msg, len);
+	ret = cec_trigger_tx(msg, len);
 
 	return ret;
 }
@@ -1446,7 +1446,7 @@ static u32 cec_handle_message(void)
 		(cec_msg.buf[cec_msg.rx_read_pos].msg_len > 1)) {
 		opcode = cec_msg.buf[cec_msg.rx_read_pos].msg[1];
 #if CEC_FW_DEBUG
-		printf("handl:0x%02x\n", opcode);
+		printf("handle:0x%02x\n", opcode);
 #endif
 		switch (opcode) {
 		case CEC_OC_GET_CEC_VERSION:
@@ -1712,7 +1712,7 @@ static u32 cecb_irq_handler(void)
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
 			printf("TX_OK\n");
-			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+			cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		} else {
 #if CEC_REG_DEBUG
@@ -1727,7 +1727,7 @@ static u32 cecb_irq_handler(void)
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.msg[s_idx].retry < 2) {
 			cec_tx_msgs.msg[s_idx].retry++;
-			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+			cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		} else {
 			/*printf("TX retry too much, abort msg\n");*/
@@ -1739,8 +1739,8 @@ static u32 cecb_irq_handler(void)
 	if (irq & CECB_IRQ_TX_ERR_INITIATOR) {
 		printf("@TX_ERR_INIT\n");
 		s_idx = cec_tx_msgs.send_idx;
-		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) { // triggle tx if idle
-			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) { // trigger tx if idle
+			cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		}
 		busy_count = 0;
@@ -1822,7 +1822,7 @@ static u32 ceca_irq_handler(void)
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
 			printf("TX_OK\n");
-			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+			cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		} else {
 			printf("TX_END\n");
@@ -1840,7 +1840,7 @@ static u32 ceca_irq_handler(void)
 			s_idx = cec_tx_msgs.send_idx;
 			if (cec_tx_msgs.msg[s_idx].retry < 3) {
 				cec_tx_msgs.msg[s_idx].retry++;
-				cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+				cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 					       cec_tx_msgs.msg[s_idx].len);
 			} else {
 				printf("TX retry too much, abort msg\n");
@@ -1853,7 +1853,7 @@ static u32 ceca_irq_handler(void)
 	 case TX_IDLE:
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
-			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf,
+			cec_trigger_tx(cec_tx_msgs.msg[s_idx].buf,
 				       cec_tx_msgs.msg[s_idx].len);
 		}
 		busy_count = 0;
@@ -1991,7 +1991,7 @@ static void cec_node_init(void)
 			 * just for simple check, ignore TX_BUSY
 			 */
 			if (tx_stat == TX_DONE) {
-				printf("TX_DONE sombody takes cec log_addr:0x%x\n",
+				printf("TX_DONE somebody takes cec log_addr:0x%x\n",
 					kern_log_addr);
 			} else {
 				cec_set_log_addr(kern_log_addr);
@@ -2019,7 +2019,7 @@ static void cec_node_init(void)
 			cec_delay(500);
 			tx_stat = cec_check_irq_sts();
 			if (tx_stat == TX_DONE) {
-				printf("TX_DONE sombody takes cec log_addr:0x%x\n",
+				printf("TX_DONE somebody takes cec log_addr:0x%x\n",
 					kern_log_addr2);
 			} else {
 				cec_set_log_addr(kern_log_addr2);
@@ -2103,7 +2103,7 @@ static void cec_node_init(void)
 				ping_state = 0;
 				return ;
 			} else if (tx_stat == TX_DONE) {
-				printf("TX_DONE sombody takes cec log_addr:0x%x\n", player_dev[idx][sub_idx]);
+				printf("TX_DONE somebody takes cec log_addr:0x%x\n", player_dev[idx][sub_idx]);
 				#if 0
 				regist_devs |= (1 << dev_idx);
 				retry += (4 - (retry & 0x03));

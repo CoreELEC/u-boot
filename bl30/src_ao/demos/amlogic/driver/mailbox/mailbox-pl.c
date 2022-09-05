@@ -56,10 +56,10 @@ static void vExitCritical(void)
 
 
 /*ARM 2 AOCPU mailbox*/
-static void vAoRevTeeMbHandler(uint32_t inmbox)
+static void vAoRevTeeMbHandler(uint32_t mailbox)
 {
 	//BaseType_t xYieldRequired = pdFALSE;
-	uint32_t mbox = inmbox;
+	uint32_t mbox = mailbox;
 	mbPackInfo mbInfo;
 	MbStat_t st;
 	uint32_t *addr = NULL;
@@ -162,10 +162,10 @@ static void vTeeSyncTask(void *pvParameters)
 
 
 
-static void vAoRevReeMbHandler(uint32_t inmbox)
+static void vAoRevReeMbHandler(uint32_t mailbox)
 {
 	//BaseType_t xYieldRequired = pdFALSE;
-	uint32_t mbox = inmbox;
+	uint32_t mbox = mailbox;
 	mbPackInfo mbInfo;
 	MbStat_t st;
 	uint32_t *addr = NULL;

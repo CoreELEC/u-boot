@@ -12,7 +12,7 @@ __attribute__((weak)) uintptr_t handle_nmi(void)
 {
   //_exit(1);
 
-	  printf("\nhandle_nmi");
+	  printf("\n handle_nmi");
 
 
   do {}while(1);
@@ -31,7 +31,7 @@ __attribute__((weak)) uintptr_t handle_trap(uintptr_t mcause, uintptr_t sp)
   printf("In trap handler, the mepc is 0x%lx\n", read_csr(mepc));
   printf("In trap handler, the mtval is 0x%lx\n", read_csr(mbadaddr));
   //_exit(mcause);
-  printf("\nhandle_trap");
+  printf("\n handle_trap");
 
   do {}while(1);
   return 0;

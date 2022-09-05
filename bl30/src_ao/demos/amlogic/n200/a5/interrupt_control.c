@@ -120,7 +120,7 @@ void eclic_set_irq_lvl(uint32_t source, uint8_t lvl) {
   //shift lvl into correct bit position
   lvl = lvl << (8-nlbits);
 
-  //write to clicintctrl
+  //write to clicintctl
   uint8_t current_intctrl = eclic_get_intctrl(source);
   //shift intctrl left to mask off unused bits
   current_intctrl = current_intctrl << nlbits;
@@ -158,7 +158,7 @@ void eclic_set_irq_lvl_abs(uint32_t source, uint8_t lvl_abs) {
   //shift lvl_abs into correct bit position
   uint8_t lvl = lvl_abs << (8-nlbits);
 
-  //write to clicintctrl
+  //write to clicintctl
   uint8_t current_intctrl = eclic_get_intctrl(source);
   //shift intctrl left to mask off unused bits
   current_intctrl = current_intctrl << nlbits;
@@ -192,7 +192,7 @@ void eclic_set_irq_pri(uint32_t source, uint8_t pri) {
     nlbits = CLICINTCTLBITS;
   }
 
-  //write to clicintctrl
+  //write to clicintctl
   uint8_t current_intctrl = eclic_get_intctrl(source);
   //shift intctrl left to mask off unused bits
   current_intctrl = current_intctrl >> (8 - nlbits);

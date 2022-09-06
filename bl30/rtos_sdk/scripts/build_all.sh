@@ -14,7 +14,6 @@ source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 echo "======== Building document ========" | tee $BUILD_LOG
-
 	make docs >> $BUILD_LOG 2>&1
 	if [ -d $LOCAL_DOC_PATH ]; then
 		pushd $LOCAL_DOC_PATH >/dev/null
@@ -47,9 +46,9 @@ while IFS= read -r LINE; do
 	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && exit 2
 	echo -n "$nr. Building $LINE ... "
 	make >> $BUILD_LOG 2>&1
-	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!" && exit 3
+	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!\n" && exit 3
 	grep -qr "warning: " $BUILD_LOG
-	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!" && exit 1
+	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!\n" && exit 1
 	echo "OK."
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		if [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then

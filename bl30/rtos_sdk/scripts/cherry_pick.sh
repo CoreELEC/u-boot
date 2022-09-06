@@ -5,10 +5,85 @@
 # SPDX-License-Identifier: MIT
 #
 
-[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="curr_manifest.xml"
-[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+get_repo_path() {
+	for keyword in $keyline; do
+		if [[ $keyword == $pattern* ]]; then
+			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
+			break;
+		fi
+	done
+}
 
-if [ -n "$GIT_CHERRY_PICK" ]; then
+cherry_pick() {
+	if [ -d "$repo_path" ]; then
+		pushd $repo_path > /dev/null
+		git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_REFSPEC}
+		git cherry-pick FETCH_HEAD
+		if [ "$?" -ne 0 ]; then
+			git status
+			git log -1
+			echo -e "\nFailed to apply patch!\n"
+			exit 1
+		fi
+		popd > /dev/null
+	else
+		echo -e "\nNo such directory! $repo_path\n"
+		exit 1
+	fi
+}
+
+apply_patch_by_change_number() {
+	[ -z "$GERRIT_PORT" -o -z "$GERRIT_PROJECT" -o -z "$GERRIT_REFSPEC" ] && [ -z "$MANUAL_GERRIT_CHANGE_NUMBER" ] && return
+
+	if [ -n "$GERRIT_PORT" ] && [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_REFSPEC" ]; then
+		echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+	elif [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
+		GERRIT_PORT="29418"
+		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$MANUAL_GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
+		GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
+		GERRIT_REFSPEC=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
+		echo -e "\n======== Applying manual change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+	fi
+
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+	pattern="path="
+	get_repo_path
+
+	cherry_pick
+	echo -e "======== Done ========\n"
+}
+
+apply_patch_by_gerrit_topic() {
+	[ -z "$MANUAL_GERRIT_TOPIC" ] && return
+
+	GERRIT_PORT="29418"
+	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open topic:$MANUAL_GERRIT_TOPIC > $GERRIT_QUERY_RESULT
+	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
+	GERRIT_REFSPECS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
+
+	echo -e "\n======== Applying manual patches ========"
+
+	i=1
+	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
+		echo "-------- Applying manual patch $i on Project $GERRIT_PROJECT --------"
+		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+		pattern="path="
+		get_repo_path
+
+		GERRIT_REFSPEC=$(echo $GERRIT_REFSPECS | awk "{print \$$i}")
+		cherry_pick
+		echo -e "-------- Done --------\n"
+		i=$((i+1))
+	done
+
+	i=$((i-1))
+	[[ "$i" -eq 1 ]] && echo -e "\n======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========\n"
+	[[ "$i" -gt 1 ]] && echo -e "\n======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========\n"
+}
+
+apply_patch_by_gerrit_url() {
+	[ -z "$GIT_CHERRY_PICK" ] && return
+
 	while IFS= read -r line
 	do
 		pattern=":29418/"
@@ -21,13 +96,8 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 
 		echo -e "\n-------- Applying manual patch on Project $GIT_PROJECT --------"
 		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST`
-
-		for keyword in $keyline; do
-			if [[ $keyword == path=* ]]; then
-				repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-				break;
-			fi
-		done
+		pattern="path="
+		get_repo_path
 
 		if [ -d "$repo_path" ]; then
 			pushd $repo_path > /dev/null
@@ -46,85 +116,13 @@ if [ -n "$GIT_CHERRY_PICK" ]; then
 		fi
 		echo -e "-------- Done --------\n"
 	done <<< "$GIT_CHERRY_PICK"
-fi
+}
 
-if [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
-	GERRIT_SERVER="scgit.amlogic.com"
-	GERRIT_PORT="29418"
-	GERRIT_QUERY_RESULT="changes.txt"
-	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
-	GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
-	GERRIT_CHANGE_REF=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
+[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="curr_manifest.xml"
+[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
 
-	echo -e "\n-------- Applying manual patch on Project $GERRIT_PROJECT --------"
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+GERRIT_SERVER="scgit.amlogic.com"
+GERRIT_QUERY_RESULT="changes.txt"
 
-	for keyword in $keyline; do
-		if [[ $keyword == path=* ]]; then
-			repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-			break;
-		fi
-	done
-
-	if [ -d "$repo_path" ]; then
-		pushd $repo_path > /dev/null
-		git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
-		git cherry-pick FETCH_HEAD
-		if [ "$?" -ne 0 ]; then
-			echo -e "-------- Applying patch failed! --------\n"
-			exit 1
-		fi
-		popd > /dev/null
-	else
-		echo "No such directory! $repo_path"
-		exit 1
-	fi
-	echo -e "-------- Done --------\n"
-fi
-
-if [ -n "$MANUAL_GERRIT_TOPIC" ]; then
-	GERRIT_SERVER="scgit.amlogic.com"
-	GERRIT_PORT="29418"
-	GERRIT_QUERY_RESULT="changes.txt"
-	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open topic:$MANUAL_GERRIT_TOPIC > $GERRIT_QUERY_RESULT
-	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
-	GERRIT_CHANGE_REFS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
-
-	echo -e "\n======== Applying manual changes ========"
-
-	i=1
-	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
-		echo -e "\n-------- Applying manual patch $i on Project $GERRIT_PROJECT --------"
-		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
-
-		for keyword in $keyline; do
-			if [[ $keyword == path=* ]]; then
-				repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-				break;
-			fi
-		done
-
-		if [ -d "$repo_path" ]; then
-			GERRIT_CHANGE_REF=$(echo $GERRIT_CHANGE_REFS | awk "{print \$$i}")
-			pushd $repo_path > /dev/null
-			git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_CHANGE_REF}
-			git cherry-pick FETCH_HEAD
-			if [ "$?" -ne 0 ]; then
-				git status
-				git log -1
-				echo -e "-------- Failed to apply patch! --------"
-				exit 1
-			fi
-			popd > /dev/null
-		else
-			echo "No such directory! $repo_path"
-			exit 1
-		fi
-		echo -e "-------- Done --------"
-		i=$((i+1))
-	done
-
-	i=$((i-1))
-	[[ "$i" -eq 1 ]] && echo -e "\n======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========\n"
-	[[ "$i" -gt 1 ]] && echo -e "\n======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========\n"
-fi
+apply_patch_by_change_number
+apply_patch_by_gerrit_topic

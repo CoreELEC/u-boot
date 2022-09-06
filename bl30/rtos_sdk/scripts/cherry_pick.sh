@@ -50,7 +50,7 @@ apply_patch_by_change_number() {
 	get_repo_path
 
 	cherry_pick
-	echo -e "======== Done ========\n"
+	echo "======== Done ========"
 }
 
 apply_patch_by_gerrit_topic() {

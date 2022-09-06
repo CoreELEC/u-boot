@@ -141,39 +141,8 @@ if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
 	[ -s $DIFF_MANIFEST ] && gen_jenkins_trigger
 fi
 
-if [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_PATCHSET_NUMBER" ] && [ -n "$GERRIT_CHANGE_NUMBER" ]; then
-	echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_FULL_MANIFEST`
-
-	for keyword in $keyline; do
-		if [[ $keyword == path=* ]]; then
-			repo_path=`echo ${keyword#*path=} | sed 's/\"//g'`
-			break;
-		fi
-	done
-
-	if [ -d "$repo_path" ]; then
-		pushd $repo_path > /dev/null
-		l2=${GERRIT_CHANGE_NUMBER: -2}
-		git fetch ssh://scgit.amlogic.com:29418/${GERRIT_PROJECT} refs/changes/${l2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}
-		git cherry-pick FETCH_HEAD
-		if [ "$?" -ne 0 ]; then
-			echo "======== Applying patch failed! ========"
-			exit 1
-		fi
-		popd > /dev/null
-	else
-		echo "No such directory! $repo_path"
-		exit 1
-	fi
-	echo "======== Done ========"
-fi
-
-# Manually cherry pick patches
+# Cherry pick patches
 source scripts/cherry_pick.sh
-
-# Include publish functions
-source scripts/publish.sh
 
 echo ""
 

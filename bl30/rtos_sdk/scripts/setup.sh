@@ -31,8 +31,8 @@ echo "#define CONFIG_BOARD_NAME \"$BOARD\"" > $RTOS_SDK_VERSION_FILE
 echo "#define CONFIG_PRODUCT_NAME \"$PRODUCT\"" >> $RTOS_SDK_VERSION_FILE
 echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
 
-# Check whether the project is a repo
-repo manifest >/dev/null 2>&1
+# Check whether the project is a valid repo
+repo manifest 2>&1 | grep -q $build_dir
 if [ "$?" -ne 0 ]; then
 	echo "Non-repo source code"
 	if [ -f $DEFAULT_RTOS_SDK_MANIFEST ]; then

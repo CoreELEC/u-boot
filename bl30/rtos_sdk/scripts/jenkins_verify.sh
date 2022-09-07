@@ -114,17 +114,8 @@ source gen_jenkins_trigger.sh
 # Cherry pick patches
 source scripts/cherry_pick.sh
 
-if [[ "$SUBMIT_TYPE" == "release" ]]; then
-	echo "======== Building all packages ========"
-	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1
-	if [ "$?" -eq 0 ]; then
-		post_publish_packages >> $BUILD_LOG 2>&1
-		echo "======== Done ========"
-	else
-		cat $BUILD_LOG
-		echo "Aborted!"
-		exit 1
-	fi
+if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then
+	source scripts/build_all_pkg.sh
 else
 	source scripts/build_all.sh
 fi

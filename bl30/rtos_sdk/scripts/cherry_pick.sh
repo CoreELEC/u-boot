@@ -33,12 +33,11 @@ cherry_pick() {
 }
 
 apply_patch_by_change_number() {
-	[ -z "$GERRIT_PORT" -o -z "$GERRIT_PROJECT" -o -z "$GERRIT_REFSPEC" ] && [ -z "$MANUAL_GERRIT_CHANGE_NUMBER" ] && return
+	[ -z "$GERRIT_CHANGE_NUMBER" -o -z "$GERRIT_PROJECT" -o -z "$GERRIT_REFSPEC" ] && [ -z "$MANUAL_GERRIT_CHANGE_NUMBER" ] && return
 
-	if [ -n "$GERRIT_PORT" ] && [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_REFSPEC" ]; then
+	if [ -n "$GERRIT_CHANGE_NUMBER" ] && [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_REFSPEC" ]; then
 		echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	elif [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
-		GERRIT_PORT="29418"
 		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$MANUAL_GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
 		GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 		GERRIT_REFSPEC=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
@@ -50,13 +49,12 @@ apply_patch_by_change_number() {
 	get_repo_path
 
 	cherry_pick
-	echo "======== Done ========"
+	echo -e "======== Done ========\n"
 }
 
 apply_patch_by_gerrit_topic() {
 	[ -z "$MANUAL_GERRIT_TOPIC" ] && return
 
-	GERRIT_PORT="29418"
 	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open topic:$MANUAL_GERRIT_TOPIC > $GERRIT_QUERY_RESULT
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_REFSPECS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
@@ -121,6 +119,7 @@ apply_patch_by_gerrit_url() {
 [ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="curr_manifest.xml"
 [ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
 
+[ -z "$GERRIT_PORT" ] && GERRIT_PORT="29418"
 GERRIT_SERVER="scgit.amlogic.com"
 GERRIT_QUERY_RESULT="changes.txt"
 

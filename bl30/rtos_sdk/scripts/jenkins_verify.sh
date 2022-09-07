@@ -144,8 +144,6 @@ fi
 # Cherry pick patches
 source scripts/cherry_pick.sh
 
-echo ""
-
 if [[ "$SUBMIT_TYPE" == "release" ]]; then
 	echo "======== Building all packages ========"
 	./scripts/build_all_pkg.sh > $BUILD_LOG 2>&1

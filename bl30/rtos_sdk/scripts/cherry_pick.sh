@@ -36,12 +36,12 @@ apply_patch_by_change_number() {
 	[ -z "$GERRIT_CHANGE_NUMBER" -o -z "$GERRIT_PROJECT" -o -z "$GERRIT_REFSPEC" ] && [ -z "$MANUAL_GERRIT_CHANGE_NUMBER" ] && return
 
 	if [ -n "$GERRIT_CHANGE_NUMBER" ] && [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_REFSPEC" ]; then
-		echo -e "\n======== Applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+		echo -e "\n======== Auto-applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	elif [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$MANUAL_GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
 		GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 		GERRIT_REFSPEC=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
-		echo -e "\n======== Applying manual change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+		echo -e "\n======== Manually applying Gerrit change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	fi
 
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
@@ -59,11 +59,11 @@ apply_patch_by_gerrit_topic() {
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_REFSPECS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
-	echo -e "\n======== Applying manual patches ========"
+	echo -e "\n======== Manually applying Gerrit changes ========"
 
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
-		echo "-------- Applying manual patch $i on Project $GERRIT_PROJECT --------"
+		echo "-------- Applying patch $i on Project $GERRIT_PROJECT --------"
 		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
 		pattern="path="
 		get_repo_path
@@ -75,8 +75,8 @@ apply_patch_by_gerrit_topic() {
 	done
 
 	i=$((i-1))
-	[[ "$i" -eq 1 ]] && echo -e "\n======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========\n"
-	[[ "$i" -gt 1 ]] && echo -e "\n======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========\n"
+	[[ "$i" -eq 1 ]] && echo -e "======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========\n"
+	[[ "$i" -gt 1 ]] && echo -e "======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========\n"
 }
 
 apply_patch_by_gerrit_url() {
@@ -92,7 +92,7 @@ apply_patch_by_gerrit_url() {
 			fi
 		done
 
-		echo -e "\n-------- Applying manual patch on Project $GIT_PROJECT --------"
+		echo -e "\n-------- Manually applying patch on Project $GIT_PROJECT --------"
 		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST`
 		pattern="path="
 		get_repo_path

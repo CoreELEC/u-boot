@@ -103,15 +103,16 @@ if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
 				popd > /dev/null
 			fi
 		done < $DIFF_FULL_MANIFEST
+		echo -e "================\n"
 	else
-		echo -e "======== Nothing changed since last build ========"
+		echo -e "======== Nothing changed since last build ========\n"
 	fi
 	rm -f $DIFF_FULL_MANIFEST
 fi
 
 gen_jenkins_trigger() {
 	if [ -s $CURRENT_MANIFEST ]; then
-		echo -e "\n======== Generate Jenkins Trigger ========"
+		echo -e "======== Generate Jenkins Trigger ========\n"
 
 		rm -f $JENKINS_TRIGGER
 

@@ -6,9 +6,6 @@
 #
 
 [ -z "$BUILD_LOG" ] && BUILD_LOG="output/build.log"
-# Clear build log
-cat <<EOF > $BUILD_LOG
-EOF
 
 source scripts/publish.sh
 
@@ -27,10 +24,10 @@ echo "======== Building document ========" | tee $BUILD_LOG
 	else
 		echo "$LOCAL_DOC_PATH not exist!"
 	fi
-echo -e "======== Done ========\n" | tee $BUILD_LOG
+echo -e "======== Done ========\n" | tee -a $BUILD_LOG
 fi
 
-echo "======== Building all projects ========" | tee $BUILD_LOG
+echo "======== Building all projects ========" | tee -a $BUILD_LOG
 
 source scripts/gen_build_combination.sh
 
@@ -61,4 +58,4 @@ done <"$BUILD_COMBINATION"
 
 [[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1
 
-echo -e "======== Done ========\n" | tee $BUILD_LOG
+echo -e "======== Done ========\n" | tee -a $BUILD_LOG

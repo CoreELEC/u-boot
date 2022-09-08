@@ -36,12 +36,12 @@ apply_patch_by_change_number() {
 	[ -z "$GERRIT_CHANGE_NUMBER" -o -z "$GERRIT_PROJECT" -o -z "$GERRIT_REFSPEC" ] && [ -z "$MANUAL_GERRIT_CHANGE_NUMBER" ] && return
 
 	if [ -n "$GERRIT_CHANGE_NUMBER" ] && [ -n "$GERRIT_PROJECT" ] && [ -n "$GERRIT_REFSPEC" ]; then
-		echo -e "\n======== Auto-applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+		echo -e "======== Auto-applying Gerrit change $GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	elif [ -n "$MANUAL_GERRIT_CHANGE_NUMBER" ]; then
 		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open change:$MANUAL_GERRIT_CHANGE_NUMBER > $GERRIT_QUERY_RESULT
 		GERRIT_PROJECT=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 		GERRIT_REFSPEC=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
-		echo -e "\n======== Manually applying Gerrit change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
+		echo -e "======== Manually applying Gerrit change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	fi
 
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
@@ -59,7 +59,7 @@ apply_patch_by_gerrit_topic() {
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_REFSPECS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
-	echo -e "\n======== Manually applying Gerrit changes ========"
+	echo -e "======== Manually applying Gerrit changes ========"
 
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do

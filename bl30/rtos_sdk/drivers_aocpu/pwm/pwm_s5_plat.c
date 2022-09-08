@@ -16,28 +16,111 @@ struct xPwmMesonChip meson_pwm_chip[] = {
 	{ PWM_IJ, PWMIJ_PWM_A, 0, CLKCTRL_PWM_CLK_IJ_CTRL },
 };
 
+#if defined(CONFIG_BOARD_AX208_S928X) || defined(CONFIG_BOARD_AX209_S928X)
 /* VDDEE voltage table  volt must ascending */
 struct xPwmMesonVoltage vddee_table[] = {
-	{ 730, 0x140000 }, { 740, 0x120000 }, { 750, 0x110001 }, { 760, 0x100002 },
-	{ 770, 0x0f0003 }, { 780, 0x0e0004 }, { 790, 0x0d0005 }, { 800, 0x0c0006 },
-	{ 810, 0x0b0007 }, { 820, 0x0a0008 }, { 830, 0x090009 }, { 840, 0x08000a },
-	{ 850, 0x07000b }, { 860, 0x06000c }, { 870, 0x05000d }, { 880, 0x04000e },
-	{ 890, 0x03000f }, { 900, 0x020010 }, { 910, 0x010011 }, { 920, 0x000012 },
-	{ 930, 0x000014 },
+	{687, 0x00120000},
+	{694, 0x00110001},
+	{705, 0x00100002},
+	{715, 0x000f0003},
+	{723, 0x000e0004},
+	{730, 0x000d0005},
+	{742, 0x000c0006},
+	{751, 0x000b0007},
+	{759, 0x000a0008},
+	{768, 0x00090009},
+	{778, 0x0008000a},
+	{787, 0x0007000b},
+	{796, 0x0006000c},
+	{805, 0x0005000d},
+	{814, 0x0004000e},
+	{823, 0x0003000f},
+	{832, 0x00020010},
+	{841, 0x00010011},
+	{850, 0x00000012},
 };
+
+#elif defined(CONFIG_BOARD_AX201_S928X)
+/* VDDEE voltage table  volt must ascending */
+struct xPwmMesonVoltage vddee_table[] = {
+	{718, 0x00120000},
+	{727, 0x00110001},
+	{737, 0x00100002},
+	{747, 0x000f0003},
+	{757, 0x000e0004},
+	{766, 0x000d0005},
+	{777, 0x000c0006},
+	{786, 0x000b0007},
+	{797, 0x000a0008},
+	{806, 0x00090009},
+	{816, 0x0008000a},
+	{827, 0x0007000b},
+	{836, 0x0006000c},
+	{847, 0x0005000d},
+	{856, 0x0004000e},
+	{866, 0x0003000f},
+	{876, 0x00020010},
+	{886, 0x00010011},
+	{897, 0x00000012},
+};
+
+#else
+#error "no found board"
+#endif
 
 /* VDDCPU voltage table  volt must ascending */
 struct xPwmMesonVoltage vddcpu_table[] = {
-	{ 690, 0x00240000 },  { 700, 0x00220000 },  { 710, 0x00210001 },  { 720, 0x00200002 },
-	{ 730, 0x001f0003 },  { 740, 0x001e0004 },  { 750, 0x001d0005 },  { 760, 0x001c0006 },
-	{ 770, 0x001b0007 },  { 780, 0x001a0008 },  { 790, 0x00190009 },  { 800, 0x0018000a },
-	{ 810, 0x0017000b },  { 820, 0x0016000c },  { 830, 0x0015000d },  { 840, 0x0014000e },
-	{ 850, 0x0013000f },  { 860, 0x00120010 },  { 870, 0x00110011 },  { 880, 0x00100012 },
-	{ 890, 0x000f0013 },  { 900, 0x000e0014 },  { 910, 0x000d0015 },  { 920, 0x000c0016 },
-	{ 930, 0x000b0017 },  { 940, 0x000a0018 },  { 950, 0x00090019 },  { 960, 0x0008001a },
-	{ 970, 0x0007001b },  { 980, 0x0006001c },  { 990, 0x0005001d },  { 1000, 0x0004001e },
-	{ 1010, 0x0003001f }, { 1020, 0x00020020 }, { 1030, 0x00010021 }, { 1040, 0x00000022 },
-	{ 1050, 0x00000024 },
+	{692, 0x00220000},
+	{701, 0x00210001},
+	{712, 0x00200002},
+	{722, 0x001f0003},
+	{731, 0x001e0004},
+	{742, 0x001d0005},
+	{751, 0x001c0006},
+	{761, 0x001b0007},
+	{771, 0x001a0008},
+	{781, 0x00190009},
+	{791, 0x0018000a},
+	{798, 0x0017000b},
+	{808, 0x0016000c},
+	{820, 0x0015000d},
+	{830, 0x0014000e},
+	{840, 0x0013000f},
+	{850, 0x00120010},
+	{860, 0x00110011},
+	{870, 0x00100012},
+	{879, 0x000f0013},
+	{889, 0x000e0014},
+	{900, 0x000d0015},
+	{909, 0x000c0016},
+	{919, 0x000b0017},
+	{929, 0x000a0018},
+	{939, 0x00090019},
+	{948, 0x0008001a},
+	{957, 0x0007001b},
+	{969, 0x0006001c},
+	{978, 0x0005001d},
+	{990, 0x0004001e},
+	{1000, 0x0003001f},
+	{1008, 0x00020020},
+	{1019, 0x00010021},
+	{1029, 0x00000022},
+};
+
+struct board_pwm_cfg_t {
+	uint32_t pwm_ctrl;
+	uint32_t pwm_chn;
+	struct {
+		struct xPwmMesonVoltage *table;
+		uint32_t table_size;
+	};
+};
+
+#define VOLTAGE_TABLE_INFO(x) {x, ARRAY_SIZE(x)}
+
+struct board_pwm_cfg_t board_cfg[] = {
+	[VDDEE_VOLT] = {PWM_AB, MESON_PWM_1, VOLTAGE_TABLE_INFO(vddee_table)},
+	[VDDCPU_VOLT] = {PWM_AB, MESON_PWM_0, VOLTAGE_TABLE_INFO(vddcpu_table)},
 };
 
 /*
@@ -46,17 +129,10 @@ struct xPwmMesonVoltage vddcpu_table[] = {
  */
 uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
-	switch (voltage_id) {
-	case VDDEE_VOLT:
-		return PWM_AB;
+	if (!(voltage_id < MAX_ITEM_VOLT))
+		return PWM_MUX;
 
-	case VDDCPU_VOLT:
-		return PWM_AB;
-
-	default:
-		break;
-	}
-	return PWM_MUX;
+	return board_cfg[voltage_id].pwm_ctrl;
 }
 
 /*
@@ -65,47 +141,26 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
  */
 uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id)
 {
-	switch (voltage_id) {
-	case VDDEE_VOLT:
-		return MESON_PWM_0;
+	if (!(voltage_id < MAX_ITEM_VOLT))
+		return MESON_PWM_2;
 
-	case VDDCPU_VOLT:
-		return MESON_PWM_1;
-
-	default:
-		break;
-	}
-	return MESON_PWM_2;
+	return board_cfg[voltage_id].pwm_chn;
 }
 
 struct xPwmMesonVoltage *vPwmMesonGetVoltTable(uint32_t voltage_id)
 {
-	switch (voltage_id) {
-	case VDDEE_VOLT:
-		return vddee_table;
+	if (!(voltage_id < MAX_ITEM_VOLT))
+		return NULL;
 
-	case VDDCPU_VOLT:
-		return vddcpu_table;
-
-	default:
-		break;
-	}
-	return NULL;
+	return board_cfg[voltage_id].table;
 }
 
 uint32_t vPwmMesonGetVoltTableSize(uint32_t voltage_id)
 {
-	switch (voltage_id) {
-	case VDDEE_VOLT:
-		return sizeof(vddee_table) / sizeof(struct xPwmMesonVoltage);
+	if (!(voltage_id < MAX_ITEM_VOLT))
+		return 0;
 
-	case VDDCPU_VOLT:
-		return sizeof(vddcpu_table) / sizeof(struct xPwmMesonVoltage);
-
-	default:
-		break;
-	}
-	return 0;
+	return board_cfg[voltage_id].table_size;
 }
 
 struct xPwmMesonChip *prvIdToPwmChip(uint32_t chip_id)

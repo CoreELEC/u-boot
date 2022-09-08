@@ -9,7 +9,7 @@
 #############
 MK_ARGV=""
 NEW_ARGV=""
-COVERITY_PATH="/proj/coverity/cov-analysis-linux64-2020.12/bin"
+#COVERITY_PATH="/proj/coverity/cov-analysis-linux64-2020.12/bin"
 COV_IM_DIR="./cov-imdir"
 COV_RESULT_HTML="./result-html"
 HIGH_LEVEL="0"
@@ -42,7 +42,7 @@ function check_cov_path() {
 function run_coverity() {
 	echo ""
 	echo -e "\e[1;35m[1] run cov-build: $@ \e[0m"
-	${COVERITY_PATH}/cov-build --dir ${COV_IM_DIR} $@ || err_exit "cov-build error."
+	cov-build --dir ${COV_IM_DIR} $@ || err_exit "cov-build error."
 	echo -e "\e[1;35m[1] run cov-build OK. \e[0m"
 }
 
@@ -51,22 +51,22 @@ function analysis_coverity() {
 	echo -e "\e[1;35m[2] run cov-analyze ... \e[0m"
 	if [ ${HIGH_LEVEL} = "1" ]; then
         	if [ "${PATTERN_ENABLE}" = "1" ];then
-			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze high level error."
+			cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze high level error."
         	else
-			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 || err_exit "cov-analyze high level error."
+			cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all --aggressiveness-level high --fb-max-mem 3072 || err_exit "cov-analyze high level error."
 		fi
 	else
 		if [ "${PATTERN_ENABLE}" = "1" ];then
-			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze normal level error."
+			cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  --tu-pattern "file('/${PATTERN_PATH}')" || err_exit "cov-analyze normal level error."
 		else
-			${COVERITY_PATH}/cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  || err_exit "cov-analyze normal level error."
+			cov-analyze --dir ${COV_IM_DIR} --strip-path $MKPATH --all  || err_exit "cov-analyze normal level error."
 		fi
 	fi
 	echo -e "\e[1;35m[2] run cov-analyze OK. \e[0m"
 
 	echo ""
 	echo -e "\e[1;35m[3] run cov-format-errors ... \e[0m"
-	${COVERITY_PATH}/cov-format-errors --dir ${COV_IM_DIR} --html-output ${COV_RESULT_HTML} --filesort --strip-path $MKPATH -x || err_exit "cov-format-errors error."
+	cov-format-errors --dir ${COV_IM_DIR} --html-output ${COV_RESULT_HTML} --filesort --strip-path $MKPATH -x || err_exit "cov-format-errors error."
 	echo -e "\e[1;35m[3] run cov-format-errors OK. \e[0m"
 	echo "end."
 
@@ -167,21 +167,21 @@ function sync_code() {
 function run_cov_for_bl2_core() {
 	# get all support soc
 	cd ../ree/plat/
-	arry=`ls -d *`
+	array=`ls -d *`
 	cd - &> /dev/null
 
-	skiped=("common" "fvp" "juno" "golden" "c3")
+	skiped=("common" "fvp" "juno" "golden")
 	for item in ${skiped[@]}
 	{
 		# remove skiped item
-		arry=${arry//${item}/''}
+		array=${array//${item}/''}
 	}
 
-	RESULT='\n'"Build BL2 core for SoC: "$arry'\n'
+	RESULT='\n'"Build BL2 core for SoC: "${array[@]}'\n'
 	echo -e $RESULT
 
 	# loop all soc
-	for soc in ${arry[@]}
+	for soc in ${array[@]}
 	do
 		TEST_BRANCH=projects/$soc
 		echo "TEST_BRANCH=:$TEST_BRANCH"
@@ -190,7 +190,8 @@ function run_cov_for_bl2_core() {
 		sync_code firmware ${TEST_BRANCH}
 
 		# run test
-		run_coverity ./mk $soc
+		run_coverity ./mk $soc --dusb
+		run_coverity ./mk $soc --dsto
 	done
 }
 

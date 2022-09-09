@@ -35,8 +35,6 @@ CURRENT_FULL_MANIFEST="$OUTPUT_DIR/curr_full_manifest.xml"
 DIFF_FULL_MANIFEST="$OUTPUT_DIR/diff_full_manifest.xml"
 LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
 CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
-DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
-JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 BUILD_LOG="$OUTPUT_DIR/build.log"
 
 if [ -n "$EXCLUDE_REPOS" ]; then
@@ -110,37 +108,8 @@ if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
 	rm -f $DIFF_FULL_MANIFEST
 fi
 
-gen_jenkins_trigger() {
-	if [ -s $CURRENT_MANIFEST ]; then
-		echo -e "======== Generate Jenkins Trigger ========\n"
-
-		rm -f $JENKINS_TRIGGER
-
-		while IFS= read -r line
-		do
-			keyline=`echo "$line" | grep 'name=.* path='`
-			unset repo_name
-			for keyword in $keyline; do
-				[[ $keyword == name=* ]] && repo_name=`echo ${keyword#*name=} | sed 's/\"//g'`
-			done
-
-			if [ -n "$repo_name" ]; then
-				echo "$repo_name"
-				echo "p=$repo_name" >> $JENKINS_TRIGGER
-				echo "b=projects/amlogic-dev" >> $JENKINS_TRIGGER
-			fi
-		done < $CURRENT_MANIFEST
-	fi
-	rm -f $LAST_MANIFEST $CURRENT_MANIFEST $DIFF_MANIFEST
-}
-
-if [ ! -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
-	gen_jenkins_trigger
-fi
-if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
-	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
-	[ -s $DIFF_MANIFEST ] && gen_jenkins_trigger
-fi
+# Generate Jenkins trigger
+source gen_jenkins_trigger.sh
 
 # Cherry pick patches
 source scripts/cherry_pick.sh

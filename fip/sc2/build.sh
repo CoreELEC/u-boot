@@ -622,7 +622,7 @@ function process_blx() {
 		rem=`expr ${nocs_size} % 16`
 		nocs_size=`expr ${nocs_size} - ${rem}`
 		echo ==== align bl33 size ${blx_size} to ${nocs_size} ====
-		# Nocs should sign bl33-payload-nocs.bin with it's size alaigned
+		# Nocs should sign bl33-payload-nocs.bin with it's size aligned
 		dd if=/dev/zero of=${BUILD_PATH}/bl33-payload-nocs.bin bs=${nocs_size} count=1 &> /dev/null
 		dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload-nocs.bin conv=notrunc &> /dev/null
 	fi

@@ -10,21 +10,25 @@
 source scripts/publish.sh
 
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
-echo "======== Building document ========" | tee $BUILD_LOG
-	make docs >> $BUILD_LOG 2>&1
-	if [ -d $LOCAL_DOC_PATH ]; then
-		pushd $LOCAL_DOC_PATH >/dev/null
-		publish_docoment
-		if [ $? -ne 0 ]; then
-			echo "Failed to update document!"
+	echo "======== Building document ========" | tee $BUILD_LOG
+		make docs >> $BUILD_LOG 2>&1
+		if [ -d $LOCAL_DOC_PATH ]; then
+			pushd $LOCAL_DOC_PATH >/dev/null
+			publish_docoment
+			if [ $? -ne 0 ]; then
+				echo "Failed to update document!"
+			else
+				echo "Document updated."
+			fi
+			popd >/dev/null
 		else
-			echo "Document updated."
+			echo "$LOCAL_DOC_PATH not exist!"
 		fi
-		popd >/dev/null
-	else
-		echo "$LOCAL_DOC_PATH not exist!"
-	fi
-echo -e "======== Done ========\n" | tee -a $BUILD_LOG
+	echo -e "======== Done ========\n" | tee -a $BUILD_LOG
+else
+# Clear Kconfig
+cat <<EOF > $BUILD_LOG
+EOF
 fi
 
 echo "======== Building all projects ========" | tee -a $BUILD_LOG

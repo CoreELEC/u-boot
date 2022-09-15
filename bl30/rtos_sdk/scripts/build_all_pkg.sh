@@ -5,6 +5,10 @@
 # SPDX-License-Identifier: MIT
 #
 
+# Clear build.log
+cat <<EOF > $BUILD_LOG
+EOF
+
 source scripts/publish.sh
 
 function get_new_package_dir() {
@@ -13,24 +17,6 @@ function get_new_package_dir() {
 	CURRENT_PRODUCTS_DIR_NAME=${fileArry[0]}
 	export CURRENT_PRODUCTS_DIR_NAME
 }
-
-if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
-echo "======== Building document ========" | tee $BUILD_LOG
-	make docs >> $BUILD_LOG 2>&1
-	if [ -d $LOCAL_DOC_PATH ]; then
-		pushd $LOCAL_DOC_PATH >/dev/null
-		publish_docoment
-		if [ $? -ne 0 ]; then
-			echo "Failed to update document!"
-		else
-			echo "Document updated."
-		fi
-		popd >/dev/null
-	else
-		echo "$LOCAL_DOC_PATH not exist!"
-	fi
-echo -e "======== Done ========\n" | tee -a $BUILD_LOG
-fi
 
 echo "======== Building all packages ========" | tee -a $BUILD_LOG
 

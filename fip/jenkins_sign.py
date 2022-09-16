@@ -160,7 +160,7 @@ def submitSignJob(
         fileParameter: (fileName, open(inputFilePath, "rb")),
     }
     url = getJobRootUrl(type) + "buildWithParameters"
-    if type == "ta":
+    if type == "ta" or type == "vmxta":
         data = {
             "chip_part_number": chipType,
             "ta_version": taVersion,

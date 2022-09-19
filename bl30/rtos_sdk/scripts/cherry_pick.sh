@@ -8,7 +8,7 @@
 get_repo_path() {
 	for keyword in $keyline; do
 		if [[ $keyword == $pattern* ]]; then
-			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
+			repo_path=`echo ${keyword#*${pattern}} | sed 's/\"//g'`
 			break;
 		fi
 	done
@@ -44,7 +44,7 @@ apply_patch_by_change_number() {
 		echo -e "======== Manually applying Gerrit change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	fi
 
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_FULL_MANIFEST`
 	pattern="path="
 	get_repo_path
 
@@ -64,7 +64,7 @@ apply_patch_by_gerrit_topic() {
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
 		echo "-------- Applying patch $i on Project $GERRIT_PROJECT --------"
-		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_FULL_MANIFEST`
 		pattern="path="
 		get_repo_path
 
@@ -93,7 +93,7 @@ apply_patch_by_gerrit_url() {
 		done
 
 		echo -e "\n-------- Manually applying patch on Project $GIT_PROJECT --------"
-		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST`
+		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_FULL_MANIFEST`
 		pattern="path="
 		get_repo_path
 
@@ -116,8 +116,8 @@ apply_patch_by_gerrit_url() {
 	done <<< "$GIT_CHERRY_PICK"
 }
 
-[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="curr_manifest.xml"
-[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+[ -z "$CURRENT_FULL_MANIFEST" ] && CURRENT_FULL_MANIFEST="curr_full_manifest.xml"
+[ ! -f $CURRENT_FULL_MANIFEST ] && repo manifest -r -o $CURRENT_FULL_MANIFEST
 
 [ -z "$GERRIT_PORT" ] && GERRIT_PORT="29418"
 GERRIT_SERVER="scgit.amlogic.com"

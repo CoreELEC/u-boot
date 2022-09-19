@@ -402,8 +402,7 @@ int32_t xLedsStateSetBlinkBreath(uint32_t id, uint32_t times, uint32_t high_ms, 
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink breath fail!
-			maxhigh: %dms maxlow: %dms\n",
+		iprintf("%s:high:%ldms low:%ldms set blink breath fail!maxhigh:%dms maxlow:%dms\n",
 			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
@@ -430,8 +429,7 @@ int32_t xLedsStateSetBlinkOn(uint32_t id, uint32_t times, uint32_t high_ms, uint
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink on fail!
-			maxhigh: %dms maxlow: %dms\n",
+		iprintf("%s: high: %ldms low: %ldms set blink on fail!maxhigh: %dms maxlow: %dms\n",
 			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
@@ -458,8 +456,7 @@ int32_t xLedsStateSetBlinkOff(uint32_t id, uint32_t times, uint32_t high_ms, uin
 	}
 
 	if ((high_ms > LED_MAX_HIGH_MS) || (low_ms > LED_MAX_HIGH_MS)) {
-		iprintf("%s: high: %ldms low: %ldms set blink off fail!
-			maxhigh: %dms maxlow: %dms\n",
+		iprintf("%s:high:%ldms low:%ldms set blink off fail!maxhigh:%dms maxlow:%dms\n",
 			DRIVER_NAME, high_ms, low_ms, LED_MAX_HIGH_MS, LED_MAX_LOW_MS);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
@@ -494,8 +491,7 @@ int32_t xLedsStateSetBreath(uint32_t id, uint32_t breath_id)
 int32_t xLedsStateSetBrightness(uint32_t id, uint32_t brightness)
 {
 	if ((id >= LED_ID_MAX) || (brightness > LED_FULL)) {
-		iprintf("%s: id: %ld brightness: %ld set brightness fail!
-			maxid: %d maxbrightness: %d\n",
+		iprintf("%s:id:%ld brightness:%ld set brightness fail!maxid:%d maxbrightness:%d\n",
 			DRIVER_NAME, id, brightness, LED_ID_MAX - 1, LED_FULL);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}

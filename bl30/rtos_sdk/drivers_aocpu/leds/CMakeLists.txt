@@ -5,6 +5,4 @@
 aml_library_sources_ifdef(
 	CONFIG_LEDS
 	leds_state.c
-	leds_${SOC}_plat.c
 )
-

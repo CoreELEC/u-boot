@@ -5,5 +5,20 @@
 config BOARD_AM301_T950D4
 	bool "Amlogic AM301 Board"
 	select SOC_T5D
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select DDR
+	select MAILBOX
+	select VRTC
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select TIMER_SOURCE
+	select SARADC
+	select IR
 	help
 	  Enable Amlogic AM301 Board.

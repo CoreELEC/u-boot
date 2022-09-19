@@ -17,6 +17,7 @@ config BOARD_AT309_T962D4
 	select GPIO
 	select KEY
 	select PWM
+	select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

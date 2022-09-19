@@ -16,6 +16,7 @@ config BOARD_AV409_A113X2
 	select GPIO
 	select KEY
 	select PWM
+	select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

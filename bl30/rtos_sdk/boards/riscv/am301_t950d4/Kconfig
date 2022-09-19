@@ -17,6 +17,7 @@ config BOARD_AM301_T950D4
 	select GPIO
 	select KEY
 	select PWM
+	select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

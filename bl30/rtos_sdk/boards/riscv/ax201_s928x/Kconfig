@@ -15,6 +15,7 @@ config BOARD_AX201_S928X
 	select GPIO
 	select KEY
 	select PWM
+	select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

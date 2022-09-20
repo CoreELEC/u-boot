@@ -104,18 +104,17 @@ void vPortHaltSystem(Halt_Action_e act)
 				plat_gic_irq_unregister(irq + i);
 		}
 	}
-#if 0
-	//Do not support now
-	if (act == HLTACT_SHUTDOWN_SYSTEM)
-		xRtosInfo.flags |= RTOSINFO_FLG_SHUTDOWN;
-	else
-		xRtosInfo.flags |= ~((uint32_t)RTOSINFO_FLG_SHUTDOWN);
-#else
+
 	(void)act;
-#endif
+
 	vPortRtosInfoUpdateStatus(eRtosStat_Done);
+
 	configPREPARE_CPU_HALT();
+
+	vHardwareResourceRelease();
+
 	plat_gic_raise_softirq(1, 7);
+
 	while (1) {
 #ifdef CONFIG_SOC_T7
 		/* viu1_line_n_int */
@@ -171,3 +170,23 @@ void vPortConfigLogBuf(uint32_t pa, uint32_t len)
 	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
 }
 #endif
+
+/*-----------------------------------------------------------*/
+void vHardwareResourceRecord(void)
+{
+#ifdef CONFIG_SOC_T7
+extern void vTickTimerRecord(void);
+	/* systick timer record */
+	vTickTimerRecord();
+#endif
+}
+
+/*-----------------------------------------------------------*/
+void vHardwareResourceRelease(void)
+{
+#ifdef CONFIG_SOC_T7
+extern void vTickTimerRestore(void);
+	/* systick timer restore */
+	vTickTimerRestore();
+#endif
+}

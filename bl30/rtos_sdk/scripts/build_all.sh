@@ -5,7 +5,10 @@
 # SPDX-License-Identifier: MIT
 #
 
-[ -z "$BUILD_LOG" ] && BUILD_LOG="output/build.log"
+[ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
+[ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
+
+[ -z "$BUILD_LOG" ] && BUILD_LOG="$OUTPUT_DIR/build.log"
 
 # Clear build.log
 cat <<EOF > $BUILD_LOG
@@ -16,6 +19,7 @@ source scripts/publish.sh
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 	echo "======== Building document ========" | tee -a $BUILD_LOG
 		make docs >> $BUILD_LOG 2>&1
+		LOCAL_DOC_PATH="$OUTPUT_DIR/docs/html"
 		if [ -d $LOCAL_DOC_PATH ]; then
 			pushd $LOCAL_DOC_PATH >/dev/null
 			publish_docoment

@@ -5,13 +5,11 @@
 # SPDX-License-Identifier: MIT
 #
 
-DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
-JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
-
 gen_jenkins_trigger() {
 	if [ -s $CURRENT_MANIFEST ]; then
-		echo -e "======== Generate Jenkins Trigger ========\n"
+		echo "======== Generate Jenkins Trigger ========"
 
+		JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 		rm -f $JENKINS_TRIGGER
 
 		pattern="name="
@@ -28,14 +26,24 @@ gen_jenkins_trigger() {
 				echo "b=projects/amlogic-dev" >> $JENKINS_TRIGGER
 			fi
 		done < $CURRENT_MANIFEST
+
+		echo -e "======== Done ========\n"
 	fi
-	rm -f $LAST_MANIFEST $CURRENT_MANIFEST $DIFF_MANIFEST
 }
 
-if [ ! -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
+[ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
+[ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
+
+[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
+[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+
+[ -z "$LAST_MANIFEST" ] && LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
+
+[ -z "$DIFF_MANIFEST" ] && DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
+
+if [ ! -f $LAST_MANIFEST ]; then
 	gen_jenkins_trigger
-fi
-if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
+else
 	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
 	[ -s $DIFF_MANIFEST ] && gen_jenkins_trigger
 fi

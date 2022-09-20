@@ -5,6 +5,11 @@
 # SPDX-License-Identifier: MIT
 #
 
+[ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
+[ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
+
+[ -z "$BUILD_LOG" ] && BUILD_LOG="$OUTPUT_DIR/build.log"
+
 # Clear build.log
 cat <<EOF > $BUILD_LOG
 EOF

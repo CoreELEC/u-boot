@@ -30,12 +30,9 @@ BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
 OUTPUT_DIR=$WORK_DIR/output
 
-LAST_FULL_MANIFEST="$OUTPUT_DIR/last_full_manifest.xml"
-CURRENT_FULL_MANIFEST="$OUTPUT_DIR/curr_full_manifest.xml"
-DIFF_FULL_MANIFEST="$OUTPUT_DIR/diff_full_manifest.xml"
 LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
 CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
-BUILD_LOG="$OUTPUT_DIR/build.log"
+DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
 
 if [ -n "$EXCLUDE_REPOS" ]; then
 	echo "Exclude repos:"
@@ -63,8 +60,7 @@ else
 	else
 		repo forall -c git reset -q --hard origin/$BRANCH_NAME
 	fi
-	repo manifest -r -o $LAST_FULL_MANIFEST
-	repo manifest -o $LAST_MANIFEST
+	repo manifest -r -o $LAST_MANIFEST
 fi
 
 repo sync -cq -j8 --prune
@@ -74,14 +70,13 @@ if [ -n "$REPO_SYNC_IPATTERN" ]; then
 else
 	repo forall -c git reset -q --hard origin/$BRANCH_NAME
 fi
-repo manifest -r -o $CURRENT_FULL_MANIFEST
-repo manifest -o $CURRENT_MANIFEST
+repo manifest -r -o $CURRENT_MANIFEST
 echo -e "======== Done ========\n"
 
-if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
-	comm -23 <(sort $LAST_FULL_MANIFEST) <(sort $CURRENT_FULL_MANIFEST) > $DIFF_FULL_MANIFEST
+if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
+	comm -23 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
 
-	if [ -s $DIFF_FULL_MANIFEST ]; then
+	if [ -s $DIFF_MANIFEST ]; then
 		echo "======== Recent Changes ========"
 
 		while IFS= read -r line
@@ -100,19 +95,18 @@ if [ -f $LAST_FULL_MANIFEST ] && [ -f $CURRENT_FULL_MANIFEST ]; then
 				git log $repo_version..HEAD
 				popd > /dev/null
 			fi
-		done < $DIFF_FULL_MANIFEST
+		done < $DIFF_MANIFEST
 		echo -e "================\n"
 	else
 		echo -e "======== Nothing changed since last build ========\n"
 	fi
-	rm -f $DIFF_FULL_MANIFEST
 fi
-
-# Generate Jenkins trigger
-source gen_jenkins_trigger.sh
 
 # Cherry pick patches
 source scripts/cherry_pick.sh
+
+# Generate Jenkins trigger
+[ "$SUBMIT_TYPE" = "release" ] && source gen_jenkins_trigger.sh
 
 if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then
 	source scripts/build_all_pkg.sh

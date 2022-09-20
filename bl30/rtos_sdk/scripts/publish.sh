@@ -5,11 +5,10 @@
 # SPDX-License-Identifier: MIT
 #
 
-LOCAL_DOC_PATH="$PWD/output/docs/html"
-REMOTE_DOC_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
-
 # Build and upload document
 publish_docoment() {
+	REMOTE_DOC_PATH="ftp://platform:platform@10.68.11.163:2222/Documents/Ecosystem/RTOS/rtos-sdk/"
+
 	find -type f | while read filename; do
 		curl -s --ftp-create-dirs -T $filename $REMOTE_DOC_PATH/$filename
 		if [ $? -ne 0 ]; then
@@ -18,8 +17,9 @@ publish_docoment() {
 	done
 }
 
-LOCAL_OUTPUT_PATH=output
-LOCAL_PACKAGES_PATH=$LOCAL_OUTPUT_PATH/packages
+[ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
+LOCAL_OUTPUT_PATH=$OUTPUT_DIR
+LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 
 BUILD_DATE=$(date +%F)
 LATEST_REMOTE_PATH=/data/shanghai/image/RTOS/latest
@@ -31,11 +31,10 @@ FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
 
 make_image() {
-	mkimage -A $ARCH -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d output/$ARCH-$BOARD-$PRODUCT/images/freertos-signed.bin output/$ARCH-$BOARD-$PRODUCT/images/rtos-uImage
+	mkimage -A $ARCH -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d $LOCAL_IMAGE_PATH/images/freertos-signed.bin $LOCAL_IMAGE_PATH/images/rtos-uImage
 }
 
 publish_images() {
-	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 	REMOTE_IMAGE_PATH=$REMOTE_IMAGES_PATH/$ARCH-$BOARD-$PRODUCT
 
 	if [ -d $LOCAL_IMAGE_PATH ]; then
@@ -75,7 +74,7 @@ post_publish_images() {
 }
 
 publish_packages() {
-	LOCAL_PACKAGE_PATH=$LOCAL_PACKAGES_PATH/$CURRENT_PRODUCTS_DIR_NAME
+	LOCAL_PACKAGE_PATH=$LOCAL_OUTPUT_PATH/packages/$CURRENT_PRODUCTS_DIR_NAME
 	REMOTE_PACKAGE_PATH=$REMOTE_PACKAGES_PATH/$CURRENT_PRODUCTS_DIR_NAME
 
 	if [ -d $LOCAL_PACKAGE_PATH ]; then

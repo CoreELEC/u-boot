@@ -12,6 +12,16 @@ extern "C" {
 #endif
 #include <register.h>
 
+enum meson_pwm_id {
+	MESON_PWM_A = 0,
+	MESON_PWM_B,
+	MESON_PWM_C,
+	MESON_PWM_D,
+	MESON_PWM_E,
+	MESON_PWM_F,
+	MESON_PWM_INVALID,
+};
+
 #define PwmMesonVolt_Duty 1
 
 /* There are 3 pwm controllers in t5d */

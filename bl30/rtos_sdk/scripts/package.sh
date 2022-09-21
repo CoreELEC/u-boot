@@ -201,6 +201,7 @@ function build_aml_image() {
 
 #build uboot
 function build_uboot() {
+    echo "UBOOT COMPILE START"
     if [ -z "$UBOOT_BOARDNAME" ]; then
         echo "Select board($BOARD) not support compile uboot"
         exit 1

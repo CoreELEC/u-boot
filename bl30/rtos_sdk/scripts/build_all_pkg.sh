@@ -9,6 +9,8 @@
 cat <<EOF > $BUILD_LOG
 EOF
 
+TEMP_LOG="$OUTPUT_DIR/temp.log"
+
 source scripts/publish.sh
 
 function get_new_package_dir() {
@@ -16,6 +18,13 @@ function get_new_package_dir() {
 	fileArry=($filelist)
 	CURRENT_PRODUCTS_DIR_NAME=${fileArry[0]}
 	export CURRENT_PRODUCTS_DIR_NAME
+}
+
+# compile warning check
+function compile_warning_check(){
+	touch $TEMP_LOG
+	CAT_LINE=`sed -n -e '/UBOOT COMPILE START/=' $1`
+	sed -n "1,${CAT_LINE}p" $1 >> $TEMP_LOG
 }
 
 echo "======== Building all packages ========" | tee -a $BUILD_LOG
@@ -30,8 +39,9 @@ while IFS= read -r LINE; do
 	make package >> $BUILD_LOG 2>&1
 	get_new_package_dir
 	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!\n" && exit 3
-	grep -qr "warning: " $BUILD_LOG
-	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!\n" && exit 1
+	compile_warning_check $BUILD_LOG
+	grep -qr "warning: " $TEMP_LOG
+	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!\n" && rm $TEMP_LOG && exit 1
 	echo "OK."
 	if [[ "$SUBMIT_TYPE" == "release" ]]; then
 		publish_packages >> $BUILD_LOG 2>&1
@@ -39,6 +49,8 @@ while IFS= read -r LINE; do
 	fi
 	index=$((index + 1))
 done <"$PACKAGE_COMBINATION"
+
+rm $TEMP_LOG
 
 [[ "$SUBMIT_TYPE" == "release" ]] && post_publish_packages >> $BUILD_LOG 2>&1
 

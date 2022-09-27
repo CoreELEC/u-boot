@@ -215,6 +215,7 @@ void eclic_set_irq_pri(uint32_t source, uint8_t pri) {
   //shift intctrl into correct bit position
   current_intctrl = current_intctrl << (8 - nlbits);
 
+  pri = (pri << (8 - CLICINTCTLBITS + nlbits)) >> nlbits;
   eclic_set_intctrl(source, (current_intctrl | pri));
 }
 
@@ -299,12 +300,12 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 	uint32_t index;
 
 	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS ||
-		ulIrq > ECLIC_NUM_INTERRUPTS) {
+		ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
 
-	if (src > 0xff) {
+	if (src > IRQ_NUM_MAX) {
 		printf("Error src!\n");
 		return -2;
 	}
@@ -335,7 +336,7 @@ int int_src_clean(uint32_t ulIrq)
 	uint32_t index;
 
 	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS ||
-		ulIrq > ECLIC_NUM_INTERRUPTS) {
+		ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -384,7 +385,15 @@ extern uint32_t vector_base;
 int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	/* Prevent duplicate registration with the same interrupt. */
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == int_num) {
+			printf("Warning: the irq %ld has already been registered!\n", int_num);
+			return 0;
+		}
+	}
+
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == 0)
 			break;
 	}
@@ -403,11 +412,11 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 int UnRegisterIrq(uint32_t ulIrq)
 {
 	int irq = 0;
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	} else {
@@ -424,11 +433,11 @@ int UnRegisterIrq(uint32_t ulIrq)
 int EnableIrq(uint32_t ulIrq)
 {
 	int irq = 0;
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	} else {
@@ -440,11 +449,11 @@ int EnableIrq(uint32_t ulIrq)
 int DisableIrq(uint32_t ulIrq)
 {
 	int irq = 0;
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	} else {
@@ -456,11 +465,11 @@ int DisableIrq(uint32_t ulIrq)
 int SetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
 {
 	int irq = 0;
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	} else {
@@ -472,11 +481,11 @@ int SetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
 int ClearPendingIrq(uint32_t ulIrq)
 {
 	int irq = 0;
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq ++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq ++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	} else {

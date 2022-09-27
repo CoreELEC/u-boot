@@ -27,6 +27,7 @@ extern void eclic_irq50_handler(void);
 	}
 
 /*IRQ_NUM define list*/
+#define IRQ_NUM_MAX	126
 #define IRQ_NUM_MB_0	50
 #define IRQ_NUM_MB_1	49
 #define IRQ_NUM_MB_2	48

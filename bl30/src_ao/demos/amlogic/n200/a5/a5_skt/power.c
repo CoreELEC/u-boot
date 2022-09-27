@@ -34,7 +34,7 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 
-#include "interrupt_control.h"
+#include "interrupt_control_eclic.h"
 #include "eth.h"
 
 static int vdd_ee;

@@ -1,8 +1,10 @@
 // See LICENSE for license details.
 
-#include "interrupt_control.h"
+#include "interrupt_control_eclic.h"
 #include "riscv_encoding.h"
 #include "register.h"
+
+static uint8_t CLICINTCTLBITS;
 
     // Configure PMP to make all the address space accesable and executable
 void eclic_init ( uint32_t num_irq )
@@ -27,6 +29,8 @@ void eclic_init ( uint32_t num_irq )
   }
 
   clean_int_src();
+
+  CLICINTCTLBITS = eclic_get_clicintctlbits();
 }
 
 void print_eclic(void)
@@ -77,6 +81,18 @@ void eclic_set_cliccfg (uint8_t cliccfg){
 
 uint8_t eclic_get_cliccfg (void){
   return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET);
+}
+
+uint32_t eclic_get_clicinfo (void){
+  return *(volatile uint32_t*)(ECLIC_ADDR_BASE+ECLIC_INFO_OFFSET);
+}
+
+//get clicintctlbits
+uint8_t eclic_get_clicintctlbits(void) {
+  //extract clicintctlbits
+  uint32_t clicinfo = eclic_get_clicinfo() ;
+  uint8_t clicintctlbits = (clicinfo & ECLIC_INFO_CLICINTCTLBITS_MASK) >> ECLIC_INFO_CLICINTCTLBITS_LSB;
+  return clicintctlbits;
 }
 
 void eclic_set_mth (uint8_t mth){
@@ -272,6 +288,10 @@ void clean_int_src(void)
 {
 	for (uint32_t i=0; i<8; i++)
 		REG32(AOCPU_IRQ_SEL0 + i*4) = 0;
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+	for (uint32_t i=0; i<8; i++)
+		REG32(AOCPU_IRQ_SEL8 + i*4) = 0;
+#endif
 }
 
 int int_src_sel(uint32_t ulIrq, uint32_t src)
@@ -291,9 +311,22 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+	index = ulIrq/2;
+
+	if (ulIrq < 16) {
+		REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+		REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%2)*16;
+	} else {
+		REG32(AOCPU_IRQ_SEL8 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+		REG32(AOCPU_IRQ_SEL8 + index*4) |= src << (ulIrq%2)*16;
+	}
+#else
 	index = ulIrq/4;
 	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
 	REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%4)*8;
+#endif
+
 	return 0;
 }
 
@@ -309,8 +342,18 @@ int int_src_clean(uint32_t ulIrq)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+	index = ulIrq/2;
+
+	if (ulIrq < 16)
+		REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+	else
+		REG32(AOCPU_IRQ_SEL8 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+#else
 	index = ulIrq/4;
 	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);
+#endif
+
 	return 0;
 }
 

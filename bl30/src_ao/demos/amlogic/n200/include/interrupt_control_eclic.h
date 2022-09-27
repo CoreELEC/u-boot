@@ -23,6 +23,10 @@ uint8_t eclic_get_intattr  (uint32_t source);
 void eclic_set_cliccfg (uint8_t cliccfg);
 uint8_t eclic_get_cliccfg (void);
 
+uint32_t eclic_get_clicinfo (void);
+
+uint8_t eclic_get_clicintctlbits(void);
+
 void eclic_set_mth (uint8_t mth);
 uint8_t eclic_get_mth(void);
 
@@ -57,5 +61,7 @@ void print_eclic(void);
 void clean_int_src(void);
 int int_src_sel(uint32_t ulIrq, uint32_t src);
 int int_src_clean(uint32_t ulIrq);
+
+typedef void (*function_ptr_t) (void);
 
 #endif

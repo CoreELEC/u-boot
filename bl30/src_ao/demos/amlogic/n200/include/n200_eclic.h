@@ -8,7 +8,7 @@
   //   SOC_ECLIC_NUM_INTERRUPTS : how much of irq configured in total for the ECLIC in this SoC
 #include "soc.h"
 
-#define CLICINTCTLBITS  3
+//#define CLICINTCTLBITS  3
 
 //ECLIC memory map
 //   Offset
@@ -45,6 +45,8 @@
 
 #define ECLIC_CFG_NLBITS_MASK          _AC(0x1E,UL)
 #define ECLIC_CFG_NLBITS_LSB     (1u)
+#define ECLIC_INFO_CLICINTCTLBITS_MASK _AC(0x1E00000,UL)
+#define ECLIC_INFO_CLICINTCTLBITS_LSB  (21u)
 
 #define ECLIC_INT_MSIP          3
 #define ECLIC_INT_MTIP          7

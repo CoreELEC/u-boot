@@ -36,7 +36,7 @@
 
 #include "hdmi_cec.h"
 
-#include "interrupt_control.h"
+#include "interrupt_control_eclic.h"
 #include "eth.h"
 
 static TaskHandle_t cecTask = NULL;

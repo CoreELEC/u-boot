@@ -36,7 +36,7 @@
 
 #include "hdmi_cec.h"
 #include "hdmirx_wake.h"
-#include "interrupt_control.h"
+#include "interrupt_control_eclic.h"
 #include "eth.h"
 
 #define CONFIG_HDMIRX_PLUGIN_WAKEUP

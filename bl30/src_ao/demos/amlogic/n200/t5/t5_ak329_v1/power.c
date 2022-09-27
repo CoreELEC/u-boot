@@ -36,7 +36,7 @@
 
 #include "hdmi_cec.h"
 
-#include "interrupt_control.h"
+#include "interrupt_control_pic.h"
 #include "eth.h"
 #include "irq.h"
 

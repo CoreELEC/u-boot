@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "riscv_encoding.h"
-#include "interrupt_control.h"
+#include "interrupt_control_pic.h"
 #include "register.h"
 #include "FreeRTOS.h"
 

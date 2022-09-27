@@ -138,7 +138,7 @@ int ClearPendingIrq(uint32_t ulIrq)
 	unsigned long irq_status;
 
 	irq_status = interrupt_status_get();
-	if (irq_status)
+	if (irq_status & 0x1)
 		interrupt_disable();
 
 	for (i = 0; i < IRQ_EN_REG_NUM; i++)
@@ -151,8 +151,7 @@ int ClearPendingIrq(uint32_t ulIrq)
 	}
 	pic_enable_interrupt(ulIrq);
 	i = pic_claim_interrupt();
-	if (i)
-		pic_complete_interrupt(i);
+	pic_complete_interrupt(i);
 	pic_disable_interrupt(ulIrq);
 
 	for (i = 0; i < IRQ_EN_REG_NUM; i++)
@@ -162,7 +161,7 @@ int ClearPendingIrq(uint32_t ulIrq)
 		REG32(current_ptr) = irq_setting[i];
 	}
 
-	if (irq_status)
+	if (irq_status & 0x1)
 		interrupt_enable();
 
 	return 0;

@@ -116,7 +116,7 @@ void vPortHaltSystem(Halt_Action_e act)
 	plat_gic_raise_softirq(1, 7);
 
 	while (1) {
-#ifdef CONFIG_SOC_T7
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
 		/* viu1_line_n_int */
 		plat_gic_irq_register_with_core(
 		    227, portLOWEST_USABLE_INTERRUPT_PRIORITY - 1, 0, NULL, NULL, 0xff);
@@ -174,7 +174,7 @@ void vPortConfigLogBuf(uint32_t pa, uint32_t len)
 /*-----------------------------------------------------------*/
 void vHardwareResourceRecord(void)
 {
-#ifdef CONFIG_SOC_T7
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
 extern void vTickTimerRecord(void);
 	/* systick timer record */
 	vTickTimerRecord();
@@ -184,7 +184,7 @@ extern void vTickTimerRecord(void);
 /*-----------------------------------------------------------*/
 void vHardwareResourceRelease(void)
 {
-#ifdef CONFIG_SOC_T7
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
 extern void vTickTimerRestore(void);
 	/* systick timer restore */
 	vTickTimerRestore();

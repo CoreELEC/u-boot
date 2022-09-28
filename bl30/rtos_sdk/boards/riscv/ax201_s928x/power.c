@@ -28,6 +28,12 @@
 #include "interrupt_control.h"
 #include "eth.h"
 #endif
+
+#define VCC5V_GPIO	GPIOC_7
+#define VCC3V3_GPIO	GPIOD_10
+#define VDDCPU_A55_GPIO	GPIOD_3
+#define VDDCPU_A76_GPIO	GPIO_TEST_N
+
 static int vdd_ee;
 static int vdd_cpu;
 static TaskHandle_t vadTask;
@@ -75,10 +81,10 @@ void str_hw_init(void)
 	vETHInit(IRQ_ETH_PMT_NUM, eth_handler);
 #endif
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
-									xMboxVadWakeup, 0);
-	if (ret == MBOX_CALL_MAX)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
+//	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
+//									xMboxVadWakeup, 0);
+//	if (ret == MBOX_CALL_MAX)
+//		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
@@ -92,7 +98,7 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
-	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
+//	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
@@ -120,18 +126,32 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/***power on vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+	/***power on A55 vdd_cpu***/
+	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
+
+	/***power on A76 vdd_cpu***/
+	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio val fail\n");
+		return;
+	}
+
 
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
@@ -142,13 +162,13 @@ void str_power_on(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vcc_3.3v set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_HIGH);
+		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
 		if (ret < 0) {
 			printf("vcc_3.3v gpio val fail\n");
 			return;
@@ -156,20 +176,20 @@ void str_power_on(int shutdown_flag)
 	}
 
 	/***power on vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vcc_5v gpio val fail\n");
 		return;
 	}
 
-	/*Wait 200ms for VDDCPU statble*/
-	vTaskDelay(pdMS_TO_TICKS(200));
+	/*Wait 10ms for VDDCPU statble*/
+	vTaskDelay(pdMS_TO_TICKS(10));
 
 	printf("vdd_cpu on\n");
 }
@@ -181,13 +201,13 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 
 	/***power off vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vcc_5v gpio val fail\n");
 		return;
@@ -195,13 +215,13 @@ void str_power_off(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vcc_3.3v set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_LOW);
+		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
 		if (ret < 0) {
 			printf("vcc_3.3v gpio val fail\n");
 			return;
@@ -228,19 +248,33 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	/***power off vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+	/***power off A55 vdd_cpu***/
+	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
 
+	/***power off A76 vdd_cpu***/
+	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio val fail\n");
+		return;
+	}
+
+#ifdef NEED_TO_MODITY
 	/* set GPIOE_1 pinmux to gpio */
 	xPinmuxSet(GPIOE_1, PIN_FUNC0);
 
@@ -256,10 +290,11 @@ void str_power_off(int shutdown_flag)
 
 	/* disable PWM channel */
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
-
+#endif
 	if (shutdown_flag) {
 		/* disable sar adc */
-		vKeyPadDeinit();
+		//vKeyPadDeinit();
+		;
 	}
 
 	printf("vdd_cpu off\n");

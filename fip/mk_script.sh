@@ -579,6 +579,10 @@ function bin_path_parser() {
 				CONFIG_NASC_NAGRA_TIER_1=1
 				export CONFIG_NASC_NAGRA_TIER_1
 				continue;;
+			--build-nogit)
+				CONFIG_WITHOUT_BIN_GIT=1
+				export CONFIG_WITHOUT_BIN_GIT
+				continue ;;
 			--cas)
 				cas="${argv[$i]}"
 				#limit the "--cas xxx" only works for g12a

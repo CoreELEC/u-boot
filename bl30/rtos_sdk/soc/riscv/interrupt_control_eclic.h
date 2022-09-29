@@ -30,6 +30,10 @@ uint8_t eclic_get_intattr(uint32_t source);
 void eclic_set_cliccfg(uint8_t cliccfg);
 uint8_t eclic_get_cliccfg(void);
 
+uint32_t eclic_get_clicinfo(void);
+
+uint8_t eclic_get_clicintctlbits(void);
+
 void eclic_set_mth(uint8_t mth);
 uint8_t eclic_get_mth(void);
 

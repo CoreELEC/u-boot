@@ -10,6 +10,8 @@
 #include "riscv_encoding.h"
 #include "register.h"
 
+static uint8_t CLICINTCTLBITS;
+
 // Configure PMP to make all the address space accesable and executable
 void eclic_init(uint32_t num_irq)
 {
@@ -31,6 +33,8 @@ void eclic_init(uint32_t num_irq)
 		*ptr = 0;
 
 	clean_int_src();
+
+	CLICINTCTLBITS = eclic_get_clicintctlbits();
 }
 
 void print_eclic(void)
@@ -90,6 +94,21 @@ void eclic_set_cliccfg(uint8_t cliccfg)
 uint8_t eclic_get_cliccfg(void)
 {
 	return *(volatile uint8_t *)(ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET);
+}
+
+uint32_t eclic_get_clicinfo(void)
+{
+	return *(volatile uint32_t *)(ECLIC_ADDR_BASE + ECLIC_INFO_OFFSET);
+}
+
+//get clicintctlbits
+uint8_t eclic_get_clicintctlbits(void)
+{
+	//extract clicintctlbits
+	uint32_t clicinfo = eclic_get_clicinfo();
+	uint8_t clicintctlbits = (clicinfo & ECLIC_INFO_CLICINTCTLBITS_MASK)
+				 >> ECLIC_INFO_CLICINTCTLBITS_LSB;
+	return clicintctlbits;
 }
 
 void eclic_set_mth(uint8_t mth)
@@ -223,6 +242,7 @@ void eclic_set_irq_pri(uint32_t source, uint8_t pri)
 	//shift intctrl into correct bit position
 	current_intctrl = current_intctrl << (8 - nlbits);
 
+	pri = (pri << (8 - CLICINTCTLBITS + nlbits)) >> nlbits;
 	eclic_set_intctrl(source, (current_intctrl | pri));
 }
 
@@ -314,7 +334,7 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 {
 	uint32_t index;
 
-	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS) {
+	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -349,7 +369,7 @@ int int_src_clean(uint32_t ulIrq)
 {
 	uint32_t index;
 
-	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS) {
+	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -397,7 +417,15 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	/* Prevent duplicate registration with the same interrupt. */
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == int_num) {
+			printf("Warning: the irq %ld has already been registered!\n", int_num);
+			return 0;
+		}
+	}
+
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == 0)
 			break;
 	}
@@ -417,11 +445,11 @@ int UnRegisterIrq(uint32_t ulIrq)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -440,11 +468,11 @@ int EnableIrq(uint32_t ulIrq)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -458,11 +486,11 @@ int DisableIrq(uint32_t ulIrq)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -476,11 +504,11 @@ int SetIrqPriority(uint32_t ulIrq, uint32_t ulProi)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}
@@ -494,11 +522,11 @@ int ClearPendingIrq(uint32_t ulIrq)
 {
 	int irq = 0;
 
-	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq <= ECLIC_NUM_INTERRUPTS; irq++) {
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS) {
+	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
 		printf("Error ulIrq!\n");
 		return -1;
 	}

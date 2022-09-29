@@ -10,7 +10,11 @@
 __BEGIN_DECLS
 
 #include "n200_timer.h"
-#include "interrupt_control.h"
+#ifdef CONFIG_N200_REVA
+#include "interrupt_control_pic.h"
+#else
+#include "interrupt_control_eclic.h"
+#endif
 #include "gcc_compiler_attributes.h"
 
 void pmp_open_all_space(void);

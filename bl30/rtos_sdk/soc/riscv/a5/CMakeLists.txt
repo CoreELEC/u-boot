@@ -7,7 +7,6 @@ aml_library_include_directories(
 )
 
 aml_library_sources(
-	interrupt_control.c
 	clk.c
 	power_domain.c
 )

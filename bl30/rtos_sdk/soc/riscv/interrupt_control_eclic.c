@@ -5,7 +5,7 @@
  */
 
 #include <stdio.h>
-#include "interrupt_control.h"
+#include "interrupt_control_eclic.h"
 #include "common.h"
 #include "riscv_encoding.h"
 #include "register.h"
@@ -304,6 +304,10 @@ void clean_int_src(void)
 {
 	for (uint32_t i = 0; i < 8; i++)
 		REG32(AOCPU_IRQ_SEL0 + i * 4) = 0;
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+	for (uint32_t i = 0; i < 8; i++)
+		REG32(AOCPU_IRQ_SEL8 + i * 4) = 0;
+#endif
 }
 
 int int_src_sel(uint32_t ulIrq, uint32_t src)
@@ -315,16 +319,29 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 		return -1;
 	}
 
-	if (src > 0xff) {
+	if (src > IRQ_NUM_MAX) {
 		printf("Error src!\n");
 		return -2;
 	}
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
 	index = ulIrq / 2;
-	REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
-	REG32(AOCPU_IRQ_SEL0 + index * 4) |= src << (ulIrq % 2) * 16;
+
+	if (ulIrq < 16) {
+		REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
+		REG32(AOCPU_IRQ_SEL0 + index * 4) |= src << (ulIrq % 2) * 16;
+	} else {
+		REG32(AOCPU_IRQ_SEL8 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
+		REG32(AOCPU_IRQ_SEL8 + index * 4) |= src << (ulIrq % 2)*16;
+	}
+#else
+	index = ulIrq / 4;
+	REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0xff << (ulIrq % 4) * 8);
+	REG32(AOCPU_IRQ_SEL0 + index * 4) |= src << (ulIrq % 4) * 8;
+#endif
+
 	return 0;
 }
 
@@ -339,8 +356,18 @@ int int_src_clean(uint32_t ulIrq)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
+#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
 	index = ulIrq / 2;
-	REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
+
+	if (ulIrq < 16)
+		REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
+	else
+		REG32(AOCPU_IRQ_SEL8 + index * 4) &= ~(0x1ff << (ulIrq % 2) * 16);
+#else
+	index = ulIrq / 4;
+	REG32(AOCPU_IRQ_SEL0 + index * 4) &= ~(0xff << (ulIrq % 4) * 8);
+#endif
+
 	return 0;
 }
 

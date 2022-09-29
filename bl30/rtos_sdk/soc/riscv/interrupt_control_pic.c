@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <FreeRTOS.h>
-#include "interrupt_control.h"
+#include "interrupt_control_pic.h"
 #include "common.h"
 #include "register.h"
 

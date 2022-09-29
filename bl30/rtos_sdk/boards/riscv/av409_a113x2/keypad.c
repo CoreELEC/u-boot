@@ -63,5 +63,5 @@ void vKeyPadInit(void)
 void vKeyPadDeinit(void)
 {
 	vAdcKeyDisable();
-	vDestoryAdcKey();
+	vDestroyAdcKey();
 }

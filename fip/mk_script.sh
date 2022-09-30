@@ -357,8 +357,7 @@ function usage() {
         ./$(basename $0) [config_name] --update-bl2 --ddrfw
 
     7. build uboot with bl[x]/src source code, and run coverity defect
-        ./$(basename $0) [config_name] --update-bl[x] --cov
-        ./$(basename $0) [config_name] --update-bl[x] --cov-high [path]
+        see help info: ./fip/check_coverity.sh -h
 
     8. build uboot with ramdump function
         ./$(basename $0) [config_name] --update-bl[x] --enable-ramdump --chipid [cpu_id]

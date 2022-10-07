@@ -130,7 +130,7 @@
         "fb_height=1080\0" \
         "hdmichecksum=0x00000000\0" \
         "frac_rate_policy=1\0" \
-        "hdr_policy=0\0" \
+        "hdr_policy=1\0" \
         "usb_burning=" CONFIG_USB_TOOL_ENTRY "\0" \
         "fdt_high=0x20000000\0"\
         "sdcburncfg=aml_sdc_burn.ini\0"\

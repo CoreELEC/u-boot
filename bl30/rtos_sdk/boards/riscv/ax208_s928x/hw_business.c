@@ -66,6 +66,6 @@ void hw_business_process(void)
 	vMbInit();
 	//	vCecCallbackInit(CEC_CHIP_SC2);
 	vRtcInit();
-	//create_str_task();
+	create_str_task();
 	vHwLockInit(HW_SPIN_LOCK0, 0);
 }

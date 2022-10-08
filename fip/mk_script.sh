@@ -304,7 +304,10 @@ function build() {
 	if [ ! $CONFIG_AVB2_RECOVERY ]; then
 		CONFIG_AVB2_RECOVERY=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY}
+	if [ ! $CONFIG_TESTKEY ]; then
+		CONFIG_TESTKEY=null
+	fi
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -669,6 +672,11 @@ function bin_path_parser() {
 				echo "export CONFIG_PATCH"
 				export CONFIG_PATCH
 				source fip/auto_patch.sh
+				continue ;;
+			--testkey)
+				CONFIG_TESTKEY=1
+				echo "export CONFIG_TESTKEY"
+				export CONFIG_TESTKEY=1
 				continue ;;
 				*)
 		esac

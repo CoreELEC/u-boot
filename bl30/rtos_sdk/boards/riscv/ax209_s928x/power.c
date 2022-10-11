@@ -81,11 +81,6 @@ void str_hw_init(void)
 	vETHInit(IRQ_ETH_PMT_NUM, eth_handler);
 #endif
 
-//	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
-//									xMboxVadWakeup, 0);
-//	if (ret == MBOX_CALL_MAX)
-//		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
-
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
@@ -98,7 +93,6 @@ void str_hw_disable(void)
 #ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
 #endif
-//	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
@@ -109,15 +103,6 @@ void str_power_on(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
-
-	/* open PWM clk */
-	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
-
-	/* set GPIOE_1 pinmux to pwm */
-	xPinmuxSet(GPIOE_1, PIN_FUNC1);
-
-	/* enable vddcpu PWM channel */
-	REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
 
 	/***set vdd_cpu val***/
 	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
@@ -176,15 +161,9 @@ void str_power_on(int shutdown_flag)
 	}
 
 	/***power on vcc_5v***/
-	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_IN);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vcc_5v gpio val fail\n");
 		return;
 	}
 
@@ -274,28 +253,5 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-#ifdef NEED_TO_MODITY
-	/* set GPIOE_1 pinmux to gpio */
-	xPinmuxSet(GPIOE_1, PIN_FUNC0);
-
-	/***set vddcpu pwm to input***/
-	ret = xGpioSetDir(GPIOE_1, GPIO_DIR_IN);
-	if (ret < 0) {
-		printf("GPIOE_1 set gpio dir fail\n");
-		return;
-	}
-
-	/*disable PWM CLK*/
-	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
-
-	/* disable PWM channel */
-	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
-#endif
-	if (shutdown_flag) {
-		/* disable sar adc */
-		//vKeyPadDeinit();
-		;
-	}
-
-	printf("vdd_cpu off\n");
+	printf("Power down done.\n");
 }

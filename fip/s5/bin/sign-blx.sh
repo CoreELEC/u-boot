@@ -9,7 +9,7 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #BASEDIR_BUILD="${BASEDIR_TOP}/output"
 BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
-declare -a BLX_BIN_SIZE=("144288" "65536" "65536" "8192" "212992" "262144" "524288"  "98304")
+declare -a BLX_BIN_SIZE=("183200" "65536" "65536" "2048" "212992" "262144" "524288"  "98304")
 
 function process_ddrfw() {
 	local ddr_input=$1
@@ -179,7 +179,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${soc} ]; then
-		soc="p1"
+		soc="s5"
 	fi
 
 	if [ -z ${build_type} ]; then
@@ -193,7 +193,7 @@ function sign_blx() {
 		dd if=/dev/zero of=${BASEDIR_BUILD}/bl2e-payload.bin bs=${BLX_BIN_SIZE[1]} count=1  &> /dev/null
 		dd if=/dev/zero of=${BASEDIR_BUILD}/bl2x-payload.bin bs=${BLX_BIN_SIZE[2]} count=1  &> /dev/null
 		dd if=/dev/zero of=${BASEDIR_BUILD}/csinit-params.bin bs=${BLX_BIN_SIZE[3]} count=1  &> /dev/null
-		dd if=/dev/zero of=${BASEDIR_BUILD}/ddr-fwdata.bin bs=${BLX_BIN_SIZE[4]} count=1  &> /dev/null
+		#dd if=/dev/zero of=${BASEDIR_BUILD}/ddr-fwdata.bin bs=${BLX_BIN_SIZE[4]} count=1  &> /dev/null
 	elif [ ${blxname} == "bl31" ]; then
 		dd if=/dev/zero of=${BASEDIR_BUILD}/${blxname}-payload.bin bs=${BLX_BIN_SIZE[5]} count=1  &> /dev/null
 	elif [ ${blxname} == "bl32" ]; then
@@ -214,17 +214,10 @@ function sign_blx() {
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
-		chipacs_size=`stat -c %s ${chip_acs}`
-		chipacs_ddrfw_size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
-		if [ $chipacs_size == $chipacs_ddrfw_size ]; then
-			split_ddrfw_from_chipacs ${chip_acs} ${chip_acs} ${BASEDIR_BUILD}/ddr-fwdata.bin
-			ddrfw_split_flag=1
-		fi
+
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
-		if [ ${ddrfw_split_flag} == 0 ]; then
-			process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
-		fi
+
 		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2" ] && [ ${build_type} == "bl2-only" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
@@ -234,16 +227,9 @@ function sign_blx() {
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
-		chipacs_size=`stat -c %s ${chip_acs}`
-		chipacs_ddrfw_size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
-		if [ $chipacs_size == $chipacs_ddrfw_size ]; then
-			split_ddrfw_from_chipacs ${chip_acs} ${chip_acs} ${BASEDIR_BUILD}/ddr-fwdata.bin
-			ddrfw_split_flag=1
-		fi
+
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
-		if [ ${ddrfw_split_flag} == 0 ]; then
-			process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
-		fi
+
 		dd if=${input} of=${BASEDIR_BUILD}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${chipset_variant_suffix}.bin.bl2-only conv=notrunc  &> /dev/null
 		${EXEC_BASEDIR}/gen-boot-blob-bl2-final.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then

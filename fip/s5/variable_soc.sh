@@ -64,8 +64,8 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "bl30.bin")
 fi
 
-declare -a BLX_BIN_SIZE=("407552"	\
-			 "407552"	\
+declare -a BLX_BIN_SIZE=("206848"	\
+			 "206848"	\
 			 "74864"	\
 			 "74864"	\
 			 "66672"	\

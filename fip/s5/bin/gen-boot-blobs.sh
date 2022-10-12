@@ -57,7 +57,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2e-payload=${BASEDIR_PAYLOAD}/bl2e-payload.
 BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2x-payload=${BASEDIR_PAYLOAD}/bl2x-payload.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}/dvinit-params.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-csinit-params=${BASEDIR_PAYLOAD}/csinit-params.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-ddr-fwdata=${BASEDIR_PAYLOAD}/ddr-fwdata.bin"
 
 ### Input: Chipset Level-1/2 Private RSA keys
 

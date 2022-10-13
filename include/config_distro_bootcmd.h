@@ -395,7 +395,7 @@
 	BOOTENV_SHARED_EFI \
 	BOOTENV_SHARED_VIRTIO \
 	"boot_prefixes=/ /boot/\0" \
-	"boot_scripts=boot.scr.uimg boot.scr boot.ini\0" \
+	"boot_scripts=boot.scr.uimg boot.scr boot.ini cfgload\0" \
 	"boot_script_dhcp=boot.scr.uimg\0" \
 	BOOTENV_BOOT_TARGETS \
 	\
@@ -425,6 +425,7 @@
 					"${prefix}${script}; then "       \
 				"echo Found U-Boot script "               \
 					"${prefix}${script}; "            \
+				"if test ${script} = cfgload; then device=${devtype}; devnr=${devnum}; partnr=${distro_bootpart}; ce_on_emmc=no; fi; "   \
 				"run boot_a_script; "                     \
 				"echo SCRIPT FAILED: continuing...; "     \
 			"fi; "                                            \

@@ -472,6 +472,10 @@ function parser() {
 				export CONFIG_RAMDUMP_CHIPID
 				echo "SET CHIP ID: ${CONFIG_RAMDUMP_CHIPID}"
 				continue ;;
+			--build-2019)
+				CONFIG_BUILD_2019=1
+				export CONFIG_BUILD_2019
+				continue ;;
 			clean|distclean|-distclean|--distclean)
 				clean
 				exit ;;

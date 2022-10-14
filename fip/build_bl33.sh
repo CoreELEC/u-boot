@@ -10,10 +10,14 @@ function select_uboot() {
 		#echo $temp_file
 		temp_file=${temp_file%_*}
 		if [ "$cfg_name" == "$temp_file" ]; then
-			if [ "${BL33_DEFCFG1}" == "$(dirname $file)" ]; then
-				bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION1}
-			else
+			if [ "1" == "${CONFIG_BUILD_2019}" ]; then
 				bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION2}
+			else
+				if [ "${BL33_DEFCFG1}" == "$(dirname $file)" ]; then
+					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION1}
+				else
+					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION2}
+				fi
 			fi
 			echo "select bl33: ${bl33_path}"
 			BL33_BUILD_FOLDER=${bl33_path}/build/

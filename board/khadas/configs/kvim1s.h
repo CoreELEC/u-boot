@@ -143,7 +143,7 @@
         "video_reverse=0\0"\
         "board=oppen\0"\
         "initargs="\
-            "rootflags=data=writeback rw rootfstype=ext4" CONFIG_KNL_LOG_LEVEL "console=ttyS0,921600 console=tty0 no_console_suspend fsck.repair=yes net.ifnames=0 "\
+            "rootflags=data=writeback rw rootfstype=ext4" CONFIG_KNL_LOG_LEVEL "console=ttyS0,921600 console=tty0 no_console_suspend earlycon=aml-uart,0xfe07a000 fsck.repair=yes net.ifnames=0 "\
             "khadas_board=VIM1S boot_source=${boot_source} "\
             "\0"\
         "upgrade_check="\

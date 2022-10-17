@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <stdint.h>
 #include "soc.h"
+
 uint32_t timere_read(void);
 unsigned long long timere_read_us(void);
 void udelay(uint32_t us);

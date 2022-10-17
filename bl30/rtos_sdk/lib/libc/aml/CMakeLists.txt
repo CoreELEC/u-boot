@@ -8,6 +8,7 @@ aml_add_library()
 
 aml_library_sources(
 	aml_scanf.c
+	aml_putchar.c
 	aml_printf.c
 	aml_malloc.c
 	aml_free.c

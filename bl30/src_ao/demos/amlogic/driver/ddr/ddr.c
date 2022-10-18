@@ -62,7 +62,7 @@
 /*clear [mask] 0 bits in [addr], set these 0 bits with [value] corresponding bits*/
 #define modify_reg(addr, value, mask)       wr_reg(addr, ((rd_reg(addr) & (mask)) | (value)))
 #define wait_set(addr, loc)                 do {} while (0 == (rd_reg(addr) & (1 << loc)));
-#define wait_clr(addr, loc)                 do {} while (1 == (rd_reg(addr) & (1 << loc)));
+#define wait_clr(addr, loc)                 do {} while (0x80000000 == (rd_reg(addr) & (1 << loc)));
 #define wait_equal(addr, data)              do {} while (data != (rd_reg(addr)));
 
 #define _udelay(tim)                        vTaskDelay(tim)

@@ -178,7 +178,7 @@ int main(void)
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();
 
-	for (;;)
+	for (;;);
 
 	return 0;
 }

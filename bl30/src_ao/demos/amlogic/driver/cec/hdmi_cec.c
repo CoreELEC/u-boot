@@ -64,7 +64,7 @@ struct st_cec_mailbox_data {
 
 static unsigned int cec_wait_addr;
 static cec_wakeup_t cec_wakup;
-static unsigned char hdmi_cec_func_config;
+static uint32_t hdmi_cec_func_config;
 static cec_msg_t cec_msg;
 static u32 cec_wakup_flag;
 struct st_cec_mailbox_data cec_mailbox;
@@ -857,9 +857,11 @@ static unsigned char remote_cecb_ll_rx(void)
 
 	len = cecb_rd_reg(DWC_CECB_RX_CNT);
 	printf("cec R:");
-	for (i = 0; i < len; i++) {
-		cec_msg.buf[cec_msg.rx_write_pos].msg[i] = cecb_rd_reg(DWC_CECB_RX_DATA00 + i);
-		printf(" 0x%02x", cec_msg.buf[cec_msg.rx_write_pos].msg[i]);
+	if (len <= 16) {
+		for (i = 0; i < len; i++) {
+			cec_msg.buf[cec_msg.rx_write_pos].msg[i] = cecb_rd_reg(DWC_CECB_RX_DATA00 + i);
+			printf(" 0x%02x", cec_msg.buf[cec_msg.rx_write_pos].msg[i]);
+		}
 	}
 	/* clr CEC lock bit */
 	cecb_wr_reg(DWC_CECB_LOCK_BUF, 0);
@@ -883,9 +885,11 @@ static unsigned char remote_ceca_ll_rx(void)
 
 	len = ceca_rd_reg(CECA_RX_MSG_LENGTH) + 1;
 	printf("cec R:");
-	for (i = 0; i < len; i++) {
-		cec_msg.buf[cec_msg.rx_write_pos].msg[i] = ceca_rd_reg(CECA_RX_MSG_0_HEADER + i);
-		printf(" 0x%02x", cec_msg.buf[cec_msg.rx_write_pos].msg[i]);
+	if (len <= 16) {
+		for (i = 0; i < len; i++) {
+			cec_msg.buf[cec_msg.rx_write_pos].msg[i] = ceca_rd_reg(CECA_RX_MSG_0_HEADER + i);
+			printf(" 0x%02x", cec_msg.buf[cec_msg.rx_write_pos].msg[i]);
+		}
 	}
 
 	write_ao(CECA_REG_INTR_CLR, (1 << 2));
@@ -1096,7 +1100,7 @@ static int cecb_check_irq_sts(void)
 
 static int ceca_check_irq_sts(void)
 {
-	unsigned int reg;
+	unsigned int reg = 0;
 	unsigned int ret = TX_IDLE;
 	unsigned int cnt = 0;
 	unsigned int int_st;
@@ -1107,7 +1111,7 @@ static int ceca_check_irq_sts(void)
 			write_ao(CECA_REG_INTR_CLR, int_st);
 		else
 
-		reg = ceca_rd_reg(CECA_TX_MSG_STATUS);
+		reg = (unsigned int)ceca_rd_reg(CECA_TX_MSG_STATUS);
 		if ( reg == TX_DONE ) {
 			ret = TX_DONE;
 			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);

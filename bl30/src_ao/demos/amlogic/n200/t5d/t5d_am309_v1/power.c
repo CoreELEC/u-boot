@@ -79,10 +79,10 @@ void str_hw_init(void)
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler_t5);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
-	return;
-	vBackupAndClearGpioIrqReg();
-	vGpioKeyEnable();
-	vGpioIRQInit();
+	// return;
+	// vBackupAndClearGpioIrqReg();
+	// vGpioKeyEnable();
+	// vGpioIRQInit();
 }
 
 
@@ -95,9 +95,9 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	return;
-	vGpioKeyDisable();
-	vRestoreGpioIrqReg();
+	// return;
+	// vGpioKeyDisable();
+	// vRestoreGpioIrqReg();
 }
 
 void str_power_on(int shutdown_flag)

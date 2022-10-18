@@ -1,7 +1,7 @@
 /*
  * IntTest.c
  *
- *  Created on: 2018Äê10ÔÂ17ÈÕ
+ *  Created on: 2018/10/17
  *      Author: danialxie
  *
  *        This is an PIC interrupt nesting test for N200 SOC, NUCLEI, Inc.
@@ -203,7 +203,7 @@ int main(void)
 	vUartPuts("Starting task scheduler ...\n");
 	vTaskStartScheduler();
 
-	for (;;)
+	for (;;);
 
 	return 0;
 }

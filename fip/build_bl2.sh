@@ -113,6 +113,9 @@ function build_bl2() {
 	if [ -e ${targetvd} ]; then
 		cp ${targetvd} $2 -f
 	fi
+	if [ -e ${1}/bl22/bl22.bin ]; then
+		cp ${1}/bl22/bl22.bin $2 -f
+	fi
 	echo "...done"
 	return
 }

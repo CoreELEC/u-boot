@@ -380,7 +380,7 @@ int eclic_map_interrupt(uint32_t ulIrq, uint32_t src)
 }
 
 uint32_t eclic_interrupt_inner[SOC_ECLIC_NUM_INTERRUPTS] = {0};
-extern uint32_t vector_base;
+extern uint32_t vector_base[ECLIC_NUM_INTERRUPTS];
 
 int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler) {
 	int irq = 0;
@@ -403,7 +403,7 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 	}
 	eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = int_num;
 
-	*(&vector_base + irq) = (uint32_t)handler;
+	vector_base[irq] = (uint32_t)handler;
 	eclic_set_irq_pri(irq, int_priority);
 
 	return 0;
@@ -425,7 +425,7 @@ int UnRegisterIrq(uint32_t ulIrq)
 			return -1;
 		}
 		eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = 0;
-		*(&vector_base + irq) = 0;
+		vector_base[irq] = 0;
 	}
 	return 0;
 }

@@ -198,16 +198,18 @@ void str_power_off(int shutdown_flag)
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 		/***power off vcc_5v***/
-		ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_5v set gpio dir fail\n");
-			return;
-		}
+		if (get_USB_Power_flag() == 0) {
+			ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
+			if (ret < 0) {
+				printf("vcc_5v set gpio dir fail\n");
+				return;
+			}
 
-		ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc_5v gpio val fail\n");
-			return;
+			ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
+			if (ret < 0) {
+				printf("vcc_5v gpio val fail\n");
+				return;
+			}
 		}
 
 		/***power off A55 vdd_cpu***/

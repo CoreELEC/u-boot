@@ -40,6 +40,7 @@ uint32_t suspend_flag;
 uint32_t suspend_debug_flag;
 #endif
 uint32_t power_mode;
+uint32_t usb_power_flag = 0;
 
 struct WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
@@ -329,6 +330,19 @@ void *xMboxpm_sem(void *msg)
 	return NULL;
 }
 
+void *xMboxUSBSetPower(void *msg);
+void *xMboxUSBSetPower(void *msg)
+{
+	usb_power_flag = *(u32 *)msg;
+	return NULL;
+}
+
+int get_USB_Power_flag(void);
+int get_USB_Power_flag(void)
+{
+	return usb_power_flag;
+}
+
 static void vSTRTask(void *pvParameters)
 {
 	/*make compiler happy*/
@@ -422,4 +436,7 @@ void create_str_task(void)
 			MBX_CMD_GET_STICK_REBOOT_FLAG, xMboxGetStickRebootFlag, 1);
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
 			MBX_CMD_PM_FREEZE, xMboxpm_sem, 1);
+
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_SET_USB_POWER, xMboxUSBSetPower, 1);
 }

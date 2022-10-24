@@ -67,6 +67,7 @@ void vCLK_suspend(uint32_t st_f);
 void vCLK_resume(uint32_t st_f);
 void vDSP_suspend(uint32_t st_f);
 void vDSP_resume(uint32_t st_f);
+int get_USB_Power_flag(void);
 extern void create_str_task(void);
 extern void STR_Start_Sem_Give_FromISR(void);
 extern void STR_Start_Sem_Give(void);

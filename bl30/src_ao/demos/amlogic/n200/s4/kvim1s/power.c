@@ -201,16 +201,18 @@ void str_power_off(int shutdown_flag)
 	printf("vdd_cpu off\n");
 
 	/***Power 5v***/
-	ret = xGpioSetDir(GPIOZ_7, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	if (get_USB_Power_flag() == 0) {
+		ret = xGpioSetDir(GPIOZ_7, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio dir fail\n");
+			return;
+		}
 
-	ret = xGpioSetValue(GPIOZ_7, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vcc5v set gpio val fail\n");
-		return;
+		ret = xGpioSetValue(GPIOZ_7, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vcc5v set gpio val fail\n");
+			return;
+		}
 	}
 
 	if (1 == shutdown_flag) {

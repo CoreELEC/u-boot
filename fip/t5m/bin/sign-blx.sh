@@ -9,52 +9,29 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #BASEDIR_BUILD="${BASEDIR_TOP}/output"
 BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
-declare -a BLX_BIN_SIZE=("183200" "65536" "65536" "2048" "86016" "262144" "524288"  "98304")
+declare -a BLX_BIN_SIZE=("183200" "65536" "65536" "2048" "212992" "262144" "524288"  "98304")
 
-function process_ddrfw() {
-	local ddr_input=$1
-	local ddr_output=$2
-	local ddr_type=$3
+declare CHIPACS_SIZE=${BLX_BIN_SIZE[3]}
+declare DDRFW_SIZE=${BLX_BIN_SIZE[4]}
 
-	if [ "$ddr_type" == "ddr4" ]; then
-		dd if=${ddr_input}/ddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=${ddr_input}/ddr4_2d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=36864  &> /dev/null
-	elif [ "$ddr_type" == "ddr3" ]; then
-		dd if=${ddr_input}/ddr3_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=/dev/zero of=${ddr_output}/ddrfw_2d.bin bs=36864 count=1
-	elif [ "$ddr_type" == "lpddr4" ]; then
-		dd if=${ddr_input}/lpddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=${ddr_input}/lpddr4_2d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=36864  &> /dev/null
-	elif [ "$ddr_type" == "lpddr3" ]; then
-		dd if=${ddr_input}/lpddr3_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=/dev/zero of=${ddr_output}/ddrfw_2d.bin bs=36864 count=1
-	else
-		echo "un-recognized ddr_type: ${ddr_type}"
-		echo "---- use default ddr4 ----"
-		dd if=${ddr_input}/ddr4_1d.fw of=${ddr_output}/ddrfw_1d.bin skip=96 bs=1 count=36864  &> /dev/null
-		dd if=${ddr_input}/ddr4_2d.fw of=${ddr_output}/ddrfw_2d.bin skip=96 bs=1 count=36864  &> /dev/null
+function split_ddrfw_from_chipacs() {
+	local input=$1
+	local output1=$2
+	local output2=$3
+	local size=`expr ${CHIPACS_SIZE} + ${DDRFW_SIZE}`
+	local input_size=`stat -c %s ${input}`
+
+	if [ $input_size -ne ${size} ]; then
+		echo "$input is not chipacs and ddrfw merge !!!"
+		return
 	fi
+	dd if=${input} of=${output1}.tmp bs=1 count=${CHIPACS_SIZE}
+	dd if=${input} of=${output2}.tmp skip=${CHIPACS_SIZE} bs=1 count=${DDRFW_SIZE}
+	cat ${output1}.tmp > ${output1}
+	cat ${output2}.tmp > ${output2}
+	rm -rf ${output1}.tmp ${output2}.tmp
 
-	piei_size=`stat -c %s ${ddr_input}/piei.fw`
-	if [ $piei_size -gt 12384 ]; then
-		dd if=${ddr_input}/piei.fw of=${ddr_output}/ddrfw_piei.bin skip=96 bs=1 count=12288  &> /dev/null
-	else
-		dd if=/dev/zero of=${ddr_output}/ddrfw_piei.bin bs=12288 count=1  &> /dev/null
-		dd if=${ddr_input}/piei.fw of=${ddr_output}/ddrfw_piei.bin skip=96 bs=1 conv=notrunc  &> /dev/null
-	fi
-
-	cat ${ddr_output}/ddrfw_1d.bin ${ddr_output}/ddrfw_2d.bin \
-		${ddr_output}/ddrfw_piei.bin > ${ddr_output}/ddr-fwdata.bin
-
-	if [ ! -f ${ddr_output}/ddr-fwdata.bin ]; then
-		echo "ddr-fwdata payload does not exist in ${ddr_output} !"
-		exit -1
-	fi
-	ddrfw_data_size=`stat -c %s ${ddr_output}/ddr-fwdata.bin`
-	if [ $ddrfw_data_size -ne 86016 ]; then
-		echo "ddr-fwdata size is not equal to 84K, $ddrfw_data_size"
-		exit -1
-	fi
+	return
 }
 
 function sign_blx() {
@@ -111,7 +88,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${chipset_name} ]; then
-		chipset_name="t982"
+		chipset_name="azp1"
 	fi
 
 	# select bl2/bl2e sign template
@@ -170,14 +147,17 @@ function sign_blx() {
 
 	${EXEC_BASEDIR}/download-keys.sh ${key_type} ${soc} chipset
 
+	ddrfw_split_flag=0
+
 	if [ ${blxname} == "bl2" ] && [ ${build_type} == "normal" ]; then
 		if [ -z ${chip_acs} ] || [ ! -f ${chip_acs} ]; then
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
+
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
-		#process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+
 		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2" ] && [ ${build_type} == "bl2-only" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
@@ -187,8 +167,9 @@ function sign_blx() {
 			echo "chip_acs ${chip_acs} invalid"
 			exit 1
 		fi
+
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
-		#process_ddrfw ${BASEDIR_TOP} ${BASEDIR_BUILD} ${ddr_type}
+
 		dd if=${input} of=${BASEDIR_BUILD}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${chipset_variant_suffix}.bin.bl2-only conv=notrunc  &> /dev/null
 		${EXEC_BASEDIR}/gen-boot-blob-bl2-final.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then

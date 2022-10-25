@@ -92,6 +92,9 @@ parse_main() {
             --device-tee-vers)
                 device_tee_vers="${argv[$i]}"
 		;;
+            --device-soc)
+                device_soc="${argv[$i]}"
+        ;;
             --output-dir)
                 output_dir="${argv[$i]}"
 		;;
@@ -119,6 +122,7 @@ device_scs_segid=0x0
 device_vendor_segid=0x0
 device_scs_vers=0x0
 device_tee_vers=0x0
+device_soc=""
 
 parse_main "$@"
 
@@ -260,6 +264,8 @@ BB1ST_ARGS="${BB1ST_ARGS} --feature-enable-device-lvlx-pubrsa-prot"
 BB1ST_ARGS="${BB1ST_ARGS} --feature-device-root-pubrsa-prot-mrk"
 
 BB1ST_ARGS="${BB1ST_ARGS} --switch-device-sign-blob=0"
+
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${device_soc}"
 
 # arb info
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"

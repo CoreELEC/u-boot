@@ -74,7 +74,8 @@ function mk_bl2ex() {
 
 	if [ ! -f ${output}/bl2.bin.sto ]	|| \
 	   [ ! -f ${output}/bl2.bin.usb ]	|| \
-	   [ ! -f ${output}/bl2e.bin ]	|| \
+	   [ ! -f ${output}/bl2e.bin.sto ]	|| \
+	   [ ! -f ${output}/bl2e.bin.usb ]	|| \
 	   [ ! -f ${output}/bl2x.bin ]; then
 		echo "Error: ${output}/bl2/e/x.bin does not all exist... abort"
 		ls -la ${output}
@@ -98,52 +99,6 @@ function mk_bl2ex() {
 
 	dd if=/dev/zero of=${payload}/bl2x.bin bs=65536 count=1
 	dd if=${output}/bl2x.bin of=${payload}/bl2x.bin conv=notrunc
-
-
-	echo "===================================================="
-	echo "------ process for Synopsys ddr fw ------"
-	INPUT_DDRFW=./${FIP_FOLDER}${CUR_SOC}
-
-	if [ "$ddr_type" == "ddr4" ]; then
-		dd if=${INPUT_DDRFW}/ddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=${INPUT_DDRFW}/ddr4_2d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=36864
-	elif [ "$ddr_type" == "ddr3" ]; then
-		dd if=${INPUT_DDRFW}/ddr3_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=/dev/zero of=${payload}/ddrfw_2d.bin bs=36864 count=1
-	elif [ "$ddr_type" == "lpddr4" ]; then
-		dd if=${INPUT_DDRFW}/lpddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=${INPUT_DDRFW}/lpddr4_2d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=36864
-	elif [ "$ddr_type" == "lpddr3" ]; then
-		dd if=${INPUT_DDRFW}/lpddr3_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=/dev/zero of=${payload}/ddrfw_2d.bin bs=36864 count=1
-	else
-		echo "un-recognized ddr_type: ${ddr_type}"
-		echo "---- use default ddr4 ----"
-		dd if=${INPUT_DDRFW}/ddr4_1d.fw of=${payload}/ddrfw_1d.bin skip=96 bs=1 count=36864
-		dd if=${INPUT_DDRFW}/ddr4_2d.fw of=${payload}/ddrfw_2d.bin skip=96 bs=1 count=36864
-	fi
-
-	piei_size=`stat -c %s ${INPUT_DDRFW}/piei.fw`
-	if [ $piei_size -gt 12384 ]; then
-		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 count=12288
-	else
-		dd if=/dev/zero of=${payload}/ddrfw_piei.bin bs=12288 count=1
-		dd if=${INPUT_DDRFW}/piei.fw of=${payload}/ddrfw_piei.bin skip=96 bs=1 conv=notrunc
-	fi
-
-	cat ${payload}/ddrfw_1d.bin ${payload}/ddrfw_2d.bin \
-		${payload}/ddrfw_piei.bin > ${payload}/ddrfw_data.bin
-
-	if [ ! -f ${payload}/ddrfw_data.bin ]; then
-		echo "ddrfw_data payload does not exist in ${payload} !"
-		exit -1
-	fi
-	ddrfw_data_size=`stat -c %s ${payload}/ddrfw_data.bin`
-	if [ $ddrfw_data_size -ne 86016 ]; then
-		echo "ddr_fwdata size is not equal to 84K, $ddrfw_data_size"
-		exit -1
-	fi
-
 
 	echo "===================================================="
 	echo "------ process for device and chip params ------"
@@ -170,7 +125,7 @@ function mk_bl2ex() {
 	fi
 
 	if [ $dev_acs_size -gt 8192 ]; then
-		echo "chip acs size exceed limit 8192, $dev_acs_size"
+		echo "dev acs size exceed limit 8192, $dev_acs_size"
 		exit -1
 	else
 		dd if=/dev/zero of=${payload}/device_acs.bin bs=8192 count=1
@@ -496,18 +451,18 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
-	dateStamp=SC2-`date +%Y%m%d%H%M%S`
+	dateStamp=S5-${CHIPSET_NAME}-`date +%y%m%d%H%M%S`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null
 	nItemNum=5
 	nSizeHDR=$[64+nItemNum*16]
-	printf "01 %02x %02x %02x 00 00 00 00" $[(nItemNum)&0xFF] $[(nSizeHDR)&0xFF] $[((nSizeHDR)>>8)&0xFF] \
+	printf "02 %02x %02x %02x" $[(nItemNum)&0xFF] $[(nSizeHDR)&0xFF] $[((nSizeHDR)>>8)&0xFF] \
 		| xxd -r -ps > ${file_info_cfg_temp}
 	cat ${file_info_cfg_temp} >> ${file_info_cfg}
 
 	echo ${dateStamp} > ${file_info_cfg_temp}
-	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=16 oflag=append conv=notrunc &> /dev/null
+	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=20 oflag=append conv=notrunc &> /dev/null
 
 	index=0
 	arrPayload=("BBST" "BL2E" "BL2X" "DDRF" "DEVF");
@@ -541,7 +496,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=332 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=404 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"
@@ -570,7 +525,6 @@ function cleanup() {
 	rm -f ${BUILD_PATH}/bl*.enc ${BUILD_PATH}/bl2*.sig
 }
 
-
 function encrypt_step() {
 	dbg "encrypt: $@"
 	local ret=0
@@ -580,6 +534,7 @@ function encrypt_step() {
 		echo "Err! aml_encrypt_${CUR_SOC} return $ret"
 		exit $ret
 	fi
+
 }
 
 function encrypt() {
@@ -607,15 +562,17 @@ function build_fip() {
 
 
 	# build final bootloader
-#mk_uboot ${BUILD_PATH} ${BUILD_PATH}
+	#mk_uboot ${BUILD_PATH} ${BUILD_PATH}
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .sto ${CHIPSET_VARIANT_SUFFIX}
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	return
 }
 
-function process_blx() {
+declare CHIPACS_SIZE="8192"
+declare DDRFW_SIZE="212992"
 
+function process_blx() {
 
 	# process loop
 	for loop in ${!BLX_NAME[@]}; do
@@ -623,15 +580,27 @@ function process_blx() {
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} ]; then
 			if [ -n "${CONFIG_FORMER_SIGN}" ]; then
+					if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+					./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+						--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+					fi
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
 						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}
 			else
 					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
+						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+							--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+						fi
 						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
 							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
 					else
+						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
+						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
+							--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
+						fi
 						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
 							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
@@ -665,8 +634,8 @@ function process_blx() {
 		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
 
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
@@ -683,13 +652,6 @@ function process_blx() {
 	fi
 	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc &> /dev/null
-
-	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
-		mv -f ${BUILD_PATH}/bl33.bin  ${BUILD_PATH}/bl33.bin.org
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin.org --output ${BUILD_PATH}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
-		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
-		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
-	fi
 
 	# fix size for BL33 1024KB
 	if [ ! -f ${BUILD_PATH}/bl33.bin ]; then
@@ -786,9 +748,13 @@ function build_signed() {
 function copy_other_soc() {
 	cp ${BL33_BUILD_FOLDER}${BOARD_DIR}/firmware/acs.bin ${BUILD_PATH}/device_acs.bin -f
 
+    if [ ! -f ${BUILD_PATH}/chip_acs.bin ]; then
+		cp ./${FIP_FOLDER}${CUR_SOC}/chip_acs.bin ${BUILD_PATH}/chip_acs.bin -f
+    fi
 	# device acs params parse for ddr timing
 	#./${FIP_FOLDER}parse ${BUILD_PATH}/device_acs.bin
 }
+
 
 function package() {
 	# BUILD_PATH without "/"

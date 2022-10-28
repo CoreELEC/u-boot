@@ -390,6 +390,11 @@ function package_binary()
 
 function mk_ddr_fip()
 {
+	FAST_BOOT_RESOURCE="fastboot"
+	test -f ${FAST_BOOT_RESOURCE}/bl22.bin && cp ${FAST_BOOT_RESOURCE}/bl22.bin ${BUILD_PATH}/bl22.bin
+	test -f ${FAST_BOOT_RESOURCE}/rtos_1.bin && cp ${FAST_BOOT_RESOURCE}/rtos_1.bin ${BUILD_PATH}/rtos_1.bin
+	test -f ${FAST_BOOT_RESOURCE}/rtos_2.bin && cp ${FAST_BOOT_RESOURCE}/rtos_2.bin ${BUILD_PATH}/rtos_2.bin
+
 	if [ ! -e ${BUILD_PATH}/rtos_1.bin ]; then
 		echo ==== rtos_1.bin not exist, use a empty one ====
 		dd if=/dev/zero of=${BUILD_PATH}/rtos_1.bin bs=1 count=8192

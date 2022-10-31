@@ -223,9 +223,9 @@
   //bit 5.   LPDT data endian.  1 = transfer the high bit first. 0 : transfer the low bit first.
   //bit 4.   HS data endian.
   //bit 3.  force data byte lane in stop mode.
-  //bit 2.  force data byte lane 0 in reciever mode.
+  //bit 2.  force data byte lane 0 in receiver mode.
   //bit 1. write 1 to sync the txclkesc input. the internal logic have to use txclkesc to decide Txvalid and Txready.
-  //bit 0.  enalbe the MIPI DSI PHY TxDDRClk.
+  //bit 0.  enable the MIPI DSI PHY TxDDRClk.
 #define MIPI_DSI_CHAN_CTRL                         ((0x0001  << 2) + 0xfe014000)
   //bit 31.   clk lane tx_hs_en control selection.  1 = from register. 0 use clk lane state machine.
   //bit 30.   register bit for clock lane tx_hs_en.
@@ -282,8 +282,8 @@
 #define MIPI_DSI_WAKEUP_TIM                        ((0x0008  << 2) + 0xfe014000)
   //TWAKEUP.
 #define MIPI_DSI_LPOK_TIM                          ((0x0009  << 2) + 0xfe014000)
-  //bit 31:0 when in RxULPS state, RX reciever is in sleep mode.
-  //every MIPI_DSI_ULPS_CHECK period, the reciever would be enabled once, and waiting this timer period to get the stable input.
+  //bit 31:0 when in RxULPS state, RX receiver is in sleep mode.
+  //every MIPI_DSI_ULPS_CHECK period, the receiver would be enabled once, and waiting this timer period to get the stable input.
 #define MIPI_DSI_LP_WCHDOG                         ((0x000a  << 2) + 0xfe014000)
   //bit 31:0 watch dog timer for MIPI DSI LP receive state.
 #define MIPI_DSI_ANA_CTRL                          ((0x000b  << 2) + 0xfe014000)
@@ -294,7 +294,7 @@
 #define MIPI_DSI_TURN_WCHDOG                       ((0x000d  << 2) + 0xfe014000)
  //bit 31:0 watch dog timer for lane 0 LP turn around waiting time.
 #define MIPI_DSI_ULPS_CHECK                        ((0x000e  << 2) + 0xfe014000)
- //bit 31:0 when Lane0 in LP recieve state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
+ //bit 31:0 when Lane0 in LP receive state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
 #define MIPI_DSI_TEST_CTRL0                        ((0x000f  << 2) + 0xfe014000)
 #define MIPI_DSI_TEST_CTRL1                        ((0x0010  << 2) + 0xfe014000)
 //========================================================================
@@ -315,9 +315,9 @@
   //bit 5.   LPDT data endian.  1 = transfer the high bit first. 0 : transfer the low bit first.
   //bit 4.   HS data endian.
   //bit 3.  force data byte lane in stop mode.
-  //bit 2.  force data byte lane 0 in reciever mode.
+  //bit 2.  force data byte lane 0 in receiver mode.
   //bit 1. write 1 to sync the txclkesc input. the internal logic have to use txclkesc to decide Txvalid and Txready.
-  //bit 0.  enalbe the MIPI DSI PHY TxDDRClk.
+  //bit 0.  enable the MIPI DSI PHY TxDDRClk.
 #define MIPI_DSI_B_CHAN_CTRL                       ((0x0001  << 2) + 0xfe016000)
   //bit 31.   clk lane tx_hs_en control selection.  1 = from register. 0 use clk lane state machine.
   //bit 30.   register bit for clock lane tx_hs_en.
@@ -374,8 +374,8 @@
 #define MIPI_DSI_B_WAKEUP_TIM                      ((0x0008  << 2) + 0xfe016000)
   //TWAKEUP.
 #define MIPI_DSI_B_LPOK_TIM                        ((0x0009  << 2) + 0xfe016000)
-  //bit 31:0 when in RxULPS state, RX reciever is in sleep mode.
-  //every MIPI_DSI_ULPS_CHECK period, the reciever would be enabled once, and waiting this timer period to get the stable input.
+  //bit 31:0 when in RxULPS state, RX receiver is in sleep mode.
+  //every MIPI_DSI_ULPS_CHECK period, the receiver would be enabled once, and waiting this timer period to get the stable input.
 #define MIPI_DSI_B_LP_WCHDOG                       ((0x000a  << 2) + 0xfe016000)
   //bit 31:0 watch dog timer for MIPI DSI LP receive state.
 #define MIPI_DSI_B_ANA_CTRL                        ((0x000b  << 2) + 0xfe016000)
@@ -386,7 +386,7 @@
 #define MIPI_DSI_B_TURN_WCHDOG                     ((0x000d  << 2) + 0xfe016000)
  //bit 31:0 watch dog timer for lane 0 LP turn around waiting time.
 #define MIPI_DSI_B_ULPS_CHECK                      ((0x000e  << 2) + 0xfe016000)
- //bit 31:0 when Lane0 in LP recieve state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
+ //bit 31:0 when Lane0 in LP receive state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
 #define MIPI_DSI_B_TEST_CTRL0                      ((0x000f  << 2) + 0xfe016000)
 #define MIPI_DSI_B_TEST_CTRL1                      ((0x0010  << 2) + 0xfe016000)
 //========================================================================
@@ -5312,7 +5312,7 @@
 //Bit 1,        reg_dmac_tx_en_force         ,default = 0,dmac_tx_en force enable
 //Bit 0,        reg_dmac_tx_en_force_value   ,default = 0,dmac_tx_en force value
 #define EARCTX_MUTE_VAL                            ((0x0001  << 2) + 0xfe333400)
-//Bit 31:0,     reg_spdif_mute_val     ,default = 0,when biahpase encode mute,the channel value,with reg_mute_l/reg_mute_r
+//Bit 31:0,     reg_spdif_mute_val     ,default = 0,when biphase encode mute,the channel value,with reg_mute_l/reg_mute_r
 #define EARCTX_SPDIFOUT_GAIN0                      ((0x0002  << 2) + 0xfe333400)
 //Bit 31:24,    reg_gain_ch3     ,default = 0,channel 3 gain
 //Bit 23:16,    reg_gain_ch2     ,default = 0,channel 2 gain
@@ -5355,16 +5355,16 @@
 //Bit 6:4,    reg_frddr_type      ,default = 0
 //Bit 3:0,    reserved
 #define EARCTX_SPDIFOUT_PREAMB                     ((0x0006  << 2) + 0xfe333400)
-//Bit 31,     reg_premable_Z_set      ,default = 0,user 8'b11101000 1 user 7:0
-//Bit 30,     reg_premable_Y_set      ,default = 0,user 8'b11100100 1 user 15:8
-//Bit 29,     reg_premable_X_set      ,default = 0,user 8'b11100010 1 user 23:16
+//Bit 31,     reg_preamble_Z_set      ,default = 0,user 8'b11101000 1 user 7:0
+//Bit 30,     reg_preamble_Y_set      ,default = 0,user 8'b11100100 1 user 15:8
+//Bit 29,     reg_preamble_X_set      ,default = 0,user 8'b11100010 1 user 23:16
 //Bit 28:24,  reserved
-//Bit 23:16,  reg_premable_X_value    ,default = 0
-//Bit 15:8,   reg_premable_Y_value    ,default = 0
-//Bit 7:0,    reg_premable_Z_value    ,default = 0
+//Bit 23:16,  reg_preamble_X_value    ,default = 0
+//Bit 15:8,   reg_preamble_Y_value    ,default = 0
+//Bit 7:0,    reg_preamble_Z_value    ,default = 0
 #define EARCTX_SPDIFOUT_SWAP                       ((0x0007  << 2) + 0xfe333400)
 //Bit 31:16,  reg_hold_cnt        ,default = 0,hold start cnt ,valid when reg_hold_for_tdm set 1
-//Bit 15,     reg_init_send_en    ,default = 0,send 01 sequence some times after intial done from frddr set
+//Bit 15,     reg_init_send_en    ,default = 0,send 01 sequence some times after initial done from frddr set
 //Bit 14:0,   reg_init_send_cnt   ,default = 0,send 01 sequence time ,valid when reg_init_send_en set 1
 #define EARCTX_ERR_CORRT_CTRL0                     ((0x0008  << 2) + 0xfe333400)
 //Bit 31:24,  reserved
@@ -5409,7 +5409,7 @@
 //Bit 21,    reg_data_sel                 ,default = 0,//data sel: 0 data 1 reg_mute_data_value
 //Bit 20:19, reg_ubit_sel                 ,default = 0,//userBit sel: 0 data 1 reg_value 2 fifo data
 //Bit 18,    reg_vbit_sel                 ,default = 0,//validBit sel: 0 data 1 reg_value
-//Bit 17,    reg_chst_sel                 ,default = 0,//chanel status sel: 0 data 1 reg_value
+//Bit 17,    reg_chst_sel                 ,default = 0,//channel status sel: 0 data 1 reg_value
 //Bit 16,    reg_ubit_fifo_less_irq_en    ,default = 0,fifo_less_thd irq enable
 //Bit 15:8,  reg_ubit_fifo_start_thd      ,default = 0,start transmit iu after fifo level greater than this value
 //Bit 7:0,   reg_ubit_fifo_less_thd       ,default = 0,generate irq,when fifo level less than this value
@@ -5488,7 +5488,7 @@
 //Bit   6,       reg_earctx_hd_hpd_value  unsigned, default = 0, earctx_hd_hdp mux = 3,register value
 //Bit   5:4,     reg_earctx_hd_hdp_mux    unsigned, default = 0, earctx_hd_hdp mux
 //Bit   3:2,     reserved
-//Bit   1,       reg_earctx_force_mode_en unsigned, default = 0, force mode enale
+//Bit   1,       reg_earctx_force_mode_en unsigned, default = 0, force mode enable
 //Bit   0,       reg_earctx_force_mode    unsigned, default = 0, force mode value
 #define EARCTX_DMAC_INT_MASK                       ((0x0001  << 2) + 0xfe333600)
 //Bit   31:6,  reserved
@@ -5667,7 +5667,7 @@
 #define EARC_RX_CMDC_PACKET_CTRL3                  ((0x0015  << 2) + 0xfe333800)
 //Bit      31,       cmdc_en                      unsigned, default = 0,  XX
 //Bit      30,       cmdc_parity_mask             unsigned, default = 0,  XX
-//Bit      29,       imeout_en                    unsigned, default = 0,  XX
+//Bit      29,       timeout_en                    unsigned, default = 0,  XX
 //Bit      28,       ecc_check_en                 unsigned, default = 0,  XX
 //Bit      27,       rev_debug_en                 unsigned, default = 0,  XX
 //Bit     26:16,     reserved
@@ -5760,22 +5760,22 @@
 #define EARC_RX_CMDC_STATUS5                       ((0x002c  << 2) + 0xfe333800)
 //Bit      31:0,     ro_cmdc_status5              unsigned, RO, default = 0,
 #define EARC_RX_CMDC_STATUS6                       ((0x002d  << 2) + 0xfe333800)
-//Bit      31,         ro_idle2_int                unsigned, RO, dfault =0
-//Bit      30,         ro_idle1_int                unsigned, RO, dfault =0
-//Bit      29,         ro_disc2_int                unsigned, RO, dfault =0
-//Bit      28,         ro_disc1_int                unsigned, RO, dfault =0
-//Bit      27,         ro_earc_int                 unsigned, RO, dfault =0
-//Bit      26,         ro_hb_status_int            unsigned, RO, dfault =0
-//Bit      25,         ro_losthb_int               unsigned, RO, dfault =0
-//Bit      24,         ro_timeout_int              unsigned, RO, dfault =0
-//Bit      23,         ro_status_ch_int            unsigned, RO, dfault =0
-//Bit      22,         ro_int_rec_invalid_id       unsigned, RO, dfault =0
-//Bit      21,         ro_int_rec_invalid_offset   unsigned, RO, dfault =0
-//Bit      20,         ro_int_rec_unexp            unsigned, RO, dfault =0
-//Bit      19,         ro_int_rec_ecc_err          unsigned, RO, dfault =0
-//Bit      18,         ro_int_rec_parity_err       unsigned, RO, dfault =0
-//Bit      17,         ro_int_recv_packet          unsigned, RO, dfault =0
-//Bit      16,         ro_int_rec_time_out         unsigned, RO, dfault =0
+//Bit      31,         ro_idle2_int                unsigned, RO, default =0
+//Bit      30,         ro_idle1_int                unsigned, RO, default =0
+//Bit      29,         ro_disc2_int                unsigned, RO, default =0
+//Bit      28,         ro_disc1_int                unsigned, RO, default =0
+//Bit      27,         ro_earc_int                 unsigned, RO, default =0
+//Bit      26,         ro_hb_status_int            unsigned, RO, default =0
+//Bit      25,         ro_losthb_int               unsigned, RO, default =0
+//Bit      24,         ro_timeout_int              unsigned, RO, default =0
+//Bit      23,         ro_status_ch_int            unsigned, RO, default =0
+//Bit      22,         ro_int_rec_invalid_id       unsigned, RO, default =0
+//Bit      21,         ro_int_rec_invalid_offset   unsigned, RO, default =0
+//Bit      20,         ro_int_rec_unexp            unsigned, RO, default =0
+//Bit      19,         ro_int_rec_ecc_err          unsigned, RO, default =0
+//Bit      18,         ro_int_rec_parity_err       unsigned, RO, default =0
+//Bit      17,         ro_int_recv_packet          unsigned, RO, default =0
+//Bit      16,         ro_int_rec_time_out         unsigned, RO, default =0
 //Bit      15:0,       reserved
 //
 // Closing file:  earc_rx_cmdc.h
@@ -5869,7 +5869,7 @@
 //Bit   29:28,  reserved
 //Bit   27,     reg_debug_en                  unsigned, default = 0, debug enable
 //Bit   26,     reg_chnum_en                  unsigned, default = 0, star add ch_cnt to ch_num
-//Bit   25,     reg_findpapb_en               unsigned, default = 0, papb check enalbe
+//Bit   25,     reg_findpapb_en               unsigned, default = 0, papb check enable
 //Bit   24,     reg_nonpcm2pcm_en             unsigned, default = 0, nonpcm2pcm_th enable
 //Bit   23:12,  reg_nonpcm2pcm_th             unsigned, default = 0, if long time didn't detect PaPb again,will generate irq
 //Bit   11:8,   reg_ch_status_sel             unsigned, default = 0, for stat1/stat2
@@ -5918,10 +5918,10 @@
 //Bit   31,     reg_work_enable               unsigned, default = 0, dmac user bit decode enable
 //Bit   30:24,  reg_iu_sync                   unsigned, default = 0, iu sync value
 //Bit   23:16,  reg_fifo_thd                  unsigned, default = 0, generate irq when fifo level pass some threshold
-//Bit   15,     reg_max_dist_en               unsigned, default = 0, max distance bewteen IUs to set lost
+//Bit   15,     reg_max_dist_en               unsigned, default = 0, max distance between IUs to set lost
 //Bit   14,     reg_iu_sync_en                unsigned, default = 0, iu sync code enable 0 : all iu to fifo 1 only sync iu packet to fifo
 //Bit   13:12,  reg_user_lr                   unsigned, default = 0, 00 off 01 use l channel userbit 10 use r channel userbit 11 user lr channel userbit
-//Bit   11:8,   reg_max_dist                  unsigned, default = 0, max distance bewteen IUs value
+//Bit   11:8,   reg_max_dist                  unsigned, default = 0, max distance between IUs value
 //Bit   7,      reg_fifo_thd_en               unsigned, default = 0, fifo_thd irq enable
 //Bit   6,      reg_fifo_lost_init_en         unsigned, default = 0, when lost,initial fifo
 //Bit   5,      reg_fifo_init                 unsigned, default = 0, fifo initial
@@ -8528,9 +8528,9 @@
 // Bit 19:14 -- des_2 ts pl state   -- Read Only
 // Bit 13:8 -- des ts pl state   -- Read Only
 // Bit 3:0 PID index to 8 PID to get key-set
-// auto increse after TS_PL_PID_DATA read/write
+// auto increase after TS_PL_PID_DATA read/write
 #define TS_PL_PID_INDEX                            ((0x00f3  << 2) + 0xfe040000)
-// Bit 13 -- PID match disble
+// Bit 13 -- PID match disable
 // Bit 12:0 -- PID
 #define TS_PL_PID_DATA                             ((0x00f4  << 2) + 0xfe040000)
 #define COMM_DESC_KEY0                             ((0x00f5  << 2) + 0xfe040000)
@@ -8556,7 +8556,7 @@
 // [3]      General enable for the ciplus module
 // [2]      AES CBC disable (default should be 0 to enable AES CBC)
 // [1]      AES Enable
-// [0]      DES Eanble
+// [0]      DES Enable
 #define CIPLUS_CONFIG                              ((0x00fd  << 2) + 0xfe040000)
 // bit[31:28] AES IV endian
 // bit[27:24] AES message out endian
@@ -9089,7 +9089,7 @@
 // To measure display slave's frame rate, we can use a reference clock to measure the duration of one of more edpite pulse(s).
 // Measurement control is by register MIPI_DSI_TOP_MEAS_CNTL bit[9:0].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_TOP_MEAS_STAT_TE0 and MIPI_DSI_TOP_MEAS_STAT_TE1, as below:
+// Measurement result is in MIPI_DSI_TOP_MEAS_STAT_TE0 and MIPI_DSI_TOP_MEAS_STAT_TE1, as below:
 // edpite_meas_count[47:0]: Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // edpite_meas_count_n[3:0]:Number of measure periods has been done. Number can wrap over.
@@ -9102,7 +9102,7 @@
 // To measure Host's frame rate, we can use a reference clock to measure the duration of one of more Vsync pulse(s).
 // Measurement control is by register MIPI_DSI_TOP_MEAS_CNTL bit[19:10].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_TOP_MEAS_STAT_VS0 and MIPI_DSI_TOP_MEAS_STAT_VS1, as below:
+// Measurement result is in MIPI_DSI_TOP_MEAS_STAT_VS0 and MIPI_DSI_TOP_MEAS_STAT_VS1, as below:
 // vsync_meas_count[47:0]:  Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // vsync_meas_count_n[3:0]: Number of measure periods has been done. Number can wrap over.
@@ -9296,7 +9296,7 @@
 // To measure display slave's frame rate, we can use a reference clock to measure the duration of one of more edpite pulse(s).
 // Measurement control is by register MIPI_DSI_B_TOP_MEAS_CNTL bit[9:0].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_B_TOP_MEAS_STAT_TE0 and MIPI_DSI_B_TOP_MEAS_STAT_TE1, as below:
+// Measurement result is in MIPI_DSI_B_TOP_MEAS_STAT_TE0 and MIPI_DSI_B_TOP_MEAS_STAT_TE1, as below:
 // edpite_meas_count[47:0]: Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // edpite_meas_count_n[3:0]:Number of measure periods has been done. Number can wrap over.
@@ -9309,7 +9309,7 @@
 // To measure Host's frame rate, we can use a reference clock to measure the duration of one of more Vsync pulse(s).
 // Measurement control is by register MIPI_DSI_B_TOP_MEAS_CNTL bit[19:10].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_B_TOP_MEAS_STAT_VS0 and MIPI_DSI_B_TOP_MEAS_STAT_VS1, as below:
+// Measurement result is in MIPI_DSI_B_TOP_MEAS_STAT_VS0 and MIPI_DSI_B_TOP_MEAS_STAT_VS1, as below:
 // vsync_meas_count[47:0]:  Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // vsync_meas_count_n[3:0]: Number of measure periods has been done. Number can wrap over.
@@ -9513,8 +9513,8 @@
 //Bit 14:10 ,reserved
 //Bit 9:0   ,fifo_rd_size             ,default = 0        ,fifo_rd_size
 #define MIPI_ADAPT_PIXEL0_CNTL3                    ((0x0023  << 2) + 0xfe3b1000)
-//Bit 31    ,frame_sync_dely_en       ,default = 0        ,frame_sync_dely_en
-//Bit 30:16 ,frame_sync_dely_time     ,default = 0        ,frame_sync_dely_time
+//Bit 31    ,frame_sync_delay_en       ,default = 0        ,frame_sync_delay_en
+//Bit 30:16 ,frame_sync_delay_time     ,default = 0        ,frame_sync_delay_time
 //Bit 15:3  ,reserved
 //Bit 2     ,frame_sync_en            ,default = 0        ,frame_sync_en
 //Bit 1     ,frame_sync_rst_en        ,default = 0        ,frame_sync_rst_en
@@ -9543,8 +9543,8 @@
 //Bit 14:10 ,reserved
 //Bit 9:0   ,fifo_rd_size             ,default = 0        ,fifo_rd_size
 #define MIPI_ADAPT_PIXEL1_CNTL3                    ((0x0033  << 2) + 0xfe3b1000)
-//Bit 31    ,frame_sync_dely_en       ,default = 0        ,frame_sync_dely_en
-//Bit 30:16 ,frame_sync_dely_time     ,default = 0        ,frame_sync_dely_time
+//Bit 31    ,frame_sync_delay_en       ,default = 0        ,frame_sync_delay_en
+//Bit 30:16 ,frame_sync_delay_time     ,default = 0        ,frame_sync_delay_time
 //Bit 15:3  ,reserved
 //Bit 2     ,frame_sync_en            ,default = 0        ,frame_sync_en
 //Bit 1     ,frame_sync_rst_en        ,default = 0        ,frame_sync_rst_en
@@ -9613,8 +9613,8 @@
 //Bit 5     ,frame_continue            ,default = 0       ,frame_continue
 //Bit 4:0   ,reserved
 #define MIPI_ADAPT_ALIG_CNTL9                      ((0x0049  << 2) + 0xfe3b1000)
-//Bit 31    ,frame_sync_dely_en        ,default = 0       ,frame_sync_dely_en
-//Bit 30:16 ,frame_sync_dely_time      ,default = 0       ,frame_sync_dely_time
+//Bit 31    ,frame_sync_delay_en        ,default = 0       ,frame_sync_delay_en
+//Bit 30:16 ,frame_sync_delay_time      ,default = 0       ,frame_sync_delay_time
 //Bit 15:0  ,hsync_irq_num             ,default = 0       ,hsync_irq_num
 #define MIPI_ADAPT_ALIG_CNTL10                     ((0x004a  << 2) + 0xfe3b1000)
 //Bit 31    ,isp_hold_src7_en          ,default = 0       ,isp_hold_src7_en
@@ -10142,7 +10142,7 @@
 #define MD_TOP_GCLK                                ((0x0000  << 2) + 0xfe3b2400)
 //Bit 31: 0        reg_md_gclk               // unsigned ,    RW, default = 0  clock gate control
 #define MD_TOP_CTRL                                ((0x0001  << 2) + 0xfe3b2400)
-//Bit 31: 0        reg_md_top_ctrl           // unsigned ,    RW, default = 32'h204  md top ntrol
+//Bit 31: 0        reg_md_top_ctrl           // unsigned ,    RW, default = 32'h204  md top control
 #define MD_WR_CTRL0                                ((0x0002  << 2) + 0xfe3b2400)
 //Bit 31           reg_wr_axi_wr_en          // unsigned ,    RW, default = 1  axi wr enable
 //Bit 30           reg_wr_axi_req_en         // unsigned ,    RW, default = 1  axi request enable
@@ -10562,7 +10562,7 @@
 // Closing file:  isp_md2_sta_regs.h
 //
 //========================================================================
-// MIPI_ISP  fliker
+// MIPI_ISP  flicker
 //========================================================================
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe3b2c00
@@ -10636,7 +10636,7 @@
 //Bit 14: 0        reg_flkr_wdr_ratio        // unsigned ,    RW, default = 64  exposure ratio between long and short1 for wdr mode. T7 wdr mode short frame input=long_expo/short_expo, else=1. default 64
 #define ISP_DEFLICKER_CNTL                         ((0x0010  << 2) + 0xfe3b2c00)
 //Bit 31:19        reserved
-//Bit 18:14        reg_flkr_avg_chnen        // unsigned ,    RW, default = 31
+//Bit 18:14        reg_flkr_avg_channel        // unsigned ,    RW, default = 31
 //Bit 13            reserved
 //Bit 12           reg_flkr_sta_input_format // unsigned ,    RW, default = 1  STA input select ISP output, 0: raw input 1: YUV/RGB
 //Bit 11:10        reserved
@@ -11064,7 +11064,7 @@
 #define AWSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b4400)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define AWSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b4400)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define AWSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b4400)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define AWSUB0_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b4400)
@@ -11788,7 +11788,7 @@
 #define ARSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b4400)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define ARSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b4400)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define ARSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b4400)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define ARSUB0_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b4400)
@@ -12864,7 +12864,7 @@
 #define TWSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b4c00)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TWSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b4c00)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define TWSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b4c00)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TWSUB0_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b4c00)
@@ -13588,7 +13588,7 @@
 #define TRSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b4c00)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TRSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b4c00)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define TRSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b4c00)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TRSUB0_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b4c00)
@@ -14328,7 +14328,7 @@
 #define TWSUB1_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b5000)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TWSUB1_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b5000)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define TWSUB1_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b5000)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TWSUB1_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b5000)
@@ -15052,7 +15052,7 @@
 #define TRSUB1_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b5000)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TRSUB1_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b5000)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved  for gated-clock control
 #define TRSUB1_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b5000)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TRSUB1_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b5000)
@@ -17115,7 +17115,7 @@
 //Bit 7:6, component0 output switch, 00: select component0 in, 01: select component1 in, 10: select component2 in
 //Bit 5,   input window selection function enable
 //Bit 4, enable VDIN common data input, otherwise there will be no video data input
-//Bit 3:0 vdin selection, 1: mpeg_in from dram, 2: bt656 input, 3: component input, 4: tvdecoder input, 5: hdmi rx input, 6: digtial video input, 7: loopback from Viu1, 8: MIPI.
+//Bit 3:0 vdin selection, 1: mpeg_in from dram, 2: bt656 input, 3: component input, 4: tvdecoder input, 5: hdmi rx input, 6: digital video input, 7: loopback from Viu1, 8: MIPI.
 #define VDIN_COM_CTRL0                             ((0x1202  << 2) + 0xff000000)
 //Bit 28:16 active_max_pix_cnt, readonly
 //Bit 12:0  active_max_pix_cnt_shadow, readonly
@@ -17446,9 +17446,9 @@
 //Read only
 //according to the meas_hs_index in register VDIN_MEAS_CTRL0,
 //meas_hs_index == 0, first range hs counter,
-//meas_hs_index == 1, second range hs coutner
-//meas_hs_index == 2, third range hs coutner
-//meas_hs_index == 3, fourth range hs coutner
+//meas_hs_index == 1, second range hs counter
+//meas_hs_index == 2, third range hs counter
+//meas_hs_index == 3, fourth range hs counter
 //23:0
 #define VDIN_MEAS_HS_COUNT                         ((0x125e  << 2) + 0xff000000)
 //Bit 8      white_enable
@@ -17456,7 +17456,7 @@
 #define VDIN_BLKBAR_CTRL1                          ((0x125f  << 2) + 0xff000000)
 // Bit 31:24 blkbar_black_level    threshold to judge a black point
 // Bit 23:21 Reserved
-// Bit 20:8  blkbar_hwidth         left and right region width
+// Bit 20:8  blkbar_width         left and right region width
 // Bit 7:5   blkbar_comp_sel       select yin or uin or vin to be the valid input
 // Bit 4     blkbar_sw_statistic_en enable software statistic of each block black points number
 // Bit 3     blkbar_det_en
@@ -18760,7 +18760,7 @@
 //Bit 0            reg_ldc_gain_lut_wr              // unsigned ,    RW, default = 0  1:software write 0:software read.
 #define LDC_GAIN_LUT_CTRL1                         ((0x1475  << 2) + 0xff000000)
 //Bit 31: 1        reserved
-//Bit 0            reg_ldc_gain_lut_str             // unsigned ,    RW, default = 0  0->1:one software write/read start,postive edge valid.
+//Bit 0            reg_ldc_gain_lut_str             // unsigned ,    RW, default = 0  0->1:one software write/read start,positive edge valid.
 #define LDC_ADJ_VS_CTRL                            ((0x1476  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15:0          reg_ldc_blk_intsty_calc_intvl     // unsigned ,    RW, default = 200 delay for one block intensity calculation period
@@ -18775,7 +18775,7 @@
 //Bit 26    reg_ldc_prt_func_en                     //unsigned , RW, default = 0   1: enable LDC output protect function 0:disable LDC output protect function
 //Bit 25    reg_ldc_bl_input_sft_ctr_en             //unsigned , RW, default = 0   1: software control backlight info write index enable
 //Bit 24:23 reg_ldc_bl_input_sft_wr_idx             //unsigned , RW, default = 0   backlight info write index, for debug only
-//Bit 22    reg_ldc_vsync_get_bl_info_en            //unsigned , RW, default = 1   0:get backlight info every block line  (no vsync interrupt) 1:get  backlight info  accroding to vsync
+//Bit 22    reg_ldc_vsync_get_bl_info_en            //unsigned , RW, default = 1   0:get backlight info every block line  (no vsync interrupt) 1:get  backlight info  according to vsync
 //Bit 21:20 reg_ldc_hist_burst_len                  //unsigned , RW, default = 0   0:2 times 128bit 1:4 times 128bit 2,3:6 times      128bit
 //Bit 19:18 reg_ldc_blk_intsty_burst_len            //unsigned , RW, default = 0   0:2 times 128bit 1:4 times 128bit 2:6   times      128bit 3:8        times 128bit
 //Bit 17    reg_ldc_vs_edge_sel                     //unsigned , RW, default = 1   1:posedge vs sync   0:negedge vs sync
@@ -19064,10 +19064,10 @@
 //bit 26:24,   reg_demon_mux
 //bit 23:20,   reg_right_win
 //bit 19:16,   reg_left_win
-//bit 7:4,     reg_ei_sadm_quatize_margin
+//bit 7:4,     reg_ei_sadm_quantize_margin
 //bit 1:0,     reg_ei_sad_relative_mode
 #define DI_EI_CTRL4                                ((0x171a  << 2) + 0xff000000)
-//bit 29,      reg_ei_caldrt_ambliike2_biasvertical
+//bit 29,      reg_ei_caldrt_amblike2_biasvertical
 //bit 28:24,   reg_ei_caldrt_addxla2list_drtmax
 //bit 22:20,   reg_ei_caldrt_addxla2list_signm0th
 //bit 19,      reg_ei_caldrt_addxla2list_mode
@@ -19264,7 +19264,7 @@
 //bit 15: 8,   mtn_minth
 //bit  7: 0,   mtn_maxth
 #define DI_MTN_1_CTRL5                             ((0x1744  << 2) + 0xff000000)
-//bit 31:28,   mtn_m1b_extnd
+//bit 31:28,   mtn_m1b_extend
 //bit 27:24,   mtn_m1b_errod
 //bit 21:20,   mtn_mot_txt_mode
 //bit 19:18,   mtn_replace_cbyy
@@ -19325,7 +19325,7 @@
 //Bit 4,	Nr2_proc_en
 //Bit 0,	Nr2_sw_en
 #define NR2_FRM_SIZE                               ((0x1750  << 2) + 0xff000000)
-//Bit 27:16,  Frm_heigh	Frame/field height
+//Bit 27:16,  Frm_height	Frame/field height
 //Bit 11: 0,  Frm_width	Frame/field width
 //   `define NR2_SNR_SAD_CFG             8'h51
 //   //Bit 12,	reg_MATNR_SNR_SAD_CenRPL	U1, Enable signal for Current pixel position SAD to be replaced by SAD_min.0: do not replace Current pixel position SAD by SAD_min;1: do replacements
@@ -19370,10 +19370,10 @@
 //   //Bit 7:0,	reg_MATNR_YBeta_Egain	U8,  Gain to Edge based Beta for Luma channel. (normalized to 32 as 1)
 //
 //   `define NR2_MATNR_BETA_BRT          8'h59
-//   //Bit 31:28,	reg_MATNR_beta_BRT_limt_hi	U4,  Beta adjustment based on Brightness high side Limit. (X16 to u8 scale)
+//   //Bit 31:28,	reg_MATNR_beta_BRT_limit_hi	U4,  Beta adjustment based on Brightness high side Limit. (X16 to u8 scale)
 //   //Bit 27:24,	reg_MATNR_beta_BRT_slop_hi	U4,  Beta adjustment based on Brightness high side slope. Normalized to 16 as 1
 //   //Bit 23:16,	reg_MATNR_beta_BRT_thrd_hi	U8,  Beta adjustment based on Brightness high threshold.(u8 scale)
-//   //Bit 15:12,	reg_MATNR_beta_BRT_limt_lo	U4,  Beta adjustment based on Brightness low side Limit. (X16 to u8 scale)
+//   //Bit 15:12,	reg_MATNR_beta_BRT_limit_lo	U4,  Beta adjustment based on Brightness low side Limit. (X16 to u8 scale)
 //   //Bit 11:8,	    reg_MATNR_beta_BRT_slop_lo	U4,  Beta adjustment based on Brightness low side slope. Normalized to 16 as 1
 //   //Bit 7:0,	    reg_MATNR_beta_BRT_thrd_lo	U8,  Beta adjustment based on Brightness low threshold.(u8 scale)
 //   `define NR2_MATNR_XBETA_CFG         8'h5a
@@ -19383,7 +19383,7 @@
 //   //Bit  7: 0,	reg_MATNR_YBeta_Ofst	    U8,  Offset to Beta for Luma channel.(after beta_edge and beta_motion mux)
 //   `define NR2_MATNR_YBETA_SCL         8'h5b
 //   //Bit 31:24,	reg_MATNR_YBeta_scale_min	U8,  Final step Beta scale low limit for Luma channel;
-//   //Bit 23:16,	reg_MATNR_YBeta_scale_max	U8,  Final step Beta scale high limit for Luma channe;
+//   //Bit 23:16,	reg_MATNR_YBeta_scale_max	U8,  Final step Beta scale high limit for Luma channel;
 //   //Bit 15: 8,	reg_MATNR_YBeta_scale_gain	U8,  Final step Beta scale Gain for Luma channel (normalized 32 to 1);
 //   //Bit 7 : 0,	reg_MATNR_YBeta_scale_ofst	S8,  Final step Beta scale offset for Luma channel ;
 //   `define NR2_MATNR_CBETA_SCL         8'h5c
@@ -19522,10 +19522,10 @@
 //    //Bit  7: 0,	reg_MATNR_AlphaHP_LUT_12	Matnr high-pass filter alpha LUT node 12
 //
 //    `define NR2_MATNR_MTNB_BRT          8'h77
-//    //Bit 31:28,	reg_MATNR_mtnb_BRT_limt_hi	Motion adjustment based on Brightness high side Limit. (X16 to u8 scale)
+//    //Bit 31:28,	reg_MATNR_mtnb_BRT_limit_hi	Motion adjustment based on Brightness high side Limit. (X16 to u8 scale)
 //    //Bit 27:24,	reg_MATNR_mtnb_BRT_slop_hi	Motion adjustment based on Brightness high side slope. Normalized to 16 as 1
 //    //Bit 23:16,	reg_MATNR_mtnb_BRT_thrd_hi	Motion adjustment based on Brightness high threshold.(u8 scale)
-//    //Bit 15:12,	reg_MATNR_mtnb_BRT_limt_lo	Motion adjustment based on Brightness low side Limit. (X16 to u8 scale)
+//    //Bit 15:12,	reg_MATNR_mtnb_BRT_limit_lo	Motion adjustment based on Brightness low side Limit. (X16 to u8 scale)
 //    //Bit 11: 8,	reg_MATNR_mtnb_BRT_slop_lo	Motion adjustment based on Brightness low side slope. Normalized to 16 as 1
 //    //Bit  7: 0,	reg_MATNR_mtnb_BRT_thrd_lo	Motion adjustment based on Brightness low threshold.(u8 scale)
 // 0x51 - 0x69 | 0x4e | 0x6a - 0x77
@@ -19576,10 +19576,10 @@
 //Bit 15: 8        reg_matnr_cbeta_egain          // unsigned , default = 32    normalized to 32
 //Bit  7: 0        reg_matnr_ybeta_egain          // unsigned , default = 32    normalized to 32
 #define NR2_MATNR_BETA_BRT                         ((0x1759  << 2) + 0xff000000)
-//Bit 31:28        reg_matnr_beta_brt_limt_hi     // unsigned , default = 0
+//Bit 31:28        reg_matnr_beta_brt_limit_hi     // unsigned , default = 0
 //Bit 27:24        reg_matnr_beta_brt_slop_hi     // unsigned , default = 0
 //Bit 23:16        reg_matnr_beta_brt_thrd_hi     // unsigned , default = 160
-//Bit 15:12        reg_matnr_beta_brt_limt_lo     // unsigned , default = 6
+//Bit 15:12        reg_matnr_beta_brt_limit_lo     // unsigned , default = 6
 //Bit 11: 8        reg_matnr_beta_brt_slop_lo     // unsigned , default = 6
 //Bit  7: 0        reg_matnr_beta_brt_thrd_lo     // unsigned , default = 100
 #define NR2_MATNR_XBETA_CFG                        ((0x175a  << 2) + 0xff000000)
@@ -19750,10 +19750,10 @@
 //Bit 15: 8        reg_matnr_alphahp_lut13   // unsigned , default = 255  high-pass filter alpha LUT
 //Bit  7: 0        reg_matnr_alphahp_lut12   // unsigned , default = 255  high-pass filter alpha LUT
 #define NR2_MATNR_MTNB_BRT                         ((0x1777  << 2) + 0xff000000)
-//Bit 31:28        reg_matnr_mtnb_brt_limt_hi  // unsigned , default = 0
+//Bit 31:28        reg_matnr_mtnb_brt_limit_hi  // unsigned , default = 0
 //Bit 27:24        reg_matnr_mtnb_brt_slop_hi  // unsigned , default = 0
 //Bit 23:16        reg_matnr_mtnb_brt_thrd_hi  // unsigned , default = 160
-//Bit 15:12        reg_matnr_mtnb_brt_limt_lo  // unsigned , default = 6
+//Bit 15:12        reg_matnr_mtnb_brt_limit_lo  // unsigned , default = 6
 //Bit 11: 8        reg_matnr_mtnb_brt_slop_lo  // unsigned , default = 6
 //Bit  7: 0        reg_matnr_mtnb_brt_thrd_lo  // unsigned , default = 100
 //========== nr2_tnr_regs register end ==========//
@@ -20110,7 +20110,7 @@
 //bit 15:8,    reg_ei_int_drtdelay2_notver_sadth
 //bit 7:0,     reg_ei_int_drtdelay2_vlddrt_sadth
 #define DI_MTN_1_CTRL6                             ((0x17a9  << 2) + 0xff000000)
-//bit 31:24,   mtn_m1b_extnd
+//bit 31:24,   mtn_m1b_extend
 //bit 23:16,   mtn_m1b_errod
 //bit 15: 8,   mtn_core_ykinter
 //bit  7: 0,   mtn_core_ckinter
@@ -21585,7 +21585,7 @@
 //Bit 12:0  coef21
 #define VIU_OSD1_MATRIX_COEF20_21                  ((0x1a94  << 2) + 0xff000000)
 //Bit 31:30    mat_clmod
-//Bit 18:16    mat_convrs
+//Bit 18:16    mat_convers
 //Bit 12:0     mat_coef42
 #define VIU_OSD1_MATRIX_COLMOD_COEF42              ((0x1a95  << 2) + 0xff000000)
 //Bit 26:16 offset0
@@ -21931,65 +21931,65 @@
 //Bit 31:12        reserved
 //Bit  11          reg_quant_expand_en_1  //unsigned, RW, enable for quantization value expansion
 //Bit  10          reg_quant_expand_en_0  //unsigned, RW, enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst               //signed ,  RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst               //signed ,  RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define AFBCDEC_IQUANT_LUT_1                       ((0x1af3  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDEC_IQUANT_LUT_2                       ((0x1af4  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDEC_IQUANT_LUT_3                       ((0x1af5  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDEC_IQUANT_LUT_4                       ((0x1af6  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 // synopsys translate_off
 // synopsys translate_on
 //
@@ -22757,7 +22757,7 @@
 //  ---------------------------
 //  ---------------------------  <------ region4_startp
 //		.
-//		.           region4         <---------- nonlinear region or nonoscaling region
+//		.           region4         <---------- nonlinear region or nonscaling region
 //		.
 //		.
 //  ---------------------------  <------ region4_endp
@@ -22928,9 +22928,9 @@
 // Bit 0 SMOKE1 preblend enable only when preblend osd1 is not enable
 #define VPP_SMOKE_CTRL                             ((0x1d29  << 2) + 0xff000000)
 //smoke can be used only when that blending is disable and then be used as smoke function
-//smoke1 for OSD1 chanel
-//smoke2 for OSD2 chanel
-//smoke3 for VD2 chanel
+//smoke1 for OSD1 channel
+//smoke2 for OSD2 channel
+//smoke3 for VD2 channel
 //31:24 Y
 //23:16 Cb
 //15:8 Cr
@@ -24569,7 +24569,7 @@
 //`define DI_IF0_GEN_REG3           8'h42
 //bit 31:1,  reversed
 //bit 0,     cntl_64bit_rev
-// di arbtration :
+// di arbitration :
 // the segment is 8'h50-8'h5f
 //
 // Reading file:  di_arb_axi_regs.h
@@ -24777,13 +24777,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -24811,68 +24811,68 @@
 //Bit 31:12        reserved
 //Bit 11           reg_quant_expand_en_1     // unsigned ,    RW, default = 0  enable for quantization value expansion
 //Bit 10           reg_quant_expand_en_0     // unsigned ,    RW, default = 0  enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define DI_AFBCE_IQUANT_LUT_1                      ((0x2073  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE_IQUANT_LUT_2                      ((0x2074  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE_IQUANT_LUT_3                      ((0x2075  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE_IQUANT_LUT_4                      ((0x2076  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE_RQUANT_LUT_1                      ((0x2077  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_0_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -24899,7 +24899,7 @@
 //Bit  2: 0        reg_rquant_yclut_0_0      // unsigned ,    RW, default = 0
 #define DI_AFBCE_RQUANT_LUT_3                      ((0x2079  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_1_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -24993,7 +24993,7 @@
 #define DI_AFBCE_ROT_CTRL                          ((0x208b  << 2) + 0xff000000)
 //Bit   31:5      reserved
 //Bit   4         reg_rot_en           //unsigned  , RW,default = 0, rotation enable
-//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting acorrding rotation shrink mode
+//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting according rotation shrink mode
 #define DI_AFBCE_DIMM_CTRL                         ((0x208c  << 2) + 0xff000000)
 //Bit   31        reg_dimm_layer_en   //unsigned  , RW,default = 0,dimm_layer enable singal
 //Bit   30        reserved
@@ -25195,13 +25195,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -25229,68 +25229,68 @@
 //Bit 31:12        reserved
 //Bit 11           reg_quant_expand_en_1     // unsigned ,    RW, default = 0  enable for quantization value expansion
 //Bit 10           reg_quant_expand_en_0     // unsigned ,    RW, default = 0  enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define DI_AFBCE1_IQUANT_LUT_1                     ((0x20d3  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE1_IQUANT_LUT_2                     ((0x20d4  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE1_IQUANT_LUT_3                     ((0x20d5  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE1_IQUANT_LUT_4                     ((0x20d6  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define DI_AFBCE1_RQUANT_LUT_1                     ((0x20d7  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_0_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -25317,7 +25317,7 @@
 //Bit  2: 0        reg_rquant_yclut_0_0      // unsigned ,    RW, default = 0
 #define DI_AFBCE1_RQUANT_LUT_3                     ((0x20d9  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_1_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -25411,7 +25411,7 @@
 #define DI_AFBCE1_ROT_CTRL                         ((0x20eb  << 2) + 0xff000000)
 //Bit   31:5      reserved
 //Bit   4         reg_rot_en           //unsigned  , RW,default = 0, rotation enable
-//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting acorrding rotation shrink mode
+//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting according rotation shrink mode
 #define DI_AFBCE1_DIMM_CTRL                        ((0x20ec  << 2) + 0xff000000)
 //Bit   31        reg_dimm_layer_en   //unsigned  , RW,default = 0,dimm_layer enable singal
 //Bit   30        reserved
@@ -27108,7 +27108,7 @@
 #define VPU_VENC_RGN_CTRL                          ((0x2789  << 2) + 0xff000000)
 #define VPU_VENC_RGN_RSIZE                         ((0x278a  << 2) + 0xff000000)
 #define VPU_DISP_WRAP_CTRL                         ((0x278b  << 2) + 0xff000000)
-// vpu arbtration :
+// vpu arbitration :
 // the segment is 8'h90-8'hc8
 //
 // Reading file:  vpu_arb_axi_regs.h
@@ -28948,8 +28948,8 @@
 //Bit 11: 6        reg_nr4_snr2_alp1_cmin            // unsigned , default = 0    normalized to 64 as '1'
 //Bit  5: 0        reg_nr4_snr2_alp1_cmax            // unsigned , default = 63   normalized to 64 as '1'
 #define NR4_ALP1C_ERR2CURV_LIMIT0                  ((0x2db1  << 2) + 0xff000000)
-//Bit 31:24        reg_nr4_snr2_alp1_minerr_cpar0  // unsigned , default = 0    annel, this will be set value of flat region mierr that no need directional NR. 0~255.
-//Bit 23:16        reg_nr4_snr2_alp1_minerr_cpar1  // unsigned , default = 24   hannel,this will be set value of texture region mierr that can not do directional NR. 0~255.
+//Bit 31:24        reg_nr4_snr2_alp1_minerr_cpar0  // unsigned , default = 0    channel, this will be set value of flat region mierr that no need directional NR. 0~255.
+//Bit 23:16        reg_nr4_snr2_alp1_minerr_cpar1  // unsigned , default = 24   channel,this will be set value of texture region mierr that can not do directional NR. 0~255.
 //Bit 15: 8        reg_nr4_snr2_alp1_minerr_cpar5  // unsigned , default = 0    a/chroma  channel. the larger of the value, the deep of the slope.
 //Bit  7: 0        reg_nr4_snr2_alp1_minerr_cpar6  // unsigned , default = 20   a/chroma  channel. the larger of the value, the deep of the slope. 0~255
 #define NR4_ALP1C_ERR2CURV_LIMIT1                  ((0x2db2  << 2) + 0xff000000)
@@ -29564,7 +29564,7 @@
 //                                           0: unable; 1: enable, use neighboring mvs in refinement, default = 1
 //Bit 11,    reserved
 //Bit 10,    reg_mcdi_referrfrqchken
-//                                           0: unable; 1: enable, enable mv frquency check while finding min err in ref, default = 1
+//                                           0: unable; 1: enable, enable mv frequency check while finding min err in ref, default = 1
 //Bit 9,     reg_mcdi_refen
 //                                           0: unable; 1: enable, enable mv refinement, default = 1
 //Bit 8,     reg_mcdi_horlineen
@@ -29648,7 +29648,7 @@
 //Bit 19:16, reg_mcdi_chkedgedifthd0.                     thd0 for edge dif check (>=), default = 15
 //Bit   :15, reserved.
 //Bit 14:10, reg_mcdi_chkedgechklen.                      total check length for edge check, 1~24 (>0), default = 24
-//Bit  9: 8, reg_mcdi_chkedgeedgesel.                     final edge select mode, 0: original start edge, 1: lpf start edge, 2: orignal start+end edge, 3: lpf start+end edge, default = 1
+//Bit  9: 8, reg_mcdi_chkedgeedgesel.                     final edge select mode, 0: original start edge, 1: lpf start edge, 2: original start+end edge, 3: lpf start+end edge, default = 1
 //Bit  7: 3, reg_mcdi_chkedgesaddstgain.                  distance gain for sad calc while getting edges, default = 4
 //Bit     2, reg_mcdi_chkedgechkmode.                     edge used in check mode, 0: original edge, 1: lpf edge, default = 1
 //Bit     1, reg_mcdi_chkedgestartedge.                   edge mode for start edge, 0: original edge, 1: lpf edge, default = 0
@@ -29658,7 +29658,7 @@
 //Bit 14:12, reg_mcdi_lmvvalidmode                        valid mode for lmv calc., 100b: use char det, 010b: use flt, 001b: use hori flg
 //Bit 11:10, reg_mcdi_lmvgainmvmode                       four modes of mv selection for lmv weight calculation, default = 1
 //                                                        0: cur(x-3), lst(x-1,x,x+1); 1: cur(x-4,x-3), lst(x,x+1); 2: cur(x-5,x-4,x-3), lst(x-1,x,x+1,x+2,x+3); 3: cur(x-6,x-5,x-4,x-3), lst(x-1,x,x+1,x+2);
-//Bit  9,    reg_mcdi_lmvinitmode                         initial lmvs at first row of input field, 0: intial value = 0; 1: inital = 32 (invalid), default = 0
+//Bit  9,    reg_mcdi_lmvinitmode                         initial lmvs at first row of input field, 0: initial value = 0; 1: inital = 32 (invalid), default = 0
 //Bit  8,    reserved
 //Bit  7: 4, reg_mcdi_lmvrt0                              ratio of max mv, default = 5
 //Bit  3: 0, reg_mcdi_lmvrt1                              ratio of second max mv, default = 5
@@ -29771,15 +29771,15 @@
 //Bit  3: 0, reg_mcdi_referrgmvgain.               (locked) gmv gain for err calc. in ref, normalized to 8 as '1', default = 0
 #define MCDI_REF_ERR_FRQ_CHK                       ((0x2f1d  << 2) + 0xff000000)
 //Bit 31:28, reserved
-//Bit 27:24, reg_mcdi_referrfrqgain.               gain for mv frquency, normalized to 4 as '1', default = 10
+//Bit 27:24, reg_mcdi_referrfrqgain.               gain for mv frequency, normalized to 4 as '1', default = 10
 //Bit 23:21, reserved
-//Bit 20:16, reg_mcdi_referrfrqmax.                max gain for mv frquency check, default = 31
+//Bit 20:16, reg_mcdi_referrfrqmax.                max gain for mv frequency check, default = 31
 //Bit    15, reserved
-//Bit 14:12, reg_mcdi_ref_errfrqmvdifthd2.         mv dif threshold 2 (<) for mv frquency check, default = 3
+//Bit 14:12, reg_mcdi_ref_errfrqmvdifthd2.         mv dif threshold 2 (<) for mv frequency check, default = 3
 //Bit    11, reserved
-//Bit 10: 8, reg_mcdi_ref_errfrqmvdifthd1.         mv dif threshold 1 (<) for mv frquency check, default = 2
+//Bit 10: 8, reg_mcdi_ref_errfrqmvdifthd1.         mv dif threshold 1 (<) for mv frequency check, default = 2
 //Bit     7, reserved
-//Bit  6: 4, reg_mcdi_ref_errfrqmvdifthd0.         mv dif threshold 0 (<) for mv frquency check, default = 1
+//Bit  6: 4, reg_mcdi_ref_errfrqmvdifthd0.         mv dif threshold 0 (<) for mv frequency check, default = 1
 //Bit  3: 0, reserved
 #define MCDI_QME_LPF_MSK                           ((0x2f1e  << 2) + 0xff000000)
 //Bit 31:28, reserved
@@ -31350,7 +31350,7 @@
 //Bit 31:16, reserved
 //Bit 15: 4, reg_vd1_rgb_bright        s12, brightness level in rgb domain                              default=0
 //Bit  3: 2, reserved
-//Bit     1, reg_vd1_rgb_bright_prt     u1, enalbe signal to protect saturation in rgb                  default=1
+//Bit     1, reg_vd1_rgb_bright_prt     u1, enable signal to protect saturation in rgb                  default=1
 //Bit     0, reg_vd1_rgbbst_dlut_x2    u1, enable signal to do x2 to the dlut cells before subtracting default=0
 #define XVYCC_VD1_RGB_DLUT_0_3                     ((0x3172  << 2) + 0xff000000)
 //Bit 31:24, reg_vd1_rgbbst_dlut0      u8,   default = 255
@@ -31379,7 +31379,7 @@
 //Bit 31:16, reserved
 //Bit 15: 4, reg_post_rgb_bright        s12, brightness level in rgb domain                              default=0
 //Bit  3: 2, reserved
-//Bit     1, reg_post_rgb_bright_prt     u1, enalbe signal to protect saturation in rgb                  default=1
+//Bit     1, reg_post_rgb_bright_prt     u1, enable signal to protect saturation in rgb                  default=1
 //Bit     0, reg_post_rgbbst_dlut_x2    u1, enable signal to do x2 to the dlut cells before subtracting default=0
 #define XVYCC_POST_RGB_DLUT_0_3                    ((0x3177  << 2) + 0xff000000)
 //Bit 31:24, reg_post_rgbbst_dlut0      u8,   default = 255
@@ -31547,65 +31547,65 @@
 //Bit 31:12        reserved
 //Bit  11          reg_quant_expand_en_1  //unsigned, RW, enable for quantization value expansion
 //Bit  10          reg_quant_expand_en_0  //unsigned, RW, enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define VD2_AFBCDEC_IQUANT_LUT_1                   ((0x3193  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define VD2_AFBCDEC_IQUANT_LUT_2                   ((0x3194  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define VD2_AFBCDEC_IQUANT_LUT_3                   ((0x3195  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define VD2_AFBCDEC_IQUANT_LUT_4                   ((0x3196  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 // synopsys translate_off
 // synopsys translate_on
 //
@@ -31630,7 +31630,7 @@
 #define OSD1_AFBCD_MODE                            ((0x31a1  << 2) + 0xff000000)
 //Bit   31,       soft_reset              the use as go_field
 //Bit   30:29,    reserved
-//Bit   28,       axi_reorder_mode        default=0, the axi reorder mode, note : don't seting
+//Bit   28,       axi_reorder_mode        default=0, the axi reorder mode, note : don't setting
 //Bit   27:26,    reserved
 //Bit   25:24,    mif_urgent              uns, default = 3 , info mif and data mif urgent
 //Bit   22:16,    hold_line_num
@@ -32492,9 +32492,9 @@
 #define XLR_THRD                                   ((0x3731  << 2) + 0xff000000)
 //Bit 31:28        reserved
 //Bit 27:24        reg_xlr_txt_core          // unsigned , default = 3    coring to texture                         default = 3, (3/32)
-//Bit 23:16        reg_xlr_err_thrd2         // unsigned , default = 5    threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, defaut= {20, 10, 5}
-//Bit 15: 8        reg_xlr_err_thrd1         // unsigned , default = 10   threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, defaut= {20, 10, 5}
-//Bit  7: 0        reg_xlr_err_thrd0         // unsigned , default = 20   threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, defaut= {20, 10, 5}
+//Bit 23:16        reg_xlr_err_thrd2         // unsigned , default = 5    threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, default= {20, 10, 5}
+//Bit 15: 8        reg_xlr_err_thrd1         // unsigned , default = 10   threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, default= {20, 10, 5}
+//Bit  7: 0        reg_xlr_err_thrd0         // unsigned , default = 20   threshold to error to decide blending coef, 0, 1/4, 1/2, 1.0, default= {20, 10, 5}
 #define XLR_HCT_THRD                               ((0x3732  << 2) + 0xff000000)
 //Bit 31:28        reserved
 //Bit 27:26        reg_xlr_hct_step          // unsigned , default = 1  horizontal chroma diff steps, 0: abs[-1 (2) -1]; 1: abs[-1 0 (2) 0 -1], 2: abs[-1 0 0 (2) 0 0 -1]; 3:abs[-1 0 0 0 (2) 0 0 0 -1]
@@ -32523,7 +32523,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 1  debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 1  debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -32671,7 +32671,7 @@
 //  ---------------------------
 //  ---------------------------  <------ region4_startp
 //		.
-//		.           region4         <---------- nonlinear region or nonoscaling region
+//		.           region4         <---------- nonlinear region or nonscaling region
 //		.
 //		.
 //  ---------------------------  <------ region4_endp
@@ -34486,13 +34486,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -34520,68 +34520,68 @@
 //Bit 31:12        reserved
 //Bit 11           reg_quant_expand_en_1     // unsigned ,    RW, default = 0  enable for quantization value expansion
 //Bit 10           reg_quant_expand_en_0     // unsigned ,    RW, default = 0  enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst           // signed ,    RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define AFBCE_IQUANT_LUT_1                         ((0x41b3  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCE_IQUANT_LUT_2                         ((0x41b4  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCE_IQUANT_LUT_3                         ((0x41b5  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27            reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23            reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19            reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCE_IQUANT_LUT_4                         ((0x41b6  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15            reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11            reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7            reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3            reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCE_RQUANT_LUT_1                         ((0x41b7  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_0_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_0_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -34608,7 +34608,7 @@
 //Bit  2: 0        reg_rquant_yclut_0_0      // unsigned ,    RW, default = 0
 #define AFBCE_RQUANT_LUT_3                         ((0x41b9  << 2) + 0xff000000)
 //Bit 31            reserved
-//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leavs, quant=2^lut(bc_leav_r+1), can be calculated from iquant_yclut(fw_setting)
+//Bit 30:28        reg_rquant_yclut_1_11     // unsigned ,    RW, default = 5  quantization lut for bctree leaves, quant=2^lut(bc_leave_r+1), can be calculated from iquant_yclut(fw_setting)
 //Bit 27            reserved
 //Bit 26:24        reg_rquant_yclut_1_10     // unsigned ,    RW, default = 5
 //Bit 23            reserved
@@ -34702,7 +34702,7 @@
 #define AFBCE_ROT_CTRL                             ((0x41cb  << 2) + 0xff000000)
 //Bit   31:5      reserved
 //Bit   4         reg_rot_en           //unsigned  , RW,default = 0, rotation enable
-//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting acorrding rotation shrink mode
+//Bit   3:0       reg_vstep            //unsigned  , RW,default = 8, rotation vstep ,setting according rotation shrink mode
 #define AFBCE_DIMM_CTRL                            ((0x41cc  << 2) + 0xff000000)
 //Bit   31        reg_dimm_layer_en   //unsigned  , RW,default = 0,dimm_layer enable singal
 //Bit   30        reserved
@@ -34792,7 +34792,7 @@
 //bit[30]        R-RW   0~1  0    reg_id_check       :  check the id of data path and req path
 //bit[29]        R-RW   0~1  0    reg_clear_fifo     :  manually reset bit
 //bit[28]        R-RW   0~1  0    reg_vsync_rst      :  soft_rst auto reset enable
-//bit[27]        R-RW   0~1  0    reg_update_addr    :  manually udpate start addr
+//bit[27]        R-RW   0~1  0    reg_update_addr    :  manually update start addr
 //bit[26]        R-RW   0~1  0    reg_addr_auto      :  auto update start addr enable
 //bit[25]        R-RW   0~1  0    reg_keep_receive   :  data path keep receive
 //bit[24:19]     R-RW   0~63 0    reg_req_th         :  fifo_room > req_th, then send the request
@@ -35300,7 +35300,7 @@
 //Bit  3: 2,        reg_nr_cti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:cti; 2: (nr+cti)/2; 3:cti + dlt_nr  . unsigned  , default = 1
 //Bit  1: 0,        reg_nr_lti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:lti; 2: (nr+lti)/2; 3:lti + dlt_nr  . unsigned  , default = 2
 ////////////////////////////////////////////////////////////////////////////////
-// new ti regsters from here
+// new ti registers from here
 ////////////////////////////////////////////////////////////////////////////////
 #define LTI_DIR_CORE_ALPHA                         ((0x502a  << 2) + 0xff000000)
 //Bit 31:30,        reserved
@@ -35549,7 +35549,7 @@
 //Bit 15: 8, reg_sr2_y_bic_vcoef01            the same as above; default=64
 //Bit  7: 0, reg_sr2_y_bic_vcoef00            the same as above; default=0
 #define SHARP_SR2_YBIC_VCOEF1                      ((0x505d  << 2) + 0xff000000)
-//Bit 31:24, reg_sr2_y_bic_vcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channe, lFilter will be normalized to 128 as "1"; default=-4
+//Bit 31:24, reg_sr2_y_bic_vcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channel, lFilter will be normalized to 128 as "1"; default=-4
 //Bit 23:16, reg_sr2_y_bic_vcoef12            the same as above; default=36
 //Bit 15: 8, reg_sr2_y_bic_vcoef11            the same as above; default=36
 //Bit  7: 0, reg_sr2_y_bic_vcoef10            the same as above; default=-4
@@ -35601,7 +35601,7 @@
 //Bit 23:16,  reg_sr3_pk_hp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
 //Bit 15:8,   reg_sr3_pk_bp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
 //Bit 7,      reg_sr3_sad_intlev_mode                 //u1: interleave detection xerr mode: 0 max; 1:sum default=1
-//Bit 6,      reg_sr3_sad_intlev_mode1                //u1: mode 1 of using diagonal protection: 0: no digonal protection; 1: with diagonal protection default=1
+//Bit 6,      reg_sr3_sad_intlev_mode1                //u1: mode 1 of using diagonal protection: 0: no diagonal protection; 1: with diagonal protection default=1
 //Bit 5:0,    reg_sr3_sad_intlev_gain                 //u6: interleave detection for sad gain applied, normalized to 8 as 1  default=12
 #define SHARP_DEJ_CTRL                             ((0x5064  << 2) + 0xff000000)
 //Bit 31:4    reserved
@@ -35680,17 +35680,17 @@
 #define SHARP_SR3_DERING_LUMA2PKGAIN_4TO6          ((0x506d  << 2) + 0xff000000)
 //Bit 31:24   reserved
 //Bit 23:16   reg_sr3_dering_luma2pkgain6             // u8: rate1 (for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkgain5             // u8: rate0 (for bpcon<th0) of curve for dering pkgain based on LPF luma level. dfault =50
+//Bit 15:8    reg_sr3_dering_luma2pkgain5             // u8: rate0 (for bpcon<th0) of curve for dering pkgain based on LPF luma level. default =50
 //Bit 7:0     reg_sr3_dering_luma2pkgain4             // u8: level limit(for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =255
 #define SHARP_SR3_DERING_LUMA2PKOS_0TO3            ((0x506e  << 2) + 0xff000000)
 //Bit 31:24   reg_sr3_dering_luma2pkos3             // u8: level limit(for th0<bpcon<th1) of curve for dering pkOS based on LPF luma level. default=255
 //Bit 23:16   reg_sr3_dering_luma2pkos2             // u8: level limit(for bpcon<th0) of curve for dering pkOS based on LPF luma level. default=255
 //Bit 15:8    reg_sr3_dering_luma2pkos1             // u8: threshold1 of curve for dering pkOS based on LPF luma level  default =200
-//Bit 7:0     reg_sr3_dering_luma2pkos0             // u8: threshold0 of curve for dering pkOS based on LPF luma leve. default =30
+//Bit 7:0     reg_sr3_dering_luma2pkos0             // u8: threshold0 of curve for dering pkOS based on LPF luma level. default =30
 #define SHARP_SR3_DERING_LUMA2PKOS_4TO6            ((0x506f  << 2) + 0xff000000)
 //Bit 31:24   reserved
 //Bit 23:16   reg_sr3_dering_luma2pkos6             // u8: rate1 (for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkos5             // u8: rate0 (for bpcon<th0) of curve for dering pkOS based on LPF luma level. dfault =50
+//Bit 15:8    reg_sr3_dering_luma2pkos5             // u8: rate0 (for bpcon<th0) of curve for dering pkOS based on LPF luma level. default =50
 //Bit 7:0     reg_sr3_dering_luma2pkos4             // u8: level limit(for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =255
 #define SHARP_SR3_DERING_GAINVS_MADSAD             ((0x5070  << 2) + 0xff000000)
 //Bit 31:28   reg_sr3_dering_gainvs_maxsad7        //u4: pkgain vs maxsad value, 8 node interpolations, default = 0
@@ -35715,7 +35715,7 @@
 //Bit 23:16   reg_sr3_dering_lcvar_floor        //u8: local variant no smaller than this value to calculate dgain max(localvar,x)/maxsad. default = 10
 //Bit 15:8    reg_sr3_dering_vr2max_gain        //u8: gain to max(local_var, floor)/maxsad  before feeding to LUT. default = 32
 //Bit 7:6     reserved
-//Bit 5:0     reg_sr3_dering_vr2max_limt        //u6: limit of maxsad to max(local_var, floor)*(max(maxsad, lmit))/maxsad.  default = 16
+//Bit 5:0     reg_sr3_dering_vr2max_limit        //u6: limit of maxsad to max(local_var, floor)*(max(maxsad, limit))/maxsad.  default = 16
 #define SHARP_SR3_DRTLPF_THETA                     ((0x5073  << 2) + 0xff000000)
 //Bit 31:0    reg_sr3_drtlpf_theta              //u4x8: directional lpf beta coef for min_sad/min2_sad compared to x=0:7 correspond to[1:8]/16;  0 means no drtLPF, 15: 100% alpha dependant drtLPF
 #define SHARP_SATPRT_CTRL                          ((0x5074  << 2) + 0xff000000)
@@ -35737,7 +35737,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 1  debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 1  debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -38241,65 +38241,65 @@
 //Bit 31:12        reserved
 //Bit  11          reg_quant_expand_en_1     //unsigned,      RW, default = 0  enable for quantization value expansion
 //Bit  10          reg_quant_expand_en_0     //unsigned,      RW, default = 0  enable for quantization value expansion
-//Bit  9: 8        reg_bcleav_ofst           //signed ,       RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
+//Bit  9: 8        reg_bcleave_ofst           //signed ,       RW, default = 0  bcleave ofset to get lower range, especially under lossy, for v1/v2, x=0 is equivalent, default = -1;
 //Bit  7: 5        reserved
 //Bit  4           reg_quant_enable_1        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 //Bit  3: 1        reserved
 //Bit  0           reg_quant_enable_0        // unsigned ,    RW, default = 0  enable for quant to get some lossy
 #define AFBCDM_IQUANT_LUT_1                        ((0x5453  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_0_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_0_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_0_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_0_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDM_IQUANT_LUT_2                        ((0x5454  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_0_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_0_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_0_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_0_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDM_IQUANT_LUT_3                        ((0x5455  << 2) + 0xff000000)
 //Bit 31           reserved
-//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 30:28        reg_iquant_yclut_1_11     // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 27           reserved
-//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 26:24        reg_iquant_yclut_1_10     // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 23           reserved
-//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 22:20        reg_iquant_yclut_1_9      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 19           reserved
-//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 18:16        reg_iquant_yclut_1_8      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_7      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_6      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_5      // unsigned ,    RW, default = 5  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_4      // unsigned ,    RW, default = 4  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDM_IQUANT_LUT_4                        ((0x5456  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15           reserved
-//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 14:12        reg_iquant_yclut_1_3      // unsigned ,    RW, default = 3  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit 11           reserved
-//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit 10: 8        reg_iquant_yclut_1_2      // unsigned ,    RW, default = 2  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  7           reserved
-//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  6: 4        reg_iquant_yclut_1_1      // unsigned ,    RW, default = 1  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 //Bit  3           reserved
-//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leavs, iquant=2^lut(bc_leav_q+1)
+//Bit  2: 0        reg_iquant_yclut_1_0      // unsigned ,    RW, default = 0  quantization lut for mintree leaves, iquant=2^lut(bc_leave_q+1)
 #define AFBCDM_ROT_CTRL                            ((0x5460  << 2) + 0xff000000)
 //Bit   31:30   reg_rot_ohds2_mode                  //unsigned, RW, default = 0 , rot output format down hor drop mode,0:average 1:use 0 2:use 1
 //Bit   29:28   reg_rot_ovds2_mode                  //unsigned, RW, default = 0 , rot output format down ver drop mode,0:average 1:use 0 2:use 1
@@ -39305,7 +39305,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -39474,7 +39474,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -39643,7 +39643,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -39812,7 +39812,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -40996,7 +40996,7 @@
 #define PFIFO_WR_PTR                               ((0x3866  << 2) + 0xfdf00000)
 // bit 9:0 -- point to byte address
 #define PFIFO_RD_PTR                               ((0x3867  << 2) + 0xfdf00000)
-// bit 31:0 -- 8/16/24/32 bits data acording to pfifo_data_width
+// bit 31:0 -- 8/16/24/32 bits data according to pfifo_data_width
 #define PFIFO_DATA                                 ((0x3868  << 2) + 0xfdf00000)
 // bit 31:0 -- parser search pattern
 #define PARSER_SEARCH_PATTERN                      ((0x3869  << 2) + 0xfdf00000)
@@ -41031,7 +41031,7 @@
 #define PARSER_PARAMETER                           ((0x386f  << 2) + 0xfdf00000)
 // bit 31:0 -- insert data // write only
 // write to PARSER_CONTROL will reset the write position
-// continous write to this address can write upto 16 bytes
+// continuous write to this address can write upto 16 bytes
 #define PARSER_INSERT_DATA                         ((0x3870  << 2) + 0xfdf00000)
 // Bit 31:24 -- Reserved Stream_ID
 // Bit 23:16 -- Sub Stream_ID
@@ -41200,7 +41200,7 @@
 #define PARSER_B_PFIFO_WR_PTR                      ((0x1166  << 2) + 0xfdf00000)
 // bit 9:0 -- point to byte address
 #define PARSER_B_PFIFO_RD_PTR                      ((0x1167  << 2) + 0xfdf00000)
-// bit 31:0 -- 8/16/24/32 bits data acording to pfifo_data_width
+// bit 31:0 -- 8/16/24/32 bits data according to pfifo_data_width
 #define PARSER_B_PFIFO_DATA                        ((0x1168  << 2) + 0xfdf00000)
 // bit 31:0 -- parser search pattern
 #define PARSER_B_PARSER_SEARCH_PATTERN             ((0x1169  << 2) + 0xfdf00000)
@@ -41235,7 +41235,7 @@
 #define PARSER_B_PARSER_PARAMETER                  ((0x116f  << 2) + 0xfdf00000)
 // bit 31:0 -- insert data // write only
 // write to PARSER_CONTROL will reset the write position
-// continous write to this address can write upto 16 bytes
+// continuous write to this address can write upto 16 bytes
 #define PARSER_B_PARSER_INSERT_DATA                ((0x1170  << 2) + 0xfdf00000)
 // Bit 31:24 -- Reserved Stream_ID
 // Bit 23:16 -- Sub Stream_ID

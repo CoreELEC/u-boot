@@ -236,7 +236,7 @@
 #define HCODEC_MFDIN_REG6_DCFG                     ((0x100e  << 2) + 0xff620000)
 //cfg_soft_cmd = mfdin_reg7_scmd; // Soft Command [28]selfcleared start,[27:14]dmb_x,[13:0]dmb_y
 #define HCODEC_MFDIN_REG7_SCMD                     ((0x100f  << 2) + 0xff620000)
-//cfg_pic_xsize = mfdin_reg8_dmbl[23:12]; //pixel (x,y) at the begining of last dmb in the picture, picture x size
+//cfg_pic_xsize = mfdin_reg8_dmbl[23:12]; //pixel (x,y) at the beginning of last dmb in the picture, picture x size
 //cfg_pic_ysize = mfdin_reg8_dmbl[11:0];  //picture y size
 #define HCODEC_MFDIN_REG8_DMBL                     ((0x1010  << 2) + 0xff620000)
 //cfg_endian = mfdin_reg9_endn; //Endian Control
@@ -1240,8 +1240,8 @@
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
-//   bit 24:12 convas_y_start ( 13 btis )
-//   bit 11:0  convas_x_start ( 12 btis )
+//   bit 24:12 convas_y_start ( 13 bits )
+//   bit 11:0  convas_x_start ( 12 bits )
 #define DCAC_DMA_ADDRESS                           ((0x0e13  << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
 #define DCAC_CPU_ADDRESS                           ((0x0e14  << 2) + 0xff620000)
@@ -1636,7 +1636,7 @@
 // bit[8]     p_top_left_mix
 // bit[7]     mv_cal_mixed_type
 // bit[6]     mc_hcmd_mixed_type
-// bit[5]     use_seperate_int_control
+// bit[5]     use_separate_int_control
 // bit[4]     hcmd_intra_use_q_info
 // bit[3]     hcmd_left_use_prev_info
 // bit[2]     hcmd_use_q_info
@@ -1648,7 +1648,7 @@
 //15:8  - hcmd_mb_y_auto
 // 7:0  - hcmd_mb_x_auto
 #define VLC_HCMD_MBXY_AUTO                         ((0x1d26  << 2) + 0xff620000)
-// bit[31:0] vlc_int_control_inter -- will be used when use_seperate_int_control is set
+// bit[31:0] vlc_int_control_inter -- will be used when use_separate_int_control is set
 #define VLC_INT_CONTROL_INTER                      ((0x1d2f  << 2) + 0xff620000)
 // --------------------------------------------
 // Picture VLC
@@ -3377,8 +3377,8 @@
 ////   bit 31:0 dcac_dma_addr
 //// when (convas_enable == 1 )
 ////   bit 31:25 canvas_addr (7 bits)
-////   bit 24:12 convas_y_start ( 13 btis )
-////   bit 11:0  convas_x_start ( 12 btis )
+////   bit 24:12 convas_y_start ( 13 bits )
+////   bit 11:0  convas_x_start ( 12 bits )
 //`define HCODEC_DCAC_DMA_ADDRESS     8'h13
 //// bit 7:0 -- dcac_cpu_addr
 //`define HCODEC_DCAC_CPU_ADDRESS     8'h14
@@ -4029,7 +4029,7 @@
 // [7:6]   - max_pcm_luma_coding_block_size
 // [5:4]   - min_pcm_luma_coding_block_size
 // [3:2]   - bit_depth_luma_minus8
-// [1]     - enable_negtive_quant
+// [1]     - enable_negative_quant
 // [0]     - pcm_enabled_flag
 #define HEVC_PARSER_HEADER_INFO2                   ((0x3125  << 2) + 0xff620000)
 // Read Only
@@ -4071,14 +4071,14 @@
 // cabac_manual_data              // 15:0
 //
 #define HEVC_PARSER_MANUAL_CMD                     ((0x312b  << 2) + 0xff620000)
-// bit [12:0] - Read adress :
+// bit [12:0] - Read address :
 //          address 0-255 stream_fifo (128x64)
 //          address 256-319 context_mem (256x7)
 //          address 512-639 parser_cmd_mem (256x16)
 //          address 0x400-0xfff vp9_count_mem(768x96)
 //          address 0x1000-0x11ff vp9_prob_mem(512x32)
 #define HEVC_PARSER_MEM_RD_ADDR                    ((0x312c  << 2) + 0xff620000)
-// bit [9:0] - Write adress :
+// bit [9:0] - Write address :
 //          address 0-255 stream_fifo (128x64)
 //          address 512-639 parser_cmd_mem (256x16)
 //          address 0x400-0xfff vp9_count_mem(768x96)
@@ -4885,11 +4885,11 @@
 #define HEVCD_MPP_WEIGHTPRED_CNTL_ADDR             ((0x347b  << 2) + 0xff620000)
 // [0]      -- weighted_pred_flag
 #define HEVCD_MPP_L0_WEIGHT_FLAG_ADDR              ((0x347c  << 2) + 0xff620000)
-// [15:0]   -- luma_weght_flag0[15:0], indexed by refidx0
-// [31:16]  -- chroma_weght_flag0[15:0], indexed by refidx0
+// [15:0]   -- luma_weight_flag0[15:0], indexed by refidx0
+// [31:16]  -- chroma_weight_flag0[15:0], indexed by refidx0
 #define HEVCD_MPP_L1_WEIGHT_FLAG_ADDR              ((0x347d  << 2) + 0xff620000)
-// [15:0]   -- luma_weght_flag1[15:0], indexed by refidx1
-// [31:16]  -- chroma_weght_flag1[15:0], indexed by refidx1
+// [15:0]   -- luma_weight_flag1[15:0], indexed by refidx1
+// [31:16]  -- chroma_weight_flag1[15:0], indexed by refidx1
 #define HEVCD_MPP_YLOG2WGHTDENOM_ADDR              ((0x347e  << 2) + 0xff620000)
 // [3:0]    -- luma_log2_weight_denom
 #define HEVCD_MPP_DELTACLOG2WGHTDENOM_ADDR         ((0x347f  << 2) + 0xff620000)
@@ -4934,7 +4934,7 @@
 #define HEVCD_MPP_DECOMP_CTL2                      ((0x34c3  << 2) + 0xff620000)
 // [9:0]     -- decomp_default_Y
 // [19:10]   -- decomp_default_Cb
-// [29:20]   -- decomp_dafault_Cr
+// [29:20]   -- decomp_default_Cr
 // [31:30]   -- bitdepth_sel 00:8bit 01:9bit 10:10bit
 #define HEVCD_MPP_DECOMP_CTL3                      ((0x34c4  << 2) + 0xff620000)
 // HEVCD_MPP_DECOMP_PERFMON_CTL
@@ -5214,8 +5214,8 @@
 //  [3:0]   lcu_size_log2
 //  [31]    above intermedia data compress: 0=no-compress,1=compress;default:1'b0
 #define HEVC_SAO_CTRL1                             ((0x3602  << 2) + 0xff620000)
-//  [31:24] ar_fifo1_axi_thred
-//  [23:16] ar_fifo0_axi_thred
+//  [31:24] ar_fifo1_axi_thread
+//  [23:16] ar_fifo0_axi_thread
 //  [15:14] axi_linealign, 0-16bytes, 1-32bytes, 2-64bytes
 //  [13:12] axi_aformat, 0-Linear, 1-32x32, 2-64x32
 //  [11:08] axi_lendian_C
@@ -5282,10 +5282,10 @@
 //pad_u_cbus[9:0]
 //pad_y_cbus[9:0]
 #define HEVC_SAO_CTRL7                             ((0x3625  << 2) + 0xff620000)
-//ar_fifo5_axi_thred
-//aw_fifo5_axi_thred
-//aw_fifo4_axi_thred
-//aw_fifo3_axi_thred
+//ar_fifo5_axi_thread
+//aw_fifo5_axi_thread
+//aw_fifo4_axi_thread
+//aw_fifo3_axi_thread
 #define HEVC_CM_BODY_START_ADDR                    ((0x3626  << 2) + 0xff620000)
 #define HEVC_CM_BODY_LENGTH                        ((0x3627  << 2) + 0xff620000)
 #define HEVC_CM_HEADER_START_ADDR                  ((0x3628  << 2) + 0xff620000)
@@ -5296,13 +5296,13 @@
 //cm_color_y_cfg_cbus
 #define HEVC_CM_HEADER_OFFSET                      ((0x362b  << 2) + 0xff620000)
 #define HEVC_SAO_CTRL8                             ((0x362c  << 2) + 0xff620000)
-//axi_idle_thred=sao_ctrl8[15:0]
+//axi_idle_thread=sao_ctrl8[15:0]
 #define HEVC_SAO_CTRL9                             ((0x362d  << 2) + 0xff620000)
 //[10] dw_output_sel:0=nv21,1=compress,default=0
 //[11] fgs_bypass:0=bypass,1=not bypass,default=0
-//[16] fgs_table_disable:0=enable 1=diable,default=0
-//[17] fgs_dma_disable:0=enable 1=diable,default=0
-//[18] fgs_core_disable:0=enable 1=diable,default=0
+//[16] fgs_table_disable:0=enable 1=disable,default=0
+//[17] fgs_dma_disable:0=enable 1=disable,default=0
+//[18] fgs_core_disable:0=enable 1=disable,default=0
 //[23:20] fgs_dma_axi_lendian
 #define HEVC_SAO_CTRL10                            ((0x362e  << 2) + 0xff620000)
 #define HEVC_SAO_CTRL11                            ((0x362f  << 2) + 0xff620000)
@@ -5341,8 +5341,8 @@
 #define HEVC_CM_LOSSY_QUANT_CTRL                   ((0x3642  << 2) + 0xff620000)
 //[0]    lossy_quant_enable
 //[3:1]  reserved 0
-//[7:4]  luma_bcleav_offset
-//[11:8] chroma_bcleav_offset
+//[7:4]  luma_bcleave_offset
+//[11:8] chroma_bcleave_offset
 //[31:12] reserved 0
 // ID to bctree quant lookup table 2x12
 // [31:12]  reserved
@@ -5394,8 +5394,8 @@
 #define HEVC_CM_LOSSY_QUANT_CTRL2                  ((0x3652  << 2) + 0xff620000)
 //[0]    lossy_quant_enable
 //[3:1]  reserved 0
-//[7:4]  luma_bcleav_offset
-//[11:8] chroma_bcleav_offset
+//[7:4]  luma_bcleave_offset
+//[11:8] chroma_bcleave_offset
 //[31:12] reserved 0
 // ID to bctree quant lookup table 2x12
 // [31:12]  reserved
@@ -8251,8 +8251,8 @@
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
-//   bit 24:12 convas_y_start ( 13 btis )
-//   bit 11:0  convas_x_start ( 12 btis )
+//   bit 24:12 convas_y_start ( 13 bits )
+//   bit 11:0  convas_x_start ( 12 bits )
 #define HCODEC_DCAC_DMA_ADDRESS                    ((0x1e13  << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
 #define HCODEC_DCAC_CPU_ADDRESS                    ((0x1e14  << 2) + 0xff620000)
@@ -8440,8 +8440,8 @@
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
-//   bit 24:12 convas_y_start ( 13 btis )
-//   bit 11:0  convas_x_start ( 12 btis )
+//   bit 24:12 convas_y_start ( 13 bits )
+//   bit 11:0  convas_x_start ( 12 bits )
 #define VDEC2_DCAC_DMA_ADDRESS                     ((0x2e13  << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
 #define VDEC2_DCAC_CPU_ADDRESS                     ((0x2e14  << 2) + 0xff620000)
@@ -8629,8 +8629,8 @@
 //   bit 31:0 dcac_dma_addr
 // when (convas_enable == 1 )
 //   bit 31:25 canvas_addr (7 bits)
-//   bit 24:12 convas_y_start ( 13 btis )
-//   bit 11:0  convas_x_start ( 12 btis )
+//   bit 24:12 convas_y_start ( 13 bits )
+//   bit 11:0  convas_x_start ( 12 bits )
 #define HEVC_DCAC_DMA_ADDRESS                      ((0x3e13  << 2) + 0xff620000)
 // bit 7:0 -- dcac_cpu_addr
 #define HEVC_DCAC_CPU_ADDRESS                      ((0x3e14  << 2) + 0xff620000)
@@ -9190,7 +9190,7 @@
 // bit[8]     p_top_left_mix
 // bit[7]     mv_cal_mixed_type
 // bit[6]     mc_hcmd_mixed_type
-// bit[5]     use_seperate_int_control
+// bit[5]     use_separate_int_control
 // bit[4]     hcmd_intra_use_q_info
 // bit[3]     hcmd_left_use_prev_info
 // bit[2]     hcmd_use_q_info
@@ -9202,7 +9202,7 @@
 //15:8  - hcmd_mb_y_auto
 // 7:0  - hcmd_mb_x_auto
 #define HCODEC_VLC_HCMD_MBXY_AUTO                  ((0x1d26  << 2) + 0xff620000)
-// bit[31:0] vlc_int_control_inter -- will be used when use_seperate_int_control is set
+// bit[31:0] vlc_int_control_inter -- will be used when use_separate_int_control is set
 #define HCODEC_VLC_INT_CONTROL_INTER               ((0x1d2f  << 2) + 0xff620000)
 // --------------------------------------------
 // Picture VLC

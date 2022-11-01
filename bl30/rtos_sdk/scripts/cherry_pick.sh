@@ -59,7 +59,7 @@ apply_patch_by_gerrit_topic() {
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_REFSPECS=$(jq -r '.currentPatchSet.ref // empty' $GERRIT_QUERY_RESULT)
 
-	echo -e "======== Manually applying Gerrit changes ========"
+	echo -e "======== Manually applying Gerrit Topic: $MANUAL_GERRIT_TOPIC ========"
 
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do

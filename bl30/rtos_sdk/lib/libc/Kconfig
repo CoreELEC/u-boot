@@ -4,18 +4,11 @@
 
 menuconfig LIBC
 	bool "Generic_C_lib"
-	select LIBC_AML if RISCV
-	select LIBC_STD if ARM64 || ARM
-	select QLIBC if ARM64
 	help
 	  Select generic C library
 
 if LIBC
-if RISCV
 	rsource "aml/Kconfig"
-endif
-if ARM || ARM64
 	rsource "newlib/Kconfig"
 	rsource "qlibc/Kconfig"
-endif
 endif

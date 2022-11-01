@@ -13,8 +13,12 @@ aml_library_sources(
 	aml_malloc.c
 	aml_free.c
 	aml_atoi.c
-	aml_isspace.c
+	aml_errno.c
+	aml_isalpha.c
 	aml_isdigit.c
+	aml_islower.c
+	aml_isspace.c
+	aml_isupper.c
 	aml_tolower.c
 	aml_memcpy.c
 	aml_memset.c
@@ -22,6 +26,7 @@ aml_library_sources(
 	aml_memcmp.c
 	aml_strlen.c
 	aml_strncpy.c
+	aml_strtoul.c
 	aml_strcasecmp.c
 	aml_strncasecmp.c
 	)

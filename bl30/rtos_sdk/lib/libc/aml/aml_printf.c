@@ -43,7 +43,7 @@ static int hexdigit(int c)
 	return c > 9 ? (c + 'a' - 10) : (c + '0');
 }
 
-static int uint64divmod(uint64_t *n, int d)
+int uint64divmod(uint64_t *n, int d)
 {
 	uint64_t q = 0, mask;
 	int r = 0;

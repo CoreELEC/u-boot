@@ -5,6 +5,7 @@
 config BOARD_AM301_T950D4
 	bool "Amlogic AM301 Board"
 	select SOC_T5D
+	select LIBC_AML
 	select COMMON
 	select GET_VERSION
 	select STICK_MEM

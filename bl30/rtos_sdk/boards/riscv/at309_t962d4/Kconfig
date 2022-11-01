@@ -5,6 +5,7 @@
 config BOARD_AT309_T962D4
 	bool "Amlogic AT309 Board"
 	select SOC_T5W
+	select LIBC_AML
 	select COMMON
 	select GET_VERSION
 	select STICK_MEM

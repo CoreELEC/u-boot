@@ -5,6 +5,7 @@
 config BOARD_AX201_S928X
 	bool "Amlogic AX201 Board"
 	select SOC_S5
+	select LIBC_AML
 	select COMMON
 	select GET_VERSION
 	select STICK_MEM

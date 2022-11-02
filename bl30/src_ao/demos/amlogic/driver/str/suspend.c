@@ -96,7 +96,9 @@ void set_suspend_flag(void)
 	taskENTER_CRITICAL();
 	suspend_flag = 1;
 	taskEXIT_CRITICAL();
+#ifdef CONFIG_ETH_WAKEUP
 	EnableIrq(IRQ_ETH_PMT_NUM);
+#endif
 }
 
 uint32_t get_power_mode(void)

@@ -92,7 +92,9 @@ void set_suspend_flag(void)
 	taskENTER_CRITICAL();
 	suspend_flag = 1;
 	taskEXIT_CRITICAL();
+#ifdef CONFIG_ETH_WAKEUP
 	EnableIrq(IRQ_ETH_PMT_NUM);
+#endif
 }
 __attribute__((weak)) void vDDR_suspend(uint32_t st_f)
 {

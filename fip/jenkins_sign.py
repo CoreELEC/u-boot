@@ -16,7 +16,7 @@ import jenkins
 serverRootUrl = "https://jenkins-sh.amlogic.com/job/Security/job/"
 homeConfigFilePath = "~/.sign.cfg"
 types = ["ta", "vmxta", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "aucpufw", "vdecfw"]
-casProviders = ["", "VMX", "nagra", "nagra-dev", "vo", "gs-dev", "gs", "irdeto"]
+casProviders = ["", "VMX", "nagra", "nagra-dev", "vo-dev", "vo", "gs-dev", "gs", "irdeto"]
 ddrTypes = ["ddr4", "lpddr4", "ddr3", "lpddr3", "lpddr4_lpddr5"]
 chipVariants = ["general", "nocs-jts-ap", "nocs-prod"]
 

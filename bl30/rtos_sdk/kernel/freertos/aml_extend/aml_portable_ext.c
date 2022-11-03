@@ -45,6 +45,23 @@ static unsigned long prvCorePowerDown(void)
 	arm_smccc_smc(0x84000002, 0, 0, 0, 0, 0, 0, 0, &res);
 	return res.a0;
 }
+/*-----------------------------------------------------------*/
+static void vOperationBeforeShutdown(void)
+{
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+	/* viu1_line_n_int */
+	plat_gic_irq_register_with_default(227, 0, 0);
+	/* ge2d_int */
+	plat_gic_irq_register_with_default(249, 0, 1);
+	/* dwap_irq */
+	plat_gic_irq_register_with_default(91, 0, 1);
+	/* isp adapter frontend2 irq */
+	plat_gic_irq_register_with_default(343, 0, 1);
+	plat_gic_irq_register_with_default(321, 1, 0);
+	/* timerA irq*/
+	plat_gic_irq_register_with_default(32, 0, 0);
+#endif
+}
 
 /*-----------------------------------------------------------*/
 void vLowPowerSystem(void)
@@ -115,20 +132,10 @@ void vPortHaltSystem(Halt_Action_e act)
 
 	plat_gic_raise_softirq(1, 7);
 
+	vOperationBeforeShutdown();
+
 	while (1) {
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
-		/* viu1_line_n_int */
-		plat_gic_irq_register_with_default(227, 0, 0);
-		/* ge2d_int */
-		plat_gic_irq_register_with_default(249, 0, 1);
-		/* dwap_irq */
-		plat_gic_irq_register_with_default(91, 0, 1);
-		/* isp adapter frontend2 irq */
-		plat_gic_irq_register_with_default(343, 0, 1);
-		plat_gic_irq_register_with_default(321, 1, 0);
-		/* timerA irq*/
-		plat_gic_irq_register_with_default(32, 0, 0);
-
 		prvCorePowerDown();
 #else
 		__asm volatile("wfi");

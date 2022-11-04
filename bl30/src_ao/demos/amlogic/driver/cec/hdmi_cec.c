@@ -1271,6 +1271,34 @@ static int cec_routing_change(void)
 	return cec_msg.cec_power;
 }
 
+static void cec_routing_information(void)
+{
+	unsigned char phy_addr_ab = (cec_mailbox.phy_addr >> 8) & 0xff;
+	unsigned char phy_addr_cd = cec_mailbox.phy_addr & 0xff;
+
+	printf("%s: phy_addr_ab:0x%02x", __func__, phy_addr_ab);
+	printf(", phy_addr_cd:0x%02x", phy_addr_cd);
+	printf(", msg[2]:0x%02x", cec_msg.buf[cec_msg.rx_read_pos].msg[2]);
+	printf(", msg[3]:0x%02x\n", cec_msg.buf[cec_msg.rx_read_pos].msg[3]);
+
+	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
+		if ((hdmi_cec_func_config >> STREAMPATH_POWER_ON_MASK) & 0x1) {
+			/* wake up if routing destination is self */
+			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) &&
+				(phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[3])) {
+				cec_msg.cec_power = 0x1;
+				/* no need for playback dev wakeup */
+				/* cec_msg.active_source = 1; */
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg, cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
+				printf("%s power on\n", __func__);
+			}
+		}
+	}
+}
+
 static void cec_device_vendor_id(unsigned char source)
 {
 	unsigned char msg[5];
@@ -1465,6 +1493,9 @@ static u32 cec_handle_message(void)
 			break;
 		case CEC_OC_ROUTING_CHANGE:
 			cec_routing_change();
+			break;
+		case CEC_OC_ROUTING_INFORMATION:
+			cec_routing_information();
 			break;
 		case CEC_OC_GIVE_DEVICE_POWER_STATUS:
 			cec_report_device_power_status(dest, source);

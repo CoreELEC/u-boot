@@ -38,9 +38,13 @@
 
 #include "ir_drv.h"
 
-static uint8_t ucIsDebugEnable;
+static uint8_t ucIsDebugEnable = 1;
 static IRPowerKey_t prvKeyCodeList[MAX_KEY_NUM] = {};
 static uint32_t key_cnt;
+
+static uint32_t usr_pwr_key = 0xffffffff;
+static uint32_t usr_ir_proto = 0;
+static uint32_t usr_pwr_key_mask = 0xffffffff;
 
 #define IRDebug(fmt, x...)						\
 do {									\
@@ -140,8 +144,9 @@ void vInitIRWorkMode(uint16_t usWorkMode)
 		prvIRRegWrite(LEGACY_CTL, REG_REG1, 0);
 
 	IRDebug("change mode to 0x%x\n", usWorkMode);
-	if (MULTI_IR_CTL_MASK(usWorkMode))
-		vSetIRWorkMode(MULTI_IR_CTL_MASK(usWorkMode), MULTI_CTL);
+
+	// enable hardware decoder, no software mode available
+	vSetIRWorkMode(MULTI_IR_CTL_MASK(usWorkMode), MULTI_CTL);
 }
 
 static void prvCheckPowerKey(void)
@@ -166,6 +171,19 @@ static void prvCheckPowerKey(void)
 			if (xDrvData->vIRHandler)
 				xDrvData->vIRHandler(&ulPowerKeyList[ucIndex]);
 		}
+
+	// check user set ir code
+	if ((xDrvData->ulFrameCode & usr_pwr_key_mask) == (usr_pwr_key & usr_pwr_key_mask)) {
+		IRPowerKey_t pkey = {
+			.code = xDrvData->ulFrameCode,
+			.type = IR_CUSTOM
+		};
+
+		iprintf("receive the custom user power key:0x%x\n",
+			xDrvData->ulFrameCode);
+		if (xDrvData->vIRHandler)
+			xDrvData->vIRHandler(&pkey);
+	}
 }
 
 static void vIRIntteruptHandler(void)
@@ -212,7 +230,7 @@ int8_t ucIsIRInit(void)
 	return xDrvData->ucIsInit;
 }
 
-void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
+void vIRInit(uint16_t usGpio, enum PinMuxType func,
 	     IRPowerKey_t *ulPowerKeyList, uint8_t ucPowerKeyNum,
 	     void (*vIRHandler)(IRPowerKey_t *pkey))
 {
@@ -238,12 +256,16 @@ void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 		return;
 	}
 
+	IRDebug("remotewakeup: 0x%08x\n", usr_pwr_key);
+	IRDebug("decode_type: 0x%08x\n", usr_ir_proto);
+	IRDebug("remotewakeupmask: 0x%08x\n", usr_pwr_key_mask);
+
 	xDrvData = pGetIRDrvData();
-	vInitIRWorkMode(usWorkMode);
+	vInitIRWorkMode(usr_ir_proto);
 
 	xDrvData->ulPowerKeyList = ulPowerKeyList;
 	xDrvData->ucPowerKeyNum = ucPowerKeyNum;
-	xDrvData->ucCurWorkMode = usWorkMode;
+	xDrvData->ucCurWorkMode = usr_ir_proto;
 	xDrvData->vIRHandler = vIRHandler;
 
 	RegisterIrq(IRQ_NUM_IRIN, 2, vIRIntteruptHandler);
@@ -296,6 +318,24 @@ static void *prvIRGetInfo(void *msg)
 
 }
 
+static void *prvIRSetRemote(void *msg)
+{
+	usr_pwr_key = *(u32 *)msg;
+	return NULL;
+}
+
+static void *prvIRSetProtocol(void *msg)
+{
+	usr_ir_proto = *(u32 *)msg;
+	return NULL;
+}
+
+static void *prvIRSetMask(void *msg)
+{
+	usr_pwr_key_mask = *(u32 *)msg;
+	return NULL;
+}
+
 void vIRMailboxEnable(void)
 {
 	int32_t ret;
@@ -306,5 +346,25 @@ void vIRMailboxEnable(void)
 		printf("mailbox cmd 0x%x register fail\n");
 		return;
 	}
-}
 
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_REMOTE,
+						    prvIRSetRemote, 1);
+	if (ret == MBOX_CALL_MAX) {
+		printf("mailbox cmd 0x%x register fail\n");
+		return;
+	}
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_IR_PROTOCOL,
+						    prvIRSetProtocol, 1);
+	if (ret == MBOX_CALL_MAX) {
+		printf("mailbox cmd 0x%x register fail\n");
+		return;
+	}
+
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_REMOTE_MASK,
+						    prvIRSetMask, 1);
+	if (ret == MBOX_CALL_MAX) {
+		printf("mailbox cmd 0x%x register fail\n");
+		return;
+	}
+}

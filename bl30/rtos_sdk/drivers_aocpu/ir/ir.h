@@ -21,8 +21,8 @@ struct IRPowerKey {
 enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
 
 /*supported protocol*/
-#define MODE_SOFT 0x0
-#define MODE_HARD_NEC 0x1
+//#define MODE_SOFT 0x0
+#define MODE_HARD_NEC 0x0
 
 #ifdef CONFIG_SOC_A4
 #define MODE_HARD_NEC_32K	0x10
@@ -46,8 +46,9 @@ enum IrMboxCmdType {
 
 //#define MODE_HARD_DUOKAN	0x02
 //#define MODE_HARD_XMP_1	0x03
-//#define MODE_HARD_RC5		0x04
-//#define MODE_HARD_RC6		0x05
+#define MODE_HARD_RC5		0x04
+#define MODE_HARD_RC6A	0x05
+#define MODE_HARD_RC6		0x0b
 //#define MODE_HARD_TOSHIBA	0x06
 //#define MODE_HARD_RCA		0x08
 //#define MODE_HARD_RCMM	0x09
@@ -60,11 +61,10 @@ enum IrMboxCmdType {
 
 /**
  *  xIRInit() - IR hardware initialize.
- *  @usWorkMode: supported protocol.
  *  @usGpio: which gpio is used as input.
  *  @func: function number of gpio use as ir input.
  */
-extern uint32_t vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
+extern uint32_t vIRInit(uint16_t usGpio, enum PinMuxType func,
 		    struct IRPowerKey *ulPowerKeyList, uint8_t ucPowerKeyNum,
 		    void (*vIRHandler)(struct IRPowerKey *pkey));
 

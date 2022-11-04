@@ -91,7 +91,7 @@ void str_hw_init(void)
 {
 	int ret;
 
-	vIRInit(MODE_HARD_NEC, GPIODV_0, PIN_FUNC1, prvPowerKeyList,
+	vIRInit(GPIODV_0, PIN_FUNC1, prvPowerKeyList,
 			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,

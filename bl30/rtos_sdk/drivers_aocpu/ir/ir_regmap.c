@@ -116,9 +116,9 @@ static struct xRegList xRC5RegList[] = {
 	/*bit[0-3]: RC5; bit[8]: MSB first mode; bit[11]: compare frame method*/
 	{ REG_REG2, ((1 << 13) | (1 << 11) | (1 << 8) | 0x7) },
 	/*Half bit for RC5 format: 888.89us*/
-	{ REG_DURATN2, ((53 << 16) | (38 << 0)) },
+	{ REG_DURATN2, ((56 << 16) | (38 << 0)) },
 	/*RC5 typically 1777.78us for whole bit*/
-	{ REG_DURATN3, ((99 << 16) | (81 << 0)) },
+	{ REG_DURATN3, ((102 << 16) | (76 << 0)) },
 	{ REG_REG3, 0 }
 };
 
@@ -126,6 +126,33 @@ static struct xRegProtocolMethod xRC5Decode = {
 	.ucProtocol = MODE_HARD_RC5,
 	.RegList = xRC5RegList,
 	.ucRegNum = ARRAY_SIZE(xRC5RegList),
+};
+#endif
+
+#ifdef MODE_HARD_RC6A
+static struct xRegList xRC6ARegList[] = {
+	{REG_LDR_ACTIVE,    (210 << 16) | (125 << 0)},
+	{REG_LDR_IDLE,      55 << 16 | 38 << 0}, /* leader idle 400*/
+	{REG_LDR_REPEAT,    145 << 16 | 125 << 0}, /* leader repeat*/
+	/* logic '0' or '00' 1500us*/
+	{REG_BIT_0,         51 << 16 | 38 << 0 },
+	{REG_REG0,          (3 << 28)|(0xFA0 << 12)|0x13},
+	/* sys clock time.base time = 20 body frame*/
+	{REG_STATUS,       (94 << 20) | (82 << 10)},
+	/*20bit:9440 32bit:9f40 36bit:a340 37bit:a440*/
+	{REG_REG1,         ((1 << 15) | (36 << 8) | (1 << 6))},                    // frame len = 37bit
+	/*it may get the wrong customer value and key value from register if
+	 *the value is set to 0x4,so the register value must set to 0x104
+	 */
+	{REG_REG2,         (1 << 8) | 0x9},                                        // rc6 protocol
+	{REG_DURATN2,      ((28 << 16) | (16 << 0))},
+	{REG_DURATN3,      ((51 << 16) | (38 << 0))},
+};
+
+static struct xRegProtocolMethod xRC6ADecode = {
+	.ucProtocol = MODE_HARD_RC6A,
+	.RegList = xRC6ARegList,
+	.ucRegNum = ARRAY_SIZE(xRC6ARegList),
 };
 #endif
 
@@ -243,6 +270,10 @@ static const struct xRegProtocolMethod *xSupportProtocol[] = {
 
 #ifdef MODE_HARD_RC5
 	&xRC5Decode,
+#endif
+
+#ifdef MODE_HARD_RC6A
+	&xRC6ADecode,
 #endif
 
 #ifdef MODE_HARD_RC6

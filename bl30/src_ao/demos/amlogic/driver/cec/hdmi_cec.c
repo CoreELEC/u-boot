@@ -1490,7 +1490,7 @@ static u32 cec_handle_message(void)
 			dest = cec_msg.buf[cec_msg.rx_read_pos].msg[0] & 0xf;
 			if (((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) &&
 			    ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) &&
-			    (dest == CEC_TV_ADDR)) {
+			    (source == CEC_TV_ADDR)) {
 				/* request active source needed */
 				phy_addr = 0xffff;
 				cec_msg.cec_power = 0x1;
@@ -1514,7 +1514,7 @@ static u32 cec_handle_message(void)
 				   (cec_msg.buf[cec_msg.rx_read_pos].msg[3] << 0);
 			if (((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) &&
 			    ((hdmi_cec_func_config >> ACTIVE_SOURCE_MASK) & 0x1) &&
-			    (dest == CEC_TV_ADDR && check_addr(phy_addr))) {
+			    (source == CEC_TV_ADDR && (dest == CEC_BROADCAST_ADDR || check_addr(phy_addr)))) {
 				cec_msg.cec_power = 0x1;
 				cec_msg.active_source = 1;
 				cec_wakup.wk_logic_addr = source;

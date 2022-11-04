@@ -438,6 +438,23 @@ function parser() {
 				export CONFIG_MDUMP_COMPRESS
 				echo "SET CONFIG: CONFIG_MDUMP_COMPRESS"
 				continue ;;
+			--uasan)
+				UASAN_DDR_SIZE="${argv[$i]}"
+				if [ -z "${UASAN_DDR_SIZE}" ]; then
+					echo "Must set UASAN_DDR_SIZE when compile uasan"
+					exit -1;
+				fi
+				if [ "${UASAN_DDR_SIZE}" -gt 0 ]  2>/dev/null; then
+					echo  "==== UASAN_DDR_SIZE ${UASAN_DDR_SIZE} ===="
+				else
+					echo "UASAN_DDR_SIZE must be a number"
+					exit -1;
+				fi
+				CONFIG_AML_UASAN=1
+				echo "==== BL33 BUILD ENALBED CONFIG_AML_UASAN ===="
+				export CONFIG_AML_UASAN=1
+				export UASAN_DDR_SIZE
+				continue ;;
 			--enable-bl33z)
 				CONFIG_SUPPORT_BL33Z=1
 				export CONFIG_SUPPORT_BL33Z

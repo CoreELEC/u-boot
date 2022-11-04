@@ -670,7 +670,7 @@ static void write_ao(enum cec_reg_idx addr, unsigned int data)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		CEC_DBG_LOG("%s no reg:0x%x", __func__, addr);
+		CEC_DBG_LOG("%s no reg:0x%x\n", __func__, addr);
 		return;
 	}
 #if CEC_FW_DEBUG
@@ -1438,8 +1438,13 @@ static void cec_set_stream_path(void)
 	unsigned char phy_addr_ab = (cec_mailbox.phy_addr >> 8) & 0xff;
 	unsigned char phy_addr_cd = cec_mailbox.phy_addr & 0xff;
 
+	printf("%s: phy_addr_ab:0x%02x", __func__, phy_addr_ab);
+	printf(", phy_addr_cd:0x%02x", phy_addr_cd);
+	printf(", msg[2]:0x%02x", cec_msg.buf[cec_msg.rx_read_pos].msg[2]);
+	printf(", msg[3]:0x%02x\n", cec_msg.buf[cec_msg.rx_read_pos].msg[3]);;
+
 	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
-		if ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) {
+		if ((hdmi_cec_func_config >> STREAMPATH_POWER_ON_MASK) & 0x1) {
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[2]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[3])) {
 				cec_msg.cec_power = 0x1;
@@ -1461,8 +1466,13 @@ static int cec_routing_change(void)
 	unsigned char phy_addr_ab = (cec_mailbox.phy_addr >> 8) & 0xff;
 	unsigned char phy_addr_cd = cec_mailbox.phy_addr & 0xff;
 
+	printf("%s: phy_addr_ab:0x%02x", __func__, phy_addr_ab);
+	printf(", phy_addr_cd:0x%02x", phy_addr_cd);
+	printf(", msg[2]:0x%02x", cec_msg.buf[cec_msg.rx_read_pos].msg[2]);
+	printf(", msg[3]:0x%02x\n", cec_msg.buf[cec_msg.rx_read_pos].msg[3]);
+
 	if ((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) {
-		if ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) {
+		if ((hdmi_cec_func_config >> STREAMPATH_POWER_ON_MASK) & 0x1) {
 			/* wake up if routing destination is self */
 			if ((phy_addr_ab == cec_msg.buf[cec_msg.rx_read_pos].msg[4]) &&
 			    (phy_addr_cd == cec_msg.buf[cec_msg.rx_read_pos].msg[5])) {
@@ -1567,15 +1577,6 @@ static int check_addr(int phy_addr)
 	return 1;
 }
 
-static int is_playback_dev(int addr)
-{
-	if (addr != CEC_PLAYBACK_DEVICE_1_ADDR && addr != CEC_PLAYBACK_DEVICE_2_ADDR &&
-	    addr != CEC_PLAYBACK_DEVICE_3_ADDR) {
-		return 0;
-	}
-	return 1;
-}
-
 static int is_audio_system_dev(int addr)
 {
 	if ((addr & 0xf) == CEC_AUDIO_SYSTEM_ADDR)
@@ -1619,6 +1620,7 @@ static u32 cec_handle_message(void)
 {
 	unsigned char opcode;
 	unsigned char source;
+	unsigned char dest;
 	unsigned int phy_addr;
 	u32 data;
 
@@ -1677,9 +1679,10 @@ static u32 cec_handle_message(void)
 		/* TV Wake up by image/text view on */
 		case CEC_OC_IMAGE_VIEW_ON:
 		case CEC_OC_TEXT_VIEW_ON:
+			dest = cec_msg.buf[cec_msg.rx_read_pos].msg[0] & 0xf;
 			if (((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) &&
 			    ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) &&
-			    (!is_playback_dev(cec_msg.log_addr))) {
+			    (dest == CEC_TV_ADDR)) {
 				/* request active source needed */
 				phy_addr = 0xffff;
 				cec_msg.cec_power = 0x1;
@@ -1699,11 +1702,12 @@ static u32 cec_handle_message(void)
 
 		/* TV Wake up by active source*/
 		case CEC_OC_ACTIVE_SOURCE:
+			dest = cec_msg.buf[cec_msg.rx_read_pos].msg[0] & 0xf;
 			phy_addr = (cec_msg.buf[cec_msg.rx_read_pos].msg[2] << 8) |
 				   (cec_msg.buf[cec_msg.rx_read_pos].msg[3] << 0);
 			if (((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) &&
 			    ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) &&
-			    (!is_playback_dev(cec_msg.log_addr) && check_addr(phy_addr))) {
+			    (dest == CEC_TV_ADDR && check_addr(phy_addr))) {
 				cec_msg.cec_power = 0x1;
 				cec_msg.active_source = 1;
 				cec_wakup.wk_logic_addr = source;
@@ -2044,12 +2048,12 @@ static void cec_node_init(void)
 	unsigned char msg[16];
 	/*unsigned int kern_log_addr = (REG32(SYSCTRL_STATUS_REG1) >> 16) & 0xf;*/
 	unsigned int kern_log_addr = (read_ao(CEC_REG_STS1) >> 16) & 0xf;
-	unsigned int player_dev[3][3] = { { CEC_PLAYBACK_DEVICE_1_ADDR, CEC_PLAYBACK_DEVICE_2_ADDR,
-					    CEC_PLAYBACK_DEVICE_3_ADDR },
-					  { CEC_PLAYBACK_DEVICE_2_ADDR, CEC_PLAYBACK_DEVICE_3_ADDR,
-					    CEC_PLAYBACK_DEVICE_1_ADDR },
-					  { CEC_PLAYBACK_DEVICE_3_ADDR, CEC_PLAYBACK_DEVICE_1_ADDR,
-					    CEC_PLAYBACK_DEVICE_2_ADDR } };
+	unsigned int player_dev[3][3] = { { CEC_RECORDING_DEVICE_1_ADDR, CEC_RECORDING_DEVICE_2_ADDR,
+					    CEC_RECORDING_DEVICE_3_ADDR },
+					  { CEC_RECORDING_DEVICE_2_ADDR, CEC_RECORDING_DEVICE_3_ADDR,
+					    CEC_RECORDING_DEVICE_1_ADDR },
+					  { CEC_RECORDING_DEVICE_3_ADDR, CEC_RECORDING_DEVICE_1_ADDR,
+					    CEC_RECORDING_DEVICE_2_ADDR } };
 
 #if CEC_FW_DEBUG
 	printf("%s\n", __func__);
@@ -2080,13 +2084,9 @@ static void cec_node_init(void)
 		/*regist_devs = 0;*/
 		idx = 0;
 		/*_udelay(100);*/
-		/*
-		 * use kernel cec logic address to detect which logic address is the
-		 * started one to allocate.
-		 */
 		printf("addr from kernel:0x%x\n", kern_log_addr);
 		/* we don't need probe TV address */
-		if (!is_playback_dev(kern_log_addr)) {
+		if (kern_log_addr == CEC_TV_ADDR) {
 			cec_set_log_addr(kern_log_addr);
 			msg[0] = (kern_log_addr << 4) | kern_log_addr;
 			ping_cec_ll_tx(msg, 1);
@@ -2098,6 +2098,18 @@ static void cec_node_init(void)
 			idx = 0;
 			retry = 0;
 			/*check_standby();*/
+			return;
+		} else if (kern_log_addr != CEC_UNREGISTERED_ADDR) {
+			cec_set_log_addr(kern_log_addr);
+			cec_msg.log_addr = kern_log_addr;
+			/*_udelay(100);*/
+			printf("log_addr:0x%x ADDR0:0x%x\n",
+			       cec_msg.log_addr,
+			       cec_get_log_addr());
+			probe = NULL;
+			/*regist_devs = 0;*/
+			idx = 0;
+			retry = 0;
 			return;
 		}
 
@@ -2222,6 +2234,8 @@ u32 cec_suspend_handle(void)
 			}
 		}
 	} else if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
+		printf("cec_config:0x%x\n", cec_mailbox.cec_config);
+		printf("phy_addr:0x%x\n", cec_mailbox.phy_addr);
 		cec_node_init();
 	}
 

@@ -20,10 +20,6 @@ aml_library_sources(
 	aml_isspace.c
 	aml_isupper.c
 	aml_tolower.c
-	aml_memcpy.c
-	aml_memset.c
-	aml_memmove.c
-	aml_memcmp.c
 	aml_strlen.c
 	aml_strncpy.c
 	aml_strtoul.c
@@ -31,8 +27,26 @@ aml_library_sources(
 	aml_strncasecmp.c
 	)
 
-aml_library_link_libraries(kernel__${KERNEL})
+if(CONFIG_ARM64)
+#memmove is a alias function as memcpy in aml_memcpy.S
+aml_library_sources(
+	asm/${ARCH}/aml_memcpy.S
+	asm/${ARCH}/aml_memset.S
+	asm/${ARCH}/aml_memcmp.S
+	)
+else()
+aml_library_sources(
+	aml_memcpy.c
+	aml_memset.c
+	aml_memmove.c
+	aml_memcmp.c
+	)
+endif()
+
+aml_library_link_libraries(arch__${ARCH})
 aml_library_link_libraries(drivers)
+aml_library_link_libraries(kernel__${KERNEL})
+
 aml_link_libraries()
 
 endif()

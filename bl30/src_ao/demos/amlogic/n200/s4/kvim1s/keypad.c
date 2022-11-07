@@ -20,17 +20,9 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 {
 	uint32_t buf[4] = {0};
 
-	switch (event.ulCode) {
-	case GPIO_KEY_ID_POWER:
+	if (event.ulCode == GPIO_KEY_ID_POWER || event.ulCode == get_User_Gpio()) {
 		buf[0] = POWER_KEY_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		break;
-	case GPIO_KEY_ID_WIFI_WAKEUP:
-		buf[0] = WIFI_WAKEUP;
-		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		break;
-	default:
-		break;
 	}
 
 	printf("GPIO key event 0x%x, key code %d, responseTicks %d\n",
@@ -57,7 +49,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 struct xGpioKeyInfo gpioKeyInfo[] = {
 	GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
 			vGpioKeyCallBack, NULL),
-	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKEUP, HIGH, EVENT_SHORT,
+	GPIO_KEY_INFO(GPIO_INVALID, HIGH, EVENT_SHORT,
 			vGpioKeyCallBack, NULL)
 };
 
@@ -81,6 +73,7 @@ struct xAdcKeyInfo adcKeyInfo[] = {
 
 void vKeyPadInit(void)
 {
+	gpioKeyInfo[1].keyInitInfo.ulKeyId = get_User_Gpio();
 	vCreateAdcKey(adcKeyInfo,
 			sizeof(adcKeyInfo)/sizeof(struct xAdcKeyInfo));
 	vAdcKeyEnable();

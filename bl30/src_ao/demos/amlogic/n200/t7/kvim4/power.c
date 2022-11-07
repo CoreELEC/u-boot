@@ -79,7 +79,7 @@ void Bt_GpioIRQFree(void);
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+	vIRInit(GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);

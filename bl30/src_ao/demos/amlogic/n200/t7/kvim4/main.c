@@ -51,6 +51,7 @@
 #include "version.h"
 #include "eth.h"
 #include "leds_state.h"
+#include "ir.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -185,6 +186,7 @@ int main(void)
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();
+	vIRMailboxEnable();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

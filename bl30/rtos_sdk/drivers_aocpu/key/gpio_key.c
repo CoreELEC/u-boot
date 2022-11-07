@@ -116,22 +116,37 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 	}
 
 	for (i = 0; i < keyNum; i++) {
-		xOneKey = pvPortMalloc(sizeof(struct xOneGpioKeyInfo));
-		if (xOneKey == NULL)
-			goto fail_alloc2;
+		struct xOneGpioKeyInfo *xPassBtn;
+		//check if gpio is already in list
+		for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
+			if (xPassBtn->gpioKeyInfo->keyInitInfo.ulKeyId == keyArr[i].keyInitInfo.ulKeyId) {
+				keyArr[i].keyInitInfo.ulKeyId = GPIO_INVALID;
+				printf("GPIOKEY: do not add gpio key [%ld], already in list\n",
+					xPassBtn->gpioKeyInfo->keyInitInfo.ulKeyId);
+				break;
+			}
+			xPassBtn = xPassBtn->xNext;
+		}
+		// only add valid gpio
+		if (keyArr[i].keyInitInfo.ulKeyId != GPIO_INVALID) {
+			xOneKey = pvPortMalloc(sizeof(struct xOneGpioKeyInfo));
+			if (xOneKey == NULL)
+				goto fail_alloc2;
 
-		gpioKeyInfo = pvPortMalloc(sizeof(struct xGpioKeyInfo));
-		if (gpioKeyInfo == NULL)
-			goto fail_alloc1;
+			gpioKeyInfo = pvPortMalloc(sizeof(struct xGpioKeyInfo));
+			if (gpioKeyInfo == NULL)
+				goto fail_alloc1;
 
-		memcpy(gpioKeyInfo, &keyArr[i], sizeof(struct xGpioKeyInfo));
-		memset(xOneKey, 0, sizeof(struct xOneGpioKeyInfo));
-		xOneKey->keyJitterCount = 0;
-		xOneKey->keyState = UP;
-		xOneKey->gpioKeyInfo = gpioKeyInfo;
-		prvAddGpioKey(xOneKey);
+			memcpy(gpioKeyInfo, &keyArr[i], sizeof(struct xGpioKeyInfo));
+			memset(xOneKey, 0, sizeof(struct xOneGpioKeyInfo));
+			xOneKey->keyJitterCount = 0;
+			xOneKey->keyState = UP;
+			xOneKey->gpioKeyInfo = gpioKeyInfo;
+			prvAddGpioKey(xOneKey);
 
-		printf("GPIOKEY: SETUP %ld\n", xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
+			printf("GPIOKEY: add gpio key [%ld]\n",
+				xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
+		}
 	}
 
 	return;

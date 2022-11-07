@@ -31,6 +31,7 @@
 #include "pm.h"
 #include "suspend_debug.h"
 #include "uart.h"
+#include "gpio.h"
 
 SemaphoreHandle_t xSTRSemaphore;
 QueueHandle_t xSTRQueue;
@@ -41,6 +42,7 @@ uint32_t suspend_debug_flag;
 #endif
 uint32_t power_mode;
 uint32_t usb_power_flag = 0;
+uint32_t user_gpio = GPIO_INVALID;
 
 struct WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
@@ -343,6 +345,20 @@ int get_USB_Power_flag(void)
 	return usb_power_flag;
 }
 
+void *xMboxSetUserGpio(void *msg);
+void *xMboxSetUserGpio(void *msg)
+{
+	user_gpio = *(u32 *)msg;
+	return NULL;
+}
+
+uint32_t get_User_Gpio(void);
+uint32_t get_User_Gpio(void)
+{
+	printf("%s: %d\n", __func__, user_gpio);
+	return user_gpio;
+}
+
 static void vSTRTask(void *pvParameters)
 {
 	/*make compiler happy*/
@@ -439,4 +455,6 @@ void create_str_task(void)
 
 	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
 			MBX_CMD_SET_USB_POWER, xMboxUSBSetPower, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_SET_USER_GPIO, xMboxSetUserGpio, 1);
 }

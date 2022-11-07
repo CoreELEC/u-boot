@@ -50,6 +50,7 @@
 #include "pm.h"
 #include "irq.h"
 #include "uart.h"
+#include "eth.h"
 
 #ifndef UNUSED
 #define UNUSED(x) ((void)x)
@@ -89,12 +90,16 @@ WakeUp_Reason vWakeupReason[] = {
 	[HDMI_RX_WAKEUP] = { .name = "hdmirx_plugin" },
 };
 
+__attribute__((weak)) void vETHEnableIrq(void)
+{
+}
+
 void set_suspend_flag(void)
 {
 	taskENTER_CRITICAL();
 	suspend_flag = 1;
+	vETHEnableIrq();
 	taskEXIT_CRITICAL();
-	EnableIrq(IRQ_ETH_PMT_NUM);
 }
 
 uint32_t get_power_mode(void)

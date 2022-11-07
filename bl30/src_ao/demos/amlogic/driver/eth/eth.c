@@ -32,6 +32,9 @@
 #include "interrupt.h"
 #include "mailbox-api.h"
 #include "eth.h"
+#ifdef N200_REVA
+#include "interrupt_control_pic.h"
+#endif
 
 uint32_t eth_wol_flag = 0;
 uint32_t ethIrq;
@@ -46,8 +49,15 @@ void eth_handler(void)
 
 void vETHInit(uint32_t ulIrq,function_ptr_t handler)
 {
+	if (!eth_wol_flag)
+		return;
+	printf("vETH Init\n");
 	ethIrq = ulIrq;
 	RegisterIrq(ulIrq, 2, handler);
+#ifdef N200_REVA
+	printf("complete eth irq %d\n", ulIrq);
+	pic_complete_interrupt(ulIrq);
+#endif
 }
 
 void vETHDeint(void)
@@ -71,9 +81,20 @@ void eth_handler_t5(void)
 
 void vETHDeint_t5(void)
 {
+	if (!eth_wol_flag)
+		return;
+	printf("vETH Deinit\n");
 	eth_deinit = 1;
 	DisableIrq(ethIrq);
 	UnRegisterIrq(ethIrq);
+}
+
+void vETHEnableIrq(void)
+{
+	if (!eth_wol_flag)
+		return;
+	printf("vETH enable irq\n");
+	EnableIrq(ethIrq);
 }
 
 int get_ETHWol_flag(void)
@@ -97,3 +118,4 @@ void vETHMailboxCallback(void)
 		return;
 	}
 }
+

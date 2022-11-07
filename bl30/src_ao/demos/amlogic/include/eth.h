@@ -39,6 +39,7 @@ extern "C" {
 	extern void eth_handler(void);
 	extern void vETHDeint_t5(void);
 	extern void eth_handler_t5(void);
+	extern void vETHEnableIrq(void);
 	extern int get_ETHWol_flag(void);
 	extern void vETHMailboxCallback(void);
 #ifdef __cplusplus

@@ -52,6 +52,8 @@
 #include "eth.h"
 #include "stick_mem.h"
 #include "leds_state.h"
+#include "ir.h"
+
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -183,6 +185,7 @@ int main(void)
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();
+	vIRMailboxEnable();
 
 #if configBL30_VERSION_SAVE
 	bl30_plat_save_version();

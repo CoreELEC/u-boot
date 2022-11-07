@@ -49,6 +49,7 @@
 #include "vrtc.h"
 #include "mailbox-api.h"
 #include "version.h"
+#include "ir.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -175,6 +176,7 @@ int main(void)
 	vCecCallbackInit(CEC_CHIP_S4);
 	vRtcInit();
 	create_str_task();
+	vIRMailboxEnable();
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

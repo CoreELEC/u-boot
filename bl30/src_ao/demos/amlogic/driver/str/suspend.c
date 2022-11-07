@@ -68,6 +68,7 @@ SemaphoreHandle_t xSTRFlagSem = NULL;
 uint32_t suspend_flag;
 uint32_t power_mode;
 uint32_t usb_power_flag = 0;
+uint32_t user_gpio = GPIO_INVALID;
 
 WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
@@ -318,6 +319,20 @@ int get_USB_Power_flag(void)
 	return usb_power_flag;
 }
 
+void *xMboxSetUserGpio(void *msg);
+void *xMboxSetUserGpio(void *msg)
+{
+	user_gpio = *(u32 *)msg;
+	return NULL;
+}
+
+uint32_t get_User_Gpio(void);
+uint32_t get_User_Gpio(void)
+{
+	printf("%s: %d\n", __func__, user_gpio);
+	return user_gpio;
+}
+
 static void vSTRTask( void *pvParameters )
 {
 	/*make compiler happy*/
@@ -426,4 +441,8 @@ void create_str_task(void)
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_USB_POWER);
 
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_USER_GPIO,
+					xMboxSetUserGpio, 1);
+	if (ret == MBOX_CALL_MAX)
+		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_USER_GPIO);
 }

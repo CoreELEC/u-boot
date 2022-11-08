@@ -22,5 +22,6 @@ config BOARD_AM301_T950D4
 	select TIMER_SOURCE
 	select SARADC
 	select IR
+	select VERSION_FULL_INFO
 	help
 	  Enable Amlogic AM301 Board.

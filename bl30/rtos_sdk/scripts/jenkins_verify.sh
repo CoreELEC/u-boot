@@ -33,6 +33,7 @@ OUTPUT_DIR=$WORK_DIR/output
 LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
 CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
 DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
+LAST_BUILD_FAILURE="$OUTPUT_DIR/.last_build_failure"
 
 if [ -n "$EXCLUDE_REPOS" ]; then
 	echo "Exclude repos:"

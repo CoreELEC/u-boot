@@ -41,7 +41,7 @@ gen_jenkins_trigger() {
 
 [ -z "$DIFF_MANIFEST" ] && DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
 
-if [ ! -f $LAST_MANIFEST ]; then
+if [ ! -f $LAST_MANIFEST ] || [ -f $LAST_BUILD_FAILURE ]; then
 	gen_jenkins_trigger
 else
 	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST

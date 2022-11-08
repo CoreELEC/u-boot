@@ -51,10 +51,11 @@ while IFS= read -r LINE; do
 	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && exit 2
 	echo -n "$nr. Building $LINE ... "
 	make >> $BUILD_LOG 2>&1
-	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!\n" && exit 3
+	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && exit 3
 	grep -qr "warning: " $BUILD_LOG
-	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!\n" && exit 1
+	[ "$?" -eq 0 ] && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && exit 1
 	echo "OK."
+	rm -f $LAST_BUILD_FAILURE
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		if [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then
 			make_image >> $BUILD_LOG 2>&1

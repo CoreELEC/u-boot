@@ -192,7 +192,9 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 	pxTopOfStack--;
 
 	*pxTopOfStack = (StackType_t) 0x00000000;	/* DSPControl */
-	pxTopOfStack -= 7;  						/* Includes space for AC1 - AC3. */
+
+	/* Includes space for AC1 - AC3. */
+	pxTopOfStack -= 7;
 
 	*pxTopOfStack = (StackType_t) portTASK_RETURN_ADDRESS;	/* ra */
 	pxTopOfStack -= 15;

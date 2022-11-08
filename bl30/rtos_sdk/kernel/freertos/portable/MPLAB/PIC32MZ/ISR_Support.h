@@ -216,8 +216,7 @@
 	sw			s6, portEPC_STACK_LOCATION(s5)
 	sw			$1, 16(s5)
 
-	/* Save the AC0, AC1, AC2, AC3 registers from the DSP.  s6 is used as a
-	scratch register. */
+	/* Save the AC0, AC1, AC2, AC3 registers from the DSP.  s6 is used as a scratch register. */
 	mfhi		s6, $ac1
 	sw			s6, 128(s5)
 	mflo		s6, $ac1

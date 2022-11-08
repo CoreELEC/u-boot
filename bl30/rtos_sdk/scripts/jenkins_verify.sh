@@ -107,7 +107,7 @@ fi
 source scripts/cherry_pick.sh
 
 # Generate Jenkins trigger
-[ "$SUBMIT_TYPE" = "release" ] && source gen_jenkins_trigger.sh
+[ "$SUBMIT_TYPE" = "daily" ] && source scripts/gen_jenkins_trigger.sh
 
 if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then
 	source scripts/build_all_pkg.sh

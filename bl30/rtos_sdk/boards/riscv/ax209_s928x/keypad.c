@@ -28,17 +28,17 @@
 static void vGpioKeyCallBack(struct xReportEvent event)
 {
 	uint32_t buf[4] = { 0 };
-#ifdef KEYPAD_USED
+
 	switch (event.ulCode) {
-	case GPIO_KEY_ID_WIFI_WAKE:
-		buf[0] = POWER_KEY_WAKEUP;
+	case GPIOZ_14:
+		printf("gpio14 wakeup\n");
+		buf[0] = ETH_PHY_GPIO;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		wakeup_dsp();
 		break;
 	default:
 		break;
 	}
-#endif
+
 	printf("GPIO key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
 	       event.responseTime);
 }
@@ -67,6 +67,7 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 	 *		vGpioKeyCallBack, NULL),
 	 */
 //	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKE, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
+	GPIO_KEY_INFO(GPIOZ_14, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
 
 };
 

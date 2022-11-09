@@ -64,9 +64,6 @@ void vUartTxFlush(void)
 
 void vUartPutc(const char c)
 {
-	if (c == '\n')
-		vUartPutc('\r');
-
 	while (prvUartTxIsFull())
 		;
 	REG32(P_UART_WFIFO(UART_PORT_CONS)) = (char)c;
@@ -77,6 +74,9 @@ void vUartPuts(const char *s)
 {
 	while (*s)
 		vUartPutc(*s++);
+
+	vUartPutc('\r');
+	vUartPutc('\n');
 }
 
 void vUartTxStart(void)

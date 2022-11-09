@@ -48,6 +48,7 @@ struct WakeUp_Reason vWakeupReason[] = {
 	[REMOTE_CUS_WAKEUP] = { .name = "remote_cus" },
 	[ETH_PMT_WAKEUP] = { .name = "eth" },
 	[CECB_WAKEUP] = { .name = "cecb" },
+	[ETH_PHY_GPIO] = { .name = "eth_gpio" },
 	[VAD_WAKEUP] = { .name = "vad" },
 	[HDMI_RX_WAKEUP] = { .name = "hdmirx_plugin" },
 };
@@ -294,6 +295,10 @@ static void vSTRTask(void *pvParameters)
 				break;
 			case WIFI_WAKEUP:
 				exit_reason = WIFI_WAKEUP;
+				break;
+			case ETH_PHY_GPIO:
+				exit_reason = ETH_PHY_GPIO;
+				printf("wzh eth gpio\n");
 				break;
 			case VAD_WAKEUP:
 				exit_reason = VAD_WAKEUP;

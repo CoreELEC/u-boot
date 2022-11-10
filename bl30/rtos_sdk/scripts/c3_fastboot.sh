@@ -56,8 +56,8 @@ function package_fastboot() {
 	cp $RTOS_IMAGE_B ./fastboot
 	cp $RTOS_BUILD_DIR/bl22.bin ./fastboot
 	#./mk c3_aw419 --update-bl2 --bl31 ./blob-bl31.bin.signed
-	./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./blob-bl31.bin.signed
-	#./mk c3_aw419 ./blob-bl31.bin.signed
+	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./blob-bl31.bin.signed
+	./mk c3_aw419
 	popd
 }
 

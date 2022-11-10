@@ -85,4 +85,6 @@ void vHardwareResourceRecord(void);
 
 void vHardwareResourceRelease(void);
 
+int xRtosLoadStageIndicator(void);
+
 #endif

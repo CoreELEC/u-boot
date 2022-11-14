@@ -24,13 +24,6 @@ STAMP="$kernel_BUILD_DIR/.stamp"
 [ -n "$1" ] && BUILD_DIR=$1;
 RTOS_SDK_VERSION_FILE="$BUILD_DIR/sdk_ver.h"
 
-#COMPILE_TIME="$(shell date +%g.%V.%u" "%H:%M:%S)"
-COMPILE_TIME=`date +%F" "%T`
-
-echo "#define CONFIG_BOARD_NAME \"$BOARD\"" > $RTOS_SDK_VERSION_FILE
-echo "#define CONFIG_PRODUCT_NAME \"$PRODUCT\"" >> $RTOS_SDK_VERSION_FILE
-echo "#define CONFIG_COMPILE_TIME \"$COMPILE_TIME\"" >> $RTOS_SDK_VERSION_FILE
-
 # Check whether the project is a valid repo
 repo manifest 2>&1 | grep -q $build_dir
 if [ "$?" -ne 0 ]; then
@@ -52,16 +45,8 @@ else
 fi
 
 # Get SDK_VERSION
-pattern="revision="
-keyline=`grep 'default .* revision' $RTOS_SDK_MANIFEST_FILE`
-for keyword in $keyline; do
-	let i++
-	if [[ $keyword == $pattern* ]]; then
-		SDK_VERSION=`echo ${keyword#*${pattern}} | sed 's/\"//g' | sed 's/\/>//g'`
-		break;
-	fi
-done
-echo "#define CONFIG_VERSION_STRING \"$SDK_VERSION\"" >> $RTOS_SDK_VERSION_FILE
+source scripts/gen_version.sh $RTOS_SDK_VERSION_FILE \
+	$RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
 
 if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`

@@ -21,5 +21,6 @@ config BOARD_AV400_A113X2
 	select SARADC
 	select IR
 	select RTC
+	select VERSION_FULL_INFO
 	help
 	  Enable Amlogic AV400 Board.

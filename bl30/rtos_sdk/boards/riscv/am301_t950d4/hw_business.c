@@ -71,6 +71,7 @@ static void vPICInit(void)
 void hw_business_process(void)
 {
 	printf("AOCPU image version='%s'\n", CONFIG_COMPILE_TIME);
+	OUTPUT_VERSION_FULL_INFO();
 
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();

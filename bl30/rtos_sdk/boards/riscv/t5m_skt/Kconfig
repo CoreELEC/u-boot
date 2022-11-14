@@ -22,5 +22,6 @@ config BOARD_SKT_T5M
 	select IR
 	select VRTC
 	select HWSPINLOCK
+	select VERSION_FULL_INFO
 	help
 	  Enable Amlogic T5M SKT Board.

@@ -26,7 +26,7 @@ declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/ree"		\
 			   "bl2/tee"		\
 			   "bl31_1.3/src"	\
-			   "bl32_3.8/src"	\
+			   "bl32_3.18/src"	\
 			   "NULL"		\
 			   "bl30/src_ao"	\
 			   "bl33")

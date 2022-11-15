@@ -25,6 +25,7 @@
 #include "vrtc.h"
 #include "rtc.h"
 #include "mailbox-api.h"
+#include "eth.h"
 #include "wakeup.h"
 #include "stick_mem.h"
 #include "pm.h"
@@ -57,6 +58,7 @@ void set_suspend_flag(void)
 {
 	taskENTER_CRITICAL();
 	suspend_flag = 1;
+	vETHEnableIrq();
 	taskEXIT_CRITICAL();
 }
 

@@ -10,6 +10,9 @@
 #include "mailbox-api.h"
 #include "irq.h"
 #include "eth.h"
+#ifdef CONFIG_N200_REVA
+#include "interrupt_control_pic.h"
+#endif
 
 uint32_t ethIrq = IRQ_ETH_PMT_NUM;
 uint32_t Serial_T5;
@@ -46,9 +49,12 @@ void vETHInit(uint32_t type)
 		return;
 	printf("%s type=%d\n", __func__, type);
 	Serial_T5 = type;
-	if (type == 1)
+	if (type == 1) {
 		RegisterIrq(ethIrq, 2, eth_handler_t5);
-	else
+#ifdef CONFIG_N200_REVA
+		pic_complete_interrupt(ethIrq);
+#endif
+	} else
 		RegisterIrq(ethIrq, 2, eth_handler);
 }
 

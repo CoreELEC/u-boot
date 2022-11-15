@@ -29,6 +29,8 @@ check_project()
 # $4: product
 check_build_combination()
 {
+	[ $# -ne 4 ] && return -1
+
 	i=0
 	for arch in ${ARCHS[*]}; do
 		[[ "$1" == "$arch" ]] && break
@@ -67,20 +69,29 @@ SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basen
 BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
 PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
 
-BUILD_COMBINATION_INPUT="$PWD/build_system/build_combination.in"
 export BUILD_COMBINATION="$PWD/output/build_combination.txt"
 
 if [ ! -d "$PWD/output" ]; then
 	mkdir -p $PWD/output
 fi
-if [ ! -s "$BUILD_COMBINATION" ] || [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
-	:> $BUILD_COMBINATION
-	while IFS= read -r LINE; do
-		arch=`echo "$LINE"|awk '{print $1}'`
-		soc=`echo "$LINE"|awk '{print $2}'`
-		board=`echo "$LINE"|awk '{print $3}'`
-		product=`echo "$LINE"|awk '{print $4}'`
-		check_build_combination $arch $soc $board $product
-		[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
-	done < $BUILD_COMBINATION_INPUT
+
+for arch in ${ARCHS[*]}; do
+	BUILD_COMBINATION_INPUT="$PWD/boards/$arch/build_combination.in"
+	if [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
+		:> $BUILD_COMBINATION
+	fi
+done
+
+if [ ! -s "$BUILD_COMBINATION" ]; then
+	for arch in ${ARCHS[*]}; do
+		BUILD_COMBINATION_INPUT="$PWD/boards/$arch/build_combination.in"
+		while IFS= read -r LINE; do
+			a=`echo "$LINE"|awk '{print $1}'`
+			s=`echo "$LINE"|awk '{print $2}'`
+			b=`echo "$LINE"|awk '{print $3}'`
+			p=`echo "$LINE"|awk '{print $4}'`
+			check_build_combination $a $s $b $p
+			[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
+		done < $BUILD_COMBINATION_INPUT
+	done
 fi

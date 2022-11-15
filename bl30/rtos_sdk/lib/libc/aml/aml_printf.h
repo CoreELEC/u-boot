@@ -60,4 +60,4 @@ int iprint_string(char *str);
 }
 #endif
 
-#endif /* __CROS_EC_PRINTF_H */
+#endif

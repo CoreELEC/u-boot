@@ -5,10 +5,9 @@
  */
 
 #include "aml_errno.h"
-
-static volatile int __aml_errno;
+#include "aml_impure.h"
 
 int *__errno(void)
 {
-	return (int *)&__aml_errno;
+	return (int *)&(_impure_ptr->_errno);
 }

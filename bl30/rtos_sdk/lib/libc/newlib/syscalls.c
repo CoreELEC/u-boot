@@ -5,12 +5,14 @@
  */
 
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <FreeRTOS.h>
+#include <task.h>
 #if CONFIG_VFS
 #include <sys_vfs.h>
 #else
@@ -339,6 +341,29 @@ int _close(int file)
 #endif
 
 	free_file(file);
+	return 0;
+}
+
+int _gettimeofday(struct timeval *tv, struct timezone *tz)
+{
+	TickType_t tick_count;
+
+	if (0 == configTICK_RATE_HZ)
+		return -1;
+	if ((NULL == tv) && (NULL == tz))
+		return -1;
+
+	if (NULL != tv) {
+		tick_count = xTaskGetTickCount();
+		tv->tv_sec = tick_count / configTICK_RATE_HZ;
+		tv->tv_usec = (tick_count  % 1000) * configTICK_RATE_HZ;
+	}
+
+	if (NULL != tz) {
+		tz->tz_dsttime = DST_NONE;
+		tz->tz_minuteswest = 0;
+	}
+
 	return 0;
 }
 

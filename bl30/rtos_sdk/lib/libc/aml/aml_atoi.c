@@ -5,7 +5,8 @@
  */
 
 #include "aml_atoi.h"
-#include <ctype.h>
+#include "aml_isspace.h"
+#include "aml_isdigit.h"
 
 int atoi(const char *nptr)
 {

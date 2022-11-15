@@ -8,6 +8,7 @@
 #include "common.h"
 #include "gpio.h"
 #include "ir.h"
+#include "eth.h"
 #include "suspend.h"
 #include "task.h"
 #include "gpio.h"
@@ -19,14 +20,6 @@
 #define CONFIG_CEC_TASK
 #ifdef CONFIG_CEC_TASK
 #include "hdmi_cec.h"
-#endif
-
-/*#define CONFIG_ETH_WAKEUP*/
-
-#ifdef CONFIG_ETH_WAKEUP
-#include "interrupt_control.h"
-#include "eth.h"
-#include "irq.h"
 #endif
 
 #ifdef CONFIG_CEC_TASK
@@ -63,9 +56,7 @@ void str_hw_init(void)
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
-#ifdef CONFIG_ETH_WAKEUP
-	vETHInit(IRQ_ETH_PMT_NUM, eth_handler_t5);
-#endif
+	vETHInit(1);
 #ifdef CONFIG_CEC_TASK
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 #endif
@@ -79,9 +70,7 @@ void str_hw_disable(void)
 {
 	/*disable wakeup source interrupt*/
 	vIRDeint();
-#ifdef CONFIG_ETH_WAKEUP
-	vETHDeint_t5();
-#endif
+	vETHDeint();
 #ifdef CONFIG_CEC_TASK
 	if (cecTask) {
 		vTaskDelete(cecTask);
@@ -197,13 +186,13 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-#ifndef CONFIG_ETH_WAKEUP
-	ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vcc3.3 set gpio val fail\n");
-		return;
+	if (get_ETHWol_flag() == 0) {
+		ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vcc3.3 set gpio val fail\n");
+			return;
+		}
 	}
-#endif
 
 	/***set vdd_cpu val***/
 	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);

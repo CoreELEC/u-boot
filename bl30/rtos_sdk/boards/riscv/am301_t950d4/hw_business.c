@@ -12,6 +12,7 @@
 #include "n200_pic_tmr.h"
 #include "n200_func.h"
 #include "uart.h"
+#include "eth.h"
 #include "common.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
@@ -92,6 +93,7 @@ void hw_business_process(void)
 	write_csr_mivec(&irq_entry);
 
 	vRtcInit();
+	vETHMailboxCallback();
 	create_str_task();
 	vKeyPadCreate();
 }

@@ -12,6 +12,7 @@
 #include "n200_eclic.h"
 #include "n200_func.h"
 #include "uart.h"
+#include "eth.h"
 #include "common.h"
 #include "riscv_encoding.h"
 #include "mailbox-api.h"
@@ -68,6 +69,7 @@ void hw_business_process(void)
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_S5);
 	vRtcInit();
+	vETHMailboxCallback();
 	create_str_task();
 	vHwLockInit(HW_SPIN_LOCK0, 0);
 }

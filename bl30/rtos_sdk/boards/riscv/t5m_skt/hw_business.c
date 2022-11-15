@@ -12,6 +12,7 @@
 #include "n200_eclic.h"
 #include "n200_func.h"
 #include "uart.h"
+#include "eth.h"
 #include "common.h"
 #include "riscv_encoding.h"
 #include "mailbox-api.h"
@@ -68,5 +69,6 @@ void hw_business_process(void)
 	//	vCecCallbackInit(CEC_CHIP_SC2);
 	//	vRtcInit();
 	//rtc_init();
+	vETHMailboxCallback();
 	//create_str_task();
 }

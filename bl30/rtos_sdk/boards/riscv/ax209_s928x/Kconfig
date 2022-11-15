@@ -20,6 +20,7 @@ config BOARD_AX209_S928X
 	select TIMER_SOURCE
 	select SARADC
 	select IR
+	select ETHERNET
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO

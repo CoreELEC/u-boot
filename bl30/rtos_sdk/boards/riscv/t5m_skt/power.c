@@ -9,7 +9,7 @@
 #include "common.h"
 #include "gpio.h"
 #include "ir.h"
-#include "soc.h"
+#include "eth.h"
 #include "suspend.h"
 #include "task.h"
 #include "gpio.h"
@@ -22,12 +22,7 @@
 #include "power.h"
 #include "mailbox-api.h"
 
-/* #define CONFIG_ETH_WAKEUP */
 
-#ifdef CONFIG_ETH_WAKEUP
-#include "interrupt_control.h"
-#include "eth.h"
-#endif
 static int vdd_ee;
 static int vdd_cpu;
 static TaskHandle_t vadTask;
@@ -71,9 +66,8 @@ void str_hw_init(void)
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
-#ifdef CONFIG_ETH_WAKEUP
-	vETHInit(IRQ_ETH_PMT_NUM, eth_handler);
-#endif
+	vETHInit(0);
+
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
 									xMboxVadWakeup, 0);
@@ -89,9 +83,8 @@ void str_hw_disable(void)
 {
 	/*disable wakeup source interrupt*/
 	vIRDeint();
-#ifdef CONFIG_ETH_WAKEUP
 	vETHDeint();
-#endif
+
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 
 	vKeyPadDeinit();

@@ -18,6 +18,8 @@ else
 	UBOOT_DIR=$2
 fi
 
+#Clear cache files
+[ -d $RTOS_BASE_DIR/output ] && rm -rf $RTOS_BASE_DIR/output
 #Get the current project environment variables
 source $RTOS_BASE_DIR/scripts/env.sh arm64 c3 aw419_c308l fastboot
 

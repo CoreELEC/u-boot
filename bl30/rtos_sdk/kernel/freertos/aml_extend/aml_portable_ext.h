@@ -87,4 +87,6 @@ void vHardwareResourceRelease(void);
 
 int xRtosLoadStageIndicator(void);
 
+extern void _global_constructors(void);
+
 #endif

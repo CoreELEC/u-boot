@@ -199,10 +199,16 @@ extern void vTickTimerRestore(void);
 /*-----------------------------------------------------------*/
 int xRtosLoadStageIndicator(void)
 {
+	static int load_finished;
+
 #if defined(CONFIG_BOARD_AW419_C308L)
 	vCacheFlushDcacheRange((CONFIG_SCATTER_LOAD_ADDRESS - 0x04), 4);
-	if (REG32(CONFIG_SCATTER_LOAD_ADDRESS - 0x04) == 0xaabbccdd)
+	if (REG32(CONFIG_SCATTER_LOAD_ADDRESS - 0x04) == 0xaabbccdd) {
+		if (0 == load_finished)
+			_global_constructors();
+		load_finished = 1;
 		return 2;
+	}
 #endif
 	return 1;
 }

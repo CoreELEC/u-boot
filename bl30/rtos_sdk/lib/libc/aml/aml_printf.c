@@ -3,508 +3,614 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
-#include <projdefs.h>
-#include <string.h>
-#include <FreeRTOS.h>
-#include <task.h>
 #include "aml_printf.h"
+#include "aml_strnlen.h"
+#include "aml_isdigit.h"
+#include <stdarg.h>
+#include <stddef.h>
 #if (1 == CONFIG_ARM64)
 #include "serial.h"
 #else
 #include "uart.h"
 #endif
-static const char error_str[] = "ERROR";
 
-#define MAX_FORMAT 1024 /* Maximum chars in a single format field */
-static char printbuffer[512];
+#define HAS_FLOAT 1
+#define MAX_BUFFER_LEN	512
+static char printbuffer[MAX_BUFFER_LEN];
 
-#ifndef MAX
-#define MAX(a, b)                                                                                \
-	({                                                                                       \
-		__typeof__(a) temp_a = (a);                                                      \
-		__typeof__(b) temp_b = (b);                                                      \
-		temp_a > temp_b ? temp_a : temp_b;                                               \
-	})
-#endif
+#define ZEROPAD (1 << 0) /* Pad with zero */
+#define SIGN (1 << 1) /* Unsigned/signed long */
+#define PLUS (1 << 2) /* Show plus */
+#define SPACE (1 << 3) /* Spacer */
+#define LEFT (1 << 4) /* Left justified */
+#define HEX_PREP (1 << 5) /* 0x */
+#define UPPERCASE (1 << 6) /* 'ABCDEF' */
 
-/**
- * Convert the lowest nibble of a number to hex
- *
- * @param c	Number to extract lowest nibble from
- *
- * @return The corresponding ASCII character ('0' - 'f').
- */
-static int hexdigit(int c)
+static char *digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+static char *upper_digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+static int skip_atoi(const char **s)
 {
-	/* Strip off just the last nibble */
-	c &= 0x0f;
+	int i = 0;
 
-	return c > 9 ? (c + 'a' - 10) : (c + '0');
+	while (isdigit(**s))
+		i = i * 10 + *((*s)++) - '0';
+
+	return i;
 }
 
-int uint64divmod(uint64_t *n, int d)
+static char *number(char *str, long num, int base, int size, int precision, int type)
 {
-	uint64_t q = 0, mask;
-	int r = 0;
+	char c, sign, tmp[66];
+	char *dig = digits;
+	int i;
 
-	/* Divide-by-zero returns zero */
-	if (!d) {
-		*n = 0;
+	if (type & UPPERCASE)
+		dig = upper_digits;
+	if (type & LEFT)
+		type &= ~ZEROPAD;
+	if (base < 2 || base > 36)
 		return 0;
-	}
 
-	/* Common powers of 2 = simple shifts */
-	if (d == 2) {
-		r = *n & 1;
-		*n >>= 1;
-		return r;
-	} else if (d == 16) {
-		r = *n & 0xf;
-		*n >>= 4;
-		return r;
-	}
-
-	/* If v fits in 32-bit, we're done. */
-	if (*n <= 0xffffffff) {
-		uint32_t v32 = *n;
-
-		r = v32 % d;
-		*n = v32 / d;
-		return r;
-	}
-
-	/* Otherwise do integer division the slow way. */
-	for (mask = (1ULL << 63); mask; mask >>= 1) {
-		r <<= 1;
-		if (*n & mask)
-			r |= 1;
-		if (r >= d) {
-			r -= d;
-			q |= mask;
+	c = (type & ZEROPAD) ? '0' : ' ';
+	sign = 0;
+	if (type & SIGN) {
+		if (num < 0) {
+			sign = '-';
+			num = -num;
+			size--;
+		} else if (type & PLUS) {
+			sign = '+';
+			size--;
+		} else if (type & SPACE) {
+			sign = ' ';
+			size--;
 		}
 	}
-	*n = q;
-	return r;
+
+	if (type & HEX_PREP) {
+		if (base == 16)
+			size -= 2;
+		else if (base == 8)
+			size--;
+	}
+
+	i = 0;
+
+	if (num == 0)
+		tmp[i++] = '0';
+	else {
+		while (num != 0) {
+			tmp[i++] = dig[((unsigned long)num) % (unsigned int)base];
+			num = ((unsigned long)num) / (unsigned int)base;
+		}
+	}
+
+	if (i > precision)
+		precision = i;
+	size -= precision;
+	if (!(type & (ZEROPAD | LEFT)))
+		while (size-- > 0)
+			*str++ = ' ';
+	if (sign)
+		*str++ = sign;
+
+	if (type & HEX_PREP) {
+		if (base == 8)
+			*str++ = '0';
+		else if (base == 16) {
+			*str++ = '0';
+			*str++ = digits[33];
+		}
+	}
+
+	if (!(type & LEFT))
+		while (size-- > 0)
+			*str++ = c;
+	while (i < precision--)
+		*str++ = '0';
+	while (i-- > 0)
+		*str++ = tmp[i];
+	while (size-- > 0)
+		*str++ = ' ';
+
+	return str;
 }
 
-/* Flags for vfnprintf() flags */
-#define PF_LEFT (1 << 0) /* Left-justify */
-#define PF_PADZERO (1 << 1) /* Pad with 0's not spaces */
-#define PF_NEGATIVE (1 << 2) /* Number is negative */
-#define PF_64BIT (1 << 3) /* Number is 64-bit */
-
-int vfnprintf(int (*addchar)(void *context, int c), void *context, const char *format,
-	      va_list args)
+static char *eaddr(char *str, unsigned char *addr, int size, int precision, int type)
 {
-	/*
-	 * Longest uint64 in decimal = 20
-	 * Longest uint32 in binary  = 32
-	 * + sign bit
-	 * + terminating null
-	 */
-	char intbuf[34];
-	int flags;
-	int pad_width;
-	int precision;
-	char *vstr;
-	int vlen;
+	char tmp[24];
+	char *dig = digits;
+	int i, len;
 
-	while (*format) {
-		int c = *format++;
+	if (type & UPPERCASE)
+		dig = upper_digits;
+	len = 0;
+	for (i = 0; i < 6; i++) {
+		if (i != 0)
+			tmp[len++] = ':';
+		tmp[len++] = dig[addr[i] >> 4];
+		tmp[len++] = dig[addr[i] & 0x0F];
+	}
 
-		/* Copy normal characters */
-		if (c != '%') {
-			if (addchar(context, c))
-				return pdFREERTOS_ERRNO_EINVAL;
-			continue;
-		}
+	if (!(type & LEFT))
+		while (len < size--)
+			*str++ = ' ';
+	for (i = 0; i < len; ++i)
+		*str++ = tmp[i];
+	while (len < size--)
+		*str++ = ' ';
 
-		/* Zero flags, now that we're in a format */
-		flags = 0;
+	return str;
+}
 
-		/* Get first format character */
-		c = *format++;
+static char *iaddr(char *str, unsigned char *addr, int size, int precision, int type)
+{
+	char tmp[24];
+	int i, n, len;
 
-		/* Send "%" for "%%" input */
-		if (c == '%' || c == '\0') {
-			if (addchar(context, '%'))
-				return pdFREERTOS_ERRNO_EINVAL;
-			continue;
-		}
+	len = 0;
+	for (i = 0; i < 4; i++) {
+		if (i != 0)
+			tmp[len++] = '.';
+		n = addr[i];
 
-		/* Handle %c */
-		if (c == 'c') {
-			c = va_arg(args, int);
-
-			if (addchar(context, c))
-				return pdFREERTOS_ERRNO_EINVAL;
-			continue;
-		}
-
-		/* Handle left-justification ("%-5s") */
-		if (c == '-') {
-			flags |= PF_LEFT;
-			c = *format++;
-		}
-
-		/* Handle padding with 0's */
-		if (c == '0') {
-			flags |= PF_PADZERO;
-			c = *format++;
-		}
-
-		/* Count padding length */
-		pad_width = 0;
-		if (c == '*') {
-			pad_width = va_arg(args, int);
-
-			c = *format++;
-		} else {
-			while (c >= '0' && c <= '9') {
-				pad_width = (10 * pad_width) + c - '0';
-				c = *format++;
-			}
-		}
-		if (pad_width < 0 || pad_width > MAX_FORMAT) {
-			/* Sanity check for precision failed */
-			format = error_str;
-			continue;
-		}
-		/* Count precision */
-		precision = 0;
-		if (c == '.') {
-			c = *format++;
-			if (c == '*') {
-				precision = va_arg(args, int);
-
-				c = *format++;
-			} else {
-				while (c >= '0' && c <= '9') {
-					precision = (10 * precision) + c - '0';
-					c = *format++;
-				}
-			}
-			if (precision < 0 || precision > MAX_FORMAT) {
-				/* Sanity check for precision failed */
-				format = error_str;
-				continue;
-			}
-		}
-
-		if (c == 's') {
-			vstr = va_arg(args, char *);
-
-			if (vstr == NULL) { /*Fix me */
-				; // vstr = "(NULL)";
-			}
-		} else if (c == 'h') {
-			/* Hex dump output */
-			vstr = va_arg(args, char *);
-
-			if (!precision) {
-				/* Hex dump requires precision */
-				format = error_str;
-				continue;
+		if (n == 0)
+			tmp[len++] = digits[0];
+		else {
+			if (n >= 100) {
+				tmp[len++] = digits[n / 100];
+				n = n % 100;
+				tmp[len++] = digits[n / 10];
+				n = n % 10;
+			} else if (n >= 10) {
+				tmp[len++] = digits[n / 10];
+				n = n % 10;
 			}
 
-			for (; precision; precision--, vstr++) {
-				if (addchar(context, hexdigit(*vstr >> 4)) ||
-				    addchar(context, hexdigit(*vstr)))
-					return pdFREERTOS_ERRNO_EINVAL;
-			}
-
-			continue;
-		} else {
-			uint64_t v;
-			int base = 10;
-
-			/* Handle length */
-			if (c == 'l') {
-				if (sizeof(long) == 8)
-					flags |= PF_64BIT;
-				c = *format++;
-				if (c == 'l') {
-					flags |= PF_64BIT;
-					c = *format++; // long long is 64bit at LP64
-				}
-			}
-
-			/* Special-case: %T = current time */
-			if (c == 'T') {
-				// v = get_time().val;
-				flags |= PF_64BIT;
-				precision = 6;
-			} else if (flags & PF_64BIT) {
-				v = va_arg(args, uint64_t);
-			} else {
-				v = va_arg(args, uint32_t);
-			}
-
-			switch (c) {
-			case 'd':
-				if (flags & PF_64BIT) {
-					if ((int64_t)v < 0) {
-						flags |= PF_NEGATIVE;
-						v = (v != (1ULL << 63)) ? -v : v;
-					}
-				} else {
-					if ((int)v < 0) {
-						flags |= PF_NEGATIVE;
-						v = (v != (1ULL << 31)) ? -(int)v : v;
-					}
-				}
-				break;
-			case 'u':
-			case 'T':
-				break;
-			case 'X':
-			case 'x':
-			case 'p':
-				base = 16;
-				break;
-			case 'b':
-				base = 2;
-				break;
-			default:
-				format = error_str;
-			}
-			if (format == error_str)
-				continue; /* Bad format specifier */
-
-			/*
-			 * Convert integer to string, starting at end of
-			 * buffer and working backwards.
-			 */
-			vstr = intbuf + sizeof(intbuf) - 1;
-			*(vstr) = '\0';
-
-			/*
-			 * Fixed-point precision must fit in our buffer.
-			 * Leave space for "0." and the terminating null.
-			 */
-			if (precision > (int)(sizeof(intbuf) - 3))
-				precision = (int)(sizeof(intbuf) - 3);
-
-			/*
-			 * Handle digits to right of decimal for fixed point
-			 * numbers.
-			 */
-			for (vlen = 0; vlen < precision; vlen++)
-				*(--vstr) = '0' + uint64divmod(&v, 10);
-			if (precision)
-				*(--vstr) = '.';
-
-			if (!v)
-				*(--vstr) = '0';
-
-			while (v) {
-				int digit = uint64divmod(&v, base);
-
-				if (digit < 10)
-					*(--vstr) = '0' + digit;
-				else if (c == 'X')
-					*(--vstr) = 'A' + digit - 10;
-				else
-					*(--vstr) = 'a' + digit - 10;
-			}
-
-			if (flags & PF_NEGATIVE)
-				*(--vstr) = '-';
-
-			/*
-			 * Precision field was interpreted by fixed-point
-			 * logic, so clear it.
-			 */
-			precision = 0;
-		}
-
-		/* Copy string (or stringified integer) */
-		if (vstr != NULL)
-			vlen = strlen(vstr);
-		else
-			vlen = 0;
-
-		/* No padding strings to wider than the precision */
-		if (precision > 0 && pad_width > precision)
-			pad_width = precision;
-
-		/* If precision is zero, print everything */
-		if (!precision)
-			precision = MAX(vlen, pad_width);
-
-		while (vlen < pad_width && !(flags & PF_LEFT)) {
-			if (addchar(context, flags & PF_PADZERO ? '0' : ' '))
-				return pdFREERTOS_ERRNO_EINVAL;
-			vlen++;
-		}
-
-		if (vstr != NULL) {
-			while (*vstr && --precision >= 0)
-				if (addchar(context, *vstr++))
-					return pdFREERTOS_ERRNO_EINVAL;
-		}
-		while (vlen < pad_width && flags & PF_LEFT) {
-			if (addchar(context, ' '))
-				return pdFREERTOS_ERRNO_EINVAL;
-			vlen++;
+			tmp[len++] = digits[n];
 		}
 	}
 
-	/* If we're still here, we consumed all output */
-	return pdFREERTOS_ERRNO_NONE;
+	if (!(type & LEFT))
+		while (len < size--)
+			*str++ = ' ';
+	for (i = 0; i < len; ++i)
+		*str++ = tmp[i];
+	while (len < size--)
+		*str++ = ' ';
+
+	return str;
 }
 
-/* Context for snprintf() */
-struct snprintf_context {
+char *ecvtbuf(double arg, int ndigits, int *decpt, int *sign, char *buf);
+char *fcvtbuf(double arg, int ndigits, int *decpt, int *sign, char *buf);
+static void ee_bufcpy(char *d, char *s, int count);
+
+void ee_bufcpy(char *pd, char *ps, int count)
+{
+	char *pe = ps + count;
+
+	while (ps != pe)
+		*pd++ = *ps++;
+}
+
+static void parse_float(double value, char *buffer, char fmt, int precision)
+{
+	int decpt, sign, exp, pos;
+	char *digits = NULL;
+	char cvtbuf[80];
+	int capexp = 0;
+	int magnitude;
+
+	if (fmt == 'G' || fmt == 'E') {
+		capexp = 1;
+		fmt += 'a' - 'A';
+	}
+
+	if (fmt == 'g') {
+		digits = ecvtbuf(value, precision, &decpt, &sign, cvtbuf);
+		magnitude = decpt - 1;
+		if (magnitude < -4 || magnitude > precision - 1) {
+			fmt = 'e';
+			precision -= 1;
+		} else {
+			fmt = 'f';
+			precision -= decpt;
+		}
+	}
+
+	if (fmt == 'e') {
+		digits = ecvtbuf(value, precision + 1, &decpt, &sign, cvtbuf);
+
+		if (sign)
+			*buffer++ = '-';
+		*buffer++ = *digits;
+		if (precision > 0)
+			*buffer++ = '.';
+		ee_bufcpy(buffer, digits + 1, precision);
+		buffer += precision;
+		*buffer++ = capexp ? 'E' : 'e';
+
+		if (decpt == 0) {
+			if (value == 0.0)
+				exp = 0;
+			else
+				exp = -1;
+		} else
+			exp = decpt - 1;
+
+		if (exp < 0) {
+			*buffer++ = '-';
+			exp = -exp;
+		} else
+			*buffer++ = '+';
+
+		buffer[2] = (exp % 10) + '0';
+		exp = exp / 10;
+		buffer[1] = (exp % 10) + '0';
+		exp = exp / 10;
+		buffer[0] = (exp % 10) + '0';
+		buffer += 3;
+	} else if (fmt == 'f') {
+		digits = fcvtbuf(value, precision, &decpt, &sign, cvtbuf);
+		if (sign)
+			*buffer++ = '-';
+		if (*digits) {
+			if (decpt <= 0) {
+				*buffer++ = '0';
+				*buffer++ = '.';
+				for (pos = 0; pos < -decpt; pos++)
+					*buffer++ = '0';
+				while (*digits)
+					*buffer++ = *digits++;
+			} else {
+				pos = 0;
+				while (*digits) {
+					if (pos++ == decpt)
+						*buffer++ = '.';
+					*buffer++ = *digits++;
+				}
+			}
+		} else {
+			*buffer++ = '0';
+			if (precision > 0) {
+				*buffer++ = '.';
+				for (pos = 0; pos < precision; pos++)
+					*buffer++ = '0';
+			}
+		}
+	}
+
+	*buffer = '\0';
+}
+
+static void decimal_point(char *buffer)
+{
+	while (*buffer) {
+		if (*buffer == '.')
+			return;
+		if (*buffer == 'e' || *buffer == 'E')
+			break;
+		buffer++;
+	}
+
+	if (*buffer) {
+		int n = strnlen(buffer, 256);
+
+		while (n > 0) {
+			buffer[n + 1] = buffer[n];
+			n--;
+		}
+
+		*buffer = '.';
+	} else {
+		*buffer++ = '.';
+		*buffer = '\0';
+	}
+}
+
+static void cropzeros(char *buffer)
+{
+	char *stop;
+
+	while (*buffer && *buffer != '.')
+		buffer++;
+	if (*buffer++) {
+		while (*buffer && *buffer != 'e' && *buffer != 'E')
+			buffer++;
+		stop = buffer--;
+		while (*buffer == '0')
+			buffer--;
+		if (*buffer == '.')
+			buffer--;
+		while (buffer != stop)
+			*++buffer = 0;
+	}
+}
+
+static char *flt(char *str, double num, int size, int precision, char fmt, int flags)
+{
+	char tmp[80];
+	char c, sign;
+	int n, i;
+
+	// Left align means no zero padding
+	if (flags & LEFT)
+		flags &= ~ZEROPAD;
+
+	// Determine padding and sign char
+	c = (flags & ZEROPAD) ? '0' : ' ';
+	sign = 0;
+	if (flags & SIGN) {
+		if (num < 0.0) {
+			sign = '-';
+			num = -num;
+			size--;
+		} else if (flags & PLUS) {
+			sign = '+';
+			size--;
+		} else if (flags & SPACE) {
+			sign = ' ';
+			size--;
+		}
+	}
+
+	// Compute the precision value
+	if (precision < 0)
+		precision = 6; // Default precision: 6
+
+	// Convert floating point number to text
+	parse_float(num, tmp, fmt, precision);
+
+	if ((flags & HEX_PREP) && precision == 0)
+		decimal_point(tmp);
+	if (fmt == 'g' && !(flags & HEX_PREP))
+		cropzeros(tmp);
+
+	n = strnlen(tmp, 256);
+
+	// Output number with alignment and padding
+	size -= n;
+	if (!(flags & (ZEROPAD | LEFT)))
+		while (size-- > 0)
+			*str++ = ' ';
+	if (sign)
+		*str++ = sign;
+	if (!(flags & LEFT))
+		while (size-- > 0)
+			*str++ = c;
+	for (i = 0; i < n; i++)
+		*str++ = tmp[i];
+	while (size-- > 0)
+		*str++ = ' ';
+
+	return str;
+}
+
+int aml_vsprintf(char *buf, const char *fmt, va_list args)
+{
+	int len;
+	unsigned long num;
+	int i, base;
 	char *str;
-	size_t size;
-};
+	char *s;
 
-/**
- * Add a character to the string context.
- *
- * @param context	Context receiving character
- * @param c		Character to add
- * @return 0 if character added, 1 if character dropped because no space.
- */
-static int snprintf_addchar(void *context, int c)
-{
-	struct snprintf_context *ctx = (struct snprintf_context *)context;
+	int flags; // Flags to number()
 
-	if (!ctx->size)
-		return 1;
+	int field_width; // Width of output field
+	int precision; // Min. # of digits for integers; max number of chars for from string
+	int qualifier; // 'h', 'l', or 'L' for integer fields
 
-	*(ctx->str++) = c;
-	ctx->size--;
+	for (str = buf; *fmt; fmt++) {
+		if (*fmt != '%') {
+			*str++ = *fmt;
+			continue;
+		}
 
-	return 0;
-}
+		// Process flags
+		flags = 0;
+repeat:
+		fmt++; // This also skips first '%'
+		switch (*fmt) {
+		case '-':
+			flags |= LEFT;
+			goto repeat;
+		case '+':
+			flags |= PLUS;
+			goto repeat;
+		case ' ':
+			flags |= SPACE;
+			goto repeat;
+		case '#':
+			flags |= HEX_PREP;
+			goto repeat;
+		case '0':
+			flags |= ZEROPAD;
+			goto repeat;
+		}
 
-int sPrintf_ext(char *str, size_t size, const char *format, va_list args)
-{
-	struct snprintf_context ctx;
-	int rv;
+		// Get field width
+		field_width = -1;
+		if (isdigit(*fmt))
+			field_width = skip_atoi(&fmt);
+		else if (*fmt == '*') {
+			fmt++;
+			field_width = va_arg(args, int);
+			if (field_width < 0) {
+				field_width = -field_width;
+				flags |= LEFT;
+			}
+		}
 
-	if (!str || !size)
-		return pdFREERTOS_ERRNO_EINVAL;
+		// Get the precision
+		precision = -1;
+		if (*fmt == '.') {
+			++fmt;
+			if (isdigit(*fmt))
+				precision = skip_atoi(&fmt);
+			else if (*fmt == '*') {
+				++fmt;
+				precision = va_arg(args, int);
+			}
+			if (precision < 0)
+				precision = 0;
+		}
 
-	ctx.str = str;
-	ctx.size = size - 1; /* Reserve space for terminating '\0' */
+		// Get the conversion qualifier
+		qualifier = -1;
+		if (*fmt == 'l' || *fmt == 'L') {
+			qualifier = *fmt;
+			fmt++;
+		}
 
-	rv = vfnprintf(snprintf_addchar, &ctx, format, args);
+		// Default base
+		base = 10;
 
-	/* Terminate string */
-	*ctx.str = '\0';
+		switch (*fmt) {
+		case 'c':
+			if (!(flags & LEFT))
+				while (--field_width > 0)
+					*str++ = ' ';
+			*str++ = (unsigned char)va_arg(args, int);
+			while (--field_width > 0)
+				*str++ = ' ';
+			continue;
 
-	return rv;
-}
+		case 's':
+			s = va_arg(args, char *);
+			if (!s)
+				s = "<NULL>";
+			len = strnlen(s, MAX_BUFFER_LEN - (str-buf) - 1);
+			if (!(flags & LEFT))
+				while (len < field_width--)
+					*str++ = ' ';
+			for (i = 0; i < len; ++i)
+				*str++ = *s++;
+			while (len < field_width--)
+				*str++ = ' ';
+			continue;
 
-int sPrintf(char *str, size_t size, const char *fmt, ...)
-{
-	va_list args;
-	int i;
+		case 'p':
+			if (field_width == -1) {
+				field_width = 2 * sizeof(void *);
+				flags |= ZEROPAD;
+			}
+			str = number(str, (unsigned long)va_arg(args, void *), 16, field_width,
+				precision, flags);
+			continue;
 
-	va_start(args, fmt);
+		case 'A':
+			flags |= UPPERCASE;
 
-	i = sPrintf_ext(str, size, fmt, args);
-	va_end(args);
+		case 'a':
+			if (qualifier == 'l')
+				str = eaddr(str, va_arg(args, unsigned char *), field_width,
+					precision, flags);
+			else
+				str = iaddr(str, va_arg(args, unsigned char *), field_width,
+					precision, flags);
+			continue;
 
-	return i;
-}
+		// Integer number formats - set up the flags and "break"
+		case 'o':
+			base = 8;
+			break;
 
-int iprintf(const char *fmt, ...)
-{
-	va_list args;
-	int i;
-	UBaseType_t uxSavedInterruptStatus;
+		case 'X':
+			flags |= UPPERCASE;
 
-	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
+		case 'x':
+			base = 16;
+			break;
 
-	va_start(args, fmt);
+		case 'd':
+		case 'i':
+			flags |= SIGN;
 
-	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
-	va_end(args);
-	{
-		/* Print the string */
-#if (1 == CONFIG_ARM64)
-		vSerialPutString(ConsoleSerial, printbuffer);
-#else
-		vUartPuts(printbuffer);
+		case 'u':
+			break;
+
+#if HAS_FLOAT
+		case 'f':
+			str = flt(str, va_arg(args, double), field_width, precision, *fmt,
+				flags | SIGN);
+			continue;
+
 #endif
+
+		default:
+			if (*fmt != '%')
+				*str++ = '%';
+			if (*fmt)
+				*str++ = *fmt;
+			else
+				--fmt;
+			continue;
+		}
+
+		if (qualifier == 'l')
+			num = va_arg(args, unsigned long);
+		else if (flags & SIGN)
+			num = va_arg(args, int);
+		else
+			num = va_arg(args, unsigned int);
+
+		str = number(str, num, base, field_width, precision, flags);
 	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
-	return i;
-}
 
-int printk(const char *fmt, ...)
-{
-	va_list args;
-	int i;
-	UBaseType_t uxSavedInterruptStatus;
-
-	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
-
-	va_start(args, fmt);
-
-	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
-	va_end(args);
-	{
-		/* Print the string */
-#if (1 == CONFIG_ARM64)
-		vSerialPutString(ConsoleSerial, printbuffer);
-#else
-		vUartPuts(printbuffer);
-#endif
-	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
-	return i;
+	*str = '\0';
+	return str - buf;
 }
 
 int printf(const char *fmt, ...)
 {
 	va_list args;
-	int i;
-	UBaseType_t uxSavedInterruptStatus;
-
-	uxSavedInterruptStatus = portSET_INTERRUPT_MASK_FROM_ISR();
+	char *p = printbuffer;
+	int n = 0;
 
 	va_start(args, fmt);
-
-	i = sPrintf_ext(printbuffer, sizeof(printbuffer), fmt, args);
+	aml_vsprintf(printbuffer, fmt, args);
 	va_end(args);
-	{
-		/* Print the string */
+
+	while (*p) {
+		if ('\n' == *p) {
 #if (1 == CONFIG_ARM64)
-		vSerialPutString(ConsoleSerial, printbuffer);
+			vSerialPutChar(ConsoleSerial, '\r');
 #else
-		vUartPuts(printbuffer);
+			vUartPutc('\r');
 #endif
+			n++;
+		}
+#if (1 == CONFIG_ARM64)
+		vSerialPutChar(ConsoleSerial, *p);
+#else
+		vUartPutc(*p);
+#endif
+		n++;
+		p++;
 	}
-	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
-	return i;
+
+	return n;
 }
 
-int iprint_string(char *str)
+int iprintf(const char *fmt, ...)
 {
-#if (1 == CONFIG_ARM64)
-	vSerialPutString(ConsoleSerial, str);
-#else
-	vUartPuts(str);
-#endif
+	va_list args;
+	int n = 0;
 
-	return 0;
+	va_start(args, fmt);
+	n = printf(fmt, args);
+	va_end(args);
+
+	return n;
 }
-
-extern int puts(const char *str);
 
 int puts(const char *str)
 {
 #if (1 == CONFIG_ARM64)
-	vSerialPutString(ConsoleSerial, str);
+	return vSerialPutString(ConsoleSerial, str);
 #else
-	vUartPuts(str);
+	return vUartPuts(str);
 #endif
-
-	return 0;
 }

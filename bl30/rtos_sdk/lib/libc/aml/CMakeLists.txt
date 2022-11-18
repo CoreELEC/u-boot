@@ -7,6 +7,7 @@ if(CONFIG_LIBC_AML)
 aml_add_library()
 
 aml_library_sources(
+	aml_cvt.c
 	aml_scanf.c
 	aml_putchar.c
 	aml_fprintf.c
@@ -24,6 +25,7 @@ aml_library_sources(
 	aml_tolower.c
 	aml_strcmp.c
 	aml_strlen.c
+	aml_strnlen.c
 	aml_strncpy.c
 	aml_strtoul.c
 	aml_strcasecmp.c

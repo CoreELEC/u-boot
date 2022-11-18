@@ -4,18 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef __AML_PRINTF_H__
-#define __AML_PRINTF_H__
+#ifndef __AML_CVT_H__
+#define __AML_CVT_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int printf(const char *fmt, ...);
+char *ecvt(double arg, int ndigits, int *decpt, int *sign);
 
-int iprintf(const char *fmt, ...);
-
-int puts(const char *str);
+char *my_fcvt(double arg, int ndigits, int *decpt, int *sign);
 
 #ifdef __cplusplus
 }

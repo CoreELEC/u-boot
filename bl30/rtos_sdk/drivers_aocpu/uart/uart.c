@@ -70,13 +70,21 @@ void vUartPutc(const char c)
 	vUartTxFlush();
 }
 
-void vUartPuts(const char *s)
+int vUartPuts(const char *s)
 {
-	while (*s)
+	int n = 0;
+
+	while (*s) {
 		vUartPutc(*s++);
+		n++;
+	}
 
 	vUartPutc('\r');
+	n++;
 	vUartPutc('\n');
+	n++;
+
+	return n;
 }
 
 void vUartTxStart(void)

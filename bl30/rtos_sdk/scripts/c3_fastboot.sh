@@ -31,7 +31,7 @@ RTOS_IMAGE_B=$RTOS_BUILD_DIR/rtos_2.bin
 function lz4_rtos() {
 	pushd $RTOS_BASE_DIR/lib/utilities/lz4
 	cp $RTOS_IMAGE_A .
-	./self_decompress_tool.sh -a ./self_decompress_head.bin -b ./rtos_1.bin -l 0x04c00000 -j 0x04e00000 -d 0
+	./self_decompress_tool.sh -a ./self_decompress_head.bin -b ./rtos_1.bin -l 0x04c00000 -j 0x09000000 -d 0
 	cp ./self_decompress_firmware.bin $RTOS_IMAGE_A
 	popd
 }
@@ -40,7 +40,6 @@ function bl22_compile() {
 	if [ -d $BL22_DIR ]; then
 		pushd $BL22_DIR
 		if [ -f ./mk ]; then
-			echo aaaaaaa
 			./mk c3
 		fi
 		cp ./bl22.bin $RTOS_BUILD_DIR/bl22.bin
@@ -59,8 +58,20 @@ function package_fastboot() {
 	cp $RTOS_BUILD_DIR/bl22.bin ./fastboot
 	#./mk c3_aw419 --update-bl2 --bl31 ./blob-bl31.bin.signed
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./blob-bl31.bin.signed
+	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./fip/blob-bl31.bin.signed
 	./mk c3_aw419
 	popd
+}
+
+function debug_info() {
+	echo "<============ Kconfig RTOS ============>"
+	cat $RTOS_BASE_DIR/Kconfig
+	echo "<============ CMakeLists RTOS ============>"
+	cat $RTOS_BASE_DIR/CMakeLists.txt
+	echo "<============ XML RTOS ============>"
+	cat $RTOS_BUILD_DIR/rtos_sdk_manifest.xml
+	echo "<============ XML OLD RTOS ============>"
+	cat $RTOS_BUILD_DIR/rtos_sdk_manifest_old.xml
 }
 
 #compile the rtos image
@@ -71,3 +82,5 @@ lz4_rtos
 bl22_compile
 #compile the u-boot image
 package_fastboot
+#debug
+debug_info

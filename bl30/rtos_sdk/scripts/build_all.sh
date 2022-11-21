@@ -48,12 +48,12 @@ while IFS= read -r LINE; do
 	source scripts/env.sh $LINE >> $BUILD_LOG 2>&1
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination! $LINE" && continue
 	make distclean
-	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && exit 2
+	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && return 2
 	echo -n "$nr. Building $LINE ... "
 	make >> $BUILD_LOG 2>&1
-	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && exit 3
+	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && return 3
 	grep -qr "warning: " $BUILD_LOG
-	[ "$?" -eq 0 ] && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && exit 1
+	[ "$?" -eq 0 ] && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && return 1
 	echo "OK."
 	rm -f $LAST_BUILD_FAILURE
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
@@ -61,7 +61,7 @@ while IFS= read -r LINE; do
 			make_image >> $BUILD_LOG 2>&1
 		fi
 		publish_images >> $BUILD_LOG 2>&1
-		[ "$?" -ne 0 ] && echo "Failed to publish images!" && exit 4
+		[ "$?" -ne 0 ] && echo "Failed to publish images!" && return 4
 	fi
 done <"$BUILD_COMBINATION"
 

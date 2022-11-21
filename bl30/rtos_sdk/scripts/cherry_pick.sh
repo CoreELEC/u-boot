@@ -23,12 +23,12 @@ cherry_pick() {
 			git status
 			git log -1
 			echo -e "\nFailed to apply patch!\n"
-			exit 1
+			return 1
 		fi
 		popd > /dev/null
 	else
 		echo -e "\nNo such directory! $repo_path\n"
-		exit 1
+		return 1
 	fi
 }
 
@@ -49,6 +49,7 @@ apply_patch_by_change_number() {
 	get_repo_path
 
 	cherry_pick
+	[ "$?" -ne 0 ] && return 1
 	echo -e "======== Done ========\n"
 }
 
@@ -70,6 +71,7 @@ apply_patch_by_gerrit_topic() {
 
 		GERRIT_REFSPEC=$(echo $GERRIT_REFSPECS | awk "{print \$$i}")
 		cherry_pick
+		[ "$?" -ne 0 ] && return 1
 		echo -e "-------- Done --------\n"
 		i=$((i+1))
 	done
@@ -122,9 +124,9 @@ apply_patch_by_gerrit_url() {
 [ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
 [ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
 
+[ -z "$GERRIT_SERVER" ] && GERRIT_SERVER="scgit.amlogic.com"
 [ -z "$GERRIT_PORT" ] && GERRIT_PORT="29418"
-GERRIT_SERVER="scgit.amlogic.com"
-GERRIT_QUERY_RESULT="$OUTPUT_DIR/changes.txt"
+[ -z "$GERRIT_QUERY_RESULT" ] && GERRIT_QUERY_RESULT="$OUTPUT_DIR/topic_changes.txt"
 
 apply_patch_by_change_number
 apply_patch_by_gerrit_topic

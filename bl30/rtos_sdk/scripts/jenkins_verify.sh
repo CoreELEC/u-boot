@@ -35,6 +35,10 @@ CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
 DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
 LAST_BUILD_FAILURE="$OUTPUT_DIR/.last_build_failure"
 
+GERRIT_SERVER="scgit.amlogic.com"
+GERRIT_PORT="29418"
+GERRIT_QUERY_RESULT="$OUTPUT_DIR/topic_changes.txt"
+
 if [ -n "$EXCLUDE_REPOS" ]; then
 	echo "Exclude repos:"
 	echo "$EXCLUDE_REPOS"
@@ -52,7 +56,7 @@ if [ ! -d "$WORK_DIR" ]; then
 	mkdir -p $WORK_DIR
 	mkdir -p $OUTPUT_DIR
 	cd $WORK_DIR
-	repo init -u ${MANIFEST_URL} -b ${MANIFEST_BRANCH} --repo-url=git://scgit.amlogic.com/tools/repo.git --no-repo-verify
+	repo init -u ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${PROJECT_NAME} -b ${MANIFEST_BRANCH} --repo-url=git://${GERRIT_SERVER}/tools/repo.git --no-repo-verify
 else
 	echo -e "\n======== Syncing source code ========"
 	cd $WORK_DIR
@@ -103,8 +107,10 @@ if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
 	fi
 fi
 
+source scripts/gerrit_review.sh
 # Cherry pick patches
 source scripts/cherry_pick.sh
+[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL
 
 # Generate Jenkins trigger
 [ "$SUBMIT_TYPE" = "daily" ] && source scripts/gen_jenkins_trigger.sh
@@ -114,3 +120,6 @@ if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then
 else
 	source scripts/build_all.sh
 fi
+
+[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL
+gerrit_review_for_gerrit_topic SUCCESS

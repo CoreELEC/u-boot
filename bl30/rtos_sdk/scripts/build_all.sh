@@ -49,7 +49,7 @@ while IFS= read -r LINE; do
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination! $LINE" && continue
 	make distclean
 	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && return 2
-	echo -n "$nr. Building $LINE ... "
+	echo -n -e "$nr. Building $LINE ...\t"
 	make >> $BUILD_LOG 2>&1
 	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && return 3
 	grep -qr "warning: " $BUILD_LOG

@@ -14,7 +14,7 @@ export PATH=/opt/xtensa/XtDevTools/install/tools/RG-2018.9-linux/XtensaTools/bin
 export XTENSA_SYSTEM=/opt/xtensa/XtDevTools/install/builds/RG-2018.9-linux/Amlogic_v0/config
 export XTENSA_CORE=Amlogic_v0
 
-if [ -z "$MANIFEST_URL" ] || [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ]; then
+if [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ]; then
 	echo "NULL params!"
 	exit 1
 fi
@@ -111,6 +111,7 @@ source scripts/gerrit_review.sh
 # Cherry pick patches
 source scripts/cherry_pick.sh
 [ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL
+gerrit_review_for_gerrit_topic Start
 
 # Generate Jenkins trigger
 [ "$SUBMIT_TYPE" = "daily" ] && source scripts/gen_jenkins_trigger.sh

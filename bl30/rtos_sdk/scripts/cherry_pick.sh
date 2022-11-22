@@ -22,12 +22,12 @@ cherry_pick() {
 		if [ "$?" -ne 0 ]; then
 			git status
 			git log -1
-			echo -e "\nFailed to apply patch!\n"
+			echo -e "\n${FUNCNAME[0]}: Failed to apply patch!\n"
 			return 1
 		fi
 		popd > /dev/null
 	else
-		echo -e "\nNo such directory! $repo_path\n"
+		echo -e "\n${FUNCNAME[0]}: No such directory! $repo_path\n"
 		return 1
 	fi
 }
@@ -106,12 +106,12 @@ apply_patch_by_gerrit_url() {
 			if [ "$?" -ne 0 ]; then
 				git status
 				git log -1
-				echo -e "-------- Failed to apply patch! --------"
+				echo -e "\n${FUNCNAME[0]}: Failed to apply patch!\n"
 				exit 1
 			fi
 			popd > /dev/null
 		else
-			echo "No such directory! $repo_path"
+			echo -e "\n${FUNCNAME[0]}: No such directory! $repo_path\n"
 			exit 1
 		fi
 		echo -e "-------- Done --------\n"

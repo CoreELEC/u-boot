@@ -5,23 +5,26 @@
 # SPDX-License-Identifier: MIT
 #
 
+# $1: Review result
 gerrit_review_for_gerrit_topic() {
+	[ -z "$MANUAL_GERRIT_TOPIC" ] && return
+
 	[ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
 	[ -z "$GERRIT_SERVER" ] && GERRIT_SERVER="scgit.amlogic.com"
 	[ -z "$GERRIT_PORT" ] && GERRIT_PORT="29418"
 	[ -z "$GERRIT_QUERY_RESULT" ] && GERRIT_QUERY_RESULT="$OUTPUT_DIR/topic_changes.txt"
 
-	if [ -z "$MANUAL_GERRIT_TOPIC" ] || [ ! -f "$GERRIT_QUERY_RESULT" ]; then
-		return
-	fi
+	[ ! -f "$GERRIT_QUERY_RESULT" ] && echo "${FUNCNAME[0]}: No such file! $GERRIT_QUERY_RESULT" && exit 1
+	[ $# -ne 1 ] && echo "${FUNCNAME[0]}: Invalid parameters! $*" && exit 1
 
-	if [ "$1" = "SUCCESS" ]; then
-		verify_score="+1"
+	if [ "$1" = "Start" ]; then
+		verify_param=""
+	elif [ "$1" = "SUCCESS" ]; then
+		verify_param="--verified +1"
 	elif [ "$1" = "FAIL" ]; then
-		verify_score="-1"
+		verify_param="--verified -1"
 	else
-		echo "gerrit_review_for_gerrit_topic: Invalid parameter $1"
-		return
+		echo "${FUNCNAME[0]}: Invalid parameter $1" && exit 1
 	fi
 
 	review_msg="Build ${BUILD_URL}: $1"
@@ -29,18 +32,25 @@ gerrit_review_for_gerrit_topic() {
 	GERRIT_CHANGE_NUMBERS=$(jq -r '.number // empty' $GERRIT_QUERY_RESULT)
 	GERRIT_PATCHSET_NUMBERS=$(jq -r '.currentPatchSet.number // empty' $GERRIT_QUERY_RESULT)
 
+	[ "$1" != "Start" ] && echo -e "======== Verifying Gerrit Topic: $MANUAL_GERRIT_TOPIC ========"
 	i=1
 	for GERRIT_CHANGE_NUMBER in $GERRIT_CHANGE_NUMBERS; do
 		GERRIT_PATCHSET_NUMBER=$(echo $GERRIT_PATCHSET_NUMBERS | awk "{print \$$i}")
-		echo -n "$GERRIT_CHANGE_NUMBER/$GERRIT_PATCHSET_NUMBER $verify_score ... "
-		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit review --verified "${verify_score}" -m "'${review_msg}'" $GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER
-		if [ "$?" -eq 0 ]; then
-			echo "OK"
-		else
-			echo "failed"
+		[ "$1" != "Start" ] && echo -n -e "$GERRIT_CHANGE_NUMBER/$GERRIT_PATCHSET_NUMBER $verify_score ...\t"
+		ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit review "${verify_param}" -m "'${review_msg}'" $GERRIT_CHANGE_NUMBER,$GERRIT_PATCHSET_NUMBER
+		if [ "$1" != "Start" ]; then
+			if [ "$?" -eq 0 ]; then
+				echo "OK"
+			else
+				echo "failed"
+			fi
 		fi
 		i=$((i+1))
 	done
+
+	i=$((i-1))
+	[ "$1" != "Start" ] && [ "$i" -eq 1 ] && echo -e "======== Verified $i Gerrit change for $MANUAL_GERRIT_TOPIC ========\n"
+	[ "$1" != "Start" ] && [ "$i" -gt 1 ] && echo -e "======== Verified $i Gerrit changes for $MANUAL_GERRIT_TOPIC ========\n"
 
 	if [ "$1" = "FAIL" ]; then
 		exit 1

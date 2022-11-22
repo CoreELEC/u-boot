@@ -53,8 +53,8 @@ while IFS= read -r LINE; do
 	make >> $BUILD_LOG 2>&1
 	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && return 3
 	grep -qr "warning: " $BUILD_LOG
-	[ "$?" -eq 0 ] && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && return 1
-	echo "OK."
+	[ "$?" -eq 0 ] && echo "with warnings!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && return 1
+	echo "OK"
 	rm -f $LAST_BUILD_FAILURE
 	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
 		if [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then

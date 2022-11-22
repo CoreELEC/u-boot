@@ -18,13 +18,24 @@ extern "C" {
 
 #define PwmMesonVolt_Duty 1
 
-/* There are 4 pwm controllers in a5 */
+enum meson_pwm_id {
+	MESON_PWM_A = 0,
+	MESON_PWM_B,
+	MESON_PWM_C,
+	MESON_PWM_D,
+	MESON_PWM_E,
+	MESON_PWM_F,
+	MESON_PWM_G,
+	MESON_PWM_H,
+	MESON_PWM_INVALID,
+};
+
+/* There are 4 pwm controllers in T5M */
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
 	PWM_GH,
-	PWM_IJ,
 	PWM_MUX,
 };
 

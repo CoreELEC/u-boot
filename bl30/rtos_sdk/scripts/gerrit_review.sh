@@ -17,19 +17,15 @@ gerrit_review_for_gerrit_topic() {
 	[ ! -f "$GERRIT_QUERY_RESULT" ] && echo "${FUNCNAME[0]}: No such file! $GERRIT_QUERY_RESULT" && exit 1
 	[ $# -ne 1 ] && echo "${FUNCNAME[0]}: Invalid parameters! $*" && exit 1
 
-	if [ "$1" = "SUCCESS" ]; then
-		verify_score="+1"
-	elif [ "$1" = "FAIL" ]; then
-		verify_score="-1"
-	else
-		echo "${FUNCNAME[0]}: Invalid parameter $1" && exit 1
-	fi
-
 	if [ "$1" = "Start" ]; then
 		verify_param=""
-	else
+	elif [ "$1" = "SUCCESS" ] || [ "$1" = "FAIL" ]; then
+		[ "$1" = "SUCCESS" ] && verify_score="+1"
+		[ "$1" = "FAIL" ] && verify_score="-1"
 		verify_param="--verified $verify_score"
 		echo -e "======== Verifying Gerrit Topic: $MANUAL_GERRIT_TOPIC ========"
+	else
+		echo "${FUNCNAME[0]}: Invalid parameter $1" && exit 1
 	fi
 
 	review_msg="Build ${BUILD_URL}: $1"
@@ -58,7 +54,5 @@ gerrit_review_for_gerrit_topic() {
 		[ "$i" -gt 1 ] && echo -e "======== Verified $i Gerrit changes for $MANUAL_GERRIT_TOPIC ========\n"
 	fi
 
-	if [ "$1" = "FAIL" ]; then
-		exit 1
-	fi
+	[ "$1" = "FAIL" ] && exit 1
 }

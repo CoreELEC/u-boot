@@ -45,6 +45,7 @@ function pre_build_uboot() {
 }
 
 function build_uboot() {
+	set -e
 	echo "Build uboot...Please Wait...$1...$2...$3...$4...$5"
 	mkdir -p ${FIP_BUILD_FOLDER}
 	cd ${UBOOT_SRC_FOLDER}
@@ -61,6 +62,7 @@ function build_uboot() {
 		echo "### BL33 CONFIG_MDUMP_COMPRESS = 0 ###"
 		make -j SYSTEMMODE=$1 AVBMODE=$2 BOOTCTRLMODE=$3 FASTBOOTMODE=$4 AVB2RECOVERY=$5 CHIPMODE=${CONFIG_CHIP_NOCS} # &> /dev/null
 	fi
+	set +e
 
 	if [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then
 		echo ""

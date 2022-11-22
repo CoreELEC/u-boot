@@ -13,7 +13,7 @@ extern "C" {
 
 void vUartInit(void);
 
-void vUartPuts(const char *s);
+int vUartPuts(const char *s);
 
 void vUartTxFlush(void);
 

@@ -108,7 +108,7 @@ else
 	pattern="path=\"${relative_dir}/"
 fi
 
-# Sort manifest.xml of RTOS SDK
+# Sort manifest.xml based on "path" to get an reasonable order for generating Kconfig
 sort -k $i $RTOS_SDK_MANIFEST_FILE -o $RTOS_SDK_MANIFEST_FILE
 
 while IFS= read -r line

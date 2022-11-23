@@ -54,7 +54,7 @@ gerrit_review_for_gerrit_topic() {
 		[ "$i" -gt 1 ] && echo -e "======== Verified $i Gerrit changes for $MANUAL_GERRIT_TOPIC ========\n"
 	fi
 
-	[ "$1" = "FAIL" ] && echo "FAIL" && exit 1
-	echo "SUCCESS"
+	[ "$1" = "FAIL" ] && exit 1
+
 	return 0
 }

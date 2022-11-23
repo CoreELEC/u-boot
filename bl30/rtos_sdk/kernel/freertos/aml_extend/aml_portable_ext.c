@@ -179,10 +179,18 @@ void vPortConfigLogBuf(uint32_t pa, uint32_t len)
 /*-----------------------------------------------------------*/
 void vHardwareResourceRecord(void)
 {
+#define NOTICE_BL31_RTOS_LOAD_INFO_ADDRESS (0xF7040000 - 0x08)
+
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
-extern void vTickTimerRecord(void);
+	extern void vTickTimerRecord(void);
 	/* systick timer record */
 	vTickTimerRecord();
+#endif
+
+	/* The real loading address of RTOS is passed to BL31 */
+#if defined(CONFIG_BOARD_AW419_C308L) && (CONFIG_PRIMARY_CPU == 1)
+	REG32(NOTICE_BL31_RTOS_LOAD_INFO_ADDRESS) = configTEXT_BASE;
+	vCacheFlushDcacheRange(NOTICE_BL31_RTOS_LOAD_INFO_ADDRESS, 4);
 #endif
 }
 
@@ -190,7 +198,7 @@ extern void vTickTimerRecord(void);
 void vHardwareResourceRelease(void)
 {
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
-extern void vTickTimerRestore(void);
+	extern void vTickTimerRestore(void);
 	/* systick timer restore */
 	vTickTimerRestore();
 #endif
@@ -204,9 +212,11 @@ int xRtosLoadStageIndicator(void)
 #if defined(CONFIG_BOARD_AW419_C308L)
 	vCacheFlushDcacheRange((CONFIG_SCATTER_LOAD_ADDRESS - 0x04), 4);
 	if (REG32(CONFIG_SCATTER_LOAD_ADDRESS - 0x04) == 0xaabbccdd) {
-		if (0 == load_finished)
+		if (!load_finished) {
+			load_finished = 1;
+			/* Prepare the c++ constructors environment */
 			_global_constructors();
-		load_finished = 1;
+		}
 		return 2;
 	}
 #endif

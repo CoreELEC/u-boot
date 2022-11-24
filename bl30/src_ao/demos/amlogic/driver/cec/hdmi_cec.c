@@ -2040,7 +2040,7 @@ static void cec_node_init(void)
 		return;
 	} else {
 		/* ping dev addr */
-		log_addr = player_dev[idx][sub_idx];
+		log_addr = probe[sub_idx];
 		/* don't need to set logic addr before poll logic addr */
 		/* cec_set_log_addr(log_addr); */
 		msg[0] = (log_addr << 4 ) | log_addr;
@@ -2080,7 +2080,7 @@ static void cec_node_init(void)
 				ping_state = 0;
 				return ;
 			} else if (tx_stat == TX_DONE) {
-				printf("TX_DONE somebody takes cec log_addr:0x%x\n", player_dev[idx][sub_idx]);
+				printf("TX_DONE somebody takes cec log_addr:0x%x\n", probe[sub_idx]);
 				#if 0
 				regist_devs |= (1 << dev_idx);
 				retry += (4 - (retry & 0x03));

@@ -2116,30 +2116,14 @@ static void cec_node_init(void)
 
 static u32 cec_suspend_wakeup_chk(void)
 {
-	u32 timeout_flag = 0;
-
 	if ((cec_msg.cec_power == 0x1) &&
 		(hdmi_cec_func_config & CEC_CFG_FUNC_EN)) {
-		if (cec_wait_addr++ < 80) {
-			if (cec_msg.active_source) {
-				cec_save_port_id();
-				timeout_flag = 1;
-				printf("active src cmd in, wakeup\n");
-			}
-			printf(".");
-		} else {
-			timeout_flag = 1;
-		}
+		cec_wakup_flag = 1;
+		printf("%s wakeup\n", __func__);
+		return 1;
 	}
 
-	if (timeout_flag) {
-		cec_wakup_flag = 1;
-		printf("wakeup\n");
-		/*set_cec_val0(CEC_WAKEUP);*/
-		return 1;
-	} else {
-		return 0;
-	}
+	return 0;
 }
 
 u32 cec_suspend_handle(void)
@@ -2147,11 +2131,10 @@ u32 cec_suspend_handle(void)
 	u32 active_src_flag = 0;
 
 	/*cec_sts_check();*/
-	cec_suspend_wakeup_chk();
 	if (cec_msg.log_addr) {
 		if (hdmi_cec_func_config & CEC_CFG_FUNC_EN) {
 			cec_irq_handler();
-			if (cec_msg.cec_power == 0x1) {
+			if (cec_suspend_wakeup_chk()) {
 				if (cec_msg.active_source) {
 					cec_save_port_id();
 					/*cec power key*/
@@ -2382,7 +2365,7 @@ void vCEC_task(void __unused *pvParameters)
 
 idle:
 	for ( ;; ) {
-		vTaskDelay(pdMS_TO_TICKS(2000));
+		vTaskDelay(pdMS_TO_TICKS(20));
 		//printf("%s idle\n", __func__);
 	}
 }

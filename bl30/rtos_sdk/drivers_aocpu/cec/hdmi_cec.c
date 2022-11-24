@@ -2161,7 +2161,7 @@ static void cec_node_init(void)
 		retry = 0;
 	} else {
 		/* ping dev addr */
-		log_addr = player_dev[idx][sub_idx];
+		log_addr = probe[sub_idx];
 		cec_set_log_addr(log_addr);
 		msg[0] = (log_addr << 4) | log_addr;
 		/*printf("%s ping:idx:%d, 0x%x\n", __func__, sub_idx, msg[0]);*/
@@ -2196,7 +2196,7 @@ static void cec_node_init(void)
 				return;
 			} else if (tx_stat == TX_DONE) {
 				CEC_DBG_LOG("TX_DONE somebody takes cec log_addr:0x%x\n",
-				       player_dev[idx][sub_idx]);
+				       probe[sub_idx]);
 				ping_state = 0;
 			} else {
 				/*idle*/

@@ -8,6 +8,11 @@
 #include "task.h"
 #include "hw_business.h"
 #include "sw_business.h"
+#include "gcc_compiler_attributes.h"
+
+void __weak aocpu_bringup_finished(void)
+{
+}
 
 int main(void)
 {
@@ -17,6 +22,7 @@ int main(void)
 	sw_business_process();
 
 	printf("Starting task scheduler ...\n");
+	aocpu_bringup_finished();
 	vTaskStartScheduler();
 	for (;;)
 

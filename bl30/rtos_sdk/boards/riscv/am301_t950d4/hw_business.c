@@ -51,6 +51,8 @@
 #define INT_TEST_MIN_TIMER_PERIOD	50 // ms
 #define INT_TEST_MUTE_TIMER_PERIOD	200 // ms
 
+#define RTOS_BOOT_SUCC_REG		AO_DEBUG_REG2
+
 /* Binary Semaphore */
 QueueHandle_t xGPIOSemaphore[INT_TEST_NEST_DEPTH];
 QueueHandle_t xMessageQueue[TASK_TEST_QUEUE_NUM];
@@ -96,5 +98,11 @@ void hw_business_process(void)
 	vETHMailboxCallback();
 	create_str_task();
 	vKeyPadCreate();
+}
+
+void aocpu_bringup_finished(void)
+{
+	#define RTOS_RUN_SUCC                  (1 << 0)
+	*(volatile uint32_t *)RTOS_BOOT_SUCC_REG |= RTOS_RUN_SUCC;
 }
 

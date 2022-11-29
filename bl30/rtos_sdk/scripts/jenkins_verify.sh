@@ -110,7 +110,7 @@ fi
 source scripts/gerrit_review.sh
 # Cherry pick patches
 source scripts/cherry_pick.sh
-[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL
+[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL && exit 1
 gerrit_review_for_gerrit_topic Start
 
 # Generate Jenkins trigger
@@ -122,5 +122,5 @@ else
 	source scripts/build_all.sh
 fi
 
-[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL
+[ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL && exit 1
 gerrit_review_for_gerrit_topic SUCCESS

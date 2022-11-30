@@ -315,7 +315,7 @@ function build() {
 	if [ ! $CONFIG_TESTKEY ]; then
 		CONFIG_TESTKEY=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY}
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY} ${CONFIG_AB_UPDATE}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -498,6 +498,11 @@ function parser() {
 				CONFIG_CHOICE_BUILD=1
 				export CONFIG_CHOICE_BUILD
 				export CONFIG_BUILD_VERSION
+				continue ;;
+			--ab-update)
+				CONFIG_AB_UPDATE=y
+				echo "export CONFIG_AB_UPDATE"
+				export CONFIG_AB_UPDATE=y
 				continue ;;
 			clean|distclean|-distclean|--distclean)
 				clean

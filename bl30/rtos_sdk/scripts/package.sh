@@ -206,7 +206,7 @@ function build_uboot() {
         echo "Select board($BOARD) not support compile uboot"
         exit 1
     else
-        pushd $RTOS_BUILD_DIR/boot/
+        pushd $RTOS_BUILD_DIR/boot/u-boot
         ./mk $UBOOT_BOARDNAME
         test -f build/u-boot.bin && cp -av build/u-boot.bin* $PROJECT_BUILD_OUT_IMAGE_PATH
         popd

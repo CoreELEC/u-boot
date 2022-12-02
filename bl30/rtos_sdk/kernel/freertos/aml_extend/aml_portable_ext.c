@@ -188,7 +188,7 @@ void vHardwareResourceRecord(void)
 #endif
 
 	/* The real loading address of RTOS is passed to BL31 */
-#if defined(CONFIG_BOARD_AW419_C308L) && (CONFIG_PRIMARY_CPU == 1)
+#if defined(CONFIG_SOC_C3) && (CONFIG_PRIMARY_CPU == 1)
 	REG32(NOTICE_BL31_RTOS_LOAD_INFO_ADDRESS) = configTEXT_BASE;
 	vCacheFlushDcacheRange(NOTICE_BL31_RTOS_LOAD_INFO_ADDRESS, 4);
 #endif
@@ -209,7 +209,7 @@ int xRtosLoadStageIndicator(void)
 {
 	static int load_finished;
 
-#if defined(CONFIG_BOARD_AW419_C308L)
+#if defined(CONFIG_SOC_C3) && (CONFIG_PRIMARY_CPU == 1)
 	vCacheFlushDcacheRange((CONFIG_SCATTER_LOAD_ADDRESS - 0x04), 4);
 	if (REG32(CONFIG_SCATTER_LOAD_ADDRESS - 0x04) == 0xaabbccdd) {
 		if (!load_finished) {
@@ -220,5 +220,6 @@ int xRtosLoadStageIndicator(void)
 		return 2;
 	}
 #endif
+
 	return 1;
 }

@@ -88,8 +88,8 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.DRAMFreq			= {LPDDR4X_DEFAULT_CLK, 0, 0, 0},
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
 	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	.imem_load_addr			= 0xFFFC0000, //sram
-	.dmem_load_size			= 0x1000, //4K
+	//.imem_load_addr			= 0xFFFC0000, //sram
+	//.dmem_load_size			= 0x1000, //4K
 
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming			= 0,
@@ -162,8 +162,8 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.DRAMFreq			= {LPDDR4X_DEFAULT_CLK, 0, 0, 0},
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
 	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	.imem_load_addr			= 0xFFFC0000, //sram
-	.dmem_load_size			= 0x1000, //4K
+	//.imem_load_addr			= 0xFFFC0000, //sram
+	//.dmem_load_size			= 0x1000, //4K
 
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming			= 0,

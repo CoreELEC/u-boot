@@ -33,7 +33,7 @@ class SectionSize():
         return self.data + self.bss
     def total(self):
         return self.text + self.data + self.bss
-    def add_section(self, section, size):
+    def add_gcc_section(self, section, size):
         if section.startswith('.comment'):
             return
         if section.startswith('.debug'):
@@ -58,10 +58,46 @@ class SectionSize():
             if (size > 0):
                 print("customer section:%s, size:%d" % (section, size))
                 self.customize += size
+    def add_xcc_section(self, section, size):
+        if section.startswith('.comment'):
+            return
+        if section.startswith('.debug'):
+            return
+        if section.startswith('.xt.prop')or section.startswith('.xt.lit'):
+            return
+        if section.startswith('.text') or section.endswith('.text') \
+            or section.startswith('.literal') or section.endswith('.literal') \
+            or section.startswith('.rodata') or section.endswith('.rodata'):
+            self.text += size
+        elif section.startswith('.rela.dyn'):
+            self.rela_text += size
+        elif section.startswith('.bss') or section.startswith('.common') or section.startswith('.sbss'):
+            self.bss += size
+        elif section.startswith('.data') or section.endswith('.data'):
+            self.data += size
+        elif section.startswith('.heap'):
+            self.heap += size
+            self.bss += size
+        elif section.startswith('.stack'):
+            self.stack += size
+            self.bss += size
+        else:
+            if (size > 0):
+                print("customer section:%s, size:%d" % (section, size))
+                self.customize += size
 
 size_by_source = {}
-base = 0x2067a
 with open(args.map_file) as f:
+    if os.getenv('arch') == "xtensa":
+        arch_toolchain = "XCC"
+        toolchain_keyword = "xtensa-elf"
+        is_xtensa = 1
+    else:
+        arch_toolchain = "GCC"
+        toolchain_keyword = "toolchains"
+        is_xtensa = 0
+    print("%s toolchain map analyzer" % arch_toolchain)
+
     lines = iter(f)
     for line in lines:
         if line.strip() == "Linker script and memory map":
@@ -90,6 +126,9 @@ with open(args.map_file) as f:
                 # Note: this line might be wrapped, with the size of the section
                 # on the next line, but we ignore the size anyway and will ignore that line
                 current_section = pieces[0]
+                # XCC text section format
+                if (pieces == 4):
+                    source = pieces[-1]
             elif len(pieces) == 1 and len(line) > 14:
                 # ld splits the rest of this line onto the next if the section name is too long
                 split_line = line
@@ -121,14 +160,17 @@ with open(args.map_file) as f:
                     elif '.dir' in source:
                         source = source[:source.find(".dir")]
                     elif source.endswith('.o'):
-                        if 'toolchains' in source:
+                        if toolchain_keyword in source:
                             source = 'toolchain_obj'
                         else:
                             source = os.path.basename(source)
 
                 if source not in size_by_source:
                     size_by_source[source] = SectionSize()
-                size_by_source[source].add_section(current_section, size)
+                if is_xtensa == 1:
+                    size_by_source[source].add_xcc_section(current_section, size)
+                else:
+                    size_by_source[source].add_gcc_section(current_section, size)
 
 # Print out summary
 sources = list(size_by_source.keys())

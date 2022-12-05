@@ -9,7 +9,7 @@
 #               1. 2022.07.20 v0.1 create for stable branch update.
 #  =====================================================================
 
-# Import moudles
+# Import modules
 try:
     import sys
     import os
@@ -25,7 +25,7 @@ try:
     from collections import OrderedDict
 except Exception as e:
     print(e)
-    exit('Please install moudles, eg: pip3 install os')
+    exit('Please install modules, eg: pip3 install os')
 
 # jason example: bl3.4.5-20220711-pre-ver.json
 # {

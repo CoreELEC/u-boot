@@ -301,7 +301,7 @@
   //bit 5.   LPDT data endian.  1 = transfer the high bit first. 0 : transfer the low bit first.
   //bit 4.   HS data endian.
   //bit 3.  force data byte lane in stop mode.
-  //bit 2.  force data byte lane 0 in reciever mode.
+  //bit 2.  force data byte lane 0 in receiver mode.
   //bit 1. write 1 to sync the txclkesc input. the internal logic have to use txclkesc to decide Txvalid and Txready.
   //bit 0.  enalbe the MIPI DSI PHY TxDDRClk.
 #define MIPI_DSI_CHAN_CTRL                         ((0x0001  << 2) + 0xfe014000)
@@ -360,8 +360,8 @@
 #define MIPI_DSI_WAKEUP_TIM                        ((0x0008  << 2) + 0xfe014000)
   //TWAKEUP.
 #define MIPI_DSI_LPOK_TIM                          ((0x0009  << 2) + 0xfe014000)
-  //bit 31:0 when in RxULPS state, RX reciever is in sleep mode.
-  //every MIPI_DSI_ULPS_CHECK period, the reciever would be enabled once, and waiting this timer period to get the stable input.
+  //bit 31:0 when in RxULPS state, RX receiver is in sleep mode.
+  //every MIPI_DSI_ULPS_CHECK period, the receiver would be enabled once, and waiting this timer period to get the stable input.
 #define MIPI_DSI_LP_WCHDOG                         ((0x000a  << 2) + 0xfe014000)
   //bit 31:0 watch dog timer for MIPI DSI LP receive state.
 #define MIPI_DSI_ANA_CTRL                          ((0x000b  << 2) + 0xfe014000)
@@ -372,7 +372,7 @@
 #define MIPI_DSI_TURN_WCHDOG                       ((0x000d  << 2) + 0xfe014000)
  //bit 31:0 watch dog timer for lane 0 LP turn around waiting time.
 #define MIPI_DSI_ULPS_CHECK                        ((0x000e  << 2) + 0xfe014000)
- //bit 31:0 when Lane0 in LP recieve state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
+ //bit 31:0 when Lane0 in LP receive state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
 #define MIPI_DSI_TEST_CTRL0                        ((0x000f  << 2) + 0xfe014000)
 #define MIPI_DSI_TEST_CTRL1                        ((0x0010  << 2) + 0xfe014000)
 //========================================================================
@@ -393,7 +393,7 @@
   //bit 5.   LPDT data endian.  1 = transfer the high bit first. 0 : transfer the low bit first.
   //bit 4.   HS data endian.
   //bit 3.  force data byte lane in stop mode.
-  //bit 2.  force data byte lane 0 in reciever mode.
+  //bit 2.  force data byte lane 0 in receiver mode.
   //bit 1. write 1 to sync the txclkesc input. the internal logic have to use txclkesc to decide Txvalid and Txready.
   //bit 0.  enalbe the MIPI DSI PHY TxDDRClk.
 #define MIPI_DSI_B_CHAN_CTRL                       ((0x0001  << 2) + 0xfe016000)
@@ -452,8 +452,8 @@
 #define MIPI_DSI_B_WAKEUP_TIM                      ((0x0008  << 2) + 0xfe016000)
   //TWAKEUP.
 #define MIPI_DSI_B_LPOK_TIM                        ((0x0009  << 2) + 0xfe016000)
-  //bit 31:0 when in RxULPS state, RX reciever is in sleep mode.
-  //every MIPI_DSI_ULPS_CHECK period, the reciever would be enabled once, and waiting this timer period to get the stable input.
+  //bit 31:0 when in RxULPS state, RX receiver is in sleep mode.
+  //every MIPI_DSI_ULPS_CHECK period, the receiver would be enabled once, and waiting this timer period to get the stable input.
 #define MIPI_DSI_B_LP_WCHDOG                       ((0x000a  << 2) + 0xfe016000)
   //bit 31:0 watch dog timer for MIPI DSI LP receive state.
 #define MIPI_DSI_B_ANA_CTRL                        ((0x000b  << 2) + 0xfe016000)
@@ -464,7 +464,7 @@
 #define MIPI_DSI_B_TURN_WCHDOG                     ((0x000d  << 2) + 0xfe016000)
  //bit 31:0 watch dog timer for lane 0 LP turn around waiting time.
 #define MIPI_DSI_B_ULPS_CHECK                      ((0x000e  << 2) + 0xfe016000)
- //bit 31:0 when Lane0 in LP recieve state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
+ //bit 31:0 when Lane0 in LP receive state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
 #define MIPI_DSI_B_TEST_CTRL0                      ((0x000f  << 2) + 0xfe016000)
 #define MIPI_DSI_B_TEST_CTRL1                      ((0x0010  << 2) + 0xfe016000)
 //========================================================================
@@ -5403,16 +5403,16 @@
 //Bit 6:4,    reg_frddr_type      ,default = 0
 //Bit 3:0,    reserved
 #define EARCTX_SPDIFOUT_PREAMB                     ((0x0006  << 2) + 0xfe333400)
-//Bit 31,     reg_premable_Z_set      ,default = 0,user 8'b11101000 1 user 7:0
-//Bit 30,     reg_premable_Y_set      ,default = 0,user 8'b11100100 1 user 15:8
-//Bit 29,     reg_premable_X_set      ,default = 0,user 8'b11100010 1 user 23:16
+//Bit 31,     reg_preamble_Z_set      ,default = 0,user 8'b11101000 1 user 7:0
+//Bit 30,     reg_preamble_Y_set      ,default = 0,user 8'b11100100 1 user 15:8
+//Bit 29,     reg_preamble_X_set      ,default = 0,user 8'b11100010 1 user 23:16
 //Bit 28:24,  reserved
-//Bit 23:16,  reg_premable_X_value    ,default = 0
-//Bit 15:8,   reg_premable_Y_value    ,default = 0
-//Bit 7:0,    reg_premable_Z_value    ,default = 0
+//Bit 23:16,  reg_preamble_X_value    ,default = 0
+//Bit 15:8,   reg_preamble_Y_value    ,default = 0
+//Bit 7:0,    reg_preamble_Z_value    ,default = 0
 #define EARCTX_SPDIFOUT_SWAP                       ((0x0007  << 2) + 0xfe333400)
 //Bit 31:16,  reg_hold_cnt        ,default = 0,hold start cnt ,valid when reg_hold_for_tdm set 1
-//Bit 15,     reg_init_send_en    ,default = 0,send 01 sequence some times after intial done from frddr set
+//Bit 15,     reg_init_send_en    ,default = 0,send 01 sequence some times after initial done from frddr set
 //Bit 14:0,   reg_init_send_cnt   ,default = 0,send 01 sequence time ,valid when reg_init_send_en set 1
 #define EARCTX_ERR_CORRT_CTRL0                     ((0x0008  << 2) + 0xfe333400)
 //Bit 31:24,  reserved
@@ -5457,7 +5457,7 @@
 //Bit 21,    reg_data_sel                 ,default = 0,//data sel: 0 data 1 reg_mute_data_value
 //Bit 20:19, reg_ubit_sel                 ,default = 0,//userBit sel: 0 data 1 reg_value 2 fifo data
 //Bit 18,    reg_vbit_sel                 ,default = 0,//validBit sel: 0 data 1 reg_value
-//Bit 17,    reg_chst_sel                 ,default = 0,//chanel status sel: 0 data 1 reg_value
+//Bit 17,    reg_chst_sel                 ,default = 0,//channel status sel: 0 data 1 reg_value
 //Bit 16,    reg_ubit_fifo_less_irq_en    ,default = 0,fifo_less_thd irq enable
 //Bit 15:8,  reg_ubit_fifo_start_thd      ,default = 0,start transmit iu after fifo level greater than this value
 //Bit 7:0,   reg_ubit_fifo_less_thd       ,default = 0,generate irq,when fifo level less than this value
@@ -5808,22 +5808,22 @@
 #define EARC_RX_CMDC_STATUS5                       ((0x002c  << 2) + 0xfe333800)
 //Bit      31:0,     ro_cmdc_status5              unsigned, RO, default = 0,
 #define EARC_RX_CMDC_STATUS6                       ((0x002d  << 2) + 0xfe333800)
-//Bit      31,         ro_idle2_int                unsigned, RO, dfault =0
-//Bit      30,         ro_idle1_int                unsigned, RO, dfault =0
-//Bit      29,         ro_disc2_int                unsigned, RO, dfault =0
-//Bit      28,         ro_disc1_int                unsigned, RO, dfault =0
-//Bit      27,         ro_earc_int                 unsigned, RO, dfault =0
-//Bit      26,         ro_hb_status_int            unsigned, RO, dfault =0
-//Bit      25,         ro_losthb_int               unsigned, RO, dfault =0
-//Bit      24,         ro_timeout_int              unsigned, RO, dfault =0
-//Bit      23,         ro_status_ch_int            unsigned, RO, dfault =0
-//Bit      22,         ro_int_rec_invalid_id       unsigned, RO, dfault =0
-//Bit      21,         ro_int_rec_invalid_offset   unsigned, RO, dfault =0
-//Bit      20,         ro_int_rec_unexp            unsigned, RO, dfault =0
-//Bit      19,         ro_int_rec_ecc_err          unsigned, RO, dfault =0
-//Bit      18,         ro_int_rec_parity_err       unsigned, RO, dfault =0
-//Bit      17,         ro_int_recv_packet          unsigned, RO, dfault =0
-//Bit      16,         ro_int_rec_time_out         unsigned, RO, dfault =0
+//Bit      31,         ro_idle2_int                unsigned, RO, default =0
+//Bit      30,         ro_idle1_int                unsigned, RO, default =0
+//Bit      29,         ro_disc2_int                unsigned, RO, default =0
+//Bit      28,         ro_disc1_int                unsigned, RO, default =0
+//Bit      27,         ro_earc_int                 unsigned, RO, default =0
+//Bit      26,         ro_hb_status_int            unsigned, RO, default =0
+//Bit      25,         ro_losthb_int               unsigned, RO, default =0
+//Bit      24,         ro_timeout_int              unsigned, RO, default =0
+//Bit      23,         ro_status_ch_int            unsigned, RO, default =0
+//Bit      22,         ro_int_rec_invalid_id       unsigned, RO, default =0
+//Bit      21,         ro_int_rec_invalid_offset   unsigned, RO, default =0
+//Bit      20,         ro_int_rec_unexp            unsigned, RO, default =0
+//Bit      19,         ro_int_rec_ecc_err          unsigned, RO, default =0
+//Bit      18,         ro_int_rec_parity_err       unsigned, RO, default =0
+//Bit      17,         ro_int_recv_packet          unsigned, RO, default =0
+//Bit      16,         ro_int_rec_time_out         unsigned, RO, default =0
 //Bit      15:0,       reserved
 //
 // Closing file:  ./earc_rx_cmdc.h
@@ -5966,10 +5966,10 @@
 //Bit   31,     reg_work_enable               unsigned, default = 0, dmac user bit decode enable
 //Bit   30:24,  reg_iu_sync                   unsigned, default = 0, iu sync value
 //Bit   23:16,  reg_fifo_thd                  unsigned, default = 0, generate irq when fifo level pass some threshold
-//Bit   15,     reg_max_dist_en               unsigned, default = 0, max distance bewteen IUs to set lost
+//Bit   15,     reg_max_dist_en               unsigned, default = 0, max distance between IUs to set lost
 //Bit   14,     reg_iu_sync_en                unsigned, default = 0, iu sync code enable 0 : all iu to fifo 1 only sync iu packet to fifo
 //Bit   13:12,  reg_user_lr                   unsigned, default = 0, 00 off 01 use l channel userbit 10 use r channel userbit 11 user lr channel userbit
-//Bit   11:8,   reg_max_dist                  unsigned, default = 0, max distance bewteen IUs value
+//Bit   11:8,   reg_max_dist                  unsigned, default = 0, max distance between IUs value
 //Bit   7,      reg_fifo_thd_en               unsigned, default = 0, fifo_thd irq enable
 //Bit   6,      reg_fifo_lost_init_en         unsigned, default = 0, when lost,initial fifo
 //Bit   5,      reg_fifo_init                 unsigned, default = 0, fifo initial
@@ -8576,7 +8576,7 @@
 // Bit 19:14 -- des_2 ts pl state   -- Read Only
 // Bit 13:8 -- des ts pl state   -- Read Only
 // Bit 3:0 PID index to 8 PID to get key-set
-// auto increse after TS_PL_PID_DATA read/write
+// auto increase after TS_PL_PID_DATA read/write
 #define TS_PL_PID_INDEX                            ((0x00f3  << 2) + 0xfe040000)
 // Bit 13 -- PID match disble
 // Bit 12:0 -- PID
@@ -8604,7 +8604,7 @@
 // [3]      General enable for the ciplus module
 // [2]      AES CBC disable (default should be 0 to enable AES CBC)
 // [1]      AES Enable
-// [0]      DES Eanble
+// [0]      DES Enable
 #define CIPLUS_CONFIG                              ((0x00fd  << 2) + 0xfe040000)
 // bit[31:28] AES IV endian
 // bit[27:24] AES message out endian
@@ -9137,7 +9137,7 @@
 // To measure display slave's frame rate, we can use a reference clock to measure the duration of one of more edpite pulse(s).
 // Measurement control is by register MIPI_DSI_TOP_MEAS_CNTL bit[9:0].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_TOP_MEAS_STAT_TE0 and MIPI_DSI_TOP_MEAS_STAT_TE1, as below:
+// Measurement result is in MIPI_DSI_TOP_MEAS_STAT_TE0 and MIPI_DSI_TOP_MEAS_STAT_TE1, as below:
 // edpite_meas_count[47:0]: Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // edpite_meas_count_n[3:0]:Number of measure periods has been done. Number can wrap over.
@@ -9150,7 +9150,7 @@
 // To measure Host's frame rate, we can use a reference clock to measure the duration of one of more Vsync pulse(s).
 // Measurement control is by register MIPI_DSI_TOP_MEAS_CNTL bit[19:10].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_TOP_MEAS_STAT_VS0 and MIPI_DSI_TOP_MEAS_STAT_VS1, as below:
+// Measurement result is in MIPI_DSI_TOP_MEAS_STAT_VS0 and MIPI_DSI_TOP_MEAS_STAT_VS1, as below:
 // vsync_meas_count[47:0]:  Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // vsync_meas_count_n[3:0]: Number of measure periods has been done. Number can wrap over.
@@ -9344,7 +9344,7 @@
 // To measure display slave's frame rate, we can use a reference clock to measure the duration of one of more edpite pulse(s).
 // Measurement control is by register MIPI_DSI_B_TOP_MEAS_CNTL bit[9:0].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_B_TOP_MEAS_STAT_TE0 and MIPI_DSI_B_TOP_MEAS_STAT_TE1, as below:
+// Measurement result is in MIPI_DSI_B_TOP_MEAS_STAT_TE0 and MIPI_DSI_B_TOP_MEAS_STAT_TE1, as below:
 // edpite_meas_count[47:0]: Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // edpite_meas_count_n[3:0]:Number of measure periods has been done. Number can wrap over.
@@ -9357,7 +9357,7 @@
 // To measure Host's frame rate, we can use a reference clock to measure the duration of one of more Vsync pulse(s).
 // Measurement control is by register MIPI_DSI_B_TOP_MEAS_CNTL bit[19:10].
 // Reference clock comes from clk_rst_tst.cts_dsi_meas_clk, and is defined by HIU register HHI_VDIN_MEAS_CLK_CNTL bit[23:12].
-// Mesurement result is in MIPI_DSI_B_TOP_MEAS_STAT_VS0 and MIPI_DSI_B_TOP_MEAS_STAT_VS1, as below:
+// Measurement result is in MIPI_DSI_B_TOP_MEAS_STAT_VS0 and MIPI_DSI_B_TOP_MEAS_STAT_VS1, as below:
 // vsync_meas_count[47:0]:  Number of reference clock cycles counted during one measure period (non-incremental measure), or
 //                          during all measure periods so far (incremental measure).
 // vsync_meas_count_n[3:0]: Number of measure periods has been done. Number can wrap over.
@@ -11112,7 +11112,7 @@
 #define AWSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b4400)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define AWSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b4400)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define AWSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b4400)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define AWSUB0_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b4400)
@@ -11836,7 +11836,7 @@
 #define ARSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b4400)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define ARSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b4400)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define ARSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b4400)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define ARSUB0_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b4400)
@@ -12912,7 +12912,7 @@
 #define TWSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b4c00)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TWSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b4c00)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define TWSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b4c00)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TWSUB0_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b4c00)
@@ -13636,7 +13636,7 @@
 #define TRSUB0_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b4c00)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TRSUB0_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b4c00)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define TRSUB0_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b4c00)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TRSUB0_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b4c00)
@@ -14376,7 +14376,7 @@
 #define TWSUB1_ISP_LOSS_FRAME_HOLD                 ((0x0001  << 2) + 0xfe3b5000)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TWSUB1_ISP_LOSS_GCLK_CTRL                  ((0x0002  << 2) + 0xfe3b5000)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define TWSUB1_ISP_LOSS_RO_CODEC_STATUS            ((0x0003  << 2) + 0xfe3b5000)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TWSUB1_ISP_LOSS_MISC                       ((0x0004  << 2) + 0xfe3b5000)
@@ -15100,7 +15100,7 @@
 #define TRSUB1_ISP_LOSS_FRAME_HOLD                 ((0x0081  << 2) + 0xfe3b5000)
 //Bit 31:0       reg_frame_hold_nums     // unsigned ,    RW, default = 16, hold clock number from frame_rst, to wait register ready
 #define TRSUB1_ISP_LOSS_GCLK_CTRL                  ((0x0082  << 2) + 0xfe3b5000)
-//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  resevsed for gated-clock control
+//Bit 31: 0      reg_gclk_ctrl           // unsigned ,    RW, default = 0  reserved for gated-clock control
 #define TRSUB1_ISP_LOSS_RO_CODEC_STATUS            ((0x0083  << 2) + 0xfe3b5000)
 //Bit 31: 0      ro_codec_status         // unsigned ,    RW, default = 0, codec status, write 1 to clear
 #define TRSUB1_ISP_LOSS_MISC                       ((0x0084  << 2) + 0xfe3b5000)
@@ -17166,7 +17166,7 @@
 //                                      1=ABH read request burst size 24;
 //                                      2=ABH read request burst size 32;
 //                                      3=ABH read request burst size 48.
-// Bit     1 RW ctrl_sw_reset. 1=Reset RDMA logics except register.
+// Bit     1 RW ctrl_sw_reset. 1=Reset RDMA logic except register.
 // Bit     0 RW ctrl_free_clk_enable. 0=Default, Enable clock gating. 1=No clock gating, enable free clock.
 #define RDMA_CTRL                                  ((0x1114  << 2) + 0xff000000)
 // Read only.
@@ -17263,7 +17263,7 @@
 //Bit 7:6, component0 output switch, 00: select component0 in, 01: select component1 in, 10: select component2 in
 //Bit 5,   input window selection function enable
 //Bit 4, enable VDIN common data input, otherwise there will be no video data input
-//Bit 3:0 vdin selection, 1: mpeg_in from dram, 2: bt656 input, 3: component input, 4: tvdecoder input, 5: hdmi rx input, 6: digtial video input, 7: loopback from Viu1, 8: MIPI.
+//Bit 3:0 vdin selection, 1: mpeg_in from dram, 2: bt656 input, 3: component input, 4: tvdecoder input, 5: hdmi rx input, 6: digital video input, 7: loopback from Viu1, 8: MIPI.
 #define VDIN_COM_CTRL0                             ((0x1202  << 2) + 0xff000000)
 //Bit 28:16 active_max_pix_cnt, readonly
 //Bit 12:0  active_max_pix_cnt_shadow, readonly
@@ -18908,7 +18908,7 @@
 //Bit 0            reg_ldc_gain_lut_wr              // unsigned ,    RW, default = 0  1:software write 0:software read.
 #define LDC_GAIN_LUT_CTRL1                         ((0x1475  << 2) + 0xff000000)
 //Bit 31: 1        reserved
-//Bit 0            reg_ldc_gain_lut_str             // unsigned ,    RW, default = 0  0->1:one software write/read start,postive edge valid.
+//Bit 0            reg_ldc_gain_lut_str             // unsigned ,    RW, default = 0  0->1:one software write/read start, positive edge valid.
 #define LDC_ADJ_VS_CTRL                            ((0x1476  << 2) + 0xff000000)
 //Bit 31:16        reserved
 //Bit 15:0          reg_ldc_blk_intsty_calc_intvl     // unsigned ,    RW, default = 200 delay for one block intensity calculation period
@@ -18923,7 +18923,7 @@
 //Bit 26    reg_ldc_prt_func_en                     //unsigned , RW, default = 0   1: enable LDC output protect function 0:disable LDC output protect function
 //Bit 25    reg_ldc_bl_input_sft_ctr_en             //unsigned , RW, default = 0   1: software control backlight info write index enable
 //Bit 24:23 reg_ldc_bl_input_sft_wr_idx             //unsigned , RW, default = 0   backlight info write index, for debug only
-//Bit 22    reg_ldc_vsync_get_bl_info_en            //unsigned , RW, default = 1   0:get backlight info every block line  (no vsync interrupt) 1:get  backlight info  accroding to vsync
+//Bit 22    reg_ldc_vsync_get_bl_info_en            //unsigned , RW, default = 1   0:get backlight info every block line  (no vsync interrupt) 1:get  backlight info  according to vsync
 //Bit 21:20 reg_ldc_hist_burst_len                  //unsigned , RW, default = 0   0:2 times 128bit 1:4 times 128bit 2,3:6 times      128bit
 //Bit 19:18 reg_ldc_blk_intsty_burst_len            //unsigned , RW, default = 0   0:2 times 128bit 1:4 times 128bit 2:6   times      128bit 3:8        times 128bit
 //Bit 17    reg_ldc_vs_edge_sel                     //unsigned , RW, default = 1   1:posedge vs sync   0:negedge vs sync
@@ -19412,7 +19412,7 @@
 //bit 15: 8,   mtn_minth
 //bit  7: 0,   mtn_maxth
 #define DI_MTN_1_CTRL5                             ((0x1744  << 2) + 0xff000000)
-//bit 31:28,   mtn_m1b_extnd
+//bit 31:28,   mtn_m1b_extend
 //bit 27:24,   mtn_m1b_errod
 //bit 21:20,   mtn_mot_txt_mode
 //bit 19:18,   mtn_replace_cbyy
@@ -20258,7 +20258,7 @@
 //bit 15:8,    reg_ei_int_drtdelay2_notver_sadth
 //bit 7:0,     reg_ei_int_drtdelay2_vlddrt_sadth
 #define DI_MTN_1_CTRL6                             ((0x17a9  << 2) + 0xff000000)
-//bit 31:24,   mtn_m1b_extnd
+//bit 31:24,   mtn_m1b_extend
 //bit 23:16,   mtn_m1b_errod
 //bit 15: 8,   mtn_core_ykinter
 //bit  7: 0,   mtn_core_ckinter
@@ -21215,9 +21215,9 @@
 // Bit 15:13 v0_gofld_sel, 000: display go_field, 001: DI pre_frame_rst, 010: vdin0 go_field, 011: vdin1 go_field, otherwise: force go_field by
 // reg_v0_go_field(bit19)
 // Bit 12:6 hole_lines for d2d3 depth read interface
-// Bit 5:4 d2d3_v1_sel, 2'b01: video display read interface(DI or vd1 fomart output), 2'b10: scale output, otherwise nothing as v1
+// Bit 5:4 d2d3_v1_sel, 2'b01: video display read interface(DI or vd1 format output), 2'b10: scale output, otherwise nothing as v1
 // Bit 3 use_vdin_eol, if true, use vdin eol as the v0_eol, otherwise using length to get the v0_eol
-// Bit 2:0  d2d3_v0_sel  001: vdin0, 010: vdin1, 011: NRW, 100: video display read interface(DI or vd1 fomart output), 101: vpp scale output
+// Bit 2:0  d2d3_v0_sel  001: vdin0, 010: vdin1, 011: NRW, 100: video display read interface(DI or vd1 format output), 101: vpp scale output
 //
 // `define D2D3_INTF_CTRL0                 8'h09
 #define VD1_AFBCD0_MISC_CTRL                       ((0x1a0a  << 2) + 0xff000000)
@@ -21230,7 +21230,7 @@
 // OSD1 registers 0x10-0x2f
 //------------------------------------------------------------------------------
 // Bit    31 Reserved
-// Bit    30 RW, enable_free_clk: 1=use free-running clock to drive logics;
+// Bit    30 RW, enable_free_clk: 1=use free-running clock to drive logic;
 //                                0=use gated clock for low power.
 // Bit    29 R, test_rd_dsr
 // Bit    28 R, osd_done
@@ -21357,7 +21357,7 @@
 // OSD2 registers 0x30-0x4f  0x64 -0x67
 //------------------------------------------------------------------------------
 // Bit    31 Reserved
-// Bit    30 RW, enable_free_clk: 1=use free-running clock to drive logics;
+// Bit    30 RW, enable_free_clk: 1=use free-running clock to drive logic;
 //                                0=use gated clock for low power.
 // Bit    29 R, test_rd_dsr
 // Bit    28 R, osd_done
@@ -23060,9 +23060,9 @@
 // Bit 0 SMOKE1 preblend enable only when preblend osd1 is not enable
 #define VPP_SMOKE_CTRL                             ((0x1d29  << 2) + 0xff000000)
 //smoke can be used only when that blending is disable and then be used as smoke function
-//smoke1 for OSD1 chanel
-//smoke2 for OSD2 chanel
-//smoke3 for VD2 chanel
+//smoke1 for OSD1 channel
+//smoke2 for OSD2 channel
+//smoke3 for VD2 channel
 //31:24 Y
 //23:16 Cb
 //15:8 Cr
@@ -24895,7 +24895,7 @@
 //
 // Closing file:  ./noise_estimate_reg.h
 //
-// di arbtration :
+// di arbitration :
 // the segment is 8'h50-8'h5f
 //
 // Reading file:  ./di_arb_axi_regs.h
@@ -25103,13 +25103,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -25521,13 +25521,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -27448,7 +27448,7 @@
 //Bit 4     reg_frc_pos_sel        // unsigned ,   RW, default = 0, select singal of frc positon switch,1:before postblend 0:after postblend
 //Bit 3:1   reserved
 //Bit 0     reg_frc_byp_en         // unsigned ,   RW, default = 1, bypass enable singal of frc,1:bypas frc 0:open frc
-// vpu arbtration :
+// vpu arbitration :
 // the segment is 8'h90-8'hc8
 //
 // Reading file:  ./vpu_arb_axi_regs.h
@@ -27702,8 +27702,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      rd_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      rd_rel_num        unsigned  , default = 0  release the read command threshold
 #define VPU_ASYNC_RD_MODE1                         ((0x27a6  << 2) + 0xff000000)
@@ -27715,8 +27715,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      rd_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      rd_rel_num        unsigned  , default = 0  release the read command threshold
 #define VPU_ASYNC_RD_MODE2                         ((0x27a7  << 2) + 0xff000000)
@@ -27728,8 +27728,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      rd_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      rd_rel_num        unsigned  , default = 0  release the read command threshold
 #define VPU_ASYNC_RD_MODE3                         ((0x27a8  << 2) + 0xff000000)
@@ -27741,8 +27741,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      rd_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      rd_rel_num        unsigned  , default = 0  release the read command threshold
 #define VPU_ASYNC_RD_MODE4                         ((0x27a9  << 2) + 0xff000000)
@@ -27754,8 +27754,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      rd_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      rd_rel_num        unsigned  , default = 0  release the read command threshold
 #define VPU_ASYNC_WR_MODE0                         ((0x27aa  << 2) + 0xff000000)
@@ -27767,8 +27767,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      wr_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      wr_rel_num        unsigned  , default = 0  release the write command threshold
 #define VPU_ASYNC_WR_MODE1                         ((0x27ab  << 2) + 0xff000000)
@@ -27780,8 +27780,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      wr_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      wr_rel_num        unsigned  , default = 0  release the write command threshold
 #define VPU_ASYNC_WR_MODE2                         ((0x27ac  << 2) + 0xff000000)
@@ -27793,8 +27793,8 @@
 //Bit   10:9,     arugt_sel         unsigned  , default = 0
 //                                  00 : use auto fifo arugt generate the output arugt.
 //                                  01 : use the register bit control
-//                                  00 : use the input arguent
-//Bit   8,        arguent_cfg       unsigned  , default = 0  register arguent control bit
+//                                  00 : use the input argument
+//Bit   8,        argument_cfg       unsigned  , default = 0  register argument control bit
 //Bit   7:4,      wr_hold_num       unsigned  , default = 4  hold the read command threshold
 //Bit   3:0,      wr_rel_num        unsigned  , default = 0  release the write command threshold
 #define VPU_ASYNC_STAT                             ((0x27ad  << 2) + 0xff000000)
@@ -30226,7 +30226,7 @@
 //                                           0: unable; 1: enable, use neighboring mvs in refinement, default = 1
 //Bit 11,    reserved
 //Bit 10,    reg_mcdi_referrfrqchken
-//                                           0: unable; 1: enable, enable mv frquency check while finding min err in ref, default = 1
+//                                           0: unable; 1: enable, enable mv frequency check while finding min err in ref, default = 1
 //Bit 9,     reg_mcdi_refen
 //                                           0: unable; 1: enable, enable mv refinement, default = 1
 //Bit 8,     reg_mcdi_horlineen
@@ -30310,7 +30310,7 @@
 //Bit 19:16, reg_mcdi_chkedgedifthd0.                     thd0 for edge dif check (>=), default = 15
 //Bit   :15, reserved.
 //Bit 14:10, reg_mcdi_chkedgechklen.                      total check length for edge check, 1~24 (>0), default = 24
-//Bit  9: 8, reg_mcdi_chkedgeedgesel.                     final edge select mode, 0: original start edge, 1: lpf start edge, 2: orignal start+end edge, 3: lpf start+end edge, default = 1
+//Bit  9: 8, reg_mcdi_chkedgeedgesel.                     final edge select mode, 0: original start edge, 1: lpf start edge, 2: original start+end edge, 3: lpf start+end edge, default = 1
 //Bit  7: 3, reg_mcdi_chkedgesaddstgain.                  distance gain for sad calc while getting edges, default = 4
 //Bit     2, reg_mcdi_chkedgechkmode.                     edge used in check mode, 0: original edge, 1: lpf edge, default = 1
 //Bit     1, reg_mcdi_chkedgestartedge.                   edge mode for start edge, 0: original edge, 1: lpf edge, default = 0
@@ -30320,7 +30320,7 @@
 //Bit 14:12, reg_mcdi_lmvvalidmode                        valid mode for lmv calc., 100b: use char det, 010b: use flt, 001b: use hori flg
 //Bit 11:10, reg_mcdi_lmvgainmvmode                       four modes of mv selection for lmv weight calculation, default = 1
 //                                                        0: cur(x-3), lst(x-1,x,x+1); 1: cur(x-4,x-3), lst(x,x+1); 2: cur(x-5,x-4,x-3), lst(x-1,x,x+1,x+2,x+3); 3: cur(x-6,x-5,x-4,x-3), lst(x-1,x,x+1,x+2);
-//Bit  9,    reg_mcdi_lmvinitmode                         initial lmvs at first row of input field, 0: intial value = 0; 1: inital = 32 (invalid), default = 0
+//Bit  9,    reg_mcdi_lmvinitmode                         initial lmvs at first row of input field, 0: initial value = 0; 1: inital = 32 (invalid), default = 0
 //Bit  8,    reserved
 //Bit  7: 4, reg_mcdi_lmvrt0                              ratio of max mv, default = 5
 //Bit  3: 0, reg_mcdi_lmvrt1                              ratio of second max mv, default = 5
@@ -30433,15 +30433,15 @@
 //Bit  3: 0, reg_mcdi_referrgmvgain.               (locked) gmv gain for err calc. in ref, normalized to 8 as '1', default = 0
 #define MCDI_REF_ERR_FRQ_CHK                       ((0x2f1d  << 2) + 0xff000000)
 //Bit 31:28, reserved
-//Bit 27:24, reg_mcdi_referrfrqgain.               gain for mv frquency, normalized to 4 as '1', default = 10
+//Bit 27:24, reg_mcdi_referrfrqgain.               gain for mv frequency, normalized to 4 as '1', default = 10
 //Bit 23:21, reserved
-//Bit 20:16, reg_mcdi_referrfrqmax.                max gain for mv frquency check, default = 31
+//Bit 20:16, reg_mcdi_referrfrqmax.                max gain for mv frequency check, default = 31
 //Bit    15, reserved
-//Bit 14:12, reg_mcdi_ref_errfrqmvdifthd2.         mv dif threshold 2 (<) for mv frquency check, default = 3
+//Bit 14:12, reg_mcdi_ref_errfrqmvdifthd2.         mv dif threshold 2 (<) for mv frequency check, default = 3
 //Bit    11, reserved
-//Bit 10: 8, reg_mcdi_ref_errfrqmvdifthd1.         mv dif threshold 1 (<) for mv frquency check, default = 2
+//Bit 10: 8, reg_mcdi_ref_errfrqmvdifthd1.         mv dif threshold 1 (<) for mv frequency check, default = 2
 //Bit     7, reserved
-//Bit  6: 4, reg_mcdi_ref_errfrqmvdifthd0.         mv dif threshold 0 (<) for mv frquency check, default = 1
+//Bit  6: 4, reg_mcdi_ref_errfrqmvdifthd0.         mv dif threshold 0 (<) for mv frequency check, default = 1
 //Bit  3: 0, reserved
 #define MCDI_QME_LPF_MSK                           ((0x2f1e  << 2) + 0xff000000)
 //Bit 31:28, reserved
@@ -33185,7 +33185,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 1  debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 1  debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -35153,13 +35153,13 @@
 //Bit 21           reg_adpt_xinterleave_luma_ride // unsigned ,    RW, default = 1  vertical interleave piece luma reorder ride;   0: no reorder ride; 1: w/4 as ride
 //Bit 20           reg_adpt_xinterleave_chrm_ride // unsigned ,    RW, default = 1  vertical interleave piece chroma reorder ride; 0: no reorder ride; 1: w/2 as ride
 //Bit 19            reserved
-//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
-//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: diable
+//Bit 18           reg_disable_order_mode_i_6 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 17           reg_disable_order_mode_i_5 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 16           reg_disable_order_mode_i_4 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 15           reg_disable_order_mode_i_3 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 14           reg_disable_order_mode_i_2 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 13           reg_disable_order_mode_i_1 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
+//Bit 12           reg_disable_order_mode_i_0 // unsigned ,    RW, default = 0  disable order mode0~6: each mode with one  disable bit: 0: no disable, 1: disable
 //Bit 11            reserved
 //Bit 10           reg_minval_yenc_en        // unsigned ,    RW, default = 0  force disable, final decision to remove this ws 1% performance loss
 //Bit  9           reg_16x4block_enable      // unsigned ,    RW, default = 0  block as mission, but permit 16x4 block
@@ -35459,7 +35459,7 @@
 //bit[30]        R-RW   0~1  0    reg_id_check       :  check the id of data path and req path
 //bit[29]        R-RW   0~1  0    reg_clear_fifo     :  manually reset bit
 //bit[28]        R-RW   0~1  0    reg_vsync_rst      :  soft_rst auto reset enable
-//bit[27]        R-RW   0~1  0    reg_update_addr    :  manually udpate start addr
+//bit[27]        R-RW   0~1  0    reg_update_addr    :  manually update start addr
 //bit[26]        R-RW   0~1  0    reg_addr_auto      :  auto update start addr enable
 //bit[25]        R-RW   0~1  0    reg_keep_receive   :  data path keep receive
 //bit[24:19]     R-RW   0~63 0    reg_req_th         :  fifo_room > req_th, then send the request
@@ -35954,11 +35954,11 @@
 //Bit  1: 0        reg_in_ds_rate_y          // unsigned ,    RW, default = 2  Input down-sample registers, normally AVG. value = [0,1,2], change according to input resolution. real rate is 2^reg_in_ds_rate
 #define INTRP_PARAM                                ((0x4b01  << 2) + 0xff000000)
 //Bit 31:26        reserved
-//Bit 25:21        reg_intep_phs_x_rtl       // signed ,    RW, default = 0  Interpolation x phase used, could be negtive num, set by SW
-//Bit 20:16        reg_intep_phs_x_use       // signed ,    RW, default = 0  Interpolation x phase used, could be negtive num, set by SW
+//Bit 25:21        reg_intep_phs_x_rtl       // signed ,    RW, default = 0  Interpolation x phase used, could be negative num, set by SW
+//Bit 20:16        reg_intep_phs_x_use       // signed ,    RW, default = 0  Interpolation x phase used, could be negative num, set by SW
 //Bit 15:10        reserved
-//Bit  9: 5        reg_intep_phs_y_rtl       // signed ,    RW, default = 0  Interpolation x phase used, could be negtive num, set by SW
-//Bit  4: 0        reg_intep_phs_y_use       // signed ,    RW, default = 0  Interpolation y phase used, could be negtive num, set by SW
+//Bit  9: 5        reg_intep_phs_y_rtl       // signed ,    RW, default = 0  Interpolation x phase used, could be negative num, set by SW
+//Bit  4: 0        reg_intep_phs_y_use       // signed ,    RW, default = 0  Interpolation y phase used, could be negative num, set by SW
 #define DCTR_BGRID_PARAM1                          ((0x4b02  << 2) + 0xff000000)
 //Bit 31:26        reserved
 //Bit 25:16        reg_grd_xnum              // unsigned ,    RW, default = 80  number of grid in horizontal dimension, value = [0-80]
@@ -36831,7 +36831,7 @@
 //Bit  3: 2,        reg_nr_cti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:cti; 2: (nr+cti)/2; 3:cti + dlt_nr  . unsigned  , default = 1
 //Bit  1: 0,        reg_nr_lti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:lti; 2: (nr+lti)/2; 3:lti + dlt_nr  . unsigned  , default = 2
 ////////////////////////////////////////////////////////////////////////////////
-// new ti regsters from here
+// new ti registers from here
 ////////////////////////////////////////////////////////////////////////////////
 #define LTI_DIR_CORE_ALPHA                         ((0x502a  << 2) + 0xff000000)
 //Bit 31:30,        reserved
@@ -37132,7 +37132,7 @@
 //Bit 23:16,  reg_sr3_pk_hp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
 //Bit 15:8,   reg_sr3_pk_bp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
 //Bit 7,      reg_sr3_sad_intlev_mode                 //u1: interleave detection xerr mode: 0 max; 1:sum default=1
-//Bit 6,      reg_sr3_sad_intlev_mode1                //u1: mode 1 of using diagonal protection: 0: no digonal protection; 1: with diagonal protection default=1
+//Bit 6,      reg_sr3_sad_intlev_mode1                //u1: mode 1 of using diagonal protection: 0: no diagonal protection; 1: with diagonal protection default=1
 //Bit 5:0,    reg_sr3_sad_intlev_gain                 //u6: interleave detection for sad gain applied, normalized to 8 as 1  default=12
 #define SHARP_DEJ_CTRL                             ((0x5064  << 2) + 0xff000000)
 //Bit 31:4    reserved
@@ -37211,7 +37211,7 @@
 #define SHARP_SR3_DERING_LUMA2PKGAIN_4TO6          ((0x506d  << 2) + 0xff000000)
 //Bit 31:24   reserved
 //Bit 23:16   reg_sr3_dering_luma2pkgain6             // u8: rate1 (for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkgain5             // u8: rate0 (for bpcon<th0) of curve for dering pkgain based on LPF luma level. dfault =50
+//Bit 15:8    reg_sr3_dering_luma2pkgain5             // u8: rate0 (for bpcon<th0) of curve for dering pkgain based on LPF luma level. default =50
 //Bit 7:0     reg_sr3_dering_luma2pkgain4             // u8: level limit(for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =255
 #define SHARP_SR3_DERING_LUMA2PKOS_0TO3            ((0x506e  << 2) + 0xff000000)
 //Bit 31:24   reg_sr3_dering_luma2pkos3             // u8: level limit(for th0<bpcon<th1) of curve for dering pkOS based on LPF luma level. default=255
@@ -37221,7 +37221,7 @@
 #define SHARP_SR3_DERING_LUMA2PKOS_4TO6            ((0x506f  << 2) + 0xff000000)
 //Bit 31:24   reserved
 //Bit 23:16   reg_sr3_dering_luma2pkos6             // u8: rate1 (for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkos5             // u8: rate0 (for bpcon<th0) of curve for dering pkOS based on LPF luma level. dfault =50
+//Bit 15:8    reg_sr3_dering_luma2pkos5             // u8: rate0 (for bpcon<th0) of curve for dering pkOS based on LPF luma level. default =50
 //Bit 7:0     reg_sr3_dering_luma2pkos4             // u8: level limit(for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =255
 #define SHARP_SR3_DERING_GAINVS_MADSAD             ((0x5070  << 2) + 0xff000000)
 //Bit 31:28   reg_sr3_dering_gainvs_maxsad7        //u4: pkgain vs maxsad value, 8 node interpolations, default = 0
@@ -37268,7 +37268,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 1  debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 1  debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -37771,8 +37771,8 @@
 //Bit 31:12   reserved
 //Bit 11:10   reg_fmeter_vwin_mm     //u2, vertical window size, 0:1 cloumn, 1:3cloumn, 2or3: 5cloumn .unsigned  , default = 0
 //Bit 9 : 8   reg_fmeter_hwin_mm     //u2, horizontal window size, 0:1x7, 1:1x9, 2or3: 1x11 .unsigned  , default = 0
-//Bit 7       reg_fmeter_d2_mode     //u1, selectino filter D2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
-//Bit 6       reg_fmeter_v2_mode     //u1, selectino filter V2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
+//Bit 7       reg_fmeter_d2_mode     //u1, selection filter D2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
+//Bit 6       reg_fmeter_v2_mode     //u1, selection filter V2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
 //Bit 5: 4    reg_fmeter_h2_mode     //u2, selection filter H2, 0: [0 0 0 -2 0 0 2 0 0], 1: [-2 0 0 0 2], 2or3: [0-2 0 0 0 0 0 2 0] .unsigned  , default = 0
 //Bit 3: 1    reserved
 //Bit 0       reg_freq_meter_en      //u1, freq meter enable  .unsigned  , default = 0
@@ -41014,7 +41014,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -41183,7 +41183,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -41352,7 +41352,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -41521,7 +41521,7 @@
 //Bit 23           reg_nrdeband_en11         // unsigned , default = 0  , debanding registers of side lines, [0] for luma,   same for below
 //Bit 22           reg_nrdeband_en10         // unsigned , default = 0  , debanding registers of side lines, [1] for chroma, same for below
 //Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  , options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strenght of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
+//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  , mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
 //Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
 //Bit 16            reserved
 //Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
@@ -42658,7 +42658,7 @@
 //Bit  4           reg_vp_debug_type_replace_phs_mv_en // unsigned ,    RW, default = 0  enable of type replace phs mv
 //Bit  3           reg_vp_debug_phs_rp_flg_en // unsigned ,    RW, default = 0  enable of phs rp flg en
 //Bit  2           reg_vp_debug_phs_sobj_flg_en // unsigned ,    RW, default = 0  enable of phs sobj flg en
-//Bit  1           reg_mv_debug_var_level_en // unsigned ,    RW, default = 0  eanble of var level debug
+//Bit  1           reg_mv_debug_var_level_en // unsigned ,    RW, default = 0  enable of var level debug
 //Bit  0           reg_mv_debug_var2_level_en // unsigned ,    RW, default = 0  enable of var2 level debug
 #define FRC_REG_MC_DEBUG1                          ((0x0141  << 2) + 0xff050000)
 //Bit 31:24        reserved
@@ -43647,7 +43647,7 @@
 // synopsys translate_on
 #define FRC_INP_CSC_CTRL                           ((0x04e0  << 2) + 0xff050000)
 //Bit 31: 10       reserved
-//Bit 9 : 8        reg_glk_ctrl      // unsigned ,    RW, default = 0  csc reg_glk_ctrl enable 2'b00:gatting 2'b01:close 2'b1x:always open
+//Bit 9 : 8        reg_glk_ctrl      // unsigned ,    RW, default = 0  csc reg_glk_ctrl enable 2'b00:gating 2'b01:close 2'b1x:always open
 //Bit 7: 5         reserved
 //Bit  4           reg_sync_en       // unsigned ,    RW, default = 0  reg_csc_en sync enable
 //Bit  3           reg_csc_en        // unsigned ,    RW, default = 1  enable rgb2yuv mtrix for ip pattern generation
@@ -43846,44 +43846,44 @@
 //Bit  7: 0        reg_iplogo_edgedir4_corr_form_cnt_coring // unsigned ,    RW, default = 1  dir4 corr form logo same weight cnt coring
 #define FRC_IPLOGO_CORR_FORM_UB_GWEIGHT_0          ((0x0507  << 2) + 0xff050000)
 //Bit 31: 8        reserved
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_0 // unsigned ,    RW, default = 7  dir4 corr form logo gaussion weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_0 // unsigned ,    RW, default = 7  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_LB_GWEIGHT_0          ((0x0508  << 2) + 0xff050000)
-//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_0 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
-//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_0 // unsigned ,    RW, default = 10  dir4 corr form logo gaussion weight
-//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_0 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_0 // unsigned ,    RW, default = 7  dir4 corr form logo gaussion weight
+//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_0 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
+//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_0 // unsigned ,    RW, default = 10  dir4 corr form logo gaussian weight
+//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_0 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_0 // unsigned ,    RW, default = 7  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_UB_GWEIGHT_1          ((0x0509  << 2) + 0xff050000)
 //Bit 31: 8        reserved
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_1 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_1 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_LB_GWEIGHT_1          ((0x050a  << 2) + 0xff050000)
-//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_1 // unsigned ,    RW, default = 11  dir4 corr form logo gaussion weight
-//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_1 // unsigned ,    RW, default = 12  dir4 corr form logo gaussion weight
-//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_1 // unsigned ,    RW, default = 11  dir4 corr form logo gaussion weight
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_1 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
+//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_1 // unsigned ,    RW, default = 11  dir4 corr form logo gaussian weight
+//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_1 // unsigned ,    RW, default = 12  dir4 corr form logo gaussian weight
+//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_1 // unsigned ,    RW, default = 11  dir4 corr form logo gaussian weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_1 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_UB_GWEIGHT_2          ((0x050b  << 2) + 0xff050000)
 //Bit 31: 8        reserved
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_2 // unsigned ,    RW, default = 10  dir4 corr form logo gaussion weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_2 // unsigned ,    RW, default = 10  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_LB_GWEIGHT_2          ((0x050c  << 2) + 0xff050000)
-//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_2 // unsigned ,    RW, default = 12  dir4 corr form logo gaussion weight
-//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_2 // unsigned ,    RW, default = 13  dir4 corr form logo gaussion weight
-//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_2 // unsigned ,    RW, default = 12  dir4 corr form logo gaussion weight
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_2 // unsigned ,    RW, default = 10  dir4 corr form logo gaussion weight
+//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_2 // unsigned ,    RW, default = 12  dir4 corr form logo gaussian weight
+//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_2 // unsigned ,    RW, default = 13  dir4 corr form logo gaussian weight
+//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_2 // unsigned ,    RW, default = 12  dir4 corr form logo gaussian weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_2 // unsigned ,    RW, default = 10  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_UB_GWEIGHT_3          ((0x050d  << 2) + 0xff050000)
 //Bit 31: 8        reserved
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_3 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_3 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_LB_GWEIGHT_3          ((0x050e  << 2) + 0xff050000)
-//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_3 // unsigned ,    RW, default = 11  dir4 corr form logo gaussion weight
-//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_3 // unsigned ,    RW, default = 12  dir4 corr form logo gaussion weight
-//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_3 // unsigned ,    RW, default = 11  dir4 corr form logo gaussion weight
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_3 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
+//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_3 // unsigned ,    RW, default = 11  dir4 corr form logo gaussian weight
+//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_3 // unsigned ,    RW, default = 12  dir4 corr form logo gaussian weight
+//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_3 // unsigned ,    RW, default = 11  dir4 corr form logo gaussian weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_3 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_UB_GWEIGHT_4          ((0x050f  << 2) + 0xff050000)
 //Bit 31: 8        reserved
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_4 // unsigned ,    RW, default = 7  dir4 corr form logo gaussion weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_4_4 // unsigned ,    RW, default = 7  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_CORR_FORM_LB_GWEIGHT_4          ((0x0510  << 2) + 0xff050000)
-//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_4 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
-//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_4 // unsigned ,    RW, default = 10  dir4 corr form logo gaussion weight
-//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_4 // unsigned ,    RW, default = 9  dir4 corr form logo gaussion weight
-//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_4 // unsigned ,    RW, default = 7  dir4 corr form logo gaussion weight
+//Bit 31:24        reg_iplogo_edgedir4_corr_weight_5x5_3_4 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
+//Bit 23:16        reg_iplogo_edgedir4_corr_weight_5x5_2_4 // unsigned ,    RW, default = 10  dir4 corr form logo gaussian weight
+//Bit 15: 8        reg_iplogo_edgedir4_corr_weight_5x5_1_4 // unsigned ,    RW, default = 9  dir4 corr form logo gaussian weight
+//Bit  7: 0        reg_iplogo_edgedir4_corr_weight_5x5_0_4 // unsigned ,    RW, default = 7  dir4 corr form logo gaussian weight
 #define FRC_IPLOGO_SCC_GRAY_TH_0                   ((0x0511  << 2) + 0xff050000)
 //Bit 31:22        reserved
 //Bit 21:16        reg_iplogo_scc_dif_th_0   // unsigned ,    RW, default = 20  scc gray dif rough threshold
@@ -44779,9 +44779,9 @@
 #define FRC_IPLOGO_HW_GCLK_CTRL                    ((0x05e1  << 2) + 0xff050000)
 //Bit 31:26         reserved
 //Bit 25:6          reg_gclk_ctrl                  // unsigned ,    RW, default = 0  reg_gclk_ctrl
-//Bit 5:4           reg_scc_det_gclk_ctrl          // unsigned ,    RW, default = 0  reg_scc_det_gclk_ctrl   0b00:gatting 0b1x:free run clock
-//Bit 3:2           reg_blk_clr_gclk_ctrl          // unsigned ,    RW, default = 0  reg_blk_clr_gclk_ctrl   0b00:gatting 0b1x:free run clock
-//Bit 1:0           reg_pix_logo_gclk_ctrl         // unsigned ,    RW, default = 0  reg_pix_logo_gclk_ctrl  0b00:gatting 0b1x:free run clock
+//Bit 5:4           reg_scc_det_gclk_ctrl          // unsigned ,    RW, default = 0  reg_scc_det_gclk_ctrl   0b00:gating 0b1x:free run clock
+//Bit 3:2           reg_blk_clr_gclk_ctrl          // unsigned ,    RW, default = 0  reg_blk_clr_gclk_ctrl   0b00:gating 0b1x:free run clock
+//Bit 1:0           reg_pix_logo_gclk_ctrl         // unsigned ,    RW, default = 0  reg_pix_logo_gclk_ctrl  0b00:gating 0b1x:free run clock
 #define FRC_IPLOGO_HW_FORCE_CTRL                   ((0x05e2  << 2) + 0xff050000)
 //Bit 31:3          reserved
 //Bit 2             reg_force_dila_logo_en         // unsigned ,    RW, default = 0  reg_force_dila_logo_en  force output of dila
@@ -45627,7 +45627,7 @@
 //Bit 21:16        reg_tnr_alpha_min_0       // unsigned ,    RW, default = 8  down limit to alpah of luma and chroma
 //Bit 15:10        reg_tnr_alpha_max_0       // unsigned ,    RW, default = 63
 //Bit  9: 8        reg_tnr_deghost_mode_0    // unsigned ,    RW, default = 1  window mode for deghost window: 0: 1x3; 1: 3x3; 2:5x5; 3: 7x7
-//Bit  7: 0        reg_tnr_deghost_os_0      // unsigned ,    RW, default = 20  deghost overshoot marging
+//Bit  7: 0        reg_tnr_deghost_os_0      // unsigned ,    RW, default = 20  deghost overshoot margins
 #define FRC_NR_SNR_1_0                             ((0x0807  << 2) + 0xff050000)
 //Bit 31:28        reg_snr_err_hgain_0       // unsigned ,    RW, default = 1  (1+x/8) to the ssim0
 //Bit 27:24        reg_snr_err_vgain_0       // unsigned ,    RW, default = 1  (1+x/8) to the ssim2
@@ -45691,7 +45691,7 @@
 //Bit 21:16        reg_tnr_alpha_min_1       // unsigned ,    RW, default = 8  down limit to alpah of luma and chroma
 //Bit 15:10        reg_tnr_alpha_max_1       // unsigned ,    RW, default = 63
 //Bit  9: 8        reg_tnr_deghost_mode_1    // unsigned ,    RW, default = 1  window mode for deghost window: 0: 1x3; 1: 3x3; 2:5x5; 3: 7x7
-//Bit  7: 0        reg_tnr_deghost_os_1      // unsigned ,    RW, default = 20  deghost overshoot marging
+//Bit  7: 0        reg_tnr_deghost_os_1      // unsigned ,    RW, default = 20  deghost overshoot margins
 #define FRC_NR_SNR_1_1                             ((0x080f  << 2) + 0xff050000)
 //Bit 31:28        reg_snr_err_hgain_1       // unsigned ,    RW, default = 1  (1+x/8) to the ssim0
 //Bit 27:24        reg_snr_err_vgain_1       // unsigned ,    RW, default = 1  (1+x/8) to the ssim2
@@ -45806,9 +45806,9 @@
 #define CLOSS_FRAME_HOLD_NUMS                  0x1  //
 //Bit 31: 0        reg_frame_hold_nums       // unsigned ,    RW, default = 0  frame_hold_nums
 #define CLOSS_GCLK_CTRL0                       0x2  //
-//Bit 31: 0        reg_gclk_ctrl_0           // unsigned ,    RW, default = 0  resevsed for gated-clock control0
+//Bit 31: 0        reg_gclk_ctrl_0           // unsigned ,    RW, default = 0  reserved for gated-clock control0
 #define CLOSS_GCLK_CTRL1                       0x3  //
-//Bit 31: 0        reg_gclk_ctrl_1           // unsigned ,    RW, default = 0  resevsed for gated-clock control1
+//Bit 31: 0        reg_gclk_ctrl_1           // unsigned ,    RW, default = 0  reserved for gated-clock control1
 #define CLOSS_PIC_SIZE                         0x4  //
 //Bit 31:16        reg_pic_ysize             // unsigned ,    RW, default = 512  picture vertical size
 //Bit 15: 0        reg_pic_xsize             // unsigned ,    RW, default = 1024  picture horizontal size
@@ -46439,7 +46439,7 @@
 //Bit 16           reg_me_rpdb_en_fs         // unsigned ,    RW, default = 1  1: enable fs candidate even if fs_en_flag = 1
 //Bit 15           reg_me_rpd0_en_fs         // unsigned ,    RW, default = 0  1: enable fs candidate if rpd_flg = 0
 //Bit 14           reg_me_rpd1_en_fs         // unsigned ,    RW, default = 0  1: enable fs candidate even if rpd_flg = 1
-//Bit 13:12        reg_me_phs_rp_flg_mode    // unsigned ,    RW, default = 0  selction mode of phase loop rp flg , 0: none, 1: p and c 2:p or c
+//Bit 13:12        reg_me_phs_rp_flg_mode    // unsigned ,    RW, default = 0  selection mode of phase loop rp flg , 0: none, 1: p and c 2:p or c
 //Bit 11           reg_me_rpd_penalty_gmv_en // unsigned ,    RW, default = 1  1: enable special penalty for gmv at rpd==1 case.
 //Bit 10           reg_me_rpd_penalty_st_en  // unsigned ,    RW, default = 1  1: enable special penalty for S and T at rpd==1 case.
 //Bit  9           reg_me_fs2vp_sel_0        // unsigned ,    RW, default = 0  fs_ball signal to vp. 0: use bv flag.  1: use current block flag.
@@ -46586,14 +46586,14 @@
 //Bit 18           reg_me_rpd_flg_refine_con_3 // unsigned ,    RW, default = 0  rpd refine process option
 //Bit 17           reg_me_rpd_flg_refine_con_4 // unsigned ,    RW, default = 0  rpd refine process option
 //Bit 16           reg_me_rpd_flg_refine_con_5 // unsigned ,    RW, default = 0  rpd refine process option
-//Bit 15           reg_me_rpd_flg_dialate_en // unsigned ,    RW, default = 1  enable repeated pattern flag dialation
+//Bit 15           reg_me_rpd_flg_dialate_en // unsigned ,    RW, default = 1  enable repeated pattern flag dilation
 //Bit 14: 8        reg_me_fs_lwidth_col_chk_max_th // unsigned ,    RW, default = 8  for type_summary_fs_detect, lwidth_chk comparison threshold. ME_FS_RNG_Y/2;
 //Bit  7: 0        reg_me_fs_lwidth_row_chk_max_th // unsigned ,    RW, default = 10  for type_summary_fs_detect, lwidth_chk comparison threshold. ME_FS_RNG_X/2;
 #define FRC_ME_RPD_FS_POST                         ((0x1128  << 2) + 0xff050000)
 //Bit 31:28        reg_me_fs_pit_max_blend_coef // unsigned ,    RW, default = 0  blend coefficient of pit and max_sad
 //Bit 27:24        reg_me_fs_low_sad_th_gain // unsigned ,    RW, default = 8  gain to low_sad_th
 //Bit 23:20        reg_me_fs_ero_cnt_th      // unsigned ,    RW, default = 1  threshold of erosion to fs_en_fine_flag
-//Bit 19:16        reg_me_fs_dil_cnt_th      // unsigned ,    RW, default = 3  threshold of dialtion to fs_en_fine_flag
+//Bit 19:16        reg_me_fs_dil_cnt_th      // unsigned ,    RW, default = 3  threshold of dilation to fs_en_fine_flag
 //Bit 15:12        reg_me_fs_refine_ball_cnt_th // unsigned ,    RW, default = 1  threshold of ball cnt to refine fs_en_raw_flag
 //Bit 11           reg_me_fs_refine_en       // unsigned ,    RW, default = 0  enable signal for refine to fs_en_raw_flag
 //Bit 10           reg_me_fs_ero_en          // unsigned ,    RW, default = 0  enable signal for erosion to fs_en_fine_flag
@@ -46624,24 +46624,24 @@
 //Bit  7: 0        reg_me_rpd_min_peak_th    // unsigned ,    RW, default = 0  min peak threshold for repeated pattern search
 #define FRC_ME_RPD_T1_FLAT                         ((0x112c  << 2) + 0xff050000)
 //Bit 31:28        reserved
-//Bit 27:16        reg_me_rpd_t1_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleanig false type one detection for repeated pattern search
-//Bit 15: 8        reg_me_rpd_t1_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleanig false type one detection for repeated pattern search
+//Bit 27:16        reg_me_rpd_t1_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleaning false type one detection for repeated pattern search
+//Bit 15: 8        reg_me_rpd_t1_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleaning false type one detection for repeated pattern search
 //Bit  7: 0        reg_me_rpd_t1_th          // unsigned ,    RW, default = 64  type one rp threshold for repeated pattern search
 #define FRC_ME_RPD_T2_LHL                          ((0x112d  << 2) + 0xff050000)
 //Bit 31:24        reg_me_rpd_t2_lhl_th      // unsigned ,    RW, default = 12  type two lhl threshold for repeated pattern search
 //Bit 23:16        reg_me_rpd_t2_lhlhl_th    // unsigned ,    RW, default = 4  type two lhlhl threshold for repeated pattern search
 //Bit 15: 8        reserved
-//Bit  7: 0        reg_me_rpd_t2_flat_th3    // unsigned ,    RW, default = 8  flat threshold3 cleanig false type two detection for repeated pattern search
+//Bit  7: 0        reg_me_rpd_t2_flat_th3    // unsigned ,    RW, default = 8  flat threshold3 cleaning false type two detection for repeated pattern search
 #define FRC_ME_RPD_T2_FLAT                         ((0x112e  << 2) + 0xff050000)
-//Bit 31:20        reg_me_rpd_t2_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleanig false type two detection for repeated pattern search
-//Bit 19:12        reg_me_rpd_t2_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleanig false type two detection for repeated pattern search
-//Bit 11: 0        reg_me_rpd_t2_flat_th2    // unsigned ,    RW, default = 128  flat threshold2 cleanig false type two detection for repeated pattern search
+//Bit 31:20        reg_me_rpd_t2_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleaning false type two detection for repeated pattern search
+//Bit 19:12        reg_me_rpd_t2_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleaning false type two detection for repeated pattern search
+//Bit 11: 0        reg_me_rpd_t2_flat_th2    // unsigned ,    RW, default = 128  flat threshold2 cleaning false type two detection for repeated pattern search
 #define FRC_ME_RPD_T3_FLAT                         ((0x112f  << 2) + 0xff050000)
 //Bit 31:30        reserved
 //Bit 29:24        reg_me_rpd_t3_th          // unsigned ,    RW, default = 2  type three threshold for repeated pattern search, 8 is normalized as 1
-//Bit 23:16        reg_me_rpd_t3_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleanig false type three detection for repeated pattern search
+//Bit 23:16        reg_me_rpd_t3_flat_th1    // unsigned ,    RW, default = 6  flat threshold1 cleaning false type three detection for repeated pattern search
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_rpd_t3_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleanig false type three detection for repeated pattern search
+//Bit 11: 0        reg_me_rpd_t3_flat_th0    // unsigned ,    RW, default = 256  flat threshold0 cleaning false type three detection for repeated pattern search
 #define FRC_ME_RPD_AUTO_FLAT                       ((0x1130  << 2) + 0xff050000)
 //Bit 31:28        reserved
 //Bit 27:16        reg_me_rpd_auto_flat_th0  // unsigned ,    RW, default = 256  atuo flat flag threshold0 for repeated pattern search
@@ -47628,7 +47628,7 @@
 //Bit 14           reg_me_choosebv_mode_0    // unsigned ,    RW, default = 0  new mode for phase bv selection
 //Bit 13           reg_me_loop_scan0_0       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 1st run, 0 do not run, 1 run
 //Bit 12           reg_me_loop_scan1_0       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 2nd run, 0 do not run, 1 run
-//Bit 11           reg_me_ovrwrite_bv_en_0   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_ovrwrite_vector, 0: no overwrite, 1: overwrite
+//Bit 11           reg_me_overwrite_bv_en_0   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_overwrite_vector, 0: no overwrite, 1: overwrite
 //Bit 10: 8        reg_obme_mask_mode_max_0  // unsigned ,    RW, default = 3  max of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
 //Bit  7            reserved
 //Bit  6: 4        reg_obme_mask_mode_min_0  // unsigned ,    RW, default = 0  min of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
@@ -47683,7 +47683,7 @@
 //Bit 14           reg_me_choosebv_mode_1    // unsigned ,    RW, default = 0  new mode for phase bv selection
 //Bit 13           reg_me_loop_scan0_1       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 1st run, 0 do not run, 1 run
 //Bit 12           reg_me_loop_scan1_1       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 2nd run, 0 do not run, 1 run
-//Bit 11           reg_me_ovrwrite_bv_en_1   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_ovrwrite_vector, 0: no overwrite, 1: overwrite
+//Bit 11           reg_me_overwrite_bv_en_1   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_overwrite_vector, 0: no overwrite, 1: overwrite
 //Bit 10: 8        reg_obme_mask_mode_max_1  // unsigned ,    RW, default = 3  max of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
 //Bit  7            reserved
 //Bit  6: 4        reg_obme_mask_mode_min_1  // unsigned ,    RW, default = 0  min of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
@@ -47738,7 +47738,7 @@
 //Bit 14           reg_me_choosebv_mode_2    // unsigned ,    RW, default = 0  new mode for phase bv selection
 //Bit 13           reg_me_loop_scan0_2       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 1st run, 0 do not run, 1 run
 //Bit 12           reg_me_loop_scan1_2       // unsigned ,    RW, default = 1  enable to run the [0]pre point to cur or cur point to pre, [1]cur point to nex, [2]nex point to cur loop 2nd run, 0 do not run, 1 run
-//Bit 11           reg_me_ovrwrite_bv_en_2   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_ovrwrite_vector, 0: no overwrite, 1: overwrite
+//Bit 11           reg_me_overwrite_bv_en_2   // unsigned ,    RW, default = 0  enable to overwrite the mv with reg_me_overwrite_vector, 0: no overwrite, 1: overwrite
 //Bit 10: 8        reg_obme_mask_mode_max_2  // unsigned ,    RW, default = 3  max of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
 //Bit  7            reserved
 //Bit  6: 4        reg_obme_mask_mode_min_2  // unsigned ,    RW, default = 0  min of obme mask mode selection, 0: 4x8 mask, 1: 8x8 mask; 2:12x8 mask, 3: 16x8 mask
@@ -47895,7 +47895,7 @@
 //Bit 19:18        reg_me_bv_e2e_sad_upd_en  // unsigned ,    RW, default = 0  set to 1, enable updating bv01 e2e based sad for phase loop
 //Bit 17           reg_me_bv_e2e_sad_chk_en  // unsigned ,    RW, default = 0  copy bv0 to bv1 after swap them by reg_me_bv_e2e_sad_upd_en.
 //Bit 16           reg_me_bv_e2e_mv_chk_en   // unsigned ,    RW, default = 0  set to 0, bypass e2e MV check.
-//Bit 15: 8        reg_me_bv_diff_th         // unsigned ,    RW, default = 16  threshold of mvdiff if bvs are differenent
+//Bit 15: 8        reg_me_bv_diff_th         // unsigned ,    RW, default = 16  threshold of mvdiff if bvs are different
 //Bit  7: 0        reg_me_bv_sad_ratio       // unsigned ,    RW, default = 20  apl ration for bvs sad, 8% of apl. set this ratio to 0 and reg_me_p2p_bypass_con*=0 will bypass e2e MV check.
 #define FRC_ME_E2E_CHK_TH                          ((0x1525  << 2) + 0xff050000)
 //Bit 31:24        reg_me_bv_p2p_diff_th     // unsigned ,    RW, default = 16  mv diff threshold for bvs p2p check
@@ -47972,7 +47972,7 @@
 //Bit 31:18        reserved
 //Bit 17:16        reg_me_periodic0_gmv_sel  // unsigned ,    RW, default = 1  gmv selection for periodic0, 0: global gmv, 1: finer gmv, 2: region_gmv, 3: force gmv;
 //Bit 15:10        reserved
-//Bit  9: 0        reg_me_periodic0_gmv_dtl_th // unsigned ,    RW, default = 0  gmv detail thresold for periodic0
+//Bit  9: 0        reg_me_periodic0_gmv_dtl_th // unsigned ,    RW, default = 0  gmv detail threshold for periodic0
 #define FRC_ME_P0_REGION_EN                        ((0x1530  << 2) + 0xff050000)
 //Bit 31           reg_me_region_gmv_like_en // unsigned ,    RW, default = 0  region gmv like enable
 //Bit 30:28        reserved
@@ -48169,14 +48169,14 @@
 //Bit 12: 0        reg_me_lmt_vbuf_sad_diff_th // unsigned ,    RW, default = 2560  sad diff threshold for v-buffer clean in limit proc.
 #define FRC_ME_GMV                                 ((0x1548  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_gmv_vector_0       // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_gmv_vector_0       // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15           reg_me_gmv_invalid        // unsigned ,    RW, default = 1  when 1, gmv is invalid.
 //Bit 14           reg_me_gmv_mux_sel        // unsigned ,    RW, default = 0  1: use HW gmv(ro_me_gmv, ro_me_gmv_invalid); 0: use firmware gmv(reg_me_gmv, reg_me_gmv_invalid).
 //Bit 13:12        reserved
 //Bit 11: 0        reg_me_gmv_vector_1       // signed ,    RW, default = 0
 #define FRC_ME_GMV_2ND                             ((0x1549  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_gmv_2nd_vector_0   // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_gmv_2nd_vector_0   // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
 //Bit 11: 0        reg_me_gmv_2nd_vector_1   // signed ,    RW, default = 0
 #define FRC_ME_GMV_PATCH                           ((0x154a  << 2) + 0xff050000)
@@ -48232,124 +48232,124 @@
 //Bit 11: 0        reg_me_pg_col_delta_mv_2_vector_1 // signed ,    RW, default = 0  me pattern generation delta mvy for col
 #define FRC_ME_STAT_GMV_RGN_0                      ((0x1554  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_0_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_0_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_0_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_0_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_0                  ((0x1555  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_0_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_0_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_0_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_0_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_1                      ((0x1556  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_1_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_1_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_1_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_1_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_1                  ((0x1557  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_1_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_1_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_1_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_1_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2                      ((0x1558  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_2                  ((0x1559  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_2_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_2_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_2_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_2_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_3                      ((0x155a  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_3_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_3_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_3_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_3_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_3                  ((0x155b  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_3_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_3_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_3_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_3_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_4                      ((0x155c  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_4_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_4_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_4_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_4_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_4                  ((0x155d  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_4_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_4_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_4_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_4_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_5                      ((0x155e  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_5_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_5_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_5_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_5_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_5                  ((0x155f  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_5_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_5_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_5_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_5_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_6                      ((0x1560  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_6_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_6_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_6_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_6_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_6                  ((0x1561  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_6_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_6_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_6_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_6_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_7                      ((0x1562  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_7_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_7_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_7_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_7_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_7                  ((0x1563  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_7_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_7_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_7_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_7_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_8                      ((0x1564  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_8_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_8_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_8_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_8_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_8                  ((0x1565  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_8_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_8_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_8_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_8_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_9                      ((0x1566  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_9_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_9_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_9_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_9_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_9                  ((0x1567  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_9_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_9_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_9_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_9_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_10                     ((0x1568  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_10_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_10_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_10_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_10_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_10                 ((0x1569  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_10_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_10_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_10_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_10_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_11                     ((0x156a  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_11_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_11_vector_0 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_11_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_11_vector_1 // signed ,    RW, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GMV_RGN_2ND_11                 ((0x156b  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_me_region_gmv_2nd_11_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_me_region_gmv_2nd_11_vector_0 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        reg_me_region_gmv_2nd_11_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        reg_me_region_gmv_2nd_11_vector_1 // signed ,    RW, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_STAT_GLB_APL                        ((0x156c  << 2) + 0xff050000)
 //Bit 31:24        reg_me_glb_apl_0          // unsigned ,    RW, default = 0  global apl for each loop
 //Bit 23:16        reg_me_glb_apl_1          // unsigned ,    RW, default = 0  global apl for each loop
@@ -48703,9 +48703,9 @@
 //Bit  9: 0        reg_me_region_dtl_coring_th // unsigned ,    RW, default = 50  detail coring threshold for regional statistic
 #define FRC_ME_STAT_RGN_GOOD                       ((0x172b  << 2) + 0xff050000)
 //Bit 31:26        reserved
-//Bit 25:16        reg_me_region_good_match_t_consis_th // unsigned ,    RW, default = 3  good match mv temporal consistance threshold for regional statistic
+//Bit 25:16        reg_me_region_good_match_t_consis_th // unsigned ,    RW, default = 3  good match mv temporal consistence threshold for regional statistic
 //Bit 15:10        reserved
-//Bit  9: 0        reg_me_region_good_match_s_consis_th // unsigned ,    RW, default = 3  good match mv spatial consistance threshold for regional statistic
+//Bit  9: 0        reg_me_region_good_match_s_consis_th // unsigned ,    RW, default = 3  good match mv spatial consistence threshold for regional statistic
 // synopsys translate_off
 // synopsys translate_on
 //
@@ -48720,9 +48720,9 @@
 // synopsys translate_off
 // synopsys translate_on
 #define FRC_ME_RO_RGN_T_CONSIS_0                   ((0x1800  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_0   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_0   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_0                   ((0x1801  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_0   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_0   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_0                    ((0x1802  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_0    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48745,9 +48745,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_0    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_1                   ((0x1809  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_1   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_1   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_1                   ((0x180a  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_1   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_1   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_1                    ((0x180b  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_1    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48770,9 +48770,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_1    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_2                   ((0x1812  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_2   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_2   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_2                   ((0x1813  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_2   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_2   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_2                    ((0x1814  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_2    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48795,9 +48795,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_2    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_3                   ((0x181b  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_3   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_3   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_3                   ((0x181c  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_3   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_3   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_3                    ((0x181d  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_3    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48820,9 +48820,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_3    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_4                   ((0x1824  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_4   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_4   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_4                   ((0x1825  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_4   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_4   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_4                    ((0x1826  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_4    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48845,9 +48845,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_4    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_5                   ((0x182d  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_5   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_5   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_5                   ((0x182e  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_5   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_5   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_5                    ((0x182f  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_5    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48870,9 +48870,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_5    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_6                   ((0x1836  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_6   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_6   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_6                   ((0x1837  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_6   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_6   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_6                    ((0x1838  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_6    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48895,9 +48895,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_6    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_7                   ((0x183f  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_7   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_7   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_7                   ((0x1840  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_7   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_7   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_7                    ((0x1841  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_7    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48920,9 +48920,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_7    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_8                   ((0x1848  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_8   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_8   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_8                   ((0x1849  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_8   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_8   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_8                    ((0x184a  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_8    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48945,9 +48945,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_8    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_9                   ((0x1851  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_9   // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_9   // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_9                   ((0x1852  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_9   // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_9   // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_9                    ((0x1853  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_9    // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48970,9 +48970,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_9    // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_10                  ((0x185a  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_10  // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_10  // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_10                  ((0x185b  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_10  // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_10  // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_10                   ((0x185c  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_10   // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -48995,9 +48995,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_10   // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_RGN_T_CONSIS_11                  ((0x1863  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_t_consis_11  // unsigned ,    RO, default = 0  12 region temporal cnosistences for phase loop
+//Bit 31: 0        ro_me_region_t_consis_11  // unsigned ,    RO, default = 0  12 region temporal consistency for phase loop
 #define FRC_ME_RO_RGN_S_CONSIS_11                  ((0x1864  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_region_s_consis_11  // unsigned ,    RO, default = 0  12 region spatial cnosistences for phase loop
+//Bit 31: 0        ro_me_region_s_consis_11  // unsigned ,    RO, default = 0  12 region spatial consistency for phase loop
 #define FRC_ME_RO_RGN_DTL_SUM_11                   ((0x1865  << 2) + 0xff050000)
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_dtl_sum_11   // unsigned ,    RO, default = 0  12 region high detail sum for phase loop
@@ -49020,9 +49020,9 @@
 //Bit 31            reserved
 //Bit 30: 0        ro_me_region_apl_sum_11   // unsigned ,    RO, default = 0  12 region apl sum for phase loop
 #define FRC_ME_RO_S_CONSIS_0                       ((0x186c  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_s_consis_0      // unsigned ,    RO, default = 0  global spatial cnosistences in each loop
+//Bit 31: 0        ro_me_glb_s_consis_0      // unsigned ,    RO, default = 0  global spatial consistency in each loop
 #define FRC_ME_RO_T_CONSIS_0                       ((0x186d  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_t_consis_0      // unsigned ,    RO, default = 0  global temporal cnosistences in each loop
+//Bit 31: 0        ro_me_glb_t_consis_0      // unsigned ,    RO, default = 0  global temporal consistency in each loop
 #define FRC_ME_RO_APL_0                            ((0x186e  << 2) + 0xff050000)
 //Bit 31:24        reserved
 //Bit 23: 0        ro_me_glb_apl_sum_0       // unsigned ,    RO, default = 0  global apl for each loop
@@ -49041,9 +49041,9 @@
 #define FRC_ME_RO_FCMV_CNT_0                       ((0x1874  << 2) + 0xff050000)
 //Bit 31: 0        ro_me_fin_cmv_cnt_0       // unsigned ,    RO, default = 0  fine/final cmv count
 #define FRC_ME_RO_S_CONSIS_1                       ((0x1875  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_s_consis_1      // unsigned ,    RO, default = 0  global spatial cnosistences in each loop
+//Bit 31: 0        ro_me_glb_s_consis_1      // unsigned ,    RO, default = 0  global spatial consistency in each loop
 #define FRC_ME_RO_T_CONSIS_1                       ((0x1876  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_t_consis_1      // unsigned ,    RO, default = 0  global temporal cnosistences in each loop
+//Bit 31: 0        ro_me_glb_t_consis_1      // unsigned ,    RO, default = 0  global temporal consistency in each loop
 #define FRC_ME_RO_APL_1                            ((0x1877  << 2) + 0xff050000)
 //Bit 31:24        reserved
 //Bit 23: 0        ro_me_glb_apl_sum_1       // unsigned ,    RO, default = 0  global apl for each loop
@@ -49062,9 +49062,9 @@
 #define FRC_ME_RO_FCMV_CNT_1                       ((0x187d  << 2) + 0xff050000)
 //Bit 31: 0        ro_me_fin_cmv_cnt_1       // unsigned ,    RO, default = 0  fine/final cmv count
 #define FRC_ME_RO_S_CONSIS_2                       ((0x187e  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_s_consis_2      // unsigned ,    RO, default = 0  global spatial cnosistences in each loop
+//Bit 31: 0        ro_me_glb_s_consis_2      // unsigned ,    RO, default = 0  global spatial consistency in each loop
 #define FRC_ME_RO_T_CONSIS_2                       ((0x187f  << 2) + 0xff050000)
-//Bit 31: 0        ro_me_glb_t_consis_2      // unsigned ,    RO, default = 0  global temporal cnosistences in each loop
+//Bit 31: 0        ro_me_glb_t_consis_2      // unsigned ,    RO, default = 0  global temporal consistency in each loop
 #define FRC_ME_RO_APL_2                            ((0x1880  << 2) + 0xff050000)
 //Bit 31:24        reserved
 //Bit 23: 0        ro_me_glb_apl_sum_2       // unsigned ,    RO, default = 0  global apl for each loop
@@ -49087,7 +49087,7 @@
 //Bit 17: 0        ro_me_glb_unstable_cnt    // unsigned ,    RO, default = 0  global unstable count
 #define FRC_ME_RO_GMV_ROUGH                        ((0x1888  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_gmv_rough_vector_0  // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_gmv_rough_vector_0  // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:13        reserved
 //Bit 12           ro_me_gmv_rough_invalid   // unsigned ,    RO, default = 1  when 1, gmv is invalid.
 //Bit 11: 0        ro_me_gmv_rough_vector_1  // signed ,    RO, default = 0
@@ -49134,13 +49134,13 @@
 //Bit 17: 0        ro_me_gmv_rough_cnt_3x3_8 // unsigned ,    RO, default = 0
 #define FRC_ME_RO_GMV                              ((0x1896  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_gmv_vector_0        // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_gmv_vector_0        // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:13        reserved
 //Bit 12           ro_me_gmv_invalid         // unsigned ,    RO, default = 1  when 1, gmv is invalid.
 //Bit 11: 0        ro_me_gmv_vector_1        // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_MUX                          ((0x1897  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_gmv_mux_vector_0    // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_gmv_mux_vector_0    // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:13        reserved
 //Bit 12           ro_me_gmv_mux_invalid     // unsigned ,    RO, default = 1
 //Bit 11: 0        ro_me_gmv_mux_vector_1    // signed ,    RO, default = 0
@@ -49206,14 +49206,14 @@
 // synopsys translate_on
 #define FRC_ME_RO_GMV_RGN_0                        ((0x1900  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_0_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_0_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_0_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_0_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_0                    ((0x1901  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_0_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_0_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_0_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_0_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_0                  ((0x1902  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_0_vector_0 // signed ,    RO, default = 0
@@ -49226,14 +49226,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_0_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_1                        ((0x1904  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_1_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_1_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_1_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_1_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_1                    ((0x1905  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_1_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_1_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_1_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_1_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_1                  ((0x1906  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_1_vector_0 // signed ,    RO, default = 0
@@ -49246,14 +49246,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_1_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_2                        ((0x1908  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_2                    ((0x1909  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_2_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_2_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_2_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_2_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_2                  ((0x190a  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_2_vector_0 // signed ,    RO, default = 0
@@ -49266,14 +49266,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_2_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_3                        ((0x190c  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_3_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_3_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_3_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_3_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_3                    ((0x190d  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_3_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_3_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_3_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_3_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_3                  ((0x190e  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_3_vector_0 // signed ,    RO, default = 0
@@ -49286,14 +49286,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_3_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_4                        ((0x1910  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_4_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_4_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_4_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_4_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_4                    ((0x1911  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_4_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_4_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_4_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_4_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_4                  ((0x1912  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_4_vector_0 // signed ,    RO, default = 0
@@ -49306,14 +49306,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_4_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_5                        ((0x1914  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_5_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_5_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_5_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_5_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_5                    ((0x1915  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_5_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_5_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_5_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_5_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_5                  ((0x1916  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_5_vector_0 // signed ,    RO, default = 0
@@ -49326,14 +49326,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_5_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_6                        ((0x1918  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_6_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_6_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_6_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_6_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_6                    ((0x1919  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_6_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_6_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_6_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_6_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_6                  ((0x191a  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_6_vector_0 // signed ,    RO, default = 0
@@ -49346,14 +49346,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_6_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_7                        ((0x191c  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_7_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_7_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_7_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_7_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_7                    ((0x191d  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_7_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_7_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_7_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_7_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_7                  ((0x191e  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_7_vector_0 // signed ,    RO, default = 0
@@ -49366,14 +49366,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_7_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_8                        ((0x1920  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_8_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_8_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_8_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_8_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_8                    ((0x1921  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_8_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_8_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_8_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_8_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_8                  ((0x1922  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_8_vector_0 // signed ,    RO, default = 0
@@ -49386,14 +49386,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_8_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_9                        ((0x1924  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_9_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_9_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_9_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_9_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_9                    ((0x1925  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_9_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_9_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_9_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_9_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_9                  ((0x1926  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_9_vector_0 // signed ,    RO, default = 0
@@ -49406,14 +49406,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_9_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_10                       ((0x1928  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_10_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_10_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_10_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_10_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_10                   ((0x1929  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_10_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_10_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_10_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_10_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_10                 ((0x192a  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_10_vector_0 // signed ,    RO, default = 0
@@ -49426,14 +49426,14 @@
 //Bit 11: 0        ro_me_region_gmv_rough_2nd_10_vector_1 // signed ,    RO, default = 0
 #define FRC_ME_RO_GMV_RGN_11                       ((0x192c  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_11_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_11_vector_0 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_11_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_11_vector_1 // signed ,    RO, default = 0  mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_RGN_2ND_11                   ((0x192d  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_me_region_gmv_2nd_11_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_me_region_gmv_2nd_11_vector_0 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:12        reserved
-//Bit 11: 0        ro_me_region_gmv_2nd_11_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 11: 0        ro_me_region_gmv_2nd_11_vector_1 // signed ,    RO, default = 0  2nd regional mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 #define FRC_ME_RO_GMV_ROUGH_RGN_11                 ((0x192e  << 2) + 0xff050000)
 //Bit 31:29        reserved
 //Bit 28:16        ro_me_region_gmv_rough_11_vector_0 // signed ,    RO, default = 0
@@ -50315,7 +50315,7 @@
 //Bit  0           reg_vp_en                 // unsigned ,    RW, default = 1  vp processing enable, 0:disable, 1:enable
 #define FRC_VP_GMV                                 ((0x1e01  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        reg_vp_gmv_vector_0       // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        reg_vp_gmv_vector_0       // signed ,    RW, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:13        reserved
 //Bit 12           reg_vp_gmv_invalid        // unsigned ,    RW, default = 0  when 1, gmv is invalid.
 //Bit 11: 0        reg_vp_gmv_vector_1       // signed ,    RW, default = 0
@@ -50344,7 +50344,7 @@
 //Bit  3: 0        reg_retimer_vsrch_rng     // unsigned ,    RW, default = 7  vp partI (retimer) vertical search range
 #define FRC_VP_GMV_MUX                             ((0x1e08  << 2) + 0xff050000)
 //Bit 31:29        reserved
-//Bit 28:16        ro_vp_gmv_mux_vector_0    // signed ,    RO, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_ovrwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
+//Bit 28:16        ro_vp_gmv_mux_vector_0    // signed ,    RO, default = 0  global mv detected by FW, [mvx, mvy] s9.2, replace the bv if reg_me_overwrite_bv_en=1, otherwise is gmv of each loop, only care about the vector, no care of the sad and so on.
 //Bit 15:14        reserved
 //Bit 13           ro_vp_gmv_mux_invalid     // unsigned ,    RO, default = 0  when 1, gmv is invalid.
 //Bit 12: 1        ro_vp_gmv_mux_vector_1    // signed ,    RO, default = 0
@@ -50562,9 +50562,9 @@
 //Bit  0           reg_cn2ncr_cn2ncrr_oor_enable // unsigned ,    RW, default = 1  enable to use out of range considerations in dir_type decision
 #define FRC_VP_SAD_TH                              ((0x1e39  << 2) + 0xff050000)
 //Bit 31:24        reserved
-//Bit 23:16        reg_vp_sad_chk_s_th       // unsigned ,    RW, default = 80  threshold to sad comparision to do sad check for basic sad rule
-//Bit 15: 8        reg_vp_sad_chk_b_th       // unsigned ,    RW, default = 100  threshold to sad comparision to do sad check for replacement sad rule
-//Bit  7: 0        reg_vp_sad_th_xrule       // unsigned ,    RW, default = 10  threshold to sad comparision to do sad check for replacement xross rule sad comparison
+//Bit 23:16        reg_vp_sad_chk_s_th       // unsigned ,    RW, default = 80  threshold to sad comparison to do sad check for basic sad rule
+//Bit 15: 8        reg_vp_sad_chk_b_th       // unsigned ,    RW, default = 100  threshold to sad comparison to do sad check for replacement sad rule
+//Bit  7: 0        reg_vp_sad_th_xrule       // unsigned ,    RW, default = 10  threshold to sad comparison to do sad check for replacement xross rule sad comparison
 #define FRC_VP_RETIMER_ENABLE                      ((0x1e3a  << 2) + 0xff050000)
 //Bit 31:24        reserved
 //Bit 23:16        reg_vp_gmv_similar_th     // unsigned ,    RW, default = 8  threshold to gmv and CP/CN for replacement gmv similar rule check.
@@ -50573,7 +50573,7 @@
 //Bit  7           reg_vp_dont_care_gmv      // unsigned ,    RW, default = 1  enable signal to dont care gmv, 0: care gmv; 1: dont care gmv
 //Bit  6           reg_vp_uncov_rule_en      // unsigned ,    RW, default = 1  enable signal to use uncov_final, 0: disable 1: enable
 //Bit  5           reg_vp_cover_rule_en      // unsigned ,    RW, default = 1  enable signal to use cover_final, 0: disable 1: enable
-//Bit  4           reg_vp_extnd_rule_en      // unsigned ,    RW, default = 1  enable signal to use replace_cp/cn_extend, 0: disable 1: enable
+//Bit  4           reg_vp_extend_rule_en      // unsigned ,    RW, default = 1  enable signal to use replace_cp/cn_extend, 0: disable 1: enable
 //Bit  3           reg_vp_sad_rule_en        // unsigned ,    RW, default = 0  enable signal to use replace_cp/cn_sad, 0: disable 1: enable
 //Bit  2           reg_vp_oor_rule_en        // unsigned ,    RW, default = 1  enable signal to use replace_cp/cn_oor, 0: disable 1: enable
 //Bit  1           reg_vp_cross_rule_en      // unsigned ,    RW, default = 1  enable signal to use replace_cp/cn_cross, 0: disable 1: enable
@@ -52082,7 +52082,7 @@
 // synopsys translate_on
 #define FRC_MC_CSC_CTRL                            ((0x30f0  << 2) + 0xff050000)
 //Bit 31: 10       reserved
-//Bit 9 : 8        reg_glk_ctrl      // unsigned ,    RW, default = 0  csc reg_glk_ctrl enable 2'b00:gatting 2'b01:close 2'b1x:always open
+//Bit 9 : 8        reg_glk_ctrl      // unsigned ,    RW, default = 0  csc reg_glk_ctrl enable 2'b00:gating 2'b01:close 2'b1x:always open
 //Bit 7: 5         reserved
 //Bit  4           reg_sync_en       // unsigned ,    RW, default = 1  reg_csc_en sync enable
 //Bit  3           reg_csc_en        // unsigned ,    RW, default = 1  enable rgb2yuv mtrix for ip pattern generation
@@ -53421,7 +53421,7 @@
 //Bit 31:15        reserved
 //Bit 14           reg_mc_force_deflicker_en // unsigned ,    RW, default = 0  force deflicker
 //Bit 13           reg_mc_flicker0_mode      // unsigned ,    RW, default = 0  do-deflicker == 0 mode 0: use all bilinear(c v h c2 v2 h2); mode 1: c use h8v4, v h c2 h2 v2 use bilinear
-//Bit 12           reg_mc_flicker1_mode      // unsigned ,    RW, default = 0  do-deflicker == 1 mode 0: just c use h8v4 not do obmc; mode 1: c use h8 v4, v h c2 h2 v2 use biliear
+//Bit 12           reg_mc_flicker1_mode      // unsigned ,    RW, default = 0  do-deflicker == 1 mode 0: just c use h8v4 not do obmc; mode 1: c use h8 v4, v h c2 h2 v2 use bilinear
 //Bit 11:10        reserved
 //Bit  9: 0        reg_mc_diff_mv_thrd       // unsigned ,    RW, default = 0  mv diff th
 #define FRC_MC_INVALID_CHECK_MODE                  ((0x3202  << 2) + 0xff050000)
@@ -53810,7 +53810,7 @@
 //Bit 22:20        reg_mc_7_flag4_color8_mode // unsigned ,    RW, default = 0  flag color mode
 //Bit 19:16        reg_mc_7_flag4_num8       // unsigned ,    RW, default = 0  flag num
 //Bit 15:14        reserved
-//Bit 13: 8        reg_mc_7_flag_seg_len     // unsigned ,    RW, default = 16  7 flag seg lenth
+//Bit 13: 8        reg_mc_7_flag_seg_len     // unsigned ,    RW, default = 16  7 flag seg length
 //Bit  7: 6        reserved
 //Bit  5: 0        reg_mc_7_flag_line_width  // unsigned ,    RW, default = 4  7 flag line width
 #define FRC_MC_DBG_EN                              ((0x3234  << 2) + 0xff050000)
@@ -55190,7 +55190,7 @@
 #define PFIFO_WR_PTR                               ((0x3866  << 2) + 0xfdf00000)
 // bit 9:0 -- point to byte address
 #define PFIFO_RD_PTR                               ((0x3867  << 2) + 0xfdf00000)
-// bit 31:0 -- 8/16/24/32 bits data acording to pfifo_data_width
+// bit 31:0 -- 8/16/24/32 bits data according to pfifo_data_width
 #define PFIFO_DATA                                 ((0x3868  << 2) + 0xfdf00000)
 // bit 31:0 -- parser search pattern
 #define PARSER_SEARCH_PATTERN                      ((0x3869  << 2) + 0xfdf00000)
@@ -55225,7 +55225,7 @@
 #define PARSER_PARAMETER                           ((0x386f  << 2) + 0xfdf00000)
 // bit 31:0 -- insert data // write only
 // write to PARSER_CONTROL will reset the write position
-// continous write to this address can write upto 16 bytes
+// continuous write to this address can write upto 16 bytes
 #define PARSER_INSERT_DATA                         ((0x3870  << 2) + 0xfdf00000)
 // Bit 31:24 -- Reserved Stream_ID
 // Bit 23:16 -- Sub Stream_ID
@@ -55394,7 +55394,7 @@
 #define PARSER_B_PFIFO_WR_PTR                      ((0x1166  << 2) + 0xfdf00000)
 // bit 9:0 -- point to byte address
 #define PARSER_B_PFIFO_RD_PTR                      ((0x1167  << 2) + 0xfdf00000)
-// bit 31:0 -- 8/16/24/32 bits data acording to pfifo_data_width
+// bit 31:0 -- 8/16/24/32 bits data according to pfifo_data_width
 #define PARSER_B_PFIFO_DATA                        ((0x1168  << 2) + 0xfdf00000)
 // bit 31:0 -- parser search pattern
 #define PARSER_B_PARSER_SEARCH_PATTERN             ((0x1169  << 2) + 0xfdf00000)
@@ -55429,7 +55429,7 @@
 #define PARSER_B_PARSER_PARAMETER                  ((0x116f  << 2) + 0xfdf00000)
 // bit 31:0 -- insert data // write only
 // write to PARSER_CONTROL will reset the write position
-// continous write to this address can write upto 16 bytes
+// continuous write to this address can write upto 16 bytes
 #define PARSER_B_PARSER_INSERT_DATA                ((0x1170  << 2) + 0xfdf00000)
 // Bit 31:24 -- Reserved Stream_ID
 // Bit 23:16 -- Sub Stream_ID

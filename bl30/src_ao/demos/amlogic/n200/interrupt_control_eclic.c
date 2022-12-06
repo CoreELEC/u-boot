@@ -6,7 +6,7 @@
 
 static uint8_t CLICINTCTLBITS;
 
-    // Configure PMP to make all the address space accesable and executable
+    // Configure PMP to make all the address space accessible and executable
 void eclic_init ( uint32_t num_irq )
 {
 

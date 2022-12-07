@@ -305,7 +305,7 @@
 
 #define DMC_MON0_CTRL                    ((0x0025  << 2) + 0xff638000)
   //BW MONTIOR 0 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON0_CTRL1                   ((0x0026  << 2) + 0xff638000)
@@ -322,7 +322,7 @@
 
 #define DMC_MON1_CTRL                    ((0x0029  << 2) + 0xff638000)
   //BW monitor 1 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON1_CTRL1                   ((0x002a  << 2) + 0xff638000)
@@ -339,7 +339,7 @@
 
 #define DMC_MON2_CTRL                    ((0x002d  << 2) + 0xff638000)
   //BW monitor 2 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON2_CTRL1                   ((0x002e  << 2) + 0xff638000)
@@ -356,7 +356,7 @@
 
 #define DMC_MON3_CTRL                    ((0x0031  << 2) + 0xff638000)
   //BW monitor 3 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON3_CTRL1                   ((0x0032  << 2) + 0xff638000)
@@ -373,7 +373,7 @@
 
 #define DMC_MON4_CTRL                    ((0x0035  << 2) + 0xff638000)
   //BW monitor 4 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON4_CTRL1                   ((0x0036  << 2) + 0xff638000)
@@ -390,7 +390,7 @@
 
 #define DMC_MON5_CTRL                    ((0x0039  << 2) + 0xff638000)
   //BW monitor 5 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON5_CTRL1                   ((0x003a  << 2) + 0xff638000)
@@ -407,7 +407,7 @@
 
 #define DMC_MON6_CTRL                    ((0x003d  << 2) + 0xff638000)
   //BW monitor 6 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON6_CTRL1                   ((0x003e  << 2) + 0xff638000)
@@ -425,7 +425,7 @@
 
 #define DMC_MON7_CTRL                    ((0x0041  << 2) + 0xff638000)
   //BW monitor 7 address range control.
-  //start addrss <= AXI address[31:16] <= end address
+  //start address <= AXI address[31:16] <= end address
   //bit 31:16  End address[31:16]
   //bit 15:0.  start address[31:16]
 #define DMC_MON7_CTRL1                   ((0x0042  << 2) + 0xff638000)
@@ -485,7 +485,7 @@
   //bit 7:0.    write urgent 0 request pending hold num.
 
 #define DMC_CMD_FILTER_CTRL7                  ((0x0056  << 2) + 0xff638000)
-  //bit 31:24.  aw_req_pedning signal assertion after wbuf full.
+  //bit 31:24.  aw_req_pending signal assertion after wbuf full.
   //bit 23:16   aw_req_pending signal hold how long if wbuf not full.
   //bit 15:8    write to read waiting cycles if there write hit request.
   //bit 7:0     read to write waiting cycles if there write hit request.
@@ -1415,7 +1415,7 @@
 #define DMC_DRAM_TDPD                    ((0x001d  << 2) + 0xff638400)
  //not support.
 #define DMC_DRAM_DFITCTRLDELAY                ((0x001e  << 2) + 0xff638400)
-  //bit 3:0. DFI_t_ctrldealy
+  //bit 3:0. DFI_t_ctrldelay
 #define DMC_DRAM_DFITPHYWRDATA                ((0x001f  << 2) + 0xff638400)
   //bit 5:0.  dfi_t_phy_wrdata.
 #define DMC_DRAM_DFITPHYWRLAT                 ((0x0020  << 2) + 0xff638400)
@@ -1425,7 +1425,7 @@
 #define DMC_DRAM_DFITPHYRDLAT                 ((0x0022  << 2) + 0xff638400)
   //bit 5:0.  dfi_t_rdlat.
 #define DMC_DRAM_DFITCTRLUPDMIN               ((0x0023  << 2) + 0xff638400)
-  //bit 7:0.  CTRLUPD_MIN  minimux clock cycle to maintain CTRLUPD_REQ.
+  //bit 7:0.  CTRLUPD_MIN  minimum clock cycle to maintain CTRLUPD_REQ.
 #define DMC_DRAM_DFITCTRLUPDMAX               ((0x0024  << 2) + 0xff638400)
   //bit 7:0   CTRLUPD_MAX.  maxmum clock cycle to maintain CTRLUPD_REQ if no CTRLUPD_ACK response.
 #define DMC_DRAM_DFITREFMSKI                  ((0x0026  << 2) + 0xff638400)

@@ -90,7 +90,6 @@ function build_bl2() {
 	cd $1
 	if [ "$ADVANCED_BOOTLOADER" == "1" ]; then
 		check_branch $3
-		set -e
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dsto
 		/bin/bash mk $3 --ddrtype ${CONFIG_DDRFW_TYPE} --dusb
 		set +e

@@ -33,7 +33,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}"
 ### Input: payloads ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC_FAMILY}"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s5"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}"

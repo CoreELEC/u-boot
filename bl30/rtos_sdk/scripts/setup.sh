@@ -29,8 +29,17 @@ repo manifest 2>&1 | grep -q $build_dir
 if [ "$?" -ne 0 ]; then
 	echo "Non-repo source code"
 	if [ -f $DEFAULT_RTOS_SDK_MANIFEST ]; then
-		echo "Use default manifest: $DEFAULT_RTOS_SDK_MANIFEST"
-		cp -f $DEFAULT_RTOS_SDK_MANIFEST $RTOS_SDK_MANIFEST_FILE
+		if [ -s "$RTOS_EXTERN_SDK_XML" ]; then
+			echo "Use specific manifest: $RTOS_EXTERN_SDK_XML"
+			cp -f $RTOS_EXTERN_SDK_XML $RTOS_SDK_MANIFEST_FILE
+			RTOS_EXTERN_SDK_MARK=$(grep build_system $RTOS_SDK_MANIFEST_FILE)
+			RTOS_EXTERN_SDK_MARK=${RTOS_EXTERN_SDK_MARK#*project}
+			RTOS_EXTERN_SDK_MARK=${RTOS_EXTERN_SDK_MARK%%build_system*}
+			sed -i "s|$RTOS_EXTERN_SDK_MARK| path=\"|" $RTOS_SDK_MANIFEST_FILE
+		else
+			echo "Use default manifest: $DEFAULT_RTOS_SDK_MANIFEST"
+			cp -f $DEFAULT_RTOS_SDK_MANIFEST $RTOS_SDK_MANIFEST_FILE
+		fi
 	else
 		echo "Default manifest.xml not found!"
 		exit 0

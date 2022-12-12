@@ -21,7 +21,8 @@
 #include "wakeup.h"
 #include "power.h"
 #include "mailbox-api.h"
-
+#include "hdmi_cec.h"
+static TaskHandle_t cecTask;
 
 static int vdd_ee;
 static int vdd_cpu;
@@ -67,7 +68,8 @@ void str_hw_init(void)
 	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
-
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
 									xMboxVadWakeup, 0);
@@ -89,6 +91,10 @@ void str_hw_disable(void)
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+	}
 }
 
 void str_power_on(int shutdown_flag)

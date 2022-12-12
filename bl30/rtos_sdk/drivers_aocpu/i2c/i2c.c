@@ -287,6 +287,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 
 		if (REG32(ctrl) & REG_CTRL_ERROR) {
 			iprintf("meson i2c: error(0x%x)\n", REG32(ctrl));
+			taskEXIT_CRITICAL();
 			return -1;
 		}
 

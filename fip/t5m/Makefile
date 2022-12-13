@@ -3,9 +3,9 @@
 # Rules
 #
 
-DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/s5/device/
+DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/t5m/device/
 DEVICE_ROOTRSA_INDEX ?= 0
-PROJECT ?= s928x
+PROJECT ?= t963d4
 SOC_FAMILY ?= s5
 DEVICE_SCS_SEGID ?= 0x0
 DEVICE_VENDOR_SEGID ?= 0x0

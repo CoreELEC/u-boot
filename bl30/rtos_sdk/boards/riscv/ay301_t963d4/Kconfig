@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_SKT_T5M
-	bool "Amlogic T5M SKT Board"
+config BOARD_AY301_T963D4
+	bool "Amlogic AY301 Board"
 	select SOC_T5M
 	select LIBC_AML
 	select COMMON
@@ -25,4 +25,4 @@ config BOARD_SKT_T5M
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
 	help
-	  Enable Amlogic T5M SKT Board.
+	  Enable Amlogic AY301 Board.

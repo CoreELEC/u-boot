@@ -70,5 +70,5 @@ void hw_business_process(void)
 	//	vRtcInit();
 	//rtc_init();
 	vETHMailboxCallback();
-	//create_str_task();
+	create_str_task();
 }

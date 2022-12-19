@@ -88,7 +88,7 @@ class SectionSize():
 
 size_by_source = {}
 with open(args.map_file) as f:
-    if os.getenv('arch') == "xtensa":
+    if os.getenv('COMPILER') == "xcc":
         arch_toolchain = "XCC"
         toolchain_keyword = "xtensa-elf"
         is_xtensa = 1

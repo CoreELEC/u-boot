@@ -52,7 +52,10 @@ if [ -n "$1" ] && [ $1 == "-h" ]; then
 	return 0
 elif [ $# -eq 4 ]; then
 	PROJECT="$1 $2 $3 $4"
-	echo "Choose project: $PROJECT"
+	echo "Choose project:$PROJECT"
+elif [ $# -eq 5 ]; then
+	PROJECT="$1 $2 $3 $4 $5"
+	echo "Choose project:$PROJECT"
 else
 	unset ARRAY
 
@@ -64,10 +67,6 @@ else
 	j=0
 	for j in "${!ARRAY[@]}"; do
 		NR=$j
-		ARCH=`echo "${ARRAY[$j]}"|awk '{print $1}'`
-		SOC=`echo "${ARRAY[$j]}"|awk '{print $2}'`
-		BOARD=`echo "${ARRAY[$j]}"|awk '{print $3}'`
-		PRODUCT=`echo "${ARRAY[$j]}"|awk '{print $4}'`
 		j=$((j+1))
 		echo -e "\t$NR. ${ARRAY[$j-1]}"
 	done
@@ -91,6 +90,7 @@ ARCH=`echo "$PROJECT"|awk '{print $1}'`
 SOC=`echo "$PROJECT"|awk '{print $2}'`
 BOARD=`echo "$PROJECT"|awk '{print $3}'`
 PRODUCT=`echo "$PROJECT"|awk '{print $4}'`
+COMPILER=`echo "$PROJECT"|awk '{print $5}'`
 # Check current project
 check_build_combination $ARCH $SOC $BOARD $PRODUCT
 err=$?
@@ -100,10 +100,17 @@ err=$?
 [ "$err" -eq 4 ] && echo "Invalid PRODUCT: $PRODUCT!" && return $err
 
 case $ARCH in
-	arm) COMPILER=gcc;TOOLCHAIN_KEYWORD="arm-none-eabi" ;;
-	arm64) COMPILER=gcc;TOOLCHAIN_KEYWORD="aarch64-none-elf" ;;
-	riscv) COMPILER=gcc;TOOLCHAIN_KEYWORD="riscv-none" ;;
-	xtensa) COMPILER=xcc;TOOLCHAIN_KEYWORD="xt" ;;
+	arm) COMPILER=gcc; TOOLCHAIN_KEYWORD="arm-none-eabi" ;;
+	arm64)  if [ "$COMPILER" == "clang+llvm" ]; then
+			TOOLCHAIN_KEYWORD="arm"
+			TOOLCHAIN_PATH=$PWD/output/toolchains/clang+llvm-arm
+		else
+			COMPILER="gcc"
+			TOOLCHAIN_KEYWORD="aarch64-none-elf"
+		fi
+	      ;;
+	riscv) COMPILER="gcc"; TOOLCHAIN_KEYWORD="riscv-none" ;;
+	xtensa) COMPILER="xcc"; TOOLCHAIN_KEYWORD="xt" ;;
 	*) echo "Failed to identify ARCH $ARCH";return 1;;
 esac
 
@@ -115,4 +122,4 @@ fi
 
 KERNEL=freertos
 
-export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD BACKTRACE_ENABLE
+export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD TOOLCHAIN_PATH BACKTRACE_ENABLE

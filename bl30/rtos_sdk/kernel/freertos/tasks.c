@@ -5275,8 +5275,13 @@ void task_stack_range(TaskHandle_t xTask, unsigned long *low, unsigned long *hig
 {
 	TCB_t *pxTCB;
 	pxTCB = prvGetTCBFromHandle( xTask );
-	*low = (unsigned long)pxTCB->pxStack;
-	*high = *low + pxTCB->uStackDepth * sizeof(StackType_t);
+	if (NULL != pxTCB) {
+		*low = (unsigned long)pxTCB->pxStack;
+		*high = *low + pxTCB->uStackDepth * sizeof(StackType_t);
+	} else {
+		*low = 0;
+		*high = 0;
+	}
 }
 #endif
 

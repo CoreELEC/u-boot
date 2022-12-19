@@ -90,7 +90,7 @@ void vTaskDumpStack(void *pvTaskHandle)
 	while (p >= pxTCB->pxStack) {
 		printf("%p:", p);
 		for (i = 0; i < 8 && p >= pxTCB->pxStack; i++)
-			printf(" %08x", *p--);
+			printf(" %08lx", (long)(*p--));
 		printf("\n");
 	}
 }

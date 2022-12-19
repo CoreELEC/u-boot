@@ -189,8 +189,9 @@ static int xPrintOutOfBoundSite(size_t pos)
 
 	return result;
 }
+
 // output memory leak scene
-static int printMemoryLeakSite(size_t pos, size_t allocatedAddress)
+static void printMemoryLeakSite(size_t pos, size_t allocatedAddress)
 {
 	TaskStatus_t status;
 	size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
@@ -211,6 +212,7 @@ static int printMemoryLeakSite(size_t pos, size_t allocatedAddress)
 
 	print_traceitem(allocList[pos].backTrace);
 }
+
 // scan dynamic memory is leak?
 static int xScanDynamicMemory(size_t pos, size_t allocatedAddress)
 {

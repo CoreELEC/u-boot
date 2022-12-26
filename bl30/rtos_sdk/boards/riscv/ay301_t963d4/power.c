@@ -69,8 +69,8 @@ void str_hw_init(void)
 		vIRHandler);
 	vETHInit(0);
 
-//	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-//		    NULL, CEC_TASK_PRI, &cecTask);
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
 
 
 	vBackupAndClearGpioIrqReg();
@@ -87,10 +87,10 @@ void str_hw_disable(void)
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 
-//	if (cecTask) {
-//		vTaskDelete(cecTask);
-//		cec_req_irq(0);
-//	}
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+	}
 }
 
 void str_power_on(int shutdown_flag)

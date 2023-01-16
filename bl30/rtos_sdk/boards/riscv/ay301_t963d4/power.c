@@ -251,9 +251,5 @@ void str_power_off(int shutdown_flag)
 	/* disable PWM channel */
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
 
-	if (shutdown_flag) {
-		/* disable sar adc */
-		vKeyPadDeinit();
-	}
 	printf("vdd_cpu off\n");
 }

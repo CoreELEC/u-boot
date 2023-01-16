@@ -1,3 +1,4 @@
+riscv a4 a4_skt aocpu
 riscv a5 av400_a113x2 aocpu
 riscv a5 av409_a113x2 aocpu
 riscv t5d am301_t950d4 aocpu

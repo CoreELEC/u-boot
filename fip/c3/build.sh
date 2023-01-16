@@ -616,6 +616,13 @@ function process_blx() {
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
+			if [ "bl32" == "${BLX_NAME[$loop]}" ] || \
+				[ "bl40" == "${BLX_NAME[$loop]}" ]; then
+				cp ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}  ${BUILD_PATH}/temp
+				dd if=${BUILD_PATH}/temp of=${BUILD_PATH}/${BLX_BIN_NAME[$loop]}   bs=${BLX_BIN_SIZE[$loop]}  count=1
+				echo $loop
+				rm ${BUILD_PATH}/temp
+			fi
 			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
 			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
 				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
@@ -681,7 +688,7 @@ function process_blx() {
 
 	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
 		echo "Warning: local bl40"
-		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
+		dd if=bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed of=${BUILD_PATH}/blob-bl40.bin.signed bs=${BLX_BIN_SIZE[7]}  count=1
 	fi
 	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
 		echo "Warning: local device fip header templates"

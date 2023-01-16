@@ -66,11 +66,11 @@ declare -a BLX_BIN_SIZE=("169984"	\
 			 "74864"	\
 			 "66672"	\
 			 "266240"	\
-			 "528384"	\
-			 "102400")
+			 "8192"	\
+			 "8192")
 
 declare BL30_BIN_SIZE="65536"
-declare BL33_BIN_SIZE="1572864"
+declare BL33_BIN_SIZE="524288"
 declare DEV_ACS_BIN_SIZE="4096"
 declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\

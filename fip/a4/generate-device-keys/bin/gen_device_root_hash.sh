@@ -265,7 +265,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --feature-device-root-pubrsa-prot-mrk"
 
 BB1ST_ARGS="${BB1ST_ARGS} --switch-device-sign-blob=0"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s4"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${device_soc}"
 
 # arb info
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"

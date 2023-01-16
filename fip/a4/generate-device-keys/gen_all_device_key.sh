@@ -55,7 +55,7 @@ size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
-device_soc="s4"
+device_soc="a4"
 
 parse_main() {
     local i=0

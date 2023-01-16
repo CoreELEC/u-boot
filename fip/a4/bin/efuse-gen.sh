@@ -131,6 +131,8 @@ function generate_efuse_device_pattern() {
 		keyinfo="$(xxd -p -c 32 $device_roothash)"
         echo "efuse_obj set HASH_NORMAL_DEVICE_ROOTCERT $keyinfo" >> $patt_text
 		echo "efuse_obj lock HASH_NORMAL_DEVICE_ROOTCERT" >> $patt_text
+        echo "efuse_obj set HASH_DFU_DEVICE_ROOTCERT $keyinfo" >> $patt_text
+        echo "efuse_obj lock HASH_DFU_DEVICE_ROOTCERT" >> $patt_text
     fi
 
     if [ "$enable_device_vendor_scs" == "true" ]; then

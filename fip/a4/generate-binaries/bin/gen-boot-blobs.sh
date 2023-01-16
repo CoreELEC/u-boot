@@ -23,7 +23,7 @@ BASEDIR_ROOT=${BASEDIR_ROOT:-$BASEDIR_TEMPLATE}
 
 BASEDIR_OUTPUT_BLOB=$2
 
-SOC=$3
+SOC_FAMILY=$3
 
 input_postfix=.signed
 output_postfix=.device.signed
@@ -81,7 +81,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RS
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --switch-keep-device-lvl2-pubrsa=1"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s4"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=${SOC_FAMILY}"
 
 # arb info
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"

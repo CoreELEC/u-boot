@@ -15,10 +15,10 @@ declare -a BLX_NAME=("bl2"	\
 		     "bl2e"	\
 		     "bl2e"	\
 		     "bl2x"	\
-		     "bl31"	)
+		     "bl31"	\
+		     "bl30")
 #		     "bl32"	
 #		     "bl40"	
-#		     "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/core"		\
@@ -26,7 +26,7 @@ declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/ree"		\
 			   "bl2/tee"		\
 			   "bl31_1.3/src"	\
-			   "bl32_3.8/src"	\
+			   "bl32_3.8/src"	\ 
 			   "NULL"		\
 			   "bl30/src_ao"	\
 			   "bl33")
@@ -65,8 +65,8 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 fi
 
 
-declare -a BLX_BIN_SIZE=("169984"	\
-			 "169984"	\
+declare -a BLX_BIN_SIZE=("206848"	\
+			 "206848"	\
 			 "74864"	\
 			 "74864"	\
 			 "66672"	\
@@ -77,7 +77,7 @@ declare -a BLX_BIN_SIZE=("169984"	\
 
 declare BL30_BIN_SIZE="65536"
 declare BL33_BIN_SIZE="1572864"
-declare DEV_ACS_BIN_SIZE="4096"
+declare DEV_ACS_BIN_SIZE="8192"
 declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\
 			    "bl2e.bin.sto"	\
@@ -132,8 +132,8 @@ declare -a BIN_PATH=("null"	\
 		     "null"	\
 		     "null"	\
 		     "null"	\
-		     "null"	\
-		     "null"	\
+#		     "null"	\
+#		     "null"	\
 		     "source")
 
 # variables
@@ -169,10 +169,10 @@ DDR_FW_NAME="aml_ddr.fw"
 CONFIG_NEED_BL32=y
 ADVANCED_BOOTLOADER=1
 
-#declare CONFIG_RTOS_SDK_ENABLE=1
-#declare CONFIG_SOC_NAME="a4"
-#if [ "${BL30_SELECT}" == "a4_skt" ]; then
-#	declare CONFIG_BOARD_PACKAGE_NAME="av400_a113x2"
-#else
-#	declare CONFIG_BOARD_PACKAGE_NAME="av409_a113x2"
-#fi
+declare CONFIG_RTOS_SDK_ENABLE=1
+declare CONFIG_SOC_NAME="a4"
+if [ "${BL30_SELECT}" == "a4_pxp" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="a4_skt"
+else
+	declare CONFIG_BOARD_PACKAGE_NAME="a4_skt"
+fi

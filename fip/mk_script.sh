@@ -245,6 +245,11 @@ function clean() {
 		cd ${BL33_PATH2}
 		make distclean
 	fi
+	if [ -e ${BL33_PATH3} ]; then
+		cd ${MAIN_FOLDER}
+		cd ${BL33_PATH3}
+		make distclean
+	fi
 	cd ${MAIN_FOLDER}
 	rm ${FIP_BUILD_FOLDER} -rf
 	rm ${BUILD_FOLDER}/* -rf
@@ -472,9 +477,14 @@ function parser() {
 				export CONFIG_RAMDUMP_CHIPID
 				echo "SET CHIP ID: ${CONFIG_RAMDUMP_CHIPID}"
 				continue ;;
-			--build-2019)
-				CONFIG_BUILD_2019=1
-				export CONFIG_BUILD_2019
+			--build-version)
+				CONFIG_BUILD_VERSION="${argv[$i]}"
+				if [ -z "${CONFIG_BUILD_VERSION}" ]; then
+					echo "need choice 2015/2019/2023 version"
+				fi
+				CONFIG_CHOICE_BUILD=1
+				export CONFIG_CHOICE_BUILD
+				export CONFIG_BUILD_VERSION
 				continue ;;
 			clean|distclean|-distclean|--distclean)
 				clean

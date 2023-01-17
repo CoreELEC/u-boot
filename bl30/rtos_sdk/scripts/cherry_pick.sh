@@ -54,7 +54,7 @@ apply_patch_by_change_number() {
 }
 
 apply_patch_by_gerrit_topic() {
-	[ -z "$MANUAL_GERRIT_TOPIC" ] && return
+	[ -z "$MANUAL_GERRIT_TOPIC" ] && return 0
 
 	ssh -p $GERRIT_PORT $GERRIT_SERVER gerrit query --format=JSON --current-patch-set status:open topic:$MANUAL_GERRIT_TOPIC > $GERRIT_QUERY_RESULT
 	GERRIT_PROJECTS=$(jq -r '.project // empty' $GERRIT_QUERY_RESULT)
@@ -79,6 +79,8 @@ apply_patch_by_gerrit_topic() {
 	i=$((i-1))
 	[[ "$i" -eq 1 ]] && echo -e "======== Applied $i patch for $MANUAL_GERRIT_TOPIC ========\n"
 	[[ "$i" -gt 1 ]] && echo -e "======== Applied $i patches for $MANUAL_GERRIT_TOPIC ========\n"
+
+	return 0
 }
 
 apply_patch_by_gerrit_url() {

@@ -118,16 +118,21 @@ function build_blx_src() {
 	elif [ $name == ${BLX_NAME_GLB[2]} ]; then
 		# bl31
 		# some soc use v1.3
+		# some soc use v2.7
+		local version
 		check_bl31_ver $soc
-		if [ $? == 1 ]; then
-			echo "check bl31 ver: use v1.3"
-			build_bl31_v1_3 $src_folder $bin_folder $soc
-		elif [ $? == 0 ]; then
-			echo "check bl31 ver: use v1.0"
-			build_bl31 $src_folder $bin_folder $soc
-		else
+		version=$?
+		#echo "switch_bl31 version=${version}"
+
+		if [ ${version} == 2 ]; then
 			echo "check bl31 ver: use v2.7"
 			build_bl31_v2_7 $src_folder $bin_folder $soc
+		elif [ ${version} == 1 ]; then
+			echo "check bl31 ver: use v1.3"
+			build_bl31_v1_3 $src_folder $bin_folder $soc
+		else
+			echo "check bl31 ver: use v1.0"
+			build_bl31 $src_folder $bin_folder $soc
 		fi
 	elif [ $name == ${BLX_NAME_GLB[3]} ]; then
 		# control flow for jenkins patchbuild

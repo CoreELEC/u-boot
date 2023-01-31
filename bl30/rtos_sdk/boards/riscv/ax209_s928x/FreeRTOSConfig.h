@@ -19,7 +19,7 @@
 #define configUSE_PREEMPTION 1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE 0
-#define configCPU_CLOCK_HZ 24000000
+#define configCPU_CLOCK_HZ 1000000 //24000000
 #define configTICK_RATE_HZ 50
 #define configMAX_PRIORITIES 4
 #define configMINIMAL_STACK_SIZE 450
@@ -36,6 +36,7 @@
 #define configUSE_NEWLIB_REENTRANT 0
 #define configENABLE_BACKWARD_COMPATIBILITY 0
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 5
+#define configSOC_TIMER_AS_TICK 1
 
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION 0

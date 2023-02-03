@@ -103,6 +103,13 @@ void str_power_on(int shutdown_flag)
 	/* open PWM clk */
 //	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
 
+	/***restore vdd_ee val***/
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
+	if (ret < 0) {
+		printf("VDD_EE pwm set fail\n");
+		return;
+	}
+
 	/* set GPIOE_1 pinmux to pwm */
 	xPinmuxSet(GPIOE_1, PIN_FUNC1);
 
@@ -129,26 +136,44 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-	if (ret < 0) {
-		printf("VDD_EE pwm set fail\n");
-		return;
-	}
-
 	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
+		/***power on WOL&VAD*** vddq power issue*/
+/*		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
 		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
+			printf("vad_en set gpio dir fail\n");
 			return;
 		}
 
 		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_HIGH);
 		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
+			printf("vad_en gpio val fail\n");
 			return;
 		}
+*/
+		/***power on WIFI***/
+		ret = xGpioSetDir(GPIOD_11, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("wifi_en set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_11, GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("wifi_en gpio val fail\n");
+			return;
+		}
+	}
+	/***power on vcc_3v3***/
+	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc_3.3v gpio val fail\n");
+		return;
 	}
 
 	/***power on vcc_5v***/
@@ -190,30 +215,42 @@ void str_power_off(int shutdown_flag)
 	}
 
 	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
+		/***power off wol &vad*** cause vddq issue*/
+/*		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
 		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
+			printf("vad_en set gpio dir fail\n");
 			return;
 		}
 
 		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_LOW);
 		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
+			printf("vad_en gpio val fail\n");
+			return;
+		}
+*/
+		/***power off wifi***/
+		ret = xGpioSetDir(GPIOD_11, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("wifi_en set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_11, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("wifi_en gpio val fail\n");
 			return;
 		}
 	}
-
-	/***set vdd_ee val***/
-	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-	if (vdd_ee < 0) {
-		printf("vdd_EE pwm get fail\n");
+	/***power off vcc_3v3***/
+	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+	ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_LOW);
 	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
+		printf("vcc_3.3v gpio val fail\n");
 		return;
 	}
 
@@ -252,6 +289,19 @@ void str_power_off(int shutdown_flag)
 
 	/* disable PWM channel */
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
+
+	/***set vdd_ee val***/
+	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
+	if (vdd_ee < 0) {
+		printf("vdd_EE pwm get fail\n");
+		return;
+	}
+
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+	if (ret < 0) {
+		printf("vdd_EE pwm set fail\n");
+		return;
+	}
 
 	printf("vdd_cpu off\n");
 }

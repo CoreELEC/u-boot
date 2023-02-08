@@ -2,18 +2,18 @@
 
 # SPDX-License-Identifier: MIT
 
-if((CONFIG_SOC_A5) OR (CONFIG_SOC_S5) OR (CONFIG_SOC_T5M) OR (CONFIG_SOC_A4) )
+if((CONFIG_SOC_T5D) OR (CONFIG_SOC_T5W))
 aml_library_sources_ifdef(
 	CONFIG_MAILBOX
-	mailbox.c
-	mailbox-irq.c
+	mailbox-pl.c
 	mailbox-htbl.c
 	mailbox-rpc-test.c
 )
 else()
 aml_library_sources_ifdef(
 	CONFIG_MAILBOX
-	mailbox-pl.c
+	mailbox.c
+	mailbox-irq.c
 	mailbox-htbl.c
 	mailbox-rpc-test.c
 )

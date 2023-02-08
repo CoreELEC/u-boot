@@ -16,9 +16,22 @@
 #include "string.h"
 #include "interrupt.h"
 #include "suspend.h"
+#include "rtc_register.h"
 
 #undef TAG
 #define TAG "AOCPU RTC"
+
+static uint32_t gray_to_binary(uint32_t gray)
+{
+	uint32_t bcd = gray;
+	int size = sizeof(bcd) * 8;
+	int i;
+
+	for (i = 0; (1 << i) < size; i++)
+		bcd ^= bcd >> (1 << i);
+
+	return bcd;
+}
 
 static void vRTCInterruptHandler(void)
 {
@@ -27,17 +40,17 @@ static void vRTCInterruptHandler(void)
 	uint32_t reg_val;
 
 	/* Mask alarm0 irq */
-	reg_val = REG32(RTC_INT_MASK);
+	reg_val = REG32(RTC_DIG_INT_MASK);
 	reg_val |= 0x1;
-	REG32(RTC_INT_MASK) = reg_val;
+	REG32(RTC_DIG_INT_MASK) = reg_val;
 
 	/* Clear alarm0 */
-	REG32(RTC_ALARM0_REG) = 0;
+	REG32(RTC_DIG_ALARM0_REG) = 0;
 
-	alarm0_int_status = REG32(RTC_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
+	alarm0_int_status = REG32(RTC_DIG_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
 	/* Clear alarm0 int status */
 	if (alarm0_int_status)
-		REG32(RTC_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
+		REG32(RTC_DIG_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
 
 	printf("[%s]: rtc alarm fired\n", TAG);
 
@@ -88,7 +101,10 @@ void store_rtc(void)
 {
 	uint32_t reg_val;
 
-	reg_val = REG32(RTC_REAL_TIME);
+	reg_val = REG32(RTC_DIG_REAL_TIME);
+#ifdef CONFIG_RTC_STORAGE_FORMAT_GRAY
+	reg_val = gray_to_binary(reg_val);
+#endif
 	REG32(VRTC_STICKY_REG) = reg_val;
 }
 

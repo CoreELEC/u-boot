@@ -1,0 +1,28 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_SKT_T3X
+	bool "Amlogic T3X SKT Board"
+	select SOC_T3X
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VRTC
+	select HWSPINLOCK
+	select VERSION_FULL_INFO
+	help
+	  Enable Amlogic T3X SKT Board.

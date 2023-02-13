@@ -23,5 +23,6 @@ config BOARD_SKT_A4
 	select ETHERNET
 	select RTC
 	select VERSION_FULL_INFO
+	select RTC_STORAGE_FORMAT_GRAY
 	help
 	  Enable Amlogic A4 SKT Board.

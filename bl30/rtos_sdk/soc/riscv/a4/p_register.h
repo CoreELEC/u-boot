@@ -13,7 +13,7 @@
 //
 // Project name: a4
 //
-// Create time: Fri Nov  4 11:29:51 CST 2022 by chong.gu
+// Create time: Tue Feb 14 11:32:43 CST 2023 by chong.gu
 //
 // ./REG_LIST_RTL.h
 //
@@ -944,6 +944,7 @@
 #define P_CLKCTRL_PWM_CLK_IJ_CTRL                  ((volatile uint32_t *)0xfe000190)
 #define P_CLKCTRL_DEMOD_CLK_CTRL                   ((volatile uint32_t *)0xfe000200)
 #define P_CLKCTRL_VOUTENC_CLK_CTRL                 ((volatile uint32_t *)0xfe000204)
+#define P_CLKCTRL_AUDIO_CLK_CTRL                   ((volatile uint32_t *)0xfe000208)
 //`define CLKCTRL_NNA_CLK_CNTL            10'h88
 #define P_CLKCTRL_TIMESTAMP_CTRL                   ((volatile uint32_t *)0xfe000400)
 #define P_CLKCTRL_TIMESTAMP_CTRL1                  ((volatile uint32_t *)0xfe000404)
@@ -1965,6 +1966,8 @@
 #define P_RESETCTRL_SEC_WATCHDOG_CNT               ((volatile uint32_t *)0xfe002118)
 #define P_RESETCTRL_SEC_WATCHDOG_CLR               ((volatile uint32_t *)0xfe00211c)
 #define P_RESETCTRL_WATCHDOG_DLY_CNT               ((volatile uint32_t *)0xfe002120)
+#define P_RESETCTRL_WATCHDOG_IRQ_OFFSET            ((volatile uint32_t *)0xfe002124)
+#define P_RESETCTRL_SEC_WATCHDOG_IRQ_OFFSET        ((volatile uint32_t *)0xfe002128)
 #define P_RESETCTRL_SEC_RESET0                     ((volatile uint32_t *)0xfe002140)
 #define P_RESETCTRL_SEC_RESET1                     ((volatile uint32_t *)0xfe002144)
 #define P_RESETCTRL_SEC_RESET0_LEVEL               ((volatile uint32_t *)0xfe002180)
@@ -3568,6 +3571,22 @@
 #define P_EE_AUDIO_TDMINB_LB_MUTE5                 ((volatile uint32_t *)0xfe330b58)
 #define P_EE_AUDIO_TDMINB_LB_MUTE6                 ((volatile uint32_t *)0xfe330b5c)
 #define P_EE_AUDIO_TDMINB_LB_MUTE7                 ((volatile uint32_t *)0xfe330b60)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL0                ((volatile uint32_t *)0xfe330b80)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL1                ((volatile uint32_t *)0xfe330b84)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL2                ((volatile uint32_t *)0xfe330b88)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL3                ((volatile uint32_t *)0xfe330b8c)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL4                ((volatile uint32_t *)0xfe330b90)
+#define P_EE_AUDIO_PCPD_MON_A_CTRL5                ((volatile uint32_t *)0xfe330b94)
+#define P_EE_AUDIO_PCPD_MON_A_STAT0                ((volatile uint32_t *)0xfe330ba0)
+#define P_EE_AUDIO_PCPD_MON_A_STAT1                ((volatile uint32_t *)0xfe330ba4)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL0                ((volatile uint32_t *)0xfe330bc0)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL1                ((volatile uint32_t *)0xfe330bc4)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL2                ((volatile uint32_t *)0xfe330bc8)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL3                ((volatile uint32_t *)0xfe330bcc)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL4                ((volatile uint32_t *)0xfe330bd0)
+#define P_EE_AUDIO_PCPD_MON_B_CTRL5                ((volatile uint32_t *)0xfe330bd4)
+#define P_EE_AUDIO_PCPD_MON_B_STAT0                ((volatile uint32_t *)0xfe330be0)
+#define P_EE_AUDIO_PCPD_MON_B_STAT1                ((volatile uint32_t *)0xfe330be4)
 #define P_EE_AUDIO_TODDR_A_CHNUM_ID0               ((volatile uint32_t *)0xfe330c00)
 #define P_EE_AUDIO_TODDR_A_CHNUM_ID1               ((volatile uint32_t *)0xfe330c04)
 #define P_EE_AUDIO_TODDR_A_CHNUM_ID2               ((volatile uint32_t *)0xfe330c08)
@@ -3893,6 +3912,108 @@
 #define P_PDMB_MASK_NUM                            ((volatile uint32_t *)0xfe334838)
 #define P_PDMB_CHAN_CTRL2                          ((volatile uint32_t *)0xfe33483c)
 //bit 7:0    second sample and start FSM point vs rise edge of PDM_DCLK
+//========================================================================
+//  AUDIO TOP_VAD - Registers
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe334c00
+// -----------------------------------------------
+#define P_EE_AUDIO2_CLK81_CTRL                     ((volatile uint32_t *)0xfe334c00)
+#define P_EE_AUDIO2_CLK81_EN                       ((volatile uint32_t *)0xfe334c04)
+#define P_EE_AUDIO2_SW_RESET0                      ((volatile uint32_t *)0xfe334c08)
+#define P_EE_AUDIO2_CLK_GATE_EN0                   ((volatile uint32_t *)0xfe334c0c)
+#define P_EE_AUDIO2_SECURITY_CTRL0                 ((volatile uint32_t *)0xfe334c10)
+#define P_EE_AUDIO2_SECURITY_CTRL1                 ((volatile uint32_t *)0xfe334c14)
+#define P_EE_AUDIO2_MCLK_VAD_CTRL                  ((volatile uint32_t *)0xfe334c40)
+#define P_EE_AUDIO2_VAD_CLK_CTRL                   ((volatile uint32_t *)0xfe334c44)
+#define P_EE_AUDIO2_MST_DLY_CTRL0                  ((volatile uint32_t *)0xfe334c48)
+#define P_EE_AUDIO2_MST_VAD_SCLK_CTRL0             ((volatile uint32_t *)0xfe334c4c)
+#define P_EE_AUDIO2_MST_VAD_SCLK_CTRL1             ((volatile uint32_t *)0xfe334c50)
+#define P_EE_AUDIO2_CLK_TDMIN_VAD_CTRL             ((volatile uint32_t *)0xfe334c54)
+#define P_EE_AUDIO2_CLK_PDMIN_CTRL0                ((volatile uint32_t *)0xfe334c58)
+#define P_EE_AUDIO2_CLK_PDMIN_CTRL1                ((volatile uint32_t *)0xfe334c5c)
+#define P_EE_AUDIO2_AUD_VAD_PAD_CTRL0              ((volatile uint32_t *)0xfe334c60)
+#define P_EE_AUDIO2_TOVAD_CTRL0                    ((volatile uint32_t *)0xfe334c80)
+#define P_EE_AUDIO2_TODDR_VAD_CTRL0                ((volatile uint32_t *)0xfe334cc0)
+#define P_EE_AUDIO2_TODDR_VAD_CTRL1                ((volatile uint32_t *)0xfe334cc4)
+#define P_EE_AUDIO2_TODDR_VAD_CTRL2                ((volatile uint32_t *)0xfe334cc8)
+#define P_EE_AUDIO2_TODDR_VAD_START_ADDR           ((volatile uint32_t *)0xfe334ccc)
+#define P_EE_AUDIO2_TODDR_VAD_INIT_ADDR            ((volatile uint32_t *)0xfe334cd0)
+#define P_EE_AUDIO2_TODDR_VAD_FINISH_ADDR          ((volatile uint32_t *)0xfe334cd4)
+#define P_EE_AUDIO2_TODDR_VAD_START_ADDRB          ((volatile uint32_t *)0xfe334cd8)
+#define P_EE_AUDIO2_TODDR_VAD_FINISH_ADDRB         ((volatile uint32_t *)0xfe334cdc)
+#define P_EE_AUDIO2_TODDR_VAD_INT_ADDR             ((volatile uint32_t *)0xfe334ce0)
+#define P_EE_AUDIO2_TODDR_VAD_STATUS1              ((volatile uint32_t *)0xfe334ce4)
+#define P_EE_AUDIO2_TODDR_VAD_STATUS2              ((volatile uint32_t *)0xfe334ce8)
+#define P_EE_AUDIO2_TDMIN_VAD_CTRL                 ((volatile uint32_t *)0xfe334d00)
+#define P_EE_AUDIO2_TDMIN_VAD_SWAP0                ((volatile uint32_t *)0xfe334d04)
+#define P_EE_AUDIO2_TDMIN_VAD_SWAP1                ((volatile uint32_t *)0xfe334d08)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE_VAL             ((volatile uint32_t *)0xfe334d0c)
+#define P_EE_AUDIO2_TDMIN_VAD_STAT                 ((volatile uint32_t *)0xfe334d10)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE0                ((volatile uint32_t *)0xfe334d40)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE1                ((volatile uint32_t *)0xfe334d44)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE2                ((volatile uint32_t *)0xfe334d48)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE3                ((volatile uint32_t *)0xfe334d4c)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE4                ((volatile uint32_t *)0xfe334d50)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE5                ((volatile uint32_t *)0xfe334d54)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE6                ((volatile uint32_t *)0xfe334d58)
+#define P_EE_AUDIO2_TDMIN_VAD_MUTE7                ((volatile uint32_t *)0xfe334d5c)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK0                ((volatile uint32_t *)0xfe334d60)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK1                ((volatile uint32_t *)0xfe334d64)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK2                ((volatile uint32_t *)0xfe334d68)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK3                ((volatile uint32_t *)0xfe334d6c)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK4                ((volatile uint32_t *)0xfe334d70)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK5                ((volatile uint32_t *)0xfe334d74)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK6                ((volatile uint32_t *)0xfe334d78)
+#define P_EE_AUDIO2_TDMIN_VAD_MASK7                ((volatile uint32_t *)0xfe334d7c)
+#define P_EE_AUDIO2_VAD_DAT_PAD_CTRL0              ((volatile uint32_t *)0xfe334d80)
+#define P_EE_AUDIO2_VAD_DAT_PAD_CTRL1              ((volatile uint32_t *)0xfe334d84)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID0            ((volatile uint32_t *)0xfe334dc0)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID1            ((volatile uint32_t *)0xfe334dc4)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID2            ((volatile uint32_t *)0xfe334dc8)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID3            ((volatile uint32_t *)0xfe334dcc)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID4            ((volatile uint32_t *)0xfe334dd0)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID5            ((volatile uint32_t *)0xfe334dd4)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID6            ((volatile uint32_t *)0xfe334dd8)
+#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID7            ((volatile uint32_t *)0xfe334ddc)
+#define P_EE_AUDIO2_TODDR_VAD_CHSYNC_CTRL          ((volatile uint32_t *)0xfe334dfc)
+#define P_EE_AUDIO2_VAD_AM2AXI_CTRL0               ((volatile uint32_t *)0xfe334e00)
+#define P_EE_AUDIO2_VAD_AXIWR_ASYNC_CTRL0          ((volatile uint32_t *)0xfe334e04)
+#define P_EE_AUDIO2_VAD_AM2AXI_STAT                ((volatile uint32_t *)0xfe334e20)
+#define P_EE_AUDIO2_VAD_AXIWR_ASYNC_STAT           ((volatile uint32_t *)0xfe334e24)
+#define P_EE_AUDIO2_EXCEPTION_IRQ_STS0             ((volatile uint32_t *)0xfe334e40)
+#define P_EE_AUDIO2_EXCEPTION_IRQ_MASK0            ((volatile uint32_t *)0xfe334e44)
+#define P_EE_AUDIO2_EXCEPTION_IRQ_MODE0            ((volatile uint32_t *)0xfe334e48)
+#define P_EE_AUDIO2_EXCEPTION_IRQ_CLR0             ((volatile uint32_t *)0xfe334e4c)
+#define P_EE_AUDIO2_EXCEPTION_IRQ_INV0             ((volatile uint32_t *)0xfe334e50)
+//========================================================================
+//  AUDIO ASRC WRAPPER - Registers
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe336400
+// -----------------------------------------------
+//
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_CTL0          ((volatile uint32_t *)0xfe336400)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_CTL1          ((volatile uint32_t *)0xfe336404)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_CTL2          ((volatile uint32_t *)0xfe336408)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_CTL3          ((volatile uint32_t *)0xfe33640c)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_CTL4          ((volatile uint32_t *)0xfe336410)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_ST0           ((volatile uint32_t *)0xfe336440)
+#define P_AUDIO_ACC_ASRC_WRAPPER_TOP_ST1           ((volatile uint32_t *)0xfe336444)
+//========================================================================
+//  AUDIO EQDRC WRAPPER - Registers
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe336800
+// -----------------------------------------------
+//
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_CTL0         ((volatile uint32_t *)0xfe336800)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_CTL1         ((volatile uint32_t *)0xfe336804)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_CTL2         ((volatile uint32_t *)0xfe336808)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_CTL3         ((volatile uint32_t *)0xfe33680c)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_CTL4         ((volatile uint32_t *)0xfe336810)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_ST0          ((volatile uint32_t *)0xfe336840)
+#define P_AUDIO_ACC_EQDRC_WRAPPER_TOP_ST1          ((volatile uint32_t *)0xfe336844)
 //========================================================================
 //  EQ DRC - Registers
 //========================================================================
@@ -5598,79 +5719,386 @@
 // Closing file:  ./RESAMPLEB.h
 //
 //========================================================================
-//  AUDIO TOP_VAD - Registers
+//  AUDIO ACC TOP - Registers
 //========================================================================
 // -----------------------------------------------
-// REG_BASE:  APB0_BASE_ADDR = 0xfe334c00
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe336c00
 // -----------------------------------------------
-#define P_EE_AUDIO2_CLK81_CTRL                     ((volatile uint32_t *)0xfe334c00)
-#define P_EE_AUDIO2_CLK81_EN                       ((volatile uint32_t *)0xfe334c04)
-#define P_EE_AUDIO2_SW_RESET0                      ((volatile uint32_t *)0xfe334c08)
-#define P_EE_AUDIO2_CLK_GATE_EN0                   ((volatile uint32_t *)0xfe334c0c)
-#define P_EE_AUDIO2_SECURITY_CTRL0                 ((volatile uint32_t *)0xfe334c10)
-#define P_EE_AUDIO2_SECURITY_CTRL1                 ((volatile uint32_t *)0xfe334c14)
-#define P_EE_AUDIO2_MCLK_VAD_CTRL                  ((volatile uint32_t *)0xfe334c40)
-#define P_EE_AUDIO2_VAD_CLK_CTRL                   ((volatile uint32_t *)0xfe334c44)
-#define P_EE_AUDIO2_MST_DLY_CTRL0                  ((volatile uint32_t *)0xfe334c48)
-#define P_EE_AUDIO2_MST_VAD_SCLK_CTRL0             ((volatile uint32_t *)0xfe334c4c)
-#define P_EE_AUDIO2_MST_VAD_SCLK_CTRL1             ((volatile uint32_t *)0xfe334c50)
-#define P_EE_AUDIO2_CLK_TDMIN_VAD_CTRL             ((volatile uint32_t *)0xfe334c54)
-#define P_EE_AUDIO2_CLK_PDMIN_CTRL0                ((volatile uint32_t *)0xfe334c58)
-#define P_EE_AUDIO2_CLK_PDMIN_CTRL1                ((volatile uint32_t *)0xfe334c5c)
-#define P_EE_AUDIO2_AUD_VAD_PAD_CTRL0              ((volatile uint32_t *)0xfe334c60)
-#define P_EE_AUDIO2_TOVAD_CTRL0                    ((volatile uint32_t *)0xfe334c80)
-#define P_EE_AUDIO2_TODDR_VAD_CTRL0                ((volatile uint32_t *)0xfe334cc0)
-#define P_EE_AUDIO2_TODDR_VAD_CTRL1                ((volatile uint32_t *)0xfe334cc4)
-#define P_EE_AUDIO2_TODDR_VAD_CTRL2                ((volatile uint32_t *)0xfe334cc8)
-#define P_EE_AUDIO2_TODDR_VAD_START_ADDR           ((volatile uint32_t *)0xfe334ccc)
-#define P_EE_AUDIO2_TODDR_VAD_INIT_ADDR            ((volatile uint32_t *)0xfe334cd0)
-#define P_EE_AUDIO2_TODDR_VAD_FINISH_ADDR          ((volatile uint32_t *)0xfe334cd4)
-#define P_EE_AUDIO2_TODDR_VAD_START_ADDRB          ((volatile uint32_t *)0xfe334cd8)
-#define P_EE_AUDIO2_TODDR_VAD_FINISH_ADDRB         ((volatile uint32_t *)0xfe334cdc)
-#define P_EE_AUDIO2_TODDR_VAD_INT_ADDR             ((volatile uint32_t *)0xfe334ce0)
-#define P_EE_AUDIO2_TODDR_VAD_STATUS1              ((volatile uint32_t *)0xfe334ce4)
-#define P_EE_AUDIO2_TODDR_VAD_STATUS2              ((volatile uint32_t *)0xfe334ce8)
-#define P_EE_AUDIO2_TDMIN_VAD_CTRL                 ((volatile uint32_t *)0xfe334d00)
-#define P_EE_AUDIO2_TDMIN_VAD_SWAP0                ((volatile uint32_t *)0xfe334d04)
-#define P_EE_AUDIO2_TDMIN_VAD_SWAP1                ((volatile uint32_t *)0xfe334d08)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE_VAL             ((volatile uint32_t *)0xfe334d0c)
-#define P_EE_AUDIO2_TDMIN_VAD_STAT                 ((volatile uint32_t *)0xfe334d10)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE0                ((volatile uint32_t *)0xfe334d40)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE1                ((volatile uint32_t *)0xfe334d44)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE2                ((volatile uint32_t *)0xfe334d48)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE3                ((volatile uint32_t *)0xfe334d4c)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE4                ((volatile uint32_t *)0xfe334d50)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE5                ((volatile uint32_t *)0xfe334d54)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE6                ((volatile uint32_t *)0xfe334d58)
-#define P_EE_AUDIO2_TDMIN_VAD_MUTE7                ((volatile uint32_t *)0xfe334d5c)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK0                ((volatile uint32_t *)0xfe334d60)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK1                ((volatile uint32_t *)0xfe334d64)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK2                ((volatile uint32_t *)0xfe334d68)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK3                ((volatile uint32_t *)0xfe334d6c)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK4                ((volatile uint32_t *)0xfe334d70)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK5                ((volatile uint32_t *)0xfe334d74)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK6                ((volatile uint32_t *)0xfe334d78)
-#define P_EE_AUDIO2_TDMIN_VAD_MASK7                ((volatile uint32_t *)0xfe334d7c)
-#define P_EE_AUDIO2_VAD_DAT_PAD_CTRL0              ((volatile uint32_t *)0xfe334d80)
-#define P_EE_AUDIO2_VAD_DAT_PAD_CTRL1              ((volatile uint32_t *)0xfe334d84)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID0            ((volatile uint32_t *)0xfe334dc0)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID1            ((volatile uint32_t *)0xfe334dc4)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID2            ((volatile uint32_t *)0xfe334dc8)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID3            ((volatile uint32_t *)0xfe334dcc)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID4            ((volatile uint32_t *)0xfe334dd0)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID5            ((volatile uint32_t *)0xfe334dd4)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID6            ((volatile uint32_t *)0xfe334dd8)
-#define P_EE_AUDIO2_TODDR_VAD_CHNUM_ID7            ((volatile uint32_t *)0xfe334ddc)
-#define P_EE_AUDIO2_TODDR_VAD_CHSYNC_CTRL          ((volatile uint32_t *)0xfe334dfc)
-#define P_EE_AUDIO2_VAD_AM2AXI_CTRL0               ((volatile uint32_t *)0xfe334e00)
-#define P_EE_AUDIO2_VAD_AXIWR_ASYNC_CTRL0          ((volatile uint32_t *)0xfe334e04)
-#define P_EE_AUDIO2_VAD_AM2AXI_STAT                ((volatile uint32_t *)0xfe334e20)
-#define P_EE_AUDIO2_VAD_AXIWR_ASYNC_STAT           ((volatile uint32_t *)0xfe334e24)
-#define P_EE_AUDIO2_EXCEPTION_IRQ_STS0             ((volatile uint32_t *)0xfe334e40)
-#define P_EE_AUDIO2_EXCEPTION_IRQ_MASK0            ((volatile uint32_t *)0xfe334e44)
-#define P_EE_AUDIO2_EXCEPTION_IRQ_MODE0            ((volatile uint32_t *)0xfe334e48)
-#define P_EE_AUDIO2_EXCEPTION_IRQ_CLR0             ((volatile uint32_t *)0xfe334e4c)
-#define P_EE_AUDIO2_EXCEPTION_IRQ_INV0             ((volatile uint32_t *)0xfe334e50)
+//
+// Reading file:  ./audio_acc_reg.h
+//
+#define P_AUDIO_ACC_CLK_GATE_EN                    ((volatile uint32_t *)0xfe336c00)
+//Bit 31:0   reg_aud_acc_clk_gate_en    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_SW_RESERT                      ((volatile uint32_t *)0xfe336c04)
+//Bit 31:0   reg_aud_acc_sw_reset       //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_SECURITY_CTRL_0                ((volatile uint32_t *)0xfe336c28)
+//Bit 31:0   reg_security_ctrl0        //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_SECURITY_CTRL_1                ((volatile uint32_t *)0xfe336c2c)
+//Bit 31:0   reg_security_ctrl1        //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_SECURITY_CTRL_2                ((volatile uint32_t *)0xfe336c30)
+//Bit 31:0   reg_security_ctrl2        //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_DBG_0                          ((volatile uint32_t *)0xfe336c40)
+//Bit 31:0   reg_dbg_0                  //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_DBG_1                          ((volatile uint32_t *)0xfe336c44)
+//Bit 31:0   reg_dbg_1                  //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_CTRL0                  ((volatile uint32_t *)0xfe336c80)
+//Bit 31:0   reg_frddr_0_ctrl0          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_CTRL1                  ((volatile uint32_t *)0xfe336c84)
+//Bit 31:0   reg_frddr_0_ctrl1          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_CTRL2                  ((volatile uint32_t *)0xfe336c88)
+//Bit 31:0   reg_frddr_0_ctrl2          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_START_ADDR             ((volatile uint32_t *)0xfe336c8c)
+//Bit 31:0   reg_frddr_0_start_addr     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_INIT_ADDR              ((volatile uint32_t *)0xfe336c90)
+//Bit 31:0   reg_frddr_0_init_addr      //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_FINISH_ADDR            ((volatile uint32_t *)0xfe336c94)
+//Bit 31:0   reg_frddr_0_finish_addr    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_START_ADDRB            ((volatile uint32_t *)0xfe336c98)
+//Bit 31:0   reg_frddr_0_start_addrb    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_FINISH_ADDRB           ((volatile uint32_t *)0xfe336c9c)
+//Bit 31:0   reg_frddr_0_finish_addrb   //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_INT_ADDR               ((volatile uint32_t *)0xfe336ca0)
+//Bit 31:0   reg_frddr_0_int_addr       //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_RO_STATUS1             ((volatile uint32_t *)0xfe336ca4)
+//Bit 31:0   ro_frddr_0_status1         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_RO_STATUS2             ((volatile uint32_t *)0xfe336ca8)
+//Bit 31:0   ro_frddr_0_status2         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_FRDDR_0_CTRL3                  ((volatile uint32_t *)0xfe336cac)
+//Bit 31:8  reserved
+//Bit 7:4   reg_frddr_0_ctrl3           //unsigned,   RW,   default = 0;
+//Bit 3:2   reserved
+//Bit 1:1   pls_frddr_0_trigger         //unsigned,   RW,   default = 0;
+//Bit 0:0   reg_frddr_0_trigger_mode    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_CTRL0                  ((volatile uint32_t *)0xfe336cc0)
+//Bit 31:0   reg_frddr_1_ctrl0          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_CTRL1                  ((volatile uint32_t *)0xfe336cc4)
+//Bit 31:0   reg_frddr_1_ctrl1          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_CTRL2                  ((volatile uint32_t *)0xfe336cc8)
+//Bit 31:0   reg_frddr_1_ctrl2          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_START_ADDR             ((volatile uint32_t *)0xfe336ccc)
+//Bit 31:0   reg_frddr_1_start_addr     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_INIT_ADDR              ((volatile uint32_t *)0xfe336cd0)
+//Bit 31:0   reg_frddr_1_init_addr      //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_FINISH_ADDR            ((volatile uint32_t *)0xfe336cd4)
+//Bit 31:0   reg_frddr_1_finish_addr    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_START_ADDRB            ((volatile uint32_t *)0xfe336cd8)
+//Bit 31:0   reg_frddr_1_start_addrb    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_FINISH_ADDRB           ((volatile uint32_t *)0xfe336cdc)
+//Bit 31:0   reg_frddr_1_finish_addrb   //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_INT_ADDR               ((volatile uint32_t *)0xfe336ce0)
+//Bit 31:0   reg_frddr_1_int_addr       //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_RO_STATUS1             ((volatile uint32_t *)0xfe336ce4)
+//Bit 31:0   ro_frddr_1_status1         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_RO_STATUS2             ((volatile uint32_t *)0xfe336ce8)
+//Bit 31:0   ro_frddr_1_status2         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_FRDDR_1_CTRL3                  ((volatile uint32_t *)0xfe336cec)
+//Bit 31:8  reserved
+//Bit 7:4   reg_frddr_1_ctrl3           //unsigned,   RW,   default = 0;
+//Bit 3:2   reserved
+//Bit 1:1   pls_frddr_1_trigger         //unsigned,   RW,   default = 0;
+//Bit 0:0   reg_frddr_1_trigger_mode    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CTRL0                  ((volatile uint32_t *)0xfe336d00)
+//Bit 31:0   reg_toddr_0_ctrl0          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CTRL1                  ((volatile uint32_t *)0xfe336d04)
+//Bit 31:0   reg_toddr_0_ctrl1          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CTRL2                  ((volatile uint32_t *)0xfe336d08)
+//Bit 31:0   reg_toddr_0_ctrl2          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_START_ADDR             ((volatile uint32_t *)0xfe336d0c)
+//Bit 31:0   reg_toddr_0_start_addr     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_INIT_ADDR              ((volatile uint32_t *)0xfe336d10)
+//Bit 31:0   reg_toddr_0_init_addr      //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_FINISH_ADDR            ((volatile uint32_t *)0xfe336d14)
+//Bit 31:0   reg_toddr_0_finish_addr    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_START_ADDRB            ((volatile uint32_t *)0xfe336d18)
+//Bit 31:0   reg_toddr_0_start_addrb    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_FINISH_ADDRB           ((volatile uint32_t *)0xfe336d1c)
+//Bit 31:0   reg_toddr_0_finish_addrb   //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_INT_ADDR               ((volatile uint32_t *)0xfe336d20)
+//Bit 31:0   reg_toddr_0_int_addr       //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_RO_STATUS1             ((volatile uint32_t *)0xfe336d24)
+//Bit 31:0   ro_toddr_0_status1         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_RO_STATUS2             ((volatile uint32_t *)0xfe336d28)
+//Bit 31:0   ro_toddr_0_status2         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHSYNC_CTRL            ((volatile uint32_t *)0xfe336d2c)
+//Bit 31:0   reg_toddr_0_chsync_ctrl    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_0             ((volatile uint32_t *)0xfe336d30)
+//Bit 31:0   reg_toddr_0_chnum_id_0     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_1             ((volatile uint32_t *)0xfe336d34)
+//Bit 31:0   reg_toddr_0_chnum_id_1     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_2             ((volatile uint32_t *)0xfe336d38)
+//Bit 31:0   reg_toddr_0_chnum_id_2     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_3             ((volatile uint32_t *)0xfe336d3c)
+//Bit 31:0   reg_toddr_0_chnum_id_3     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_4             ((volatile uint32_t *)0xfe336d40)
+//Bit 31:0   reg_toddr_0_chnum_id_4     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_5             ((volatile uint32_t *)0xfe336d44)
+//Bit 31:0   reg_toddr_0_chnum_id_5     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_6             ((volatile uint32_t *)0xfe336d48)
+//Bit 31:0   reg_toddr_0_chnum_id_6     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CHNUM_ID_7             ((volatile uint32_t *)0xfe336d4c)
+//Bit 31:0   reg_toddr_0_chnum_id_7     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_0_CTRL3                  ((volatile uint32_t *)0xfe336d50)
+//Bit 31:0   reg_toddr_0_ctrl3          //unsigned,   RW,   default = 56;
+#define P_AUDIO_ACC_TODDR_1_CTRL0                  ((volatile uint32_t *)0xfe336d80)
+//Bit 31:0   reg_toddr_1_ctrl0          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CTRL1                  ((volatile uint32_t *)0xfe336d84)
+//Bit 31:0   reg_toddr_1_ctrl1          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CTRL2                  ((volatile uint32_t *)0xfe336d88)
+//Bit 31:0   reg_toddr_1_ctrl2          //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_START_ADDR             ((volatile uint32_t *)0xfe336d8c)
+//Bit 31:0   reg_toddr_1_start_addr     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_INIT_ADDR              ((volatile uint32_t *)0xfe336d90)
+//Bit 31:0   reg_toddr_1_init_addr      //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_FINISH_ADDR            ((volatile uint32_t *)0xfe336d94)
+//Bit 31:0   reg_toddr_1_finish_addr    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_START_ADDRB            ((volatile uint32_t *)0xfe336d98)
+//Bit 31:0   reg_toddr_1_start_addrb    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_FINISH_ADDRB           ((volatile uint32_t *)0xfe336d9c)
+//Bit 31:0   reg_toddr_1_finish_addrb   //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_INT_ADDR               ((volatile uint32_t *)0xfe336da0)
+//Bit 31:0   reg_toddr_1_int_addr       //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_RO_STATUS1             ((volatile uint32_t *)0xfe336da4)
+//Bit 31:0   ro_toddr_1_status1         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_RO_STATUS2             ((volatile uint32_t *)0xfe336da8)
+//Bit 31:0   ro_toddr_1_status2         //unsigned,   RO,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHSYNC_CTRL            ((volatile uint32_t *)0xfe336dac)
+//Bit 31:0   reg_toddr_1_chsync_ctrl    //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_0             ((volatile uint32_t *)0xfe336db0)
+//Bit 31:0   reg_toddr_1_chnum_id_0     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_1             ((volatile uint32_t *)0xfe336db4)
+//Bit 31:0   reg_toddr_1_chnum_id_1     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_2             ((volatile uint32_t *)0xfe336db8)
+//Bit 31:0   reg_toddr_1_chnum_id_2     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_3             ((volatile uint32_t *)0xfe336dbc)
+//Bit 31:0   reg_toddr_1_chnum_id_3     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_4             ((volatile uint32_t *)0xfe336dc0)
+//Bit 31:0   reg_toddr_1_chnum_id_4     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_5             ((volatile uint32_t *)0xfe336dc4)
+//Bit 31:0   reg_toddr_1_chnum_id_5     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_6             ((volatile uint32_t *)0xfe336dc8)
+//Bit 31:0   reg_toddr_1_chnum_id_6     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CHNUM_ID_7             ((volatile uint32_t *)0xfe336dcc)
+//Bit 31:0   reg_toddr_1_chnum_id_7     //unsigned,   RW,   default = 0;
+#define P_AUDIO_ACC_TODDR_1_CTRL3                  ((volatile uint32_t *)0xfe336dd0)
+//Bit 31:0   reg_toddr_1_ctrl3          //unsigned,   RW,   default = 56;
+#define P_AUDIO_ACC_A2P_CONV_0                     ((volatile uint32_t *)0xfe336e00)
+//Bit 31:0   reg_act_conv_0             //unsigned,   RW,   default = 32'h0000_6038;
+#define P_AUDIO_ACC_A2P_CONV_1                     ((volatile uint32_t *)0xfe336e04)
+//Bit 31:0   reg_act_conv_1             //unsigned,   RW,   default = 32'h0000_6038;
+#define P_AUDIO_ACC_PATH_CTRL                      ((volatile uint32_t *)0xfe336e08)
+//Bit 31:8   reserved
+//Bit 7:0    reg_act_path_ctrl          //unsigned,   RW,   default = 0;
+//
+// Closing file:  ./audio_acc_reg.h
+//
+//========================================================================
+//  AUDIO EQ CORE - Registers
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe335000
+// -----------------------------------------------
+//
+// Reading file:  ./audio_eqdrc_reg_16ch.h
+//
+#define P_AEQ_COEF_CNTL_A                          ((volatile uint32_t *)0xfe335000)
+#define P_AEQ_COEF_DATA_A                          ((volatile uint32_t *)0xfe335004)
+#define P_AEQ_COEF_CNTL_B                          ((volatile uint32_t *)0xfe335008)
+#define P_AEQ_COEF_DATA_B                          ((volatile uint32_t *)0xfe33500c)
+#define P_AEQ_SOFT_RSET                            ((volatile uint32_t *)0xfe335024)
+//Bit 31:2  reserved
+//Bit  1:1  reg_ctl_rst                       //unsigned,   RW,   default = 0;
+//Bit  0:0  reg_sw_rst                        //unsigned,   RW,   default = 0;
+#define P_AEQ_TOP_CTRL                             ((volatile uint32_t *)0xfe335040)
+//Bit 31:1  reserved
+//Bit  0:0  reg_dsp_en                       //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS0_CTRL                         ((volatile uint32_t *)0xfe335044)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap0                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status0_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed0                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS1_CTRL                         ((volatile uint32_t *)0xfe335048)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap1                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status1_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed1                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS2_CTRL                         ((volatile uint32_t *)0xfe33504c)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap2                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status2_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed2                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS3_CTRL                         ((volatile uint32_t *)0xfe335050)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap3                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status3_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed3                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS4_CTRL                         ((volatile uint32_t *)0xfe335054)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap4                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status4_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed4                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS5_CTRL                         ((volatile uint32_t *)0xfe335058)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap5                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status5_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed5                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS6_CTRL                         ((volatile uint32_t *)0xfe33505c)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap6                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status6_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed6                    //unsigned,   RW,   default = 0;
+#define P_AEQ_STATUS7_CTRL                         ((volatile uint32_t *)0xfe335060)
+//Bit 31:7  reserved
+//Bit  6:2   reg_eq_tap7                       //unsigned,   RW,   default = 5'h14;
+//Bit  1:1   reg_status7_en                    //unsigned,   RW,   default = 0;
+//Bit  0:0   reg_ed_signed7                    //unsigned,   RW,   default = 0;
+//
+// Closing file:  ./audio_eqdrc_reg_16ch.h
+//
+//========================================================================
+//  AUDIO RESAMPLE_ACC - Registers
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe336000
+// -----------------------------------------------
+//
+// Reading file:  ./RESAMPLE_ACC.h
+//
+#define P_AUDIO_RSAMP_ACC_CTRL0                    ((volatile uint32_t *)0xfe336000)
+//Bit   31:3      reserved
+//Bit   2         reg_lock_rst      //unsigned  , default =0;
+//Bit   1         reg_rsamp_rst     //unsigned  , default =0;
+//Bit   0         reg_sw_rst        //unsigned  , default =0;
+#define P_AUDIO_RSAMP_ACC_CTRL1                    ((volatile uint32_t *)0xfe336004)
+//Bit   31:27      reg_in_lsb        //unsigned  , default =0;
+//Bit   26         reg_watchdog_en   //unsigned  , default =0;
+//Bit   25         reg_rsamp_rst_sel //unsigned  , default =0;
+//Bit   24         reg_module_bypas  //unsigned  , default =0;
+//Bit   23:18      reg_gclk_ctrl     //unsigned  , default =0;
+//Bit   17:13      reg_in_msb        //unsigned  , default =23;
+//Bit   12         reg_output_en     //unsigned  , default =0;
+//Bit   11         reg_rsamp_en      //unsigned  , default =0;
+//Bit   10         reg_filt_en       //unsigned  , default =0;
+//Bit   9          reg_post_en       //unsigned  , default =0;
+//Bit   8          reg_inp_mux_mode  //unsigned  , default =0;
+//Bit   7:5        reserved          //unsigned  , default =2;
+//Bit   4:0        reg_inp_mux       //unsigned  , default =0;
+#define P_AUDIO_RSAMP_ACC_CTRL2                    ((volatile uint32_t *)0xfe336008)
+//Bit 31:30    reserved              //unsigned  , default =0;
+//Bit 29:24    reg_chx_size          //unsigned  , default =2;
+//Bit 23:18    reserved              //unsigned  , default =0;
+//Bit 17:16    reg_scl_step          //unsigned  , default =0; 0: 1/1  1: 1/2  2: 1/4
+//Bit 15:8     reg_filt_tap          //unsigned  , default =63;
+//Bit 7:0      reg_intp_tap          //unsigned  , default =63;
+#define P_AUDIO_RSAMP_ACC_PHSINIT                  ((volatile uint32_t *)0xfe33600c)
+//Bit   31:28      reserved          //unsigned  , default = 0;
+//Bit   27:0       reg_init_phs      //unsigned  , default = 0;
+#define P_AUDIO_RSAMP_ACC_PHSSTEP                  ((volatile uint32_t *)0xfe336010)
+//Bit   31         reserved          //unsigned  , default = 0;
+//Bit   30:0       reg_rsamp_step    //unsigned  , default = 134217728;//'h800_0000
+#define P_AUDIO_RSAMP_ACC_SHIFT                    ((volatile uint32_t *)0xfe336014)
+//Bit   31:24       reg_rsft_iir    //unsigned  , default = 23;
+//Bit   23:16       reg_rsft_blnd   //unsigned  , default = 21;
+//Bit   15:8        reg_rsft_sinc   //unsigned  , default = 31;
+//Bit   7:0         reg_rsft_aa     //unsigned  , default = 31;
+#define P_AUDIO_RSAMP_ACC_ADJ_CTRL0                ((volatile uint32_t *)0xfe336018)
+//Bit   31:7        reserved                //unsigned
+//Bit   6           reg_lock_vld_sel        //unsigned , default = 0;
+//Bit   5           reg_loop_dif_clr_en     //unsigned , default = 0;
+//Bit   4           reg_aout_force_en       //unsigned , default = 0;
+//Bit   3           reserved                //unsigned
+//Bit   2           reg_rsamp_adj_out_inv   //unsigned , default = 0;
+//Bit   1           reg_rsamp_adj_force_en  //unsigned , default = 0;
+//Bit   0           reg_rsamp_adj_en        //unsigned , default = 0;
+#define P_AUDIO_RSAMP_ACC_ADJ_CTRL1                ((volatile uint32_t *)0xfe33601c)
+//Bit   31:16       reg_rsamp_adj_odet_step     //unsigned , default = 8;
+//Bit   15:0        reg_rsamp_adj_kmax          //unsigned , default = 32768;
+#define P_AUDIO_RSAMP_ACC_ADJ_SFT                  ((volatile uint32_t *)0xfe336020)
+//Bit   31:30       reserved                //unsigned , default = 0;
+//Bit   29          reg_rsamp_adj_dif_sel   //unsigned , default = 0;
+//Bit   28:24       reg_rsamp_adj_ki        //unsigned , default = 9;
+//Bit   23:21       reserved                //unsigned , default = 0;
+//Bit   20:16       reg_rsamp_adj_kp        //unsigned , default = 1;
+//Bit   15:13       reserved                //unsigned , default = 0;
+//Bit   12:8        reg_rsamp_adj_ki_sft    //unsigned , default = 6;
+//Bit   7:6         reserved                //unsigned , default = 0;
+//Bit   5:0         reg_rsamp_adj_out_sft   //unsigned , default = 12;
+#define P_AUDIO_RSAMP_ACC_ADJ_IDET_LEN             ((volatile uint32_t *)0xfe336024)
+//Bit   31:0       reg_rsamp_adj_idet_len       //unsigned , default = 10000;
+#define P_AUDIO_RSAMP_ACC_ADJ_FORCE                ((volatile uint32_t *)0xfe336028)
+//Bit   31:0       reg_rsamp_adj_force_err      //signed , default = 8;
+#define P_AUDIO_RSAMP_ACC_ADJ_KI_FORCE             ((volatile uint32_t *)0xfe33602c)
+//Bit   31:0       reg_rsamp_adj_ki_force //signed , default = 0;
+#define P_AUDIO_RSAMP_ACC_WATCHDOG_THRD            ((volatile uint32_t *)0xfe336030)
+//Bit   31:0       reg_watchdog_thrd      //signed , default = 32'h1000;
+#define P_AUDIO_RSAMP_ACC_DBG_INFO                 ((volatile uint32_t *)0xfe336034)
+//Bit   31:16      reg_aout_force_hi        //unsigned , default = 0;
+//Bit   15         reserved                 //unsigned , default = 0;
+//Bit   14         reg_rsamp_incnt_clr      //unsigned , default = 0;
+//Bit   13         reg_rsamp_incnt_vldsel   //unsigned , default = 0;
+//Bit   12         reg_rsamp_incnt_en       //unsigned , default = 0;
+//Bit   11         reserved                 //unsigned , default = 0;
+//Bit   10         reg_rsamp_outcnt_clr     //unsigned , default = 0;
+//Bit   9          reg_rsamp_outcnt_vldsel  //unsigned , default = 0;
+//Bit   8          reg_rsamp_outcnt_en      //unsigned , default = 0;
+//Bit   7:6        reserved                 //unsigned , default = 0;
+//Bit   5          reg_rsamp_dbgcnt_clr     //unsigned , default = 0;
+//Bit   4          reg_rsamp_dbgcnt_en      //unsigned , default = 0;
+//Bit   3          reg_rsamp_iocnt_sel      //unsigned , default = 0;
+//Bit   2:0        reg_watchdog_rstsel      //unsigned , default = 4;
+#define P_AUDIO_RSAMP_ACC_AOUT_FORCE               ((volatile uint32_t *)0xfe336038)
+//Bit   31:0       reg_aout_force_lo        //unsigned , default = 0;
+#define P_AUDIO_RSAMP_ACC_IRQ_CTRL                 ((volatile uint32_t *)0xfe33603c)
+//Bit   31:16      reg_irq_thrd             //unsigned , default = 0;
+//Bit   15:12      reserved                 //unsigned , default = 0;
+//Bit   11:8       reg_irq_sel              //unsigned , default = 0;
+//Bit   7:4        reg_irq_clr              //unsigned , default = 0;
+//Bit   3:0        reg_irq_en               //unsigned , default = 0;
+#define P_AUDIO_RSAMP_ACC_PKG_NUM                  ((volatile uint32_t *)0xfe336060)
+//Bit   31:0       reg_pkg_num              //unsigned , default = 5000;
+#define P_AUDIO_RSAMP_ACC_PKG_CTRL                 ((volatile uint32_t *)0xfe336064)
+//Bit   31:16   reg_tim_out_num             //unsigned , default = 2000;
+//Bit   15:2    reserved                    //unsigned , default = 0;
+//Bit   1       reg_tim_out_en              //unsigned , default = 1;
+//Bit   0       reg_pkg_end_sel             //unsigned , default = 0;
+#define P_AUDIO_RSAMP_ACC_POST_COEF0               ((volatile uint32_t *)0xfe336080)
+//Bit   31:0       reg_post_coef0 //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_POST_COEF1               ((volatile uint32_t *)0xfe336084)
+//Bit   31:0       reg_post_coef1 //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_POST_COEF2               ((volatile uint32_t *)0xfe336088)
+//Bit   31:0       reg_post_coef2 //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_POST_COEF3               ((volatile uint32_t *)0xfe33608c)
+//Bit   31:0       reg_post_coef3 //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_POST_COEF4               ((volatile uint32_t *)0xfe336090)
+//Bit   31:0       reg_post_coef4 //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_AA_COEF_ADDR             ((volatile uint32_t *)0xfe3360c0)
+//Bit   31:0       reg_aa_coef_addr     //unsigned, default = 0;
+#define P_AUDIO_RSAMP_ACC_AA_COEF_DATA             ((volatile uint32_t *)0xfe3360c4)
+//Bit   31:0       reg_aa_coef_data     //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_SINC_COEF_ADDR           ((volatile uint32_t *)0xfe336100)
+//Bit   31:0       reg_sinc_coef_addr   //unsigned, default = 0;
+#define P_AUDIO_RSAMP_ACC_SINC_COEF_DATA           ((volatile uint32_t *)0xfe336104)
+//Bit   31:0       reg_sinc_coef_data   //signed  , default = 0;
+#define P_AUDIO_RSAMP_ACC_RO_STATUS                ((volatile uint32_t *)0xfe336140)
+//Bit   31:0       ro_rsamp_stat  //{din_chx_chk_err,is_idle_st,rsamp_fifo_over_cnt[7:0]}
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_FREQ              ((volatile uint32_t *)0xfe336144)
+//Bit   31:0       ro_rsamp_adj_freq
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_DIFF_BAK          ((volatile uint32_t *)0xfe336148)
+//Bit   31:0       ro_det_diff_bak
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_DIFF_DLT          ((volatile uint32_t *)0xfe33614c)
+//Bit   31:0       ro_det_diff_dlt
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_PHS_ERR           ((volatile uint32_t *)0xfe336150)
+//Bit   31:0       ro_det_phase_err
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_KI_OUT            ((volatile uint32_t *)0xfe336154)
+//Bit   31:0       ro_rsamp_ki_out
+#define P_AUDIO_RSAMP_ACC_RO_IN_CNT                ((volatile uint32_t *)0xfe336158)
+//Bit   31:0       ro_rsamp_in_cnt
+#define P_AUDIO_RSAMP_ACC_RO_OUT_CNT               ((volatile uint32_t *)0xfe33615c)
+//Bit   31:0       ro_rsamp_out_cnt
+#define P_AUDIO_RSAMP_ACC_RO_ADJ_PHS_ERR_VAR       ((volatile uint32_t *)0xfe336160)
+//Bit   31:0       ro_det_phase_err_var
+//
+// Closing file:  ./RESAMPLE_ACC.h
+//
 //
 // Closing file:  ./REG_LIST_AUDIO_RTL.h
 //

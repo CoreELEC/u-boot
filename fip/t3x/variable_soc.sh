@@ -18,8 +18,8 @@ declare -a BLX_NAME=("bl2"	\
 		     "bl2x"	\
 		     "bl31"	\
 		     "bl32"	\
-		     "bl40"	)
-#		     "bl30")
+		     "bl40"	\
+		     "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/core"		\

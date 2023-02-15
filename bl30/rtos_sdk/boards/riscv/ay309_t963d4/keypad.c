@@ -17,7 +17,7 @@
 
 /*KEY ID*/
 #define GPIO_KEY_ID_POWER GPIOD_3
-//#define GPIO_KEY_ID_WIFI_WAKE GPIOX_7
+#define GPIO_KEY_ID_WIFI_WAKE GPIOD_12
 
 #define ADC_KEY_ID_MENU 520
 #define ADC_KEY_ID_VOL_DEC 521
@@ -30,8 +30,15 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 	uint32_t buf[4] = { 0 };
 #ifdef KEYPAD_USED
 	switch (event.ulCode) {
+#ifdef CONFIG_WIFI_WAKEUP
 	case GPIO_KEY_ID_WIFI_WAKE:
-		buf[0] = POWER_KEY_WAKEUP;
+		buf[0] = WIFI_WAKEUP;
+		STR_Wakeup_src_Queue_Send_FromISR(buf);
+		wakeup_dsp();
+		break;
+#endif
+	case GPIO_KEY_ID_POWER:
+		buf[1] = POWER_KEY_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);
 		wakeup_dsp();
 		break;
@@ -66,7 +73,9 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 	 * GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
 	 *		vGpioKeyCallBack, NULL),
 	 */
-//	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKE, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
+#ifdef CONFIG_WIFI_WKAEUP
+	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKE, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
+#endif
 
 };
 

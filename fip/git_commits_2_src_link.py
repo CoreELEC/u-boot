@@ -147,6 +147,10 @@ def git_commits_to_src_link():
     for i in range(len(trunk_list)):
         print(' > [%d] gitPath: %-12s  lastCommit: %s'%(i+1, trunk_list[i]['gitPath'], trunk_list[i]['lastCommit']))
 
+        if len(trunk_list[i]['lastCommit']) == 0:
+            print(' >     lastCommit is NULL !')
+            continue
+
         try:
             os.chdir(topdir + trunk_list[i]['gitPath'])
         except:
@@ -233,6 +237,8 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
             log_list[i] = str(re.sub(r'" into', r'> into', str(log_list[i])))
             log_list[i] = str(re.sub(r'Revert "', r'Revert <', str(log_list[i])))
             log_list[i] = str(re.sub(r'"",', r'>",', str(log_list[i])))
+            log_list[i] = str(re.sub(r' "', r' <', str(log_list[i])))
+            log_list[i] = str(re.sub(r'" ', r'> ', str(log_list[i])))
 
             if debug_enable:
                 print(' >    [%d] %s'%(i,log_list[i]))
@@ -244,6 +250,9 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
         real_log_list = [eval(str(item)) for item in log_list]
     except:
         real_log_list = []
+        if debug_enable:
+            print(' >    eval(str(item)) ERROR!')
+            print(' >    %s'%(log_list))
         pass
 
     # update real_log_list[i]['pd'] with JiraNo

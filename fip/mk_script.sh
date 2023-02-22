@@ -664,6 +664,12 @@ function bin_path_parser() {
 				echo "export CONFIG_AVB2_RECOVERY"
 				export CONFIG_AVB2_RECOVERY=1
 				continue ;;
+			--patch)
+				CONFIG_PATCH=1
+				echo "export CONFIG_PATCH"
+				export CONFIG_PATCH
+				source fip/auto_patch.sh
+				continue ;;
 				*)
 		esac
 	done

@@ -21,7 +21,7 @@
 #include "sdk_ver.h"
 #include "suspend.h"
 #include "vrtc.h"
-//#include "hwspinlock.h"
+#include "hwspinlock.h"
 
 #define INT_TEST_NEST_DEPTH 6
 #define INT_TEST_GPIO_NUM 6
@@ -72,5 +72,5 @@ void hw_business_process(void)
 	//rtc_init();
 	vETHMailboxCallback();
 	create_str_task();
-	//vHwLockInit(HW_SPIN_LOCK0, 0);
+	vHwLockInit(HW_SPIN_LOCK0, 0);
 }

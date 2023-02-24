@@ -33,6 +33,7 @@ static TaskHandle_t cecTask;
 #define VDDCPU_A76_GPIO	GPIO_TEST_N
 
 static int vdd_ee;
+static int vdddos_npu_vpu;
 static int vdd_cpu;
 static TaskHandle_t vadTask;
 
@@ -140,6 +141,12 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
+	/***set dos/npu/vpu val***/
+	ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, vdddos_npu_vpu);
+	if (ret < 0) {
+		printf("vdddos_npu_vpu pwm set fail\n");
+		return;
+	}
 
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
@@ -220,6 +227,19 @@ void str_power_off(int shutdown_flag)
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
+		return;
+	}
+
+	/*** set dos/npu/vpu power***/
+	vdddos_npu_vpu = vPwmMesongetvoltage(VDDDOS_NPU_VPU);
+	if (vdddos_npu_vpu < 0) {
+		printf("vdd_dos_npu_vpu pwm get fail\n");
+		return;
+	}
+
+	ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, 770);
+	if (ret < 0) {
+		printf("vdd_dos_npu_vpu pwm set fail\n");
 		return;
 	}
 

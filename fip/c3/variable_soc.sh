@@ -53,8 +53,8 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
 			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-			 "blob-bl2x.bin.signed"                              \
-			 "blob-bl31.bin.signed"                              \
+			 "blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl32.bin.signed"                              \
 			 "blob-bl40.bin.signed")
 fi

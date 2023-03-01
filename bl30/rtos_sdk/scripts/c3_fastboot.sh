@@ -41,6 +41,20 @@ if [ -z $BOARD_TYPE_MAPPING ]; then
 	exit 1
 fi
 
+#release flow
+if [ -d $RTOS_BASE_DIR/binary_release ] && [ -d $RTOS_BASE_DIR/bl22_bin ] && [ "$BOARD_TYPE_MAPPING" == "c3_aw402" ]; then
+	pushd $UBOOT_DIR
+	if [ -d ./fastboot ]; then
+		rm -rf ./fastboot
+	fi
+	mkdir -p ./fastboot
+	cp $RTOS_BASE_DIR/binary_release/* ./fastboot
+	cp $RTOS_BASE_DIR/bl22_bin/bl22.bin ./fastboot
+	./mk $BOARD_TYPE_MAPPING
+	popd
+	exit 0
+fi
+
 #Get the rtos target address (The configuration needs to be consistent with the lscript.h file)
 if [ -z $RTOS_TARGET_ADDRESS ]; then
 	case $BOARD_TYPE_MAPPING in
@@ -74,11 +88,12 @@ RTOS_IMAGE_B=$RTOS_BUILD_DIR/rtos_2.bin
 function toolchain_prepare() {
 	echo "<============ TOOLCHAIN INFO RTOS ============>"
 	CROSSTOOL=$RTOS_BASE_DIR/arch/$ARCH/toolchain/$COMPILER*$TOOLCHAIN_KEYWORD
+	TOOLCHAIN_DIR=$RTOS_BASE_DIR/output/toolchains/$COMPILER-$TOOLCHAIN_KEYWORD
 	rm -rf $RTOS_BASE_DIR/output/toolchains
-	mkdir $RTOS_BASE_DIR/output/toolchains
-	tar -xf $CROSSTOOL.tar.xz -C $RTOS_BASE_DIR/output/toolchains --strip-components=1
-	ls -la $RTOS_BASE_DIR/output/toolchains/bin
-	$RTOS_BASE_DIR/output/toolchains/bin/aarch64-none-elf-gcc -v
+	mkdir -p $TOOLCHAIN_DIR
+	tar -xf $CROSSTOOL.tar.xz -C $TOOLCHAIN_DIR --strip-components=1
+	ls -la $TOOLCHAIN_DIR/bin
+	$TOOLCHAIN_DIR/bin/aarch64-none-elf-gcc -v
 	echo "<============ TOOLCHAIN INFO RTOS ============>"
 }
 

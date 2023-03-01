@@ -57,7 +57,7 @@ blSrcGits = [
     {"blType" : "fip",           "gitBranch" : "amlogic-dev",              "gitRemote" : "fip",           "upStream" : "amlogic/tools/fip/+/"}
 ]
 
-# the local csv file columns 
+# the local csv file columns
 csv_file_column = [
     {"ID" : "A",       "WIDTH" : 12,         "NAME" : "Index"},
     {"ID" : "B",       "WIDTH" : 45,         "NAME" : "Trunk Commit"},
@@ -229,8 +229,15 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
         #    print(' >    %s'%(log_list))
     except:
         pass
+    #Remove invalid commits
+    autosubmit = []
+    log_list_len = len(log_list)
+    for i in range(log_list_len):
+        if "gerrit.autosubmit@amlogic.com" in log_list[i]:
+            autosubmit.append(i)
+    log_list = [log_list[i] for i in range(log_list_len) if (i not in autosubmit)]
 
-    # deal with "Merge into" or "revert" commits 
+    # deal with "Merge into" or "revert" commits
     for i in range(len(log_list)):
         try:
             log_list[i] = str(re.sub(r'Merge "', r'Merge <', str(log_list[i])))
@@ -244,7 +251,6 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
                 print(' >    [%d] %s'%(i,log_list[i]))
         except:
             pass
-
     # eval special special characters
     try:
         real_log_list = [eval(str(item)) for item in log_list]
@@ -254,7 +260,6 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
             print(' >    eval(str(item)) ERROR!')
             print(' >    %s'%(log_list))
         pass
-
     # update real_log_list[i]['pd'] with JiraNo
     for j in range(len(real_log_list)):
         try:

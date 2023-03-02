@@ -616,6 +616,7 @@ function process_blx() {
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
+if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
 			if [ "bl32" == "${BLX_NAME[$loop]}" ] || \
 				[ "bl40" == "${BLX_NAME[$loop]}" ]; then
 				cp ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}  ${BUILD_PATH}/temp
@@ -623,6 +624,7 @@ function process_blx() {
 				echo $loop
 				rm ${BUILD_PATH}/temp
 			fi
+fi
 			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
 			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
 				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
@@ -688,7 +690,11 @@ function process_blx() {
 
 	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
 		echo "Warning: local bl40"
+if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
 		dd if=bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed of=${BUILD_PATH}/blob-bl40.bin.signed bs=${BLX_BIN_SIZE[7]}  count=1
+else
+		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
+fi
 	fi
 	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
 		echo "Warning: local device fip header templates"
@@ -778,6 +784,11 @@ function copy_other_soc() {
 function package() {
 	# BUILD_PATH without "/"
 	x=$((${#BUILD_PATH}-1))
+if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+	cp ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool-fastboot ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
+else
+	cp ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool-normal ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
+fi
 	if [ "\\" == "${BUILD_PATH:$x:1}" ] || [ "/" == "${BUILD_PATH:$x:1}" ]; then
 		BUILD_PATH=${BUILD_PATH:0:$x}
 	fi
@@ -792,5 +803,6 @@ function package() {
 	fi
 	#copy_file
 	cleanup
+	rm ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
 	echo "Bootloader build done!"
 }

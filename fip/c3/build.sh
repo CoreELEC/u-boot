@@ -704,8 +704,10 @@ function build_signed() {
 
 	process_blx $@
 
-	# package ddr-fip.bin
-	mk_ddr_fip ${BUILD_PATH}
+	if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+		# package ddr-fip.bin
+		mk_ddr_fip ${BUILD_PATH}
+	fi
 
 	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
 	postfix=.signed

@@ -319,6 +319,7 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 		REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
 		REG32(AOCPU_IRQ_SEL0 + index*4) |= src << (ulIrq%2)*16;
 	} else {
+		index -= 8;
 		REG32(AOCPU_IRQ_SEL8 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
 		REG32(AOCPU_IRQ_SEL8 + index*4) |= src << (ulIrq%2)*16;
 	}
@@ -349,7 +350,7 @@ int int_src_clean(uint32_t ulIrq)
 	if (ulIrq < 16)
 		REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
 	else
-		REG32(AOCPU_IRQ_SEL8 + index*4) &= ~(0x1ff << (ulIrq%2)*16);
+		REG32(AOCPU_IRQ_SEL8 + (index-8)*4) &= ~(0x1ff << (ulIrq%2)*16);
 #else
 	index = ulIrq/4;
 	REG32(AOCPU_IRQ_SEL0 + index*4) &= ~(0xff << (ulIrq%4)*8);

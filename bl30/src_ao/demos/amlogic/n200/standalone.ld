@@ -68,7 +68,7 @@ SECTIONS
 	*(.init)
         *(.text* .rodata*)
         . = ALIGN(0x100);
-#if defined (SOC_sc2) || defined (SOC_s4)
+#if defined (SOC_sc2)
         . = ALIGN(0x4000);
 #endif
         PROVIDE( _etext = . );

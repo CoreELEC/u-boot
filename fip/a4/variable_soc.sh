@@ -16,9 +16,9 @@ declare -a BLX_NAME=("bl2"	\
 		     "bl2e"	\
 		     "bl2x"	\
 		     "bl31"	\
+		     "bl32"	\
+		     "bl40"	\
 		     "bl30")
-#		     "bl32"	
-#		     "bl40"	
 
 declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/core"		\
@@ -26,7 +26,7 @@ declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/ree"		\
 			   "bl2/tee"		\
 			   "bl31_2.7/src"	\
-			   "bl32_3.8/src"	\ 
+			   "bl32_3.18/src"	\
 			   "NULL"		\
 			   "bl30/src_ao"	\
 			   "bl33")
@@ -36,10 +36,10 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl2/bin"		\
-			   "bl31_2.7/bin"	)
-#			   "bl32_3.8/bin"	
-#			   "bl40/bin"		
-#			   "bl30/bin_ao")
+			   "bl31_2.7/bin"	\
+			   "bl32_3.18/bin"	\
+			   "bl40/bin"		\
+			   "bl30/bin_ao")
 
 if [ "y" == "${CONFIG_BUILD_UNSIGN}" ]; then
 declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
@@ -48,8 +48,8 @@ declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl2e.bin.usb"	\
 			    "bl2x.bin"		\
 			    "bl31.bin"		\
-#			    "bl32.bin"		
-#			    "bl40.bin"		
+			    "bl32.bin"		\
+			    "bl40.bin"		\
 				"NULL")
 
 else
@@ -84,8 +84,8 @@ declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2e.bin.usb"	\
 			    "bl2x.bin"		\
 			    "bl31.bin"		\
-#			    "bl32.bin"		
-#			    "bl40.bin"		
+			    "bl32.bin"		\
+			    "bl40.bin"		\
 			    "NULL")
 
 declare -a BLX_IMG_NAME=("NULL"	\
@@ -121,9 +121,9 @@ declare -a BLX_BIN_GIT=("firmware/bin/bl2" \
 			"firmware/bin/bl2" \
 			"firmware/bin/bl2" \
 			"firmware/bin/bl2" \
-			"firmware/bin/bl31" )
-#			"firmware/bin/bl32" \
-#			"firmware/bin/b40")
+			"firmware/bin/bl31"\
+			"firmware/bin/bl32"\
+			"firmware/bin/b40")
 
 # blx priority. null: default, source: src code, others: bin path
 declare -a BIN_PATH=("null"	\
@@ -132,8 +132,8 @@ declare -a BIN_PATH=("null"	\
 		     "null"	\
 		     "null"	\
 		     "null"	\
-#		     "null"	\
-#		     "null"	\
+		     "null"	\
+		     "null"	\
 		     "source")
 
 # variables

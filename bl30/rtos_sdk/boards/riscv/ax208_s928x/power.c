@@ -33,7 +33,7 @@ static TaskHandle_t cecTask;
 #define VDDCPU_A76_GPIO	GPIO_TEST_N
 
 static int vdd_ee;
-static int vdd_cpu;
+static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
@@ -105,13 +105,6 @@ void str_power_on(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	/***set vdd_cpu val***/
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
-	if (ret < 0) {
-		printf("VDD_CPU pwm set fail\n");
-		return;
-	}
-
 	/***power on A55 vdd_cpu***/
 	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -138,6 +131,14 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
+	/***set dos/npu/vpu val***/
+	if (vdddos_npu_vpu) {
+		ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, vdddos_npu_vpu);
+		if (ret < 0) {
+			printf("vdddos_npu_vpu pwm set fail\n");
+			return;
+		}
+	}
 
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
@@ -221,11 +222,15 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	/***set vdd_cpu val***/
-	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
-	if (vdd_ee < 0) {
-		printf("VDD_CPU pwm get fail\n");
-		return;
+	/*** set dos/npu/vpu power***/
+	vdddos_npu_vpu = vPwmMesongetvoltage(VDDDOS_NPU_VPU);
+	if (vdddos_npu_vpu < 0) {
+		printf("Skip the operation of reducing the voltage.\n");
+		vdddos_npu_vpu = 0;
+	} else {
+		ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, 770);
+		if (ret < 0)
+			printf("vdd_dos_npu_vpu pwm set fail\n");
 	}
 
 	/***power off A55 vdd_cpu***/

@@ -33,7 +33,6 @@ static TaskHandle_t cecTask;
 #define VDDCPU_A76_GPIO	GPIO_TEST_N
 
 static int vdd_ee;
-static int vdd_cpu;
 static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
@@ -105,13 +104,6 @@ void str_power_on(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
-
-	/***set vdd_cpu val***/
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
-	if (ret < 0) {
-		printf("VDD_CPU pwm set fail\n");
-		return;
-	}
 
 	/***power on A55 vdd_cpu***/
 	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
@@ -219,13 +211,6 @@ void str_power_off(int shutdown_flag)
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
-		return;
-	}
-
-	/***set vdd_cpu val***/
-	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
-	if (vdd_ee < 0) {
-		printf("VDD_CPU pwm get fail\n");
 		return;
 	}
 

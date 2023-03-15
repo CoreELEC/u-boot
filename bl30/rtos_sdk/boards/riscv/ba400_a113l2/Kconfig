@@ -1,0 +1,28 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_BA400_A113L2
+	bool "Amlogic BA400 Board"
+	select SOC_A4
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select RTC
+	select VERSION_FULL_INFO
+	select RTC_STORAGE_FORMAT_GRAY
+	help
+	  Enable Amlogic BA400 Board.

@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_SKT_A4
-	bool "Amlogic A4 SKT Board"
+config BOARD_BA409_A113L2
+	bool "Amlogic BA409 Board"
 	select SOC_A4
 	select LIBC_AML
 	select COMMON
@@ -25,4 +25,4 @@ config BOARD_SKT_A4
 	select VERSION_FULL_INFO
 	select RTC_STORAGE_FORMAT_GRAY
 	help
-	  Enable Amlogic A4 SKT Board.
+	  Enable Amlogic BA409 Board.

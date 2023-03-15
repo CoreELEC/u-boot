@@ -1,4 +1,5 @@
-riscv a4 a4_skt aocpu
+riscv a4 ba400_a113l2 aocpu
+riscv a4 ba409_a113l2 aocpu
 riscv a5 av400_a113x2 aocpu
 riscv a5 av409_a113x2 aocpu
 riscv t3x t3x_skt aocpu

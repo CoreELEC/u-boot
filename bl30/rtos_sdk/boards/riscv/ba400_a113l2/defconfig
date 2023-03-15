@@ -4,5 +4,5 @@
 # SPDX-License-Identifier: MIT
 #
 
-CONFIG_BOARD_SKT_A4=y
+CONFIG_BOARD_BA400_A113L2=y
 

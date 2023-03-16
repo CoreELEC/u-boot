@@ -171,8 +171,10 @@ ADVANCED_BOOTLOADER=1
 
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="a4"
-if [ "${BL30_SELECT}" == "a4_pxp" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="a4_skt"
+if [ "${BL30_SELECT}" == "a4_ba400" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="ba400_a113l2"
+elif [ "${BL30_SELECT}" == "a4_ba409" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="ba409_a113l2"
 else
-	declare CONFIG_BOARD_PACKAGE_NAME="a4_skt"
+	declare CONFIG_BOARD_PACKAGE_NAME="ba400_a113l2"
 fi

@@ -78,7 +78,7 @@ void str_hw_init(void)
 	start_suspend_time = timere_read_us();
 #endif
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+	vIRInit(MODE_HARD_NEC, GPIOAO_1, PIN_FUNC3, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
 

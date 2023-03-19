@@ -10,7 +10,7 @@
 /*s4 data define*/
 
 /*GPIOH_3 FUNC4:ceca, FUNC1:ceca FUNC2:cecb*/
-#define CEC_PIN_MX GPIOH_3
+#define CEC_PIN_MX GPIOE_0	//TODO
 #define CEC_PIN_FUNC PIN_FUNC2
 #define CEC_IP 1 /* 0: cec a, 1: cecb*/
 

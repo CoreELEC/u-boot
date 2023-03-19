@@ -22,7 +22,7 @@
 #include "wakeup.h"
 #include "power.h"
 #include "mailbox-api.h"
-
+#include "rtc.h"
 
 /*#define SHOW_LATENCY */
 
@@ -88,6 +88,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+	rtc_enable_irq();
 }
 
 void str_hw_disable(void)
@@ -100,6 +101,7 @@ void str_hw_disable(void)
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
+	rtc_disable_irq();
 }
 
 void str_power_on(int shutdown_flag)

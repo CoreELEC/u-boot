@@ -23,9 +23,17 @@ static uint32_t GpioIrqRegBackup[IRQ_REG_NUM] = { 0 };
 static uint32_t GpioIrqRegAOBackup;
 #endif
 
+/* platform a4 */
+#ifdef GPIO_AO_EXT_IRQ_NUM
+static uint32_t GpioIrqRegAOExtBackup[GPIO_AO_EXT_IRQ_NUM];
+#endif
+
 void vGpioIRQInit(void)
 {
 	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE, BIT(31), BIT(31));
+#ifdef GPIO_AO_EXT_IRQ_NUM
+	REG32_UPDATE_BITS(GPIO_AO_IRQ_BASE, BIT(31), BIT(31));
+#endif
 }
 
 /*
@@ -145,6 +153,13 @@ void vRestoreGpioIrqReg(void)
 #ifdef GPIO_AO_IRQ_BASE
 	REG32((unsigned long)GPIO_AO_IRQ_BASE) = GpioIrqRegAOBackup;
 #endif
+
+/* platform a4 */
+#ifdef GPIO_AO_EXT_IRQ_NUM
+	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
+		REG32((unsigned long)(GPIO_AO_IRQ_BASE + 0x04 * ucIndex)) =
+			GpioIrqRegAOExtBackup[ucIndex];
+#endif
 }
 
 /* when come into suspend before request gpio irq*/
@@ -164,5 +179,15 @@ void vBackupAndClearGpioIrqReg(void)
 #ifdef GPIO_AO_IRQ_BASE
 	GpioIrqRegAOBackup = REG32((unsigned long)GPIO_AO_IRQ_BASE);
 	REG32((unsigned long)GPIO_AO_IRQ_BASE) = 0;
+#endif
+
+/* platform a4 */
+#ifdef GPIO_AO_EXT_IRQ_NUM
+	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
+		GpioIrqRegAOExtBackup[ucIndex] =
+			REG32((unsigned long)GPIO_AO_IRQ_BASE + 0x04 * ucIndex);
+
+	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
+		REG32((unsigned long)(GPIO_AO_IRQ_BASE + 0x04 * ucIndex)) = 0;
 #endif
 }

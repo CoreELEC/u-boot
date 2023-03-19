@@ -38,10 +38,6 @@ int is_domain_power_on(enum PM domain)
 		fsm = ((*P_PWRCTRL_CPU3_FSM_STS0 >> 12) & 0x1f);
 		ret = (fsm == PWR_STATE_IDLE) ? 1 : ((fsm == PWR_STATE_WAIT_ON) ? 0 : -1);
 		break;
-	case PM_DSPA:
-		fsm = ((*P_PWRCTRL_DSPA_FSM_STS0 >> 12) & 0x1f);
-		ret = (fsm == PWR_STATE_IDLE) ? 1 : ((fsm == PWR_STATE_WAIT_ON) ? 0 : -1);
-		break;
 	case PM_AOCPU:
 		fsm = ((*P_PWRCTRL_AOCPU_FSM_STS0 >> 12) & 0x1f);
 		ret = (fsm == PWR_STATE_IDLE) ? 1 : ((fsm == PWR_STATE_WAIT_ON) ? 0 : -1);
@@ -51,10 +47,14 @@ int is_domain_power_on(enum PM domain)
 			ret = (*P_PWRCTRL_FOCRST0 & (1 << id)) == 0 ?
 				      1 :
 				      (((*P_PWRCTRL_PWR_OFF0 & (1 << id)) != 0) ? 0 : -1);
+		} else if (id < 64) {
+			ret = (*P_PWRCTRL_FOCRST1 & (1<<(id-32))) == 0 ?
+					1 :
+					(((*P_PWRCTRL_PWR_OFF0 & (1<<(id-32))) != 0) ? 0 : -1);
 		} else {
-			ret = (*P_PWRCTRL_FOCRST1 & (1 << id)) == 0 ?
+			ret = (*P_PWRCTRL_FOCRST1 & (1 << (id-64))) == 0 ?
 				      1 :
-				      (((*P_PWRCTRL_PWR_OFF1 & (1 << id)) != 0) ? 0 : -1);
+				      (((*P_PWRCTRL_PWR_OFF1 & (1 << (id-64))) != 0) ? 0 : -1);
 		}
 		break;
 	}
@@ -567,10 +567,7 @@ void power_switch_to_wraper(uint32_t pwr_state)
 	if (pwr_state == PWR_OFF) {
 		addr = REG32(CPUCTRL_SYS_CPU_CFG2 + ((0 & 0xff) << 2));
 		udelay(500);
-		while (is_domain_power_on(PM_CPU_PWR) != 0) {
-			vTaskDelay(pdMS_TO_TICKS(1000));
-			dump_fsm_status();
-		}
+		dump_fsm_status();
 		power_switch_to_domains(PM_SYS_WRAP, PWR_OFF);
 		udelay(2000);
 	} else {
@@ -583,6 +580,8 @@ void power_switch_to_wraper(uint32_t pwr_state)
 
 void dump_fsm_status(void)
 {
+	//BIT4=1 core0 enter wfi,bit5 core1 ...
+	printf("sys_cpu_status7=0x%x\n", *P_CPUCTRL_SYS_CPU_STATUS7);
 	printf("fsm_sts0=0x%x\n", *P_PWRCTRL_CPU0_FSM_STS0);
 	printf("fsm_sts1=0x%x\n", *P_PWRCTRL_CPU1_FSM_STS0);
 	printf("fsm_sts2=0x%x\n", *P_PWRCTRL_CPU2_FSM_STS0);

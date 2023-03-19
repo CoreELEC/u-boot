@@ -314,19 +314,41 @@ void disable_pll(int id)
 	}
 }
 
+void start_off_fsm_of_chip_core(void)
+{
+	// start fsm to shut down chip_core
+	REG32(AO_PWRCTRL_SHUT_DN) = 1;
+
+	// Counter increases 1
+	REG32(AO_PWRCTRL_SW_COUNT) += 1;
+}
+
+void init_ao_pwr_ctrl(void)
+{
+	// pmic_sleep high valid
+	REG32(AO_PWRCTRL_MODE) |= (0<<1);  // high valid
+
+	// SLEEP: delay between kick_off to core_iso_en = 1
+	REG32(AO_PWRCTRL_OFF_DLY0) = 5;  // 5ms, unit: 1ms
+
+	// SLEEP: delay between core_iso_en = 1 to pmic_sleep = 1
+	REG32(AO_PWRCTRL_OFF_DLY1) = 1;  // 1ms, unit: 1ms
+
+	// WAKEUP: delay between pmic_sleep = 0 to core_iso_en = 0
+	REG32(AO_PWRCTRL_ON_DLY) = 1;
+
+#ifdef USE_GPIOAO_2_CTRL_PMIC
+	REG32(PADCTRL_PIN_MUX_REGAO) &= ~(0xf << 8);
+	REG32(PADCTRL_PIN_MUX_REGAO) |=  (0x4 << 8);
+#else
+	REG32(PADCTRL_PIN_MUX_REGAO) &= ~(0xf << 16);
+	REG32(PADCTRL_PIN_MUX_REGAO) |=  (0x4 << 16);
+#endif
+}
+
 int oscin_ctrl_reg;
 void vCLK_resume(uint32_t st_f)
 {
-	int xIdx = 0;
-
-	if ((!st_f) && (get_reason_flag() != VAD_WAKEUP)) {
-		wakeup_dsp();
-		vTaskDelay(pdMS_TO_TICKS(90));
-		xIdx = WAKEUP_FROM_OTHER_KEY;
-		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-		clear_dsp_wakeup_trigger();
-	}
-
 	if (st_f) {
 		/* switch osc_clk back*/
 		REG32(CLKCTRL_SYSOSCIN_CTRL) = 1;
@@ -343,11 +365,6 @@ void vCLK_resume(uint32_t st_f)
 		power_switch_to_wraper(PWR_ON);
 		/* open mem_pd of srama and sramb */
 		REG32(PWRCTRL_MEM_PD2) = 0x0;
-	} else {
-
-		xIdx = WAIT_SWITCH_TO_24MHZ;
-		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-		vTaskDelay(pdMS_TO_TICKS(90));
 	}
 
 	// In a55 boot code
@@ -356,35 +373,28 @@ void vCLK_resume(uint32_t st_f)
 
 void vCLK_suspend(uint32_t st_f)
 {
-	int xIdx = 0;
-
 	printf("[AOCPU]: enter vCLK suspend.\n");
 
 	if (st_f) {
-		/* close mem_pd of srama and sramb */
-		REG32(PWRCTRL_MEM_PD2) = 0xfffffffc;
 		/* poweroff wrapper */
 		power_switch_to_wraper(PWR_OFF);
 		udelay(2000);
-		/* switch to RTC pll */
-		set_sys_div_clk(6, 10); // rtc pll (11.171MHz)
-		set_axi_div_clk(6, 0); // rtc pll (122.88MHz)
-		alt_timebase(1); // 1us/10us/100us/1ms/xtal3 = 1 us tick  11.171/11
 
-		udelay(2000);
-		vUartChangeBaudrate_suspend(11171000, 921600);
-		udelay(1000);
+		/***start_ao_standby_flow ***/
+		// initial ao pwr_ctrl
+		init_ao_pwr_ctrl();
 
+		// start fsm to power off chip_core
+		start_off_fsm_of_chip_core();
+		// switch clock from sys_clk to osc_clk
+		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<0); // select osc_clk
+		// switch clock from osc_clk to rtc_clk
+		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<1); // select rtc_clk
+
+		printf("[AOCPU]: 24MHz osc clk power off.\n");
 		/* power off osc_clk */
 		REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
-		oscin_ctrl_reg = REG32(CLKCTRL_OSCIN_CTRL);
-		REG32(CLKCTRL_OSCIN_CTRL) = 0;
-		printf("[AOCPU]: running at 11.171MHz, 24MHz osc clk power off.\n");
-
 	} else {
-		xIdx = WAIT_SWITCH_TO_RTC_PLL;
-		xTransferMessageAsync(AODSPA_CHANNEL, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-		vTaskDelay(pdMS_TO_TICKS(90));
-		printf("[AOCPU]: running at 24MHz, 24MHz osc clk power off.\n");
+		printf("[AOCPU]: running at 24MHz.\n");
 	}
 }

@@ -36,7 +36,7 @@ extern void eclic_irq50_handler(void);
 /*You can add other interrupts num here 46~19*/
 
 /* use for ir */
-#define IRQ_NUM_IRIN 22
+#define IRQ_NUM_IRIN 136
 
 /* cec */
 #define IRQ_NUM_CECA 40

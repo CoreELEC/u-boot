@@ -83,7 +83,7 @@ void str_hw_init(void)
 	vETHInit(0);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
+	//vKeyPadInit();
 	vGpioIRQInit();
 	rtc_enable_irq();
 }
@@ -94,7 +94,7 @@ void str_hw_disable(void)
 	vIRDeint();
 	vETHDeint();
 
-	vKeyPadDeinit();
+	//vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 	rtc_disable_irq();
 }
@@ -241,8 +241,10 @@ void str_power_off(int shutdown_flag)
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
 
 	if (shutdown_flag) {
-		/* disable sar adc */
-		vKeyPadDeinit();
+		vIRDeint();
+		vIRInit(MODE_HARD_NEC_32K, GPIOAO_1, PIN_FUNC3, prvPowerKeyList,
+			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+		vIR32KInit(prvPowerKeyList[0].code, 0x00);
 	}
 
 	printf("vdd_cpu off\n");

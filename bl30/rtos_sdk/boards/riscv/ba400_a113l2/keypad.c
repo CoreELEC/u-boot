@@ -66,7 +66,7 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 	 * GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
 	 *		vGpioKeyCallBack, NULL),
 	 */
-	GPIO_KEY_INFO(GPIO_KEY_ID_WIFI_WAKE, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
+	GPIO_KEY_INFO(GPIOAO_1, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
 
 };
 

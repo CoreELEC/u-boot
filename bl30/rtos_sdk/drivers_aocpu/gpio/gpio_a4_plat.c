@@ -24,8 +24,8 @@
 #define IRQ_GPIO7_NUM 17
 
 /* gpio irq controller AO */
-#define IRQ_AO_GPIO0_NUM 5
-#define IRQ_AO_GPIO1_NUM 6
+#define IRQ_AO_GPIO0_NUM 140
+#define IRQ_AO_GPIO1_NUM 141
 
 #define AO_GPIO_NUM 63
 #define AO_IRQ_NUM_BASE 256	/* Just to discriminate between AO & EE GPIO */

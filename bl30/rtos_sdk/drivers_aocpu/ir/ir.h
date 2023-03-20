@@ -23,6 +23,7 @@ enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
 /*supported protocol*/
 #define MODE_SOFT 0x0
 #define MODE_HARD_NEC 0x1
+#define MODE_HARD_NEC_32K	0x10
 #define MODE_HARD_LEAGCY_NEC 0xff
 #define MAX_KEY_NUM 80
 
@@ -76,6 +77,7 @@ extern int8_t ucIsIRInit(void);
 extern void vIRDeint(void);
 extern void vIRMailboxEnable(void);
 extern void vIRGetKeyCode(struct IRPowerKey *ulPowerKeyList);
+extern void vIR32KInit(uint32_t ulFrame0, uint32_t ulFrame1);
 #ifdef __cplusplus
 }
 #endif

@@ -19,6 +19,17 @@ static struct xRegList xNECLegacyRegList[] = {
 	{ REG_REG1, 0xbe00 },
 };
 
+static struct xRegList xNEC32KRegList[] = { { REG_LDR_ACTIVE, (327 << 16) | (262 << 0) },
+					 { REG_LDR_IDLE, 196 << 16 | 131 << 0 },
+					 { REG_LDR_REPEAT, 98 << 16 | 52 << 0 },
+					 { REG_BIT_0, 47 << 16 | 26 << 0 },
+					 { REG_REG0, 1 << 28 | (0xA3C << 12) | 0x0 },
+					 { REG_STATUS, (85 << 20) | (57 << 10) },
+					 { REG_REG1, 0x9f00 | (1 << 14) | (1 << 29) | (1 << 30) },
+					 { REG_REG2, 0x00 },
+					 { REG_DURATN2, 0x00 },
+					 { REG_DURATN3, 0x00 } };
+
 static struct xRegList xNECRegList[] = { { REG_LDR_ACTIVE, (500 << 16) | (400 << 0) },
 					 { REG_LDR_IDLE, 300 << 16 | 200 << 0 },
 					 { REG_LDR_REPEAT, 150 << 16 | 80 << 0 },
@@ -202,8 +213,15 @@ static struct xRegProtocolMethod xNECDecode = {
 	.ucRegNum = ARRAY_SIZE(xNECRegList),
 };
 
+static struct xRegProtocolMethod xNEC32KDecode = {
+	.ucProtocol = MODE_HARD_NEC_32K,
+	.RegList = xNEC32KRegList,
+	.ucRegNum = ARRAY_SIZE(xNEC32KRegList),
+};
+
 static const struct xRegProtocolMethod *xSupportProtocol[] = {
 	&xNECDecode,
+	&xNEC32KDecode,
 	&xNECLegacyDecode,
 
 #ifdef MODE_HARD_DUOKAN

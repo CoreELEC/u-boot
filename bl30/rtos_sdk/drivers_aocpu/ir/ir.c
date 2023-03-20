@@ -280,3 +280,24 @@ void vIRMailboxEnable(void)
 		return;
 	}
 }
+
+void vIR32KInit(uint32_t ulFrame0, uint32_t ulFrame1)
+{
+#ifdef RTCCTRL_REG_CTRL0
+	REG32(RTCCTRL_REG_CTRL3) = ulFrame0;
+	REG32(RTCCTRL_REG_CTRL4) = ulFrame1;
+
+	if (ulFrame0)
+		REG32(RTCCTRL_REG_CTRL5) = 0xffffffff;
+	else
+		REG32(RTCCTRL_REG_CTRL5) = 0x00;
+
+	if (ulFrame1)
+		REG32(RTCCTRL_REG_CTRL6) = 0xffffffff;
+	else
+		REG32(RTCCTRL_REG_CTRL6) = 0x0;
+
+	REG32(RTCCTRL_REG_CTRL9) = (1 << 12);
+	REG32(RTCCTRL_REG_CTRL9) = (1 << 4);
+#endif
+}

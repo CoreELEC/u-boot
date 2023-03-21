@@ -82,7 +82,7 @@
 	do {                                                                                       \
 		if ((x) == 0) {                                                                    \
 			taskDISABLE_INTERRUPTS();                                                  \
-			printf("ASSERT: %s %d\n", __FILE__, __LINE__);                             \
+			printf("ASSERT: %s %d\n", __FUNCTION__, __LINE__);                             \
 			for (;;)                                                                   \
 				;                                                                  \
 		}                                                                                  \

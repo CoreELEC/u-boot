@@ -8,6 +8,7 @@
 #else
 #define RTC_REGISTER_H
 
+#define RTC_IRQ     (135)
 
 #define RTC_DIG_CTRL		    AO_RTC_CTRL
 #define RTC_DIG_COUNTER_REG	    AO_RTC_COUNTER_REG

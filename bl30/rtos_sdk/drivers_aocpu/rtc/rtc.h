@@ -7,7 +7,6 @@
 #ifndef __RTC_H__
 #define __RTC_H__
 
-#define RTC_IRQ (131)
 /* RTC enbale bit */
 #define RTC_CTRL_EN (12)
 /* RTC alarm enbale bit */
@@ -26,4 +25,6 @@ void *MboxGetRTC(void *msg);
 void *MboxSetRTC(void *msg);
 void rtc_init(void);
 void store_rtc(void);
+void rtc_enable_irq(void);
+void rtc_disable_irq(void);
 #endif //__RTC_H__

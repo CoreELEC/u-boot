@@ -36,21 +36,6 @@ static uint32_t gray_to_binary(uint32_t gray)
 static void vRTCInterruptHandler(void)
 {
 	uint32_t buf[4] = { 0 };
-	uint32_t alarm0_int_status;
-	uint32_t reg_val;
-
-	/* Mask alarm0 irq */
-	reg_val = REG32(RTC_DIG_INT_MASK);
-	reg_val |= 0x1;
-	REG32(RTC_DIG_INT_MASK) = reg_val;
-
-	/* Clear alarm0 */
-	REG32(RTC_DIG_ALARM0_REG) = 0;
-
-	alarm0_int_status = REG32(RTC_DIG_INT_STATUS) & (1 << RTC_INT_ALM0_IRQ);
-	/* Clear alarm0 int status */
-	if (alarm0_int_status)
-		REG32(RTC_DIG_INT_CLR) |= (1 << RTC_INT_CLR_ALM0_IRQ);
 
 	printf("[%s]: rtc alarm fired\n", TAG);
 
@@ -131,16 +116,32 @@ void *MboxGetRTC(void *msg)
 	return NULL;
 }
 
+void rtc_enable_irq(void)
+{
+	int ret;
+
+	ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
+	if (ret)
+		printf("RTC_irq RegisterIrq error, ret = %d\n", ret);
+	EnableIrq(RTC_IRQ);
+}
+
+void rtc_disable_irq(void)
+{
+	int ret;
+
+	DisableIrq(RTC_IRQ);
+	ret = UnRegisterIrq(RTC_IRQ);
+	if (ret)
+		printf("RTC_irq UnRegisterIrq error, ret = %d\n", ret);
+}
+
 void rtc_init(void)
 {
 	int ret;
 	uint32_t reboot_mode;
 
 	printf("[%s]: init rtc\n", TAG);
-	ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
-	if (ret)
-		printf("[%s]: RegisterIrq error, ret = %d\n", TAG, ret);
-	EnableIrq(RTC_IRQ);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, MboxSetRTC, 0);
 	if (ret == MBOX_CALL_MAX)

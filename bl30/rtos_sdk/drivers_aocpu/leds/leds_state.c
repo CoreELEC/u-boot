@@ -529,6 +529,9 @@ int32_t xLedsStateInit(void)
 				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
+		/*comfirmed disabled before mux pins*/
+		vPwmMesonDisable(MesonLeds[i].pwm);
+		vPwmMesonDisable(MesonLeds[i].pwm_sub);
 	}
 
 	/* register mailbox */

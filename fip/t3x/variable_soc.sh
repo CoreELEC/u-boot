@@ -42,7 +42,6 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl40/bin"		\
 			   "bl30/bin_ao")
 
-CONFIG_UNSIGN_ENABLE=y
 if [ "y" == "${CONFIG_UNSIGN_ENABLE}" ]; then
 declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\

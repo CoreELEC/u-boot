@@ -16,6 +16,7 @@ config BOARD_BA409_A113L2
 	select GPIO
 	select KEY
 	select PWM
+	select I2C_SLAVE
 	select LEDS
 	select TIMER_SOURCE
 	select SARADC

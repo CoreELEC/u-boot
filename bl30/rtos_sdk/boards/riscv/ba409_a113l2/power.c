@@ -22,6 +22,7 @@
 #include "power.h"
 #include "mailbox-api.h"
 #include "rtc.h"
+#include "meson_i2c_slave.h"
 
 /*#define SHOW_LATENCY */
 
@@ -271,6 +272,12 @@ void str_power_off(int shutdown_flag)
 		vIRInit(MODE_HARD_NEC_32K, GPIOAO_1, PIN_FUNC3, prvPowerKeyList,
 			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 		vIR32KInit(prvPowerKeyList[0].code, 0x00);
+		/* disable sar adc */
+		vKeyPadDeinit();
+		/* set GPIOAO_2/3 pinmux to i2c slave */
+		// xPinmuxSet(GPIOAO_2, PIN_FUNC2);
+		// xPinmuxSet(GPIOAO_3, PIN_FUNC2);
+		// xI2cSlaveMesonInit(0, 0);
 	}
 
 	printf("vdd_cpu off\n");

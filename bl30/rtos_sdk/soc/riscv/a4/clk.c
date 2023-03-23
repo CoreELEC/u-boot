@@ -329,7 +329,7 @@ void init_ao_pwr_ctrl(void)
 	REG32(AO_PWRCTRL_MODE) |= (0<<1);  // high valid
 
 	// SLEEP: delay between kick_off to core_iso_en = 1
-	REG32(AO_PWRCTRL_OFF_DLY0) = 5;  // 5ms, unit: 1ms
+	REG32(AO_PWRCTRL_OFF_DLY0) = 10;  // 10ms, unit: 1ms
 
 	// SLEEP: delay between core_iso_en = 1 to pmic_sleep = 1
 	REG32(AO_PWRCTRL_OFF_DLY1) = 1;  // 1ms, unit: 1ms
@@ -380,18 +380,19 @@ void vCLK_suspend(uint32_t st_f)
 		power_switch_to_wraper(PWR_OFF);
 		udelay(2000);
 
+		// switch clock from sys_clk to osc_clk
+		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<0); // select osc_clk
+		// switch clock from osc_clk to rtc_clk
+		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<1); // select rtc_clk
+
 		/***start_ao_standby_flow ***/
 		// initial ao pwr_ctrl
 		init_ao_pwr_ctrl();
 
 		// start fsm to power off chip_core
 		start_off_fsm_of_chip_core();
-		// switch clock from sys_clk to osc_clk
-		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<0); // select osc_clk
-		// switch clock from osc_clk to rtc_clk
-		REG32(AO_CLKCTRL_OSCIN_CTRL) |= (1<<1); // select rtc_clk
 
-		printf("[AOCPU]: 24MHz osc clk power off.\n");
+		printf("soc poweroff\n");
 		/* power off osc_clk */
 		REG32(CLKCTRL_SYSOSCIN_CTRL) = 0;
 	} else {

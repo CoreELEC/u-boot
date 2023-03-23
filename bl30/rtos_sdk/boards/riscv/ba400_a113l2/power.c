@@ -82,12 +82,6 @@ void str_hw_init(void)
 		vIRHandler);
 	vETHInit(0);
 
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
-									xMboxVadWakeup, 0);
-	if (ret == MBOX_CALL_MAX)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
-
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
@@ -99,8 +93,6 @@ void str_hw_disable(void)
 	/*disable wakeup source interrupt*/
 	vIRDeint();
 	vETHDeint();
-
-	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
@@ -132,13 +124,13 @@ void str_power_on(int shutdown_flag)
 	/***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
+		printf("VDD_CPU set gpio dir fail\n");
 		return;
 	}
 
 	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
+		printf("VDD_CPU set gpio val fail\n");
 		return;
 	}
 
@@ -150,31 +142,18 @@ void str_power_on(int shutdown_flag)
 	}
 
 	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+		/***power on DDR_EN***/
+		ret = xGpioSetDir(GPIOAO_0, GPIO_DIR_OUT);
 		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
+			printf("DDR_EN set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_HIGH);
+		ret = xGpioSetValue(GPIOAO_0, GPIO_LEVEL_HIGH);
 		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
+			printf("DDR_EN gpio val fail\n");
 			return;
 		}
-	}
-
-	/***power on vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vcc_5v set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vcc_5v gpio val fail\n");
-		return;
 	}
 
 	/*Wait 200ms for VDDCPU statable*/
@@ -197,30 +176,17 @@ void str_power_off(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	/***power off vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vcc_5v set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vcc_5v gpio val fail\n");
-		return;
-	}
-
 	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+		/***power off DDR_EN***/
+		ret = xGpioSetDir(GPIOAO_0, GPIO_DIR_OUT);
 		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
+			printf("DDR_EN set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_LOW);
+		ret = xGpioSetValue(GPIOAO_0, GPIO_LEVEL_LOW);
 		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
+			printf("DDR_EN gpio val fail\n");
 			return;
 		}
 	}

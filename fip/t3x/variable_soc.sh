@@ -162,10 +162,12 @@ declare DDRFW_TYPE=""
 
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="t3x"
-if [ "${BL30_SELECT}" == "t3x_skt" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="t3x_skt"
+if [ "${BL30_SELECT}" == "t3x_bc302" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bc302_t968d4"
+elif [ "${BL30_SELECT}" == "t3x_skt" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="t3x_sky"
 else
-	declare CONFIG_BOARD_PACKAGE_NAME="ay309_t963d4"
+	declare CONFIG_BOARD_PACKAGE_NAME="bc309_t968d4"
 fi
 
 BUILD_PATH=${FIP_BUILD_FOLDER}

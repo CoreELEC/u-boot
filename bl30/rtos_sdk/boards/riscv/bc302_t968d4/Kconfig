@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: MIT
 
-config BOARD_SKT_T3X
-	bool "Amlogic T3X SKT Board"
+config BOARD_BC302_T968D4
+	bool "Amlogic BC302 Board"
 	select SOC_T3X
 	select LIBC_AML
 	select COMMON
@@ -25,4 +25,4 @@ config BOARD_SKT_T3X
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
 	help
-	  Enable Amlogic T3X SKT Board.
+	  Enable Amlogic BC302 Board.

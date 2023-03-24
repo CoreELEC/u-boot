@@ -1,7 +1,5 @@
-#
 # Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
-#
-# SPDX-License-Identifier: MIT
-#
 
-CONFIG_BOARD_SKT_T3X=y
+# SPDX-License-Identifier: MIT
+
+#add compiler options at here which is associated with current board.

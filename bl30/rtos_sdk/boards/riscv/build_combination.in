@@ -2,7 +2,9 @@ riscv a4 ba400_a113l2 aocpu
 riscv a4 ba409_a113l2 aocpu
 riscv a5 av400_a113x2 aocpu
 riscv a5 av409_a113x2 aocpu
-riscv t3x t3x_skt aocpu
+riscv t3x t3x_sky aocpu
+riscv t3x bc302_t968d4 aocpu
+riscv t3x bc309_t968d4 aocpu
 riscv t5d am301_t950d4 aocpu
 riscv t5w at301_t962d4 aocpu
 riscv t5w at309_t962d4 aocpu

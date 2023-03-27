@@ -81,13 +81,16 @@ function build_uboot() {
 	fi
 	set +e
 
-	if [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then
+	SOC_GROUP=`echo ${SOCNAME} | cut -d '_' -f 1`
+	skiped=("a1" "c1" "c2" "c3" "g12a" "g12b" "sm1" "t5w")
+	if [[ "${skiped[@]}"  =~ "${SOC_GROUP}" ]]; then
+		echo ""
+		echo "The soc(${SOC_GROUP}) does not support bl33z, skip."
+		echo ""
+	elif [ "${CONFIG_SUPPORT_BL33Z}" = "1" ]; then
 		echo ""
 		set -e
 		echo "ramdump enable, build bl33z.bin for soc [${SOCNAME}] ..."
-		if [ -z "${SOCNAME}" ];then
-			SOCNAME=p1
-		fi
 		if [ -f "./bl33z/Makefile" ]; then
 			make -C bl33z/ PLAT=${SOCNAME} AARCH=aarch64 distclean
 			make -C bl33z/ PLAT=${SOCNAME} AARCH=aarch64

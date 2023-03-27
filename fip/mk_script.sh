@@ -370,8 +370,8 @@ function usage() {
     7. build uboot with bl[x]/src source code, and run coverity defect
         see help info: ./fip/check_coverity.sh -h
 
-    8. build uboot with ramdump function
-        ./$(basename $0) [config_name] --update-bl[x] --enable-ramdump --chipid [cpu_id]
+    8. build uboot with disable full ramdump(enable by default)
+        ./$(basename $0) [config_name] --disable-bl33z
 
     Example:
     1) ./$(basename $0) gxb_p200_v1
@@ -388,9 +388,6 @@ function usage() {
 
     5) ./$(basename $0) --check-compile skt
       check all skt board compile status
-
-    6) ./$(basename $0) sc2_ah212 --update-bl2 --update-bl2e --enable-ramdump --chipid 00D9C73147101D16
-       build uboot with ramdump function, chipid for bl2.
 
     Remark:
     bl[x].bin/img priority:
@@ -469,7 +466,12 @@ function parser() {
 			--enable-bl33z)
 				CONFIG_SUPPORT_BL33Z=1
 				export CONFIG_SUPPORT_BL33Z
-				echo "SET CONFIG: CONFIG_SUPPORT_BL33Z"
+				echo "SET CONFIG: CONFIG_SUPPORT_BL33Z=1"
+				continue ;;
+			--disable-bl33z)
+				CONFIG_SUPPORT_BL33Z=0
+				export CONFIG_SUPPORT_BL33Z
+				echo "SET CONFIG: CONFIG_SUPPORT_BL33Z=0"
 				continue ;;
 			--compress-bl2e)
 				CONFIG_COMPRESS_BL2E=1
@@ -498,6 +500,12 @@ function parser() {
 			*)
 		esac
 	done
+
+	if [ -z $CONFIG_SUPPORT_BL33Z ]; then
+		CONFIG_SUPPORT_BL33Z=1
+		export CONFIG_SUPPORT_BL33Z
+		echo "By default, SET CONFIG_SUPPORT_BL33Z=1"
+	fi
 }
 
 function bin_path_update() {

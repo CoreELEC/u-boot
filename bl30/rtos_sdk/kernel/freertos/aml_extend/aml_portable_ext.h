@@ -79,6 +79,8 @@ void vPortRtosInfoUpdateStatus(uint32_t status);
 
 void vPortHaltSystem(Halt_Action_e act);
 
+void vPortHaltSystemInIrq(Halt_Action_e act);
+
 void *pvPortRealloc(void *ptr, size_t size);
 
 void vHardwareResourceRecord(void);

@@ -142,6 +142,39 @@ void vPortHaltSystem(Halt_Action_e act)
 #endif
 	}
 }
+/*-----------------------------------------------------------*/
+void vPortHaltSystemInIrq(Halt_Action_e act)
+{
+	uint32_t irq = 0, i;
+
+	portDISABLE_INTERRUPTS();
+	for (irq = 0; irq < portMAX_IRQ_NUM; irq += 8) {
+		for (i = 0; i < 8; i++) {
+			if (irq_mask[irq / 8] & (1 << i))
+				plat_gic_irq_unregister(irq + i);
+		}
+	}
+
+	(void)act;
+
+	vPortRtosInfoUpdateStatus(eRtosStat_Done);
+
+	configPREPARE_CPU_HALT();
+
+	vHardwareResourceRelease();
+
+	plat_gic_raise_softirq(1, 7);
+
+	vOperationBeforeShutdown();
+
+	while (1) {
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+		prvCorePowerDown();
+#else
+		__asm volatile("wfi");
+#endif
+	}
+}
 
 /*-----------------------------------------------------------*/
 #if CONFIG_BACKTRACE

@@ -1,0 +1,28 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_TXHD2_SKT
+	bool "Amlogic TXHD2_SKT Board"
+	select SOC_TXHD2
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select DDR
+	select MAILBOX
+	select VRTC
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VERSION_FULL_INFO
+	help
+	  Enable Amlogic TXHD2_SKT Board.

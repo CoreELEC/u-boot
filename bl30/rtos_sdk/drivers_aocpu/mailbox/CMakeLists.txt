@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-if((CONFIG_SOC_T5D) OR (CONFIG_SOC_T5W))
+if((CONFIG_SOC_T5D) OR (CONFIG_SOC_T5W) OR (CONFIG_SOC_TXHD2))
 aml_library_sources_ifdef(
 	CONFIG_MAILBOX
 	mailbox-pl.c

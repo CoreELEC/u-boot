@@ -17,14 +17,14 @@
 #include "portmacro.h"
 
 /* gpio irq controller */
-#define IRQ_GPIO0_NUM 10
-#define IRQ_GPIO1_NUM 11
-#define IRQ_GPIO2_NUM 12
-#define IRQ_GPIO3_NUM 13
-#define IRQ_GPIO4_NUM 14
-#define IRQ_GPIO5_NUM 15
-#define IRQ_GPIO6_NUM 16
-#define IRQ_GPIO7_NUM 17
+#define IRQ_GPIO0_NUM 288
+#define IRQ_GPIO1_NUM 289
+#define IRQ_GPIO2_NUM 290
+#define IRQ_GPIO3_NUM 291
+#define IRQ_GPIO4_NUM 292
+#define IRQ_GPIO5_NUM 293
+#define IRQ_GPIO6_NUM 294
+#define IRQ_GPIO7_NUM 295
 
 #define REG_PIN_SC2_SEL 0x04
 #define REG_EDGE_POL_EXTR 0x1c

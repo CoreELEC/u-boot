@@ -150,18 +150,6 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 */
-		/***power on WIFI***/
-		ret = xGpioSetDir(GPIOD_11, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("wifi_en set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(GPIOD_11, GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("wifi_en gpio val fail\n");
-			return;
-		}
 	}
 	/***power on vcc_3v3***/
 	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
@@ -228,18 +216,6 @@ void str_power_off(int shutdown_flag)
 			return;
 		}
 */
-		/***power off wifi***/
-		ret = xGpioSetDir(GPIOD_11, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("wifi_en set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(GPIOD_11, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("wifi_en gpio val fail\n");
-			return;
-		}
 	}
 	/***power off vcc_3v3***/
 	ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);

@@ -151,7 +151,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Amlogic SC2 Device Vendor Secure Chipset Startup (SCS) Signing
+       Amlogic Device Vendor Secure Chipset Startup (SCS) Signing
 
        $(basename $0)
 		--key-dir <key-dir> \\

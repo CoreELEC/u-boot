@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # static
-declare -a BLX_NAME=("bl2" "bl31")
+declare -a BLX_NAME=("bl2" "bl31" "bl32" "bl30")
 
-declare -a BLX_SRC_FOLDER=("bl2/src" "bl31_1.3/src" "bl33")
-declare -a BLX_BIN_FOLDER=("bl2/bin" "bl31_1.3/bin")
-declare -a BLX_BIN_NAME=("bl2.bin" "bl31.bin")
-declare -a BLX_IMG_NAME=("NULL" "bl31.img" "NULL")
+declare -a BLX_SRC_FOLDER=("bl2/src" "bl31/bl31_1.3/src" "bl32/bl32_3.18/src" "bl30/src_ao" "bl33")
+declare -a BLX_BIN_FOLDER=("bl2/bin" "bl31/bl31_1.3/bin" "bl32/bl32_3.18/bin" "bl30/bin_ao")
+declare -a BLX_BIN_NAME=("bl2.bin" "bl31.bin" "bl32.bin" "bl30.bin")
+declare -a BLX_IMG_NAME=("NULL" "bl31.img" "bl32.img" "NULL")
 declare -a BLX_NEEDFUL=("true" "true" "false" "true")
 
 declare -a BLX_SRC_GIT=("bootloader/spl" \
@@ -14,7 +14,7 @@ declare -a BLX_SRC_GIT=("bootloader/spl" \
 					"OP-TEE/optee_os" \
 					"firmware/aocpu" \
 					"uboot")
-declare -a BLX_BIN_GIT=("firmware/bin/bl2" "firmware/bin/bl31")
+declare -a BLX_BIN_GIT=("firmware/bin/bl2" "firmware/bin/bl31" "firmware/bin/bl32")
 
 # blx priority. null: default, source: src code, others: bin path
 declare -a BIN_PATH=("null" "null" "null" "source")
@@ -39,9 +39,9 @@ DDR_FW_NAME="aml_ddr.fw"
 CONFIG_DDR_PARSE=1
 
 declare CONFIG_RTOS_SDK_ENABLE=1
-declare CONFIG_SOC_NAME="t5w"
-if [ "${BL30_SELECT}" == "t5w_at301" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="at301_t962d4"
+declare CONFIG_SOC_NAME="txhd2"
+if [ "${BL30_SELECT}" == "txhd2_skt" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="txhd2_skt"
 else
-	declare CONFIG_BOARD_PACKAGE_NAME="at309_t962d4"
+	declare CONFIG_BOARD_PACKAGE_NAME="txhd2_skt"
 fi

@@ -38,7 +38,7 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl31_1.3/bin"	\
-			   "bl32_3.18/bin"	\
+			   "bl32_3.8/bin"	\
 			   "bl40/bin"		\
 			   "bl30/bin_ao")
 

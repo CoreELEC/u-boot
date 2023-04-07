@@ -43,7 +43,7 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_CECB 41
 
 /*wol*/
-#define IRQ_ETH_PMT_NUM 76
+#define IRQ_ETH_PMT_NUM 204
 
 /* timerA~timerJ */
 #define IRQ_NUM_TIMERA 0

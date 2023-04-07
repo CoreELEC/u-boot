@@ -170,8 +170,8 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/*Wait 200ms for VDDCPU statable*/
-	vTaskDelay(pdMS_TO_TICKS(200));
+	/*HW need 1.5mS for VDDCPU statable, So SW add margin to 10ms*/
+	vTaskDelay(pdMS_TO_TICKS(10));
 
 	printf("vdd_cpu on\n");
 #ifdef SHOW_LATENCY

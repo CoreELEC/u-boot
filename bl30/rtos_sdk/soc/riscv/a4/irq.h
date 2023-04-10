@@ -38,6 +38,9 @@ extern void eclic_irq50_handler(void);
 /* use for ir */
 #define IRQ_NUM_IRIN 136
 
+/* uart */
+#define IRQ_NUM_AO_UART_C 138
+
 /* cec */
 #define IRQ_NUM_CECA 40
 #define IRQ_NUM_CECB 41

@@ -23,6 +23,7 @@
 #include "mailbox-api.h"
 #include "rtc.h"
 #include "meson_i2c_slave.h"
+#include "uart.h"
 
 /*#define SHOW_LATENCY */
 
@@ -155,6 +156,9 @@ void str_power_on(int shutdown_flag)
 			printf("DDR_EN gpio val fail\n");
 			return;
 		}
+#ifdef CONFIG_UART_WAKEUP
+		vUartWakeupDeint(NULL);
+#endif
 	}
 
 	/*HW need 1.5mS for VDDCPU statable, So SW add margin to 10ms*/
@@ -246,6 +250,10 @@ void str_power_off(int shutdown_flag)
 		vIRInit(MODE_HARD_NEC_32K, GPIOAO_1, PIN_FUNC3, prvPowerKeyList,
 			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
 		vIR32KInit(prvPowerKeyList[0].code, 0x00);
+#ifdef CONFIG_UART_WAKEUP
+		vUartWakeupInit(GPIOAO_1, GPIOAO_0, PIN_FUNC2, 1,
+				NULL, 600, 32000);
+#endif
 		/* set GPIOAO_0/1 pinmux to i2c slave */
 		// xPinmuxSet(GPIOAO_0, PIN_FUNC1);
 		// xPinmuxSet(GPIOAO_1, PIN_FUNC1);

@@ -20,10 +20,6 @@
 //#define GPIO_KEY_ID_WIFI_WAKE GPIOX_7
 
 #define ADC_KEY_ID_MENU 520
-#define ADC_KEY_ID_VOL_DEC 521
-#define ADC_KEY_ID_VOL_INC 522
-#define ADC_KEY_ID_ESC 523
-#define ADC_KEY_ID_HOME 524
 
 static void vGpioKeyCallBack(struct xReportEvent event)
 {
@@ -71,7 +67,7 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 };
 
 struct xAdcKeyInfo adcKeyInfo[] = {
-	ADC_KEY_INFO(ADC_KEY_ID_MENU, 2048, SARADC_CH2, EVENT_SHORT, vAdcKeyCallBack, NULL),
+	ADC_KEY_INFO(ADC_KEY_ID_MENU, 0, SARADC_CH1, EVENT_SHORT, vAdcKeyCallBack, NULL),
 };
 
 void vKeyPadInit(void)

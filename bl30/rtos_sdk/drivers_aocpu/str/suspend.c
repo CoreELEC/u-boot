@@ -312,6 +312,9 @@ static void vSTRTask(void *pvParameters)
 			case HDMI_RX_WAKEUP:
 				exit_reason = HDMI_RX_WAKEUP;
 				break;
+			case UART_RX_WAKEUP:
+				exit_reason = UART_RX_WAKEUP;
+				break;
 			default:
 				break;
 			}

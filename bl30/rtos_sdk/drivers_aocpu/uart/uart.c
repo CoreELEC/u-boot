@@ -8,7 +8,12 @@
 #include "uart.h"
 #include "register.h"
 #include "soc.h"
+#include "interrupt.h"
+#include "suspend.h"
 #include <stdio.h>
+#ifdef CONFIG_SOC_A4
+#include "uart-plat.h"
+#endif
 
 
 //#define UART_PORT_CONS UART_B_WFIFO
@@ -25,6 +30,8 @@
 #define UART_STATUS (3 << 2)
 #define UART_MISC (4 << 2)
 #define UART_REG5 (5 << 2)
+
+#define UART_MODE_MASK_2WIRE (1<<15)
 #define UART_MODE_MASK_STP_1BIT (0 << 16)
 #define UART_MODE_MASK_CHAR_8BIT (0 << 20)
 #define UART_MODE_MASK_TX_EN (1 << 12)
@@ -34,6 +41,7 @@
 #define UART_MODE_MASK_CLR_ERR (1 << 24)
 #define UART_CTRL_USE_XTAL_CLK (1 << 24)
 #define UART_CTRL_USE_NEW_BAUD_RATE (1 << 23)
+#define UART_CTRL_XTAL_CLK_24M (1 << 26)
 #define UART_CTRL_XTAL_CLK_DIV2		(1<<27)
 
 #define UART_MISC_CTS_FILTER		(1<<27)
@@ -46,10 +54,11 @@
 
 #define P_UART(uart_base, reg) (uart_base + reg)
 #define P_UART_WFIFO(uart_base) P_UART(uart_base, UART_WFIFO)
-#define P_UART_REG5(uart_base) P_UART(uart_base, UART_REG5)
+#define P_UART_RFIFO(uart_base) P_UART(uart_base, UART_RFIFO)
 #define P_UART_CTRL(uart_base) P_UART(uart_base, UART_CTRL)
 #define P_UART_STATUS(uart_base) P_UART(uart_base, UART_STATUS)
 #define P_UART_MISC(uart_base) P_UART(uart_base, UART_MISC)
+#define P_UART_REG5(uart_base) P_UART(uart_base, UART_REG5)
 
 static int prvUartTxIsFull(void)
 {
@@ -99,16 +108,16 @@ void vUartTxStart(void)
 
 int uart_reg[6];
 
-void vUart_Debug(void)
+void vUart_Debug(uint32_t RegBase)
 {
-	uart_reg[2] = REG32(P_UART_CTRL(UART_PORT_CONS));
-	printf("reg2 contrl 0x%x = %x\n", P_UART_CTRL(UART_PORT_CONS), uart_reg[2]);
-	uart_reg[3] = REG32(P_UART_STATUS(UART_PORT_CONS));
-	printf("reg3 status 0x%x = %x\n", P_UART_STATUS(UART_PORT_CONS), uart_reg[3]);
-	uart_reg[4] = REG32(P_UART_MISC(UART_PORT_CONS));
-	printf("reg4 misc 0x%x = %x\n", P_UART_MISC(UART_PORT_CONS), uart_reg[4]);
-	uart_reg[5] = REG32(P_UART_REG5(UART_PORT_CONS));
-	printf("reg5 0x%x = %x\n", P_UART_REG5(UART_PORT_CONS), uart_reg[5]);
+	uart_reg[2] = REG32(P_UART_CTRL(RegBase));
+	printf("reg2 contrl 0x%x = %x\n", P_UART_CTRL(RegBase), uart_reg[2]);
+	uart_reg[3] = REG32(P_UART_STATUS(RegBase));
+	printf("reg3 status 0x%x = %x\n", P_UART_STATUS(RegBase), uart_reg[3]);
+	uart_reg[4] = REG32(P_UART_MISC(RegBase));
+	printf("reg4 misc 0x%x = %x\n", P_UART_MISC(RegBase), uart_reg[4]);
+	uart_reg[5] = REG32(P_UART_REG5(RegBase));
+	printf("reg5 0x%x = %x\n", P_UART_REG5(RegBase), uart_reg[5]);
 }
 
 void vUartChangeBaudrate_suspend(unsigned long source, unsigned long baud)
@@ -168,3 +177,117 @@ long lUartTxReady(void)
 void vUartInit(void)
 {
 }
+
+#ifdef CONFIG_UART_WAKEUP
+
+static uint32_t UartWakeupRegBase = UART_PORT_WAKEUP_REG_BASE;
+static uint32_t UartWakeupIrq = UART_PORT_WAKEUP_IRQ;
+
+void vUartWakeupMatchHandler(void)
+{
+	uint32_t buf[4] = {0};
+	int ch;
+
+	while (REG32(P_UART_STATUS(UartWakeupRegBase)) & 0xff) {
+		ch = REG32(P_UART_RFIFO(UartWakeupRegBase));
+		/* Todo: set the match string,then wake up  sample is "w" */
+		printf("%s : ch=%x\n", __func__, ch);
+		if ((ch & 0xff) == 'w') {
+			buf[0] = UART_RX_WAKEUP;
+			STR_Wakeup_src_Queue_Send_FromISR(buf);
+			DisableIrq(UartWakeupIrq);
+			return;
+		}
+	}
+}
+
+void vUartWakeupInit(uint16_t GpioRx, uint16_t GpioTx,
+		     enum PinMuxType func, uint8_t reinit,
+		     void (*vIRHandler)(void), uint32_t baudrate, uint32_t source)
+{
+	int ch;
+	uint32_t baud_para = 0;
+
+	/* Todo: set the fix pinmux */
+	if (xPinmuxSet(GpioRx, func)) {
+		printf("%s :%d uart rx pinmux setting error\n", __func__, __LINE__);
+		return;
+	}
+
+	if (xPinmuxSet(GpioTx, func)) {
+		printf("%s :%d uart tx pinmux setting error\n", __func__, __LINE__);
+		return;
+	}
+
+	/* todo:  if uart is not use before,you should turn on this code */
+	if (reinit) {
+		REG32(P_UART_CTRL(UartWakeupRegBase)) = UART_STP_BIT |
+							UART_PRTY_BIT |
+							UART_CHAR_LEN |
+							UART_MODE_MASK_RST_TX |
+							UART_MODE_MASK_RST_RX |
+							UART_MODE_MASK_CLR_ERR |
+							UART_MODE_MASK_TX_EN |
+							UART_MODE_MASK_RX_EN |
+							UART_MODE_MASK_2WIRE;
+
+		if (source == 24000000) {
+			baud_para = (source / 2 + baudrate / 2) / baudrate - 1;
+			REG32(P_UART_REG5(UartWakeupRegBase)) = baud_para |
+								UART_CTRL_USE_NEW_BAUD_RATE |
+								UART_CTRL_USE_XTAL_CLK |
+								UART_CTRL_XTAL_CLK_DIV2;
+		} else if (source == 32000) {
+			baud_para = (source / 2 + baudrate / 2) / baudrate - 1;
+			REG32(P_UART_REG5(UartWakeupRegBase)) = baud_para |
+								UART_CTRL_USE_NEW_BAUD_RATE |
+								UART_CTRL_USE_XTAL_CLK |
+								UART_CTRL_XTAL_CLK_DIV2;
+		} else {
+			baud_para = ((source * 10 / (baudrate * 4) + 5) / 10) - 1;
+			/* recommend from VLSI */
+			REG32(P_UART_MISC(UartWakeupRegBase)) |= UART_MISC_RX_FILTER |
+								 UART_MISC_CTS_FILTER;
+
+			REG32(P_UART_REG5(UartWakeupRegBase)) = baud_para |
+								UART_CTRL_USE_NEW_BAUD_RATE;
+		}
+
+		ch = REG32(P_UART_CTRL(UartWakeupRegBase));
+		ch &= ~(UART_MODE_MASK_RST_TX | UART_MODE_MASK_RST_RX | UART_MODE_MASK_CLR_ERR);
+		REG32(P_UART_CTRL(UartWakeupRegBase)) = ch;
+	}
+
+	ch = REG32(P_UART_CTRL(UartWakeupRegBase));
+	ch |= (1 << 27);
+	REG32(P_UART_CTRL(UartWakeupRegBase)) = ch;
+
+	ch = REG32(P_UART_MISC(UartWakeupRegBase));
+	ch &= 0xffffff00;
+	ch |= (1 << 0);
+	REG32(P_UART_MISC(UartWakeupRegBase)) = ch;
+
+	if (vIRHandler) {
+		RegisterIrq(UartWakeupIrq, 2, vIRHandler);
+		EnableIrq(UartWakeupIrq);
+	}
+
+#ifdef CONFIG_SOC_A4
+	UART_AO_WakeUp_Setting();
+#endif
+	/* vUart_Debug(UartWakeupRegBase); */
+}
+
+void vUartWakeupDeint(void (*vIRHandler)(void))
+{
+	if (vIRHandler) {
+		DisableIrq(UartWakeupIrq);
+		UnRegisterIrq(UartWakeupIrq);
+	}
+
+	REG32(P_UART_CTRL(UartWakeupRegBase)) = uart_reg[2];
+	REG32(P_UART_STATUS(UartWakeupRegBase)) = uart_reg[3];
+	REG32(P_UART_MISC(UartWakeupRegBase)) = uart_reg[4];
+	REG32(P_UART_REG5(UartWakeupRegBase)) = uart_reg[5];
+}
+#endif

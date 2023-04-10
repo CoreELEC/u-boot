@@ -4,3 +4,11 @@
 
 config UART
 	bool "UART Driver"
+
+if UART
+config UART_WAKEUP
+	bool "UART Wake up Function"
+	help
+	    help select uart wake up function setting.
+
+endif # UART

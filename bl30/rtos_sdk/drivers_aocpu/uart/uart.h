@@ -10,29 +10,40 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <stdint.h>
+#include "gpio.h"
 
-void vUartInit(void);
+extern void vUartInit(void);
 
-int vUartPuts(const char *s);
+extern int vUartPuts(const char *s);
 
-void vUartTxFlush(void);
+extern void vUartTxFlush(void);
 
-void vUartPutc(const char c);
+extern void vUartPutc(const char c);
 
-void vUartTxStart(void);
+extern void vUartTxStart(void);
 
-void vUartTxStop(void);
+extern void vUartTxStop(void);
 
-long lUartTxReady(void);
+extern long lUartTxReady(void);
 
-void vUartWriteChar(char c);
+extern void vUartWriteChar(char c);
 
-void vUart_Debug(void);
+extern void vUart_Debug(uint32_t RegBase);
 
-void vUartChangeBaudrate_suspend(unsigned long source, unsigned long baud);
+extern void vUartChangeBaudrate_suspend(unsigned long source, unsigned long baud);
 
-void vUartChangeBaudrate_resume(unsigned long baud);
+extern void vUartChangeBaudrate_resume(unsigned long baud);
 
+extern void vUartWakeupMatchHandler(void);
+
+extern void vUartWakeupNoMatchHandler(void);
+
+extern void vUartWakeupInit(uint16_t GpioRx, uint16_t GpioTx,
+			    enum PinMuxType func, uint8_t reinit,
+			    void (*vIRHandler)(void), uint32_t baudrate, uint32_t source);
+
+extern void vUartWakeupDeint(void (*vIRHandler)(void));
 #ifdef __cplusplus
 }
 #endif

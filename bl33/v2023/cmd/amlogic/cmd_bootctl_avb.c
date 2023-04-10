@@ -7,6 +7,9 @@
 #include <command.h>
 #include <env.h>
 #include <malloc.h>
+#ifdef CONFIG_AML_MTD
+#include <linux/mtd/mtd.h>
+#endif
 #include <asm/byteorder.h>
 #include <config.h>
 #include <asm/amlogic/arch/io.h>
@@ -14,19 +17,12 @@
 #include <amlogic/libavb/libavb.h>
 #include <version.h>
 #include <amlogic/storage.h>
-#include <fastboot.h>
-#include <u-boot/sha1.h>
-#include <asm/amlogic/arch/efuse.h>
 #include <amlogic/emmc_partitions.h>
-#if (IS_ENABLED(CONFIG_UNIFY_BOOTLOADER))
+#ifdef CONFIG_UNIFY_BOOTLOADER
 #include "cmd_bootctl_wrapper.h"
 #endif
 #include "cmd_bootctl_utils.h"
 #include <amlogic/store_wrapper.h>
-
-#if defined(CONFIG_EFUSE_OBJ_API) && defined(CONFIG_CMD_EFUSE)
-extern efuse_obj_field_t efuse_field;
-#endif//#ifdef CONFIG_EFUSE_OBJ_API
 
 #ifdef CONFIG_BOOTLOADER_CONTROL_BLOCK
 
@@ -43,7 +39,6 @@ extern efuse_obj_field_t efuse_field;
 #define WIPE_PACKAGE_OFFSET_IN_MISC 16 * 1024
 #define SYSTEM_SPACE_OFFSET_IN_MISC 32 * 1024
 #define SYSTEM_SPACE_SIZE_IN_MISC 32 * 1024
-
 
 #define AB_METADATA_MISC_PARTITION_OFFSET 2048
 
@@ -131,16 +126,16 @@ struct bootloader_message_ab {
 typedef struct slot_metadata {
 	// Slot priority with 15 meaning highest priority, 1 lowest
 	// priority and 0 the slot is unbootable.
-	uint8_t priority : 4;
+	u8 priority : 4;
 	// Number of times left attempting to boot this slot.
-	uint8_t tries_remaining : 3;
+	u8 tries_remaining : 3;
 	// 1 if this slot has booted successfully, 0 otherwise.
-	uint8_t successful_boot : 1;
+	u8 successful_boot : 1;
 	// 1 if this slot is corrupted from a dm-verity corruption, 0
 	// otherwise.
-	uint8_t verity_corrupted : 1;
+	u8 verity_corrupted : 1;
 	// Reserved for further use.
-	uint8_t reserved : 7;
+	u8 reserved : 7;
 } slot_metadata;
 
 /* Bootloader Control AB
@@ -155,30 +150,32 @@ typedef struct bootloader_control {
 	// NUL terminated active slot suffix.
 	char slot_suffix[4];
 	// Bootloader Control AB magic number (see BOOT_CTRL_MAGIC).
-	uint32_t magic;
+	u32 magic;
 	// Version of struct being used (see BOOT_CTRL_VERSION).
-	uint8_t version;
+	u8 version;
 	// Number of slots being managed.
-	uint8_t nb_slot : 3;
+	u8 nb_slot : 3;
 	// Number of times left attempting to boot recovery.
-	uint8_t recovery_tries_remaining : 3;
+	u8 recovery_tries_remaining : 3;
 	// Status of any pending snapshot merge of dynamic partitions.
-	uint8_t merge_status : 3;
+	u8 merge_status : 3;
 	// Ensure 4-bytes alignment for slot_info field.
-	uint8_t roll_flag;
+	u8 roll_flag;
 	// Per-slot information.  Up to 4 slots.
 	struct slot_metadata slot_info[4];
 	// Reserved for further use.
-	uint8_t reserved1[8];
+	u8 reserved1[8];
 	// CRC32 of all 28 bytes preceding this field (little endian
 	// format).
-	uint32_t crc32_le;
-}bootloader_control;
+	u32 crc32_le;
+} bootloader_control;
 
 #define MISC_VIRTUAL_AB_MESSAGE_VERSION 2
 #define MISC_VIRTUAL_AB_MAGIC_HEADER 0x56740AB0
 
-unsigned int kDefaultBootAttempts = 7;
+#ifndef CONFIG_UNIFY_BOOTLOADER
+unsigned int kDefaultBootAttempts = 4;
+#endif
 
 /* Magic for the A/B struct when serialized. */
 #define AVB_AB_MAGIC "\0AB0"
@@ -193,30 +190,30 @@ unsigned int kDefaultBootAttempts = 7;
 
 /* Maximum values for slot data */
 #define AVB_AB_MAX_PRIORITY 15
-#define AVB_AB_MAX_TRIES_REMAINING 7
+#define AVB_AB_MAX_TRIES_REMAINING 4
 
 /* Struct used for recording per-slot metadata.
  *
  * When serialized, data is stored in network byte-order.
  */
 typedef struct AvbABSlotData {
-  /* Slot priority. Valid values range from 0 to AVB_AB_MAX_PRIORITY,
-   * both inclusive with 1 being the lowest and AVB_AB_MAX_PRIORITY
-   * being the highest. The special value 0 is used to indicate the
-   * slot is unbootable.
-   */
-  uint8_t priority;
+	/* Slot priority. Valid values range from 0 to AVB_AB_MAX_PRIORITY,
+	 * both inclusive with 1 being the lowest and AVB_AB_MAX_PRIORITY
+	 * being the highest. The special value 0 is used to indicate the
+	 * slot is unbootable.
+	 */
+	u8 priority;
 
-  /* Number of times left attempting to boot this slot ranging from 0
-   * to AVB_AB_MAX_TRIES_REMAINING.
-   */
-  uint8_t tries_remaining;
+	/* Number of times left attempting to boot this slot ranging from 0
+	 * to AVB_AB_MAX_TRIES_REMAINING.
+	 */
+	u8 tries_remaining;
 
-  /* Non-zero if this slot has booted successfully, 0 otherwise. */
-  uint8_t successful_boot;
+	/* Non-zero if this slot has booted successfully, 0 otherwise. */
+	u8 successful_boot;
 
-  /* Reserved for future use. */
-  uint8_t reserved[1];
+	/* Reserved for future use. */
+	u8 reserved[1];
 } AvbABSlotData;
 
 /* Struct used for recording A/B metadata.
@@ -224,31 +221,32 @@ typedef struct AvbABSlotData {
  * When serialized, data is stored in network byte-order.
  */
 typedef struct AvbABData {
-  /* Magic number used for identification - see AVB_AB_MAGIC. */
-  uint8_t magic[AVB_AB_MAGIC_LEN];
+	/* Magic number used for identification - see AVB_AB_MAGIC. */
+	u8 magic[AVB_AB_MAGIC_LEN];
 
-  /* Version of on-disk struct - see AVB_AB_{MAJOR,MINOR}_VERSION. */
-  uint8_t version_major;
-  uint8_t version_minor;
+	/* Version of on-disk struct - see AVB_AB_{MAJOR,MINOR}_VERSION. */
+	u8 version_major;
+	u8 version_minor;
 
-  /* Padding to ensure |slots| field start eight bytes in. */
-  uint8_t reserved1[2];
+	/* Padding to ensure |slots| field start eight bytes in. */
+	u8 roll_flag;
+	u8 reserved1[1];
 
-  /* Per-slot metadata. */
-  AvbABSlotData slots[2];
+	/* Per-slot metadata. */
+	AvbABSlotData slots[2];
 
-  /* Reserved for future use. */
-  uint8_t reserved2[12];
+	/* Reserved for future use. */
+	u8 reserved2[12];
 
-  /* CRC32 of all 28 bytes preceding this field. */
-  uint32_t crc32;
-}AvbABData;
+	/* CRC32 of all 28 bytes preceding this field. */
+	u32	 crc32;
+} AvbABData;
 
 #ifdef CONFIG_UNIFY_BOOTLOADER
-bootctl_func_handles vab_cmd_bootctrl_handles = {0};
+bootctl_func_handles avb_cmd_bootctrl_handles = {0};
 #endif
 
-static bool boot_info_validate(bootloader_control *info)
+static bool boot_info_validate_VAB(bootloader_control *info)
 {
 	if (info->magic != BOOT_CTRL_MAGIC) {
 		printf("Magic 0x%x is incorrect.\n", info->magic);
@@ -257,7 +255,7 @@ static bool boot_info_validate(bootloader_control *info)
 	return true;
 }
 
-bool boot_info_validate_normalAB(AvbABData* info)
+static bool boot_info_validate(AvbABData *info)
 {
 	if (memcmp(info->magic, AVB_AB_MAGIC, AVB_AB_MAGIC_LEN) != 0) {
 		printf("Magic %s is incorrect.\n", info->magic);
@@ -270,64 +268,47 @@ bool boot_info_validate_normalAB(AvbABData* info)
 	return true;
 }
 
-
-void boot_info_reset(bootloader_control* boot_ctrl)
+static void boot_info_reset(AvbABData *info)
 {
-	int slot;
-
-	memset(boot_ctrl, '\0', sizeof(bootloader_control));
-	memcpy(boot_ctrl->slot_suffix, "_a", 2);
-	boot_ctrl->magic = BOOT_CTRL_MAGIC;
-	boot_ctrl->version = BOOT_CTRL_VERSION;
-	boot_ctrl->nb_slot = 2;
-	boot_ctrl->roll_flag = 0;
-
-	for (slot = 0; slot < 4; ++slot) {
-		slot_metadata entry = {};
-
-		if (slot < boot_ctrl->nb_slot) {
-			entry.priority = 7;
-			entry.tries_remaining = kDefaultBootAttempts;
-			entry.successful_boot = 0;
-		} else {
-			entry.priority = 0;  // Unbootable
-			entry.tries_remaining = 0;
-			entry.successful_boot = 0;
-		}
-
-		boot_ctrl->slot_info[slot] = entry;
-	}
-	boot_ctrl->slot_info[0].successful_boot = 1;
-	boot_ctrl->recovery_tries_remaining = 0;
+	memset(info, '\0', sizeof(AvbABData));
+	memcpy(info->magic, AVB_AB_MAGIC, AVB_AB_MAGIC_LEN);
+	info->version_major = AVB_AB_MAJOR_VERSION;
+	info->version_minor = AVB_AB_MINOR_VERSION;
+	info->slots[0].priority = AVB_AB_MAX_PRIORITY;
+	info->slots[0].tries_remaining = AVB_AB_MAX_TRIES_REMAINING;
+	info->slots[0].successful_boot = 1;
+	info->slots[1].priority = AVB_AB_MAX_PRIORITY - 1;
+	info->slots[1].tries_remaining = AVB_AB_MAX_TRIES_REMAINING;
+	info->slots[1].successful_boot = 0;
 }
 
-static void dump_boot_info(bootloader_control *boot_ctrl)
+static void dump_boot_info(AvbABData *info)
 {
 #if 0
-	int slot;
+	printf("info->magic = %s\n", info->magic);
+	printf("info->version_major = %d\n", info->version_major);
+	printf("info->version_minor = %d\n", info->version_minor);
+	printf("info->slots[0].priority = %d\n", info->slots[0].priority);
+	printf("info->slots[0].tries_remaining = %d\n", info->slots[0].tries_remaining);
+	printf("info->slots[0].successful_boot = %d\n", info->slots[0].successful_boot);
+	printf("info->slots[1].priority = %d\n", info->slots[1].priority);
+	printf("info->slots[1].tries_remaining = %d\n", info->slots[1].tries_remaining);
+	printf("info->slots[1].successful_boot = %d\n", info->slots[1].successful_boot);
 
-	printf("boot_ctrl->slot_suffix = %s\n", boot_ctrl->slot_suffix);
-	printf("boot_ctrl->magic = 0x%x\n", boot_ctrl->magic);
-	printf("boot_ctrl->version = %d\n", boot_ctrl->version);
-	printf("boot_ctrl->nb_slot = %d\n", boot_ctrl->nb_slot);
-	for (slot = 0; slot < 4; ++slot) {
-		printf("boot_ctrl->slot_info[%d].priority = %d\n",
-				slot, boot_ctrl->slot_info[slot].priority);
-		printf("boot_ctrl->slot_info[%d].tries_remaining = %d\n",
-				slot, boot_ctrl->slot_info[slot].tries_remaining);
-		printf("boot_ctrl->slot_info[%d].successful_boot = %d\n",
-				slot, boot_ctrl->slot_info[slot].successful_boot);
-	}
-	printf("boot_ctrl->recovery_tries_remaining = %d\n",
-			boot_ctrl->recovery_tries_remaining);
+	printf("info->crc32 = %d\n", info->crc32);
 #endif
 }
 
-static bool slot_is_bootable(slot_metadata* slot) {
+void dump_boot_info_VAB(bootloader_control *boot_ctrl)
+{
+}
+
+static bool slot_is_bootable_VAB(slot_metadata *slot)
+{
 	return slot->tries_remaining != 0;
 }
 
-static int get_active_slot(bootloader_control *info)
+int get_active_slot_VAB(bootloader_control *info)
 {
 	if (info->slot_info[0].priority > info->slot_info[1].priority) {
 		return 0;
@@ -341,106 +322,65 @@ static int get_active_slot(bootloader_control *info)
 	}
 }
 
-static bool slot_is_bootable_normalAB(AvbABSlotData* slot) {
-  return slot->priority > 0 &&
-		 (slot->successful_boot || (slot->tries_remaining > 0));
+static bool slot_is_bootable(AvbABSlotData *slot)
+{
+	return slot->priority > 0 &&
+		(slot->successful_boot || (slot->tries_remaining > 0));
 }
 
-int get_active_slot_normalAB(AvbABData* info) {
+static int get_active_slot(AvbABData *info)
+{
 	if (info->slots[0].priority > info->slots[1].priority)
 		return 0;
 	else
 		return 1;
 }
 
-static uint32_t vab_crc32(const uint8_t *buf, size_t size)
+static int boot_info_set_active_slot(AvbABData *info, int slot)
 {
-	static uint32_t crc_table[256];
-	uint32_t ret = -1;
+	unsigned int other_slot_number;
 
-	// Compute the CRC-32 table only once.
-	if (!crc_table[1]) {
-		for (uint32_t i = 0; i < 256; ++i) {
-			uint32_t crc = i;
+	/* Make requested slot top priority, unsuccessful, and with max tries. */
+	info->slots[slot].priority = AVB_AB_MAX_PRIORITY;
+	info->slots[slot].tries_remaining = AVB_AB_MAX_TRIES_REMAINING;
+	//info->slots[slot].successful_boot = 0;
 
-			for (uint32_t j = 0; j < 8; ++j) {
-				uint32_t mask = -(crc & 1);
+	/* Ensure other slot doesn't have as high a priority. */
+	other_slot_number = 1 - slot;
+	//info->slots[other_slot_number].priority -= 1;
+	if (info->slots[other_slot_number].priority == AVB_AB_MAX_PRIORITY)
+		info->slots[other_slot_number].priority = AVB_AB_MAX_PRIORITY - 1;
 
-				crc = (crc >> 1) ^ (0xEDB88320 & mask);
-			}
-			crc_table[i] = crc;
-		}
-	}
-
-	for (size_t i = 0; i < size; ++i)
-		ret = (ret >> 8) ^ crc_table[(ret ^ buf[i]) & 0xFF];
-
-	return ~ret;
-}
-
-static int boot_info_set_active_slot(bootloader_control *bootctrl, int slot)
-{
-	int i;
-	// Set every other slot with a lower priority than the new "active" slot.
-	const unsigned int kActivePriority = 15;
-	const unsigned int kActiveTries = 6;
-
-	for (i = 0; i < bootctrl->nb_slot; ++i) {
-		if (i != slot) {
-			//bootctrl->slot_info[i].priority -= 1;
-			if (bootctrl->slot_info[i].priority >= kActivePriority)
-				bootctrl->slot_info[i].priority = kActivePriority - 1;
-		}
-		printf("bootctrl->slot_info[%d].priority = %d\n", i,
-				bootctrl->slot_info[i].priority);
-	}
-
-	// Note that setting a slot as active doesn't change the successful bit.
-	// The successful bit will only be changed by setSlotAsUnbootable().
-	bootctrl->slot_info[slot].priority = kActivePriority;
-	bootctrl->slot_info[slot].tries_remaining = kActiveTries;
-
-	printf("bootctrl->slot_info[%d].priority = %d\n", slot,
-				bootctrl->slot_info[slot].priority);
-	printf("bootctrl->slot_info[%d].tries_remaining = %d\n",
-				slot, bootctrl->slot_info[slot].tries_remaining);
-
-	// Setting the current slot as active is a way to revert the operation that
-	// set *another* slot as active at the end of an updater. This is commonly
-	// used to cancel the pending update. We should only reset the verity_corrpted
-	// bit when attempting a new slot, otherwise the verity bit on the current
-	// slot would be flip.
-	if (slot != get_active_slot(bootctrl))
-		bootctrl->slot_info[slot].verity_corrupted = 0;
-
-	dump_boot_info(bootctrl);
+	//dump_boot_info(info);
 
 	return 0;
 }
 
-static bool boot_info_load(bootloader_control *out_info, char *miscbuf)
+bool boot_info_load_VAB(bootloader_control *out_info, char *miscbuf)
 {
 	memcpy(out_info, miscbuf + AB_METADATA_MISC_PARTITION_OFFSET, sizeof(bootloader_control));
+	dump_boot_info_VAB(out_info);
+	return true;
+}
+
+static bool boot_info_load(AvbABData *out_info, char *miscbuf)
+{
+	memcpy(out_info, miscbuf + AB_METADATA_MISC_PARTITION_OFFSET, AVB_AB_DATA_SIZE);
 	dump_boot_info(out_info);
 	return true;
 }
 
-bool boot_info_load_normalAB(AvbABData *out_info, char *miscbuf)
-{
-	memcpy(out_info, miscbuf + AB_METADATA_MISC_PARTITION_OFFSET, AVB_AB_DATA_SIZE);
-	return true;
-}
-
-static bool boot_info_save(bootloader_control *info, char *miscbuf)
+static bool boot_info_save(AvbABData *info, char *miscbuf)
 {
 	char *partition = "misc";
 	int ret = 0;
 
 	printf("save boot-info\n");
-	info->crc32_le = vab_crc32((const uint8_t *)info,
-		sizeof(bootloader_control) - sizeof(uint32_t));
 
-	memcpy(miscbuf + AB_METADATA_MISC_PARTITION_OFFSET, info, sizeof(bootloader_control));
+	info->crc32 = avb_htobe32(avb_crc32((const uint8_t *)info,
+				sizeof(AvbABData) - sizeof(uint32_t)));
+
+	memcpy(miscbuf + AB_METADATA_MISC_PARTITION_OFFSET, info, AVB_AB_DATA_SIZE);
 	dump_boot_info(info);
 
 #ifdef CONFIG_AML_MTD
@@ -458,69 +398,14 @@ static bool boot_info_save(bootloader_control *info, char *miscbuf)
 	}
 #endif
 
-	ret = store_logic_write((const char *)partition, 0, MISCBUF_SIZE, (unsigned char *)miscbuf);
+	ret = store_logic_write((const char *)partition, 0, MISCBUF_SIZE,
+			(unsigned char *)miscbuf);
 	if (ret) {
 		printf("store logic write failed at %s\n", partition);
 		return false;
 	}
+
 	return true;
-}
-
-static int is_BootSame(int srcindex, int dstindex)
-{
-	int iRet = 0;
-	int ret = -1;
-	unsigned char *buffer_src = NULL;
-	unsigned char *buffer_dest = NULL;
-	const int SHA1SUMLEN = 20;
-	u8 gensum0[SHA1SUMLEN * 2];
-	u8 *gensum1 = gensum0 + SHA1SUMLEN;
-	int capacity_boot = 0;
-
-#ifdef CONFIG_MMC_MESON_GX
-	struct mmc *mmc = NULL;
-
-	if (store_get_type() == BOOT_EMMC)
-		mmc = find_mmc_device(1);
-
-	if (mmc)
-		capacity_boot = mmc->capacity_boot;
-#endif
-
-	printf("is_BootSame_capacity_boot: %x\n", capacity_boot);
-
-	buffer_src = (unsigned char *)malloc(capacity_boot);
-	if (!buffer_src) {
-		printf("ERROR! fail to allocate memory ...\n");
-		goto exit;
-	}
-	memset(buffer_src, 0, capacity_boot);
-
-	iRet = store_boot_read("bootloader", srcindex, 0, buffer_src);
-	if (iRet) {
-		printf("Fail read bootloader %d\n", srcindex);
-		goto exit;
-	}
-	sha1_csum(buffer_src, capacity_boot, gensum0);
-
-	buffer_dest = buffer_src;
-	memset(buffer_dest, 0, capacity_boot);
-	iRet = store_boot_read("bootloader", dstindex, 0, buffer_dest);
-	if (iRet) {
-		printf("Fail read bootloader %d\n", dstindex);
-		goto exit;
-	}
-	sha1_csum(buffer_dest, capacity_boot, gensum1);
-
-	ret = memcmp(gensum0, gensum1, SHA1SUMLEN);
-	printf("bootloader %d & %d %s same\n", srcindex, dstindex, ret ? "NOT" : "DO");
-
-exit:
-	if (buffer_src) {
-		free(buffer_src);
-		buffer_src = NULL;
-	}
-	return ret;
 }
 
 static int write_bootloader(int copy, int dstindex)
@@ -535,10 +420,10 @@ static int write_bootloader(int copy, int dstindex)
 
 	if (store_get_type() == BOOT_EMMC)
 		mmc = find_mmc_device(1);
-#endif
 
 	if (mmc)
 		capacity_boot = mmc->capacity_boot;
+#endif
 
 	printf("write_bootloader_capacity_boot: %x\n", capacity_boot);
 
@@ -570,8 +455,8 @@ exit:
 	return ret;
 }
 
-static int do_GetValidSlot(
-	cmd_tbl_t *cmdtp,
+static int do_GetValidSlot
+(cmd_tbl_t *cmdtp,
 	int flag,
 	int argc,
 	char * const argv[])
@@ -582,54 +467,47 @@ static int do_GetValidSlot(
 	int slot;
 	int AB_mode = 0;
 	bool bootable_a, bootable_b;
-	bool nocs_mode = false;
 
 	if (argc != 1)
 		return cmd_usage(cmdtp);
 
 	boot_info_open_partition(miscbuf);
-	boot_info_load(&boot_ctrl, miscbuf);
+	boot_info_load(&info, miscbuf);
 
-	if (!boot_info_validate(&boot_ctrl)) {
-		printf("boot-info virtual ab is invalid. Try normal ab.\n");
-		boot_info_load_normalAB(&info, miscbuf);
-		if (!boot_info_validate_normalAB(&info)) {
+	if (!boot_info_validate(&info)) {
+		printf("boot-info is invalid. Try VAB.\n");
+		boot_info_load_VAB(&boot_ctrl, miscbuf);
+		if (!boot_info_validate_VAB(&boot_ctrl)) {
 			printf("boot-info is invalid. Resetting.\n");
-			boot_info_reset(&boot_ctrl);
-			boot_info_save(&boot_ctrl, miscbuf);
+			boot_info_reset(&info);
+			boot_info_save(&info, miscbuf);
 		} else {
-			printf("update from normal ab to virtual ab\n");
+			printf("rollback from R\n");
 			AB_mode = 1;
 		}
 	}
 
 	if (AB_mode == 1) {
-		slot = get_active_slot_normalAB(&info);
+		slot = get_active_slot_VAB(&boot_ctrl);
 		printf("active slot = %d\n", slot);
-		bootable_a = slot_is_bootable_normalAB(&info.slots[0]);
-		bootable_b = slot_is_bootable_normalAB(&info.slots[1]);
-		boot_info_reset(&boot_ctrl);
-		boot_ctrl.slot_info[0].successful_boot = info.slots[0].successful_boot;
-		boot_ctrl.slot_info[1].successful_boot = info.slots[1].successful_boot;
-		boot_info_set_active_slot(&boot_ctrl, slot);
-		boot_info_save(&boot_ctrl, miscbuf);
-		slot = get_active_slot(&boot_ctrl);
+		printf("boot_ctrl.roll_flag = %d\n", boot_ctrl.roll_flag);
+		bootable_a = slot_is_bootable_VAB(&boot_ctrl.slot_info[0]);
+		bootable_b = slot_is_bootable_VAB(&boot_ctrl.slot_info[1]);
+		boot_info_reset(&info);
+		boot_info_set_active_slot(&info, slot);
+		info.roll_flag = boot_ctrl.roll_flag;
+		boot_info_save(&info, miscbuf);
 	} else {
-		slot = get_active_slot(&boot_ctrl);
+		slot = get_active_slot(&info);
 		printf("active slot = %d\n", slot);
-		bootable_a = slot_is_bootable(&boot_ctrl.slot_info[0]);
-		bootable_b = slot_is_bootable(&boot_ctrl.slot_info[1]);
+		bootable_a = slot_is_bootable(&info.slots[0]);
+		bootable_b = slot_is_bootable(&info.slots[1]);
 	}
 
 	if (dynamic_partition)
 		env_set("partition_mode", "dynamic");
 	else
 		env_set("partition_mode", "normal");
-
-	if (gpt_partition)
-		env_set("gpt_mode", "true");
-	else
-		env_set("gpt_mode", "false");
 
 	if (vendor_boot_partition) {
 		env_set("vendor_boot_mode", "true");
@@ -654,27 +532,13 @@ static int do_GetValidSlot(
 			}
 			return 0;
 		} else if (bootable_b) {
-			printf("slot a is unbootable, back to b\n");
-			boot_ctrl.roll_flag = 1;
-			boot_info_save(&boot_ctrl, miscbuf);
+			write_bootloader(2, 0);
+			info.roll_flag = 1;
+			boot_info_save(&info, miscbuf);
 			run_command("set_active_slot b", 0);
 			env_set("update_env", "1");
 			env_set("reboot_status", "reboot_next");
-
-#if defined(CONFIG_EFUSE_OBJ_API) && defined(CONFIG_CMD_EFUSE)
-			run_command("efuse_obj get FEAT_DISABLE_EMMC_USER", 0);
-			if (*efuse_field.data == 1)
-				nocs_mode = true;
-#endif//#ifdef CONFIG_EFUSE_OBJ_API
-			if (gpt_partition || nocs_mode) {
-				printf("gpt or nocs mode\n");
-				write_bootloader(2, 1);
-				env_set("expect_index", "1");
-			} else {
-				printf("normal mode\n");
-				write_bootloader(2, 0);
-				env_set("expect_index", "0");
-			}
+			env_set("expect_index", "0");
 			run_command("saveenv", 0);
 			run_command("reset", 0);
 		} else {
@@ -697,27 +561,13 @@ static int do_GetValidSlot(
 			}
 			return 0;
 		} else if (bootable_a) {
-			printf("slot b is unbootable, back to a\n");
-			boot_ctrl.roll_flag = 1;
-			boot_info_save(&boot_ctrl, miscbuf);
+			write_bootloader(1, 0);
+			info.roll_flag = 1;
+			boot_info_save(&info, miscbuf);
 			run_command("set_active_slot a", 0);
 			env_set("update_env", "1");
 			env_set("reboot_status", "reboot_next");
-
-#if defined(CONFIG_EFUSE_OBJ_API) && defined(CONFIG_CMD_EFUSE)
-			run_command("efuse_obj get FEAT_DISABLE_EMMC_USER", 0);
-			if (*efuse_field.data == 1)
-				nocs_mode = true;
-#endif//#ifdef CONFIG_EFUSE_OBJ_API
-			if (gpt_partition || nocs_mode) {
-				printf("gpt or nocs mode\n");
-				write_bootloader(2, 1);
-				env_set("expect_index", "1");
-			} else {
-				printf("normal mode\n");
-				write_bootloader(1, 0);
-				env_set("expect_index", "0");
-			}
+			env_set("expect_index", "0");
 			run_command("saveenv", 0);
 			run_command("reset", 0);
 		} else {
@@ -728,14 +578,14 @@ static int do_GetValidSlot(
 	return 0;
 }
 
-static int do_SetActiveSlot(
-	cmd_tbl_t *cmdtp,
+static int do_SetActiveSlot
+(cmd_tbl_t *cmdtp,
 	int flag,
 	int argc,
 	char * const argv[])
 {
 	char miscbuf[MISCBUF_SIZE] = {0};
-	bootloader_control info;
+	AvbABData info;
 
 	if (argc != 2)
 		return cmd_usage(cmdtp);
@@ -776,9 +626,7 @@ static int do_SetActiveSlot(
 	boot_info_save(&info, miscbuf);
 
 	printf("info.roll_flag = %d\n", info.roll_flag);
-
-	if (!gpt_partition && info.roll_flag == 1) {
-		printf("if null gpt, write dtb back when rollback\n");
+	if (info.roll_flag == 1) {
 		if (run_command("imgread dtb ${boot_part} ${dtb_mem_addr}", 0)) {
 			printf("Fail in load dtb\n");
 		} else {
@@ -790,6 +638,64 @@ static int do_SetActiveSlot(
 	return 0;
 }
 
+static int do_SetUpdateTries
+(cmd_tbl_t *cmdtp,
+	int flag,
+	int argc,
+	char * const argv[])
+{
+	char miscbuf[MISCBUF_SIZE] = {0};
+	AvbABData info;
+	int slot;
+	bool bootable_a, bootable_b;
+	int update_flag = 0;
+
+	if (has_boot_slot == 0) {
+		printf("device is not ab mode\n");
+		return -1;
+	}
+
+	boot_info_open_partition(miscbuf);
+	boot_info_load(&info, miscbuf);
+
+	if (!boot_info_validate(&info)) {
+		printf("boot-info is invalid. Resetting.\n");
+		boot_info_reset(&info);
+		boot_info_save(&info, miscbuf);
+	}
+
+	slot = get_active_slot(&info);
+	bootable_a = slot_is_bootable(&info.slots[0]);
+	bootable_b = slot_is_bootable(&info.slots[1]);
+
+	if (slot == 0) {
+		if (bootable_a) {
+			if (info.slots[0].successful_boot == 0) {
+				info.slots[0].tries_remaining -= 1;
+				update_flag = 1;
+			}
+		}
+	}
+
+	if (slot == 1) {
+		if (bootable_b) {
+			if (info.slots[1].successful_boot == 0) {
+				info.slots[1].tries_remaining -= 1;
+				update_flag = 1;
+			}
+		}
+	}
+
+	if (update_flag == 1)
+		boot_info_save(&info, miscbuf);
+
+	printf("%s info.roll_flag = %d\n",  __func__, info.roll_flag);
+	if (info.roll_flag == 1)
+		env_set("rollback_flag", "1");
+
+	return 0;
+}
+
 static int do_SetRollFlag
 (cmd_tbl_t *cmdtp,
 	int flag,
@@ -797,10 +703,7 @@ static int do_SetRollFlag
 	char * const argv[])
 {
 	char miscbuf[MISCBUF_SIZE] = {0};
-	bootloader_control info;
-
-	if (argc != 2)
-		return cmd_usage(cmdtp);
+	AvbABData info;
 
 	if (has_boot_slot == 0) {
 		printf("device is not ab mode\n");
@@ -823,143 +726,6 @@ static int do_SetRollFlag
 	boot_info_save(&info, miscbuf);
 
 	printf("set info.roll_flag = %d\n", info.roll_flag);
-
-	return 0;
-}
-
-static int do_SetUpdateTries(
-	cmd_tbl_t *cmdtp,
-	int flag,
-	int argc,
-	char * const argv[])
-{
-	char miscbuf[MISCBUF_SIZE] = {0};
-	bootloader_control boot_ctrl;
-	bool bootable_a, bootable_b;
-	int slot;
-	int ret = -1;
-	bool nocs_mode = false;
-	int update_flag = 0;
-
-	if (has_boot_slot == 0) {
-		printf("device is not ab mode\n");
-		return -1;
-	}
-
-	boot_info_open_partition(miscbuf);
-	boot_info_load(&boot_ctrl, miscbuf);
-
-	if (!boot_info_validate(&boot_ctrl)) {
-		printf("boot-info is invalid. Resetting\n");
-		boot_info_reset(&boot_ctrl);
-		boot_info_save(&boot_ctrl, miscbuf);
-	}
-
-	slot = get_active_slot(&boot_ctrl);
-	bootable_a = slot_is_bootable(&boot_ctrl.slot_info[0]);
-	bootable_b = slot_is_bootable(&boot_ctrl.slot_info[1]);
-
-	if (slot == 0) {
-		if (bootable_a) {
-			if (boot_ctrl.slot_info[0].successful_boot == 0) {
-				boot_ctrl.slot_info[0].tries_remaining -= 1;
-				update_flag = 1;
-			}
-		}
-	}
-
-	if (slot == 1) {
-		if (bootable_b) {
-			if (boot_ctrl.slot_info[1].successful_boot == 0) {
-				boot_ctrl.slot_info[1].tries_remaining -= 1;
-				update_flag = 1;
-			}
-		}
-	}
-
-	if (update_flag == 1)
-		boot_info_save(&boot_ctrl, miscbuf);
-
-	printf("do_SetUpdateTries boot_ctrl.roll_flag = %d\n", boot_ctrl.roll_flag);
-	if (boot_ctrl.roll_flag == 1) {
-		env_set("rollback_flag", "1");
-	}
-
-#if defined(CONFIG_EFUSE_OBJ_API) && defined(CONFIG_CMD_EFUSE)
-				run_command("efuse_obj get FEAT_DISABLE_EMMC_USER", 0);
-				if (*efuse_field.data == 1)
-					nocs_mode = true;
-#endif//#ifdef CONFIG_EFUSE_OBJ_API
-
-	if (boot_ctrl.slot_info[slot].successful_boot == 1) {
-		if (gpt_partition || nocs_mode) {
-			char *bootloaderindex = NULL;
-
-			printf("current slot %d is successful_boot\n", slot);
-			bootloaderindex = env_get("forUpgrade_bootloaderIndex");
-			printf("bootloaderindex: %s\n", bootloaderindex);
-			/*if boot from boot1, means boot0 is bab, don't need to copyback*/
-			if (bootloaderindex && strcmp(bootloaderindex, "2")) {
-				printf("check if boot0 = boot1\n");
-				ret = is_BootSame(1, 2);
-				if (ret) {
-					printf("boot0 doesn't = boot1, write boot0 to boot1\n");
-					write_bootloader(1, 2);
-					printf("after write boot0 to boot1\n");
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-static int do_CopySlot(
-	cmd_tbl_t *cmdtp,
-	int flag,
-	int argc,
-	char * const argv[])
-{
-	char miscbuf[MISCBUF_SIZE] = {0};
-	bootloader_control boot_ctrl;
-	int copy = -1;
-	int dest = -1;
-
-	boot_info_open_partition(miscbuf);
-	boot_info_load(&boot_ctrl, miscbuf);
-
-	if (!boot_info_validate(&boot_ctrl)) {
-		printf("boot-info is invalid. Resetting\n");
-		boot_info_reset(&boot_ctrl);
-		boot_info_save(&boot_ctrl, miscbuf);
-	}
-
-	if (strcmp(argv[1], "1") == 0)
-		copy = 1;
-	else if (strcmp(argv[1], "2") == 0)
-		copy = 2;
-	else if (strcmp(argv[1], "0") == 0)
-		copy = 0;
-
-	if (strcmp(argv[2], "1") == 0)
-		dest = 1;
-	else if (strcmp(argv[2], "2") == 0)
-		dest = 2;
-	else if (strcmp(argv[2], "0") == 0)
-		dest = 0;
-
-	if (copy == 1) {
-		if (boot_ctrl.slot_info[0].successful_boot == 1)
-			write_bootloader(copy, dest);
-	} else if (copy == 2) {
-		if (boot_ctrl.slot_info[1].successful_boot == 1) {
-			write_bootloader(copy, dest);
-		} else {
-			env_set("update_env", "1");
-			env_set("reboot_status", "reboot_next");
-			env_set("expect_index", "2");
-			run_command("saveenv", 0);
-		}
-	}
 
 	return 0;
 }
@@ -1013,67 +779,57 @@ static int do_UpdateDt(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]
 #endif /* CONFIG_BOOTLOADER_CONTROL_BLOCK */
 
 #ifdef CONFIG_UNIFY_BOOTLOADER
-bootctl_func_handles *get_bootctl_cmd_func_vab(void)
+bootctl_func_handles *get_bootctl_cmd_func_avb(void)
 {
-	vab_cmd_bootctrl_handles.do_GetValidSlot_func = do_GetValidSlot;
-	vab_cmd_bootctrl_handles.do_SetActiveSlot_func = do_SetActiveSlot;
-	vab_cmd_bootctrl_handles.do_SetRollFlag_func = do_SetRollFlag;
-	vab_cmd_bootctrl_handles.do_CopySlot_func = do_CopySlot;
-	vab_cmd_bootctrl_handles.do_SetUpdateTries_func = do_SetUpdateTries;
-	vab_cmd_bootctrl_handles.do_GetSystemMode_func = do_GetSystemMode;
-	vab_cmd_bootctrl_handles.do_GetAvbMode_func = do_GetAvbMode;
-	vab_cmd_bootctrl_handles.do_UpdateDt_func = do_UpdateDt;
+	avb_cmd_bootctrl_handles.do_GetValidSlot_func = do_GetValidSlot;
+	avb_cmd_bootctrl_handles.do_SetActiveSlot_func = do_SetActiveSlot;
+	avb_cmd_bootctrl_handles.do_SetRollFlag_func = do_SetRollFlag;
+	avb_cmd_bootctrl_handles.do_SetUpdateTries_func = do_SetUpdateTries;
+	avb_cmd_bootctrl_handles.do_GetSystemMode_func = do_GetSystemMode;
+	avb_cmd_bootctrl_handles.do_GetAvbMode_func = do_GetAvbMode;
+	avb_cmd_bootctrl_handles.do_UpdateDt_func = do_UpdateDt;
 
-	return &vab_cmd_bootctrl_handles;
+	return &avb_cmd_bootctrl_handles;
 }
-
 #else
-
-U_BOOT_CMD(
-	get_valid_slot, 2, 0, do_GetValidSlot,
+U_BOOT_CMD
+(get_valid_slot, 2, 0, do_GetValidSlot,
 	"get_valid_slot",
 	"\nThis command will choose valid slot to boot up which saved in misc\n"
 	"partition by mark to decide whether execute command!\n"
 	"So you can execute command: get_valid_slot"
 );
 
-U_BOOT_CMD(
-	set_active_slot, 2, 1, do_SetActiveSlot,
+U_BOOT_CMD
+(set_active_slot, 2, 1, do_SetActiveSlot,
 	"set_active_slot",
 	"\nThis command will set active slot\n"
 	"So you can execute command: set_active_slot a"
 );
 
-U_BOOT_CMD(
-	set_roll_flag, 2, 1, do_SetRollFlag,
+U_BOOT_CMD
+(set_roll_flag, 2, 1, do_SetRollFlag,
 	"set_roll_flag",
 	"\nThis command will set active slot\n"
 	"So you can execute command: set_active_slot a"
 );
 
 U_BOOT_CMD
-(copy_slot_bootable, 3, 1, do_CopySlot,
-	"copy_slot_bootable",
-	"\nThis command will set active slot\n"
-	"So you can execute command: copy_slot_bootable 2 1"
-);
-
-U_BOOT_CMD(
-	update_tries, 2, 0, do_SetUpdateTries,
+(update_tries, 2, 0, do_SetUpdateTries,
 	"update_tries",
 	"\nThis command will change tries_remaining in misc\n"
 	"So you can execute command: update_tries"
 );
 
-U_BOOT_CMD(
-	get_system_as_root_mode, 1,	0, do_GetSystemMode,
+U_BOOT_CMD
+(get_system_as_root_mode, 1,	0, do_GetSystemMode,
 	"get_system_as_root_mode",
 	"\nThis command will get system_as_root_mode\n"
 	"So you can execute command: get_system_as_root_mode"
 );
 
-U_BOOT_CMD(
-	get_avb_mode, 1,	0, do_GetAvbMode,
+U_BOOT_CMD
+(get_avb_mode, 1,	0, do_GetAvbMode,
 	"get_avb_mode",
 	"\nThis command will get avb mode\n"
 	"So you can execute command: get_avb_mode"

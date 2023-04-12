@@ -14,7 +14,11 @@
 #include "uart.h"
 #endif
 
+#if CONFIG_RISCV
+#define HAS_FLOAT 0
+#else
 #define HAS_FLOAT 1
+#endif
 #define MAX_BUFFER_LEN	512
 static char printbuffer[MAX_BUFFER_LEN];
 

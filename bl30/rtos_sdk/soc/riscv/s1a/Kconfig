@@ -1,0 +1,10 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_S1A
+	bool "S1A"
+	select RISCV
+	help
+	  Enable S1A SOC of RISCV.
+

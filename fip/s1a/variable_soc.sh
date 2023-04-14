@@ -167,3 +167,12 @@ DDR_FW_NAME="aml_ddr.fw"
 
 CONFIG_NEED_BL32=y
 ADVANCED_BOOTLOADER=1
+
+declare CONFIG_RTOS_SDK_ENABLE=1
+declare CONFIG_SOC_NAME="s1a"
+
+if [ "${BL30_SELECT}" == "s1a_skt" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="s1a_skt"
+else
+	declare CONFIG_BOARD_PACKAGE_NAME="s1a_skt"
+fi

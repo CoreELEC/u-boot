@@ -690,6 +690,11 @@ function bin_path_parser() {
 				echo "export CONFIG_FASTBOOT_WRITING_CMD"
 				export CONFIG_FASTBOOT_WRITING_CMD=1
 				continue ;;
+			--signpipe)
+                                CONFIG_SIGNPIPE=1
+                                echo "export CONFIG_SIGNPIPE"
+                                export CONFIG_SIGNPIPE=1
+                                continue ;;
 			--avb2-recovery)
 				CONFIG_AVB2_RECOVERY=1
 				echo "export CONFIG_AVB2_RECOVERY"

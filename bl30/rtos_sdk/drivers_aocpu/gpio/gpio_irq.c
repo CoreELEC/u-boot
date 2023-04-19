@@ -149,16 +149,16 @@ void vRestoreGpioIrqReg(void)
 		REG32((unsigned long)(GPIO_EE_IRQ_BASE + 0x04 * ucIndex)) =
 			GpioIrqRegBackup[ucIndex];
 
-/* old platform like t5/t5d */
-#ifdef GPIO_AO_IRQ_BASE
-	REG32((unsigned long)GPIO_AO_IRQ_BASE) = GpioIrqRegAOBackup;
-#endif
-
 /* platform a4 */
 #ifdef GPIO_AO_EXT_IRQ_NUM
 	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
 		REG32((unsigned long)(GPIO_AO_IRQ_BASE + 0x04 * ucIndex)) =
 			GpioIrqRegAOExtBackup[ucIndex];
+#else
+/* old platform like t5/t5d */
+#ifdef GPIO_AO_IRQ_BASE
+	REG32((unsigned long)GPIO_AO_IRQ_BASE) = GpioIrqRegAOBackup;
+#endif
 #endif
 }
 
@@ -175,12 +175,6 @@ void vBackupAndClearGpioIrqReg(void)
 	for (ucIndex = 0; ucIndex < IRQ_REG_NUM; ucIndex++)
 		REG32((unsigned long)(GPIO_EE_IRQ_BASE + 0x04 * ucIndex)) = 0;
 
-/* old platform like t5/t5d */
-#ifdef GPIO_AO_IRQ_BASE
-	GpioIrqRegAOBackup = REG32((unsigned long)GPIO_AO_IRQ_BASE);
-	REG32((unsigned long)GPIO_AO_IRQ_BASE) = 0;
-#endif
-
 /* platform a4 */
 #ifdef GPIO_AO_EXT_IRQ_NUM
 	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
@@ -189,5 +183,11 @@ void vBackupAndClearGpioIrqReg(void)
 
 	for (ucIndex = 0; ucIndex < GPIO_AO_EXT_IRQ_NUM; ucIndex++)
 		REG32((unsigned long)(GPIO_AO_IRQ_BASE + 0x04 * ucIndex)) = 0;
+#else
+/* old platform like t5/t5d */
+#ifdef GPIO_AO_IRQ_BASE
+	GpioIrqRegAOBackup = REG32((unsigned long)GPIO_AO_IRQ_BASE);
+	REG32((unsigned long)GPIO_AO_IRQ_BASE) = 0;
+#endif
 #endif
 }

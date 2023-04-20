@@ -19,14 +19,14 @@ parser.add_argument('--combine', action='store_true',
                     help="All object files in an .a archive or in a directory are combined")
 args = parser.parse_args()
 
-class SectionSize():
+class SectionSize:
     text = 0
     rela_text = 0
     data = 0  # Including metadata like import tables
     bss = 0
     customize = 0
-    heap = 0
-    stack = 0
+    system_heap = 0
+    system_stack = 0
     def rom(self):
         return self.text + self.data
     def ram(self):
@@ -49,11 +49,9 @@ class SectionSize():
         elif section.startswith('.data') or section.startswith('.rodata'):
             self.data += size
         elif section.startswith('.heap'):
-            self.heap += size
-            self.bss += size
+            SectionSize.system_heap += size
         elif section.startswith('.stack'):
-            self.stack += size
-            self.bss += size
+            SectionSize.system_stack += size
         else:
             if (size > 0):
                 print("customer section:%s, size:%d" % (section, size))
@@ -121,18 +119,19 @@ with open(args.map_file) as f:
             continue
         if line.startswith((".", " .", " *fill*")):
             pieces = line.split(None, 3)  # Don't split paths containing spaces
+            pieces_num = len(pieces)
 
             if line.startswith("."):
                 # Note: this line might be wrapped, with the size of the section
                 # on the next line, but we ignore the size anyway and will ignore that line
                 current_section = pieces[0]
                 # XCC text section format
-                if (pieces == 4):
+                if (pieces_num == 4):
                     source = pieces[-1]
-            elif len(pieces) == 1 and len(line) > 14:
+            elif pieces_num == 1 and len(line) > 14:
                 # ld splits the rest of this line onto the next if the section name is too long
                 split_line = line
-            elif len(pieces) >= 3 and "=" not in pieces and "before" not in pieces:
+            elif pieces_num >= 3 and "=" not in pieces and "before" not in pieces:
                 if pieces[0] == "*fill*":
                     # fill use the last source to store the fill align data
                     #source = pieces[0]
@@ -175,7 +174,7 @@ with open(args.map_file) as f:
 # Print out summary
 sources = list(size_by_source.keys())
 sources.sort(key = lambda x: size_by_source[x].total())
-sumrom = sumram = sumcode = sumdata = sumbss = sumstack = sumheap = sumcustomize = 0
+sumrom = sumram = sumcode = sumdata = sumbss = sumcustomize = 0
 
 print('---------------------------------------------------------------------------------------------------')
 col_format = "%-20s\t%-12s\t%-12s\t%-7s\t%-12s\t%-12s\t%-7s"
@@ -187,13 +186,12 @@ for source in sources:
     sumbss  += size.bss
     sumrom += size.rom()
     sumram += size.ram()
-    sumstack += size.stack
-    sumheap += size.heap
     sumcustomize += size.customize
     print(col_format % (os.path.basename(source), size.rom(), size.ram(), size.text, size.data, size.bss, size.customize))
 
 print('---------------------------------------------------------------------------------------------------')
 col_format = "%-5s\t%-12s\t%-12s\t%-7s\t%-12s\t%-12s\t%-7s\t%-7s\t%-7s"
+sys_mem_usage = SectionSize.system_stack  + SectionSize.system_heap
 print(col_format % ("    ", "ROM(text+data)", "RAM(data+bss)", ".text", ".data", ".bss", "cust", "stack", "heap" ))
-print(col_format % ("total", sumrom, sumram, sumcode, sumdata, sumbss, sumcustomize, sumstack, sumheap))
+print(col_format % ("total", sumrom, sumram + sys_mem_usage, sumcode, sumdata, sumbss + sys_mem_usage, sumcustomize, SectionSize.system_stack, SectionSize.system_heap))
 print('---------------------------------------------------------------------------------------------------')

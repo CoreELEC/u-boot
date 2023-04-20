@@ -10,6 +10,7 @@ declare BL31_V2_7_SRC_FOLDER="bl31_2.7/src"
 declare BL31_V1_3_BIN_FOLDER="bl31_1.3/bin"
 declare BL31_V1_0_BIN_FOLDER="bl31/bin"
 declare BL31_V2_7_BIN_FOLDER="bl31_2.7/bin"
+declare -i ver=1
 
 function build_bl31() {
 	echo -n "Build bl31...Please wait... "
@@ -106,19 +107,19 @@ function build_bl31_v2_7() {
 # check use which bl31 build script
 function check_bl31_ver() {
 	# $1: soc
-	# return 1: use bl31 v1.3
 	# return 0: use bl31 v1.0
+	# return 1: use bl31 v1.3
 	# return 2: use bl31 v2.7
-	local -i ver=1
 	for soc_list in ${!BL31_OLD_VER_SOC_LIST[@]}; do
-	if [ "$1" == "${BL31_OLD_VER_SOC_LIST[${soc_list}]}" ]; then
-		ver=0
-	fi
+		if [ "$1" == "${BL31_OLD_VER_SOC_LIST[${soc_list}]}" ]; then
+			ver=0
+		fi
 	done
+
 	for soc_list in ${!BL31_NEW_VER_SOC_LIST[@]}; do
-	if [ "$1" == "${BL31_NEW_VER_SOC_LIST[${soc_list}]}" ]; then
-		ver=2
-	fi
+		if [ "$1" == "${BL31_NEW_VER_SOC_LIST[${soc_list}]}" ]; then
+			ver=2
+		fi
 	done
 	return ${ver}
 }
@@ -133,17 +134,20 @@ function switch_bl31() {
 		fi
 	done
 	check_bl31_ver $1
-	if [ $? == 1 ]; then
+	if [ ${ver} == 1 ]; then
 		echo "check bl31 ver: use v1.3"
 		BLX_SRC_FOLDER[$bl31_index]=${BL31_V1_3_SRC_FOLDER}
 		BLX_BIN_FOLDER[$bl31_index]=${BL31_V1_3_BIN_FOLDER}
-	elif [ $? == 0 ]; then
+	elif [ ${ver} == 0 ]; then
 		echo "check bl31 ver: use v1.0"
 		BLX_SRC_FOLDER[$bl31_index]=${BL31_V1_0_SRC_FOLDER}
 		BLX_BIN_FOLDER[$bl31_index]=${BL31_V1_0_BIN_FOLDER}
-	else
+	elif [ ${ver} == 2 ]; then
 		echo "check bl31 ver: use v2.7"
 		BLX_SRC_FOLDER[$bl31_index]=${BL31_V2_7_SRC_FOLDER}
 		BLX_BIN_FOLDER[$bl31_index]=${BL31_V2_7_BIN_FOLDER}
+	else
+		echo "version check error"
+		exit 1
 	fi
 }

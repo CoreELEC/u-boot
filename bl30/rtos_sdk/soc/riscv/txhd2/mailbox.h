@@ -19,10 +19,10 @@
 #define MHU_DATA_SIZE (MHU_MAX_SIZE - MHU_HEAD_SIZE - MHU_RESEV_SIZE)
 #define MHU_DATA_OFFSET (MHU_HEAD_SIZE / 4) /*inclule status 0x4 task id 0x8, completion 0x8*/
 
-#define MAILBOX_AOCPU_REE_IRQ 90 //MBOX_IRQ3
-#define MAILBOX_AOCPU_REEACK_IRQ 85 //MBOX_IRQ2
-#define MAILBOX_AOCPU_TEE_IRQ 88 //MBOX_IRQ1
-#define MAILBOX_AOCPU_TEEACK_IRQ 83 //MBOX_IRQ1
+#define MAILBOX_AOCPU_REE_IRQ 87 //mbox_irq_to_receiver[3]
+#define MAILBOX_AOCPU_REEACK_IRQ 82 //mbox_irq_to_sender[2]
+#define MAILBOX_AOCPU_TEE_IRQ 85 //mbox_irq_to_receiver[1]
+#define MAILBOX_AOCPU_TEEACK_IRQ 80 //mbox_irq_to_sender[0]
 
 #define MAILBOX_ARMREE2AO 0x3 /*mailbox3*/
 #define MAILBOX_AO2ARMREE 0x2 /*mailbox2*/

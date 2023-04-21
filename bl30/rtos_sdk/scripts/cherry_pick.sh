@@ -44,7 +44,7 @@ apply_patch_by_change_number() {
 		echo -e "======== Manually applying Gerrit change $MANUAL_GERRIT_CHANGE_NUMBER on Project $GERRIT_PROJECT ========"
 	fi
 
-	keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+	keyline=`grep "name=\"$GERRIT_PROJECT\"" $MANIFEST`
 	pattern="path="
 	get_repo_path
 
@@ -65,7 +65,7 @@ apply_patch_by_gerrit_topic() {
 	i=1
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
 		echo "-------- Applying patch $i on Project $GERRIT_PROJECT --------"
-		keyline=`grep "name=\"$GERRIT_PROJECT\"" $CURRENT_MANIFEST`
+		keyline=`grep "name=\"$GERRIT_PROJECT\"" $MANIFEST`
 		pattern="path="
 		get_repo_path
 
@@ -97,7 +97,7 @@ apply_patch_by_gerrit_url() {
 		done
 
 		echo -e "\n-------- Manually applying patch on Project $GIT_PROJECT --------"
-		keyline=`grep "name=\"$GIT_PROJECT\"" $CURRENT_MANIFEST`
+		keyline=`grep "name=\"$GIT_PROJECT\"" $MANIFEST`
 		pattern="path="
 		get_repo_path
 
@@ -123,8 +123,8 @@ apply_patch_by_gerrit_url() {
 [ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
 [ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
 
-[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
-[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+[ -z "$MANIFEST" ] && MANIFEST="$OUTPUT_DIR/manifest.xml"
+[ ! -f $MANIFEST ] && repo manifest -r -o $MANIFEST
 
 [ -z "$GERRIT_SERVER" ] && GERRIT_SERVER="scgit.amlogic.com"
 [ -z "$GERRIT_PORT" ] && GERRIT_PORT="29418"

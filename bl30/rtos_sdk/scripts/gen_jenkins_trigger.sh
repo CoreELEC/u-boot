@@ -6,10 +6,10 @@
 #
 
 gen_jenkins_trigger() {
-	if [ -s $CURRENT_MANIFEST ]; then
+	if [ -s $MANIFEST ]; then
 		echo "======== Generate Jenkins Trigger ========"
 
-		JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
+		[ -z "$JENKINS_TRIGGER" ] && JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 		rm -f $JENKINS_TRIGGER
 
 		pattern="name="
@@ -25,7 +25,7 @@ gen_jenkins_trigger() {
 				echo "p=$repo_name" >> $JENKINS_TRIGGER
 				echo "b=projects/amlogic-dev" >> $JENKINS_TRIGGER
 			fi
-		done < $CURRENT_MANIFEST
+		done < $MANIFEST
 
 		echo -e "======== Done ========\n"
 	fi
@@ -34,8 +34,8 @@ gen_jenkins_trigger() {
 [ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
 [ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
 
-[ -z "$CURRENT_MANIFEST" ] && CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
-[ ! -f $CURRENT_MANIFEST ] && repo manifest -r -o $CURRENT_MANIFEST
+[ -z "$MANIFEST" ] && MANIFEST="$OUTPUT_DIR/manifest.xml"
+[ ! -f $MANIFEST ] && repo manifest -r -o $MANIFEST
 
 [ -z "$LAST_MANIFEST" ] && LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
 
@@ -44,6 +44,6 @@ gen_jenkins_trigger() {
 if [ ! -f $LAST_MANIFEST ] || [ -f $LAST_BUILD_FAILURE ]; then
 	gen_jenkins_trigger
 else
-	comm -3 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
+	comm -3 <(sort $LAST_MANIFEST) <(sort $MANIFEST) > $DIFF_MANIFEST
 	[ -s $DIFF_MANIFEST ] && gen_jenkins_trigger
 fi

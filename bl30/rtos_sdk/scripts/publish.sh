@@ -50,7 +50,7 @@ publish_images() {
 		scp $KERNEL.tar.xz $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		scp images/* $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGE_PATH
 		popd >/dev/null
-		echo "Publish images success."
+		echo "Images publish done."
 	else
 		echo "No local image path! $LOCAL_IMAGE_PATH"
 	fi
@@ -64,13 +64,17 @@ post_publish_images() {
 	else
 		echo "Remote image path: $REMOTE_IMAGES_PATH"
 	fi
-	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
-	[ -f $LOCAL_OUTPUT_PATH/gerrit_trigger.txt ] && LOCAL_FILES+=" $LOCAL_OUTPUT_PATH/jenkins_trigger.txt"
+
+	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log"
+	[ -z "$MANIFEST" ] && MANIFEST="$OUTPUT_DIR/manifest.xml"
+	[ -f $MANIFEST ] && LOCAL_FILES+=" $MANIFEST"
+	[ -z "$JENKINS_TRIGGER" ] && JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
+	[ -f $JENKINS_TRIGGER ] && LOCAL_FILES+=" $JENKINS_TRIGGER"
 	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_IMAGES_PATH
 
 	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "rm -f $LATEST_REMOTE_PATH"
 	ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "ln -s $REMOTE_PATH $LATEST_REMOTE_PATH"
-	echo "Post publish images done."
+	echo "Post images publish done."
 }
 
 publish_packages() {
@@ -88,7 +92,7 @@ publish_packages() {
 		pushd $LOCAL_PACKAGE_PATH >/dev/null
 		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		popd >/dev/null
-		echo "Publish packages success."
+		echo "Packages publish done."
 	else
 		echo "No local package path! $LOCAL_PACKAGE_PATH"
 	fi
@@ -104,5 +108,5 @@ post_publish_packages() {
 	fi
 	LOCAL_FILES="$LOCAL_OUTPUT_PATH/build.log $LOCAL_OUTPUT_PATH/manifest.xml"
 	scp $LOCAL_FILES $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGES_PATH
-	echo "Post publish packages done."
+	echo "Post packages publish done."
 }

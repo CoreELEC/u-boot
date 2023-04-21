@@ -30,8 +30,8 @@ BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
 OUTPUT_DIR=$WORK_DIR/output
 
+MANIFEST="$OUTPUT_DIR/manifest.xml"
 LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
-CURRENT_MANIFEST="$OUTPUT_DIR/curr_manifest.xml"
 DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
 LAST_BUILD_FAILURE="$OUTPUT_DIR/.last_build_failure"
 
@@ -75,11 +75,11 @@ if [ -n "$REPO_SYNC_IPATTERN" ]; then
 else
 	repo forall -c git reset -q --hard origin/$BRANCH_NAME
 fi
-repo manifest -r -o $CURRENT_MANIFEST
+repo manifest -r -o $MANIFEST
 echo -e "======== Done ========\n"
 
-if [ -f $LAST_MANIFEST ] && [ -f $CURRENT_MANIFEST ]; then
-	comm -23 <(sort $LAST_MANIFEST) <(sort $CURRENT_MANIFEST) > $DIFF_MANIFEST
+if [ -f $LAST_MANIFEST ] && [ -f $MANIFEST ]; then
+	comm -23 <(sort $LAST_MANIFEST) <(sort $MANIFEST) > $DIFF_MANIFEST
 
 	if [ -s $DIFF_MANIFEST ]; then
 		echo "======== Recent Changes ========"
@@ -114,6 +114,7 @@ source scripts/cherry_pick.sh
 gerrit_review_for_gerrit_topic Start
 
 # Generate Jenkins trigger
+JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 [ "$SUBMIT_TYPE" = "daily" ] && source scripts/gen_jenkins_trigger.sh
 
 if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then

@@ -19,7 +19,6 @@ publish_docoment() {
 
 [ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
 LOCAL_OUTPUT_PATH=$OUTPUT_DIR
-LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 
 BUILD_DATE=$(date +%F)
 LATEST_REMOTE_PATH=/data/shanghai/image/RTOS/latest
@@ -35,6 +34,7 @@ make_image() {
 }
 
 publish_images() {
+	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 	REMOTE_IMAGE_PATH=$REMOTE_IMAGES_PATH/$ARCH-$BOARD-$PRODUCT
 
 	if [ -d $LOCAL_IMAGE_PATH ]; then

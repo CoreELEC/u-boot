@@ -16,7 +16,7 @@
 #include "vad_suspend.h"
 
 /*KEY ID*/
-#define GPIO_KEY_ID_POWER GPIOD_3
+#define GPIO_KEY_ID_POWER GPIOAO_1
 #define GPIO_KEY_ID_WIFI_WAKE GPIOX_7
 
 #define ADC_KEY_ID_MENU 520
@@ -30,6 +30,7 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 	uint32_t buf[4] = { 0 };
 
 	switch (event.ulCode) {
+	case GPIO_KEY_ID_POWER:
 	case GPIO_KEY_ID_WIFI_WAKE:
 		buf[0] = POWER_KEY_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);
@@ -71,7 +72,7 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 };
 
 struct xAdcKeyInfo adcKeyInfo[] = {
-	ADC_KEY_INFO(ADC_KEY_ID_MENU, 2048, SARADC_CH2, EVENT_SHORT, vAdcKeyCallBack, NULL),
+	ADC_KEY_INFO(ADC_KEY_ID_MENU, 0, SARADC_CH2, EVENT_SHORT, vAdcKeyCallBack, NULL),
 };
 
 void vKeyPadInit(void)

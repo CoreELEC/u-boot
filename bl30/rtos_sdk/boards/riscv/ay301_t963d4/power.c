@@ -22,6 +22,10 @@
 #include "power.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
+#include "hdmirx_wake.h"
+
+#define CONFIG_HDMIRX_PLUGIN_WAKEUP
+
 static TaskHandle_t cecTask;
 
 static int vdd_ee;
@@ -77,6 +81,9 @@ void str_hw_init(void)
 	vKeyPadInit();
 	vGpioIRQInit();
 	Bt_GpioIRQRegister();
+#ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
+			hdmirx_GpioIRQRegister();
+#endif
 }
 
 void str_hw_disable(void)
@@ -93,6 +100,9 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 	Bt_GpioIRQFree();
+#ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
+			hdmirx_GpioIRQFree();
+#endif
 }
 
 void str_power_on(int shutdown_flag)
@@ -261,7 +271,7 @@ void str_power_off(int shutdown_flag)
 	}
 
 	/*disable PWM CLK*/
-//	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
+//	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24)
 
 	/* disable PWM channel */
 	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);

@@ -27,6 +27,8 @@
 
 /*#define SHOW_LATENCY */
 
+/*#define ENABLE_KEYPAD */
+
 static int vdd_ee;
 static int vdd_cpu;
 static TaskHandle_t vadTask;
@@ -85,8 +87,10 @@ void str_hw_init(void)
 	vETHInit(0);
 
 	vBackupAndClearGpioIrqReg();
-	//vKeyPadInit();
 	vGpioIRQInit();
+#if defined(ENABLE_KEYPAD)
+	vKeyPadInit();
+#endif
 	rtc_enable_irq();
 }
 
@@ -95,8 +99,9 @@ void str_hw_disable(void)
 	/*disable wakeup source interrupt*/
 	vIRDeint();
 	vETHDeint();
-
-	//vKeyPadDeinit();
+#if defined(ENABLE_KEYPAD)
+	vKeyPadDeinit();
+#endif
 	vRestoreGpioIrqReg();
 	rtc_disable_irq();
 }

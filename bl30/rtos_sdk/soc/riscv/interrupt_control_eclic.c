@@ -536,3 +536,15 @@ int ClearPendingIrq(uint32_t ulIrq)
 
 	return 0;
 }
+
+int GetIrqInner(uint32_t ulIrq)
+{
+	int irq = 0;
+
+	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
+		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
+			return irq;
+	}
+
+	return 0;
+}

@@ -29,4 +29,6 @@ void interrupt_disable(void);
 
 void interrupt_enable(void);
 
+int GetIrqInner(uint32_t irq_num);
+
 #endif

@@ -17,9 +17,14 @@
 #include "interrupt.h"
 #include "suspend.h"
 #include "rtc_register.h"
+#include "timers.h"
+#include "interrupt_control_eclic.h"
 
 #undef TAG
 #define TAG "AOCPU RTC"
+
+static TimerHandle_t xAlarmTimer;
+static int alarm_flags;
 
 static uint32_t gray_to_binary(uint32_t gray)
 {
@@ -37,6 +42,7 @@ static void vRTCInterruptHandler(void)
 {
 	uint32_t buf[4] = { 0 };
 
+	alarm_flags = 1;
 	printf("[%s]: rtc alarm fired\n", TAG);
 
 	buf[0] = RTC_WAKEUP;
@@ -119,21 +125,59 @@ void *MboxGetRTC(void *msg)
 void rtc_enable_irq(void)
 {
 	int ret;
+	u32 alarm, time;
 
-	ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
-	if (ret)
-		printf("RTC_irq RegisterIrq error, ret = %d\n", ret);
-	EnableIrq(RTC_IRQ);
+	alarm = REG32(RTC_DIG_ALARM0_REG);
+	if (alarm > 0) {
+		ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
+		if (ret)
+			printf("RTC_irq RegisterIrq error, ret = %d\n", ret);
+		EnableIrq(RTC_IRQ);
+		time = REG32(RTC_DIG_REAL_TIME);
+		if (alarm > time && xAlarmTimer != NULL) {
+			alarm = (alarm - time + 1) * 1000;
+			xTimerChangePeriod(xAlarmTimer, pdMS_TO_TICKS(alarm), 0);
+		}
+	}
 }
 
 void rtc_disable_irq(void)
 {
 	int ret;
+	u32 alarm;
 
-	DisableIrq(RTC_IRQ);
-	ret = UnRegisterIrq(RTC_IRQ);
-	if (ret)
-		printf("RTC_irq UnRegisterIrq error, ret = %d\n", ret);
+	alarm = REG32(RTC_DIG_ALARM0_REG);
+	if (alarm > 0) {
+		DisableIrq(RTC_IRQ);
+		ret = UnRegisterIrq(RTC_IRQ);
+		if (ret)
+			printf("RTC_irq UnRegisterIrq error, ret = %d\n", ret);
+	}
+}
+
+static void rtc_alarm_timer_handler(TimerHandle_t xAlarmTimer)
+{
+	static int rtc_irq, status;
+
+	status = REG32(RTC_DIG_INT_STATUS) & 0x1;
+	if (status && !alarm_flags) {
+		rtc_irq = GetIrqInner(RTC_IRQ);
+		if (rtc_irq)
+			eclic_set_pending(rtc_irq);
+	}
+	alarm_flags = 0;
+}
+
+void alarm_clr(void)
+{
+	if (xAlarmTimer != NULL)
+		xTimerStop(xAlarmTimer, 0);
+}
+
+static void rtc_alarm_timer_init(void)
+{
+	xAlarmTimer = xTimerCreate("RtcAlarmTimer", pdMS_TO_TICKS(1000),
+					pdFALSE, NULL, rtc_alarm_timer_handler);
 }
 
 void rtc_init(void)
@@ -154,4 +198,6 @@ void rtc_init(void)
 	reboot_mode = get_reboot_mode();
 	if (reboot_mode == COLD_REBOOT)
 		reset_rtc();
+
+	rtc_alarm_timer_init();
 }

@@ -27,4 +27,5 @@ void rtc_init(void);
 void store_rtc(void);
 void rtc_enable_irq(void);
 void rtc_disable_irq(void);
+void alarm_clr(void);
 #endif //__RTC_H__

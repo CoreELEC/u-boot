@@ -5,6 +5,9 @@
  */
 
 #include "sw_business.h"
+#ifdef CONFIG_PM
+#include "pm.h"
+#endif
 
 #define BRINGUP_TEST	(0)
 
@@ -65,6 +68,9 @@ void sw_business_process(void)
 
 	xTaskCreate( vPrintTask1, "Print1", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate( vPrintTask2, "Print2", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
+#endif
+#ifdef CONFIG_PM
+	find_static_power_dev();
 #endif
 }
 

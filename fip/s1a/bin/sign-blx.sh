@@ -9,7 +9,7 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #BASEDIR_BUILD="${BASEDIR_TOP}/output"
 BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
-declare -a BLX_BIN_SIZE=("150432" "65536" "65536" "2048" "86016" "262144" "524288"  "98304")
+declare -a BLX_BIN_SIZE=("134048" "65536" "65536" "2048" "86016" "262144" "524288"  "98304")
 
 function process_ddrfw() {
 	local ddr_input=$1

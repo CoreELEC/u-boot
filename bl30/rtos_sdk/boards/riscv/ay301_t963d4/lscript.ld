@@ -29,6 +29,10 @@ SECTIONS
     {
         _data = .;
         *(vtable)
+	. = ALIGN(4);
+	_module_pm_begin = .;
+	KEEP (*(SORT(.sdata.__initcall*)))
+	_module_pm_end = .;
         *(.sdata* .data*)
         _edata = .;
     } > ram

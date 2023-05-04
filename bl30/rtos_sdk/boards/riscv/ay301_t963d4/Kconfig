@@ -26,5 +26,6 @@ config BOARD_AY301_T963D4
 	select VERSION_FULL_INFO
 	select HDMIRX
 	select BL30_VERSION_SAVE
+	select PM
 	help
 	  Enable Amlogic AY301 Board.

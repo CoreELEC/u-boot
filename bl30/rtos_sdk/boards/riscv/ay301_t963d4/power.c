@@ -23,6 +23,7 @@
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
 #include "hdmirx_wake.h"
+#include "pm.h"
 
 #define CONFIG_HDMIRX_PLUGIN_WAKEUP
 
@@ -290,4 +291,26 @@ void str_power_off(int shutdown_flag)
 	}
 
 	printf("vdd_cpu off\n");
+}
+
+static int platform_power_begin(void)
+{
+	logi("%s, power off\n", __func__);
+	return 0;
+}
+
+static int platform_power_end(void)
+{
+	logi("%s, power on\n", __func__);
+	return 0;
+}
+
+static struct platform_power_ops ops = {
+	.begin = platform_power_begin,
+	.end = platform_power_end,
+};
+
+void platform_power_interface_register(void)
+{
+	set_platform_power_ops(&ops);
 }

@@ -11,7 +11,6 @@
 extern "C" {
 #endif
 #include <register.h>
-#include <secure_apb.h>
 
 enum meson_pwm_id {
 	MESON_PWM_A = 0,

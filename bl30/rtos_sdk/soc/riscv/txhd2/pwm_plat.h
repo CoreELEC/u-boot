@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 #include <register.h>
+#include <secure_apb.h>
 
 enum meson_pwm_id {
 	MESON_PWM_A = 0,
@@ -19,6 +20,8 @@ enum meson_pwm_id {
 	MESON_PWM_D,
 	MESON_PWM_E,
 	MESON_PWM_F,
+	MESON_PWM_AO_A,
+	MESON_PWM_AO_B,
 	MESON_PWM_INVALID,
 };
 
@@ -29,6 +32,7 @@ enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
 	PWM_EF,
+	PWM_AO_AB,
 	PWM_MUX,
 };
 

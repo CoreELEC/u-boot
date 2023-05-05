@@ -12,6 +12,7 @@ struct xPwmMesonChip meson_pwm_chip[] = {
 	{ PWM_AB, PWM_PWM_A, 0, 0 },
 	{ PWM_CD, PWM_PWM_C, 0, 0 },
 	{ PWM_EF, PWM_PWM_E, 0, 0 },
+	{ PWM_AO_AB, AO_PWM_PWM_A, 0, 0},
 };
 
 /* VDDEE voltage table  volt must ascending */

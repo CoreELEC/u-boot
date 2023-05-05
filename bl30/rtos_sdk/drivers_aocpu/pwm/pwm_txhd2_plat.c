@@ -7,6 +7,7 @@
 #include "FreeRTOS.h"
 #include <common.h>
 #include <pwm.h>
+#include <secure_apb.h>
 
 struct xPwmMesonChip meson_pwm_chip[] = {
 	{ PWM_AB, PWM_PWM_A, 0, 0 },

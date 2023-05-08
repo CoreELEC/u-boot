@@ -24,13 +24,13 @@ else
 fi
 
 if [[ -z "${ANDROID_ROOT_DIR}" ]]; then
-	ANDROID_ROOT_DIR="/mnt/fileroot/${LOGNAME}/workspace/3_android/2_R_5.4"
+	ANDROID_ROOT_DIR="/mnt/fileroot/wenbo.wang/Android/android_T"
 else
 	echo "External settings env: ANDROID_ROOT_DIR=${ANDROID_ROOT_DIR}"
 fi
 
 if [[ -z "${ANDROID_TARGET_BRANCH}" ]]; then
-	ANDROID_TARGET_BRANCH="s-tv-dev"
+	ANDROID_TARGET_BRANCH="t-tv-dev"
 else
 	echo "External settings env: ANDROID_TARGET_BRANCH=${ANDROID_TARGET_BRANCH}"
 fi

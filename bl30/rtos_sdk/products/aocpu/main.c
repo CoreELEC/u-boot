@@ -9,6 +9,7 @@
 #include "hw_business.h"
 #include "sw_business.h"
 #include "gcc_compiler_attributes.h"
+#include "board_version.h"
 
 void __weak aocpu_bringup_finished(void)
 {
@@ -17,9 +18,14 @@ void __weak aocpu_bringup_finished(void)
 int main(void)
 {
 	printf("Starting AOCPU FreeRTOS\n");
+	output_aocpu_info();
 
 	hw_business_process();
 	sw_business_process();
+
+#ifdef CONFIG_BL30_VERSION_SAVE
+	bl30_plat_save_version();
+#endif
 
 	printf("Starting task scheduler ...\n");
 	aocpu_bringup_finished();

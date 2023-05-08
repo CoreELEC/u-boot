@@ -3,6 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 aml_add_library()
+aml_library_sources(
+	board_version.c
+)
+
+aml_library_include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 add_subdirectory(${BOARD})
 

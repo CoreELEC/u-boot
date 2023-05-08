@@ -25,5 +25,6 @@ config BOARD_BA400_A113L2
 	select RTC
 	select VERSION_FULL_INFO
 	select RTC_STORAGE_FORMAT_GRAY
+	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic BA400 Board.

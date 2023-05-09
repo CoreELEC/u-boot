@@ -18,7 +18,6 @@
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
 #include "stick_mem.h"
-#include "sdk_ver.h"
 #include "suspend.h"
 #include "vrtc.h"
 #include "hwspinlock.h"
@@ -59,9 +58,6 @@ void config_eclic_irqs(void)
 void hw_business_process(void)
 {
 	uint8_t i = 0;
-
-	printf("AOCPU image version='%s'\n", CONFIG_COMPILE_TIME);
-	OUTPUT_VERSION_FULL_INFO();
 
 	config_eclic_irqs();
 	for (i = 0; i < 4; ++i)

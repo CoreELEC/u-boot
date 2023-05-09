@@ -18,7 +18,6 @@
 #include "hdmi_cec.h"
 #include "stick_mem.h"
 #include "fsm.h"
-#include "sdk_ver.h"
 
 #define INT_TEST_NEST_DEPTH 6
 #define INT_TEST_GPIO_NUM 6
@@ -72,9 +71,6 @@ static void vPICInit(void)
 
 void hw_business_process(void)
 {
-	printf("AOCPU image version='%s'\n", CONFIG_COMPILE_TIME);
-	OUTPUT_VERSION_FULL_INFO();
-
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 	vPICInit();

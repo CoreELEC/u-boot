@@ -93,6 +93,11 @@ void str_hw_disable(void)
 	}
 }
 
+#define VCC5V_GPIO	GPIO_TEST_N
+#define VCC3V3_GPIO	GPIOD_10
+/* A55 and A76 share with dc/dc en in SKT board */
+#define VDDCPU_GPIO	GPIOD_14
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -103,9 +108,11 @@ void str_power_on(int shutdown_flag)
 
 	/* set GPIOE_1 pinmux to pwm */
 	xPinmuxSet(GPIOE_1, PIN_FUNC1);
+	xPinmuxSet(GPIOE_2, PIN_FUNC1);
 
 	/* enable vddcpu PWM channel */
-	REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
+	REG32(PWMAB_MISC_REG_AB) |= (1 << 1);
+	REG32(PWMEF_MISC_REG_AB) |= (1 << 0);
 
 	/***set vdd_cpu val***/
 	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
@@ -115,13 +122,13 @@ void str_power_on(int shutdown_flag)
 	}
 
 	/***power on vdd_cpu***/
-	ret = xGpioSetDir(GPIOD_14, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VDDCPU_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIOD_14, GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(VDDCPU_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
@@ -134,29 +141,27 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
+	/***power on vcc_3.3v***/
+	ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
+		return;
+	}
 
-		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
+	ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc_3.3v gpio val fail\n");
+		return;
 	}
 
 	/***power on vcc_5v***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vcc_5v gpio val fail\n");
 		return;
@@ -175,31 +180,29 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 
 	/***power off vcc_5v***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vcc_5v gpio val fail\n");
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
+	/***power off vcc_3.3v***/
+	ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
+		return;
+	}
 
-		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
+	ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc_3.3v gpio val fail\n");
+		return;
 	}
 
 	/***set vdd_ee val***/
@@ -223,18 +226,19 @@ void str_power_off(int shutdown_flag)
 	}
 
 	/***power off vdd_cpu***/
-	ret = xGpioSetDir(GPIOD_14, GPIO_DIR_OUT);
+	ret = xGpioSetDir(VDDCPU_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
 		return;
 	}
 
-	ret = xGpioSetValue(GPIOD_14, GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(VDDCPU_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
 	}
 
+	/* Close the pwm of A55 & A76*/
 	/* set GPIOE_1 pinmux to gpio */
 	xPinmuxSet(GPIOE_1, PIN_FUNC0);
 
@@ -245,11 +249,23 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
+	/* set GPIOE_2 pinmux to gpio */
+	xPinmuxSet(GPIOE_2, PIN_FUNC0);
+
+	/***set vddcpu pwm to input***/
+	ret = xGpioSetDir(GPIOE_2, GPIO_DIR_IN);
+	if (ret < 0) {
+		printf("GPIOE_2 set gpio dir fail\n");
+		return;
+	}
+
+
 	/*disable PWM CLK*/
 //	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
 
 	/* disable PWM channel */
-	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
+	REG32(PWMAB_MISC_REG_AB) &= ~(1 << 1);
+	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 0);
 
 	printf("vdd_cpu off\n");
 }

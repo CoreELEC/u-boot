@@ -16,7 +16,6 @@ config BOARD_S1A_SKT
 	select GPIO
 	select KEY
 	select PWM
-	select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

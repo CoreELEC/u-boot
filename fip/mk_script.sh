@@ -303,6 +303,9 @@ function build() {
 	if [ ! $CONFIG_AVB2 ]; then
 		CONFIG_AVB2=null
 	fi
+	if [ ! $CONFIG_AML_GPT ]; then
+		CONFIG_AML_GPT=null
+	fi
 	if [ ! $CONFIG_CMD_BOOTCTOL_VAB ]; then
 		CONFIG_CMD_BOOTCTOL_VAB=null
 	fi
@@ -315,7 +318,8 @@ function build() {
 	if [ ! $CONFIG_TESTKEY ]; then
 		CONFIG_TESTKEY=null
 	fi
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY} ${CONFIG_AB_UPDATE}
+
+	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY} ${CONFIG_AB_UPDATE} ${CONFIG_AML_GPT}
 
 	# source other configs after uboot compile
 	init_variable_late
@@ -699,7 +703,12 @@ function bin_path_parser() {
 				echo "export CONFIG_TESTKEY"
 				export CONFIG_TESTKEY=1
 				continue ;;
+			--gpt)
+				CONFIG_AML_GPT=1
+				export CONFIG_AML_GPT=1
+				continue ;;
 				*)
+
 		esac
 	done
 }

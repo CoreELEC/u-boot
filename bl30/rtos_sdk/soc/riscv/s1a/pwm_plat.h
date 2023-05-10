@@ -21,12 +21,6 @@ enum meson_pwm_id {
 	MESON_PWM_B,
 	MESON_PWM_C,
 	MESON_PWM_D,
-	MESON_PWM_E,
-	MESON_PWM_F,
-	MESON_PWM_G,
-	MESON_PWM_H,
-	MESON_PWM_I,
-	MESON_PWM_J,
 	MESON_PWM_INVALID,
 };
 
@@ -36,9 +30,6 @@ enum meson_pwm_id {
 enum pwm_chip_id {
 	PWM_AB = 0,
 	PWM_CD,
-	PWM_EF,
-	PWM_GH,
-	PWM_IJ,
 	PWM_MUX,
 };
 

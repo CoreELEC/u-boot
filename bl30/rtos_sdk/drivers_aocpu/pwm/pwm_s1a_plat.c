@@ -72,7 +72,7 @@ struct board_pwm_cfg_t {
 struct board_pwm_cfg_t board_cfg[] = {
 	[VDDEE_VOLT] = {PWM_AB, MESON_PWM_1, VOLTAGE_TABLE_INFO(vddee_table)},
 	[VDDCPU_VOLT] = {PWM_AB, MESON_PWM_0, VOLTAGE_TABLE_INFO(vddcpu_table)},
-	[VDDDOS_NPU_VPU] = {PWM_EF, MESON_PWM_0, VOLTAGE_TABLE_INFO(vdddos_npu_vpu_table)},
+	[VDDDOS_NPU_VPU] = {PWM_CD, MESON_PWM_0, VOLTAGE_TABLE_INFO(vdddos_npu_vpu_table)},
 };
 
 /*

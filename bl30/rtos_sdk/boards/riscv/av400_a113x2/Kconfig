@@ -23,5 +23,6 @@ config BOARD_AV400_A113X2
 	select ETHERNET
 	select RTC
 	select VERSION_FULL_INFO
+	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic AV400 Board.

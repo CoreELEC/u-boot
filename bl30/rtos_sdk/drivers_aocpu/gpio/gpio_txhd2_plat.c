@@ -14,14 +14,14 @@
 #include "portmacro.h"
 
 /* gpio irq controller EE */
-#define IRQ_GPIO0_NUM 67
-#define IRQ_GPIO1_NUM 68
-#define IRQ_GPIO2_NUM 69
-#define IRQ_GPIO3_NUM 70
+#define IRQ_GPIO0_NUM 64
+#define IRQ_GPIO1_NUM 65
+#define IRQ_GPIO2_NUM 66
+#define IRQ_GPIO3_NUM 67
 
 /* gpio irq controller AO */
-#define IRQ_AO_GPIO0_NUM 17
-#define IRQ_AO_GPIO1_NUM 18
+#define IRQ_AO_GPIO0_NUM 14
+#define IRQ_AO_GPIO1_NUM 15
 
 #define EE_IRQ_REG_EDGE_POL 0x00
 #define EE_IRQ_REG_PIN_03_SEL 0x04
@@ -35,7 +35,7 @@
 #define EE_GPIO_IRQ_SEL_SHIFT(x) (((x) << 3) % 32)
 #define EE_GPIO_IRQ_BOTH(x) BIT(8 + (x))
 
-#define AO_GPIO_NUM 10
+#define AO_GPIO_NUM (GPIOAO_IRQ_NUM_BASE + GPIOAO_PIN_NUM)
 #define AO_GPIO_IRQ_POL_EDGE_MASK(x) (BIT(16 + x) | BIT(18 + x))
 #define AO_GPIO_IRQ_POL(x) BIT(16 + (x))
 #define AO_GPIO_IRQ_EDGE(x) BIT(18 + (x))
@@ -49,7 +49,6 @@ static const struct GpioDomain aoDomain = {
 	.rPull = AO_GPIO_O_EN_N,
 	.rGpio = AO_GPIO_O_EN_N,
 	.rMux = AO_RTI_PINMUX_REG0,
-	.rDrv = AO_PAD_DS_A,
 };
 
 static const struct GpioDomain eeDomain = {
@@ -58,19 +57,17 @@ static const struct GpioDomain eeDomain = {
 	.rPull = PAD_PULL_UP_REG0,
 	.rGpio = PREG_PAD_GPIO0_EN_N,
 	.rMux = PERIPHS_PIN_MUX_0,
-	.rDrv = PAD_DS_REG0A,
 };
 
 static const struct GpioBank gpioBanks[BANK_NUM_MAX] = {
-	/* pullen pull  dir    out   in     mux   drv*/
-	BANK("D", &aoDomain, 3, 0, 2, 0, 0, 0, 4, 0, 1, 0, 0, 0, 0, 0),
-	BANK("H", &eeDomain, 2, 0, 2, 0, 6, 0, 7, 0, 8, 0, 5, 0, 3, 0),
-	BANK("B", &eeDomain, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0),
-	BANK("Z1", &eeDomain, 1, 0, 1, 0, 3, 0, 4, 0, 5, 0, 4, 0, 1, 0),
-	BANK("Z2", &eeDomain, 1, 7, 1, 7, 3, 7, 4, 7, 5, 7, 8, 0, 1, 14),
-	BANK("W", &eeDomain, 3, 0, 3, 0, 9, 0, 10, 0, 11, 0, 2, 0, 5, 0),
-	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 0),
-	BANK("M", &eeDomain, 4, 0, 4, 0, 12, 0, 13, 0, 14, 0, 0xa, 0, 6, 0),
+	/*   name  domain     pullen pull   dir    out    in     mux */
+	BANK("AO", &aoDomain, 3,  0, 2,  0,  0, 0,  4, 0,  1, 0, 0, 0, 0, 0),
+	BANK("H",  &eeDomain, 1, 16, 1, 16,  6, 0,  7, 0,  8, 0, 5, 0, 0, 0),
+	BANK("B",  &eeDomain, 2,  0, 2,  0,  0, 0,  1, 0,  2, 0, 0, 0, 0, 0),
+	BANK("Z",  &eeDomain, 3,  0, 3,  0,  3, 0,  4, 0,  5, 0, 4, 0, 0, 0),
+	BANK("W",  &eeDomain, 1,  0, 1,  0,  9, 0, 10, 0, 11, 0, 2, 0, 0, 0),
+	BANK("C",  &eeDomain, 2, 16, 2, 16, 12, 0, 13, 0, 14, 0, 9, 0, 0, 0),
+	BANK("DV", &eeDomain, 0,  0, 0,  0, 16, 0, 17, 0, 18, 0, 7, 0, 0, 0),
 };
 
 static struct ParentIRQDesc eeIRQs[] = {
@@ -83,18 +80,16 @@ static struct ParentIRQDesc eeIRQs[] = {
 static struct ParentIRQDesc aoIRQs[] = {
 	[GPIO_AO_IRQ_L0] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_AO_GPIO0_NUM),
 	[GPIO_AO_IRQ_L1] = PARENT_IRQ_BK(NULL, 0, GPIO_INVALID, IRQ_AO_GPIO1_NUM),
-
 };
 
 static const struct GpioIRQBank irqBanks[BANK_NUM_MAX] = {
-	GPIO_IRQ_BK("D", 0, aoIRQs, ARRAY_SIZE(aoIRQs)),
-	GPIO_IRQ_BK("H", 11, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("B", 33, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z1", 47, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z2", 55, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("W", 67, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("E", 80, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("M", 83, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("AO", GPIOAO_IRQ_NUM_BASE, aoIRQs, ARRAY_SIZE(aoIRQs)),
+	GPIO_IRQ_BK("H",   GPIOH_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("B",   GPIOB_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z",   GPIOZ_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("W",   GPIOW_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("C",   GPIOC_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("DV", GPIODV_IRQ_NUM_BASE, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };
 
 const struct GpioBank *pGetGpioBank(void)

@@ -10,7 +10,7 @@ config BOARD_TXHD2_SKT
 	select GET_VERSION
 	select STICK_MEM
 	select UART
-	select CEC
+	# select CEC
 	select DDR
 	select MAILBOX
 	select VRTC
@@ -18,7 +18,7 @@ config BOARD_TXHD2_SKT
 	select GPIO
 	select KEY
 	select PWM
-	select LEDS
+	# select LEDS
 	select TIMER_SOURCE
 	select SARADC
 	select IR

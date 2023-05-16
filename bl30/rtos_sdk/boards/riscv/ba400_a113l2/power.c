@@ -193,12 +193,26 @@ void str_power_off(int shutdown_flag)
 			printf("DDR_EN set gpio dir fail\n");
 			return;
 		}
+		/***for rtc only power save***/
+		ret = xPinconfSet(GPIOAO_0, PINF_CONFIG_BIAS_DISABLE);
+		if (ret < 0) {
+			printf("DDR_EN set gpio BIAS fail\n");
+			return;
+		}
 
 		ret = xGpioSetValue(GPIOAO_0, GPIO_LEVEL_LOW);
 		if (ret < 0) {
 			printf("DDR_EN gpio val fail\n");
 			return;
 		}
+
+		/***for rtc only power save***/
+		ret = xPinconfSet(GPIOAO_4, PINF_CONFIG_BIAS_DISABLE);
+		if (ret < 0) {
+			printf("PMIC_SLEEP set gpio BIAS fail\n");
+			return;
+		}
+
 	}
 
 	/***set vdd_ee val***/
@@ -225,6 +239,13 @@ void str_power_off(int shutdown_flag)
 	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio dir fail\n");
+		return;
+	}
+
+	/***for rtc only power save***/
+	ret = xPinconfSet(GPIO_TEST_N, PINF_CONFIG_BIAS_DISABLE);
+	if (ret < 0) {
+		printf("vdd_cpu set gpio BIAS fail\n");
 		return;
 	}
 

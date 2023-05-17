@@ -594,7 +594,11 @@ function build_fip() {
 }
 
 function process_blx() {
+	local extra_arg=""
 
+	if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+		extra_arg="--extraArgs ${CONFIG_CHIPSET_VARIANT}"
+	fi
 
 	# process loop
 	for loop in ${!BLX_NAME[@]}; do
@@ -605,17 +609,17 @@ function process_blx() {
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
 						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE} \
-						--extra_args ${CONFIG_CHIPSET_VARIANT}
+						${extra_arg}
 			else
 					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
 						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
 							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} \
-							--extraArgs ${CONFIG_CHIPSET_VARIANT}
+							${extra_arg}
 					else
 						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
-							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} --extraArgs ${CONFIG_CHIPSET_VARIANT}
+							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} ${extra_arg}
 					fi
 			fi
 		fi

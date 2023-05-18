@@ -124,18 +124,24 @@ void *MboxGetRTC(void *msg)
 
 void rtc_enable_irq(void)
 {
-	int ret;
+	int ret, val;
 	u32 alarm, time;
 
 	alarm = REG32(RTC_DIG_ALARM0_REG);
-	if (alarm > 0) {
+	time = REG32(RTC_DIG_REAL_TIME);
+#ifdef CONFIG_RTC_STORAGE_FORMAT_GRAY
+	alarm = gray_to_binary(alarm);
+	time = gray_to_binary(time);
+#endif
+	val = alarm - time;
+	if (val > 0) {
 		ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
 		if (ret)
 			printf("RTC_irq RegisterIrq error, ret = %d\n", ret);
 		EnableIrq(RTC_IRQ);
-		time = REG32(RTC_DIG_REAL_TIME);
-		if (alarm > time && xAlarmTimer != NULL) {
-			alarm = (alarm - time + 1) * 1000;
+		printf("[%s]: alarm val=%d S\n", TAG, val);
+		if (xAlarmTimer != NULL) {
+			alarm = (val + 1) * 1000;
 			xTimerChangePeriod(xAlarmTimer, pdMS_TO_TICKS(alarm), 0);
 		}
 	}
@@ -143,11 +149,17 @@ void rtc_enable_irq(void)
 
 void rtc_disable_irq(void)
 {
-	int ret;
-	u32 alarm;
+	int ret, val;
+	u32 alarm, time;
 
 	alarm = REG32(RTC_DIG_ALARM0_REG);
-	if (alarm > 0) {
+	time = REG32(RTC_DIG_REAL_TIME);
+#ifdef CONFIG_RTC_STORAGE_FORMAT_GRAY
+	alarm = gray_to_binary(alarm);
+	time = gray_to_binary(time);
+#endif
+	val = alarm - time;
+	if (val > 0) {
 		DisableIrq(RTC_IRQ);
 		ret = UnRegisterIrq(RTC_IRQ);
 		if (ret)

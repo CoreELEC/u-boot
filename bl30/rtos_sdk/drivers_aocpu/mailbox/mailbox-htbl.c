@@ -112,7 +112,7 @@ uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd, handler_t handler,
 			p[i].cmd = cmd;
 			p[i].handler = handler;
 			p[i].needFdBak = needFdBak;
-			PRINT_ERR("reg idx=%ld cmd=%lx handler=%p\n", i, cmd, handler);
+			PRINT("reg idx=%ld cmd=%lx handler=%p\n", i, cmd, handler);
 			return i;
 		}
 	}

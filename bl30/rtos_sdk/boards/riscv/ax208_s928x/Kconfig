@@ -24,5 +24,6 @@ config BOARD_AX208_S928X
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
+	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic AX208 Board.

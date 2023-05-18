@@ -60,8 +60,6 @@ void hw_business_process(void)
 	uint8_t i = 0;
 
 	config_eclic_irqs();
-	for (i = 0; i < 4; ++i)
-		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_T5M);
 	vRtcInit();

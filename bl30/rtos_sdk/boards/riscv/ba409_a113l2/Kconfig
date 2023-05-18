@@ -25,5 +25,6 @@ config BOARD_BA409_A113L2
 	select RTC
 	select VERSION_FULL_INFO
 	select RTC_STORAGE_FORMAT_GRAY
+	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic BA409 Board.

@@ -74,6 +74,8 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     inspected in the debugger if the task name passed into this function is
     corrupt. */
     //write(1, "Stack Overflow\n", 15);
+	printf("vApplicationStackOverflowHook, current task is %s\n", pcTaskName);
+	vTaskDumpStack(NULL);
     for ( ;; );
 }
 /*-----------------------------------------------------------*/

@@ -94,9 +94,9 @@ declare -a BLX_PATH=(		\
 	"bl2/tee"				\
 	"bl30/src_ao"			\
 	"bl30/rtos_sdk"			\
-	"bl31_1.3/src"			\
-	"bl32_3.8/src"			\
-	"bl32_3.18/src"			\
+	"bl31/bl31_1.3/src"		\
+	"bl32/bl32_3.8/src"		\
+	"bl32/bl32_3.18/src"	\
 	"bl33/v2019"			\
 	"fip"		)
 

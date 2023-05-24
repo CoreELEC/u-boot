@@ -142,7 +142,7 @@ function sign_blx() {
 	fi
 
 	if [ -z ${soc} ]; then
-		soc="s4"
+		soc="s1a"
 	fi
 
 	if [ -z ${build_type} ]; then

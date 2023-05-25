@@ -142,6 +142,9 @@ void vPortHaltSystem(Halt_Action_e act)
 #endif
 	}
 }
+
+#include "osd_wrap.h"
+
 /*-----------------------------------------------------------*/
 void vPortHaltSystemInIrq(Halt_Action_e act)
 {
@@ -169,6 +172,7 @@ void vPortHaltSystemInIrq(Halt_Action_e act)
 
 	while (1) {
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+		osd_wrap.exception_handle();
 		prvCorePowerDown();
 #else
 		__asm volatile("wfi");

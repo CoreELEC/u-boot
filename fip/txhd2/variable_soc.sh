@@ -40,8 +40,14 @@ CONFIG_DDR_PARSE=1
 
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="txhd2"
-if [ "${BL30_SELECT}" == "txhd2_skt" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="txhd2_skt"
+if [ "${BL30_SELECT}" == "txhd2_be301" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="be301_t950s"
+elif [ "${BL30_SELECT}" == "txhd2_be309" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="be309_t950s"
+elif [ "${BL30_SELECT}" == "txhd2_be311" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="be311_t950s"
+elif [ "${BL30_SELECT}" == "txhd2_be319" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="be319_t950s"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="txhd2_skt"
 fi

@@ -63,6 +63,11 @@ function init_vari() {
 		CHIPSET_VARIANT_SUFFIX=""
 	fi
 
+	#special case for c3(min bl32)
+	if [ "${CONFIG_CHIPSET_VARIANT_MIN}" == "1m" ]; then
+		CHIPSET_VARIANT_MIN_SUFFIX=".1m"
+	fi
+
 	if [ -n "${CONFIG_AMLOGIC_KEY_TYPE}" ]; then
 		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
 	fi
@@ -726,14 +731,19 @@ function build_signed() {
 		mk_ddr_fip ${BUILD_PATH}
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
+	if [ ".1m" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ]; then
+		./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_MIN_SUFFIX}
+	else
+		./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
+	fi
+
 	postfix=.signed
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	list_pack="${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
-	list_pack="$list_pack ${BUILD_PATH}/blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl32.bin.signed ${BUILD_PATH}/blob-bl40.bin.signed"
+	list_pack="$list_pack ${BUILD_PATH}/blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl40.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/bl30-payload.bin ${BUILD_PATH}/bl33-payload.bin ${BUILD_PATH}/dvinit-params.bin"
 	if [ -f ${BUILD_PATH}/ddr-fip.bin ]; then
 		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"

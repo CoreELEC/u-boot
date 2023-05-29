@@ -3,6 +3,10 @@
 # static
 declare BLX_BIN_SUB_CHIP="${CONFIG_CHIPSET_NAME}"
 
+if [ -n "${CONFIG_CHIPSET_VARIANT_MIN}" ]; then
+	declare CHIPSET_VARIANT_MIN_SUFFIX=".${CONFIG_CHIPSET_VARIANT_MIN}"
+fi
+
 if [ -n "${SCRIPT_ARG_CHIPSET_VARIANT}" ]; then
 	declare CHIPSET_VARIANT_SUFFIX=".${SCRIPT_ARG_CHIPSET_VARIANT}"
 elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
@@ -55,7 +59,7 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
 			 "blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "blob-bl32.bin.signed"                              \
+			 "blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}.bin.signed" \
 			 "blob-bl40.bin.signed")
 fi
 

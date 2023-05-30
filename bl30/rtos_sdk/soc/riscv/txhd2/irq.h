@@ -32,27 +32,12 @@ extern void eclic_irq50_handler(void);
 	}
 
 /*IRQ_NUM define list*/
-#define IRQ_NUM_MAX  255
-#define IRQ_NUM_MB_0 50
-#define IRQ_NUM_MB_1 49
-#define IRQ_NUM_MB_2 48
-#define IRQ_NUM_MB_3 47
-#define IRQ_NUM_MB_4 46
+#define IRQ_NUM_MAX  127
 
-/*You can add other interrupts num here 46~19*/
+/*You can add other interrupts num here 0~127*/
 
 /* use for ir */
 #define IRQ_NUM_IRIN 7
-
-/* gpio key/bluetooth or others gpio irq useage*/
-#define IRQ_NUM_GPIO3 23
-#define IRQ_NUM_GPIO2 22
-#define IRQ_NUM_GPIO1 21
-#define IRQ_NUM_GPIO0 20
-
-/* cec */
-#define IRQ_NUM_CECA 40
-#define IRQ_NUM_CECB 41
 
 /* APCore GIC_OUTx */
 #define IRQ_NUM_OUT_3 (28 + 13 + 3)

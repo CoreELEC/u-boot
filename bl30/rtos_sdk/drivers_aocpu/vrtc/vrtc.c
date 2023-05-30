@@ -82,6 +82,7 @@ void vRtcInit(void)
 		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
 }
 
+#ifndef configVRTC_DISABLE_ALARM
 static TimerHandle_t xRTCTimer;
 
 void alarm_set(void)
@@ -119,3 +120,4 @@ void vCreat_alarm_timer(void)
 {
 	xRTCTimer = xTimerCreate("Timer", pdMS_TO_TICKS(1000), pdFALSE, NULL, valarm_update);
 }
+#endif

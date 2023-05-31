@@ -86,45 +86,38 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
+	/***power on vcc3.3/VDDCPU***/
+	ret = xGpioSetDir(GPIOAO_2, GPIO_DIR_OUT);
 	if (ret < 0) {
-		printf("vdd_CPU pwm set fail\n");
+		printf("vcc3.3 set gpio dir fail\n");
 		return;
 	}
 
-	/***power on vcc3.3***/
-	//ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vcc3.3 set gpio dir fail\n");
-	//	return;
-	//}
-
-	//ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_HIGH);
-	//if (ret < 0) {
-	//	printf("vcc3.3 set gpio val fail\n");
-	//	return;
-	//}
+	ret = xGpioSetValue(GPIOAO_2, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc3.3 set gpio val fail\n");
+		return;
+	}
 
 	if (shutdown_flag) {
-		/***power on VDDQ/VDDCPU***/
-		//ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
-		//if (ret < 0) {
-		//	printf("VDDCPU/VDDQ set gpio dir fail\n");
-		//	return;
-		//}
-
-		//ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_HIGH);
-		//if (ret < 0) {
-		//	printf("VDDCPU/VDDQ set gpio val fail\n");
-		//	return;
-		//}
+		/***power on VDDQ***/
+		REG32(AO_GPIO_TEST_N) = REG32(AO_GPIO_TEST_N) | (1 << 31);
 		/*Wait 10ms for VDDCPU statable*/
 		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 
 	/***power on 5v***/
-	REG32(AO_GPIO_TEST_N) = REG32(AO_GPIO_TEST_N) | (1 << 31);
+	ret = xGpioSetDir(GPIOAO_10, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("VCC5V set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(GPIOAO_10, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("VCC5V set gpio val fail\n");
+		return;
+	}
 }
 
 void str_power_off(int shutdown_flag)
@@ -132,51 +125,38 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	printf("poweroff 5v\n");
+	ret = xGpioSetDir(GPIOAO_10, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("VCC5V set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(GPIOAO_10, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("VCC5V set gpio val fail\n");
+		return;
+	}
+
 	printf("0x%x\n", REG32(AO_GPIO_TEST_N));
 
-	REG32(AO_GPIO_TEST_N) = (REG32(AO_GPIO_TEST_N) << 1) >> 1;
-
 	if (shutdown_flag) {
-		/***power off VDDQ/VDDCPU***/
-		//ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
-		//if (ret < 0) {
-		//	printf("VDDCPU/VDDQ set gpio dir fail\n");
-		//	return;
-		//}
-
-		//ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_LOW);
-		//if (ret < 0) {
-		//	printf("VDDCPU/VDDQ set gpio val fail\n");
-		//	return;
-		//}
+		/***power off VDDQ***/
+		REG32(AO_GPIO_TEST_N) = (REG32(AO_GPIO_TEST_N) << 1) >> 1;
 	}
 
-	/***power off vcc3.3***/
-	//ret = xGpioSetDir(GPIOD_10, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vcc3.3 set gpio dir fail\n");
-	//	return;
-	//}
+	/***power off vcc3.3/VDDCPU***/
+	ret = xGpioSetDir(GPIOAO_2, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc3.3 set gpio dir fail\n");
+		return;
+	}
 
 	if (get_ETHWol_flag() == 0) {
-		//ret = xGpioSetValue(GPIOD_10, GPIO_LEVEL_LOW);
-		//if (ret < 0) {
-		//	printf("vcc3.3 set gpio val fail\n");
-		//	return;
-		//}
-	}
-
-	/***set vdd_cpu val***/
-	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
-	if (vdd_cpu < 0) {
-		printf("vdd_CPU pwm get fail\n");
-		return;
-	}
-
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, 700);
-	if (ret < 0) {
-		printf("vdd_CPU pwm set fail\n");
-		return;
+		ret = xGpioSetValue(GPIOAO_2, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vcc3.3 set gpio val fail\n");
+			return;
+		}
 	}
 
 	/***set vdd_ee val***/
@@ -186,7 +166,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 860);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;

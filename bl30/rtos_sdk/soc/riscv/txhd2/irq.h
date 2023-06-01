@@ -37,7 +37,7 @@ extern void eclic_irq50_handler(void);
 /*You can add other interrupts num here 0~127*/
 
 /* use for ir */
-#define IRQ_NUM_IRIN 7
+#define IRQ_NUM_IRIN 4
 
 /* APCore GIC_OUTx */
 #define IRQ_NUM_OUT_3 (28 + 13 + 3)

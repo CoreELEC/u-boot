@@ -51,8 +51,8 @@ static void vIRHandler(struct IRPowerKey *pkey)
 void str_hw_init(void)
 {
 	/*enable device & wakeup source interrupt*/
-	//vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
-	//	vIRHandler);
+	vIRInit(MODE_HARD_NEC, GPIOAO_6, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+		vIRHandler);
 	vETHInit(1);
 	//xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();

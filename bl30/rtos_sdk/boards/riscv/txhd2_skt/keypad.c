@@ -33,7 +33,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 	       event.responseTime);
 }
 
-struct xAdcKeyInfo adcKeyInfo[] = { ADC_KEY_INFO(ADC_KEY_ID_HOME, 0, SARADC_CH1, EVENT_SHORT,
+struct xAdcKeyInfo adcKeyInfo[] = { ADC_KEY_INFO(ADC_KEY_ID_HOME, 0, SARADC_CH2, EVENT_SHORT,
 						 vAdcKeyCallBack, NULL) };
 
 void vKeyPadCreate(void)

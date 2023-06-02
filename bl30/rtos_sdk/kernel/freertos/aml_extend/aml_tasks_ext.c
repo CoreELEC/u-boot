@@ -135,3 +135,27 @@ GetTaskHandleOfNumExit:
 	return pxFirstTCB;
 }
 #endif
+
+#if defined(CONFIG_DEBUG_COREDUMP)
+// iterate over all threads
+void xIterateOverAllThreads(void (*process_task_list)(List_t *list))
+{
+	int32_t queue = configMAX_PRIORITIES;
+
+	do {
+		queue--;
+		process_task_list(&pxReadyTasksLists[queue]);
+	} while (queue > tskIDLE_PRIORITY);
+
+	process_task_list((List_t *)pxDelayedTaskList);
+	process_task_list((List_t *)pxOverflowDelayedTaskList);
+
+#if INCLUDE_vTaskDelete
+	process_task_list(&xTasksWaitingTermination);
+#endif
+
+#if INCLUDE_vTaskSuspend
+	process_task_list(&xSuspendedTaskList);
+#endif
+}
+#endif

@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <FreeRTOS.h>
-#include "gic.h"
-#include "task.h"
-#include "common.h"
-#include "rtosinfo.h"
-#include "arm-smccc.h"
 #include "aml_portable_ext.h"
+
+#include <FreeRTOS.h>
+
+#include "arm-smccc.h"
+#include "common.h"
+#include "gic.h"
+#include "rtosinfo.h"
+#include "task.h"
 
 #define portMAX_IRQ_NUM 1024
 
@@ -21,6 +23,7 @@
 extern xRtosInfo_t xRtosInfo;
 
 static unsigned char irq_mask[portMAX_IRQ_NUM / 8];
+
 /*-----------------------------------------------------------*/
 static void pvPortSetIrqMask(uint32_t irq_num, int val)
 {
@@ -45,23 +48,51 @@ static unsigned long prvCorePowerDown(void)
 	arm_smccc_smc(0x84000002, 0, 0, 0, 0, 0, 0, 0, &res);
 	return res.a0;
 }
+
 /*-----------------------------------------------------------*/
-static void vOperationBeforeShutdown(void)
-{
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
-	/* viu1_line_n_int */
-	plat_gic_irq_register_with_default(227, 0, 0);
-	/* ge2d_int */
-	plat_gic_irq_register_with_default(249, 0, 1);
-	/* dwap_irq */
-	plat_gic_irq_register_with_default(91, 0, 1);
-	/* isp adapter frontend2 irq */
-	plat_gic_irq_register_with_default(343, 0, 1);
-	plat_gic_irq_register_with_default(321, 1, 0);
-	/* timerA irq*/
-	plat_gic_irq_register_with_default(32, 0, 0);
+#include "osd_wrap.h"
+#endif
+static void vBeforeExceptionShutdown(Halt_Action_e act)
+{
+	(void)act;
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+	if (act == HLTACT_EXCEPTION_SYSTEM)
+		osd_wrap.exception_handle();
 #endif
 }
+
+/*-----------------------------------------------------------*/
+#if CONFIG_BACKTRACE
+#include "stack_trace.h"
+int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
+{
+	StackType_t *pxTopOfStack;
+	int i;
+
+	if (!task || task == xTaskGetCurrentTaskHandle())
+		return -1;
+	pxTopOfStack = *(StackType_t **)task;
+	reg->sp = (unsigned long)pxTopOfStack;
+	if (*pxTopOfStack)
+		pxTopOfStack += 64;
+	pxTopOfStack += 2;
+	reg->elr = *pxTopOfStack++;
+	reg->spsr = *pxTopOfStack++;
+	for (i = 0; i < 31; i++) reg->regs[i] = pxTopOfStack[31 - (i ^ 1)];
+	return 0;
+}
+#endif
+
+/*-----------------------------------------------------------*/
+#if CONFIG_LOG_BUFFER
+void vPortConfigLogBuf(uint32_t pa, uint32_t len)
+{
+	xRtosInfo.logbuf_phy = pa;
+	xRtosInfo.logbuf_len = len;
+	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
+}
+#endif
 
 /*-----------------------------------------------------------*/
 void vLowPowerSystem(void)
@@ -113,8 +144,8 @@ void vPortHaltSystem(Halt_Action_e act)
 {
 	uint32_t irq = 0, i;
 
-	taskENTER_CRITICAL();
 	portDISABLE_INTERRUPTS();
+
 	for (irq = 0; irq < portMAX_IRQ_NUM; irq += 8) {
 		for (i = 0; i < 8; i++) {
 			if (irq_mask[irq / 8] & (1 << i))
@@ -122,17 +153,15 @@ void vPortHaltSystem(Halt_Action_e act)
 		}
 	}
 
-	(void)act;
-
-	vPortRtosInfoUpdateStatus(eRtosStat_Done);
-
 	configPREPARE_CPU_HALT();
+
+	vBeforeExceptionShutdown(act);
 
 	vHardwareResourceRelease();
 
-	plat_gic_raise_softirq(1, 7);
+	vPortRtosInfoUpdateStatus(eRtosStat_Done);
 
-	vOperationBeforeShutdown();
+	plat_gic_raise_softirq(1, 7);
 
 	while (1) {
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
@@ -142,76 +171,6 @@ void vPortHaltSystem(Halt_Action_e act)
 #endif
 	}
 }
-
-#include "osd_wrap.h"
-
-/*-----------------------------------------------------------*/
-void vPortHaltSystemInIrq(Halt_Action_e act)
-{
-	uint32_t irq = 0, i;
-
-	portDISABLE_INTERRUPTS();
-	for (irq = 0; irq < portMAX_IRQ_NUM; irq += 8) {
-		for (i = 0; i < 8; i++) {
-			if (irq_mask[irq / 8] & (1 << i))
-				plat_gic_irq_unregister(irq + i);
-		}
-	}
-
-	(void)act;
-
-	vPortRtosInfoUpdateStatus(eRtosStat_Done);
-
-	configPREPARE_CPU_HALT();
-
-	vHardwareResourceRelease();
-
-	plat_gic_raise_softirq(1, 7);
-
-	vOperationBeforeShutdown();
-
-	while (1) {
-#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
-		osd_wrap.exception_handle();
-		prvCorePowerDown();
-#else
-		__asm volatile("wfi");
-#endif
-	}
-}
-
-/*-----------------------------------------------------------*/
-#if CONFIG_BACKTRACE
-#include "stack_trace.h"
-int vPortTaskPtregs(TaskHandle_t task, struct pt_regs *reg)
-{
-	StackType_t *pxTopOfStack;
-	int i;
-
-	if (!task || task == xTaskGetCurrentTaskHandle())
-		return -1;
-	pxTopOfStack = *(StackType_t **)task;
-	reg->sp = (unsigned long)pxTopOfStack;
-	if (*pxTopOfStack)
-		pxTopOfStack += 64;
-	pxTopOfStack += 2;
-	reg->elr = *pxTopOfStack++;
-	reg->spsr = *pxTopOfStack++;
-	for (i = 0; i < 31; i++)
-		reg->regs[i] = pxTopOfStack[31 - (i ^ 1)];
-	return 0;
-}
-#endif
-
-/*-----------------------------------------------------------*/
-#if CONFIG_LOG_BUFFER
-void vPortConfigLogBuf(uint32_t pa, uint32_t len)
-{
-	xRtosInfo.logbuf_phy = pa;
-	xRtosInfo.logbuf_len = len;
-	vCacheFlushDcacheRange((unsigned long)&xRtosInfo, sizeof(xRtosInfo));
-}
-#endif
 
 /*-----------------------------------------------------------*/
 void vHardwareResourceRecord(void)
@@ -234,10 +193,26 @@ void vHardwareResourceRecord(void)
 /*-----------------------------------------------------------*/
 void vHardwareResourceRelease(void)
 {
+	/// timer
 #if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
 	extern void vTickTimerRestore(void);
 	/* systick timer restore */
 	vTickTimerRestore();
+#endif
+
+	/// irq
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+	/* viu1_line_n_int */
+	plat_gic_irq_register_with_default(227, 0, 0);
+	/* ge2d_int */
+	plat_gic_irq_register_with_default(249, 0, 1);
+	/* dwap_irq */
+	plat_gic_irq_register_with_default(91, 0, 1);
+	/* isp adapter frontend2 irq */
+	plat_gic_irq_register_with_default(343, 0, 1);
+	plat_gic_irq_register_with_default(321, 1, 0);
+	/* timerA irq*/
+	plat_gic_irq_register_with_default(32, 0, 0);
 #endif
 }
 

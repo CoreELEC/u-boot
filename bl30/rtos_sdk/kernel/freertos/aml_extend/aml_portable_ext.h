@@ -11,7 +11,8 @@
 
 typedef enum Halt_Action{
 	HLTACT_RUN_OS=0,
-	HLTACT_SHUTDOWN_SYSTEM
+	HLTACT_SHUTDOWN_SYSTEM,
+	HLTACT_EXCEPTION_SYSTEM
 }Halt_Action_e;
 
 #if CONFIG_FTRACE
@@ -78,8 +79,6 @@ void vPortRemoveIrq(uint32_t irq_num);
 void vPortRtosInfoUpdateStatus(uint32_t status);
 
 void vPortHaltSystem(Halt_Action_e act);
-
-void vPortHaltSystemInIrq(Halt_Action_e act);
 
 void *pvPortRealloc(void *ptr, size_t size);
 

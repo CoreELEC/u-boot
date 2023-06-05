@@ -247,6 +247,10 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 
 void prvTaskExitError( void )
 {
+	char *CurrentTaskName = pcTaskGetName(xTaskGetCurrentTaskHandle());
+
+	printf("prvTaskExitError, current task is %s\n", CurrentTaskName);
+
 	/* A function that implements a task must not exit or attempt to return to
 	its caller as there is nothing to return to.  If a task wants to exit it
 	should instead call vTaskDelete( NULL ).

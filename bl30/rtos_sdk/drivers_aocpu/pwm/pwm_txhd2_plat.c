@@ -49,7 +49,7 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-		return PWM_AB;
+		return PWM_AO_AB;
 
 	case VDDCPU_VOLT:
 		return PWM_AB;
@@ -68,10 +68,10 @@ uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-		return MESON_PWM_0;
+		return MESON_PWM_1;
 
 	case VDDCPU_VOLT:
-		return MESON_PWM_1;
+		return MESON_PWM_0;
 
 	default:
 		break;

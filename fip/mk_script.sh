@@ -664,6 +664,9 @@ function bin_path_parser() {
 				if [ "${CUR_SOC}" == "s4" ] && [ "${cas}" == "gs" ]; then
 					CONFIG_CAS=${cas}
 				fi
+				if [ "${cas}" == "comcast" ]; then
+					CONFIG_CAS=${cas}
+				fi
 				echo "CAS: ${cas},${CONFIG_CAS}"
 				export CONFIG_CAS
 				continue ;;

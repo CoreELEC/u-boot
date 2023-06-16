@@ -775,6 +775,7 @@ function build_signed() {
 			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
 		fi
 		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
+		export DEVICE_VARIANT_MIN_SUFFIX=${CHIPSET_VARIANT_MIN_SUFFIX}
 
 		export DEVICE_STORAGE_SUFFIX=.sto
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
@@ -805,11 +806,7 @@ function copy_other_soc() {
 function package() {
 	# BUILD_PATH without "/"
 	x=$((${#BUILD_PATH}-1))
-if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
-	cp ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool-fastboot ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
-else
-	cp ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool-normal ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
-fi
+
 	if [ "\\" == "${BUILD_PATH:$x:1}" ] || [ "/" == "${BUILD_PATH:$x:1}" ]; then
 		BUILD_PATH=${BUILD_PATH:0:$x}
 	fi
@@ -824,6 +821,6 @@ fi
 	fi
 	#copy_file
 	cleanup
-	rm ./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool
+
 	echo "Bootloader build done!"
 }

@@ -33,6 +33,10 @@ else
 	CHIPSET_VARIANT_MIN_SUFFIX=""
 fi
 
+if [ ".fastboot" == "${CHIPSET_VARIANT_SUFFIX}" ]; then
+	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+fi
+
 #
 # Arguments
 #

@@ -109,6 +109,7 @@ function lz4_rtos() {
 	#Get the rtos target address
 	./self_decompress_tool.sh -a ./self_decompress_head.bin -b ./rtos_1.bin -l 0x04c00000 -j $RTOS_TARGET_ADDRESS -d 0 -s $RTOS2_TARGET_ADDRESS
 	cp ./self_decompress_firmware.bin $RTOS_IMAGE_A
+	rm ./self_decompress_firmware.bin ./rtos_1.bin
 	popd
 }
 

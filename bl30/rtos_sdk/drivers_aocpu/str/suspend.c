@@ -250,10 +250,12 @@ void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
 
+#ifdef CONFIG_PM
 	if (mode == FREEZE_ENTER)
 		pm_enter();
 	else if (mode == FREEZE_EXIT)
 		wakeup_ap_from_kernel();
+#endif
 
 	return NULL;
 }

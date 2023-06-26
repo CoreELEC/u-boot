@@ -39,6 +39,13 @@ if [ -s "$1" ] && [ -s "$2" ]; then
     pushd $RTOS_BASE_DIR/output/toolchains/gcc-aarch64-none-elf/bin
     aarch64-none-elf-gdb $COREDUMP_ELF
     popd
+
+    # Clean up the abnormal exit problem of gdbstub
+    pid=$(lsof -t -i :1234)
+
+    if [ -n "$pid" ]; then
+        kill $pid
+    fi
 else
     usage
 fi

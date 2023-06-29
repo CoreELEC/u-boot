@@ -15,7 +15,7 @@
 #include "timers.h" /* Software timer related API prototypes. */
 #include "semphr.h" /* Semaphore related API prototypes. */
 
-#define BT_WAKE_HOST GPIOB_13 //bt_wake_host pin
+#define BT_WAKE_HOST GPIOAO_11 //bt_wake_host pin
 #define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
 
 void Bt_IRQHandle(void)

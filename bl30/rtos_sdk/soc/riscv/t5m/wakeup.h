@@ -6,9 +6,10 @@
 
 #ifndef __WAKEUP_H__
 #define __WAKEUP_H__
+#include <timer_source.h>
 
 #define TIMER_CLK_IDX	3// 0:cts_sys_clk 1:1us 2:10us 3:100us
-#define WAKEUP_TIMER_CNT	1000 //Delay : WAKEUP_TIMER_CNT * TIMER_CLK_IDX
+#define WAKEUP_TIMER_CNT	100 //Delay : WAKEUP_TIMER_CNT * TIMER_CLK_IDX
 
 /* Calculate the actual value, unit ms */
 #ifndef TIMER_CLK_IDX
@@ -22,9 +23,9 @@
 		#elif (TIMER_CLK_IDX == 1)
 		#define SYSTEM_DELAY_VAL	(WAKEUP_TIMER_CNT / 1000)
 		#elif (TIMER_CLK_IDX == 2)
-		#define SYSTEM_DELAY_VAL	(WAKEUP_TIMER_CNT / 1000 * 10)
+		#define SYSTEM_DELAY_VAL	(WAKEUP_TIMER_CNT * 10 / 1000)
 		#elif (TIMER_CLK_IDX == 3)
-		#define SYSTEM_DELAY_VAL	(WAKEUP_TIMER_CNT / 1000 * 100)
+		#define SYSTEM_DELAY_VAL	(WAKEUP_TIMER_CNT * 100 / 1000)
 		#endif
 	#endif //!((TIMER_CLK_IDX >= 0) && (TIMER_CLK_IDX <=3))
 #endif // TIMER_CLK_IDX
@@ -42,7 +43,7 @@ static inline void wakeup_ap(void)
 	value &= ~((1 << 7) | (0x3) | (1 << 6));
 	value |= ((1 << 7) | (0 << 6) | (TIMER_CLK_IDX));
 	REG32(FSM_TRIGER_CTRL) = value;
-	vTaskDelay(pdMS_TO_TICKS(SYSTEM_DELAY_VAL) + 1);
+	mdelay(SYSTEM_DELAY_VAL + 10);
 }
 
 static inline void clear_wakeup_trigger(void)

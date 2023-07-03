@@ -6,9 +6,15 @@
 #
 
 RTOS_BUILD_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
+BUILD_SYSTEM_DIR=$RTOS_BUILD_DIR/build_system
 
-#Package target check
+export RTOS_BUILD_DIR
+
+# Parsing large package combination information
 function package_target_verify() {
+
+    ARCH_PREFIX=""
+    PRODUCT_SUFFIX=""
 
     #Get the packed sequence selected by the user
     j=0
@@ -26,218 +32,172 @@ function package_target_verify() {
     fi
 
     #parameter check
+    j=0
     for ((loop = 0; loop < ${#PACKAGE_ARRY[@]}; loop += 4)); do
-        arch=${PACKAGE_ARRY[loop]}
-        soc=${PACKAGE_ARRY[loop + 1]}
-        board=${PACKAGE_ARRY[loop + 2]}
-        product=${PACKAGE_ARRY[loop + 3]}
-
-        echo $arch $soc $board $product
-
-        case ${product} in
-        'hifi_dsp')
-            BUILD_DSP=1
-            DSP_ARCH=$arch
-            DSP_SOC=$soc
-            DSP_BOARD=$board
-            DSP_PRODUCT=$product
-            ;;
-        'speaker')
-            BUILD_RTOS=1
-            RTOS_ARCH=$arch
-            RTOS_SOC=$soc
-            RTOS_BOARD=$board
-            RTOS_PRODUCT=$product
-            ;;
-        *)
-            echo "Unsupported product type:${product}"
-            exit 1
-            ;;
-        esac
-
+        pkg_arch[j]=${PACKAGE_ARRY[loop]}
+        pkg_soc[j]=${PACKAGE_ARRY[loop + 1]}
+        pkg_board[j]=${PACKAGE_ARRY[loop + 2]}
+        pkg_product[j]=${PACKAGE_ARRY[loop + 3]}
+        ARCH_PREFIX="$ARCH_PREFIX""${pkg_arch[j]}""-"
+        PRODUCT_SUFFIX="$PRODUCT_SUFFIX""-""${pkg_product[j]}"
+        j+=1
     done
 
-    #Set the board configuration path
-    IMAGE_BOARD_CONFIG_DIR="image_packer/$RTOS_SOC/"
+    # set the board configuration path
+    IMAGE_BOARD_CONFIG_DIR="$RTOS_BUILD_DIR/image_packer/${pkg_soc[0]}/"
 
-    #Set up the build project
-    BUILD_CLEAN=1
-    BUILD_IMAGE=1
-    BUILD_UBOOT=1
+    # mirror storage path
+    AML_IMAGE_STORAGE_PATH=$RTOS_BUILD_DIR/output/packages/"${ARCH_PREFIX}""${pkg_soc[0]}"-"${pkg_board[0]}"
+
+    # create mirror file directory
+    rm -fr $AML_IMAGE_STORAGE_PATH
+    mkdir -p $AML_IMAGE_STORAGE_PATH
 }
 
-#Packaging environment configuration
-function package_env_config() {
+function compile_rtos_for_arm() {
+    # target file path
+    OUTPUT_PATH=${RTOS_BUILD_DIR}/output/$1-$3-$4
 
-    #Select the compile parameters of the bootstrap
-    case $1 in
-    'ad401_a113l')
-        UBOOT_BOARDNAME="a1_ad401_nand_rtos"
-        ;;
-    'ad403_a113l')
-        UBOOT_BOARDNAME="a1_ad403_nand_rtos"
-        unset BUILD_DSP
-        unset DSP_ARCH
-        ;;
-    *)
-        echo "Unsupported board type:$1"
-        exit 1
-        ;;
-    esac
+    IMAGE_PATH=${OUTPUT_PATH}/images
+    BINARY_FILE=${IMAGE_PATH}/${KERNEL}-signed.bin
+    DEBUG_FILE_PREFIX=${OUTPUT_PATH}/${KERNEL}/${KERNEL}
+    XIP_CONFIG_FILE=${RTOS_BUILD_DIR}/boards/$1/$3/lscript.h
+    BUILD_LINK_FILE=${RTOS_BUILD_DIR}/boards/$1/$3/lscript.h
 
-    #Xip config
-    case $DSP_BOARD in
-    'ad401_a113l_hifi4a_lowpower')
-        if [ $UBOOT_BOARDNAME == 'a1_ad401_nor_rtos' ]; then
-            RTOS_XIP=1
-        fi
-        ;;
-    *) ;;
+    # Clean up rtos compilation intermediate files
+    rm -rf $OUTPUT_PATH
 
-    esac
+    # rtos load address
+    LINE=$(grep -m 1 "configTEXT_BASE" $BUILD_LINK_FILE)
+    RTOS_LOAD_ADDR=$(echo "$LINE" | grep -oP '0x[0-9a-fA-F]+')
 
-    #Arch prefix settings
-    if [ -n "$RTOS_ARCH" ]; then
-        ARCH_PREFIX="${RTOS_ARCH}""-"
-        PRODUCT_SUFFIX="-""${RTOS_PRODUCT}"
-    fi
-    if [ -n "$DSP_ARCH" ]; then
-        ARCH_PREFIX="${ARCH_PREFIX}""${DSP_ARCH}""-"
-        PRODUCT_SUFFIX="${PRODUCT_SUFFIX}""-""${DSP_PRODUCT}"
-    fi
-}
+    # determine whether to enable the xip function
+    RTOS_XIP=$(grep -E "^#define\s+CONFIG_XIP\s+[01]$" "$XIP_CONFIG_FILE" | awk '{print $3}')
 
-#build rtos dsp
-function build_rtos_dsp() {
-
+    # start compile flow
     pushd $RTOS_BUILD_DIR
 
-    source scripts/env.sh ${DSP_ARCH} ${DSP_SOC} ${DSP_BOARD} ${DSP_PRODUCT}
+    source scripts/env.sh $1 $2 $3 $4
 
-    make
-
-    test -f ${DSP_SDK_SINGED_BIN_FILE} && cp ${DSP_SDK_SINGED_BIN_FILE} $PROJECT_BUILD_OUT_IMAGE_PATH/dspboot.bin
-    test -f ${DSP_SDK_DEBUG_FILE_PREFIX}.lst && cp ${DSP_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${DSP_ARCH}-${DSP_BOARD}.lst
-    test -f ${DSP_SDK_DEBUG_FILE_PREFIX}.map && cp ${DSP_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${DSP_ARCH}-${DSP_BOARD}.map
-    rm -rf $DSP_SDK_OUT_PATH
-
-    popd
-}
-
-#build rtos uimage
-function build_rtos_image() {
-
-    pushd $RTOS_BUILD_DIR
-
-    source scripts/env.sh ${RTOS_ARCH} ${RTOS_SOC} ${RTOS_BOARD} ${RTOS_PRODUCT}
-
-    if [ -n "$RTOS_XIP" ]; then
-        sed -i -e 's/CONFIG_XIP .*$/CONFIG_XIP 1/' $RTOS_XIP_CONFIG_FILE
-    fi
-
-    if [ -n "$1" ] &&
-        [ $1 == "backtrace" ]; then
+    if [ "$BACKTRACE_ENABLE" = "1" ]; then
         make backtrace
-        if [ -n "$RTOS_XIP" ]; then
-            make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
-            cp ${RTOS_SDK_OUT_PATH}/${KERNEL}/${KERNEL}.bin ${RTOS_SDK_SINGED_BIN_FILE}
-        fi
     else
         make
-        if [ -n "$RTOS_XIP" ]; then
-            make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
-            cp ${RTOS_SDK_OUT_PATH}/${KERNEL}/${KERNEL}.bin ${RTOS_SDK_SINGED_BIN_FILE}
-        fi
-    fi
-
-    if [ -n "$RTOS_XIP" ]; then
-        sed -i -e 's/CONFIG_XIP .*$/CONFIG_XIP 0/' $RTOS_XIP_CONFIG_FILE
     fi
 
     if [ $? -ne 0 ]; then
         echo "bulid rtos image faile error:$?"
         popd
         exit 1
-    else
-        if [ -z "$RTOS_XIP" ]; then
-            mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
-            test -f ${RTOS_SDK_IMAGE_PATH}/rtos-uImage && cp ${RTOS_SDK_IMAGE_PATH}/rtos-uImage $PROJECT_BUILD_OUT_IMAGE_PATH/rtos-uImage
-            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.lst
-            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.map && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.map
-            rm -rf $RTOS_SDK_OUT_PATH
-        else
-            mkimage -A ${ARCH} -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d ${RTOS_SDK_SINGED_BIN_FILE} ${RTOS_SDK_IMAGE_PATH}/rtos-uImage
-            cp ${RTOS_SDK_OUT_PATH}/freertos/freertos_b.bin ${RTOS_SDK_IMAGE_PATH}/rtos-xipA
-            cp ${RTOS_SDK_IMAGE_PATH}/* $PROJECT_BUILD_OUT_IMAGE_PATH/
-            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.lst $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.lst
-            test -f ${RTOS_SDK_DEBUG_FILE_PREFIX}.map && cp ${RTOS_SDK_DEBUG_FILE_PREFIX}.map $PROJECT_BUILD_OUT_IMAGE_PATH/${RTOS_ARCH}-${RTOS_BOARD}.map
-            rm -rf $RTOS_SDK_OUT_PATH
-        fi
     fi
+
+    if [ "$RTOS_XIP" = "1" ]; then
+        make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
+        cp ${OUTPUT_PATH}/${KERNEL}/${KERNEL}.bin ${BINARY_FILE}
+    fi
+
+    mkimage -A ${ARCH} -O u-boot -T standalone -C none -a ${RTOS_LOAD_ADDR} -e ${RTOS_LOAD_ADDR} -n rtos -d ${BINARY_FILE} ${IMAGE_PATH}/rtos-uImage
+
+    if [ "$RTOS_XIP" = "1" ]; then
+        cp ${OUTPUT_PATH}/freertos/freertos_b.bin ${IMAGE_PATH}/rtos-xipA
+        cp ${IMAGE_PATH}/* $AML_IMAGE_STORAGE_PATH/
+    else
+        test -f ${IMAGE_PATH}/rtos-uImage && cp ${IMAGE_PATH}/rtos-uImage $AML_IMAGE_STORAGE_PATH/rtos-uImage
+    fi
+
+    test -f ${DEBUG_FILE_PREFIX}.lst && cp ${DEBUG_FILE_PREFIX}.lst $AML_IMAGE_STORAGE_PATH/$1-$3.lst
+    test -f ${DEBUG_FILE_PREFIX}.map && cp ${DEBUG_FILE_PREFIX}.map $AML_IMAGE_STORAGE_PATH/$1-$3.map
 
     popd
 }
 
-#build aml image
-function build_aml_image() {
-    install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/platform.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
-    install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/usb_flow.aml $PROJECT_BUILD_OUT_IMAGE_PATH/
-    install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_sdc_burn.ini $PROJECT_BUILD_OUT_IMAGE_PATH/
-    if [ -z "$BUILD_DSP" ]; then
-        install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
-        $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package_ndsp.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
+function compile_rtos_for_other() {
+    # target file path
+    OUTPUT_PATH=${RTOS_BUILD_DIR}/output/$1-$3-$4
+
+    IMAGE_PATH=${OUTPUT_PATH}/images
+    BINARY_FILE=${IMAGE_PATH}/${KERNEL}-signed.bin
+    DEBUG_FILE_PREFIX=${OUTPUT_PATH}/${KERNEL}/${KERNEL}
+
+    # Clean up rtos compilation intermediate files
+    rm -rf $OUTPUT_PATH
+
+    # start compile flow
+    pushd $RTOS_BUILD_DIR
+
+    source scripts/env.sh $1 $2 $3 $4
+
+    make
+
+    if [ "$1" == "xtensa" ]; then
+        test -f ${BINARY_FILE} && cp ${BINARY_FILE} $AML_IMAGE_STORAGE_PATH/dspboot.bin
     else
-        if [ -z "$RTOS_XIP" ]; then
-            install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
-            $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
-        else
-            install $RTOS_BUILD_DIR/$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf $PROJECT_BUILD_OUT_IMAGE_PATH/
-            $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package_xip.conf $PROJECT_BUILD_OUT_IMAGE_PATH $PROJECT_BUILD_OUT_IMAGE_PATH/aml_upgrade_package.img
-        fi
+        test -f ${BINARY_FILE} && cp ${BINARY_FILE} $AML_IMAGE_STORAGE_PATH/${KERNEL}-signed.bin
     fi
 
-    cd $PROJECT_BUILD_OUT_IMAGE_PATH && rm $(ls | grep -v ".lst" | grep -v ".map" | grep -v ".img")
+    test -f ${DEBUG_FILE_PREFIX}.lst && cp ${DEBUG_FILE_PREFIX}.lst $AML_IMAGE_STORAGE_PATH/$1-$3.lst
+    test -f ${DEBUG_FILE_PREFIX}.map && cp ${DEBUG_FILE_PREFIX}.map $AML_IMAGE_STORAGE_PATH/$1-$3.map
+
+    popd
 }
 
-#build uboot
-function build_uboot() {
-    echo "UBOOT COMPILE START"
-    if [ -z "$UBOOT_BOARDNAME" ]; then
-        echo "Select board($BOARD) not support compile uboot"
+# Compile rtos for all architectures
+function compile_rtos_for_all() {
+    for ((loop = 0; loop < ${#pkg_board[@]}; loop += 1)); do
+        if [[ ${pkg_arch[loop]} == *"arm"* ]]; then
+            compile_rtos_for_arm ${pkg_arch[loop]} ${pkg_soc[loop]} ${pkg_board[loop]} ${pkg_product[loop]}
+        else
+            compile_rtos_for_other ${pkg_arch[loop]} ${pkg_soc[loop]} ${pkg_board[loop]} ${pkg_product[loop]}
+        fi
+    done
+}
+
+# Compile the bootloader
+function build_bootloader() {
+    echo "start compiling bootloader ..."
+    echo "<-------------- ${pkg_arch[0]} ${pkg_soc[0]} ${pkg_board[0]} ${pkg_product[0]} -------------->"
+
+    #Select the compile parameters of the bootstrap
+    case ${pkg_board[0]} in
+    'ad401_a113l')
+        uboot_type="a1_ad401_nand_rtos"
+        ;;
+    'ad403_a113l')
+        uboot_type="a1_ad403_nand_rtos"
+        ;;
+    *) ;;
+    esac
+
+    if [ -z "$uboot_type" ]; then
+        echo "Waring: Select board(${pkg_board[0]}) not support compile uboot"
         exit 1
     else
         pushd $RTOS_BUILD_DIR/boot/u-boot
-        ./mk $UBOOT_BOARDNAME
-        test -f build/u-boot.bin && cp -av build/u-boot.bin* $PROJECT_BUILD_OUT_IMAGE_PATH
+        ./mk $uboot_type
+        test -f build/u-boot.bin && cp -av build/u-boot.bin* $AML_IMAGE_STORAGE_PATH
         popd
     fi
 }
 
+function aml_image_package() {
+    install $IMAGE_BOARD_CONFIG_DIR/platform.conf $AML_IMAGE_STORAGE_PATH/
+    install $IMAGE_BOARD_CONFIG_DIR/usb_flow.aml $AML_IMAGE_STORAGE_PATH/
+    install $IMAGE_BOARD_CONFIG_DIR/aml_sdc_burn.ini $AML_IMAGE_STORAGE_PATH/
+
+    if [ -e "$AML_IMAGE_STORAGE_PATH/dspboot.bin" ]; then
+        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+    elif [ -e "$AML_IMAGE_STORAGE_PATH/rtos-xipA.bin" ]; then
+        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+    else
+        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+    fi
+
+    $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf $AML_IMAGE_STORAGE_PATH $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.img
+
+    cd $AML_IMAGE_STORAGE_PATH && rm $(ls | grep -v ".lst" | grep -v ".map" | grep -v ".img")
+}
+
 package_target_verify
-package_env_config $RTOS_BOARD
-
-export BUILD_SYSTEM_DIR=${RTOS_BUILD_DIR}/build_system
-export RTOS_XIP_CONFIG_FILE=${RTOS_BUILD_DIR}/boards/${RTOS_ARCH}/${RTOS_BOARD}/lscript.h
-export PROJECT_BUILD_OUT_IMAGE_PATH=${RTOS_BUILD_DIR}/output/packages/"${ARCH_PREFIX}""${RTOS_SOC}"-${RTOS_BOARD}
-
-export RTOS_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}
-export RTOS_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images
-export RTOS_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/images/${KERNEL}-signed.bin
-export RTOS_SDK_DEBUG_FILE_PREFIX=${RTOS_BUILD_DIR}/output/${RTOS_ARCH}-${RTOS_BOARD}-${RTOS_PRODUCT}/${KERNEL}/${KERNEL}
-
-export DSP_SDK_OUT_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}
-export DSP_SDK_IMAGE_PATH=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images
-export DSP_SDK_SINGED_BIN_FILE=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/images/${KERNEL}-signed.bin
-export DSP_SDK_DEBUG_FILE_PREFIX=${RTOS_BUILD_DIR}/output/${DSP_ARCH}-${DSP_BOARD}-${DSP_PRODUCT}/${KERNEL}/${KERNEL}
-
-test -n "$BUILD_CLEAN" && rm -fr $DSP_SDK_OUT_PATH
-test -n "$BUILD_CLEAN" && rm -fr $RTOS_SDK_OUT_PATH
-test -n "$BUILD_CLEAN" && rm -fr $PROJECT_BUILD_OUT_IMAGE_PATH
-mkdir -p $PROJECT_BUILD_OUT_IMAGE_PATH
-
-test -n "$BUILD_RTOS" && build_rtos_image $1
-test -n "$BUILD_DSP" && build_rtos_dsp
-test -n "$BUILD_UBOOT" && build_uboot
-test -n "$BUILD_IMAGE" && build_aml_image
-
-echo "======Done======"
+compile_rtos_for_all
+build_bootloader
+aml_image_package

@@ -186,7 +186,7 @@ void str_power_on(int shutdown_flag)
 	}
 
 	/*Wait 200ms for VDDCPU statable*/
-	vTaskDelay(pdMS_TO_TICKS(200));
+	vTaskDelay(pdMS_TO_TICKS(10));
 
 	printf("vdd_cpu on\n");
 }

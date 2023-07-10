@@ -15,10 +15,10 @@ declare -a BLX_NAME=("bl2"	\
 		     "bl2e"	\
 		     "bl2e"	\
 		     "bl2x"	\
-		     "bl31"	)
-#			 "bl32"	\
-#		     "bl40"	\
-#		     "bl30")
+		     "bl31"	\
+		     "bl32"	\
+		     "bl40"	\
+		     "bl30")
 
 declare -a BLX_SRC_FOLDER=("bl2/core"		\
 			   "bl2/core"		\
@@ -36,10 +36,10 @@ declare -a BLX_BIN_FOLDER=("bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl2/bin"		\
 			   "bl2/bin"		\
-			   "bl31/bl31_2.7/bin")
-#			   "bl32/bl32_3.18/bin"	\
-#			   "bl40/bin"		\
-#			   "bl30/bin_ao")
+			   "bl31/bl31_2.7/bin"	\
+			   "bl32/bl32_3.18/bin"\
+			   "bl40/bin"		\
+			   "bl30/bin_ao")
 
 if [ "y" == "${CONFIG_BUILD_UNSIGN}" ]; then
 declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
@@ -50,7 +50,7 @@ declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl31.bin"		\
 			    "bl32.bin"		\
 			    "bl40.bin"		\
-				"NULL")
+			    "NULL")
 
 else
 declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
@@ -84,8 +84,8 @@ declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2e.bin.usb"	\
 			    "bl2x.bin"		\
 			    "bl31.bin"		\
-#			    "bl32.bin"
-#			    "bl40.bin"
+			    "bl32.bin"		\
+			    "bl40.bin"		\
 			    "NULL")
 
 declare -a BLX_IMG_NAME=("NULL"	\
@@ -171,12 +171,11 @@ ADVANCED_BOOTLOADER=1
 
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="s7"
-declare CONFIG_BOARD_PACKAGE_NAME="s7_skt"
 
-#if [ "${BL30_SELECT}" == "a4_ba400" ]; then
-#	declare CONFIG_BOARD_PACKAGE_NAME="ba400_a113l2"
+if [ "${BL30_SELECT}" == "s7_pxp" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="s7_skt"
 #elif [ "${BL30_SELECT}" == "a4_ba409" ]; then
 #	declare CONFIG_BOARD_PACKAGE_NAME="ba409_a113l2"
-#else
-#	declare CONFIG_BOARD_PACKAGE_NAME="ba400_a113l2"
-#fi
+else
+	declare CONFIG_BOARD_PACKAGE_NAME="s7_skt"
+fi

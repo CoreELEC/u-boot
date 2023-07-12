@@ -698,7 +698,7 @@
 
 //Replace avb2 software SHA256 to utilize armce
 #define CONFIG_AVB2_UBOOT_SHA256
-//#define CONFIG_MULTI_DTB    1
+#define CONFIG_MULTI_DTB    1
 // use auto select DTB table
 #ifdef CONFIG_MULTI_DTB
     #define CONFIG_T7_3G_SIZE   0xC0000000

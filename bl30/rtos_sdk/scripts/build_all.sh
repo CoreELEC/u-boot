@@ -19,7 +19,7 @@ source scripts/publish.sh
 if [[ "$SUBMIT_TYPE" == "daily" ]] || [[ "$SUBMIT_TYPE" == "release" ]]; then
 	echo "======== Building document ========" | tee -a $BUILD_LOG
 		make docs >> $BUILD_LOG 2>&1
-		LOCAL_DOC_PATH="$OUTPUT_DIR/docs/html"
+		LOCAL_DOC_PATH="$OUTPUT_DIR/docs/arm64/html"
 		if [ -d $LOCAL_DOC_PATH ]; then
 			pushd $LOCAL_DOC_PATH >/dev/null
 			publish_docoment

@@ -508,6 +508,10 @@ function parser() {
 				echo "export CONFIG_AB_UPDATE"
 				export CONFIG_AB_UPDATE=y
 				continue ;;
+			--hdmitx-only)
+				echo "export BOARD_COMPILE_HDMITX_ONLY=true"
+				export BOARD_COMPILE_HDMITX_ONLY=true
+				continue ;;
 			clean|distclean|-distclean|--distclean)
 				clean
 				exit ;;

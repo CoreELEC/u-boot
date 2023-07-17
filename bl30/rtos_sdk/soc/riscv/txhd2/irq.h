@@ -46,7 +46,7 @@ extern void eclic_irq50_handler(void);
 #define IRQ_NUM_OUT_0 (28 + 10 + 3)
 
 /*wol*/
-#define IRQ_ETH_PMT_NUM 73
+#define IRQ_ETH_PMT_NUM 70
 
 /* SOC AO Domain timerA~timerC */
 #define IRQ_NUM_AO_TIMERA 12

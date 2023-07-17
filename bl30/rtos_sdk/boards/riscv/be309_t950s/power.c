@@ -53,7 +53,7 @@ void str_hw_init(void)
 	/*enable device & wakeup source interrupt*/
 	vIRInit(MODE_HARD_NEC, GPIOAO_6, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
-	vETHInit(1);
+	vETHInit(0);
 	//xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();

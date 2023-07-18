@@ -151,12 +151,10 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	if (get_ETHWol_flag() == 0) {
-		ret = xGpioSetValue(GPIOAO_2, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc3.3 set gpio val fail\n");
-			return;
-		}
+	ret = xGpioSetValue(GPIOAO_2, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc3.3 set gpio val fail\n");
+		return;
 	}
 
 	/***set vdd_ee val***/

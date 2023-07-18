@@ -8,12 +8,15 @@ aml_add_library()
 
 aml_library_sources(
 	aml_cvt.c
+	aml_ctype.c
 	aml_scanf.c
 	aml_putchar.c
 	aml_fprintf.c
 	aml_printf.c
 	aml_malloc.c
+	aml_calloc.c
 	aml_free.c
+	aml_fflush.c
 	aml_atoi.c
 	aml_errno.c
 	aml_impure.c
@@ -23,11 +26,18 @@ aml_library_sources(
 	aml_isspace.c
 	aml_isupper.c
 	aml_tolower.c
+	aml_strcat.c
+	aml_strncat.c
 	aml_strcmp.c
+	aml_strncmp.c
 	aml_strlen.c
 	aml_strnlen.c
+	aml_strcpy.c
 	aml_strncpy.c
 	aml_strtoul.c
+	aml_sprintf.c
+	aml_snprintf.c
+	aml_vsnprintf.c
 	aml_strcasecmp.c
 	aml_strncasecmp.c
 	)

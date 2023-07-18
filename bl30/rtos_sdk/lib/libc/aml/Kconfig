@@ -7,3 +7,10 @@ config LIBC_AML
 	select KERNEL
 	help
 		Enable libc of AML's implementation.
+
+if LIBC_AML
+config LIBC_AML_FLOAT_PRINT
+	bool "Float number print supported"
+	help
+	  Float number print supported
+endif

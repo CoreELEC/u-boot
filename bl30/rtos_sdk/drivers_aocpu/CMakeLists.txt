@@ -28,6 +28,7 @@ add_subdirectory_if_kconfig(i2c)
 add_subdirectory_if_kconfig(i2c_slave)
 add_subdirectory_if_kconfig(ethernet)
 add_subdirectory_if_kconfig(hdmirx)
+add_subdirectory_if_kconfig(pm)
 
 aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/stick_mem
@@ -50,6 +51,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/i2c_slave
 	${SDK_BASE}/drivers_aocpu/ethernet
 	${SDK_BASE}/drivers_aocpu/hdmirx
+	${SDK_BASE}/drivers_aocpu/pm
 )
 
 aml_library_link_libraries(arch__${ARCH})

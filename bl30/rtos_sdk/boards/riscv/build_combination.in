@@ -16,6 +16,8 @@ riscv txhd2 be309_t950s aocpu
 riscv txhd2 be311_t950s aocpu
 riscv txhd2 be319_t950s aocpu
 riscv s1a s1a_skt aocpu
+riscv s1a bg201_s805c1 aocpu
+riscv s1a bg209_s805c1 aocpu
 riscv s5 ax201_s928x aocpu
 riscv s5 ax208_s928x aocpu
 riscv s5 ax209_s928x aocpu

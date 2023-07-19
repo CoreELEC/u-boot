@@ -1,0 +1,7 @@
+#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+CONFIG_BOARD_BG201_S805C1=y
+

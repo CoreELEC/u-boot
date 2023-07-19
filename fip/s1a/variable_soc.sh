@@ -173,8 +173,10 @@ ADVANCED_BOOTLOADER=1
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="s1a"
 
-if [ "${BL30_SELECT}" == "s1a_skt" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="s1a_skt"
+if [ "${BL30_SELECT}" == "s1a_bg201" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bg201_s805c1"
+elif [ "${BL30_SELECT}" == "s1a_bg209" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bg209_s805c1"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s1a_skt"
 fi

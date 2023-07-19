@@ -437,16 +437,16 @@ int checkhw(char * name)
 
 	switch (ddr_size) {
 	case 0x8000000:
-		strcpy(dtb_name, "s1a_bg209_128m\0");
+		strcpy(dtb_name, "s1a_bg201_128m\0");
 		break;
 	case 0x10000000:
-		strcpy(dtb_name, "s1a_bg209_256m\0");
+		strcpy(dtb_name, "s1a_bg201_256m\0");
 		break;
 	case 0x20000000:
-		strcpy(dtb_name, "s1a_bg209_512m\0");
+		strcpy(dtb_name, "s1a_bg201_512m\0");
 		break;
 	default:
-		strcpy(dtb_name, "s1a_bg209_unsupport\0");
+		strcpy(dtb_name, "s1a_bg201_unsupport\0");
 		break;
 	}
 

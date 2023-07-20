@@ -21,4 +21,13 @@
 #define CEC_CHIP_SEL_S7
 
 #define CEC_ON 1
+
+/*for compile pass, not defined in register.h, wait cec owner fix*/
+#define CLKCTRL_CECA_CTRL0 CLKCTRL_CECB_CTRL0
+#define CLKCTRL_CECA_CTRL1 CLKCTRL_CECB_CTRL1
+#define CECA_GEN_CNTL CECB_GEN_CNTL
+#define CECA_RW_REG CECB_RW_REG
+#define CECA_INTR_MASKN CECB_INTR_MASKN
+#define CECA_INTR_CLR CECB_INTR_CLR
+#define CECA_INTR_STAT CECB_INTR_STAT
 #endif

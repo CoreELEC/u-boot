@@ -13,7 +13,7 @@
 //
 // Project name: s7
 //
-// Create time: Tue Jul  4 10:35:53 CST 2023 by chong.gu
+// Create time: Tue Jul 18 12:06:34 CST 2023 by chong.gu
 //
 // ./REG_LIST_RTL.h
 //
@@ -33,910 +33,261 @@
 // synopsys translate_off
 // synopsys translate_on
 //
-//
-// Reading file:  ../mmc_lp4/dmc/rtl/dmc_sec.vh
-//
-//`define DMC_SEC_REG_BASE                32'hfe037000
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe037000
-// -----------------------------------------------
-//DMC use 14bits ID to identify the input ports and ID.
-// bit 13:9.
-// 0 : CPU
-// 3 : GE2D.
-// 4 : HEVC_F.
-// 5 : TEST.
-// 7 : Device.
-// 11: demux.
-// 16: VPU read 0.
-// 19: VPU write 0.
-// 21: VDEC.
-//control bit for  SubID functions for all the input.
-// ARM   2 bit.    HPROT[1] == 0 : SECURE CPU;   HPROT[1] == 1 : NONSEC CPU.
-//there's total 16 ranges in the whole memory range.
-// 15 ranges can be defined in 64kbyte boundary start address and end address.
-// the 16th range is all other space not defined by 15 ranges.
-// Each range can be enabled or disabled and  each range use security level bit to select key to do data scramble.
-// The ranges can be overlapped or crossover.  But from 0 to 15 ranges, the earlier has higher priority.
-#define P_DMC_SEC_RANGE0_CTRL                      (volatile uint32_t *)0xfe037000
-  //bit 31:16   | 0 | range0_eda | range 0 end address  higher 16bits.
-  //bit 15:0    | 0 | range0_sta | range 0 start address higher 16bits.
-#define P_DMC_SEC_RANGE0_CTRL1                     (volatile uint32_t *)0xfe037004
-  //bit 7:5 | 0 | range0_security_level | range0 security level for DMC and DEMUX only.
-  //bit 4  | 0 | range0_prot_en       | range0 allow protect monitor function.  1: allowed.  0: not allowed.
-  //bit 3  | 0 | range0_local_des_en  | range0 data descramble enable.  1: enable. 0 : disable. this bit works together with GLOBAL_DES_EN to decide this region data descramble enable or not.
-  //bit 2  | 0 | range0_lock  |  lock range 0 registers. write 1 to lock range 0 register. can't change anymore.
-  //bit 1  | 0 | range0_key_sel | range 0 data descramble key selection.  1 : key1. 0 : key0.
-  //bit 0  | 0 | range0_en    | range 0 enable bit. 1 : enable, 0 : disable.
-#define P_DMC_SEC_RANGE1_CTRL                      (volatile uint32_t *)0xfe037008
-  //bit 31:16   | 0 | range1_eda | range 1 end address  higher 16bits.
-  //bit 15:0    | 0 | range1_sta | range 1 start address higher 16bits.
-#define P_DMC_SEC_RANGE1_CTRL1                     (volatile uint32_t *)0xfe03700c
-  //bit 7:5 | 0 | range1_security_level | range1 security level for DMC and DEMUX only.
-  //bit 4  | 0 | range1_prot_en       | range1 allow protect monitor function.  1: allowed.  0: not allowed.
-  //bit 3  | 0 | range1_local_des_en  | range1 data descramble enable.  1: enable. 0 : disable. this bit works together with GLOBAL_DES_EN to decide this region data descramble enable or not.
-  //bit 2  | 0 | range1_lock  |  lock range 1 registers. write 1 to lock range 1 register. can't change anymore.
-  //bit 1  | 0 | range1_key_sel | range 1 data descramble key selection.  1 : key1. 1 : key0.
-  //bit 0  | 0 | range1_en    | range 0 enable bit. 1 : enable, 0 : disable.
-#define P_DMC_SEC_RANGE2_CTRL                      (volatile uint32_t *)0xfe037010
-  //bit 31:16   | 0 | range2_eda | range 2 end address  higher 16bits.
-  //bit 15:0    | 0 | range2_sta | range 2 start address higher 16bits.
-#define P_DMC_SEC_RANGE2_CTRL1                     (volatile uint32_t *)0xfe037014
-  //bit 7:5 | 0 | range2_security_level | range2 security level for DMC and DEMUX only.
-  //bit 4  | 0 | range2_prot_en       | range2 allow protect monitor function.  1: allowed.  0: not allowed.
-  //bit 3  | 0 | range2_local_des_en  | range2 data descramble enable.  1: enable. 0 : disable. this bit works together with GLOBAL_DES to decide this region data descramble enable or not.
-  //bit 2  | 0 | range2_lock  |  lock range 2 registers. write 1 to lock range 2 register. can't change anymore.
-  //bit 1  | 0 | range2_key_sel | range 2 data descramble key selection.  1 : key1. 1 : key0.
-  //bit 0  | 0 | range2_en    | range 2 enable bit. 1 : enable, 0 : disable.
-#define P_DMC_SEC_RANGE3_CTRL                      (volatile uint32_t *)0xfe037018
-  //bit 31:16   | 0 | range3_eda | range 3 end address  higher 16bits.
-  //bit 15:0    | 0 | range3_sta | range 3 start address higher 16bits.
-#define P_DMC_SEC_RANGE3_CTRL1                     (volatile uint32_t *)0xfe03701c
-  //bit 7:5 | 0 | range3_security_level | range3 security level for DMC and DEMUX only.
-  //bit 4  | 0 | range3_prot_en       | range3 allow protect monitor function.  1: allowed.  0: not allowed.
-  //bit 3  | 0 | range3_local_des_en  | range3 data descramble enable.  1: enable. 0 : disable. this bit works together with GLOBAL_DES to decide this region data descramble enable or not.
-  //bit 2  | 0 | range3_lock    | lock range 3 registers. write 1 to lock range 3 related registers. can't change anymore.
-  //bit 1  | 0 | range3_key_sel | range 3 data descramble key selection.  1 : key1. 1 : key0.
-  //bit 0  | 0 | range3_en      | range 3 enable bit. 1 : enable, 0 : disable.
-#define P_DMC_SEC_RANGE4_CTRL                      (volatile uint32_t *)0xfe037020
-  //bit 31:16   | 0 | range4_eda | range 4 end address  higher 16bits.
-  //bit 15:0    | 0 | range4_sta | range 4 start address higher 16bits.
-#define P_DMC_SEC_RANGE4_CTRL1                     (volatile uint32_t *)0xfe037024
-  //bit 7:5 | 0 | range4_security_level | range4 security level for DMC and DEMUX only.
-  //bit 4  | 0 | range4_prot_en       | range4 allow protect monitor function.  1: allowed.  0: not allowed.
-  //bit 3  | 0 | range4_local_des_en  | range4 data descramble enable.  1: enable. 0 : disable. this bit works together with GLOBAL_DES to decide this region data descramble enable or not.
-  //bit 2  | 0 | range4_lock    | lock range 4 registers. write 1 to lock range 4 related registers. can't change anymore.
-  //bit 1  | 0 | range4_key_sel | range 4 data descramble key selection.  1 : key1. 1 : key0.
-  //bit 0  | 0 | range4_en      | range 4 enable bit. 1 : enable, 0 : disable.
-#define P_DMC_SEC_RANGE5_CTRL                      (volatile uint32_t *)0xfe037028
-#define P_DMC_SEC_RANGE5_CTRL1                     (volatile uint32_t *)0xfe03702c
-#define P_DMC_SEC_RANGE6_CTRL                      (volatile uint32_t *)0xfe037030
-#define P_DMC_SEC_RANGE6_CTRL1                     (volatile uint32_t *)0xfe037034
-#define P_DMC_SEC_RANGE7_CTRL                      (volatile uint32_t *)0xfe037038
-#define P_DMC_SEC_RANGE7_CTRL1                     (volatile uint32_t *)0xfe03703c
-#define P_DMC_SEC_RANGE8_CTRL                      (volatile uint32_t *)0xfe037040
-#define P_DMC_SEC_RANGE8_CTRL1                     (volatile uint32_t *)0xfe037044
-#define P_DMC_SEC_RANGE9_CTRL                      (volatile uint32_t *)0xfe037048
-#define P_DMC_SEC_RANGE9_CTRL1                     (volatile uint32_t *)0xfe03704c
-#define P_DMC_SEC_RANGE10_CTRL                     (volatile uint32_t *)0xfe037050
-#define P_DMC_SEC_RANGE10_CTRL1                    (volatile uint32_t *)0xfe037054
-#define P_DMC_SEC_RANGE11_CTRL                     (volatile uint32_t *)0xfe037058
-#define P_DMC_SEC_RANGE11_CTRL1                    (volatile uint32_t *)0xfe03705c
-#define P_DMC_SEC_RANGE12_CTRL                     (volatile uint32_t *)0xfe037060
-#define P_DMC_SEC_RANGE12_CTRL1                    (volatile uint32_t *)0xfe037064
-#define P_DMC_SEC_RANGE13_CTRL                     (volatile uint32_t *)0xfe037068
-#define P_DMC_SEC_RANGE13_CTRL1                    (volatile uint32_t *)0xfe03706c
-#define P_DMC_SEC_RANGE14_CTRL                     (volatile uint32_t *)0xfe037070
-#define P_DMC_SEC_RANGE14_CTRL1                    (volatile uint32_t *)0xfe037074
-#define P_DMC_SEC_RANGE15_CTRL1                    (volatile uint32_t *)0xfe03707c
-//per range per sub ID access enable.
-#define P_DMC_SEC_RANGE0_RID_CTRL0                 (volatile uint32_t *)0xfe037080
-  //range_rd_sid_en[31:0];
-#define P_DMC_SEC_RANGE0_RID_CTRL1                 (volatile uint32_t *)0xfe037084
-  //range_rd_sid_en[63:32];
-#define P_DMC_SEC_RANGE0_RID_CTRL2                 (volatile uint32_t *)0xfe037088
-  //range_rd_sid_en[95:64];
-#define P_DMC_SEC_RANGE0_RID_CTRL3                 (volatile uint32_t *)0xfe03708c
-  //range_rd_sid_en[127:96];
-#define P_DMC_SEC_RANGE0_RID_CTRL4                 (volatile uint32_t *)0xfe037090
-#define P_DMC_SEC_RANGE1_RID_CTRL0                 (volatile uint32_t *)0xfe037098
-#define P_DMC_SEC_RANGE1_RID_CTRL1                 (volatile uint32_t *)0xfe03709c
-#define P_DMC_SEC_RANGE1_RID_CTRL2                 (volatile uint32_t *)0xfe0370a0
-#define P_DMC_SEC_RANGE1_RID_CTRL3                 (volatile uint32_t *)0xfe0370a4
-#define P_DMC_SEC_RANGE1_RID_CTRL4                 (volatile uint32_t *)0xfe0370a8
-#define P_DMC_SEC_RANGE2_RID_CTRL0                 (volatile uint32_t *)0xfe0370b0
-#define P_DMC_SEC_RANGE2_RID_CTRL1                 (volatile uint32_t *)0xfe0370b4
-#define P_DMC_SEC_RANGE2_RID_CTRL2                 (volatile uint32_t *)0xfe0370b8
-#define P_DMC_SEC_RANGE2_RID_CTRL3                 (volatile uint32_t *)0xfe0370bc
-#define P_DMC_SEC_RANGE2_RID_CTRL4                 (volatile uint32_t *)0xfe0370c0
-#define P_DMC_SEC_RANGE3_RID_CTRL0                 (volatile uint32_t *)0xfe0370c8
-#define P_DMC_SEC_RANGE3_RID_CTRL1                 (volatile uint32_t *)0xfe0370cc
-#define P_DMC_SEC_RANGE3_RID_CTRL2                 (volatile uint32_t *)0xfe0370d0
-#define P_DMC_SEC_RANGE3_RID_CTRL3                 (volatile uint32_t *)0xfe0370d4
-#define P_DMC_SEC_RANGE3_RID_CTRL4                 (volatile uint32_t *)0xfe0370d8
-#define P_DMC_SEC_RANGE4_RID_CTRL0                 (volatile uint32_t *)0xfe0370e0
-#define P_DMC_SEC_RANGE4_RID_CTRL1                 (volatile uint32_t *)0xfe0370e4
-#define P_DMC_SEC_RANGE4_RID_CTRL2                 (volatile uint32_t *)0xfe0370e8
-#define P_DMC_SEC_RANGE4_RID_CTRL3                 (volatile uint32_t *)0xfe0370ec
-#define P_DMC_SEC_RANGE4_RID_CTRL4                 (volatile uint32_t *)0xfe0370f0
-#define P_DMC_SEC_RANGE5_RID_CTRL0                 (volatile uint32_t *)0xfe0370f8
-#define P_DMC_SEC_RANGE5_RID_CTRL1                 (volatile uint32_t *)0xfe0370fc
-#define P_DMC_SEC_RANGE5_RID_CTRL2                 (volatile uint32_t *)0xfe037100
-#define P_DMC_SEC_RANGE5_RID_CTRL3                 (volatile uint32_t *)0xfe037104
-#define P_DMC_SEC_RANGE5_RID_CTRL4                 (volatile uint32_t *)0xfe037108
-#define P_DMC_SEC_RANGE6_RID_CTRL0                 (volatile uint32_t *)0xfe037110
-#define P_DMC_SEC_RANGE6_RID_CTRL1                 (volatile uint32_t *)0xfe037114
-#define P_DMC_SEC_RANGE6_RID_CTRL2                 (volatile uint32_t *)0xfe037118
-#define P_DMC_SEC_RANGE6_RID_CTRL3                 (volatile uint32_t *)0xfe03711c
-#define P_DMC_SEC_RANGE6_RID_CTRL4                 (volatile uint32_t *)0xfe037120
-#define P_DMC_SEC_RANGE7_RID_CTRL0                 (volatile uint32_t *)0xfe037128
-#define P_DMC_SEC_RANGE7_RID_CTRL1                 (volatile uint32_t *)0xfe03712c
-#define P_DMC_SEC_RANGE7_RID_CTRL2                 (volatile uint32_t *)0xfe037130
-#define P_DMC_SEC_RANGE7_RID_CTRL3                 (volatile uint32_t *)0xfe037134
-#define P_DMC_SEC_RANGE7_RID_CTRL4                 (volatile uint32_t *)0xfe037138
-#define P_DMC_SEC_RANGE8_RID_CTRL0                 (volatile uint32_t *)0xfe037140
-#define P_DMC_SEC_RANGE8_RID_CTRL1                 (volatile uint32_t *)0xfe037144
-#define P_DMC_SEC_RANGE8_RID_CTRL2                 (volatile uint32_t *)0xfe037148
-#define P_DMC_SEC_RANGE8_RID_CTRL3                 (volatile uint32_t *)0xfe03714c
-#define P_DMC_SEC_RANGE8_RID_CTRL4                 (volatile uint32_t *)0xfe037150
-#define P_DMC_SEC_RANGE9_RID_CTRL0                 (volatile uint32_t *)0xfe037158
-#define P_DMC_SEC_RANGE9_RID_CTRL1                 (volatile uint32_t *)0xfe03715c
-#define P_DMC_SEC_RANGE9_RID_CTRL2                 (volatile uint32_t *)0xfe037160
-#define P_DMC_SEC_RANGE9_RID_CTRL3                 (volatile uint32_t *)0xfe037164
-#define P_DMC_SEC_RANGE9_RID_CTRL4                 (volatile uint32_t *)0xfe037168
-#define P_DMC_SEC_RANGE10_RID_CTRL0                (volatile uint32_t *)0xfe037170
-#define P_DMC_SEC_RANGE10_RID_CTRL1                (volatile uint32_t *)0xfe037174
-#define P_DMC_SEC_RANGE10_RID_CTRL2                (volatile uint32_t *)0xfe037178
-#define P_DMC_SEC_RANGE10_RID_CTRL3                (volatile uint32_t *)0xfe03717c
-#define P_DMC_SEC_RANGE10_RID_CTRL4                (volatile uint32_t *)0xfe037180
-#define P_DMC_SEC_RANGE11_RID_CTRL0                (volatile uint32_t *)0xfe037188
-#define P_DMC_SEC_RANGE11_RID_CTRL1                (volatile uint32_t *)0xfe03718c
-#define P_DMC_SEC_RANGE11_RID_CTRL2                (volatile uint32_t *)0xfe037190
-#define P_DMC_SEC_RANGE11_RID_CTRL3                (volatile uint32_t *)0xfe037194
-#define P_DMC_SEC_RANGE11_RID_CTRL4                (volatile uint32_t *)0xfe037198
-#define P_DMC_SEC_RANGE12_RID_CTRL0                (volatile uint32_t *)0xfe0371a0
-#define P_DMC_SEC_RANGE12_RID_CTRL1                (volatile uint32_t *)0xfe0371a4
-#define P_DMC_SEC_RANGE12_RID_CTRL2                (volatile uint32_t *)0xfe0371a8
-#define P_DMC_SEC_RANGE12_RID_CTRL3                (volatile uint32_t *)0xfe0371ac
-#define P_DMC_SEC_RANGE12_RID_CTRL4                (volatile uint32_t *)0xfe0371b0
-#define P_DMC_SEC_RANGE13_RID_CTRL0                (volatile uint32_t *)0xfe0371b8
-#define P_DMC_SEC_RANGE13_RID_CTRL1                (volatile uint32_t *)0xfe0371bc
-#define P_DMC_SEC_RANGE13_RID_CTRL2                (volatile uint32_t *)0xfe0371c0
-#define P_DMC_SEC_RANGE13_RID_CTRL3                (volatile uint32_t *)0xfe0371c4
-#define P_DMC_SEC_RANGE13_RID_CTRL4                (volatile uint32_t *)0xfe0371c8
-#define P_DMC_SEC_RANGE14_RID_CTRL0                (volatile uint32_t *)0xfe0371d0
-#define P_DMC_SEC_RANGE14_RID_CTRL1                (volatile uint32_t *)0xfe0371d4
-#define P_DMC_SEC_RANGE14_RID_CTRL2                (volatile uint32_t *)0xfe0371d8
-#define P_DMC_SEC_RANGE14_RID_CTRL3                (volatile uint32_t *)0xfe0371dc
-#define P_DMC_SEC_RANGE14_RID_CTRL4                (volatile uint32_t *)0xfe0371e0
-#define P_DMC_SEC_RANGE15_RID_CTRL0                (volatile uint32_t *)0xfe0371e8
-#define P_DMC_SEC_RANGE15_RID_CTRL1                (volatile uint32_t *)0xfe0371ec
-#define P_DMC_SEC_RANGE15_RID_CTRL2                (volatile uint32_t *)0xfe0371f0
-#define P_DMC_SEC_RANGE15_RID_CTRL3                (volatile uint32_t *)0xfe0371f4
-#define P_DMC_SEC_RANGE15_RID_CTRL4                (volatile uint32_t *)0xfe0371f8
-//per range per sub ID access enable.
-#define P_DMC_SEC_RANGE0_WID_CTRL0                 (volatile uint32_t *)0xfe037200
-#define P_DMC_SEC_RANGE0_WID_CTRL1                 (volatile uint32_t *)0xfe037204
-#define P_DMC_SEC_RANGE0_WID_CTRL2                 (volatile uint32_t *)0xfe037208
-#define P_DMC_SEC_RANGE0_WID_CTRL3                 (volatile uint32_t *)0xfe03720c
-#define P_DMC_SEC_RANGE0_WID_CTRL4                 (volatile uint32_t *)0xfe037210
-#define P_DMC_SEC_RANGE1_WID_CTRL0                 (volatile uint32_t *)0xfe037218
-#define P_DMC_SEC_RANGE1_WID_CTRL1                 (volatile uint32_t *)0xfe03721c
-#define P_DMC_SEC_RANGE1_WID_CTRL2                 (volatile uint32_t *)0xfe037220
-#define P_DMC_SEC_RANGE1_WID_CTRL3                 (volatile uint32_t *)0xfe037224
-#define P_DMC_SEC_RANGE1_WID_CTRL4                 (volatile uint32_t *)0xfe037228
-#define P_DMC_SEC_RANGE2_WID_CTRL0                 (volatile uint32_t *)0xfe037230
-#define P_DMC_SEC_RANGE2_WID_CTRL1                 (volatile uint32_t *)0xfe037234
-#define P_DMC_SEC_RANGE2_WID_CTRL2                 (volatile uint32_t *)0xfe037238
-#define P_DMC_SEC_RANGE2_WID_CTRL3                 (volatile uint32_t *)0xfe03723c
-#define P_DMC_SEC_RANGE2_WID_CTRL4                 (volatile uint32_t *)0xfe037240
-#define P_DMC_SEC_RANGE3_WID_CTRL0                 (volatile uint32_t *)0xfe037248
-#define P_DMC_SEC_RANGE3_WID_CTRL1                 (volatile uint32_t *)0xfe03724c
-#define P_DMC_SEC_RANGE3_WID_CTRL2                 (volatile uint32_t *)0xfe037250
-#define P_DMC_SEC_RANGE3_WID_CTRL3                 (volatile uint32_t *)0xfe037254
-#define P_DMC_SEC_RANGE3_WID_CTRL4                 (volatile uint32_t *)0xfe037258
-#define P_DMC_SEC_RANGE4_WID_CTRL0                 (volatile uint32_t *)0xfe037260
-#define P_DMC_SEC_RANGE4_WID_CTRL1                 (volatile uint32_t *)0xfe037264
-#define P_DMC_SEC_RANGE4_WID_CTRL2                 (volatile uint32_t *)0xfe037268
-#define P_DMC_SEC_RANGE4_WID_CTRL3                 (volatile uint32_t *)0xfe03726c
-#define P_DMC_SEC_RANGE4_WID_CTRL4                 (volatile uint32_t *)0xfe037270
-#define P_DMC_SEC_RANGE5_WID_CTRL0                 (volatile uint32_t *)0xfe037278
-#define P_DMC_SEC_RANGE5_WID_CTRL1                 (volatile uint32_t *)0xfe03727c
-#define P_DMC_SEC_RANGE5_WID_CTRL2                 (volatile uint32_t *)0xfe037280
-#define P_DMC_SEC_RANGE5_WID_CTRL3                 (volatile uint32_t *)0xfe037284
-#define P_DMC_SEC_RANGE5_WID_CTRL4                 (volatile uint32_t *)0xfe037288
-#define P_DMC_SEC_RANGE6_WID_CTRL0                 (volatile uint32_t *)0xfe037290
-#define P_DMC_SEC_RANGE6_WID_CTRL1                 (volatile uint32_t *)0xfe037294
-#define P_DMC_SEC_RANGE6_WID_CTRL2                 (volatile uint32_t *)0xfe037298
-#define P_DMC_SEC_RANGE6_WID_CTRL3                 (volatile uint32_t *)0xfe03729c
-#define P_DMC_SEC_RANGE6_WID_CTRL4                 (volatile uint32_t *)0xfe0372a0
-#define P_DMC_SEC_RANGE7_WID_CTRL0                 (volatile uint32_t *)0xfe0372a8
-#define P_DMC_SEC_RANGE7_WID_CTRL1                 (volatile uint32_t *)0xfe0372ac
-#define P_DMC_SEC_RANGE7_WID_CTRL2                 (volatile uint32_t *)0xfe0372b0
-#define P_DMC_SEC_RANGE7_WID_CTRL3                 (volatile uint32_t *)0xfe0372b4
-#define P_DMC_SEC_RANGE7_WID_CTRL4                 (volatile uint32_t *)0xfe0372b8
-#define P_DMC_SEC_RANGE8_WID_CTRL0                 (volatile uint32_t *)0xfe0372c0
-#define P_DMC_SEC_RANGE8_WID_CTRL1                 (volatile uint32_t *)0xfe0372c4
-#define P_DMC_SEC_RANGE8_WID_CTRL2                 (volatile uint32_t *)0xfe0372c8
-#define P_DMC_SEC_RANGE8_WID_CTRL3                 (volatile uint32_t *)0xfe0372cc
-#define P_DMC_SEC_RANGE8_WID_CTRL4                 (volatile uint32_t *)0xfe0372d0
-#define P_DMC_SEC_RANGE9_WID_CTRL0                 (volatile uint32_t *)0xfe0372d8
-#define P_DMC_SEC_RANGE9_WID_CTRL1                 (volatile uint32_t *)0xfe0372dc
-#define P_DMC_SEC_RANGE9_WID_CTRL2                 (volatile uint32_t *)0xfe0372e0
-#define P_DMC_SEC_RANGE9_WID_CTRL3                 (volatile uint32_t *)0xfe0372e4
-#define P_DMC_SEC_RANGE9_WID_CTRL4                 (volatile uint32_t *)0xfe0372e8
-#define P_DMC_SEC_RANGE10_WID_CTRL0                (volatile uint32_t *)0xfe0372f0
-#define P_DMC_SEC_RANGE10_WID_CTRL1                (volatile uint32_t *)0xfe0372f4
-#define P_DMC_SEC_RANGE10_WID_CTRL2                (volatile uint32_t *)0xfe0372f8
-#define P_DMC_SEC_RANGE10_WID_CTRL3                (volatile uint32_t *)0xfe0372fc
-#define P_DMC_SEC_RANGE10_WID_CTRL4                (volatile uint32_t *)0xfe037300
-#define P_DMC_SEC_RANGE11_WID_CTRL0                (volatile uint32_t *)0xfe037308
-#define P_DMC_SEC_RANGE11_WID_CTRL1                (volatile uint32_t *)0xfe03730c
-#define P_DMC_SEC_RANGE11_WID_CTRL2                (volatile uint32_t *)0xfe037310
-#define P_DMC_SEC_RANGE11_WID_CTRL3                (volatile uint32_t *)0xfe037314
-#define P_DMC_SEC_RANGE11_WID_CTRL4                (volatile uint32_t *)0xfe037318
-#define P_DMC_SEC_RANGE12_WID_CTRL0                (volatile uint32_t *)0xfe037320
-#define P_DMC_SEC_RANGE12_WID_CTRL1                (volatile uint32_t *)0xfe037324
-#define P_DMC_SEC_RANGE12_WID_CTRL2                (volatile uint32_t *)0xfe037328
-#define P_DMC_SEC_RANGE12_WID_CTRL3                (volatile uint32_t *)0xfe03732c
-#define P_DMC_SEC_RANGE12_WID_CTRL4                (volatile uint32_t *)0xfe037330
-#define P_DMC_SEC_RANGE13_WID_CTRL0                (volatile uint32_t *)0xfe037338
-#define P_DMC_SEC_RANGE13_WID_CTRL1                (volatile uint32_t *)0xfe03733c
-#define P_DMC_SEC_RANGE13_WID_CTRL2                (volatile uint32_t *)0xfe037340
-#define P_DMC_SEC_RANGE13_WID_CTRL3                (volatile uint32_t *)0xfe037344
-#define P_DMC_SEC_RANGE13_WID_CTRL4                (volatile uint32_t *)0xfe037348
-#define P_DMC_SEC_RANGE14_WID_CTRL0                (volatile uint32_t *)0xfe037350
-#define P_DMC_SEC_RANGE14_WID_CTRL1                (volatile uint32_t *)0xfe037354
-#define P_DMC_SEC_RANGE14_WID_CTRL2                (volatile uint32_t *)0xfe037358
-#define P_DMC_SEC_RANGE14_WID_CTRL3                (volatile uint32_t *)0xfe03735c
-#define P_DMC_SEC_RANGE14_WID_CTRL4                (volatile uint32_t *)0xfe037360
-#define P_DMC_SEC_RANGE15_WID_CTRL0                (volatile uint32_t *)0xfe037368
-#define P_DMC_SEC_RANGE15_WID_CTRL1                (volatile uint32_t *)0xfe03736c
-#define P_DMC_SEC_RANGE15_WID_CTRL2                (volatile uint32_t *)0xfe037370
-#define P_DMC_SEC_RANGE15_WID_CTRL3                (volatile uint32_t *)0xfe037374
-#define P_DMC_SEC_RANGE15_WID_CTRL4                (volatile uint32_t *)0xfe037378
-#define P_DMC_DES_PADDING                          (volatile uint32_t *)0xfe037380
-  //bit 31:0 | 0 | des_pading | 32bits address padding used for DES dkey generation.
-#define P_DMC_DES_CTRL                             (volatile uint32_t *)0xfe037384
- //bit 31 : range15_des_en policy : 1 range15_des_en = range15_local_des_en && GLOBAL_DES_EN. 0 : range15_des_en = range15_local_des_en ||  GLOBAL_DES_EN.
- //bit 30 : range14_des_en policy : 1 range14_des_en = range14_local_des_en && GLOBAL_DES_EN. 0 : range14_des_en = range14_local_des_en ||  GLOBAL_DES_EN.
- //bit 29 : range13_des_en policy : 1 range13_des_en = range13_local_des_en && GLOBAL_DES_EN. 0 : range13_des_en = range13_local_des_en ||  GLOBAL_DES_EN.
- //bit 28 : range12_des_en policy : 1 range12_des_en = range12_local_des_en && GLOBAL_DES_EN. 0 : range12_des_en = range12_local_des_en ||  GLOBAL_DES_EN.
- //bit 27 : range11_des_en policy : 1 range11_des_en = range11_local_des_en && GLOBAL_DES_EN. 0 : range11_des_en = range11_local_des_en ||  GLOBAL_DES_EN.
- //bit 26 : range10_des_en policy : 1 range11_des_en = range10_local_des_en && GLOBAL_DES_EN. 0 : range10_des_en = range10_local_des_en ||  GLOBAL_DES_EN.
- //bit 25 : range9_des_en policy  : 1  range9_des_en =  range9_local_des_en && GLOBAL_DES_EN. 0 :  range9_des_en =  range9_local_des_en ||  GLOBAL_DES_EN.
- //bit 24 : range8_des_en policy  : 1  range8_des_en =  range8_local_des_en && GLOBAL_DES_EN. 0 :  range8_des_en =  range8_local_des_en ||  GLOBAL_DES_EN.
- //bit 23 : range7_des_en policy  : 1  range7_des_en =  range7_local_des_en && GLOBAL_DES_EN. 0 :  range7_des_en =  range7_local_des_en ||  GLOBAL_DES_EN.
- //bit 22 : range6_des_en policy  : 1  range6_des_en =  range6_local_des_en && GLOBAL_DES_EN. 0 :  range6_des_en =  range6_local_des_en ||  GLOBAL_DES_EN.
- //bit 21 : range5_des_en policy  : 1  range5_des_en =  range5_local_des_en && GLOBAL_DES_EN. 0 :  range5_des_en =  range5_local_des_en ||  GLOBAL_DES_EN.
- //bit 20 : range4_des_en policy  : 1  range4_des_en =  range4_local_des_en && GLOBAL_DES_EN. 0 :  range4_des_en =  range4_local_des_en ||  GLOBAL_DES_EN.
- //bit 19 : range3_des_en policy  : 1  range3_des_en =  range3_local_des_en && GLOBAL_DES_EN. 0 :  range3_des_en =  range3_local_des_en ||  GLOBAL_DES_EN.
- //bit 18 : range2_des_en policy  : 1  range2_des_en =  range2_local_des_en && GLOBAL_DES_EN. 0 :  range2_des_en =  range2_local_des_en ||  GLOBAL_DES_EN.
- //bit 17 : range1_des_en policy  : 1  range1_des_en =  range1_local_des_en && GLOBAL_DES_EN. 0 :  range1_des_en =  range1_local_des_en ||  GLOBAL_DES_EN.
- //bit 16 : range0_des_en policy  : 1  range0_des_en =  range0_local_des_en && GLOBAL_DES_EN. 0 :  range0_des_en =  range0_local_des_en ||  GLOBAL_DES_EN.
- //bit 1 | 0 | GLOBAL_DES_EN |  1: Global DES enable. 0 : global DES disable.  default is 0.
- //bit 0 | 0 | DES_lock  |  one time lock bit. after write 1 to this bit, DMC_DES_CTRL,DMC_DES_PADDING  can't be write and read.
-#define P_DMC_DES_KEY0_REG0                        (volatile uint32_t *)0xfe037388
-#define P_DMC_DES_KEY0_REG1                        (volatile uint32_t *)0xfe03738c
-#define P_DMC_DES_KEY0_REG2                        (volatile uint32_t *)0xfe037390
-#define P_DMC_DES_KEY0_REG3                        (volatile uint32_t *)0xfe037394
-#define P_DMC_DES_KEY1_REG0                        (volatile uint32_t *)0xfe037398
-#define P_DMC_DES_KEY1_REG1                        (volatile uint32_t *)0xfe03739c
-#define P_DMC_DES_KEY1_REG2                        (volatile uint32_t *)0xfe0373a0
-#define P_DMC_DES_KEY1_REG3                        (volatile uint32_t *)0xfe0373a4
-//
-////trap function: all the enable the port ID read access or enable PORT ID and subID read access must be in the predefine range. otherwire the read access would be blocked.
-//// and an error will be generated.
-//`define DMC_TRAP0_RANGE               9'h0ea
-//  // address trap0 range register.
-//  //31:16.  trap0  end address
-//  //15:0    start0 address.
-//`define DMC_TRAP0_CTRL                9'h0eb
-//  //bit 31 trap0 port ID 3 enable.
-//  //bit 30 trap0 port ID 2 enable.
-//  //bit 29 trap0 port ID 1 enable.
-//  //bit 28 trap0 port ID 0 enable.
-//  //bit 27 trap0 port ID 3 subid enable.
-//  //bit 26 trap0 port ID 2 subid enable.
-//  //bit 25 trap0 port ID 1 subid enable.
-//  //bit 24 trap0 port ID 0 subid enable.
-//  //bit 16:20. trap0 port ID 1 ID number.
-//  //bit 14:11.  trap0 port ID 1 subID ID number.
-//  //bit 8:4.   trap0 port ID 0 ID number.
-//  //bit 3:0.   trap0 port ID 0 subID ID number.
-//`define DMC_TRAP0_CTRL2                9'h0ec
-//  //bit 31:17. Not used.
-//  //bit 16:20. trap0 port ID 3 ID number.
-//  //bit 14:11. trap0 port ID 3 subID ID number.
-//  //bit 8:4.   trap0 port ID 2 ID number.
-//  //bit 3:0.   trap0 port ID 2 subID ID number.
-//
-//
-//`define DMC_TRAP1_RANGE               9'h0ed
-//  //address trap range register.
-//  //31:16.  trap end address
-//  //15:0    start address.
-//`define DMC_TRAP1_CTRL                9'h0ee
-//  //bit 31 trap1 port ID 3 enable.
-//  //bit 30 trap1 port ID 2 enable.
-//  //bit 29 trap1 port ID 1 enable.
-//  //bit 28 trap1 port ID 0 enable.
-//  //bit 27 trap1 port ID 3 subid enable.
-//  //bit 26 trap1 port ID 2 subid enable.
-//  //bit 25 trap1 port ID 1 subid enable.
-//  //bit 24 trap1 port ID 0 subid enable.
-//  //bit 16:20. trap1 port ID 1 ID number.
-//  //bit 14:11. trap1 port ID 1 subID ID number.
-//  //bit 8:4.   trap1 port ID 0 ID number.
-//  //bit 3:0.   trap1 port ID 0 subID ID number.
-//
-//`define DMC_TRAP1_CTRL2                9'h0ef
-//  //bit 31:17. Not used.
-//  //bit 16:20. trap1 port ID 1 ID number.
-//  //bit 14:11. trap1 port ID 1 subID ID number.
-//  //bit 8:4.   trap1 port ID 0 ID number.
-//  //bit 3:0.   trap1 port ID 0 subID ID number.
-//
-//APB secure control bits[3:0] .
-    //bit 3.   1: All APB bus can access these domain registers.
-    //         0: only if the apb access pprot[2:0]  match the bit [2:0], can access this domain registers.
-//`define DDR_APB_SEC_CTRL      9'h0f0
-    //bit 31:28:  APB secure control bits for protection register domain.
-    //bit 27:24:  APB secure control bits for clok and reset register domain.
-    //bit 23:20:  APB secure control bits for dmc test register domain.
-    //bit 19:16.  APB secure control bits for dmc_reg register domain.
-    //bit 15:12.  APB secure control bits for sticky register domain.
-    //bit 11:8.   APB secure control bits for frequency change register domain.
-    //Bit 7:4.    APB secure control bits for dram control register domain.
-    //Bit 3:0.    APB secure control bits for DDR PHY register domain.
-//registers to check the security protection and watch point error information.
-#define P_DMC_SEC_STATUS                           (volatile uint32_t *)0xfe0373c8
- //bit 31~7. not used.
- //bit 6
- //bit 5
- //bit 4
- //bit 3   1 : normal security register write violation.( APB bus WDATA not equal the register value when APB write).  write 1 to clean this bit to 0.
- //bit 2   sec_alert.   1 DMC security register alert function triggered. can't clean. only reset DMC can clear this bit.
- //bit 1   write security violation.
- //bit 0.  read security violation.
-#define P_DMC_VIO_ADDR0                            (volatile uint32_t *)0xfe0373cc
-  //ddr0 write secure violation address.
-#define P_DMC_VIO_ADDR1                            (volatile uint32_t *)0xfe0373d0
-  //31:27  not used. always 0.
-  //26:24  not used. always 0.
-  //23     ddr0 secure check violation.
-  //22:21  not used.
-  //20     ddr0 write address overflow. write out of DDR size.
-  //19:14. ddr0 write violation AWPROT bits.
-  //13:0   ddr0_write violation ID.
-#define P_DMC_VIO_ADDR2                            (volatile uint32_t *)0xfe0373d4
-  //ddr0 read secure violation address
-#define P_DMC_VIO_ADDR3                            (volatile uint32_t *)0xfe0373d8
-  //31:27  not used. always 0.
-  //26:24  not used. always 0.
-  //23     ddr0 read secure check violation.
-  //22:21  not used always 0.
-  //20     ddr 0 read address overflow. write out of DDR size.
-  //19:16  ddr 0 read violation ARPROT bits.
-  //15:14  not used.
-  //13:0   ddr 0 read violation ID.
-#define P_DMC_DDR_CTRL                             (volatile uint32_t *)0xfe037400
-   //bit 27.   0 : canvas use 64bytes boundary
-              // 1 : canvas use 32bytes boundary.
-  //bit 24:22   3'b000 : ddr3 mode.
-              //3'b001 : ddr4 mode.
-              //3'b010 : lpddr3 mode.
-              //3'b011 : lpddr4 mode.
-   //bit 21.   rank1 enable bit. if 1,  rank1 used the address map is as bit 5:3 defined.
-   //bit 20    DDR4 BG1 enable bit.
-   //bit 18:   ddrphy_16b, DDR PHY DDR SDRAM data bits width.  1: 16bits. 0 : 32 bits.
-   //bit 16.   ddr_16b,   1: only use 16bits data in a 32bits DDR PHY data interface. 0 : normal data interface.
-  //bit 7:4 :  ddr1_size.  DDR rank1 size control.
-     //4'b0000 : DDR rank 1 is 128Mbyte.
-     //4'b0001 : DDR rank 1 is 256Mbyte.
-     //4'b0010 : DDR rank 1 is 512Mbyte.
-     //4'b0011 : DDR rank 1 is 1Gbyte.
-     //4'b0100 : DDR rank 1 is 2Gbyte.
-     //4'b0101 : DDR rank 1 is 4Gbyte.
-     //4'b1000 : DDR rank 1 is 192Mbyte.
-     //4'b1001 : DDR rank 1 is 374Mbyte.
-     //4'b1010 : DDR rank 1 is 768Mbyte.
-     //4'b1011 : DDR rank 1 is 1.5Gbyte.
-     //4'b1100 : DDR rank 1 is 3Gbyte.
-     //others :  reserved.
-  //bit 3:0  :  ddr0_size. DDR rank0 size control.
-     //4'b0000 : DDR rank 0 is 128Mbyte.
-     //4'b0001 : DDR rank 0 is 256Mbyte.
-     //4'b0010 : DDR rank 0 is 512Mbyte.
-     //4'b0011 : DDR rank 0 is 1Gbyte.
-     //4'b0100 : DDR rank 0 is 2Gbyte.
-     //4'b0101 : DDR rank 0 is 4Gbyte.
-     //4'b1000 : DDR rank 1 is 192Mbyte.
-     //4'b1001 : DDR rank 1 is 374Mbyte.
-     //4'b1010 : DDR rank 1 is 768Mbyte.
-     //4'b1011 : DDR rank 1 is 1.5Gbyte.
-     //4'b1100 : DDR rank 1 is 3Gbyte.
-     //others :  reserved.
-//DDR3/4 LPDDR3/4 SDRAM address  to 32bits linear address address map:
-//DDR0_ADDRMAP is used to select RANK0 bank, row, col address selection.
-//DDR1_ADDRMAP is used to select RANK1 bank, row, col address selection.
-#define P_DMC_RANK0_ADDRMAP_0                      (volatile uint32_t *)0xfe037404
-  //29:25 ca8.
-  //24:20 ca7.
-  //19:15 ca6.
-  //14:10 ca5.
-  //9:5   ca4.
-  //4:0   ca3.
-#define P_DMC_RANK0_ADDRMAP_1                      (volatile uint32_t *)0xfe037408
-  //29:25 ra2.
-  //24:20 ra1.
-  //19:15 ra0.
-  //14:10 ca11.
-  //9:5   ca10.
-  //4:0   ca9.
-#define P_DMC_RANK0_ADDRMAP_2                      (volatile uint32_t *)0xfe03740c
-  //29:25 ra8.
-  //24:20 ra7.
-  //19:15 ra6.
-  //14:10 ra5.
-  //9:5   ra4.
-  //4:0   ra3.
-#define P_DMC_RANK0_ADDRMAP_3                      (volatile uint32_t *)0xfe037410
-  //29:25 ra14.
-  //24:20 ra13.
-  //19:15 ra12.
-  //14:10 ra11.
-  //9:5   ra10.
-  //4:0   ra9.
-#define P_DMC_RANK0_ADDRMAP_4                      (volatile uint32_t *)0xfe037414
-  //29:25 ra16 for DDR4 SDRAM
-  //24:20 bg1  for DDR4 SDRAM.
-  //19:15 ba2.    or bg0 for DDR4.
-  //14:10 ba1.
-  //9:5   ba0.
-  //4:0   ra15.
-#define P_DMC_RANK1_ADDRMAP_0                      (volatile uint32_t *)0xfe037418
-  //29:25 ca8.
-  //24:20 ca7.
-  //19:15 ca6.
-  //14:10 ca5.
-  //9:5   ca4.
-  //4:0   ca3.
-#define P_DMC_RANK1_ADDRMAP_1                      (volatile uint32_t *)0xfe03741c
-  //29:25 ra2.
-  //24:20 ra1.
-  //19:15 ra0.
-  //14:10 ca11.
-  //9:5   ca10.
-  //4:0   ca9.
-#define P_DMC_RANK1_ADDRMAP_2                      (volatile uint32_t *)0xfe037420
-  //29:25 ra8.
-  //24:20 ra7.
-  //19:15 ra6.
-  //14:10 ra5.
-  //9:5   ra4.
-  //4:0   ra3.
-#define P_DMC_RANK1_ADDRMAP_3                      (volatile uint32_t *)0xfe037424
-  //29:25 ra14.
-  //24:20 ra13.
-  //19:15 ra12.
-  //14:10 ra11.
-  //9:5   ra10.
-  //4:0   ra9.
-#define P_DMC_RANK1_ADDRMAP_4                      (volatile uint32_t *)0xfe037428
-  //29:25 ra16 for DDR4 SDRAM
-  //24:20 bg1  for DDR4 SDRAM.
-  //19:15 ba2  or bg0 for DDR4 SDRAM..
-  //14:10 ba1.
-  //9:5   ba0.
-  //4:0   ra15.
-//`define DDR_MEM_PD_CTRL  9'h10b
-//   //bit 31:14 not used.
-//   //2 bit control for each mem. 00 normal working. 11 power down.
-//   //bit 13:12   wc_fifo
-//   //bit 11:10   wd_mem
-//   //bit 9:8     rd_mem
-//   //bit 7:6     dfifo
-//   //bit 5:4     cfifo
-//   //bit 3:2     cav_ram
-//   //bit 1:0     sticky ram
-//FROM SC2, the APB bus provided Master ID through PUSER signals.
-//there's total 8 master IDs could access DMC non-secure registers.
-//we assign 1 control bit for each APB Master and each DMC non-secure register domains
-//and we added one lock bits to lock this setting can't be modified any more.
-#define P_DDR_APB_SEC_CTRL0                        (volatile uint32_t *)0xfe037430
-   // APB access  control for dmc REQUEST control register access control register.
-   // default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL1                        (volatile uint32_t *)0xfe037434
-   // APB access control for DMC DRAM timing parameter and DFI interface registers.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL2                        (volatile uint32_t *)0xfe037438
-   // APB access control for DMC PLL clock frequency control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL3                        (volatile uint32_t *)0xfe03743c
-   // APB access control for DMC sticky control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL4                        (volatile uint32_t *)0xfe037440
-   // APB access control for DMC test control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL5                        (volatile uint32_t *)0xfe037444
-   // APB access control for DMC clk reset control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL6                        (volatile uint32_t *)0xfe037448
-   // APB access control for DMC protection register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL7                        (volatile uint32_t *)0xfe03744c
-   // APB access control for DMC normal register.
-   //default : 0x0ff
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL8                        (volatile uint32_t *)0xfe037450
-   // APB access control for DDR PHY group register.
-   //default : 0x50005
-   //bit 23:16.  APB access enable for DDR PHY group 1 register.
-   //bit 10  PHY IMEM control 1: force PHY IMEM output 0. 0: normal working mode.
-   //bit 9   PHY DMEM control 1: force PHY DMEM output 0. 0: normal working mode.
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL9                        (volatile uint32_t *)0xfe037454
-   // APB access control for DMC canvas register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DMC_AXI2DDR0                             (volatile uint32_t *)0xfe037480
-  //for AXI address first 256MB  AXI ADDRESS[31:28] == 4'b0000.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR1                             (volatile uint32_t *)0xfe037484
-  //for AXI_ADDRESS[31:28] == 4'b0001.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR2                             (volatile uint32_t *)0xfe037488
-  //for AXI_ADDRESS[31:28] == 4'b0010.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR3                             (volatile uint32_t *)0xfe03748c
-  //for AXI_ADDRESS[31:28] == 4'b0011.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR4                             (volatile uint32_t *)0xfe037490
-  //for AXI_ADDRESS[31:28] == 4'b0100.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR5                             (volatile uint32_t *)0xfe037494
-  //for AXI_ADDRESS[31:28] == 4'b0101.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR6                             (volatile uint32_t *)0xfe037498
-  //for AXI_ADDRESS[31:28] == 4'b0110.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR7                             (volatile uint32_t *)0xfe03749c
-  //for AXI_ADDRESS[31:28] == 4'b0111.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR8                             (volatile uint32_t *)0xfe0374a0
-  //for AXI_ADDRESS[31:28] == 4'b1000.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDR9                             (volatile uint32_t *)0xfe0374a4
-  //for AXI_ADDRESS[31:28] == 4'b1001.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRA                             (volatile uint32_t *)0xfe0374a8
-  //for AXI_ADDRESS[31:28] == 4'b1010.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRB                             (volatile uint32_t *)0xfe0374ac
-  //for AXI_ADDRESS[31:28] == 4'b1011.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRC                             (volatile uint32_t *)0xfe0374b0
-  //for AXI_ADDRESS[31:28] == 4'b1100.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRD                             (volatile uint32_t *)0xfe0374b4
-  //for AXI_ADDRESS[31:28] == 4'b1101.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRE                             (volatile uint32_t *)0xfe0374b8
-  //for AXI_ADDRESS[31:28] == 4'b1110.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_AXI2DDRF                             (volatile uint32_t *)0xfe0374bc
-  //for AXI_ADDRESS[31:28] == 4'b1111.
-  //bit 6  range_valid     1 : valid address 0 : not valid.
-  //bit 5  rank_sel,       0 : rank0.   1: rank1.
-  //bit 4  ddr_data_width, 0 : 32bits.  1: 16bits.
-  //bti 3:0. remap to one rank of DDR SDRAM linear address[31:28]
-#define P_DMC_DDR_CTRL1                            (volatile uint32_t *)0xfe0374c0
-  //bit 1. cfg_level_strict
-  //bit 0. DMC_DDR_LOCK.    1: LOCK DMC_DDR_CTRL, DMC_DDR_CTRL1, DMC_AXI2DDRx, DDR0/1_ADDRMAP_x registers. those register can't modified any more.
-                        //  0: all these registers can be read/write by secure APB access.
-//
-// Closing file:  ../mmc_lp4/dmc/rtl/dmc_sec.vh
-//
+//`include "../mmc_lp4/dmc/rtl/dmc_sec.vh"
 //`include "../mmc_lp4/dmc_clk_freq/rtl/dmc_clk_freq.vh"
+//`include "../mmc_lp4/dmc/rtl/dmc_reg.vh"
+//`include "../mmc_lp4/dmc/rtl/dmc_siu_reg.vh"
+//`include "../mmc_lp4/dmc/rtl/dmc_sticky_reg.vh"
 //
-// Reading file:  ../mmc_lp4/dmc/rtl/dmc_reg.vh
+// Reading file:  ../dmc_v26/rtl/dmc_reg.vh
 //
-//`define DMC_REG_BASE      32'hfe036000
+//`define DMC_FREQ_REG_BASE   32'hfe036000
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe036000
 // -----------------------------------------------
 #define P_DMC_REQ_CTRL                             (volatile uint32_t *)0xfe036000
-  //bit 23.  enable dmc request of ambus chan 7. Reserved
-  //bit 22.  enable dmc request of ambus chan 6. Reserved.
-  //bit 21.  enable dmc request of ambus chan 5. DOS VDEC  interface   aSync interface.
-  //bit 20.  enable dmc request of ambus chan 4. Reserved
-  //bit 19.  enable dmc request of ambus chan 3. VPU write interface 0  aSync interface.
-  //bit 18.  enable dmc request of ambus chan 2. Reserved
-  //bit 17.  enable dmc request of ambus chan 1. Reserved
-  //bit 16.  enable dmc request of ambus chan 0. VPU read interface 0.  aSync interface.
-  //bit 9    enable dmc request of axibus chan 9.  reserved.
-  //bit 8.   enable dmc request of axibus chan 8.  reserved
-  //bit 7.   enable dmc request of axibus chan 7.  DEVICE. Async interface.
-  //bit 6.   enable dmc request of axibus chan 6.  reserved
+  //bit 13.   enable dmc request of axibus chan 13.  GE2D Async interface.
+  //bit 12.   enable dmc request of axibus chan 12.  GPU Async interface.
+  //bit 11.   enable dmc request of axibus chan 11.  DEMUX async interface.
+  //bit 10.   enable dmc request of axibus chan 10.  system Async interface.
+  //bit 9.   enable dmc request of axibus chan 9.  HCODEC Async interface.
+  //bit 8.   enable dmc request of axibus chan 8.  VDEC Async interface.
+  //bit 7.   enable dmc request of axibus chan 7.  HEVC Async interface.
+  //bit 6.   enable dmc request of axibus chan 6.  VPU4 async interface.
   //bit 5.   enable dmc request of axibus chan 5.  reserved for dmc_test.
-  //bit 4.   enable dmc request of axibus chan 4.  hevc front Async interface.
-  //bit 3.   enable dmc request of axibus chan 3.  GE2D interface. Async interface.
-  //bit 2.   enable dmc request of axibus chan 2.  reserved
-  //bit 1.   enable dmc request of axibus chan 1.  reserved
-  //bit 0.   enable dmc request of axibus chan 0.  CPU/A35   async interface.
+  //bit 4.   enable dmc request of axibus chan 4.  VPU3 Async interface.
+  //bit 3.   enable dmc request of axibus chan 3.  VPU2 Async interface.
+  //bit 2.   enable dmc request of axibus chan 2.  VPU1 Async interface.
+  //bit 1.   enable dmc request of axibus chan 1.  VPU0 Async interface.
+  //bit 0.   enable dmc request of axibus chan 0.  CPU/A55   async interface.
 //DMC CLK and RESET domain register. please check DMC_SEC_APB_CTRLx register for access details.
 #define P_DMC_SOFT_RST                             (volatile uint32_t *)0xfe036004
-  //bit 31~24. reserved for future.
-  //bit 23:16 8 AMBUS input interface n_clk domain reset_n signal. 0 : reset.  1: normal working mode.
-  //bit 15:0. 16 AXI BUS input interfaces n_clk domain reset_n signal. 0: reset. 1: normal working mode. each bit for one interface.
+  //bit 31~14. reserved for future.
+  //bit 13:0. 14 software reset for 14 axi ports n clock domain.
 #define P_DMC_SOFT_RST1                            (volatile uint32_t *)0xfe036008
   //To reset the Async interface, you need to disable the interface both clock domain, then reset both n_clk and m_clk domain
-  //bit 31~24 not used.
-  //bit 23.16  8 am bus interfaces master clock domain reset_n signal. 0 : reset : 1 normal working mode.
-  //bit 15:0.  16 AXI bus interfaces master clock domain reset_n signal. 0 : reset : 1 normal working mode.
+  //bit 31~14 not used.  all channels are synchronous interface.
+  //bit 13~0. 14 software reset for 14 axi ports master clock domain.
 #define P_DMC_SOFT_RST2                            (volatile uint32_t *)0xfe03600c
-  //bit 31~11.  reserved for future.
-  //bit 10  DMC DFI cmd soft reset_n
-  //bit 9   DMC DFI MISC soft reset_n
-  //bit 8   DMC DFI data soft reset_n
-  //bit 7   DMC DFI dcu soft reset_n
-  //bit 6   DMC siu soft reset_n
-  //bit 5.  DMC test soft reset_n.  0 : reset. 1 : normal working mode.
-  //bit 4.  DMC low power control module soft reset_n.    0 : reset. 1 : normal working mode.
-  //bit 3.  DMC QOS monitor module soft reset_n.   0 : reset. 1 : normal working mode.
-  //bit 2.  DMC register module soft reset_n.       0 : reset. 1 : normal working mode.
-  //bit 1.  DMC canvas transfer module soft reset_n.  0 : reset. 1 : normal working mode.
-  //bit 0.  DMC command buffers and command generation modules soft reset.  0 = reset. 1:
+  //bit 31  DMC channel 1 dfi misc module soft reset_n.
+  //bit 30  DMC channel 1 dfi data module soft reset_n.
+  //bit 29  DMC channel 1 dfi cmd module soft reset_n.
+  //bit 28  DMC channel 1 dmc dram control module soft reset_n.
+  //bit 27  DMC channel 1 dmc cmd filter module soft reset_n.
+  //bit 26  DMC channel 1 dmc wbuf module soft reset_n.
+  //bit 25  DMC channel 1 dmc rbuf module soft reset_n.
+  //bit 24  DMC channel 1 dfi low power control module soft reset_n.
+  //bit 23  DMC channel 0 dfi misc module soft reset_n.
+  //bit 22  DMC channel 0 dfi data module soft reset_n.
+  //bit 21  DMC channel 0 dfi cmd module soft reset_n.
+  //bit 20  DMC channel 0 dmc dram control module soft reset_n.
+  //bit 19  DMC channel 0 dmc cmd filter module soft reset_n.
+  //bit 18  DMC channel 0 dmc wbuf module soft reset_n.
+  //bit 17  DMC channel 0 dmc rbuf module soft reset_n.
+  //bit 16  DMC channel 0 dfi low power control module soft reset_n.
+  //bit 9   DMC siu soft reset_n .
+  //bit 8   DMC test soft reset_n .
+  //bit 7   DMC read response soft reset_n .
+  //bit 6   DMC read split soft reset_n.
+  //bit 5.  DMC read sec check soft reset_n.
+  //bit 4.  DMC write response module soft reset_n.
+  //bit 3.  DMC wd ctrl module soft reset_n.
+  //bit 2.  DMC qos monitor module soft reset_n.
+  //bit 1.  not used.
+  //bit 0.  DMC command buffers and command generation modules soft reset.
 #define P_DMC_RST_STS1                             (volatile uint32_t *)0xfe036010
-  //31~24.  not used.
-  //23~0.   Read only.  the DMC_SOFT_RST1 signal in n_clk domain. the purpose of this register is when one of the 2 clocks is too slow or too fast,  we can read this register to make sure another clock domain reset is done.
+  //31~14.  not used.
+  //13~0.   14 software reset for 14 axi ports master clock domain.. Read only.
 #define P_DMC_CLKG_CTRL0                           (volatile uint32_t *)0xfe036018
-  //bit 23:16. enable the 8 ambus interfaces both main and n_clk auto clock gating function. each 1 bit for one interface.
-  //bit 15:0.  enable the 16 axi interfaces both main and n_clk auto clock gating function. each 1 bit for one interface.
+  //bit 31:14  not used.
+  //bit 13:0.  enable the 14 axi interfaces  m_clk auto clock gating function. each 1 bit for one interface.
 #define P_DMC_CLKG_CTRL1                           (volatile uint32_t *)0xfe03601c
-  //bit 23:16. force to disable the 8 ambus interfaces both main and n_clk. each 1 bit for one interface.
-  //bit 15:0.  force to disable the 16 axi interfaces both main and n_clk. each 1 bit for one interface.
+  //bit 31:14. not used.
+  //bit 13:0.  force to disable the 14 axi interfaces m_clk. each 1 bit for one interface.
 #define P_DMC_CLKG_CTRL2                           (volatile uint32_t *)0xfe036020
-  //bit 10  enable auto clock gating for dfi command generation
-  //bit 9   enable auto clock gating for dram controller
-  //bit 8   enable auto clock gating for dfi data path.
-  //bit 7.  enalbe auto clock gating for write rsp generation.
-  //bit 6.  enalbe auto clock gating for read rsp generation.
-  //bit 5.  enalbe auto clock gating for ddr0 command filter.
-  //bit 4.  enalbe auto clock gating for ddr0 write reorder buffer.
-  //bit 3.  enalbe auto clock gating for ddr0 write data buffer.
-  //bit 2.  enalbe auto clock gating for ddr0 read reorder buffer.
-  //bit 1.  enalbe auto clock gating for read canvas.
-  //bit 0.  enalbe auto clock gating for write canvas.
+  //bit 31  enalbe auto clock gating for channel 1 dfi misc.
+  //bit 30  enalbe auto clock gating for channel 1 dfi data.
+  //bit 29  enable auto clock gating for channel 1 dfi command generation.
+  //bit 28  enable auto clock gating for channel 1 dram controller
+  //bit 27  enable auto clock gating for channel 1 command filter.
+  //bit 26  enalbe auto clock gating for channel 1 wbuf generation.
+  //bit 25  enalbe auto clock gating for channel 1 rbuf generation.
+  //bit 24  enalbe auto clock gating for channel 1 ddr0 command filter.
+  //bit 23  enalbe auto clock gating for channel 0 dfi misc.
+  //bit 22  enalbe auto clock gating for channel 0 dfi data.
+  //bit 21  enable auto clock gating for channel 0 dfi command generation.
+  //bit 20  enable auto clock gating for channel 0 dram controller
+  //bit 19  enable auto clock gating for channel 0 command filter.
+  //bit 18  enalbe auto clock gating for channel 0 wbuf generation.
+  //bit 17  enalbe auto clock gating for channel 0 rbuf generation.
+  //bit 16  enalbe auto clock gating for channel 0 ddr0 command filter.
+  //bit 8.  enalbe auto clock gating for test.
+  //bit 7.  enalbe auto clock gating for rd response.
+  //bit 6.  enalbe auto clock gating for read split.
+  //bit 5.  enalbe auto clock gating for read sec check.
+  //bit 4.  enalbe auto clock gating for write response.
+  //bit 3.  enalbe auto clock gating for wd control.
+  //bit 2.  enalbe auto clock gating for qos monitor.
+  //bit 1:0.  not used.
 #define P_DMC_CLKG_CTRL3                           (volatile uint32_t *)0xfe036024
-  //bit 10  force to disable the clock of dfi command generation
-  //bit 9   force to disable the clock of dram controller
-  //bit 8   force to disable the clock of dfi data path.
-  //bit 7. force to disable the clock of write rsp generation.
-  //bit 6. force to disable the clock of read rsp generation.
-  //bit 5.  force to disable the clock of  command filter.
-  //bit 4.  force to disable the clock of  write reorder buffer.
-  //bit 3.  force to disable the clock of write data buffer.
-  //bit 2.  force to disable the clock of read reorder buffer.
-  //bit 1.  force to disable the clock of read canvas.
-  //bit 0.  force to disable the clock of write canvas.
-// DMC CANVAS setting domain control registers.
-#define P_DC_CAV_LUT_DATAL                         (volatile uint32_t *)0xfe036048
-  //low 32 bits of canvas data which need to be configured to canvas memory.
-#define P_DC_CAV_LUT_DATAH                         (volatile uint32_t *)0xfe03604c
-  //high 32bits of canvas data which need to be configured to canvas memory.
-  //64bits CANVAS look up table
-  //bit 60:58   Endian control.
-      //3'b000:  no endian change.
-      //3'b001:
-  //bit 57:56.   Canvas block mode.  2 : 64x32, 1: 32x32; 0 : linear mode.
-  //bit 55:      canvas Y direction wrap control. 1: wrap back in y.  0: not wrap back.
-  //bit 54:      canvas X direction wrap control. 1: wrap back in X.  0: not wrap back.
-  //bit 53:41.   canvas Hight.
-  //bit 40:29.   canvas Width, unit: 8bytes. must in 32bytes boundary. that means last 2 bits must be 0.
-  //bit 28:0.    canvas start address.   unit. 8 bytes. must be in 32bytes boundary. that means last 2bits must be 0.
-#define P_DC_CAV_LUT_ADDR                          (volatile uint32_t *)0xfe036050
-  //bit 9:8.   write 9:8 2'b10. the canvas data will saved in canvas memory with addres 7:0.
-  //bit 7:0.   256 canvas Look up table address.
-#define P_DC_CAV_LUT_RDATAL                        (volatile uint32_t *)0xfe036054
-  // CBUS low 32bytes canvas read back data from LUT.
-#define P_DC_CAV_LUT_RDATAH                        (volatile uint32_t *)0xfe036058
-  // Cbus high 32bytes canvas read back data from LUT.
-// there are total 128 canvas table, So we added a 128bits register to record the those canvas mode.
-// when we configure the canvas table and if the canvas mode is 32x32 blkmode, we'll mark this related bit.
-// we will use this bit to check the VPU canvas access. if it's in 32x32 blkmode, we need break the input in 32bytes boundary.
-// You can also use below register to read/write those bit.
-#define P_DC_CAV_BLK_CTRL0                         (volatile uint32_t *)0xfe036060
- //canvas index 31:0 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL1                         (volatile uint32_t *)0xfe036064
- //canvas index 63:32 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL2                         (volatile uint32_t *)0xfe036068
- //canvas index 95:64 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL3                         (volatile uint32_t *)0xfe03606c
- //canvas index 127:96 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL4                         (volatile uint32_t *)0xfe036070
- //canvas index 159:128 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL5                         (volatile uint32_t *)0xfe036074
- //canvas index 191:160 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL6                         (volatile uint32_t *)0xfe036078
- //canvas index 223:192 blkmode. 1 : 32x32. 0 : others.
-#define P_DC_CAV_BLK_CTRL7                         (volatile uint32_t *)0xfe03607c
- //canvas index 255:224 blkmode. 1 : 32x32. 0 : others.
-#define P_DMC_MON_CTRL0                            (volatile uint32_t *)0xfe036080
+  //bit 31  force to disable the clock of channel 1 dfi misc.
+  //bit 30  force to disable the clock of channel 1 dfi data.
+  //bit 29  force to disable the clock of channel 1 dfi command generation.
+  //bit 28  force to disable the clock of channel 1 dram controller
+  //bit 27  force to disable the clock of channel 1 command filter.
+  //bit 26  force to disable the clock of channel 1 wbuf generation.
+  //bit 25  force to disable the clock of channel 1 rbuf generation.
+  //bit 24  force to disable the clock of channel 1 ddr0 command filter.
+  //bit 23  force to disable the clock of channel 0 dfi misc.
+  //bit 22  force to disable the clock of channel 0 dfi data.
+  //bit 21  force to disable the clock of channel 0 dfi command generation.
+  //bit 20  force to disable the clock of channel 0 dram controller
+  //bit 19  force to disable the clock of channel 0 command filter.
+  //bit 18  force to disable the clock of channel 0 wbuf generation.
+  //bit 17  force to disable the clock of channel 0 rbuf generation.
+  //bit 16  force to disable the clock of channel 0 ddr0 command filter.
+  //bit 8.  test.
+  //bit 7.  rd response.
+  //bit 6.  read split.
+  //bit 5.  read sec check.
+  //bit 4.  write response.
+  //bit 3.  wd control.
+  //bit 2.  qos monitor.
+  //bit 1:0.    not used.
+#define P_DMC_MON_CTRL0                            (volatile uint32_t *)0xfe036040
    //bit 31.   qos_mon_en.    write 1 to trigger the enable. polling this bit 0, means finished.  or use interrupt to check finish.
    //bit 30.   qos_mon interrupt clear.  clear the qos monitor result.  read 1 = qos mon finish interrupt.
-   //bit 7.    BW monitor 3 enable.
-   //bit 6.    BW monitor 3 enable.
-   //bit 5.    BW monitor 3 enable.
-   //bit 4.    BW monitor 3 enable.
-   //bit 3.    BW monitor 3 enable.
-   //bit 2.    BW monitor 2 enable.
-   //bit 1.    BW monitor 1 enable.
-   //bit 0.    BW monitor 0 enable.
-#define P_DMC_MON_TIMER                            (volatile uint32_t *)0xfe036084
+   //bit 7:0    bw_mon_range_en.    enables 8 monitor channels.
+#define P_DMC_MON_TIMER                            (volatile uint32_t *)0xfe036044
  // timer for the monitor period.
-#define P_DMC_MON_ALL_IDLE_CNT                     (volatile uint32_t *)0xfe036088
+#define P_DMC_MON_ALL_IDLE_CNT                     (volatile uint32_t *)0xfe036048
   // at the test period,  the whole MMC all channel IDLE time. unit, dmc clock.
-#define P_DMC_MON_ALL_BW                           (volatile uint32_t *)0xfe03608c
-  // at the test period,  the whole MMC granted data cycles. 64bits unit.
-#define P_DMC_MON_ALL16_BW                         (volatile uint32_t *)0xfe036090
-  // at the test period,  the whole MMC granted data cycles which goes to 16bits ddr. unit:64bits
-#define P_DMC_MON0_CTRL                            (volatile uint32_t *)0xfe0360c0
-  //BW MONITOR 0 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON0_CTRL1                           (volatile uint32_t *)0xfe0360c4
-   //bit 23:0.  BW monitor 0 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON0_CTRL2                           (volatile uint32_t *)0xfe0360c8
-   //bit 15:0.  BW monitor 0 port select for the selected channel.
-#define P_DMC_MON0_BW                              (volatile uint32_t *)0xfe0360cc
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON1_CTRL                            (volatile uint32_t *)0xfe0360d0
-  //BW monitor 1 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON1_CTRL1                           (volatile uint32_t *)0xfe0360d4
-   //bit 23:0.  BW monitor 1 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON1_CTRL2                           (volatile uint32_t *)0xfe0360d8
-   //bit 15:0.  BW monitor 1 port select for the selected channel.
-#define P_DMC_MON1_BW                              (volatile uint32_t *)0xfe0360dc
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON2_CTRL                            (volatile uint32_t *)0xfe0360e0
-  //BW monitor 2 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON2_CTRL1                           (volatile uint32_t *)0xfe0360e4
-   //bit 23:0.  BW monitor 2 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON2_CTRL2                           (volatile uint32_t *)0xfe0360e8
-   //bit 15:0.  BW monitor 2 port select for the selected channel.
-#define P_DMC_MON2_BW                              (volatile uint32_t *)0xfe0360ec
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON3_CTRL                            (volatile uint32_t *)0xfe0360f0
-  //BW monitor 3 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON3_CTRL1                           (volatile uint32_t *)0xfe0360f4
-   //bit 23:0.  BW monitor 3 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON3_CTRL2                           (volatile uint32_t *)0xfe0360f8
-   //bit 15:0.  BW monitor 3 port select for the selected channel.
-#define P_DMC_MON3_BW                              (volatile uint32_t *)0xfe0360fc
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON4_CTRL                            (volatile uint32_t *)0xfe036140
-  //BW monitor 4 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON4_CTRL1                           (volatile uint32_t *)0xfe036144
-   //bit 23:0.  BW monitor 4 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON4_CTRL2                           (volatile uint32_t *)0xfe036148
-   //bit 15:0.  BW monitor 4 port select for the selected channel.
-#define P_DMC_MON4_BW                              (volatile uint32_t *)0xfe03614c
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON5_CTRL                            (volatile uint32_t *)0xfe036150
-  //BW monitor 5 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON5_CTRL1                           (volatile uint32_t *)0xfe036154
-   //bit 23:0.  BW monitor 5 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON5_CTRL2                           (volatile uint32_t *)0xfe036158
-   //bit 15:0.  BW monitor 5 port select for the selected channel.
-#define P_DMC_MON5_BW                              (volatile uint32_t *)0xfe03615c
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON6_CTRL                            (volatile uint32_t *)0xfe036160
-  //BW monitor 6 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON6_CTRL1                           (volatile uint32_t *)0xfe036164
-   //bit 23:0.  BW monitor 6 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON6_CTRL2                           (volatile uint32_t *)0xfe036168
-   //bit 15:0.  BW monitor 6 port select for the selected channel.
-#define P_DMC_MON6_BW                              (volatile uint32_t *)0xfe03616c
-  // at the test period, this range granted data cycles for the select channel and ports.
-#define P_DMC_MON7_CTRL                            (volatile uint32_t *)0xfe036170
-  //BW monitor 7 address range ctrol.  start address <= AXI address[31:16] <= end address
-  //bit 31:16  End address[31:16]
-  //bit 15:0.  start address[31:16]
-#define P_DMC_MON7_CTRL1                           (volatile uint32_t *)0xfe036174
-   //bit 23:0.  BW monitor 7 channel select.   8 ambus port and 16 AXI port selection. 1 bit for one port.
-  // if only 1 channel selected, you can use DMC_MONx_CTRL2 to chose any subid of this selected channel. otherwise DMC_MONx_CTRL2 should be set 0xffff
-#define P_DMC_MON7_CTRL2                           (volatile uint32_t *)0xfe036178
-   //bit 15:0.  BW monitor 7 port select for the selected channel.
-#define P_DMC_MON7_BW                              (volatile uint32_t *)0xfe03617c
-  // at the test period, this range granted data cycles for the select channel and ports.
+#define P_DMC_MON_ALL_BW                           (volatile uint32_t *)0xfe03604c
+  // at the test period,  the whole MMC granted data cycles. units one data clock cycle = 16bytes.
+#define P_DMC_MON_ALL16_BW                         (volatile uint32_t *)0xfe036050
+  // at the test period,  the whole MMC granted data cycles which goes to 16bits ddr. units one data clock cycle = 16byte.
+#define P_DMC_MON0_CTRL1                           (volatile uint32_t *)0xfe036060
+//bit 31:16 not used.
+//bit 15:0. mon0 R/W ack AXI subid enable.
+#define P_DMC_MON1_CTRL1                           (volatile uint32_t *)0xfe036064
+//bit 31:16 not used.
+//bit 15:0. mon1 R/W ack AXI subid enable.
+#define P_DMC_MON2_CTRL1                           (volatile uint32_t *)0xfe036068
+//bit 31:16 not used.
+//bit 15:0. mon2 R/W ack AXI subid enable.
+#define P_DMC_MON3_CTRL1                           (volatile uint32_t *)0xfe03606c
+//bit 31:16 not used.
+//bit 15:0. mon3 R/W ack AXI subid enable.
+#define P_DMC_MON4_CTRL1                           (volatile uint32_t *)0xfe036070
+//bit 31:16 not used.
+//bit 15:0. mon4 R/W ack AXI subid enable.
+#define P_DMC_MON5_CTRL1                           (volatile uint32_t *)0xfe036074
+//bit 31:16 not used.
+//bit 15:0. mon5 R/W ack AXI subid enable.
+#define P_DMC_MON6_CTRL1                           (volatile uint32_t *)0xfe036078
+//bit 31:16 not used.
+//bit 15:0. mon6 R/W ack AXI subid enable.
+#define P_DMC_MON7_CTRL1                           (volatile uint32_t *)0xfe03607c
+//bit 31:16 not used.
+//bit 15:0. mon7 R/W ack AXI subid enable.
+//each monitor can check upto 3 master IDs.
+#define P_DMC_MON0_STA                             (volatile uint32_t *)0xfe036080
+  //bit 31:20. not used.
+  //bit 19:0  MON0 start address unit 4Kbyte.
+#define P_DMC_MON0_EDA                             (volatile uint32_t *)0xfe036084
+  //bit 31:20. Not used.
+  //bit 19:0  MON0 end address unit 4Kbyte.
+#define P_DMC_MON0_CTRL                            (volatile uint32_t *)0xfe036088
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON0_BW                              (volatile uint32_t *)0xfe03608c
+  //monitor bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON1_STA                             (volatile uint32_t *)0xfe036090
+  //bit 31:20. not used.
+  //bit 19:0  MON0 start address unit 4Kbyte.
+#define P_DMC_MON1_EDA                             (volatile uint32_t *)0xfe036094
+  //bit 31:20. Not used.
+  //bit 19:0  MON0 end address unit 4Kbyte.
+#define P_DMC_MON1_CTRL                            (volatile uint32_t *)0xfe036098
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON1_BW                              (volatile uint32_t *)0xfe03609c
+  //monitor 1 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON2_STA                             (volatile uint32_t *)0xfe0360a0
+  //bit 31:20. not used.
+  //bit 19:0  MON0 start address unit 4Kbyte.
+#define P_DMC_MON2_EDA                             (volatile uint32_t *)0xfe0360a4
+  //bit 31:20. Not used.
+  //bit 19:0  MON2 end address unit 4Kbyte.
+#define P_DMC_MON2_CTRL                            (volatile uint32_t *)0xfe0360a8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON2_BW                              (volatile uint32_t *)0xfe0360ac
+  //monitor 2 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON3_STA                             (volatile uint32_t *)0xfe0360b0
+  //bit 31:20. not used.
+  //bit 19:0  MON3 start address unit 4Kbyte.
+#define P_DMC_MON3_EDA                             (volatile uint32_t *)0xfe0360b4
+  //bit 31:20. Not used.
+  //bit 19:0  MON3 end address unit 4Kbyte.
+#define P_DMC_MON3_CTRL                            (volatile uint32_t *)0xfe0360b8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON3_BW                              (volatile uint32_t *)0xfe0360bc
+  //monitor 3 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON4_STA                             (volatile uint32_t *)0xfe0360c0
+  //bit 31:20. not used.
+  //bit 19:0  MON4 start address unit 4Kbyte.
+#define P_DMC_MON4_EDA                             (volatile uint32_t *)0xfe0360c4
+  //bit 31:20. Not used.
+  //bit 19:0  MON4 end address unit 4Kbyte.
+#define P_DMC_MON4_CTRL                            (volatile uint32_t *)0xfe0360c8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON4_BW                              (volatile uint32_t *)0xfe0360cc
+  //monitor 4 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON5_STA                             (volatile uint32_t *)0xfe0360d0
+  //bit 31:20. not used.
+  //bit 19:0  MON5 start address unit 4Kbyte.
+#define P_DMC_MON5_EDA                             (volatile uint32_t *)0xfe0360d4
+  //bit 31:20. Not used.
+  //bit 19:0  MON4 end address unit 4Kbyte.
+#define P_DMC_MON5_CTRL                            (volatile uint32_t *)0xfe0360d8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON5_BW                              (volatile uint32_t *)0xfe0360dc
+  //monitor 5 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON6_STA                             (volatile uint32_t *)0xfe0360e0
+  //bit 31:20. not used.
+  //bit 19:0  MON6 start address unit 4Kbyte.
+#define P_DMC_MON6_EDA                             (volatile uint32_t *)0xfe0360e4
+  //bit 31:20. Not used.
+  //bit 19:0  MON6 end address unit 4Kbyte.
+#define P_DMC_MON6_CTRL                            (volatile uint32_t *)0xfe0360e8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON6_BW                              (volatile uint32_t *)0xfe0360ec
+  //monitor 6 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_MON7_STA                             (volatile uint32_t *)0xfe0360f0
+  //bit 31:20. not used.
+  //bit 19:0  MON7 start address unit 4Kbyte.
+#define P_DMC_MON7_EDA                             (volatile uint32_t *)0xfe0360f4
+  //bit 31:20. Not used.
+  //bit 19:0  MON7 end address unit 4Kbyte.
+#define P_DMC_MON7_CTRL                            (volatile uint32_t *)0xfe0360f8
+  //bit 31:24. not used.
+  //bit 23:0. master ID number.
+#define P_DMC_MON7_BW                              (volatile uint32_t *)0xfe0360fc
+  //monitor 7 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
+#define P_DMC_CMD_FILTER_CTRL0                     (volatile uint32_t *)0xfe036128
+  //23:16   urgent4 bank hold
+  //15:8    rbuf urgent5 hold
+  //7:0     rbuf urgent4 hold
 #define P_DMC_CMD_FILTER_CTRL1                     (volatile uint32_t *)0xfe036100
-  //31:24. cfg_rbuf_ugt3_hold_num
-  //23:16. cfg_rbuf_ugt2_hold_num
-  //15:8.  cfg_rbuf_ugt1_hold_num
-  //7:0.   cfg_rbuf_ugt0_hold_num
+  //31:24   rbuf urgent3 hold
+  //23:16   rbuf urgent2 hold
+  //15:8    rbuf urgent1 hold
+  //7:0     rbuf urgent0 hold
 #define P_DMC_CMD_FILTER_CTRL2                     (volatile uint32_t *)0xfe036104
   //31:24. keep the bank active if there's urgent level 3 read bank hit request.
   //23:16. keep the bank active if there's urgent level 2 read bank hit request.
@@ -951,8 +302,8 @@
   //bit 9:5    rbuf middle level number
   //bit 4:0    rbuf low level number
 #define P_DMC_CMD_FILTER_CTRL4                     (volatile uint32_t *)0xfe03610c
-  //bit 31:26   write rank minimum number
-  //bit 25:20   read  rank minimum number
+  //bit 31:26.  rank write min number
+  //bit 25:20.  rank read min number
   //bit 19:12   tAP auto precharge the bank not used if idle that long time.
   //bit 11:6    write to read accesses if there write hit request.
   //bit 5:0     read to write accesses if there write hit request.
@@ -972,16 +323,17 @@
   //bit 15:8    write to read waiting cycles if there write hit request.
   //bit 7:0     read to write waiting cycles if there write hit request.
 #define P_DMC_CMD_FILTER_CTRL8                     (volatile uint32_t *)0xfe03611c
-  //bit 31:24.  tITW.short
-  //bit 23:16.  tITW.long
-  //bit 15:8    same rank minimum.
+  //bit 31:24   tITW_short
+  //bit 23:16   tITW_long
+  //bit 15:8    rank limit minmum to change to another rank if another rank has hit request.
   //bit 7:0     rank limit to change to another rank.
 #define P_DMC_CMD_BUFFER_CTRL                      (volatile uint32_t *)0xfe036120
   //bit 31:26  total write buffer number. default 32.
   //bit 25:20  total read buffer number. default 32.
-  //bit 19:8    reserved.
+  //bit 19:8   reserved.
   //bit 7:0    aw_pending_inc_num.  incease write ugent level 1 when write command waiting to in write buffer that long.
 #define P_DMC_CMD_BUFFER_CTRL1                     (volatile uint32_t *)0xfe036124
+  //bit 31.    rbuf urgent 4 read hit request high priority enable.
   //bit 29:24  read buffer number in non-urgent request.
   //bit 23:16  read buffer bank miss watch dog threshold.
   //bit 15:12  read buffer urgent level 3 counter inc weight.
@@ -990,21 +342,14 @@
   //bit 3:0    read buffer urgent level 0 counter inc weight.
 #define P_DMC_2ARB_CTRL                            (volatile uint32_t *)0xfe036130
   //32:24. Waiting limit to use the highest urgent level in the pipelines.
-  //22.    1: allow to increase 2 urgent levels if waiting time is doubled than inc_ugt_limit.
-  //21:12  inc_ugt_limit.  if waiting time > inc_ugt_limit, increase the urgent level by one
-  //11:6.  the final arbitration control from AXI bus(port channel 0~7).
-  //5:0.   the final arbitration weight control for Ambus ( port channel 8~15).
+  //23:10.  Not used.
+  //9:0.   cfg_inc_ugt_limit. increase urgent level if the arbiter wait that long.
 #define P_DMC_VERSION                              (volatile uint32_t *)0xfe03613c
-   //read only 32'h01000008  for s1a
+   //read only 32'h01000024  for s7
 #define P_DMC_AXI0_CHAN_CTRL                       (volatile uint32_t *)0xfe036200
-  //bit 31       enable to incr 2 urgent levels if the pending cycles is doubled.
-  //bit 30       enable to incr 3 urgent levels.
   //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19.      axi0 default urgent control : 1 use AWUGT/ARUGT pins in the port. 0 : use bit[15:14] of this register..
-  //bit 18.      force this channel all request to be super urgent request.
-  //bit 17.      force this channel all request to be urgent request.
-  //bit 16.      force this channel all request to be non urgent request.
-  //bit 15:14    axi0 default urgent level.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
   //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
   //bit 3:0      arbiter weight
 #define P_DMC_AXI0_HOLD_CTRL                       (volatile uint32_t *)0xfe036204
@@ -1013,316 +358,330 @@
     //15:8 read hold num.   max outstanding request number.
     //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
 #define P_DMC_AXI0_CHAN_CTRL1                      (volatile uint32_t *)0xfe036208
+  //31:28.  FIQ  chan0 QOS setting.
+  //27:24.  IRQ  chan0 QOS setting.
+  //23:23.  chan0 write QOS with VPU request.
+  //19:16.  chan0 write QOS with other request .
+  //15:12.  chan0 write QOS with none other requests.
+  //11:8.   chan0 read QOS with VPU request.
+  //7:4.    chan0 read QOS with other request .
+  //3:0.    chan0 read QOS with none other requests.
 #define P_DMC_AXI0_CHAN_CTRL2                      (volatile uint32_t *)0xfe03620c
-  //bit 31:28.  FIQ status
-  //bit 27:24.  IRQ status.
-  //bit 22      use ACTIVE input as clock gating control.
-  //bit 21:20.  chan0 QOS mode.
-  //bit 19:16.   AXI0 QOS high limit.
-  //bit 15:12    AXI0 QOS mit limit.
-  //bit 11  ARM  FIQ controlled super urgent enable.
-  //bit 10  ARM  FIQ controlled urgent enable.
-  //bit  9. ARM IRQ controlled super urgent enable.
-  //bit  8. ARM IRQ controlled urgent enable.
-  //bit  7.  IRQ/FIQ control enable.
-  //bit  6:5.  not used.
-  //bit 4. enable AXI0 auto urgent enable. When there's no other request, treat the AXI0 as super urgent request. other wise, use the bit3:0 to set the urgent.
-  //bit 3:2 A9 urgent if there's VIU request.
-  //bit 1:0 A9 urgent if there's request other than VIU
-#define P_DMC_AXI0_CHAN_STS                        (volatile uint32_t *)0xfe036210
-#define P_DMC_AXI0_CHAN_STS1                       (volatile uint32_t *)0xfe036214
-#define P_DMC_AXI1_CHAN_CTRL                       (volatile uint32_t *)0xfe036218
-//  //bit 31       enable to incr 2 urgent levels if the pending cycles is doubled.
-//  //bit 30       enable to incr 3 urgent levels.
-//  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-//  //bit 19.      axi0 default urgent control : 1 use AWUGT/ARUGT pins in the port. 0 : use bit[15:14] of this register..
-//  //bit 18.      force this channel all request to be super urgent request.
-//  //bit 17.      force this channel all request to be urgent request.
-//  //bit 16.      force this channel all request to be non urgent request.
-//  //bit 15:14    axi1 default urgent level.
-//  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-//  //bit 3:0      canvas arbiter arbiter weight
-#define P_DMC_AXI1_HOLD_CTRL                       (volatile uint32_t *)0xfe03621c
-//    //31:24 write hold num.   max outstanding request number.
-//    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-//    //15:8 read hold num.   max outstanding request number.
-//    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI1_CHAN_CTRL1                      (volatile uint32_t *)0xfe036220
-//  //bit 31:28.  FIQ status
-//  //bit 27:24.  IRQ status.
-//  //bit 21:20.  Mali QOS mode.
-//  //bit 19:16.   mail QOS high limit.
-//  //bit 15:12    mail QOS mit limit.
-//  //bit 11  ARM  FIQ controlled super urgent enable.
-//  //bit 10  ARM  FIQ controlled urgent enable.
-//  //bit  9. ARM IRQ controlled super urgent enable.
-//  //bit  8. ARM IRQ controlled urgent enable.
-//  //bit  7.  IRQ/FIQ control enable.
-//  //bit  6:0.  not used.
-#define P_DMC_AXI1_CHAN_STS                        (volatile uint32_t *)0xfe036224
-#define P_DMC_AXI2_CHAN_CTRL                       (volatile uint32_t *)0xfe03622c
-#define P_DMC_AXI2_CHAN_CTRL1                      (volatile uint32_t *)0xfe036230
-#define P_DMC_AXI2_HOLD_CTRL                       (volatile uint32_t *)0xfe036234
-#define P_DMC_AXI2_CHAN_STS                        (volatile uint32_t *)0xfe036238
-#define P_DMC_AXI3_CHAN_CTRL                       (volatile uint32_t *)0xfe036240
-#define P_DMC_AXI3_CHAN_CTRL1                      (volatile uint32_t *)0xfe036244
-#define P_DMC_AXI3_HOLD_CTRL                       (volatile uint32_t *)0xfe036248
-#define P_DMC_AXI3_CHAN_STS                        (volatile uint32_t *)0xfe03624c
-#define P_DMC_AXI4_CHAN_CTRL                       (volatile uint32_t *)0xfe036254
-#define P_DMC_AXI4_CHAN_CTRL1                      (volatile uint32_t *)0xfe036258
-#define P_DMC_AXI4_HOLD_CTRL                       (volatile uint32_t *)0xfe03625c
-#define P_DMC_AXI4_CHAN_STS                        (volatile uint32_t *)0xfe036260
-#define P_DMC_AXI5_CHAN_CTRL                       (volatile uint32_t *)0xfe036268
-#define P_DMC_AXI5_CHAN_CTRL1                      (volatile uint32_t *)0xfe03626c
-#define P_DMC_AXI5_HOLD_CTRL                       (volatile uint32_t *)0xfe036270
-#define P_DMC_AXI5_CHAN_STS                        (volatile uint32_t *)0xfe036274
-#define P_DMC_AXI6_CHAN_CTRL                       (volatile uint32_t *)0xfe036280
-#define P_DMC_AXI6_CHAN_CTRL1                      (volatile uint32_t *)0xfe036284
-#define P_DMC_AXI6_HOLD_CTRL                       (volatile uint32_t *)0xfe036288
-#define P_DMC_AXI6_CHAN_STS                        (volatile uint32_t *)0xfe03628c
-#define P_DMC_AXI7_CHAN_CTRL                       (volatile uint32_t *)0xfe036294
-#define P_DMC_AXI7_CHAN_CTRL1                      (volatile uint32_t *)0xfe036298
-#define P_DMC_AXI7_HOLD_CTRL                       (volatile uint32_t *)0xfe03629c
-#define P_DMC_AXI7_CHAN_STS                        (volatile uint32_t *)0xfe0362a0
-#define P_DMC_AXI8_CHAN_CTRL                       (volatile uint32_t *)0xfe0362a8
-#define P_DMC_AXI8_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362ac
-#define P_DMC_AXI8_HOLD_CTRL                       (volatile uint32_t *)0xfe0362b0
-#define P_DMC_AXI8_CHAN_STS                        (volatile uint32_t *)0xfe0362b4
+ //bit 31:4.  Not used.
+ //bit 3.     CPU FIQ QOS ctrl_en.
+ //bit 2.     CPU IRQ QOS ctrl_en.
+ //bit 1.     CPU read channel auto QOS enable (based on other traffic).
+ //bit 0.     CPU write channel auto QOS enable( based on other traffic).
+#define P_DMC_AXI1_CHAN_CTRL                       (volatile uint32_t *)0xfe036210
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      canvas arbiter arbiter weight
+#define P_DMC_AXI1_HOLD_CTRL                       (volatile uint32_t *)0xfe036214
+  //bit 31:24 write hold num.   max outstanding request number.
+  //bit 23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+  //bit 15:8 read hold num.   max outstanding request number.
+  //bit 7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI1_CHAN_CTRL1                      (volatile uint32_t *)0xfe036218
+   //bit 30     cfg_wrdata_mode
+   //bit 30:29. not used.
+   //bit 29:16. when write/read side band singal used to block other request. configure which master we can block. each bit for  one master.
+                //Note. don't block vpu itself and  CPU or other urgent request.
+   //bit 15:12. Not used.				
+   //bit 11.   use side band write urgent control signal to control AWQOS.  1: enabe. 0: disable.
+   //bit 10.   use side band read  urgent control signal to control ARQOS.  1: enabe. 0: disable.
+   //bit 9.    use side band write urgent control singal to block other master request.  1: enable. 0 disable.
+   //bit 8.    use side band read urgent control singal to block other master request.  1: enable. 0 disable.
+   //bit 7:4.  the AWQOS value when side band write urgent control signal = 1 while bit 19 enabled.
+   //bit 3:0.  the ARQOS value when side band read  urgent control signal = 1 while bit 18 enabled.
+#define P_DMC_AXI2_CHAN_CTRL                       (volatile uint32_t *)0xfe036220
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI2_HOLD_CTRL                       (volatile uint32_t *)0xfe036224
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI2_CHAN_CTRL1                      (volatile uint32_t *)0xfe036228
+   //bit 30     cfg_wrdata_mode
+   //bit 30:29. not used.
+   //bit 29:16. when write/read side band singal used to block other request. configure which master we can block. each bit for  one master.
+                //Note. don't block vpu itself and  CPU or other urgent request.
+   //bit 15:12. Not used.				
+   //bit 11.   use side band write urgent control signal to control AWQOS.  1: enabe. 0: disable.
+   //bit 10.   use side band read  urgent control signal to control ARQOS.  1: enabe. 0: disable.
+   //bit 9.    use side band write urgent control singal to block other master request.  1: enable. 0 disable.
+   //bit 8.    use side band read urgent control singal to block other master request.  1: enable. 0 disable.
+   //bit 7:4.  the AWQOS value when side band write urgent control signal = 1 while bit 19 enabled.
+   //bit 3:0.  the ARQOS value when side band read  urgent control signal = 1 while bit 18 enabled.
+#define P_DMC_AXI3_CHAN_CTRL                       (volatile uint32_t *)0xfe036230
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI3_HOLD_CTRL                       (volatile uint32_t *)0xfe036234
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI3_CHAN_CTRL1                      (volatile uint32_t *)0xfe036238
+#define P_DMC_AXI4_CHAN_CTRL                       (volatile uint32_t *)0xfe036240
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI4_HOLD_CTRL                       (volatile uint32_t *)0xfe036244
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI4_CHAN_CTRL1                      (volatile uint32_t *)0xfe036248
+#define P_DMC_AXI5_CHAN_CTRL                       (volatile uint32_t *)0xfe036250
+  //not used.
+#define P_DMC_AXI5_HOLD_CTRL                       (volatile uint32_t *)0xfe036254
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI6_CHAN_CTRL                       (volatile uint32_t *)0xfe036260
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI6_HOLD_CTRL                       (volatile uint32_t *)0xfe036264
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI6_CHAN_CTRL1                      (volatile uint32_t *)0xfe036268
+#define P_DMC_AXI7_CHAN_CTRL                       (volatile uint32_t *)0xfe036270
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI7_HOLD_CTRL                       (volatile uint32_t *)0xfe036274
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI7_CHAN_CTRL1                      (volatile uint32_t *)0xfe036278
+#define P_DMC_AXI0_CHAN_STS                        (volatile uint32_t *)0xfe036280
+  // AXI0 Async interface status.
+  //31:24.  read command pending transaction number.
+  //23:16.  write command pending transaction number.
+  //15:8.   not used.
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI1_CHAN_STS                        (volatile uint32_t *)0xfe036284
+  // AXI1 Async interface status
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI2_CHAN_STS                        (volatile uint32_t *)0xfe036288
+  //AXI chan2 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI3_CHAN_STS                        (volatile uint32_t *)0xfe03628c
+  //AXI chan3 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI4_CHAN_STS                        (volatile uint32_t *)0xfe036290
+  //AXI chan4 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI5_CHAN_STS                        (volatile uint32_t *)0xfe036294
+  //AXI chan4 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  write address without read data counter.
+  //7:0.  not used.
+#define P_DMC_AXI6_CHAN_STS                        (volatile uint32_t *)0xfe036298
+  //AXI channel 6 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI7_CHAN_STS                        (volatile uint32_t *)0xfe03629c
+  //AXI channel 7 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI8_CHAN_STS                        (volatile uint32_t *)0xfe0362a0
+  //AXI channel 7 status.
+  //31:24. read command pending transaction number.
+  //23:16. write command pending transaction number.
+  //15:8.  AWVALID without WDATA transaction number..
+  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
+#define P_DMC_AXI8_CHAN_CTRL                       (volatile uint32_t *)0xfe0362b0
+  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
+  //bit 19:16.   QOS value if this port is define use register value.
+  //bit 15       force this ports QOS to use this register bit 19:16.
+  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
+  //bit 3:0      arbiter weight
+#define P_DMC_AXI8_HOLD_CTRL                       (volatile uint32_t *)0xfe0362b4
+    //31:24 write hold num.   max outstanding request number.
+    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+    //15:8 read hold num.   max outstanding request number.
+    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
+#define P_DMC_AXI8_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362b8
 #define P_DMC_AXI9_CHAN_CTRL                       (volatile uint32_t *)0xfe0362c0
-#define P_DMC_AXI9_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362c4
-#define P_DMC_AXI9_HOLD_CTRL                       (volatile uint32_t *)0xfe0362c8
+#define P_DMC_AXI9_HOLD_CTRL                       (volatile uint32_t *)0xfe0362c4
+#define P_DMC_AXI9_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362c8
 #define P_DMC_AXI9_CHAN_STS                        (volatile uint32_t *)0xfe0362cc
-#define P_DMC_AXI10_CHAN_CTRL                      (volatile uint32_t *)0xfe0362d4
+#define P_DMC_AXI10_CHAN_CTRL                      (volatile uint32_t *)0xfe0362d0
+#define P_DMC_AXI10_HOLD_CTRL                      (volatile uint32_t *)0xfe0362d4
 #define P_DMC_AXI10_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362d8
-#define P_DMC_AXI10_HOLD_CTRL                      (volatile uint32_t *)0xfe0362dc
-#define P_DMC_AXI10_CHAN_STS                       (volatile uint32_t *)0xfe0362e0
-#define P_DMC_AXI11_CHAN_CTRL                      (volatile uint32_t *)0xfe0362e8
-#define P_DMC_AXI11_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362ec
-#define P_DMC_AXI11_HOLD_CTRL                      (volatile uint32_t *)0xfe0362f0
-#define P_DMC_AXI11_CHAN_STS                       (volatile uint32_t *)0xfe0362f4
-#define P_DMC_AXI12_CHAN_CTRL                      (volatile uint32_t *)0xfe036300
-#define P_DMC_AXI12_CHAN_CTRL1                     (volatile uint32_t *)0xfe036304
-#define P_DMC_AXI12_HOLD_CTRL                      (volatile uint32_t *)0xfe036308
-#define P_DMC_AXI12_CHAN_STS                       (volatile uint32_t *)0xfe03630c
-#define P_DMC_AXI13_CHAN_CTRL                      (volatile uint32_t *)0xfe036314
-#define P_DMC_AXI13_CHAN_CTRL1                     (volatile uint32_t *)0xfe036318
-#define P_DMC_AXI13_HOLD_CTRL                      (volatile uint32_t *)0xfe03631c
-#define P_DMC_AXI13_CHAN_STS                       (volatile uint32_t *)0xfe036320
-#define P_DMC_CHAN_STS                             (volatile uint32_t *)0xfe036328
-#define P_DMC_IRQ_STS                              (volatile uint32_t *)0xfe03632c
-  //bit 31:3   Not used.
-  //bit 2 :    QOS Monitor interrupt flag.  1: means there's QOS monitor interrup.  write 1 to clean this interrupt.
-  //bit 1 :    WRITE protection interrupt.  1: means there's write protection violation.  need to write DMC_PROT_IRQ_CTRL  bit 1to clean this bit.
-  //bit 0 :    read protection interrupt.   1: means there's read  protection violation.  need to write DMC_PROT_IRQ_CTRL bit 0 to clean this bit.
-#define P_DMC_PROT0_RANGE                          (volatile uint32_t *)0xfe036340
-  //protection 0 address range. the range define is 64Kbyte boundary.  current address [31:16] >= start address && current address [31:16] <= end address.
-  //bit 31:16 :   range end address.
-  //bit 15:0  :   range start address
-#define P_DMC_PROT0_CTRL                           (volatile uint32_t *)0xfe036344
-  //bit 23:16. each bit to enable one of the 8 ambus channel for the protection function.
-  //bit 15:0   each bit to enable one of the 15 channel input for the protection function.
-#define P_DMC_PROT0_CTRL1                          (volatile uint32_t *)0xfe036348
-  //bit 26.  protection 0  read access protection enable.
-  //bit 25.  protection 0  write access block function. if enabled, the access wouldn't write to the DDR SDRAM.  if not enabled only generate a interrupt, but the access still wrote to DDR.
-  //bit 24.  protection range 0  write access protection enable.
-#define P_DMC_PROT1_RANGE                          (volatile uint32_t *)0xfe03634c
-  //protection 1 address range. the range define is 64Kbyte boundary.  current address [31:16] >= start address && current address [31:16] <= end address.
-  //bit 31:16 :   range end address.
-  //bit 15:0  :   range start address
-#define P_DMC_PROT1_CTRL                           (volatile uint32_t *)0xfe036350
-  //bit 23:16. each bit to enable one of the 8 ambus channel for the protection function.
-  //bit 15:0   each bit to enable one of the 15 channel input for the protection function.
-#define P_DMC_PROT1_CTRL1                          (volatile uint32_t *)0xfe036354
-  //bit 26.  protection range 1 read access protection enable bit.
-  //bit 25.  protection 1  write access block function. if enabled, the access wouldn't write to the DDR SDRAM.  if not enabled only generate a interrupt, but the access still wrote to DDR.
-  //bit 24.  protection range 1 write access protection enable bit.
-#define P_DMC_PROT_VIO_0                           (volatile uint32_t *)0xfe036358
-  //ddr0 write protection violation address.
-#define P_DMC_PROT_VIO_1                           (volatile uint32_t *)0xfe03635c
-  //bit 31:22 . not used. always 0.
-  //21     ddr0 protection 1 violation.
-  //20     ddr0 protection 0 violation.
-  //19:14. ddr0 write violation AWPROT bits.
-  //13:0   ddr0_write violation ID.
-#define P_DMC_PROT_VIO_2                           (volatile uint32_t *)0xfe036360
-  //ddr0 read prot violation address
-#define P_DMC_PROT_VIO_3                           (volatile uint32_t *)0xfe036364
-  //bit 31:22 . not used. always 0.
-  //21     ddr0 read protection 1 violation.
-  //20     ddr0 read protection 0 violation.
-  //19:16  ddr0 read violation ARPROT bits.
-  //15:14. reserved.
-  //13:0   ddr0 read violation ID.
-#define P_DMC_PROT_IRQ_CTRL                        (volatile uint32_t *)0xfe036368
-  //bit 2 :  protect function IRQ enable.
-  //bit 1 :  write protection violation.  write 1 to clean write protection vio registers.
-  //bit 0 :  read  protection violation.  write 1 to clean read protection vio registers.
-//`define DMC_TEST_REG_BASE                32'hfe037800
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe037800
-// -----------------------------------------------
-#define P_DMC_TEST_STA                             (volatile uint32_t *)0xfe037800
-  //test start address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
-  //                     for sha mode,      address must be in 64 bytes boundary. that mean the last 6 bits must be 0.
-#define P_DMC_TEST_EDA                             (volatile uint32_t *)0xfe037804
-  //test end address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
-  //                   for sha mode,       address must be in 64 bytes boundary. that mean the last 6bits must be 1.
-#define P_DMC_TEST_CTRL                            (volatile uint32_t *)0xfe037808
-   //bit 31.  enable test.
-   //bit 30.  when enable test, enable the write to DDR function.
-   //bit 29.  when enable test, enable the read from DDR function.
-   //bit 28.  when enable test,  enable the sha calculation function  must be same as read enable but without write function.
-   //bit 27.  enabe to compare data.  when do the read enable to enable the error comparison. suppose the read data should be same as the data in the write buffer.
-   //bit 26.  0: save sha result to test_sha_message registers.  1 : don't save.
-   //bit 25.  address generation type.  0: continuous increase the address in the range of test start address and test end address.
-   //                                   1: test module would pick the random address from test start address  and test end address.
-   //bit 24.  done type.      0 : use the DMC_TEST_NUM register as the counter of test numbers.
-   //                             for write if the write command number == the DMC_TEST_NUM, the write is done.
-   //                             for read if the read command number == the DMC TEST_num, the read id done. for one read command can be repeated repeat number times.
-   //                         1 : finshed at end address.
-   //bit 23.  wdata type.     1 : the first write is {WD3, WD2,WD1,WD0}, then the latter is the previous data plus a pattern.( { + WD7,  + WD6, + WD5, + WD4}).
-   //                         0 : the WDATA is the data in write register.
-   //bit 23.  1  compare the sha result with the test sha message registers. 0 : dont compare the result.
-   //bit 22:20.   read repeat times.  for non-sha function, we can define multiple times of the read. the test module would repeat the same adddress repeat times.
-   //bit 19.     limit write.  0: no outstanding write request limitation.
-   //                          1: limit the outstanding write commands to the number of bits [15:8]
-   //bit 18.     limit read.   0. no outstanding read request limitation.
-   //                          1. limit the read outstanding request to the number of bits[7:0].
-   //bit 17:16.  sha mode for sha function enabled.  00 : not used.  01 : sha1. 2: sha2-256. 3: sha2_224. not used in GXL fixed to be  Sha 2.
-   //bit 15:8.   write outstanding commands limit.
-   //bit 7:0.    read  outstanding commands limit.
-#define P_DMC_TEST_NUM                             (volatile uint32_t *)0xfe03780c
-   // how many test command for the test if the DMC_TEST_CTRL bit 24 is 0.
-#define P_DMC_TEST_WDG                             (volatile uint32_t *)0xfe037810
-  //31:16.  write response watch dog.
-  //15:0.   read response  watch dog.
-#define P_DMC_TEST_COMP_MASK                       (volatile uint32_t *)0xfe037814
-  //32bits for DMC TEST COMPARE bit enable.
-  //1 : to MASK this bit.  0: compare this bit.
-#define P_DMC_TEST_WSTRB0                          (volatile uint32_t *)0xfe037818
-  //MPC WR FIFO command DM bit write data
-  //bit 31:16  the second cycle.
-  //bit 15:0   the first cycle.
-#define P_DMC_TEST_WSTRB1                          (volatile uint32_t *)0xfe03781c
-  //MPC WR FIFO command DM bit write data
-  //bit 31:16. the Forth cycle.
-  //bit 15:0.  the third cycle.
-#define P_DMC_TEST_WD0                             (volatile uint32_t *)0xfe037840
-   // write data 0 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD1                             (volatile uint32_t *)0xfe037844
-   // write data 1 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD2                             (volatile uint32_t *)0xfe037848
-   // write data 2 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD3                             (volatile uint32_t *)0xfe03784c
-   // write data 3 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD4                             (volatile uint32_t *)0xfe037850
-   // write data 4 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD5                             (volatile uint32_t *)0xfe037854
-   // write data 5 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD6                             (volatile uint32_t *)0xfe037858
-   // write data 6 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD7                             (volatile uint32_t *)0xfe03785c
-   // write data 7 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD8                             (volatile uint32_t *)0xfe037860
-   // write data 8 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD9                             (volatile uint32_t *)0xfe037864
-   // write data 9 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD10                            (volatile uint32_t *)0xfe037868
-   // write data 10 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD11                            (volatile uint32_t *)0xfe03786c
-   // write data 11 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD12                            (volatile uint32_t *)0xfe037870
-   // write data 12 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD13                            (volatile uint32_t *)0xfe037874
-   // write data 13 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD14                            (volatile uint32_t *)0xfe037878
-   // write data 14 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD15                            (volatile uint32_t *)0xfe03787c
-   // write data 15 for write command. also for read back data comparison.
-#define P_DMC_TEST_RD0                             (volatile uint32_t *)0xfe037880
-   // the read back data 0.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD1                             (volatile uint32_t *)0xfe037884
-   // the read back data 1.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD2                             (volatile uint32_t *)0xfe037888
-   // the read back data 2.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD3                             (volatile uint32_t *)0xfe03788c
-   // the read back data 3.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD4                             (volatile uint32_t *)0xfe037890
-   // the read back data 4.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD5                             (volatile uint32_t *)0xfe037894
-   // the read back data 5.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD6                             (volatile uint32_t *)0xfe037898
-   // the read back data 6.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD7                             (volatile uint32_t *)0xfe03789c
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD8                             (volatile uint32_t *)0xfe0378a0
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD9                             (volatile uint32_t *)0xfe0378a4
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD10                            (volatile uint32_t *)0xfe0378a8
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD11                            (volatile uint32_t *)0xfe0378ac
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD12                            (volatile uint32_t *)0xfe0378b0
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD13                            (volatile uint32_t *)0xfe0378b4
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD14                            (volatile uint32_t *)0xfe0378b8
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD15                            (volatile uint32_t *)0xfe0378bc
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_ERR_ADDR                        (volatile uint32_t *)0xfe037900
-  //read only. it capture the first error address.
-#define P_DMC_TEST_ERR_CNT                         (volatile uint32_t *)0xfe037904
-  //read only. how many data error happens in the whole test period.
-#define P_DMC_TEST_STS                             (volatile uint32_t *)0xfe037908
-  //read only.
-  //bit 31,   test done bit. write 1 to clean.
-  //bit 30,   indicate address err
-  //bit 29~7.  not used.
-  //bit 6.    read data resp error(caused by security or rd latency).
-  //bit 5.    test MRR/MPR rd latency error. write 1 clear
-  //bit 4,    sha done.     write 1 to clean.
-  //bit 3,    write done.   write 1 to clean.
-  //bit 2,    read done.    write 1 to clean
-  //bit 1,    write watchdog triggered.   write 1 to clean
-  //bit 0,    read watchdog triggered.    write 1 to clean.
-#define P_DMC_TEST_WRCMD_ADDR                      (volatile uint32_t *)0xfe03790c
-  //read only. the current write cmd address.
-#define P_DMC_TEST_RDCMD_ADDR                      (volatile uint32_t *)0xfe037910
-   //read only. the current read command address.
-#define P_DMC_TEST_RDRSP_ADDR                      (volatile uint32_t *)0xfe037914
-  //read only. the failed read response address(for error data )
-//
-// Closing file:  ../mmc_lp4/dmc/rtl/dmc_reg.vh
-//
-//
-// Reading file:  ../mmc_lp4/dmc/rtl/dmc_siu_reg.vh
-//
-//`define DMC_DRAM_REG_BASE      32'hfe036400
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe036400
-// -----------------------------------------------
+#define P_DMC_AXI10_CHAN_STS                       (volatile uint32_t *)0xfe0362dc
+#define P_DMC_AXI11_CHAN_CTRL                      (volatile uint32_t *)0xfe0362e0
+#define P_DMC_AXI11_HOLD_CTRL                      (volatile uint32_t *)0xfe0362e4
+#define P_DMC_AXI11_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362e8
+#define P_DMC_AXI11_CHAN_STS                       (volatile uint32_t *)0xfe0362ec
+#define P_DMC_AXI12_CHAN_CTRL                      (volatile uint32_t *)0xfe0362f0
+#define P_DMC_AXI12_HOLD_CTRL                      (volatile uint32_t *)0xfe0362f4
+#define P_DMC_AXI12_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362f8
+#define P_DMC_AXI12_CHAN_STS                       (volatile uint32_t *)0xfe0362fc
+#define P_DMC_AXI13_CHAN_CTRL                      (volatile uint32_t *)0xfe036300
+#define P_DMC_AXI13_HOLD_CTRL                      (volatile uint32_t *)0xfe036304
+#define P_DMC_AXI13_CHAN_CTRL1                     (volatile uint32_t *)0xfe036308
+#define P_DMC_AXI13_CHAN_STS                       (volatile uint32_t *)0xfe03630c
+#define P_DMC_AXI0_CHAN_STS1                       (volatile uint32_t *)0xfe036310
+  //7:4. CPU FIQ STS
+  //3:0. CPU IRQ STS.
+#define P_DMC_CHAN_STS                             (volatile uint32_t *)0xfe036330
+  // read only register.
+  //bit 31:30   not used. always 1
+  //bit 29      ddr1 read buf idle.  1 : idle 0: busy.
+  //bit 28      ddr0 read buf idle.  1 : idle 0: busy.
+  //bit 27      ddr1 write data buffer idle. 1 : idle 0: busy.
+  //bit 26      ddr0 write data buffer idle. 1 : idle 0: busy.
+  //bit 25      ddr1 wbuf idle.              1 : idle 0: busy.
+  //bit 24      ddr0 wbuf idle.              1 : idle 0: busy.
+  //bit 23:14    not used.   always 1.
+  //bit 13       AXI channel13 idle.
+  //bit 12       AXI channel12 idle.
+  //bit 11       AXI channel11 idle.
+  //bit 10       AXI channel10 idle.
+  //bit 9       AXI channel9 idle.
+  //bit 8       AXI channel8 idle.
+  //bit 7       AXI channel7 idle.
+  //bit 6       AXI channel6 idle.
+  //bit 5       AXI channel5 idle.
+  //bit 4       AXI channel4 idle.
+  //bit 3       AXI channel3 idle.
+  //bit 2       AXI channel2 idle.
+  //bit 1       AXI channel1 idle.
+  //bit 0       AXI channel0 idle.
+#define P_DMC_MON_IRQ_STS                          (volatile uint32_t *)0xfe03636c
+  //bit 31:1   Not used.
+  //bit 0 :    QOS Monitor interrupt flag.  1: means there's QOS monitor interrup.  write 1 to clean this interrupt.
+//DMC protection function domain register.
+// one protection can chose upto 4 master IDs to monitors.
+//for these 4 master IDs, you can chose either include them. or exclude them.
+#define P_DMC_PROT0_STA                            (volatile uint32_t *)0xfe036380
+  //31:20. not used.
+  //19:0   protection 0 start address . unit 4Kbyte.
+#define P_DMC_PROT0_EDA                            (volatile uint32_t *)0xfe036384
+  //31:20. not used.
+  //19:0   protection 0 end address. unit 4Kbyte.
+#define P_DMC_PROT0_CTRL                           (volatile uint32_t *)0xfe036388
+  //bit 31:16. not used.
+  //bit 15:0.  prot0 id enable.
+#define P_DMC_PROT0_CTRL1                          (volatile uint32_t *)0xfe03638c
+  //bit 31:27. not used.
+  //bit 26:    (read channel) prot0 enable.
+  //bit 25:    not used.
+  //bit 24:    (write channel) prot0 enable.
+  //bit 23:16  not used.
+  //bit 15:0.  prot0 subid enable.
+#define P_DMC_PROT1_STA                            (volatile uint32_t *)0xfe036390
+  //bit 31:20. not used.
+  //bit 19:0   protection 1 start address . unit 4Kbyte.
+#define P_DMC_PROT1_EDA                            (volatile uint32_t *)0xfe036394
+  //bit 31:20. not used.
+  //bit 19:0   protection 1 end address. unit 4Kbyte.
+#define P_DMC_PROT1_CTRL                           (volatile uint32_t *)0xfe036398
+  //bit 31:16. not used.
+  //bit 15:0.  prot1 id enable.
+#define P_DMC_PROT1_CTRL1                          (volatile uint32_t *)0xfe03639c
+  //bit 31:27. not used.
+  //bit 26:    (read channel) prot1 enable.
+  //bit 25:    not used.
+  //bit 24:    (write channel) prot1 enable.
+  //bit 23:16  not used.
+  //bit 15:0.  prot1 subid enable.
+#define P_DMC_PROT_VIO_0                           (volatile uint32_t *)0xfe0363a0
+  //protection write violation low 32bits address.
+#define P_DMC_PROT_VIO_1                           (volatile uint32_t *)0xfe0363a4
+  //bit 31:12. not used.
+  //bit 11.    protection 1 write violation.
+  //bit 10.    protection 0 write violation.
+  //bit 9:0    AWUSER. please refer  AXI bus AWUSER bits define.
+#define P_DMC_PROT_VIO_2                           (volatile uint32_t *)0xfe0363a8
+  //protection read violation low 32bits address. ARADDR[31:0].
+#define P_DMC_PROT_VIO_3                           (volatile uint32_t *)0xfe0363ac
+  //bit 31:12. not used.
+  //bit 11.    protection 1 read violation.
+  //bit 10.    protection 0 read violation.
+  //bit 9:0    ARUSER. please refer AXI bus ARUSER bits define.
+#define P_DMC_PROT_IRQ_CTRL_STS                    (volatile uint32_t *)0xfe0363b0
+  //bit 2.   protection IRQ enable.
+  //bit 1.   read for write prot violation. write 1 to clean the write protection status and interrup.
+  //bit 0.   read for read prot violation. write 1 to clean the read protection status and interrup.
+#define P_DMC_PROT0_CTRL2                          (volatile uint32_t *)0xfe0363b4
+  //bit 19.  prot0 SubID3 en for prot0 id3.
+  //bit 18.  prot0 SubID2 en for prot0 id2.
+  //bit 17.  prot0 SubID1 en for prot0 id1.
+  //bit 16.  prot0 SubID0 en for prot0 id0.
+  //bit 15:12.prot0 subid3 id number.
+  //bit 11:8. prot0 subid2 id number.
+  //bit 7:4.  prot0 subid1 id number.
+  //bit 3:0.  prot0 subid0 id number.
+#define P_DMC_PROT1_CTRL2                          (volatile uint32_t *)0xfe0363b8
+  //bit 19.   prot1 SubID3 en for prot0 id3.
+  //bit 18.   prot1 SubID2 en for prot0 id2.
+  //bit 17.   prot1 SubID1 en for prot0 id1.
+  //bit 16.   prot1 SubID0 en for prot0 id0.
+  //bit 15:12.prot1 subid3 id number.
+  //bit 11:8. prot1 subid2 id number.
+  //bit 7:4.  prot1 subid1 id number.
+  //bit 3:0.  prot1 subid0 id number.
+//SIU register.
 //there's 2 set of timing DDR timing parameter for 2 set of DDR freqency parameter.
 //when change frequency, the hardware would automatically select one of these two set of timing parameter
 //DMC_DRAM_* is for Frequency set 0.
 //DMC_NFQ_* is for Freqency set 1.
 #define P_DMC_DRAM_TMRD                            (volatile uint32_t *)0xfe036400
-   //bit 4:0.  tMRD. //MR command cycles, in DDR3/4.  in LPDDR4, it should be value of tMRW
+   //bit 7:0.  tMRD. //MR command cycles, in DDR3/4.  in LPDDR4, it should be value of tMRW
 #define P_DMC_DRAM_TRFC                            (volatile uint32_t *)0xfe036404
-   //bit 9:0 tRFC
+   //bit 25:16 tRFCpb
+   //bit 9:0   tRFCab
 #define P_DMC_DRAM_TRP                             (volatile uint32_t *)0xfe036408
-   //bit 21:16.  tRP for precharge all banks.
-   //bit 5:0.    tRP for precharge one bank.
+   //bit 23:16.  tRP for precharge all banks.
+   //bit 7:0.    tRP for precharge one bank.
 #define P_DMC_DRAM_TRTW                            (volatile uint32_t *)0xfe03640c
-   //bit 31:6:   Not used.
-   //bit 5:0     DDR3/4 mode : tRTW.
+   //bit 31:8:   Not used.
+   //bit 7:0     DDR3/4 mode : tRTW.
    // For LPDDR4 .  The total read command -> write command = (RL + BL/2 - tWODTON) + TDQSCK_MAX + tWPRE +RD(tRPST).
    //                 tRTW = TDQSCK_max + tWPRE + tRD(tRPST)  + (delay margin)
 #define P_DMC_DRAM_TCL                             (volatile uint32_t *)0xfe036410
-  //bit 5:0  tCL/tRL. read latency.
+  //bit 7:0  tCL/tRL. read latency.
 #define P_DMC_DRAM_TCWL                            (volatile uint32_t *)0xfe036414
-  //bit 5:0.  CWL:  write latency.
+  //bit 7:0.  CWL:  write latency.
 #define P_DMC_DRAM_TRAS                            (volatile uint32_t *)0xfe036418
   //bit 7:0.  tRAS.  minimum active to precharge time for same bank.
 #define P_DMC_DRAM_TRC                             (volatile uint32_t *)0xfe03641c
@@ -1330,141 +689,195 @@
 #define P_DMC_DRAM_TRCD                            (volatile uint32_t *)0xfe036420
   //bit 7:0  tRCD  active to read/write timing for same bank.
 #define P_DMC_DRAM_TRRD                            (volatile uint32_t *)0xfe036424
-  //bit 21:16.  tRRD_l  active bank A to active B in same band group for DDR4.
-  //bit 5:0.    tRRD/tRRD_s   active bank A to active bank b time.
+  //bit 23:16.  tRRD_l  active bank A to active B in same band group for DDR4.
+  //bit 7:0.    tRRD/tRRD_s   active bank A to active bank b time.
               //tRRD_s:   active bank A to active bank b in different bank grousp for DDR4.
 #define P_DMC_DRAM_TFAW                            (volatile uint32_t *)0xfe036428
   //bit 8:0   tFAW.  four active command windows
 #define P_DMC_DRAM_TRTP                            (volatile uint32_t *)0xfe03642c
-  //bit 5:0  tRTP.
+  //bit 7:0  tRTP. in LPDDR5 should be tBL + tRBTP
 #define P_DMC_DRAM_TWR                             (volatile uint32_t *)0xfe036430
-  //bit 5:0 tWR.
+  //bit 7:0 tWR.
 #define P_DMC_DRAM_TWTR                            (volatile uint32_t *)0xfe036434
-  //bit 21:16 tWTR_l   For DDR4 WTR_l.  FOR DDR3/LPDDR4 same as tWTR_s.
-  //bit 5:0 tWTR_s.
+  //bit 23:16 tWTR_l   For DDR4 WTR_l.  FOR DDR3/LPDDR4 same as tWTR_s.
+  //bit 7:0 tWTR_s.
 #define P_DMC_DRAM_TCCD                            (volatile uint32_t *)0xfe036438
-  //bit 19:16. tCCD/tCCD_l.
-  //bit 3:0 tCCD/tCCD_s    read to read command time or write to write command time.
+  //bit 21:16. tCCD/tCCD_l.
+  //bit 5:0 tCCD/tCCD_s    read to read command time or write to write command time.
 #define P_DMC_DRAM_TEXSR                           (volatile uint32_t *)0xfe03643c
   //bit 12:0. tEXSR.  EXIT SELF-REFRESH to read/write command.
 #define P_DMC_DRAM_TXS                             (volatile uint32_t *)0xfe036440
-  //bit 9:0  tXS.  EXIT SELF_REFRESH to other command time
+  //bit 10:0  tXS.  EXIT SELF_REFRESH to other command time
 #define P_DMC_DRAM_TXP                             (volatile uint32_t *)0xfe036444
-  //bit 3:0. tXP.  EXIT power down to other command time
+  //bit 6:0. LPDDR4 tXP.  EXIT power down to other command time
+             //LPDDR5 tCSL
 #define P_DMC_DRAM_TXPDLL                          (volatile uint32_t *)0xfe036448
   //bit 12:0.  tXPDLL,  EXIT power down to read/write command time(need to relock PLL).
 #define P_DMC_DRAM_TZQCS                           (volatile uint32_t *)0xfe03644c
-  //bit 11:0.  ZQCS command to other command time.
+  //bit 7:0.  ZQCS command to other command time.
 #define P_DMC_DRAM_TCKSRE                          (volatile uint32_t *)0xfe036450
-  //bit 4:0. enter self refresh to disable clock time.
+  //bit 7:0. enter self refresh to disable clock time.
 #define P_DMC_DRAM_TCKSRX                          (volatile uint32_t *)0xfe036454
-  //bit 4:0. enable clock to exit self refresh time.
+  //bit 7:0. enable clock to exit self refresh time.
 #define P_DMC_DRAM_TCKE                            (volatile uint32_t *)0xfe036458
-  //bit 4:0.  CKE high or low minimum time.
+  //bit 7:0.  CKE high or low minimum time.
+             //LPDDR5: tCSPD. power down to power up
 #define P_DMC_DRAM_TMOD                            (volatile uint32_t *)0xfe03645c
-  //bit 4:0  tMOD.  MRR/MRW to other command time. in LPDDR4, still use this register but it called tMRD.
+  //bit 7:0  tMOD.  MRR/MRW to other command time. in LPDDR4, still use this register but it called tMRD.
 #define P_DMC_DRAM_TDQS                            (volatile uint32_t *)0xfe036460
   //bit 31:28 reserved
-  //bit 27:24 tDQS. the delay for write after read in different rank.
+  //bit 27:24 tDQS_wr. the delay for write after read in different rank.
   //bit 23:20 reserved
-  //bit 19:16 tDQS. the delay for read after write in different rank.
+  //bit 19:16 tDQS_rw. the delay for read after write in different rank.
   //bit 15:12 reserved
-  //bit 11:8  tDQS. the delay for write after write in different rank.
+  //bit 11:8  tDQS_ww. the delay for write after write in different rank.
   //bit 7:4 reserved
-  //bit 3:0 tDQS. the delay for read after read in different rank.
+  //bit 3:0 tDQS_rr. the delay for read after read in different rank.
 #define P_DMC_DRAM_TRSTL                           (volatile uint32_t *)0xfe036464
-  //not used.
+  //bit 6:0 t_tstl. not used.
 #define P_DMC_DRAM_TZQLAT                          (volatile uint32_t *)0xfe036468
-  //bit 5:0 ZQ LATCH command to other comand timing in LPDDR4 mode.
+  //bit 7:0 ZQ LATCH command to other comand timing in LPDDR4 mode.
 #define P_DMC_DRAM_TMRR                            (volatile uint32_t *)0xfe03646c
   //bit 7:0 tMRR  not used in DMC.
 #define P_DMC_DRAM_TCKESR                          (volatile uint32_t *)0xfe036470
  //bit 9:0 tCKESR.   CKE low minimum pulse in self refresh mode.
 #define P_DMC_DRAM_TDPD                            (volatile uint32_t *)0xfe036474
- //not support.
+ //bit 9:0 tdpd. not support.
 #define P_DMC_DRAM_DFITCTRLDELAY                   (volatile uint32_t *)0xfe036478
-  //bit 3:0. DFI_t_ctrldelay
+  //bit 5:0. DFI_t_ctrldelay
 #define P_DMC_DRAM_DFITPHYWRDATA                   (volatile uint32_t *)0xfe03647c
   //bit 5:0.  dfi_t_phy_wrdata.
 #define P_DMC_DRAM_DFITPHYWRLAT                    (volatile uint32_t *)0xfe036480
-  //bit 5:0.  dfi_t_phy_wrlat.  in DDR3/4/LPDDR3 mode:   WL -5.   in LPDDR4 mode: WL -5 + 2.
+  //bit 7:0.  dfi_t_phy_wrlat.  in DDR3/4/LPDDR3 mode:   WL -5.   in LPDDR4 mode: WL -5 + 2.
 #define P_DMC_DRAM_DFITRDDATAEN                    (volatile uint32_t *)0xfe036484
-  //bit 5:0.  dfi_t_rddata_en.  in DDR3/4/LPDDR3 mode: RL -5. in LPDDR4 mode : RL -5 + 1.
+  //bit 7:0.  dfi_t_rddata_en.  in DDR3/4/LPDDR3 mode: RL -5. in LPDDR4 mode : RL -5 + 1.
 #define P_DMC_DRAM_DFITPHYRDLAT                    (volatile uint32_t *)0xfe036488
-  //bit 5:0.  dfi_t_rdlat.
+  //bit 7:0.  dfi_t_rdlat.
 #define P_DMC_DRAM_DFITCTRLUPDMIN                  (volatile uint32_t *)0xfe03648c
-  //bit 7:0.  CTRLUPD_MIN  minimum clock cycle to maintain CTRLUPD_REQ.
+  //bit 15:0.  CTRLUPD_MIN  minimum clock cycle to maintain CTRLUPD_REQ.
 #define P_DMC_DRAM_DFITCTRLUPDMAX                  (volatile uint32_t *)0xfe036490
-  //bit 7:0   CTRLUPD_MAX.  maximum clock cycle to maintain CTRLUPD_REQ if no CTRLUPD_ACK response.
+  //bit 15:0   CTRLUPD_MAX.  maximum clock cycle to maintain CTRLUPD_REQ if no CTRLUPD_ACK response.
 #define P_DMC_DRAM_DFITREFMSKI                     (volatile uint32_t *)0xfe036498
   //not used.
 #define P_DMC_DRAM_DFITCTRLUPDI                    (volatile uint32_t *)0xfe03649c
-  //not used.
+  //bit 31:0    frq0_dfitctrlupdi. not used.
 #define P_DMC_DRAM_DFITDRAMCLK                     (volatile uint32_t *)0xfe0364a0
 //bit 17    dram clk1 enable.
 //bit 16    dram clk0 enable.
 //bit 15:8  DRAM CLK disable waiting time
 //bit 7:0   DRAM CLK enable  enable timer
 #define P_DMC_DRAM_DFITLPRESP                      (volatile uint32_t *)0xfe0364a8
-  //bit 3:0.  dfi_lp_ctrl_req response time. after dfi_lp_ctrl_req asserted, and after response time if there's still no dfi_lp_ack respone, then drop the dfi_lp_ctrl_req.
+  //bit 4:0.  dfi_lp_ctrl_req response time. after dfi_lp_ctrl_req asserted, and after response time if there's still no dfi_lp_ack respone, then drop the dfi_lp_ctrl_req.
 #define P_DMC_DRAM_TCKECK                          (volatile uint32_t *)0xfe0364b0
- //bit 4:0. tCKECK  from CKE low to assert dfi_dram_clk_disable time. this time + dfi_t_ctrl_delay
+ //bit 7:0. tCKECK  from CKE low to assert dfi_dram_clk_disable time. this time + dfi_t_ctrl_delay
+            //in LPDDR5 tCSLCK
 #define P_DMC_DRAM_TREFI                           (volatile uint32_t *)0xfe0364b4
  //write this register will update the auto refresh related register to the auto refresh control logic.
  //bit 31:24:  tZQCI dmc send zqci period.  unit is how much auto refresh period.
  //bit 23:16   pvti  dmc send dfi_ctrlupd_req period.  unit is one auto refresh period.
- //bit 15:8.   tREFI.dmc send auto refresh command period. unit is 100ns.
- //bit 7:0.    t100ns period. unit is dmc clock cycles
+ //bit 15:0.   tREFI.dmc send auto refresh command period. unit is dmc clock cycles
 #define P_DMC_DRAM_TSR                             (volatile uint32_t *)0xfe0364b8
-  //bit 5:0 tSR.  self resfresh enter to exit time.
+  //bit 7:0 tSR.  self resfresh enter to exit time.
 #define P_DMC_DRAM_TCCDMW                          (volatile uint32_t *)0xfe0364bc
-  //bit 5:0.  4*tCCD in LPDDR4 mask write.
+  //bit 7:0.  4*tCCD in LPDDR4 mask write.
 #define P_DMC_DRAM_TESCKE                          (volatile uint32_t *)0xfe0364c0
-  //bit 5:0  tESCKE.  enter self refresh to power time for LPDDR4.
+  //bit 7:0  tESCKE.  enter self refresh to power time for LPDDR4.
 #define P_DMC_DRAM_TREFI_DDR3                      (volatile uint32_t *)0xfe0364c4
-  //7:0. DDR3 SDRAM tREFI single auto refresh time . the unit is t100ns.
+  //9:0. use this register to reset refi_disable_cnt. the unit is t100ns.
   //use this to check in 8*tREFI time, the DMC should not sent more than 16 auto REFRESH command.
 #define P_DMC_DRAM_TZQCAL                          (volatile uint32_t *)0xfe0364c8
-  //11:0. ZQCAL for LPDDR4. ZQINIT/ZQoper for DDR3/4 ZQCL command.
+  //15:0. ZQCAL for LPDDR4.  tZQCAL4/8/16 for LP5.
 #define P_DMC_DRAM_T10US                           (volatile uint32_t *)0xfe0364cc
-  //10us clock cycle number used for LP2 mode.
+  //bit 15:0 10us clock cycle number used for LP2 mode.
 #define P_DMC_DRAM_TMRRI                           (volatile uint32_t *)0xfe0364d0
 //bit 7:0   tMRRI for MRR
 #define P_DMC_DRAM_TXS_FAST                        (volatile uint32_t *)0xfe0364d4
  //bit 9:0 DDR4 mode XS_FAST exit self_refrest to zqcl/zqcs/mrs command.
 #define P_DMC_DRAM_DFIODTCFG                       (volatile uint32_t *)0xfe0364d8
-  //bit 12.  rank1 ODT default. default vulue for ODT[1] pins if theres no read/write activity.
+  //bit 12.  rank1 ODT default. default value for ODT[1] pins if theres no read/write activity.
   //bit 11.  rank1 ODT write sel.  enable ODT[1] if there's write occur in rank1.
   //bit 10.  rank1 ODT write nsel. enable ODT[1] if theres's write occur in rank0.
   //bit 9.   rank1 odt read sel.   enable ODT[1] if there's read occur in rank1.
   //bit 8.   rank1 odt read nsel.  enable ODT[1] if there's read occure in rank0.
-  //bit 4.   rank0 ODT default.    default vulue for ODT[0] pins if theres no read/write activity.
+  //bit 4.   rank0 ODT default.    default value for ODT[0] pins if theres no read/write activity.
   //bit 3.   rank0 ODT write sel.  enable ODT[0] if there's write occur in rank0.
   //bit 2.   rank0 ODT write nsel. enable ODT[0] if theres's write occur in rank1.
   //bit 1.   rank0 odt read sel.   enable ODT[0] if there's read occur in rank0.
   //bit 0.   rank0 odt read nsel.  enable ODT[0] if there's read occure in rank1.
 #define P_DMC_DRAM_DFIODTCFG1                      (volatile uint32_t *)0xfe0364dc
-  //bit 27:24  ODT length for BL8 read transfer.
-  //bit 19:16. ODT length for BL8 write transfer.
-  //bit 12:8.  ODT latency for reads.  suppose to be 0.
-  //bit 4:0.   ODT latency for writes.  suppose to be 0.
+  //bit 28:24  ODT length for BL8 read transfer.
+  //bit 20:16. ODT length for BL8 write transfer.
+  //bit 13:8.  ODT latency for reads.  suppose to be 0.
+  //bit 5:0.   ODT latency for writes.  suppose to be 0.
 #define P_DMC_DRAM_TWODTON                         (volatile uint32_t *)0xfe0364e0
-  //bit 5:0   DRAM write access ODT on time.
+  //bit 7:0   DRAM write access ODT on time.
   //   in DDR3/4 should be same as WL.
   //   in LPDDR4 ODT enable  mode:  tODTLon + tODTon.min
   //   In LPDDR4 ODT disable mode:  tWL.
-#define P_DMC_DRAM_TRETRAIN                        (volatile uint32_t *)0xfe0364e4
- //bit 15:0 LPDDR4 OSCRING retraining timer(units = auto_refresh timer). sync with autorefresh
+#define P_DMC_DRAM_PHYADDRON                       (volatile uint32_t *)0xfe0364e8
+  //bit 5:0 PHY_CTRL_ADDR_ON for new PHY. default : 12 unit: DfiClk
+#define P_DMC_DRAM_PHYWRON                         (volatile uint32_t *)0xfe0364ec
+  //bit 6:0 PHY_CTRL_WR_ON.  = 20 + WL + (tDQSS+ tDQS2DQ + tWPST)/ddr_clk + BL/2
+#define P_DMC_DRAM_PHYRDON                         (volatile uint32_t *)0xfe0364f0
+  //bit 6:0 PHY_CTRL_RD_ON.  = 20 + RL + (tDQSCK+ tRPST + tDQSQ)/ddr_clk + BL/2
 #define P_DMC_DRAM_ZQCTRL                          (volatile uint32_t *)0xfe0364f4
   //tZQCI bits in DMC_DRAM_TREFI  defined how many refresh period send ZQCS/ZQUPD/command.
-  //this register defines in 0~tZQCI period, which refresh period count to send partial ZQCS/ZACAL/ZQUPD command
+  //this register defines in 0~tZQCI period, which refresh period count to send ZQCS/ZACAL/ZQUPD command
   //31:24.  in LPDDR4 case when to send ZQLAT comman to both RANKs of LPDDR4 SDRAM
   //23:16.  when to send PHY ZQ UPDATE command.
   //15:8.   when to send ZQCS/ZQCAL to rank1 DDR SDRAM.
   //7:0.    when to senc ZQCS/ZQCAL to rank0 DDR SDRAM.
-#define P_DMC_DRAM_TPBR                            (volatile uint32_t *)0xfe0364f8
+#define P_DMC_DRAM_DFITPHYWRLATCSN                 (volatile uint32_t *)0xfe0364f8
+  //not used. bit 5:0.  dfi_t_phy_wrlat.  in DDR3/4/LPDDR3 mode:   WL -5.   in LPDDR4 mode: WL -5 + 2.
+#define P_DMC_DRAM_DFITRDDATACSN                   (volatile uint32_t *)0xfe0364fc
+  //not used. bit 5:0.  dfi_t_rddata_en.  in DDR3/4/LPDDR3 mode: RL -5. in LPDDR4 mode : RL -5 + 1.
+#define P_DMC_DRAM_TPBR                            (volatile uint32_t *)0xfe036680
   //bit 23:16 tPBR2ACT
-  //bit 7:0   tPBR2PBR
+  //bit 9:0   tPBR2PBR
+#define P_DMC_DRAM_TWCK_FS                         (volatile uint32_t *)0xfe036684
+  //not used. timing for wck_fs sync command
+  //bit 31:24 tWCKOFF
+  //bit 23:16 tWCKPRE_TOGGLE
+  //bit 15:8  tWCKPRE_STATIC
+  //bit 7:0   tWCKENL
+#define P_DMC_DRAM_TWCK_WR                         (volatile uint32_t *)0xfe036688
+  //not used. timing for wck_wr sync command
+  //bit 31:24 tWCKOFF
+  //bit 23:16 tWCKPRE_TOGGLE
+  //bit 15:8  tWCKPRE_STATIC
+  //bit 7:0   tWCKENL
+#define P_DMC_DRAM_TWCK_RD                         (volatile uint32_t *)0xfe03668c
+  //not used. timing for wck_rd sync command
+  //bit 31:24 tWCKOFF
+  //bit 23:16 tWCKPRE_TOGGLE
+  //bit 15:8  tWCKPRE_STATIC
+  //bit 7:0   tWCKENL
+#define P_DMC_DRAM_TWCK_OFF                        (volatile uint32_t *)0xfe036690
+  //not used. timing for wck_rd sync command
+  //bit 31:24 not used.
+  //bit 23:16 timing from write command to wck off timing.
+             //  = WL + BURST + TWCKPOST + tWCK2DQI ?
+  //bit 15:8  WCKOFF cmd to other command timing.
+  //bit 7:0   timing from read command to wck off timing.
+             //  = RL + BURST + TWCKPOST + tWCK2DQO ?
+#define P_DMC_DRAM_TPPD                            (volatile uint32_t *)0xfe036694
+  //bit 31:24 not used.
+  //bit 7:0.  tPPD. precharge to precharge delay in LPDDR5.
+#define P_DMC_DRAM_TCSH                            (volatile uint32_t *)0xfe036698
+  //bit 7:0.  tCSH for LPDDR5
+#define P_DMC_DRAM_TCMDPD                          (volatile uint32_t *)0xfe03669c
+  //bit 7:0.  tCMDPD for LPDDR5
+#define P_DMC_DRAM_TOSCPD                          (volatile uint32_t *)0xfe0366a0
+  //bit 15:0.  tOSCPD for LPDDR5 : tOSCPD + tOSC
+#define P_DMC_DRAM_TWCK2DQ                         (volatile uint32_t *)0xfe0366a4
+ //not used.
+ //bit 23:16. tWCK2DQI max
+ //bit 7:0.   tWCK2DQO max
+#define P_DMC_DRAM_TRFM                            (volatile uint32_t *)0xfe0366a8
+ //not used.
+ //9:0. tRFMpb for lpddr5
+#define P_DMC_DRAM_TCKMAX                          (volatile uint32_t *)0xfe0366ac
+ //9:0  tclk(max).    100ns in LPDDR4.
 //timing parameter for frequency set 1.
 #define P_DMC_NFQ_TMRD                             (volatile uint32_t *)0xfe036500
 #define P_DMC_NFQ_TRFC                             (volatile uint32_t *)0xfe036504
@@ -1520,24 +933,36 @@
 #define P_DMC_NFQ_DFIODTCFG                        (volatile uint32_t *)0xfe0365d8
 #define P_DMC_NFQ_DFIODTCFG1                       (volatile uint32_t *)0xfe0365dc
 #define P_DMC_NFQ_TWODTON                          (volatile uint32_t *)0xfe0365e0
-#define P_DMC_NFQ_TRETRAIN                         (volatile uint32_t *)0xfe0365e4
+#define P_DMC_NFQ_PHYADDRON                        (volatile uint32_t *)0xfe0365e8
+#define P_DMC_NFQ_PHYWRON                          (volatile uint32_t *)0xfe0365ec
+#define P_DMC_NFQ_PHYRDON                          (volatile uint32_t *)0xfe0365f0
 #define P_DMC_NFQ_ZQCTRL                           (volatile uint32_t *)0xfe0365f4
-#define P_DMC_NFQ_TPBR                             (volatile uint32_t *)0xfe0365f8
-#define P_DMC_NFQ_TCSH                             (volatile uint32_t *)0xfe0365fc
-//end of second frequency timing parameter
+#define P_DMC_NFQ_DFITPHYWRLATCSN                  (volatile uint32_t *)0xfe0365f8
+#define P_DMC_NFQ_DFITRDDATACSN                    (volatile uint32_t *)0xfe0365fc
+#define P_DMC_NFQ_TPBR                             (volatile uint32_t *)0xfe0366c0
+#define P_DMC_NFQ_TWCK_FS                          (volatile uint32_t *)0xfe0366c4
+#define P_DMC_NFQ_TWCK_WR                          (volatile uint32_t *)0xfe0366c8
+#define P_DMC_NFQ_TWCK_RD                          (volatile uint32_t *)0xfe0366cc
+#define P_DMC_NFQ_TWCK_OFF                         (volatile uint32_t *)0xfe0366d0
+#define P_DMC_NFQ_TPPD                             (volatile uint32_t *)0xfe0366d4
+#define P_DMC_NFQ_TCSH                             (volatile uint32_t *)0xfe0366d8
+#define P_DMC_NFQ_TCMDPD                           (volatile uint32_t *)0xfe0366dc
+#define P_DMC_NFQ_TOSCPD                           (volatile uint32_t *)0xfe0366e0
+#define P_DMC_NFQ_TWCK2DQ                          (volatile uint32_t *)0xfe0366e4
+#define P_DMC_NFQ_TRFM                             (volatile uint32_t *)0xfe0366e8
+#define P_DMC_NFQ_TCKMAX                           (volatile uint32_t *)0xfe0366ec
 #define P_DMC_DRAM_DFITPHYUPDTYPE0                 (volatile uint32_t *)0xfe036600
- //dfi_phyupd_ack hold time for dfi_phyupd_req type = 0.
+ //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 0.
 #define P_DMC_DRAM_DFITPHYUPDTYPE1                 (volatile uint32_t *)0xfe036604
- //dfi_phyupd_ack hold time for dfi_phyupd_req type = 1.
+ //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 1.
 #define P_DMC_DRAM_DFITPHYUPDTYPE2                 (volatile uint32_t *)0xfe036608
- //dfi_phyupd_ack hold time for dfi_phyupd_req type = 2.
+ //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 2.
 #define P_DMC_DRAM_DFITPHYUPDTYPE3                 (volatile uint32_t *)0xfe03660c
- //dfi_phyupd_ack hold time for dfi_phyupd_req type = 3.
+ //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 3.
 #define P_DMC_DRAM_MCFG                            (volatile uint32_t *)0xfe036618
- //bit 31:27  not used.
- //bit 26:24  rank1_d16_sel.  16bit mode, rank 1 byte selection.
- //bit 23     not used.
- //bit 22:20. rank0_d16_sel. 16bit mode, rank 0 byte selection.
+ //bit 31:28  not used.
+ //bit 27:24  rank1_d16_sel.  16bit mode, rank 1 byte selection.
+ //bit 23:20  rank0_d16_sel.  16bit mode, rank 0 byte selection.
  //bit 19.   send PHY ZQ command  after siu self refresh exit. 1 : enable.  0 : disable.
  //bit 18.   send retrain command after siu self refresh exit. 1 : enable. 0 : disable.
  //bit 17.   in DDR3/4 mode, send ZQCL command after exit register triggered self refresh.
@@ -1559,11 +984,16 @@
  //bit 1     enable PHY triggered DFI_PHYUPD_REQ.
  //bit 0     2T mode. always 1 in DDR3/4 mode.
 #define P_DMC_DRAM_ZQ_CTRL                         (volatile uint32_t *)0xfe03661c
+ //bit 31:16. how long PHY will finish PHY ZQ calibration. so DMC can send update request.
+ //bit 15:4 not used.
+ //bit 3  enable PHY ZQ CAL in ASR mode.
  //bit 2  ZQ command must be send in different time.
  //bit 1  ZQ command can be send at same time.
  //bit 0  rank0 ZQ only
 #define P_DMC_DRAM_MCFG1                           (volatile uint32_t *)0xfe036620
- //bit 22.  mrr_dbi_en. to enable dbi function for MR read.
+ //bit 26.  siu_srx_phymr_en
+ //bit 25.  siu_lp4_r17_en
+ //bit 23.  mrr_dbi_en. to enable dbi function for MR read.
  //bit 21;  enable separate dfi_lp_data_req. 1: enable. 0: dfi_lp_data_req same as dfi_lp_ctrl_req.
  //bit 20:16 dfi_lp_data_wakeup value.
  //bit 14.  enable SIU read data with DBI result.
@@ -1574,36 +1004,20 @@
  //bit 7:0.  LPDDR4 MRW DBI data mask pattern.  //default 8'b11111000;
 #define P_DMC_DRAM_DFI_CTRL                        (volatile uint32_t *)0xfe036624
   //bit 31 siu_dfi_lat err generation enable.  1: if dfi read latency violation, generate data error. 0 : disable.
-  //bit 20 phy_ctrl_rd_on phy_ctrl_wr_on ignore 16bit mode.  1: sending 0xf in 16bit mode.  0: sending valid byte enable in 16bit mode
   //bit 19: dfi_init_complete wait enable.  1: after dfi_init_complete, wait additional EXSR time for new command. 0: phy will handle all the timing    after dfi_init_complete DMC can do everything they want.
   //bit 18:  dfi_rddata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
   //bit 17:  dfi_wrdata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
-  //bit 16:  force PHY ctrl_on  if = 1, phy_ctrl_on singal will keep on.
-   //bit 15 siu_dfi1_lp_en
-  //bit 14 siu_dfi_lp_ack_and
-  //bit 13 siu_dfi_lp_ack_or
-  //bit 12 siu_dfi1_init_start_en
-  //bit 11 siu_dfi_init_com_and
-  //bit 10 siu_dfi_init_com_or
-  //bit  9 siu_dfi1_freq_en
-  //bit  8 siu_dfi1_dram_clk_dis_en
-  //bit  7 siu_dfi_phyupd_type_sel
-  //bit  6 siu_dfi1_phyupd_ack_en
-  //bit  5 siu_dfi_phyupd_req_and
-  //bit  4 siu_dfi_phyupd_req_or
-  //bit  3 siu_dfi_ctrlupd_ack_and
-  //bit  2 siu_dfi_ctrlupd_ack_or
-  //bit  1 siu_dfi1_ctrlupd_req_en
-  //bit  0 siu_dfi1_cmd_en
 #define P_DMC_DRAM_DFIINITCFG                      (volatile uint32_t *)0xfe036628
-  //bit 31.   dfi_init_complete status. read only.
+  //bit 31.     dfi_init_complete status. read only.
+  //bit 19:18.  Frequency set 1 dfi_freq_fsp value.
+  //bit 17:16.  Frequency set 0 dfi_freq_fsp value.
   //bit 15:14.  Frequency set 1 dfi_freq_ratio value.
   //bit 12:8    Frequency set 1 dfi_freq value.
   //bit 7:6     Frequency set 0 dfi_freq_ratio value.
   //bit 5:1     Frequency set 0 dfi_freq value.
   //bit 0.      dfi_init_start value  can be use manually config dfi_init_start signal.
 #define P_DMC_DRAM_APD_CTRL                        (volatile uint32_t *)0xfe036630
- //bit 19:16  DFI_LP_WAKEUP value in APD DFI_LP_REQ mode
+ //bit 20:16  DFI_LP_WAKEUP value in APD DFI_LP_REQ mode
  //bit 12    1: exit power down slow mode(waiting PLL LOCK).  0 : fast mode.
  //bit 11    enable DFI_LP_REQ when enter Auto power down mode.
  //bit 10    disable DFI_clk_disable when enter auto power down mode.
@@ -1613,35 +1027,40 @@
   //bit 31. enable RETRAIN PHY after auto selfrefresh exit. for AM_PHY only.
   //bit 30. in DDR3/4 mode, send ZQCL command after exit from auto self refresh mode.
   //bit 29. enable PHY clock in LP2 mode.  1: enable. 0 : disable.
-  //bit 28. enable dmc wait 10us after LP2 mode exit if it's long time the PHY in LP2 mode..
-  //bit [27:24] DFI_LP_WAKEUP value in self refresh DFI_LP_REQ mode.
+  //bit [28:24] DFI_LP_WAKEUP value in self refresh DFI_LP_REQ mode.
   //bit 23 : send REFRESH command after exit from auto self refersh mode(ASR).
   //bit 22 : send REFERSH command before enter to Auto self refresh mode(ASR).
   //bit 21 : send ZQCS command after exit from Auto self refresh mode(ASR).
   //bit 20 : send dfi_ctrl_upd after exit from ASR mode
   //bit 19 : send power down command when enter ASR mode. //for LPDDR4 only.
-  //bit 18 : set the PHY enter LP2 mode after enter ASR mode.
+  //bit 18 : set the PHY enter LP2 mode after enter ASR mode. //not support for P1 LP5PHY
   //bit 17 : send DFI_LP_REQ  after enter ASR mode.
   //bit 16 : set DFI_CLK_DISABLE after enter ASR mode.
   //bit 15:0.   0 disable auto ASR mode.
              // Non-zero value enable ASR mode. when DMC is in idle state for this number of clock cycles, the DMC will enter ASR mode.
 #define P_DMC_DRAM_REFR_CTRL                       (volatile uint32_t *)0xfe036648
+  //bit 28  enable send phy pvt request after PHY ZQ calibration request.
+  //bit 27:24 not used.
+  //bit 23  enable Per Bank refresh mode.
   //bit 22  dmc to control DFI_CTRLUPD_REQ  with zq generation together.
   //bit 21  dmc to control PHY ZQ generation enable.
   //bit 20  dmc to control zqlat(in LPDDR4 mode) generation enable.
   //bit 19  dmc to control zqcs1 generation enable.
   //bit 18  dmc to control zqcs0 generation enable.
   //bit 17:8 auto refresh request pending cnt if there's page hit request.
-  //bit 7  retrain enable for auto refresh request. 1: enable. 0: disable.
-  //bit 6  Disabled auto refresh command if over 16 auto refresh command sent in 2 TREFI_DDR3 period
+  //bit 7  not used.
+  //bit 6  not used.
   //bit 5  enable dmc send ZQCS command .
   //bit 4. enable dmc send DFI_CTRUPD_REQ.
   //bit 3:1. how many refresh command send for one period. = this number + 1
   //bit 0.  enable dmc send auto refresh command.
 #define P_DMC_DRAM_FREQ_CTRL                       (volatile uint32_t *)0xfe03664c
-//bit 31 .  write 1 to change freqency   read 0: finished.
-//bit 30.   waiting for software to send some manual command.  1 : waiting. 0 : not ready yet.
-//bit 29:22.  not used.
+//bit 31 .  chan0 write 1 to change freqency   read 0: finished.
+//bit 30.   chan0 waiting for software to send some manual command.  1 : waiting. 0 : not ready yet.
+//bit 29 .  chan1 write 1 to change freqency   read 0: finished.
+//bit 28.   chan1 waiting for software to send some manual command.  1 : waiting. 0 : not ready yet.
+//bit 27:23.  not used.
+//bit 22    siu_freq_refr_en, enter FREQ_AUTO_REFR after DFI freq init start complete
 //bit 21     after Freqchange send PHY ZQ update.
 //bit 20    send CTRLUPD_REQ to PHY after freq_change finished.
 //bit 19:16. how many cycles to send PLL change req after init_complete signal to low.
@@ -1667,10 +1086,25 @@
   // bit 0  1 : to ask PCTL enter STOP/CONFIG STATE .  0 : deassert the request.
 #define P_DMC_DRAM_STAT                            (volatile uint32_t *)0xfe036654
   //bit 31     rd latency error. 1: means after dfiphytrdlat cycles, the read data still not back.
+  //bit 30:29.     not used.
   //bit 28:24   dram_sr_state
   //bit 23:20   stop_st
-  //bit 19:15   sleep_st
-  //bit 14:12  ACCESS STATUS 0 :  ACCESS is in normal working mode.
+  //bit 19:16  freq_st.
+    //4'h0 : IDLE
+    //4'h1 : FREQ_CHECK_VPU
+    //4'h2 : FREQ_WAITING_STOP
+    //4'h3 : FREQ_DRAM_CFG.  waiting DMC/software to send special MRW/MPC command to configure DDR SDRAM either before Freq change or after freq change.
+    //4'h4 : FREQ_SELF_REFR_ST.
+    //4'h5 : FREQ_SET_DFI_FREQ.
+    //4'h6 : FREQ_DFI_INIT_START_HIGH.
+    //4'h7 : FREQ_CHANGE PLL_ST.
+    //4'h8 : FREQ_UPDATA REG.
+    //4'h9 : FREQ_DFI_INIT_START_LOW.
+    //4'ha : FREQ_WAITING_FINISH
+    //4'hb : FREQ_ZQCS
+    //4'hc : FREQ_ZQ_LATCH
+    //4'hd : FREQ_PVT
+  //bit 15:12  ACCESS STATUS 0 :  ACCESS is in normal working mode.
                           //1 :   ACCESS sending precharge command.
                           //2 :   ACCESS sending AUTO REFRESH command.
                           //3 :   ACCESS sending DIF_CTRLUPD_REQ command.
@@ -1704,71 +1138,63 @@
    //bit 1        1 : DRAM enter sleep state. self refresh state.
    //bit 0        1 : dram enter cfg state.
 #define P_DMC_DRAM_STAT1                           (volatile uint32_t *)0xfe036658
-  //bit 11:8  freq_st.
-    //4'h0 : IDLE
-    //4'h1 : FREQ_CHECK_VPU
-    //4'h2 : FREQ_WAITING_STOP
-    //4'h3 : FREQ_DRAM_CFG.  waiting DMC/software to send special MRW/MPC command to configure DDR SDRAM either before Freq change or after freq change.
-    //4'h4 : FREQ_SELF_REFR_ST.
-    //4'h5 : FREQ_SET_DFI_FREQ.
-    //4'h6 : FREQ_DFI_INIT_START_HIGH.
-    //4'h7 : FREQ_CHANGE PLL_ST.
-    //4'h8 : FREQ_UPDATA REG.
-    //4'h9 : FREQ_DFI_INIT_START_LOW.
-    //4'ha : FREQ_WAITING_FINISH
-    //4'hb : FREQ_ZQCS
-    //4'hc : FREQ_ZQ_LATCH
-    //4'hd : FREQ_PVT
-  //bit 7:5   train_st
-  //bit 4:0   dram_phy_st
+  //bit 12:8   sleep_st
+  //bit  7:5   train_st
+  //bit  4:0   dram_phy_st
 #define P_DMC_PHY_RETRAINING_CTRL                  (volatile uint32_t *)0xfe03665c
   //bit 31 :  phy_retraining enable.
   //bit 30 :  check  vpu sleep_en.
-  //bit 25:24 : retraining dfi_freq[4:3], the [2:0] bit still use the dfi_freq bits to keep the frequency.
-  //bit 23:0: retraining period unit : 100ns.
-#define P_DMC_OSC_CTRL                             (volatile uint32_t *)0xfe036660
-//bit 31  osc_en. for LPDDR4 enable MPC DQS2DQ OSC counter .
-//bit 30:16.  siu_osc_run.  LPDDR4 DQS interval timer run time in n_clk unit.
-//bit 15:0 osc counter value in tREFI time. how long to trigger one DQS2DQ retrain.
-#define P_DMC_TEMP_CTRL                            (volatile uint32_t *)0xfe036664
-//bit 31  mr temp read control.
-//bit 23:0 counter value in t100NS.
-#define P_DMC_TEMP_CTRL1                           (volatile uint32_t *)0xfe036668
-//bit 7:0  mr index.
+  //bit 29 :  retrain_only 1: use full 28:24 as retrain dfi_freq value 0: use only 28:27 + original dfi_freq2:0 as the retrain dfi_freq.
+  //bit 28:24 : retraining dfi_freq[4:3], the [2:0] bit still use the dfi_freq bits to keep the frequency.
+  //bit 23:    retrain cke mode enable use for LPDDR4 mode. before send dfi_init_start request to DDR_PHY,
+               //1: put LPDDR4 SDRAM into self_refresh + power down mode. 0: put LPDDR4 SDRAM in self-refresh  mode.
+  //bit 22:16:  reserved
+  //bit 15:0: retraining period unit : one refresh period.
+#define P_DMC_DFI_ERR_STAT                         (volatile uint32_t *)0xfe036660
+ //not used
+ //LPDDR4 PHY DFI error information.
+ //bit 31:20. not used.
+ //bit 9.    ddr0_dfi_error
+ //bit 8:5   ddr0_dfi_error_info.
+ //bit 4.    ddr1_dfi_error.
+ //bit 3:0.  ddr1_dfi_error_info.
+#define P_DMC_LP2_TIMER                            (volatile uint32_t *)0xfe036668
+//bit 15:0.   timer setting to measure how long the chip is entered LP2 mode.
+//this timer is 40bits counter with DMC PCLK.
+//we use the high 16bits to compare this register. if the counter is large than this number,  that means  the PHY need addition 10us after wakeup the PHY and before exit self_refresh mode.
 #define P_DMC_DRAM_COMPLETE_WAIT                   (volatile uint32_t *)0xfe03666c
  //read only how long to waiting for DFI_INIT_COMPLETE become high after DFI_INIT_START triggered.
-#define P_DMC_LP2_TIMER                            (volatile uint32_t *)0xfe036670
-//Not used.
-#define P_DMC_DRAM_DFI_SWAP_0                      (volatile uint32_t *)0xfe036680
-#define P_DMC_DRAM_DFI_SWAP_1                      (volatile uint32_t *)0xfe036684
-#define P_DMC_DRAM_DFI_SWAP_2                      (volatile uint32_t *)0xfe036688
-#define P_DMC_DRAM_DFI_SWAP_3                      (volatile uint32_t *)0xfe03668c
-#define P_DMC_DRAM_DFI_SWAP_4                      (volatile uint32_t *)0xfe036690
-#define P_DMC_DRAM_TOSCPD                          (volatile uint32_t *)0xfe0366c0
-#define P_DMC_DRAM_TCKMAX                          (volatile uint32_t *)0xfe0366c4
-#define P_DMC_DRAM_TPPD                            (volatile uint32_t *)0xfe0366c8
- //7:0  tclk(max).    100ns in LPDDR4.
-#define P_DMC_NFQ_TOSCPD                           (volatile uint32_t *)0xfe036700
-#define P_DMC_NFQ_TCKMAX                           (volatile uint32_t *)0xfe036704
-#define P_DMC_NFQ_TPPD                             (volatile uint32_t *)0xfe036708
+#define P_DMC_OSC_CTRL                             (volatile uint32_t *)0xfe036670
+//bit 31  osc_en. for LPDDR4 enable MPC DQS2DQ OSC counter .
+//bit 30:16.  siu_osc_run.  LPDDR4 DQS interval timer run time in n_clk unit.
+//bit 15:0 osc counter value in tREFI time. how long to trigger one DQS2DQ retraining.
+#define P_DMC_TEMP_CTRL                            (volatile uint32_t *)0xfe036674
+//bit 31  mr temp read control.
+//bit 15:0 counter value in t100NS.
+#define P_DMC_TEMP_CTRL1                           (volatile uint32_t *)0xfe036678
+//bit 7:0  mr index.
+#define P_DMC_DRAM_DFI_SWAP_0                      (volatile uint32_t *)0xfe036700
+#define P_DMC_DRAM_DFI_SWAP_1                      (volatile uint32_t *)0xfe036704
+#define P_DMC_DRAM_DFI_SWAP_2                      (volatile uint32_t *)0xfe036708
+#define P_DMC_DRAM_DFI_SWAP_3                      (volatile uint32_t *)0xfe03670c
+#define P_DMC_DRAM_DFI_SWAP_4                      (volatile uint32_t *)0xfe036710
 #define P_DMC_DRAM_CMD                             (volatile uint32_t *)0xfe036740
  //bit 31. cmd done.  write 0 to clean.
- //bit 30. data done. write 0 to clean.
+ //bit 30. cmd r/w channel select. 1:chan1  0:chan0
+ //bit 8 . dram command is for data 16 bits.
+ //bit 7:6 2'b01: user command with data read.
+         //2'b10: user command with data write.
+         //2'b00: user command without data.
  //bit 5.  user defined command.
- //bit 4.  LPDDR4 MPC write data command( MPC WR FIFO).
- //bit 3.  LPDDR4 MPC read data command (MPC RD Calibration and RD FIFO).
+ //bit 4.  LPDDR4 MPC write data command( MPC WR FIFO). not support in LPDDR5.
+ //bit 3.  LPDDR4 MPC read data command (MPC RD Calibration and RD FIFO). not support in LPDDR5
  //bit 2.  LPDDR4 MPC-1 command ( NOP,  Start DQS interval ....)
  //bit 1.  mrr comand.
  //bit 0.  mrw command.
 #define P_DMC_DRAM_CMD_CODE                        (volatile uint32_t *)0xfe036744
- //bit 31:28  user command case: = {act_n, ras_n, cas_n, we_n}
- //bit 27:26. 128bits data cycles . 0: 1 clock cycles;  1: 2  clock cycles; 2: 3 clock cycles; 3:4 clock cycles.
- //           LPDDR4 : 4 clock cycles;
- //           DDR3/4/LPDDR3  : 2 clock cycles.
- //bit 25     MRW/MRR/MPC command rank 1 select.  1: select.  0: not select.
- //bit 24.    MRW/MRR/MPC command rank 0 select.  1: select.  0: not select.
- //bit 23:16  MR addr.  DDR4 case :  18:16 ba[2:0].    20:19 BG[1:0].
- //bit 15:0   opcode.
+  //bit 27:26. 128bits data cycles . 0: 1 clock cycles;  1: 2  clock cycles; 2: 3 clock cycles; 3:4 clock cycles.
+        //LPDDR4 : 2 clock cycles;
+        //LPDDR5 : 2 clock cycles for MRR command.  4 cycles for RFF command.
 #define P_DMC_DRAM_CMD_TIME                        (volatile uint32_t *)0xfe036748
 //bit 31:16  PRE  CMD timer. //delay how many cycle to start the command.
 //bit 15:0   POST CMD timer  //delay how many cycle after the command execute.
@@ -1782,10 +1208,11 @@
   //MPC RD FIFO command DBI read back data
   //bit 31:16. the Forth cycle.
   //bit 15:0.  the third cycle.
-#define P_DMC_DRAM_MRR0                            (volatile uint32_t *)0xfe03675c
- //7:0  the 1st MR read result for snoop
-#define P_DMC_DRAM_MRR1                            (volatile uint32_t *)0xfe036760
- //7:0  the 2nd MR read result for snoop
+#define P_DMC_DRAM_RSTS                            (volatile uint32_t *)0xfe03675c
+    //bit3 data cnt 3 for dfi phy read latency error
+    //bit2 data cnt 2 for dfi phy read latency error
+    //bit1 data cnt 1 for dfi phy read latency error
+    //bit0 data cnt 0 for dfi phy read latency error
 //WD0~16 and RD0~16 can be used as MRW command as Frequency change .
 //WD0~16 is for Freq1 DRAM MR setting, it would send to DRAM right before FREQ0-> FREQ1
 //RD0_16 is for Freq0 DRAM MR setting. it would send to DRAM right before FREQ1-> FREQ0.
@@ -1837,16 +1264,147 @@
 #define P_DMC_DRAM_RD13                            (volatile uint32_t *)0xfe0367f4
 #define P_DMC_DRAM_RD14                            (volatile uint32_t *)0xfe0367f8
 #define P_DMC_DRAM_RD15                            (volatile uint32_t *)0xfe0367fc
-//
-// Closing file:  ../mmc_lp4/dmc/rtl/dmc_siu_reg.vh
-//
-//
-// Reading file:  ../mmc_lp4/dmc/rtl/dmc_sticky_reg.vh
-//
-//`define DMC_STICKY_REG_BASE   32'hfe036800
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe036800
-// -----------------------------------------------
+//chan1 control register.
+#define P_DMC_DRAM1_SCFG                           (volatile uint32_t *)0xfe036a00
+  // bit 2:0 only one bit can be high at same time.
+  // bit 2  1 : to ask PCTL enter ACCESS STATE.  0 : deassert the request.
+  // bit 1  1 : to ask PCTL enter SELF REFRESH STATE.  0 : deassert the request.
+  // bit 0  1 : to ask PCTL enter STOP/CONFIG STATE .  0 : deassert the request.
+#define P_DMC_DRAM1_STAT                           (volatile uint32_t *)0xfe036a04
+  //bit 31     rd latency error. 1: means after dfiphytrdlat cycles, the read data still not back.
+  //bit 30:29.     not used.
+  //bit 28:24   dram_sr_state
+  //bit 23:20   stop_st
+  //bit 19:16  freq_st.
+    //4'h0 : IDLE
+    //4'h1 : FREQ_CHECK_VPU
+    //4'h2 : FREQ_WAITING_STOP
+    //4'h3 : FREQ_DRAM_CFG.  waiting DMC/software to send special MRW/MPC command to configure DDR SDRAM either before Freq change or after freq change.
+    //4'h4 : FREQ_SELF_REFR_ST.
+    //4'h5 : FREQ_SET_DFI_FREQ.
+    //4'h6 : FREQ_DFI_INIT_START_HIGH.
+    //4'h7 : FREQ_CHANGE PLL_ST.
+    //4'h8 : FREQ_UPDATA REG.
+    //4'h9 : FREQ_DFI_INIT_START_LOW.
+    //4'ha : FREQ_WAITING_FINISH
+    //4'hb : FREQ_ZQCS
+    //4'hc : FREQ_ZQ_LATCH
+    //4'hd : FREQ_PVT
+  //bit 15:12  ACCESS STATUS 0 :  ACCESS is in normal working mode.
+                          //1 :   ACCESS sending precharge command.
+                          //2 :   ACCESS sending AUTO REFRESH command.
+                          //3 :   ACCESS sending DIF_CTRLUPD_REQ command.
+                          //4 :   ACCESS sending ZQCS command to DDR DRAM(ZQCAL for LPDDR4).
+                          //5 :   ACCESS sending ZQLATCH command to  LPDDR4 only.
+  //bit 11:8   APD STATUS:   0 :   APD_IDLE
+                          //1 :    APD sending PRECHARGE command
+                          //2 :    APD sending CKE low command
+                          //3 :    APD sending DISABLE DRAM CLOCK command
+                          //4 :    APD sending DFI_LP_CTRL_REQ
+                          //5 :    APD in Auto Power down mode.
+                          //6 :    APD deassert DFI_LP_CTRL_REQ
+                          //7 :    APD sending enable DRAM CLOCK command
+                          //8 :    APD sending out CKE high command.
+  //bit 7:4: DRAM_STATUS:  0  :    DRAM IDLE
+                         //1  :    DRAM_STOP/DRAM_CFG
+                         //2  :    DRAM_ACCESS
+                         //3  :    DRAM_SLEEP
+                         //4  :    DRAM APD(AUTO POWER DOWN).
+                         //5  :    IDLE -> STOP/CONFIG
+                         //6  :    STOP -> SLEEP
+                         //7  :    STOP -> ACCESS
+                         //8  :    ACCESS -> SLEEP.
+                         //9  :    ACCESS -> STOP
+                         //A  :    ACCESS -> APD
+                         //B  :    SLEEP -> STOP
+                         //C  :    SLEEP -> ACCESS
+                         //D  :    APD -> ACCESS
+   //bit 3        reserved.
+   //bit 2        1 : DRAM enter normal working state.
+   //bit 1        1 : DRAM enter sleep state. self refresh state.
+   //bit 0        1 : dram enter cfg state.
+#define P_DMC_DRAM1_STAT1                          (volatile uint32_t *)0xfe036a08
+  //bit 12:8   sleep_st
+  //bit  7:5   train_st
+  //bit  4:0   dram_phy_st
+#define P_DMC_DRAM1_DFI_CTRL                       (volatile uint32_t *)0xfe036a24
+//not used
+  //bit 31  siu_dfi_lat err generation enable.  1: if dfi read latency violation, generate data error. 0 : disable.
+  //bit 19: dfi_init_complete wait enable.  1: after dfi_init_complete, wait additional EXSR time for new command. 0: phy will handle all the timing    after dfi_init_complete DMC can do everything they want.
+  //bit 18:  dfi_rddata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
+  //bit 17:  dfi_wrdata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
+#define P_DMC_DRAM1_DFIINITCFG                     (volatile uint32_t *)0xfe036a28
+  //bit 31.     dfi_init_complete status. read only.
+  //bit 19:18.  Frequency set 1 dfi_freq_fsp value.
+  //bit 17:16.  Frequency set 0 dfi_freq_fsp value.
+  //bit 15:14.  Frequency set 1 dfi_freq_ratio value.
+  //bit 12:8    Frequency set 1 dfi_freq value.
+  //bit 7:6     Frequency set 0 dfi_freq_ratio value.
+  //bit 5:1     Frequency set 0 dfi_freq value.
+  //bit 0.      dfi_init_start value  can be use manually config dfi_init_start signal.
+#define P_DMC_DRAM1_APD_CTRL                       (volatile uint32_t *)0xfe036a30
+ //bit 20:16  DFI_LP_WAKEUP value in APD DFI_LP_REQ mode
+ //bit 12    1: exit power down slow mode(waiting PLL LOCK).  0 : fast mode.
+ //bit 11    enable DFI_LP_REQ when enter Auto power down mode.
+ //bit 10    disable DFI_clk_disable when enter auto power down mode.
+ //bit 9:0    0  disable auto power down mode.
+            //non zero value to enable auto power down when DMC is in idle state for this number of clock cycles.
+#define P_DMC_DRAM1_ASR_CTRL                       (volatile uint32_t *)0xfe036a34
+  //bit 31. enable RETRAIN PHY after auto selfrefresh exit. for AM_PHY only.
+  //bit 30. in DDR3/4 mode, send ZQCL command after exit from auto self refresh mode.
+  //bit 29. enable PHY clock in LP2 mode.  1: enable. 0 : disable.
+  //bit [28:24] DFI_LP_WAKEUP value in self refresh DFI_LP_REQ mode.
+  //bit 23 : send REFRESH command after exit from auto self refersh mode(ASR).
+  //bit 22 : send REFERSH command before enter to Auto self refresh mode(ASR).
+  //bit 21 : send ZQCS command after exit from Auto self refresh mode(ASR).
+  //bit 20 : send dfi_ctrl_upd after exit from ASR mode
+  //bit 19 : send power down command when enter ASR mode. //for LPDDR4 only.
+  //bit 18 : set the PHY enter LP2 mode after enter ASR mode. //not support for P1 LP5PHY
+  //bit 17 : send DFI_LP_REQ  after enter ASR mode.
+  //bit 16 : set DFI_CLK_DISABLE after enter ASR mode.
+  //bit 15:0.   0 disable auto ASR mode.
+             // Non-zero value enable ASR mode. when DMC is in idle state for this number of clock cycles, the DMC will enter ASR mode.
+#define P_DMC_DRAM1_REFR_CTRL                      (volatile uint32_t *)0xfe036a38
+  //bit 28  enable send phy pvt request after PHY ZQ calibration request.
+  //bit 27:24 refresh post. not used.
+  //bit 23  enable Per Bank refresh mode.
+  //bit 22  dmc to control DFI_CTRLUPD_REQ  with zq generation together.
+  //bit 21  dmc to control PHY ZQ generation enable.
+  //bit 20  dmc to control zqlat(in LPDDR4 mode) generation enable.
+  //bit 19  dmc to control zqcs1 generation enable.
+  //bit 18  dmc to control zqcs0 generation enable.
+  //bit 17:8 auto refresh request pending cnt if there's page hit request.
+  //bit 7  not used.
+  //bit 6  Not used.
+  //bit 5  enable dmc send ZQCS command .
+  //bit 4. enable dmc send DFI_CTRUPD_REQ.
+  //bit 3:1. how many refresh command send for one period. = this number + 1
+  //bit 0.  enable dmc send auto refresh command.
+#define P_DMC_DRAM1_OSC_CTRL                       (volatile uint32_t *)0xfe036a3c
+//bit 31  osc_en. for LPDDR4 enable MPC DQS2DQ OSC counter .
+//bit 30:16.  siu_osc_run.  LPDDR4 DQS interval timer run time in n_clk unit.
+//bit 15:0 osc counter value in tREFI time. how long to trigger one DQS2DQ retraining.
+#define P_DMC_DRAM1_TEMP_CTRL                      (volatile uint32_t *)0xfe036a40
+//bit 31  mr temp read control.
+//bit 15:0 counter value in t100NS.
+#define P_DMC_DRAM1_TEMP_CTRL1                     (volatile uint32_t *)0xfe036a44
+//bit 7:0  mr index.
+#define P_DMC_DRAM1_DFI_SWAP_0                     (volatile uint32_t *)0xfe036a60
+#define P_DMC_DRAM1_DFI_SWAP_1                     (volatile uint32_t *)0xfe036a64
+#define P_DMC_DRAM1_DFI_SWAP_2                     (volatile uint32_t *)0xfe036a68
+#define P_DMC_DRAM1_DFI_SWAP_3                     (volatile uint32_t *)0xfe036a6c
+#define P_DMC_DRAM1_DFI_SWAP_4                     (volatile uint32_t *)0xfe036a70
+#define P_DMC_DRAM1_COMPLETE_WAIT                  (volatile uint32_t *)0xfe036a74
+ //read only how long to waiting for DFI_INIT_COMPLETE become high after DFI_INIT_START triggered.
+#define P_DMC_DRAM_MRR0                            (volatile uint32_t *)0xfe036a80
+ //15:0  the 1st MR read result for snoop
+#define P_DMC_DRAM_MRR1                            (volatile uint32_t *)0xfe036a84
+ //15:0  the 2nd MR read result for snoop
+#define P_DMC_DRAM1_MRR0                           (volatile uint32_t *)0xfe036a88
+ //15:0  the 2nd MR read result for rfc rate
+#define P_DMC_DRAM1_MRR1                           (volatile uint32_t *)0xfe036a8c
+ //15:0  the 2nd MR read result for rfc rate
+//STICKY registers.
 //those register is for software save some temporary value. and because it's in RAM. it won't lose if DMC get reseted.
 #define P_DMC_STICKY_0                             (volatile uint32_t *)0xfe036800
 #define P_DMC_STICKY_1                             (volatile uint32_t *)0xfe036804
@@ -1912,10 +1470,562 @@
 #define P_DMC_STICKY_61                            (volatile uint32_t *)0xfe0368f4
 #define P_DMC_STICKY_62                            (volatile uint32_t *)0xfe0368f8
 #define P_DMC_STICKY_63                            (volatile uint32_t *)0xfe0368fc
+//DMC Security control registers.
+//DMC use 15bits ARUSER/AWUSER bits to identify AXI input ports master ID and security requirement and the necessary subID for bandwidth monitor protection functions. .
+//bit 7:0.   for upto 256 Master-ID.
+//bit  14:8.  for each Master-ID, the master can use those bits to define particular security requirements or bandwidth and protection function special requirements.
+//region0(RANGE0) related register.
+#define P_DMC_SEC_RANGE0_STA                       (volatile uint32_t *)0xfe037000
+  //bit 31:20. not used.
+  //bit 19:0.   region start address AXI address [31:12] unit 4Kbyte.
+#define P_DMC_SEC_RANGE0_EDA                       (volatile uint32_t *)0xfe037004
+  //bit 31:20. not used.
+  //bit 19:0.   region end address.for AXI address[33:12]. unit 4Kbyte.
+#define P_DMC_SEC_RANGE0_CTRL                      (volatile uint32_t *)0xfe037008
+  //bit 7:5.range0_security_level
+  //bit 4.  range0_prot_en. range 0 protect monitor function control
+  //bit 3.  range0_des_en. range 0 data scrambling enable
+  //bit 2.  range0 lock.
+  //bit 1.  range0 key select
+  //bit 0.  range0 enable
+#define P_DMC_SEC_RANGE0_RID_CTRL0                 (volatile uint32_t *)0xfe03700c
+  //range_rd_sid_en[31:0];
+#define P_DMC_SEC_RANGE0_RID_CTRL1                 (volatile uint32_t *)0xfe037010
+  //range_rd_sid_en[63:32];
+#define P_DMC_SEC_RANGE0_RID_CTRL2                 (volatile uint32_t *)0xfe037014
+  //range_rd_sid_en[95:64];
+#define P_DMC_SEC_RANGE0_RID_CTRL3                 (volatile uint32_t *)0xfe037018
+  //not used
+#define P_DMC_SEC_RANGE0_WID_CTRL0                 (volatile uint32_t *)0xfe037020
+  //range_rd_sid_en[31:0];
+#define P_DMC_SEC_RANGE0_WID_CTRL1                 (volatile uint32_t *)0xfe037024
+  //range_rd_sid_en[63:32];
+#define P_DMC_SEC_RANGE0_WID_CTRL2                 (volatile uint32_t *)0xfe037028
+  //range_rd_sid_en[95:64];
+#define P_DMC_SEC_RANGE0_WID_CTRL3                 (volatile uint32_t *)0xfe03702c
+  //not used
+//region0(RANGE1) related register.
+#define P_DMC_SEC_RANGE1_STA                       (volatile uint32_t *)0xfe037040
+#define P_DMC_SEC_RANGE1_EDA                       (volatile uint32_t *)0xfe037044
+#define P_DMC_SEC_RANGE1_CTRL                      (volatile uint32_t *)0xfe037048
+#define P_DMC_SEC_RANGE1_RID_CTRL0                 (volatile uint32_t *)0xfe03704c
+#define P_DMC_SEC_RANGE1_RID_CTRL1                 (volatile uint32_t *)0xfe037050
+#define P_DMC_SEC_RANGE1_RID_CTRL2                 (volatile uint32_t *)0xfe037054
+#define P_DMC_SEC_RANGE1_RID_CTRL3                 (volatile uint32_t *)0xfe037058
+#define P_DMC_SEC_RANGE1_WID_CTRL0                 (volatile uint32_t *)0xfe037060
+#define P_DMC_SEC_RANGE1_WID_CTRL1                 (volatile uint32_t *)0xfe037064
+#define P_DMC_SEC_RANGE1_WID_CTRL2                 (volatile uint32_t *)0xfe037068
+#define P_DMC_SEC_RANGE1_WID_CTRL3                 (volatile uint32_t *)0xfe03706c
+//region2(RANGE2) related register.
+#define P_DMC_SEC_RANGE2_STA                       (volatile uint32_t *)0xfe037080
+#define P_DMC_SEC_RANGE2_EDA                       (volatile uint32_t *)0xfe037084
+#define P_DMC_SEC_RANGE2_CTRL                      (volatile uint32_t *)0xfe037088
+#define P_DMC_SEC_RANGE2_RID_CTRL0                 (volatile uint32_t *)0xfe03708c
+#define P_DMC_SEC_RANGE2_RID_CTRL1                 (volatile uint32_t *)0xfe037090
+#define P_DMC_SEC_RANGE2_RID_CTRL2                 (volatile uint32_t *)0xfe037094
+#define P_DMC_SEC_RANGE2_RID_CTRL3                 (volatile uint32_t *)0xfe037098
+#define P_DMC_SEC_RANGE2_WID_CTRL0                 (volatile uint32_t *)0xfe0370a0
+#define P_DMC_SEC_RANGE2_WID_CTRL1                 (volatile uint32_t *)0xfe0370a4
+#define P_DMC_SEC_RANGE2_WID_CTRL2                 (volatile uint32_t *)0xfe0370a8
+#define P_DMC_SEC_RANGE2_WID_CTRL3                 (volatile uint32_t *)0xfe0370ac
+//region3(RANGE3) related register.
+#define P_DMC_SEC_RANGE3_STA                       (volatile uint32_t *)0xfe0370c0
+#define P_DMC_SEC_RANGE3_EDA                       (volatile uint32_t *)0xfe0370c4
+#define P_DMC_SEC_RANGE3_CTRL                      (volatile uint32_t *)0xfe0370c8
+#define P_DMC_SEC_RANGE3_RID_CTRL0                 (volatile uint32_t *)0xfe0370cc
+#define P_DMC_SEC_RANGE3_RID_CTRL1                 (volatile uint32_t *)0xfe0370d0
+#define P_DMC_SEC_RANGE3_RID_CTRL2                 (volatile uint32_t *)0xfe0370d4
+#define P_DMC_SEC_RANGE3_RID_CTRL3                 (volatile uint32_t *)0xfe0370d8
+#define P_DMC_SEC_RANGE3_WID_CTRL0                 (volatile uint32_t *)0xfe0370e0
+#define P_DMC_SEC_RANGE3_WID_CTRL1                 (volatile uint32_t *)0xfe0370e4
+#define P_DMC_SEC_RANGE3_WID_CTRL2                 (volatile uint32_t *)0xfe0370e8
+#define P_DMC_SEC_RANGE3_WID_CTRL3                 (volatile uint32_t *)0xfe0370ec
+//region4(RANGE4) related register.
+#define P_DMC_SEC_RANGE4_STA                       (volatile uint32_t *)0xfe037100
+#define P_DMC_SEC_RANGE4_EDA                       (volatile uint32_t *)0xfe037104
+#define P_DMC_SEC_RANGE4_CTRL                      (volatile uint32_t *)0xfe037108
+#define P_DMC_SEC_RANGE4_RID_CTRL0                 (volatile uint32_t *)0xfe03710c
+#define P_DMC_SEC_RANGE4_RID_CTRL1                 (volatile uint32_t *)0xfe037110
+#define P_DMC_SEC_RANGE4_RID_CTRL2                 (volatile uint32_t *)0xfe037114
+#define P_DMC_SEC_RANGE4_RID_CTRL3                 (volatile uint32_t *)0xfe037118
+#define P_DMC_SEC_RANGE4_WID_CTRL0                 (volatile uint32_t *)0xfe037120
+#define P_DMC_SEC_RANGE4_WID_CTRL1                 (volatile uint32_t *)0xfe037124
+#define P_DMC_SEC_RANGE4_WID_CTRL2                 (volatile uint32_t *)0xfe037128
+#define P_DMC_SEC_RANGE4_WID_CTRL3                 (volatile uint32_t *)0xfe03712c
+//region5(RANGE5) related register.
+#define P_DMC_SEC_RANGE5_STA                       (volatile uint32_t *)0xfe037140
+#define P_DMC_SEC_RANGE5_EDA                       (volatile uint32_t *)0xfe037144
+#define P_DMC_SEC_RANGE5_CTRL                      (volatile uint32_t *)0xfe037148
+#define P_DMC_SEC_RANGE5_RID_CTRL0                 (volatile uint32_t *)0xfe03714c
+#define P_DMC_SEC_RANGE5_RID_CTRL1                 (volatile uint32_t *)0xfe037150
+#define P_DMC_SEC_RANGE5_RID_CTRL2                 (volatile uint32_t *)0xfe037154
+#define P_DMC_SEC_RANGE5_RID_CTRL3                 (volatile uint32_t *)0xfe037158
+#define P_DMC_SEC_RANGE5_WID_CTRL0                 (volatile uint32_t *)0xfe037160
+#define P_DMC_SEC_RANGE5_WID_CTRL1                 (volatile uint32_t *)0xfe037164
+#define P_DMC_SEC_RANGE5_WID_CTRL2                 (volatile uint32_t *)0xfe037168
+#define P_DMC_SEC_RANGE5_WID_CTRL3                 (volatile uint32_t *)0xfe03716c
+//region6(RANGE6) related register.
+#define P_DMC_SEC_RANGE6_STA                       (volatile uint32_t *)0xfe037180
+#define P_DMC_SEC_RANGE6_EDA                       (volatile uint32_t *)0xfe037184
+#define P_DMC_SEC_RANGE6_CTRL                      (volatile uint32_t *)0xfe037188
+#define P_DMC_SEC_RANGE6_RID_CTRL0                 (volatile uint32_t *)0xfe03718c
+#define P_DMC_SEC_RANGE6_RID_CTRL1                 (volatile uint32_t *)0xfe037190
+#define P_DMC_SEC_RANGE6_RID_CTRL2                 (volatile uint32_t *)0xfe037194
+#define P_DMC_SEC_RANGE6_RID_CTRL3                 (volatile uint32_t *)0xfe037198
+#define P_DMC_SEC_RANGE6_WID_CTRL0                 (volatile uint32_t *)0xfe0371a0
+#define P_DMC_SEC_RANGE6_WID_CTRL1                 (volatile uint32_t *)0xfe0371a4
+#define P_DMC_SEC_RANGE6_WID_CTRL2                 (volatile uint32_t *)0xfe0371a8
+#define P_DMC_SEC_RANGE6_WID_CTRL3                 (volatile uint32_t *)0xfe0371ac
+//region7(RANGE7) related register.
+#define P_DMC_SEC_RANGE7_STA                       (volatile uint32_t *)0xfe0371c0
+#define P_DMC_SEC_RANGE7_EDA                       (volatile uint32_t *)0xfe0371c4
+#define P_DMC_SEC_RANGE7_CTRL                      (volatile uint32_t *)0xfe0371c8
+#define P_DMC_SEC_RANGE7_RID_CTRL0                 (volatile uint32_t *)0xfe0371cc
+#define P_DMC_SEC_RANGE7_RID_CTRL1                 (volatile uint32_t *)0xfe0371d0
+#define P_DMC_SEC_RANGE7_RID_CTRL2                 (volatile uint32_t *)0xfe0371d4
+#define P_DMC_SEC_RANGE7_RID_CTRL3                 (volatile uint32_t *)0xfe0371d8
+#define P_DMC_SEC_RANGE7_WID_CTRL0                 (volatile uint32_t *)0xfe0371e0
+#define P_DMC_SEC_RANGE7_WID_CTRL1                 (volatile uint32_t *)0xfe0371e4
+#define P_DMC_SEC_RANGE7_WID_CTRL2                 (volatile uint32_t *)0xfe0371e8
+#define P_DMC_SEC_RANGE7_WID_CTRL3                 (volatile uint32_t *)0xfe0371ec
+//region8(RANGE8) related register.
+#define P_DMC_SEC_RANGE8_STA                       (volatile uint32_t *)0xfe037200
+#define P_DMC_SEC_RANGE8_EDA                       (volatile uint32_t *)0xfe037204
+#define P_DMC_SEC_RANGE8_CTRL                      (volatile uint32_t *)0xfe037208
+#define P_DMC_SEC_RANGE8_RID_CTRL0                 (volatile uint32_t *)0xfe03720c
+#define P_DMC_SEC_RANGE8_RID_CTRL1                 (volatile uint32_t *)0xfe037210
+#define P_DMC_SEC_RANGE8_RID_CTRL2                 (volatile uint32_t *)0xfe037214
+#define P_DMC_SEC_RANGE8_RID_CTRL3                 (volatile uint32_t *)0xfe037218
+#define P_DMC_SEC_RANGE8_WID_CTRL0                 (volatile uint32_t *)0xfe037220
+#define P_DMC_SEC_RANGE8_WID_CTRL1                 (volatile uint32_t *)0xfe037224
+#define P_DMC_SEC_RANGE8_WID_CTRL2                 (volatile uint32_t *)0xfe037228
+#define P_DMC_SEC_RANGE8_WID_CTRL3                 (volatile uint32_t *)0xfe03722c
+//region9(RANGE9) related register.
+#define P_DMC_SEC_RANGE9_STA                       (volatile uint32_t *)0xfe037240
+#define P_DMC_SEC_RANGE9_EDA                       (volatile uint32_t *)0xfe037244
+#define P_DMC_SEC_RANGE9_CTRL                      (volatile uint32_t *)0xfe037248
+#define P_DMC_SEC_RANGE9_RID_CTRL0                 (volatile uint32_t *)0xfe03724c
+#define P_DMC_SEC_RANGE9_RID_CTRL1                 (volatile uint32_t *)0xfe037250
+#define P_DMC_SEC_RANGE9_RID_CTRL2                 (volatile uint32_t *)0xfe037254
+#define P_DMC_SEC_RANGE9_RID_CTRL3                 (volatile uint32_t *)0xfe037258
+#define P_DMC_SEC_RANGE9_WID_CTRL0                 (volatile uint32_t *)0xfe037260
+#define P_DMC_SEC_RANGE9_WID_CTRL1                 (volatile uint32_t *)0xfe037264
+#define P_DMC_SEC_RANGE9_WID_CTRL2                 (volatile uint32_t *)0xfe037268
+#define P_DMC_SEC_RANGE9_WID_CTRL3                 (volatile uint32_t *)0xfe03726c
+//region10(RANGE10) related register.
+#define P_DMC_SEC_RANGE10_STA                      (volatile uint32_t *)0xfe037280
+#define P_DMC_SEC_RANGE10_EDA                      (volatile uint32_t *)0xfe037284
+#define P_DMC_SEC_RANGE10_CTRL                     (volatile uint32_t *)0xfe037288
+#define P_DMC_SEC_RANGE10_RID_CTRL0                (volatile uint32_t *)0xfe03728c
+#define P_DMC_SEC_RANGE10_RID_CTRL1                (volatile uint32_t *)0xfe037290
+#define P_DMC_SEC_RANGE10_RID_CTRL2                (volatile uint32_t *)0xfe037294
+#define P_DMC_SEC_RANGE10_RID_CTRL3                (volatile uint32_t *)0xfe037298
+#define P_DMC_SEC_RANGE10_WID_CTRL0                (volatile uint32_t *)0xfe0372a0
+#define P_DMC_SEC_RANGE10_WID_CTRL1                (volatile uint32_t *)0xfe0372a4
+#define P_DMC_SEC_RANGE10_WID_CTRL2                (volatile uint32_t *)0xfe0372a8
+#define P_DMC_SEC_RANGE10_WID_CTRL3                (volatile uint32_t *)0xfe0372ac
+//region9(RANGE11) related register.
+#define P_DMC_SEC_RANGE11_STA                      (volatile uint32_t *)0xfe0372c0
+#define P_DMC_SEC_RANGE11_EDA                      (volatile uint32_t *)0xfe0372c4
+#define P_DMC_SEC_RANGE11_CTRL                     (volatile uint32_t *)0xfe0372c8
+#define P_DMC_SEC_RANGE11_RID_CTRL0                (volatile uint32_t *)0xfe0372cc
+#define P_DMC_SEC_RANGE11_RID_CTRL1                (volatile uint32_t *)0xfe0372d0
+#define P_DMC_SEC_RANGE11_RID_CTRL2                (volatile uint32_t *)0xfe0372d4
+#define P_DMC_SEC_RANGE11_RID_CTRL3                (volatile uint32_t *)0xfe0372d8
+#define P_DMC_SEC_RANGE11_WID_CTRL0                (volatile uint32_t *)0xfe0372e0
+#define P_DMC_SEC_RANGE11_WID_CTRL1                (volatile uint32_t *)0xfe0372e4
+#define P_DMC_SEC_RANGE11_WID_CTRL2                (volatile uint32_t *)0xfe0372e8
+#define P_DMC_SEC_RANGE11_WID_CTRL3                (volatile uint32_t *)0xfe0372ec
+//region12(RANGE12) related register.
+#define P_DMC_SEC_RANGE12_STA                      (volatile uint32_t *)0xfe037300
+#define P_DMC_SEC_RANGE12_EDA                      (volatile uint32_t *)0xfe037304
+#define P_DMC_SEC_RANGE12_CTRL                     (volatile uint32_t *)0xfe037308
+#define P_DMC_SEC_RANGE12_RID_CTRL0                (volatile uint32_t *)0xfe03730c
+#define P_DMC_SEC_RANGE12_RID_CTRL1                (volatile uint32_t *)0xfe037310
+#define P_DMC_SEC_RANGE12_RID_CTRL2                (volatile uint32_t *)0xfe037314
+#define P_DMC_SEC_RANGE12_RID_CTRL3                (volatile uint32_t *)0xfe037318
+#define P_DMC_SEC_RANGE12_WID_CTRL0                (volatile uint32_t *)0xfe037320
+#define P_DMC_SEC_RANGE12_WID_CTRL1                (volatile uint32_t *)0xfe037324
+#define P_DMC_SEC_RANGE12_WID_CTRL2                (volatile uint32_t *)0xfe037328
+#define P_DMC_SEC_RANGE12_WID_CTRL3                (volatile uint32_t *)0xfe03732c
+//region13(RANGE13) related register.
+#define P_DMC_SEC_RANGE13_STA                      (volatile uint32_t *)0xfe037340
+#define P_DMC_SEC_RANGE13_EDA                      (volatile uint32_t *)0xfe037344
+#define P_DMC_SEC_RANGE13_CTRL                     (volatile uint32_t *)0xfe037348
+#define P_DMC_SEC_RANGE13_RID_CTRL0                (volatile uint32_t *)0xfe03734c
+#define P_DMC_SEC_RANGE13_RID_CTRL1                (volatile uint32_t *)0xfe037350
+#define P_DMC_SEC_RANGE13_RID_CTRL2                (volatile uint32_t *)0xfe037354
+#define P_DMC_SEC_RANGE13_RID_CTRL3                (volatile uint32_t *)0xfe037358
+#define P_DMC_SEC_RANGE13_WID_CTRL0                (volatile uint32_t *)0xfe037360
+#define P_DMC_SEC_RANGE13_WID_CTRL1                (volatile uint32_t *)0xfe037364
+#define P_DMC_SEC_RANGE13_WID_CTRL2                (volatile uint32_t *)0xfe037368
+#define P_DMC_SEC_RANGE13_WID_CTRL3                (volatile uint32_t *)0xfe03736c
+//region14(RANGE14) related register.
+#define P_DMC_SEC_RANGE14_STA                      (volatile uint32_t *)0xfe037380
+#define P_DMC_SEC_RANGE14_EDA                      (volatile uint32_t *)0xfe037384
+#define P_DMC_SEC_RANGE14_CTRL                     (volatile uint32_t *)0xfe037388
+#define P_DMC_SEC_RANGE14_RID_CTRL0                (volatile uint32_t *)0xfe03738c
+#define P_DMC_SEC_RANGE14_RID_CTRL1                (volatile uint32_t *)0xfe037390
+#define P_DMC_SEC_RANGE14_RID_CTRL2                (volatile uint32_t *)0xfe037394
+#define P_DMC_SEC_RANGE14_RID_CTRL3                (volatile uint32_t *)0xfe037398
+#define P_DMC_SEC_RANGE14_WID_CTRL0                (volatile uint32_t *)0xfe0373a0
+#define P_DMC_SEC_RANGE14_WID_CTRL1                (volatile uint32_t *)0xfe0373a4
+#define P_DMC_SEC_RANGE14_WID_CTRL2                (volatile uint32_t *)0xfe0373a8
+#define P_DMC_SEC_RANGE14_WID_CTRL3                (volatile uint32_t *)0xfe0373ac
+//region15(RANGE15) related register.
+#define P_DMC_SEC_RANGE15_STA                      (volatile uint32_t *)0xfe0373c0
+#define P_DMC_SEC_RANGE15_EDA                      (volatile uint32_t *)0xfe0373c4
+#define P_DMC_SEC_RANGE15_CTRL                     (volatile uint32_t *)0xfe0373c8
+#define P_DMC_SEC_RANGE15_RID_CTRL0                (volatile uint32_t *)0xfe0373cc
+#define P_DMC_SEC_RANGE15_RID_CTRL1                (volatile uint32_t *)0xfe0373d0
+#define P_DMC_SEC_RANGE15_RID_CTRL2                (volatile uint32_t *)0xfe0373d4
+#define P_DMC_SEC_RANGE15_RID_CTRL3                (volatile uint32_t *)0xfe0373d8
+#define P_DMC_SEC_RANGE15_WID_CTRL0                (volatile uint32_t *)0xfe0373e0
+#define P_DMC_SEC_RANGE15_WID_CTRL1                (volatile uint32_t *)0xfe0373e4
+#define P_DMC_SEC_RANGE15_WID_CTRL2                (volatile uint32_t *)0xfe0373e8
+#define P_DMC_SEC_RANGE15_WID_CTRL3                (volatile uint32_t *)0xfe0373ec
+#define P_DMC_DES_PADDING                          (volatile uint32_t *)0xfe037400
+  //bit 31:0 | 0 | des_pading | 32bits address padding used for DES dkey generation.
+#define P_DMC_DES_CTRL                             (volatile uint32_t *)0xfe037404
+ //bit 1 | 0 | GLOBAL_DES_EN |  1: Global DES enable. 0 : global DES disable.  default is 0.
+ //bit 0 | 0 | DES_lock  |  one time lock bit. after write 1 to this bit, DMC_DES_CTRL,DMC_DES_PADDING  can't be write and read.
+#define P_DMC_DES_CTRL1                            (volatile uint32_t *)0xfe037428
+ //bit 31:16 : reserved
+ //bit 15 : range15_des_en policy : 1 range15_des_en = range15_local_des_en && GLOBAL_DES_EN. 0 : range15_des_en = range15_local_des_en ||  GLOBAL_DES_EN.
+ //bit 14 : range14_des_en policy : 1 range14_des_en = range14_local_des_en && GLOBAL_DES_EN. 0 : range14_des_en = range14_local_des_en ||  GLOBAL_DES_EN.
+ //bit 13 : range13_des_en policy : 1 range13_des_en = range13_local_des_en && GLOBAL_DES_EN. 0 : range13_des_en = range13_local_des_en ||  GLOBAL_DES_EN.
+ //bit 12 : range12_des_en policy : 1 range12_des_en = range12_local_des_en && GLOBAL_DES_EN. 0 : range12_des_en = range12_local_des_en ||  GLOBAL_DES_EN.
+ //bit 11 : range11_des_en policy : 1 range11_des_en = range11_local_des_en && GLOBAL_DES_EN. 0 : range11_des_en = range11_local_des_en ||  GLOBAL_DES_EN.
+ //bit 10 : range10_des_en policy : 1 range11_des_en = range10_local_des_en && GLOBAL_DES_EN. 0 : range10_des_en = range10_local_des_en ||  GLOBAL_DES_EN.
+ //bit  9 : range9_des_en policy  : 1  range9_des_en =  range9_local_des_en && GLOBAL_DES_EN. 0 :  range9_des_en =  range9_local_des_en ||  GLOBAL_DES_EN.
+ //bit  8 : range8_des_en policy  : 1  range8_des_en =  range8_local_des_en && GLOBAL_DES_EN. 0 :  range8_des_en =  range8_local_des_en ||  GLOBAL_DES_EN.
+ //bit  7 : range7_des_en policy  : 1  range7_des_en =  range7_local_des_en && GLOBAL_DES_EN. 0 :  range7_des_en =  range7_local_des_en ||  GLOBAL_DES_EN.
+ //bit  6 : range6_des_en policy  : 1  range6_des_en =  range6_local_des_en && GLOBAL_DES_EN. 0 :  range6_des_en =  range6_local_des_en ||  GLOBAL_DES_EN.
+ //bit  5 : range5_des_en policy  : 1  range5_des_en =  range5_local_des_en && GLOBAL_DES_EN. 0 :  range5_des_en =  range5_local_des_en ||  GLOBAL_DES_EN.
+ //bit  4 : range4_des_en policy  : 1  range4_des_en =  range4_local_des_en && GLOBAL_DES_EN. 0 :  range4_des_en =  range4_local_des_en ||  GLOBAL_DES_EN.
+ //bit  3 : range3_des_en policy  : 1  range3_des_en =  range3_local_des_en && GLOBAL_DES_EN. 0 :  range3_des_en =  range3_local_des_en ||  GLOBAL_DES_EN.
+ //bit  2 : range2_des_en policy  : 1  range2_des_en =  range2_local_des_en && GLOBAL_DES_EN. 0 :  range2_des_en =  range2_local_des_en ||  GLOBAL_DES_EN.
+ //bit  1 : range1_des_en policy  : 1  range1_des_en =  range1_local_des_en && GLOBAL_DES_EN. 0 :  range1_des_en =  range1_local_des_en ||  GLOBAL_DES_EN.
+ //bit  0 : range0_des_en policy  : 1  range0_des_en =  range0_local_des_en && GLOBAL_DES_EN. 0 :  range0_des_en =  range0_local_des_en ||  GLOBAL_DES_EN.
+#define P_DMC_DES_KEY0_REG0                        (volatile uint32_t *)0xfe037408
+#define P_DMC_DES_KEY0_REG1                        (volatile uint32_t *)0xfe03740c
+#define P_DMC_DES_KEY0_REG2                        (volatile uint32_t *)0xfe037410
+#define P_DMC_DES_KEY0_REG3                        (volatile uint32_t *)0xfe037414
+#define P_DMC_DES_KEY1_REG0                        (volatile uint32_t *)0xfe037418
+#define P_DMC_DES_KEY1_REG1                        (volatile uint32_t *)0xfe03741c
+#define P_DMC_DES_KEY1_REG2                        (volatile uint32_t *)0xfe037420
+#define P_DMC_DES_KEY1_REG3                        (volatile uint32_t *)0xfe037424
+//FROM SC2, the APB bus provided Master ID through PUSER.
+//after ID_REMAP, this PUSE provided 8 master ID type.
+//they are:
+//  8'b0000_0001 : TEE
+//  8'h0000_0010 : REE
+//  8'h0000_0100 : JTAG
+//  8'h0000_1000 : AOCPU
+//  8'h0001_0000 : DSPA
+//  8'h0010_0000 : DSPB
+//  no others.
+//FROM SC2, the APB bus provided Master ID through PUSER signals.
+//there's total 8 master IDs could access DMC non-secure registers.
+//we assign 1 control bit for each APB Master and each DMC non-secure register domains
+//and we added one lock bits to lock this setting can't be modified any more.
+#define P_DDR_APB_SEC_CTRL0                        (volatile uint32_t *)0xfe037440
+   // APB access  control for dmc REQUEST control register access control register.
+   // default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL1                        (volatile uint32_t *)0xfe037444
+   // APB access control for DMC DRAM timing parameter and DFI interface registers.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL2                        (volatile uint32_t *)0xfe037448
+   // APB access control for DMC PLL clock frequency control register.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL3                        (volatile uint32_t *)0xfe03744c
+   // APB access control for DMC sticky control register.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL4                        (volatile uint32_t *)0xfe037450
+   // APB access control for DMC test control register.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL5                        (volatile uint32_t *)0xfe037454
+   // APB access control for DMC clk reset control register.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL6                        (volatile uint32_t *)0xfe037458
+   // APB access control for DMC protection register.
+   //default : 0x005
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL7                        (volatile uint32_t *)0xfe03745c
+   // APB access control for DMC normal register.
+   //default : 0x0ff
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+#define P_DDR_APB_SEC_CTRL8                        (volatile uint32_t *)0xfe037460
+   // APB access control for DDR PHY group 0 registers.
+   //default : 0x005
+   //bit 23:16. PHY PRODUCTION control register enable.
+   //bit 10  PHY IMEM control 1: force PHY IMEM output 0. 0: normal working mode.
+   //bit 9   PHY DMEM control 1: force PHY DMEM output 0. 0: normal working mode.
+   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
+   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
+//registers to check the security protection and watch point error information.
+#define P_DMC_SEC_STATUS                           (volatile uint32_t *)0xfe037468
+ //bit 31~2. not used.
+ //bit 6
+ //bit 5
+ //bit 4
+ //bit 3   1 : normal security register write violation.( APB bus WDATA not equal to the register value when APB write).  write 1 to clean this bit to 0.
+ //bit 2   sec_alert.   1 DMC security register alert function triggered. can't clean. only reset DMC can clear this bit.
+ //bit 1   write security violation.
+ //bit 0.  read security violation.
+#define P_DMC_VIO_ADDR0                            (volatile uint32_t *)0xfe03746c
+  //ddr0 write secure violation address[31:0].
+#define P_DMC_VIO_ADDR1                            (volatile uint32_t *)0xfe037470
+  //bit 31:12 . not used. always 0.
+  //11.    ddr0 write address secure check error.
+  //10     ddr0 write address overflow or not in this DDR channel.
+  //9:0   ddr0_write violation USER BIT.
+#define P_DMC_VIO_ADDR2                            (volatile uint32_t *)0xfe037474
+  //ddr0 read secure violation address[31:0]
+#define P_DMC_VIO_ADDR3                            (volatile uint32_t *)0xfe037478
+  //bit 31:12 not used.
+  //11.    ddr0 read address secure check error.
+  //10     ddr0 read address overflow or not in this DDR channel.
+  //9:0   ddr0_read violation USER BIT.
+//16Gbyte AXI address remap tp 4Gbyte DDR address.
+#define P_DMC_AXI2DDR0                             (volatile uint32_t *)0xfe037480
+  //for AXI address 0x0_2000_0000 ~ 0x0_3fff_ffff
+  //bit 31:8. not used.
+  //bit 7:  pure 16bit DDR SDRAM
+  //bit 6.  addr_top vio enable
+  //bit 5. rank_sel.  1 : rank1.  0 : rank0.
+  //bit 4  16bit in 32bit DDR SDRAM.
+  //bti 3:0. temp addr[31:28]
+#define P_DMC_AXI2DDR1                             (volatile uint32_t *)0xfe037484
+#define P_DMC_AXI2DDR2                             (volatile uint32_t *)0xfe037488
+#define P_DMC_AXI2DDR3                             (volatile uint32_t *)0xfe03748c
+#define P_DMC_AXI2DDR4                             (volatile uint32_t *)0xfe037490
+#define P_DMC_AXI2DDR5                             (volatile uint32_t *)0xfe037494
+#define P_DMC_AXI2DDR6                             (volatile uint32_t *)0xfe037498
+#define P_DMC_AXI2DDR7                             (volatile uint32_t *)0xfe03749c
+#define P_DMC_AXI2DDR8                             (volatile uint32_t *)0xfe0374a0
+#define P_DMC_AXI2DDR9                             (volatile uint32_t *)0xfe0374a4
+#define P_DMC_AXI2DDRA                             (volatile uint32_t *)0xfe0374a8
+#define P_DMC_AXI2DDRB                             (volatile uint32_t *)0xfe0374ac
+#define P_DMC_AXI2DDRC                             (volatile uint32_t *)0xfe0374b0
+#define P_DMC_AXI2DDRD                             (volatile uint32_t *)0xfe0374b4
+#define P_DMC_AXI2DDRE                             (volatile uint32_t *)0xfe0374b8
+#define P_DMC_AXI2DDRF                             (volatile uint32_t *)0xfe0374bc
+#define P_DMC_DDR_CTRL                             (volatile uint32_t *)0xfe037500
+  //bit 24:22   3'b000 : ddr3 mode.
+              //3'b001 : ddr4 mode.
+              //3'b011 : lpddr4 mode.
+   //bit 21.   rank1 enable bit. if 1,  rank1 used the address map is as bit 5:3 defined.
+   //bit 20    DDR4 BG1 enable bit.
+   //bit 18:   ddrphy_16b, DDR PHY DDR SDRAM data bits width.  1: 16bits. 0 : 32 bits.
+   //bit 16.   ddr_16b,   1: only use 16bits data in a 32bits DDR PHY data interface. 0 : normal data interface.
+   //bit 11:9:  strip pos
+   //bit 8: channel 1 enable
+  //bit 7:4 :  ddr1_size.  DDR rank1 size control.
+     //4'b0000 : DDR rank 1 is 128Mbyte.
+     //4'b0001 : DDR rank 1 is 256Mbyte.
+     //4'b0010 : DDR rank 1 is 512Mbyte.
+     //4'b0011 : DDR rank 1 is 1Gbyte.
+     //4'b0100 : DDR rank 1 is 2Gbyte.
+     //4'b1000 : DDR rank 1 is 192Mbyte.
+     //4'b1001 : DDR rank 1 is 384Mbyte.
+     //4'b1010 : DDR rank 1 is 768Mbyte.
+     //4'b1011 : DDR rank 1 is 1.5Gbyte.
+     //4'b1100 : DDR rank 1 is 3Gbyte.
+     //others :  reserved.
+  //bit 3:0  :  ddr0_size. DDR rank0 size control.
+     //4'b0000 : DDR rank 0 is 128Mbyte.
+     //4'b0001 : DDR rank 0 is 256Mbyte.
+     //4'b0010 : DDR rank 0 is 512Mbyte.
+     //4'b0011 : DDR rank 0 is 1Gbyte.
+     //4'b0100 : DDR rank 0 is 2Gbyte.
+     //4'b1000 : DDR rank 0 is 192Mbyte.
+     //4'b1001 : DDR rank 0 is 384Mbyte.
+     //4'b1010 : DDR rank 0 is 768Mbyte.
+     //4'b1011 : DDR rank 0 is 1.5Gbyte.
+     //4'b1100 : DDR rank 0 is 3Gbyte.
+     //others :  reserved.
+#define P_DMC_DDR_CTRL1                            (volatile uint32_t *)0xfe037504
+  //bit 8.  dmc_ba_hash_en,  1: enable bank[2:0] more disorder
+  //bit 7.  dmc_fake_chan_en, in DDR3/DDR4 case, enable this feature to reuse some write read buffer for DFI1 channel in LPDDR4 mode.
+  //bit 6.  strict security level control for DMA channel. 1: only sec level input == region sec level is allowed.  0:  sec_level input >= region sec level is allow to write.
+#define P_DMC_RANK0_ADDRMAP_0                      (volatile uint32_t *)0xfe037508
+  //29:25 ca8.
+  //24:20 ca7.
+  //19:15 ca6.
+  //14:10 ca5.
+  //9:5   ca4.
+  //4:0   ca3.
+#define P_DMC_RANK0_ADDRMAP_1                      (volatile uint32_t *)0xfe03750c
+  //29:25 ra2.
+  //24:20 ra1.
+  //19:15 ra0.
+  //14:10 ca11.
+  //9:5   ca10.
+  //4:0   ca9.
+#define P_DMC_RANK0_ADDRMAP_2                      (volatile uint32_t *)0xfe037510
+  //29:25 ra8.
+  //24:20 ra7.
+  //19:15 ra6.
+  //14:10 ra5.
+  //9:5   ra4.
+  //4:0   ra3.
+#define P_DMC_RANK0_ADDRMAP_3                      (volatile uint32_t *)0xfe037514
+  //29:25 ra14.
+  //24:20 ra13.
+  //19:15 ra12.
+  //14:10 ra11.
+  //9:5   ra10.
+  //4:0   ra9.
+#define P_DMC_RANK0_ADDRMAP_4                      (volatile uint32_t *)0xfe037518
+  //29:25 ra16
+  //24:20 bg1
+  //19:15 ba2.
+  //14:10 ba1.
+  //9:5   ba0.
+  //4:0   ra15.
+#define P_DMC_RANK1_ADDRMAP_0                      (volatile uint32_t *)0xfe037520
+#define P_DMC_RANK1_ADDRMAP_1                      (volatile uint32_t *)0xfe037524
+#define P_DMC_RANK1_ADDRMAP_2                      (volatile uint32_t *)0xfe037528
+#define P_DMC_RANK1_ADDRMAP_3                      (volatile uint32_t *)0xfe03752c
+#define P_DMC_RANK1_ADDRMAP_4                      (volatile uint32_t *)0xfe037530
+//DMC TEST.
+#define P_DMC_TEST_STA                             (volatile uint32_t *)0xfe037940
+  //test start address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
+  //                     for sha mode,      address must be in 64 bytes boundary. that mean the last 6 bits must be 0.
+#define P_DMC_TEST_EDA                             (volatile uint32_t *)0xfe037944
+  //test end address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
+  //                   for sha mode,       address must be in 64 bytes boundary. that mean the last 6bits must be 1.
+#define P_DMC_TEST_CTRL                            (volatile uint32_t *)0xfe037948
+   //bit 31.  enable test.
+   //bit 30.  when enable test, enable the write to DDR function.
+   //bit 29.  when enable test, enable the read from DDR function.
+   //bit 28.  when enable test,  enable the sha calculation function  must be same as read enable but without write function.
+   //bit 27.  enabe to compare data.  when do the read enable to enable the error comparison. suppose the read data should be same as the data in the write buffer.
+   //bit 26.  0: save sha result to test_sha_message registers.  1 : don't save.
+   //bit 25.  address generation type.  0: continuous increase the address in the range of test start address and test end address.
+   //                                   1: test module would pick the random address from test start address  and test end address.
+   //bit 24.  done type.      0 : use the DMC_TEST_NUM register as the counter of test numbers.
+   //                             for write if the write command number == the DMC_TEST_NUM, the write is done.
+   //                             for read if the read command number == the DMC TEST_num, the read id done. for one read command can be repeated repeat number times.
+   //                         1 : finshed at end address.
+   //bit 23.  wdata type.     1 : the first write is {WD3, WD2,WD1,WD0}, then the latter is the previous data plus a pattern.( { + WD7,  + WD6, + WD5, + WD4}).
+   //                         0 : the WDATA is the data in write register.
+   //bit 23.  1  compare the sha result with the test sha message registers. 0 : dont compare the result.
+   //bit 22:20.   read repeat times.  for non-sha function, we can define multi times of the read. the test module would repeat the same adddress repeat times.
+   //bit 19.     limit write.  0: no outstanding write request limitation.
+   //                          1: limit the outstanding write commands to the number of bits [15:8]
+   //bit 18.     limit read.   0. no outstanding read request limitation.
+   //                          1. limit the read outstanding request to the number of bits[7:0].
+   //bit 17:16.  sha mode for sha function enabled.  00 : not used.  01 : sha1. 2: sha2-256. 3: sha2_224. not used in GXL fixed to be  Sha 2.
+   //bit 15:8.   write outstanding commands limit.
+   //bit 7:0.    read  outstanding commands limit.
+#define P_DMC_TEST_NUM                             (volatile uint32_t *)0xfe03794c
+   // how many test command for the test if the DMC_TEST_CTRL bit 24 is 0.
+#define P_DMC_TEST_WDG                             (volatile uint32_t *)0xfe037950
+  //31:16.  write response watch dog.
+  //15:0.   read response  watch dog.
+#define P_DMC_TEST_COMP_MASK                       (volatile uint32_t *)0xfe037954
+  //32bits for DMC TEST COMPARE bit enable.
+  //1 : to MASK this bit.  0: compare this bit.
+#define P_DMC_TEST_WSTRB0                          (volatile uint32_t *)0xfe037958
+  //MPC WR FIFO command DM bit write data
+  //bit 31:16  the second cycle.
+  //bit 15:0   the first cycle.
+#define P_DMC_TEST_WSTRB1                          (volatile uint32_t *)0xfe03795c
+  //MPC WR FIFO command DM bit write data
+  //bit 31:16. the Forth cycle.
+  //bit 15:0.  the third cycle.
+#define P_DMC_TEST_WD0                             (volatile uint32_t *)0xfe037980
+   // write data 0 for write command. also for read back data comparison.
+#define P_DMC_TEST_WD1                             (volatile uint32_t *)0xfe037984
+   // write data 1 for write command. also for read back data comparison.
+#define P_DMC_TEST_WD2                             (volatile uint32_t *)0xfe037988
+#define P_DMC_TEST_WD3                             (volatile uint32_t *)0xfe03798c
+#define P_DMC_TEST_WD4                             (volatile uint32_t *)0xfe037990
+#define P_DMC_TEST_WD5                             (volatile uint32_t *)0xfe037994
+#define P_DMC_TEST_WD6                             (volatile uint32_t *)0xfe037998
+#define P_DMC_TEST_WD7                             (volatile uint32_t *)0xfe03799c
+#define P_DMC_TEST_WD8                             (volatile uint32_t *)0xfe0379a0
+#define P_DMC_TEST_WD9                             (volatile uint32_t *)0xfe0379a4
+#define P_DMC_TEST_WD10                            (volatile uint32_t *)0xfe0379a8
+#define P_DMC_TEST_WD11                            (volatile uint32_t *)0xfe0379ac
+#define P_DMC_TEST_WD12                            (volatile uint32_t *)0xfe0379b0
+#define P_DMC_TEST_WD13                            (volatile uint32_t *)0xfe0379b4
+#define P_DMC_TEST_WD14                            (volatile uint32_t *)0xfe0379b8
+#define P_DMC_TEST_WD15                            (volatile uint32_t *)0xfe0379bc
+   // write data 15 for write command. also for read back data comparison.
+#define P_DMC_TEST_RD0                             (volatile uint32_t *)0xfe0378c0
+   // the read back data 0.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD1                             (volatile uint32_t *)0xfe0378c4
+   // the read back data 1.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD2                             (volatile uint32_t *)0xfe0378c8
+   // the read back data 2.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD3                             (volatile uint32_t *)0xfe0378cc
+   // the read back data 3.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD4                             (volatile uint32_t *)0xfe0378d0
+   // the read back data 4.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD5                             (volatile uint32_t *)0xfe0378d4
+   // the read back data 5.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD6                             (volatile uint32_t *)0xfe0378d8
+   // the read back data 6.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD7                             (volatile uint32_t *)0xfe0378dc
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD8                             (volatile uint32_t *)0xfe0378e0
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD9                             (volatile uint32_t *)0xfe0378e4
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD10                            (volatile uint32_t *)0xfe0378e8
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD11                            (volatile uint32_t *)0xfe0378ec
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD12                            (volatile uint32_t *)0xfe0378f0
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD13                            (volatile uint32_t *)0xfe0378f4
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD14                            (volatile uint32_t *)0xfe0378f8
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_RD15                            (volatile uint32_t *)0xfe0378fc
+   // the read back data 7.  if error happens, it would capture the first error data.
+#define P_DMC_TEST_ERR_ADDR                        (volatile uint32_t *)0xfe037900
+  //read only. it capture the first error address.
+#define P_DMC_TEST_ERR_CNT                         (volatile uint32_t *)0xfe037904
+  //read only. how many data error happens in the whole test period.
+#define P_DMC_TEST_STS                             (volatile uint32_t *)0xfe037908
+  //read only.
+  //bit 31,   test done bit. write 1 to clean.
+  //bit 30,   indicate address err
+  //bit 29~7.  not used.
+  //bit 6.    read data resp error(caused by security or rd latency).
+  //bit 5.    test MRR/MPR rd latency error. write 1 clear
+  //bit 4,    sha done.     write 1 to clean.
+  //bit 3,    write done.   write 1 to clean.
+  //bit 2,    read done.    write 1 to clean
+  //bit 1,    write watchdog triggered.   write 1 to clean
+  //bit 0,    read watchdog triggered.    write 1 to clean.
+#define P_DMC_TEST_WRCMD_ADDR                      (volatile uint32_t *)0xfe03790c
+  //read only. the current write cmd address.
+#define P_DMC_TEST_RDCMD_ADDR                      (volatile uint32_t *)0xfe037910
+   //read only. the current read command address.
+#define P_DMC_TEST_RDRSP_ADDR                      (volatile uint32_t *)0xfe037914
+  //read only. the failed read response address(for error data )
 //
-// Closing file:  ../mmc_lp4/dmc/rtl/dmc_sticky_reg.vh
+// Closing file:  ../dmc_v26/rtl/dmc_reg.vh
 //
-//`include "../dmc_v26/rtl/dmc_reg.vh"
 //
 // Reading file:  dmc_clk_freq.vh
 //
@@ -2110,7 +2220,7 @@
 #define P_STARTUP_BOOT_SRC                         (volatile uint32_t *)0xfe02e020
 #define P_STARTUP_TEE_REQ_DFU                      (volatile uint32_t *)0xfe02e024
 #define P_STARTUP_BOOT_OVERRIDE                    (volatile uint32_t *)0xfe02e028
-#define P_STARTUP_COLD_BOOT_CNT                    (volatile uint32_t *)0xfe02e2f0
+#define P_STARTUP_COLD_BOOT_CNT                    (volatile uint32_t *)0xfe02e02c
 #define P_STARTUP_KEY_PRESERVE                     (volatile uint32_t *)0xfe02e030
 //========================================================================
 // MIPI_DSI_PHY
@@ -2120,7 +2230,7 @@
 // -----------------------------------------------
 //`define MIPI_DSI_PHY_START      8'h00
 //`define MIPI_DSI_PHY_END        16'hffff
-#define P_MIPI_DSI_PHY_CTRL                        (volatile uint32_t *)0xfe01c000
+//`define MIPI_DSI_PHY_CTRL       8'h00
   //bit 31.  soft reset for the phy. 1 = reset. 0 = dessert the reset.
   //bit 30.  clock lane soft reset.
   //bit 29.  data byte lane 3 soft reset.
@@ -2133,7 +2243,7 @@
   //bit 2.  force data byte lane 0 in receiver mode.
   //bit 1. write 1 to sync the txclkesc input. the internal logic have to use txclkesc to decide Txvalid and Txready.
   //bit 0.  enalbe the MIPI DSI PHY TxDDRClk.
-#define P_MIPI_DSI_CHAN_CTRL                       (volatile uint32_t *)0xfe01c004
+//`define MIPI_DSI_CHAN_CTRL      8'h01
   //bit 31.   clk lane tx_hs_en control selection.  1 = from register. 0 use clk lane state machine.
   //bit 30.   register bit for clock lane tx_hs_en.
   //bit 29.  clk lane tx_lp_en contrl selection.  1 = from register. 0 from clk lane state machine.
@@ -2163,47 +2273,47 @@
   //bit 2.  chan2 power down.
   //bit 1.  chan1 power down.
   //bit 0.  chan0 power down.
-#define P_MIPI_DSI_CHAN_STS                        (volatile uint32_t *)0xfe01c008
+//`define MIPI_DSI_CHAN_STS       8'h02
  //bit 24.  chan0 TX->RX turn can't accept the ACK command from slave watch dog triggered.  write 1 to clear the status bit.
  //bit 23.  chan0 RX ESC command watch dog triggered. write 1 to clean this bit.
  //bit
-#define P_MIPI_DSI_CLK_TIM                         (volatile uint32_t *)0xfe01c00c
+//`define MIPI_DSI_CLK_TIM        8'h03
   //bit 31:24. TCLK_PREPARE.
   //bit 23:16. TCLK_ZERO.
   //bit 15:8.  TCLK_POST.
   //bit 7:0.   TCLK_TRAIL.
-#define P_MIPI_DSI_HS_TIM                          (volatile uint32_t *)0xfe01c010
+//`define MIPI_DSI_HS_TIM         8'h04
   //bit 31:24. THS_PREPARE.
   //bit 23:16. THS_ZERO.
   //bit 15:8.  THS_TRAIL.
   //bit 7:0.   THS_EXIT.
-#define P_MIPI_DSI_LP_TIM                          (volatile uint32_t *)0xfe01c014
+//`define MIPI_DSI_LP_TIM         8'h05
   //bit 31:24. tTA_GET.
   //bit 23:16. tTA_GO.
   //bit 15:8.  tTA_SURE.
   //bit 7:0.   tLPX.
-#define P_MIPI_DSI_ANA_UP_TIM                      (volatile uint32_t *)0xfe01c018
+//`define MIPI_DSI_ANA_UP_TIM         8'h06
   //wait time to  MIPI DIS analog ready.
-#define P_MIPI_DSI_INIT_TIM                        (volatile uint32_t *)0xfe01c01c
+//`define MIPI_DSI_INIT_TIM       8'h07
   // TINIT.
-#define P_MIPI_DSI_WAKEUP_TIM                      (volatile uint32_t *)0xfe01c020
+//`define MIPI_DSI_WAKEUP_TIM     8'h08
   //TWAKEUP.
-#define P_MIPI_DSI_LPOK_TIM                        (volatile uint32_t *)0xfe01c024
+//`define MIPI_DSI_LPOK_TIM       8'h09
   //bit 31:0 when in RxULPS state, RX receiver is in sleep mode.
   //every MIPI_DSI_ULPS_CHECK period, the receiver would be enabled once, and waiting this timer period to get the stable input.
-#define P_MIPI_DSI_LP_WCHDOG                       (volatile uint32_t *)0xfe01c028
+//`define MIPI_DSI_LP_WCHDOG      8'h0a
   //bit 31:0 watch dog timer for MIPI DSI LP receive state.
-#define P_MIPI_DSI_ANA_CTRL                        (volatile uint32_t *)0xfe01c02c
+//`define MIPI_DSI_ANA_CTRL       8'h0b
   //bit 31:0 tMBIAS.  timer to wait for analog mBIAS voltage stable.
-#define P_MIPI_DSI_CLK_TIM1                        (volatile uint32_t *)0xfe01c030
+//`define MIPI_DSI_CLK_TIM1       8'h0c
   //bit 31:8  not used.
   //bit 7:0    tCLK_PRE
-#define P_MIPI_DSI_TURN_WCHDOG                     (volatile uint32_t *)0xfe01c034
+//`define MIPI_DSI_TURN_WCHDOG    8'h0d
  //bit 31:0 watch dog timer for lane 0 LP turn around waiting time.
-#define P_MIPI_DSI_ULPS_CHECK                      (volatile uint32_t *)0xfe01c038
+//`define MIPI_DSI_ULPS_CHECK     8'h0e
  //bit 31:0 when Lane0 in LP receive state,  if the another side sent Low power command,  using this timer to enable Tcheck the another size wakeup nor not.
-#define P_MIPI_DSI_TEST_CTRL0                      (volatile uint32_t *)0xfe01c03c
-#define P_MIPI_DSI_TEST_CTRL1                      (volatile uint32_t *)0xfe01c040
+//`define MIPI_DSI_TEST_CTRL0     8'h0f
+//`define MIPI_DSI_TEST_CTRL1     8'h10
 //========================================================================
 //  Temp sensor PLL
 //========================================================================
@@ -2233,23 +2343,23 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe022000
 // -----------------------------------------------
-#define P_TS_DDR_CFG_REG1                          (volatile uint32_t *)0xfe022004
-#define P_TS_DDR_CFG_REG2                          (volatile uint32_t *)0xfe022008
-#define P_TS_DDR_CFG_REG3                          (volatile uint32_t *)0xfe02200c
-#define P_TS_DDR_CFG_REG4                          (volatile uint32_t *)0xfe022010
-#define P_TS_DDR_CFG_REG5                          (volatile uint32_t *)0xfe022014
-#define P_TS_DDR_CFG_REG6                          (volatile uint32_t *)0xfe022018
-#define P_TS_DDR_CFG_REG7                          (volatile uint32_t *)0xfe02201c
-#define P_TS_DDR_STAT0                             (volatile uint32_t *)0xfe022040
-#define P_TS_DDR_STAT1                             (volatile uint32_t *)0xfe022044
-#define P_TS_DDR_STAT2                             (volatile uint32_t *)0xfe022048
-#define P_TS_DDR_STAT3                             (volatile uint32_t *)0xfe02204c
-#define P_TS_DDR_STAT4                             (volatile uint32_t *)0xfe022050
-#define P_TS_DDR_STAT5                             (volatile uint32_t *)0xfe022054
-#define P_TS_DDR_STAT6                             (volatile uint32_t *)0xfe022058
-#define P_TS_DDR_STAT7                             (volatile uint32_t *)0xfe02205c
-#define P_TS_DDR_STAT8                             (volatile uint32_t *)0xfe022060
-#define P_TS_DDR_STAT9                             (volatile uint32_t *)0xfe022064
+//`define TS_DDR_CFG_REG1                         8'h01
+//`define TS_DDR_CFG_REG2                         8'h02
+//`define TS_DDR_CFG_REG3                         8'h03
+//`define TS_DDR_CFG_REG4                         8'h04
+//`define TS_DDR_CFG_REG5                         8'h05
+//`define TS_DDR_CFG_REG6                         8'h06
+//`define TS_DDR_CFG_REG7                         8'h07
+//`define TS_DDR_STAT0                            8'h10
+//`define TS_DDR_STAT1                            8'h11
+//`define TS_DDR_STAT2                            8'h12
+//`define TS_DDR_STAT3                            8'h13
+//`define TS_DDR_STAT4                            8'h14
+//`define TS_DDR_STAT5                            8'h15
+//`define TS_DDR_STAT6                            8'h16
+//`define TS_DDR_STAT7                            8'h17
+//`define TS_DDR_STAT8                            8'h18
+//`define TS_DDR_STAT9                            8'h19
 //========================================================================
 //  Temp sensor GPU
 //========================================================================
@@ -2482,12 +2592,11 @@
 //`define PADCTRL_ANALOG_I              8'hC0
 //`define PADCTRL_ANALOG_EN             8'hC1
 // CC
-#define P_CC_GPIO_OE                               (volatile uint32_t *)0xfe004314
-#define P_CC_GPIO_DIN                              (volatile uint32_t *)0xfe004318
-#define P_CC_GPIO_RE                               (volatile uint32_t *)0xfe00431c
-#define P_CC_GPIO_DOUT                             (volatile uint32_t *)0xfe004320
-#define P_CC_GPIO_PROT                             (volatile uint32_t *)0xfe004324
-#define P_CC_GPIO_LOCK                             (volatile uint32_t *)0xfe004328
+#define P_CC_GPIO_I                                (volatile uint32_t *)0xfe004300
+#define P_CC_GPIO_O                                (volatile uint32_t *)0xfe004304
+#define P_CC_GPIO_OEN                              (volatile uint32_t *)0xfe004308
+#define P_CC_GPIO_PROT                             (volatile uint32_t *)0xfe00430c
+#define P_CC_GPIO_LOCK                             (volatile uint32_t *)0xfe004310
 #define P_PADCTRL_LOCK_PIN_MUX0                    (volatile uint32_t *)0xfe004340
 #define P_PADCTRL_LOCK_PIN_MUX1                    (volatile uint32_t *)0xfe004344
 #define P_PADCTRL_LOCK_PIN_MUX2                    (volatile uint32_t *)0xfe004348
@@ -2635,8 +2744,8 @@
 #define P_SYSCTRL_MSG_INDEX1_STICKY                (volatile uint32_t *)0xfe0103c4
 #define P_SYSCTRL_MSG_INDEX2_STICKY                (volatile uint32_t *)0xfe0103c8
 #define P_SYSCTRL_MSG_INDEX3_STICKY                (volatile uint32_t *)0xfe0103cc
-#define P_SYSCTRL_MALI_TEXFMTENABLE                (volatile uint32_t *)0xfe010400
-#define P_SYSCTRL_MALI_CONFIG                      (volatile uint32_t *)0xfe010404
+//`define SYSCTRL_MALI_TEXFMTENABLE               10'h100
+//`define SYSCTRL_MALI_CONFIG                     10'h101
 #define P_SYSCTRL_CPU_RAM_EMA_CTRL                 (volatile uint32_t *)0xfe010440
 //========================================================================
 //  CLK_CTRL
@@ -2672,14 +2781,14 @@
 #define P_CLKCTRL_AXI_CLK_CTRL0                    (volatile uint32_t *)0xfe00006c
 #define P_CLKCTRL_TST_CTRL0                        (volatile uint32_t *)0xfe000080
 #define P_CLKCTRL_TST_CTRL1                        (volatile uint32_t *)0xfe000084
-#define P_CLKCTRL_CECA_CTRL0                       (volatile uint32_t *)0xfe000088
-#define P_CLKCTRL_CECA_CTRL1                       (volatile uint32_t *)0xfe00008c
+//`define CLKCTRL_CECA_CTRL0              10'h22
+//`define CLKCTRL_CECA_CTRL1              10'h23
 #define P_CLKCTRL_CECB_CTRL0                       (volatile uint32_t *)0xfe000090
 #define P_CLKCTRL_CECB_CTRL1                       (volatile uint32_t *)0xfe000094
 #define P_CLKCTRL_SC_CLK_CTRL                      (volatile uint32_t *)0xfe000098
 //`define CLKCTRL_DSPA_CLK_CTRL0          10'h27
 //`define CLKCTRL_DSPB_CLK_CTRL0          10'h28
-#define P_CLKCTRL_RAMA_CLK_CTRL0                   (volatile uint32_t *)0xfe0000a4
+//`define CLKCTRL_RAMA_CLK_CTRL0          10'h29
 #define P_CLKCTRL_CLK12_24_CTRL                    (volatile uint32_t *)0xfe0000a8
 #define P_CLKCTRL_AXI_CLK_EN0                      (volatile uint32_t *)0xfe0000ac
 #define P_CLKCTRL_AXI_CLK_EN1                      (volatile uint32_t *)0xfe0000b0
@@ -2724,10 +2833,10 @@
 #define P_CLKCTRL_PWM_CLK_EF_CTRL                  (volatile uint32_t *)0xfe000188
 #define P_CLKCTRL_PWM_CLK_GH_CTRL                  (volatile uint32_t *)0xfe00018c
 #define P_CLKCTRL_PWM_CLK_IJ_CTRL                  (volatile uint32_t *)0xfe000190
-#define P_CLKCTRL_DEMOD_CLK_CTRL                   (volatile uint32_t *)0xfe000200
-#define P_CLKCTRL_DEMOD_CLK_CTRL1                  (volatile uint32_t *)0xfe000204
-#define P_CLKCTRL_DEMOD_32K_CTRL0                  (volatile uint32_t *)0xfe000208
-#define P_CLKCTRL_DEMOD_32K_CTRL1                  (volatile uint32_t *)0xfe00020c
+//`define CLKCTRL_DEMOD_CLK_CTRL          10'h80
+//`define CLKCTRL_DEMOD_CLK_CTRL1         10'h81
+//`define CLKCTRL_DEMOD_32K_CTRL0         10'h82
+//`define CLKCTRL_DEMOD_32K_CTRL1         10'h83
 #define P_CLKCTRL_TIMESTAMP_CTRL                   (volatile uint32_t *)0xfe000400
 #define P_CLKCTRL_TIMESTAMP_CTRL1                  (volatile uint32_t *)0xfe000404
 #define P_CLKCTRL_TIMESTAMP_CTRL2                  (volatile uint32_t *)0xfe00040c
@@ -2773,6 +2882,7 @@
 #define P_PWRCTRL_MEM_PD14                         (volatile uint32_t *)0xfe00c078
 #define P_PWRCTRL_MEM_PD15                         (volatile uint32_t *)0xfe00c07c
 #define P_PWRCTRL_DDRPHY_CTRL                      (volatile uint32_t *)0xfe00c080
+#define P_PWRCTRL_ETHMAC_CTRL                      (volatile uint32_t *)0xfe00c084
 #define P_PWRCTRL_CPU0_AUTO_OFF_CTRL0              (volatile uint32_t *)0xfe00c100
 #define P_PWRCTRL_CPU0_AUTO_OFF_CTRL1              (volatile uint32_t *)0xfe00c104
 #define P_PWRCTRL_CPU0_AUTO_OFF_CTRL2              (volatile uint32_t *)0xfe00c108
@@ -3694,7 +3804,7 @@
 #define P_CPUCTRL_SYS_CPU_STATUS5                  (volatile uint32_t *)0xfe00e294
 #define P_CPUCTRL_SYS_CPU_STATUS6                  (volatile uint32_t *)0xfe00e298
 #define P_CPUCTRL_SYS_CPU_STATUS7                  (volatile uint32_t *)0xfe00e29c
-#define P_SYS_CPU_MISC                             (volatile uint32_t *)0xfe00e2a0
+//`define SYS_CPU_MISC                        8'ha8
 //========================================================================
 //  SAR_ADC
 //========================================================================
@@ -3751,14 +3861,14 @@
 //`define ANACTRL_GP0PLL_CTRL5    8'h25
 //`define ANACTRL_GP0PLL_CTRL6    8'h26
 #define P_ANACTRL_GP0PLL_STS                       (volatile uint32_t *)0xfe00809c
-//`define ANACTRL_GP1PLL_CTRL0    8'h30
-//`define ANACTRL_GP1PLL_CTRL1    8'h31
+#define P_ANACTRL_GP1PLL_CTRL0                     (volatile uint32_t *)0xfe0080c0
+#define P_ANACTRL_GP1PLL_CTRL1                     (volatile uint32_t *)0xfe0080c4
 //`define ANACTRL_GP1PLL_CTRL2    8'h32
 //`define ANACTRL_GP1PLL_CTRL3    8'h33
 //`define ANACTRL_GP1PLL_CTRL4    8'h34
 //`define ANACTRL_GP1PLL_CTRL5    8'h35
 //`define ANACTRL_GP1PLL_CTRL6    8'h36
-//`define ANACTRL_GP1PLL_STS      8'h37
+#define P_ANACTRL_GP1PLL_STS                       (volatile uint32_t *)0xfe0080dc
 #define P_ANACTRL_HIFI0PLL_CTRL0                   (volatile uint32_t *)0xfe008100
 #define P_ANACTRL_HIFI0PLL_CTRL1                   (volatile uint32_t *)0xfe008104
 #define P_ANACTRL_HIFI0PLL_CTRL2                   (volatile uint32_t *)0xfe008108
@@ -4303,29 +4413,29 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe046000
 // -----------------------------------------------
-#define P_AIU_AIFIFO_CTRL                          (volatile uint32_t *)0xfe046000
-#define P_AIU_AIFIFO_STATUS                        (volatile uint32_t *)0xfe046004
-#define P_AIU_AIFIFO_GBIT                          (volatile uint32_t *)0xfe046008
-#define P_AIU_AIFIFO_CLB                           (volatile uint32_t *)0xfe04600c
-#define P_AIU_MEM_AIFIFO_START_PTR                 (volatile uint32_t *)0xfe046010
-#define P_AIU_MEM_AIFIFO_CURR_PTR                  (volatile uint32_t *)0xfe046014
-#define P_AIU_MEM_AIFIFO_END_PTR                   (volatile uint32_t *)0xfe046018
-#define P_AIU_MEM_AIFIFO_BYTES_AVAIL               (volatile uint32_t *)0xfe04601c
-#define P_AIU_MEM_AIFIFO_CONTROL                   (volatile uint32_t *)0xfe046020
-#define P_AIU_MEM_AIFIFO_MAN_WP                    (volatile uint32_t *)0xfe046024
-#define P_AIU_MEM_AIFIFO_MAN_RP                    (volatile uint32_t *)0xfe046028
-#define P_AIU_MEM_AIFIFO_LEVEL                     (volatile uint32_t *)0xfe04602c
-#define P_AIU_MEM_AIFIFO_BUF_CNTL                  (volatile uint32_t *)0xfe046030
-#define P_AIU_MEM_AIFIFO_BUF_WRAP_COUNT            (volatile uint32_t *)0xfe046034
-#define P_AIU_MEM_AIFIFO_MEM_CTL                   (volatile uint32_t *)0xfe04603c
-#define P_AIFIFO_TIME_STAMP_CNTL                   (volatile uint32_t *)0xfe046040
-#define P_AIFIFO_TIME_STAMP_SYNC_0                 (volatile uint32_t *)0xfe046044
-#define P_AIFIFO_TIME_STAMP_SYNC_1                 (volatile uint32_t *)0xfe046048
-#define P_AIFIFO_TIME_STAMP_0                      (volatile uint32_t *)0xfe04604c
-#define P_AIFIFO_TIME_STAMP_1                      (volatile uint32_t *)0xfe046050
-#define P_AIFIFO_TIME_STAMP_2                      (volatile uint32_t *)0xfe046054
-#define P_AIFIFO_TIME_STAMP_3                      (volatile uint32_t *)0xfe046058
-#define P_AIFIFO_TIME_STAMP_LENGTH                 (volatile uint32_t *)0xfe04605c
+//`define AIU_AIFIFO_CTRL                 8'h00
+//`define AIU_AIFIFO_STATUS               8'h01
+//`define AIU_AIFIFO_GBIT                 8'h02
+//`define AIU_AIFIFO_CLB                  8'h03
+//`define AIU_MEM_AIFIFO_START_PTR        8'h04
+//`define AIU_MEM_AIFIFO_CURR_PTR         8'h05
+//`define AIU_MEM_AIFIFO_END_PTR          8'h06
+//`define AIU_MEM_AIFIFO_BYTES_AVAIL      8'h07
+//`define AIU_MEM_AIFIFO_CONTROL          8'h08
+//`define AIU_MEM_AIFIFO_MAN_WP           8'h09 // Manual or Parser write pointer
+//`define AIU_MEM_AIFIFO_MAN_RP           8'h0a
+//`define AIU_MEM_AIFIFO_LEVEL            8'h0b // must be low first to shadow low/high 16-bit words
+//`define AIU_MEM_AIFIFO_BUF_CNTL         8'h0c
+//`define AIU_MEM_AIFIFO_BUF_WRAP_COUNT   8'h0d
+//`define AIU_MEM_AIFIFO_MEM_CTL          8'h0f
+//`define AIFIFO_TIME_STAMP_CNTL          8'h10
+//`define AIFIFO_TIME_STAMP_SYNC_0        8'h11
+//`define AIFIFO_TIME_STAMP_SYNC_1        8'h12
+//`define AIFIFO_TIME_STAMP_0             8'h13
+//`define AIFIFO_TIME_STAMP_1             8'h14
+//`define AIFIFO_TIME_STAMP_2             8'h15
+//`define AIFIFO_TIME_STAMP_3             8'h16
+//`define AIFIFO_TIME_STAMP_LENGTH        8'h17
 //========================================================================
 //  MSR_CLK - Registers
 //========================================================================
@@ -4345,7 +4455,7 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe056000
 // -----------------------------------------------
-#define P_SPI_FLASH_CMD                            (volatile uint32_t *)0xfe056000
+//`define SPI_FLASH_CMD                   8'h00
     // SPI_FLASH_READ    31
     // SPI_FLASH_WREN    30
     // SPI_FLASH_WRDI    29
@@ -4366,10 +4476,10 @@
     // SPI_FLASH_USR_DOUT   12
     // SPI_FLASH_USR_DUMMY_BLEN   10
     // SPI_FLASH_USR_CMD     0
-#define P_SPI_FLASH_ADDR                           (volatile uint32_t *)0xfe056004
+//`define SPI_FLASH_ADDR                  8'h01
     // SPI_FLASH_BYTES_LEN 24
     // SPI_FLASH_ADDR_START 0
-#define P_SPI_FLASH_CTRL                           (volatile uint32_t *)0xfe056008
+//`define SPI_FLASH_CTRL                  8'h02
     // SPI_ENABLE_AHB    17
     // SPI_SST_AAI       16
     // SPI_RES_RID       15
@@ -4379,46 +4489,46 @@
     // SPI_CLKCNT_N      8
     // SPI_CLKCNT_H      4
     // SPI_CLKCNT_L      0
-#define P_SPI_FLASH_CTRL1                          (volatile uint32_t *)0xfe05600c
-#define P_SPI_FLASH_STATUS                         (volatile uint32_t *)0xfe056010
-#define P_SPI_FLASH_CTRL2                          (volatile uint32_t *)0xfe056014
-#define P_SPI_FLASH_CLOCK                          (volatile uint32_t *)0xfe056018
-#define P_SPI_FLASH_USER                           (volatile uint32_t *)0xfe05601c
-#define P_SPI_FLASH_USER1                          (volatile uint32_t *)0xfe056020
-#define P_SPI_FLASH_USER2                          (volatile uint32_t *)0xfe056024
-#define P_SPI_FLASH_USER3                          (volatile uint32_t *)0xfe056028
-#define P_SPI_FLASH_USER4                          (volatile uint32_t *)0xfe05602c
-#define P_SPI_FLASH_SLAVE                          (volatile uint32_t *)0xfe056030
-#define P_SPI_FLASH_SLAVE1                         (volatile uint32_t *)0xfe056034
-#define P_SPI_FLASH_SLAVE2                         (volatile uint32_t *)0xfe056038
-#define P_SPI_FLASH_SLAVE3                         (volatile uint32_t *)0xfe05603c
-#define P_SPI_FLASH_C0                             (volatile uint32_t *)0xfe056040
-#define P_SPI_FLASH_C1                             (volatile uint32_t *)0xfe056044
-#define P_SPI_FLASH_C2                             (volatile uint32_t *)0xfe056048
-#define P_SPI_FLASH_C3                             (volatile uint32_t *)0xfe05604c
-#define P_SPI_FLASH_C4                             (volatile uint32_t *)0xfe056050
-#define P_SPI_FLASH_C5                             (volatile uint32_t *)0xfe056054
-#define P_SPI_FLASH_C6                             (volatile uint32_t *)0xfe056058
-#define P_SPI_FLASH_C7                             (volatile uint32_t *)0xfe05605c
-#define P_SPI_FLASH_B8                             (volatile uint32_t *)0xfe056060
-#define P_SPI_FLASH_B9                             (volatile uint32_t *)0xfe056064
-#define P_SPI_FLASH_B10                            (volatile uint32_t *)0xfe056068
-#define P_SPI_FLASH_B11                            (volatile uint32_t *)0xfe05606c
-#define P_SPI_FLASH_B12                            (volatile uint32_t *)0xfe056070
-#define P_SPI_FLASH_B13                            (volatile uint32_t *)0xfe056074
-#define P_SPI_FLASH_B14                            (volatile uint32_t *)0xfe056078
-#define P_SPI_FLASH_B15                            (volatile uint32_t *)0xfe05607c
+//`define SPI_FLASH_CTRL1         8'h03
+//`define SPI_FLASH_STATUS        8'h04
+//`define SPI_FLASH_CTRL2         8'h05
+//`define SPI_FLASH_CLOCK         8'h06
+//`define SPI_FLASH_USER          8'h07
+//`define SPI_FLASH_USER1         8'h08
+//`define SPI_FLASH_USER2         8'h09
+//`define SPI_FLASH_USER3         8'h0a
+//`define SPI_FLASH_USER4         8'h0b
+//`define SPI_FLASH_SLAVE         8'h0c
+//`define SPI_FLASH_SLAVE1        8'h0d
+//`define SPI_FLASH_SLAVE2        8'h0e
+//`define SPI_FLASH_SLAVE3        8'h0f
+//`define SPI_FLASH_C0            8'h10
+//`define SPI_FLASH_C1            8'h11
+//`define SPI_FLASH_C2            8'h12
+//`define SPI_FLASH_C3            8'h13
+//`define SPI_FLASH_C4            8'h14
+//`define SPI_FLASH_C5            8'h15
+//`define SPI_FLASH_C6            8'h16
+//`define SPI_FLASH_C7            8'h17
+//`define SPI_FLASH_B8            8'h18
+//`define SPI_FLASH_B9            8'h19
+//`define SPI_FLASH_B10           8'h1a
+//`define SPI_FLASH_B11           8'h1b
+//`define SPI_FLASH_B12           8'h1c
+//`define SPI_FLASH_B13           8'h1d
+//`define SPI_FLASH_B14           8'h1e
+//`define SPI_FLASH_B15           8'h1f
 //========================================================================
 //  CEC - Registers
 //========================================================================
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe044000
 // -----------------------------------------------
-#define P_CECA_GEN_CNTL                            (volatile uint32_t *)0xfe044000
-#define P_CECA_RW_REG                              (volatile uint32_t *)0xfe044004
-#define P_CECA_INTR_MASKN                          (volatile uint32_t *)0xfe044008
-#define P_CECA_INTR_CLR                            (volatile uint32_t *)0xfe04400c
-#define P_CECA_INTR_STAT                           (volatile uint32_t *)0xfe044010
+//`define CECA_GEN_CNTL                   8'h00
+//`define CECA_RW_REG                     8'h01
+//`define CECA_INTR_MASKN                 8'h02
+//`define CECA_INTR_CLR                   8'h03
+//`define CECA_INTR_STAT                  8'h04
 #define P_CECB_GEN_CNTL                            (volatile uint32_t *)0xfe044040
 #define P_CECB_RW_REG                              (volatile uint32_t *)0xfe044044
 #define P_CECB_INTR_MASKN                          (volatile uint32_t *)0xfe044048
@@ -4470,9 +4580,9 @@
 #define P_CAPU_RANGE2_CTRL                         (volatile uint32_t *)0xfe012348
 #define P_CAPU_RANGE1_CTRL                         (volatile uint32_t *)0xfe012344
 #define P_CAPU_RANGE0_CTRL                         (volatile uint32_t *)0xfe012340
-#define P_CAPU_ACCESS_EN_AHB_ETH                   (volatile uint32_t *)0xfe012308
-#define P_CAPU_ACCESS_EN_AHB_USB0                  (volatile uint32_t *)0xfe012304
-#define P_CAPU_ACCESS_EN_AHB_USB1                  (volatile uint32_t *)0xfe012300
+//`define CAPU_ACCESS_EN_AHB_ETH                        8'hC2
+//`define CAPU_ACCESS_EN_AHB_USB0                       8'hC1
+//`define CAPU_ACCESS_EN_AHB_USB1                       8'hC0
 #define P_CAPU_ACCESS_EN_16M_SLOT0                 (volatile uint32_t *)0xfe0122c0
 #define P_CAPU_ACCESS_EN_256K_SLOT1                (volatile uint32_t *)0xfe012284
 #define P_CAPU_ACCESS_EN_256K_SLOT0                (volatile uint32_t *)0xfe012280
@@ -4588,79 +4698,81 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe030000
 // -----------------------------------------------
-#define P_BT_CTRL                                  (volatile uint32_t *)0xfe030000
-    #define BT_SOFT_RESET           31      // Soft reset
-    #define BT_JPEG_START           30
-    #define BT_JPEG_IGNORE_BYTES    18     //20:18
-    #define BT_JPEG_IGNORE_LAST     17
-    #define BT_UPDATE_ST_SEL        16
-    #define BT_COLOR_REPEAT         15
-    #define BT_VIDEO_MODE           13     // 14:13
-    #define BT_AUTO_FMT             12
-    #define BT_PROG_MODE            11
-    #define BT_JPEG_MODE            10
-    #define BT_XCLK27_EN_BIT        9      // 1 : xclk27 is input.     0 : xclk27 is output.
-    #define BT_FID_EN_BIT           8       // 1 : enable use FID port.
-    #define BT_CLK27_SEL_BIT        7       // 1 : external xclk27      0 : internal clk27.
-    #define BT_CLK27_PHASE_BIT      6       // 1 : no inverted          0 : inverted.
-    #define BT_ACE_MODE_BIT         5       // 1 : auto cover error by hardware.
-    #define BT_SLICE_MODE_BIT       4       // 1 : no ancillary flag     0 : with ancillary flag.
-    #define BT_FMT_MODE_BIT         3       // 1 : ntsc                 0 : pal.
-    #define BT_REF_MODE_BIT         2       // 1 : from bit stream.     0 : from ports.
-    #define BT_MODE_BIT             1       // 1 : BT656 model          0 : SAA7118 mode.
-    #define BT_EN_BIT               0       // 1 : enable.
-#define P_BT_VBISTART                              (volatile uint32_t *)0xfe030004
-#define P_BT_VBIEND                                (volatile uint32_t *)0xfe030008
-#define P_BT_FIELDSADR                             (volatile uint32_t *)0xfe03000c
-#define P_BT_LINECTRL                              (volatile uint32_t *)0xfe030010
-#define P_BT_VIDEOSTART                            (volatile uint32_t *)0xfe030014
-#define P_BT_VIDEOEND                              (volatile uint32_t *)0xfe030018
-#define P_BT_SLICELINE0                            (volatile uint32_t *)0xfe03001c
-#define P_BT_SLICELINE1                            (volatile uint32_t *)0xfe030020
-#define P_BT_PORT_CTRL                             (volatile uint32_t *)0xfe030024
-  #define BT_HSYNC_PHASE           0
-  #define BT_VSYNC_PHASE           1
-  #define BT_HSYNC_PULSE           2
-  #define BT_VSYNC_PULSE           3
-  #define BT_FID_PHASE             4
-  #define BT_FID_HSVS              5
-  #define BT_IDQ_EN                6
-  #define BT_IDQ_PHASE             7
-  #define BT_D8B                   8
-  #define BT_10BTO8B               9
-  #define BT_FID_DELAY            10    //12:10
-  #define BT_VSYNC_DELAY          13    //
-  #define BT_HSYNC_DELAY          16
-  #define BT_FID_HSVS_PCNT        19
-  #define BT_FID_HSVS_VS_RISING   20
-  #define BT_FID_HSVS_VS_FALLING  21
-  #define BT_VREF_FROM_VS_ONLY    22
-  #define BT_PORT_ACTIVE_HMODE    23
-  #define BT_DUAL_EDGE_CLK_EN     24
-  #define BT_CLK_INV_SEL          25
-  #define BT_DATA_ENDIAN          26
-#define P_BT_SWAP_CTRL                             (volatile uint32_t *)0xfe030028
-#define P_BT_601_CTRL0                             (volatile uint32_t *)0xfe030038
-#define P_BT_601_CTRL1                             (volatile uint32_t *)0xfe03003c
-#define P_BT_601_CTRL2                             (volatile uint32_t *)0xfe030040
-#define P_BT_601_CTRL3                             (volatile uint32_t *)0xfe030044
-#define P_BT_FIELD_LUMA                            (volatile uint32_t *)0xfe030048
-#define P_BT_RAW_CTRL                              (volatile uint32_t *)0xfe03004c
-#define P_BT_STATUS                                (volatile uint32_t *)0xfe030050
-#define P_BT_INT_CTRL                              (volatile uint32_t *)0xfe030054
-#define P_BT_VLINE_STATUS                          (volatile uint32_t *)0xfe03005c
-#define P_BT_ERR_CNT                               (volatile uint32_t *)0xfe030064
-#define P_BT_LCNT_STATUS                           (volatile uint32_t *)0xfe030068
-#define P_BT_PCNT_STATUS                           (volatile uint32_t *)0xfe030070
-#define P_BT_DELAY_CTRL                            (volatile uint32_t *)0xfe030074
-#define P_BT_REF_000                               (volatile uint32_t *)0xfe030080
-#define P_BT_REF_001                               (volatile uint32_t *)0xfe030084
-#define P_BT_REF_010                               (volatile uint32_t *)0xfe030088
-#define P_BT_REF_011                               (volatile uint32_t *)0xfe03008c
-#define P_BT_REF_100                               (volatile uint32_t *)0xfe030090
-#define P_BT_REF_101                               (volatile uint32_t *)0xfe030094
-#define P_BT_REF_110                               (volatile uint32_t *)0xfe030098
-#define P_BT_REF_111                               (volatile uint32_t *)0xfe03009c
+//`define BT_CTRL                         8'h00
+//    `define BT_SOFT_RESET           31      // Soft reset
+//    `define BT_JPEG_START           30
+//    `define BT_JPEG_IGNORE_BYTES    18     //20:18
+//    `define BT_JPEG_IGNORE_LAST     17
+//    `define BT_UPDATE_ST_SEL        16
+//    `define BT_COLOR_REPEAT         15
+//    `define BT_VIDEO_MODE           13     // 14:13
+//    `define BT_AUTO_FMT             12
+//    `define BT_PROG_MODE            11
+//    `define BT_JPEG_MODE            10
+//    `define BT_XCLK27_EN_BIT        9      // 1 : xclk27 is input.     0 : xclk27 is output.
+//    `define BT_FID_EN_BIT           8       // 1 : enable use FID port.
+//    `define BT_CLK27_SEL_BIT        7       // 1 : external xclk27      0 : internal clk27.
+//    `define BT_CLK27_PHASE_BIT      6       // 1 : no inverted          0 : inverted.
+//    `define BT_ACE_MODE_BIT         5       // 1 : auto cover error by hardware.
+//    `define BT_SLICE_MODE_BIT       4       // 1 : no ancillary flag     0 : with ancillary flag.
+//    `define BT_FMT_MODE_BIT         3       // 1 : ntsc                 0 : pal.
+//    `define BT_REF_MODE_BIT         2       // 1 : from bit stream.     0 : from ports.
+//    `define BT_MODE_BIT             1       // 1 : BT656 model          0 : SAA7118 mode.
+//    `define BT_EN_BIT               0       // 1 : enable.
+//`define BT_VBISTART                     8'h01
+//`define BT_VBIEND                       8'h02
+//`define BT_FIELDSADR                    8'h03
+//`define BT_LINECTRL                     8'h04
+//`define BT_VIDEOSTART                   8'h05
+//`define BT_VIDEOEND                     8'h06
+//`define BT_SLICELINE0                   8'h07
+//`define BT_SLICELINE1                   8'h08
+//`define BT_PORT_CTRL                    8'h09
+//  `define BT_HSYNC_PHASE           0
+//  `define BT_VSYNC_PHASE           1
+//  `define BT_HSYNC_PULSE           2
+//  `define BT_VSYNC_PULSE           3
+//  `define BT_FID_PHASE             4
+//  `define BT_FID_HSVS              5
+//  `define BT_IDQ_EN                6
+//  `define BT_IDQ_PHASE             7
+//  `define BT_D8B                   8
+//  `define BT_10BTO8B               9
+//  `define BT_FID_DELAY            10    //12:10
+//  `define BT_VSYNC_DELAY          13    //
+//  `define BT_HSYNC_DELAY          16
+//  `define BT_FID_HSVS_PCNT        19
+//  `define BT_FID_HSVS_VS_RISING   20
+//  `define BT_FID_HSVS_VS_FALLING  21
+//  `define BT_VREF_FROM_VS_ONLY    22
+//  `define BT_PORT_ACTIVE_HMODE    23
+//  `define BT_DUAL_EDGE_CLK_EN     24
+//  `define BT_CLK_INV_SEL          25
+//  `define BT_DATA_ENDIAN          26
+//
+//`define BT_SWAP_CTRL                    8'h0a
+//`define BT_601_CTRL0                    8'h0e
+//`define BT_601_CTRL1                    8'h0f
+//`define BT_601_CTRL2                    8'h10
+//`define BT_601_CTRL3                    8'h11
+//`define BT_FIELD_LUMA                   8'h12
+//`define BT_RAW_CTRL                     8'h13
+//`define BT_STATUS                       8'h14
+//`define BT_INT_CTRL                     8'h15
+//`define BT_VLINE_STATUS                 8'h17
+//`define BT_ERR_CNT                      8'h19
+//`define BT_LCNT_STATUS                  8'h1a
+//`define BT_PCNT_STATUS                  8'h1c
+//`define BT_DELAY_CTRL                   8'h1d
+//
+//`define BT_REF_000                      8'h20
+//`define BT_REF_001                      8'h21
+//`define BT_REF_010                      8'h22
+//`define BT_REF_011                      8'h23
+//`define BT_REF_100                      8'h24
+//`define BT_REF_101                      8'h25
+//`define BT_REF_110                      8'h26
+//`define BT_REF_111                      8'h27
 //========================================================================
 //  PDM
 //========================================================================
@@ -30162,9 +30274,9 @@
 //Bit 9:1   dout_offset (signed data)
 //Bit 0     enable
 #define P_GE2D_SRC1_RANGE_MAP_CR_CTRL              (volatile uint32_t *)0xff040394
-//Bit 21:16     src1 prearbitor burst number
-//Bit 13:8      src2 prearbitor burst number
-//Bit 5:0       dst prearbitor burst number
+//Bit 21:16     src1 prearbiter burst number
+//Bit 13:8      src2 prearbiter burst number
+//Bit 5:0       dst prearbiter burst number
 #define P_GE2D_ARB_BURST_NUM                       (volatile uint32_t *)0xff040398
 //each 6bit ID, high 4bit are thread ID, low 2bits are the token
 //Bit 21:16 src1 ID

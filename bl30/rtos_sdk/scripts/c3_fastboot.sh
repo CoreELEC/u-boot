@@ -71,7 +71,7 @@ if [ -z $RTOS_TARGET_ADDRESS ]; then
 fi
 
 #Get the loading address of rtos2
-let "RTOS2_TARGET_ADDRESS=$RTOS_TARGET_ADDRESS+0x200000"
+let "RTOS2_TARGET_ADDRESS=$RTOS_TARGET_ADDRESS+0x100000"
 RTOS2_TARGET_ADDRESS=$(printf '0x%x\n' $RTOS2_TARGET_ADDRESS)
 
 #Clear cache files

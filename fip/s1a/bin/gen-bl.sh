@@ -51,6 +51,9 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_INPUT_BLOB}/blob-bl32.bin.s
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin.signed"
 
+### compact Device FIP Header
+EXEC_ARGS="${EXEC_ARGS} --header-layout=compact"
+
 #echo ${EXEC_ARGS}
 
 #

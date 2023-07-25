@@ -82,7 +82,9 @@ void str_hw_init(void)
 	vGpioIRQInit();
 	Bt_GpioIRQRegister();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-			hdmirx_GpioIRQRegister();
+	/*ctrl of 5v wake up*/
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQRegister();
 #endif
 }
 
@@ -101,7 +103,9 @@ void str_hw_disable(void)
 	}
 	Bt_GpioIRQFree();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-			hdmirx_GpioIRQFree();
+	/*ctrl of 5v wake up*/
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQFree();
 #endif
 }
 

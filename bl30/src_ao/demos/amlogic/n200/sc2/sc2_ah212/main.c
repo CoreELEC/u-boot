@@ -40,6 +40,10 @@
 #include "n200_eclic.h"
 #include "n200_func.h"
 #include "uart.h"
+#ifdef UART_BT_QCOM
+#include "uart_bt.h"
+#endif
+
 #include "common.h"
 
 #include "riscv_encoding.h"
@@ -211,7 +215,9 @@ int main(void)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
 	vMbInit();
-
+#ifdef UART_BT_QCOM
+	register_bt_rpc_callback();
+#endif
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);

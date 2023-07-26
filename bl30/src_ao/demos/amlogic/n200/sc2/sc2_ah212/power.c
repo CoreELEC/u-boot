@@ -40,6 +40,10 @@
 #include "interrupt_control_eclic.h"
 #include "eth.h"
 
+#ifdef UART_BT_QCOM
+#include "uart_bt.h"
+#endif
+
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
 
@@ -86,6 +90,9 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+#ifdef UART_BT_QCOM
+	bt_suspend_handle();
+#endif
 	bt_task_start();
 }
 

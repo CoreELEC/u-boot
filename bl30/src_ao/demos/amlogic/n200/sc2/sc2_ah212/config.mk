@@ -26,3 +26,7 @@
 SOC=sc2
 ARCH_CPU=RISC_V_N205
 BOARD=sc2_ah212
+
+#switch for qualcomm uart bt config parameters in standby
+CONFIG_UART_BT_QCOM=true
+CFLAGS += -DUART_BT_QCOM

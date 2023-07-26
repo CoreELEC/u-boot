@@ -420,7 +420,17 @@ function mk_ddr_fip()
 	package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_1.bin bl22.bin
 	package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_2.bin ddr-fip.bin
 
-	dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=256 &> /dev/null
+	if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+		if [ -n "${CONFIG_BUILD_UNSIGN}" ]; then
+			echo "==== build unsigned ===="
+			dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=256 &> /dev/null
+		else
+			echo "==== build fastboot ===="
+			dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=1792 &> /dev/null
+		fi
+	else
+		dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=256 &> /dev/null
+	fi
 	dd if=${BUILD_PATH}/ddr-fip.bin of=${BUILD_PATH}/_tmp.bin conv=notrunc &> /dev/null
 	mv ${BUILD_PATH}/_tmp.bin ${BUILD_PATH}/ddr-fip.bin
 }

@@ -27,10 +27,10 @@
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
 
-#define VCC5V_GPIO	GPIOC_7
-#define VCC3V3_GPIO	GPIOD_10
-#define VDDCPU_A55_GPIO	GPIOD_3
-#define VDDCPU_A76_GPIO	GPIO_TEST_N
+#define VCC5V_GPIO	GPIOZ_6
+#define VCC3V3_GPIO	GPIO_TEST_N
+//#define VDDCPU_A55_GPIO	GPIOD_3
+//#define VDDCPU_A76_GPIO	GPIO_TEST_N
 
 static int vdd_ee;
 static int vdddos_npu_vpu;
@@ -73,7 +73,7 @@ void str_hw_init(void)
 {
 	int ret;
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+	vIRInit(MODE_HARD_NEC, GPIOD_2, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
 
@@ -82,8 +82,6 @@ void str_hw_init(void)
 
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
-	vKeyPadInit();
-	Bt_GpioIRQRegister();
 }
 
 void str_hw_disable(void)
@@ -96,8 +94,6 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	Bt_GpioIRQFree();
-	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
 
@@ -108,30 +104,30 @@ void str_power_on(int shutdown_flag)
 	(void)shutdown_flag;
 
 	/***power on A55 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	//ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio dir fail\n");
+	//	return;
+	//}
 
-	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
+	//ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio val fail\n");
+	//	return;
+	//}
 
 	/***power on A76 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	//ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio dir fail\n");
+	//	return;
+	//}
 
-	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
+	//ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_HIGH);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio val fail\n");
+	//	return;
+	//}
 
 	/***set dos/npu/vpu val***/
 	if (vdddos_npu_vpu) {
@@ -236,30 +232,30 @@ void str_power_off(int shutdown_flag)
 	}
 
 	/***power off A55 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	//ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio dir fail\n");
+	//	return;
+	//}
 
-	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
+	//ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio val fail\n");
+	//	return;
+	//}
 
 	/***power off A76 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+	//ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio dir fail\n");
+	//	return;
+	//}
 
-	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
+	//ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_LOW);
+	//if (ret < 0) {
+	//	printf("vdd_cpu set gpio val fail\n");
+	//	return;
+	//}
 
 	printf("Power down done.\n");
 }

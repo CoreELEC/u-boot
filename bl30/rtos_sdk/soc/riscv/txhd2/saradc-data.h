@@ -14,7 +14,7 @@
 
 #define REG11_VREF_EN_VALUE 1
 #define REG11_CMV_SEL_VALUE 1
-#define REG11_EOC_VALUE 1
+#define REG11_EOC_VALUE 0
 
 /* txhd2 saradc interrupt num */
 #define SARADC_INTERRUPT_NUM 8

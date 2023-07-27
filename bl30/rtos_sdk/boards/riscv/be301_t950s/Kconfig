@@ -10,7 +10,7 @@ config BOARD_BE301_T950S
 	select GET_VERSION
 	select STICK_MEM
 	select UART
-	# select CEC
+	select CEC
 	select DDR
 	select MAILBOX
 	select VRTC

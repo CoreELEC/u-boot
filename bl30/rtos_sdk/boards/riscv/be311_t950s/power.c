@@ -54,7 +54,7 @@ void str_hw_init(void)
 	vIRInit(MODE_HARD_NEC, GPIOAO_6, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
-	//xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
@@ -66,10 +66,10 @@ void str_hw_disable(void)
 	/*disable wakeup source interrupt*/
 	vIRDeint();
 	vETHDeint();
-	//if (cecTask) {
-	//	vTaskDelete(cecTask);
-	//	cec_req_irq(0);
-	//}
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+	}
 	Bt_GpioIRQFree();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();

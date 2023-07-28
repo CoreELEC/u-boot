@@ -28,12 +28,8 @@
 static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO	GPIOZ_6
-#define VCC3V3_GPIO	GPIO_TEST_N
-//#define VDDCPU_A55_GPIO	GPIOD_3
-//#define VDDCPU_A76_GPIO	GPIO_TEST_N
 
 static int vdd_ee;
-static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
@@ -103,61 +99,11 @@ void str_power_on(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	/***power on A55 vdd_cpu***/
-	//ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio dir fail\n");
-	//	return;
-	//}
-
-	//ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio val fail\n");
-	//	return;
-	//}
-
-	/***power on A76 vdd_cpu***/
-	//ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio dir fail\n");
-	//	return;
-	//}
-
-	//ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_HIGH);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio val fail\n");
-	//	return;
-	//}
-
-	/***set dos/npu/vpu val***/
-	if (vdddos_npu_vpu) {
-		ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, vdddos_npu_vpu);
-		if (ret < 0) {
-			printf("vdddos_npu_vpu pwm set fail\n");
-			return;
-		}
-	}
-
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
 	if (ret < 0) {
 		printf("VDD_EE pwm set fail\n");
 		return;
-	}
-
-	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
 	}
 
 	/***power on vcc_5v***/
@@ -192,21 +138,6 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
-	}
-
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 	if (vdd_ee < 0) {
@@ -219,43 +150,6 @@ void str_power_off(int shutdown_flag)
 		printf("vdd_EE pwm set fail\n");
 		return;
 	}
-
-	/*** set dos/npu/vpu power***/
-	vdddos_npu_vpu = vPwmMesongetvoltage(VDDDOS_NPU_VPU);
-	if (vdddos_npu_vpu < 0) {
-		printf("Skip the operation of reducing the voltage.\n");
-		vdddos_npu_vpu = 0;
-	} else {
-		ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, 770);
-		if (ret < 0)
-			printf("vdd_dos_npu_vpu pwm set fail\n");
-	}
-
-	/***power off A55 vdd_cpu***/
-	//ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio dir fail\n");
-	//	return;
-	//}
-
-	//ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio val fail\n");
-	//	return;
-	//}
-
-	/***power off A76 vdd_cpu***/
-	//ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio dir fail\n");
-	//	return;
-	//}
-
-	//ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_LOW);
-	//if (ret < 0) {
-	//	printf("vdd_cpu set gpio val fail\n");
-	//	return;
-	//}
 
 	printf("Power down done.\n");
 }

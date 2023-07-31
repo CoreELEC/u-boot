@@ -8,7 +8,7 @@ OTP Pattern Generator for Key ladder
 ```
 1) ETSI KL
 There are 5 root key profiles, and each key profile can work with TDES decryption and AES decryption. So, there are total 10 key ladder cases need to be test.
-For S4, only root key profiles can be config in efuse, key ladder configuration can be control by register.
+For S1A, only root key profiles can be config in efuse, key ladder configuration can be control by register.
 One SoC can be configured with 4 root key profiles. To test all 10 key ladder cases, 2 SoCs are needed to be burnt with correct Efuse pattern and 2 round tests are needed to be done.
 
 <Round 1>

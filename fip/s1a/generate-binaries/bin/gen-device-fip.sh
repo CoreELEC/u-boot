@@ -101,6 +101,9 @@ EXEC_ARGS="${EXEC_ARGS} --val-device-ree-vers=${DEVICE_REE_VERS}"
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin${output_postfix}"
 
+### compact Device FIP Header
+EXEC_ARGS="${EXEC_ARGS} --header-layout=compact"
+
 #echo ${EXEC_ARGS}
 
 #

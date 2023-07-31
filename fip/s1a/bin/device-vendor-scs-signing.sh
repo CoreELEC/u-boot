@@ -86,7 +86,7 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
-	dateStamp=S4-${part}-`date +%y%m%d%H%M%S`
+	dateStamp=S1A-${part}-`date +%y%m%d`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null
@@ -96,7 +96,7 @@ function mk_uboot() {
 		| xxd -r -ps > ${file_info_cfg_temp}
 	cat ${file_info_cfg_temp} >> ${file_info_cfg}
 
-	echo ${dateStamp} > ${file_info_cfg_temp}
+	printf "%-20s"  ${dateStamp} > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=20 oflag=append conv=notrunc &> /dev/null
 
 	index=0
@@ -131,7 +131,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=332 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=292 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		total_size=$[total_size+512]
@@ -151,7 +151,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Amlogic SC2 Device Vendor Secure Chipset Startup (SCS) Signing
+       Amlogic Device Vendor Secure Chipset Startup (SCS) Signing
 
        $(basename $0)
 		--key-dir <key-dir> \\

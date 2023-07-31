@@ -3,10 +3,10 @@
 # Rules
 #
 
-DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/sc2/device/
+DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/s1a/device/
 DEVICE_ROOTRSA_INDEX ?= 0
-PROJECT ?= s905x4
-SOC_DEVICE ?= s4
+PROJECT ?= s805c1
+SOC_DEVICE ?= s1a
 DEVICE_SCS_SEGID ?= 0x0
 DEVICE_VENDOR_SEGID ?= 0x0
 DEVICE_SCS_VERS ?= 0x0

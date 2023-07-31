@@ -55,7 +55,7 @@ size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
-device_soc="s4"
+device_soc="s1a"
 
 parse_main() {
     local i=0
@@ -151,6 +151,9 @@ ${EXEC_BASEDIR}/bin/gen_device_root_cert.sh --key-dir "$key_dir" --stage fip --r
 
 mkdir -p "$key_dir"/root/dvgk/"$part"
 ${EXEC_BASEDIR}/bin/dvgk_gen.sh "$key_dir"/root/dvgk/"$part"/dvgk
+
+mkdir -p "$key_dir"/root/dvuk/"$part"
+${EXEC_BASEDIR}/bin/dvuk_gen.sh "$key_dir"/root/dvuk/"$part"/dvuk
 
 ${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin "$key_dir"/root/dvgk/"$part"/dvgk.bin --mrk-name DVGK --project "$part"
 

@@ -497,7 +497,7 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
-	dateStamp=S4-${CHIPSET_NAME}-`date +%y%m%d%H%M%S`
+	dateStamp=S1A-${CHIPSET_NAME}-`date +%y%m%d`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null
@@ -507,7 +507,7 @@ function mk_uboot() {
 		| xxd -r -ps > ${file_info_cfg_temp}
 	cat ${file_info_cfg_temp} >> ${file_info_cfg}
 
-	echo ${dateStamp} > ${file_info_cfg_temp}
+	printf "%-20s"  ${dateStamp} > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=20 oflag=append conv=notrunc &> /dev/null
 
 	index=0

@@ -38,6 +38,27 @@ rsa_gen() {
 	done
 }
 
+rsa_copy() {
+	local chain_num=$1
+	local path=$2
+	local files=$3
+	local src_key=$4
+
+	echo "Copy $chain_num RSA key ..."
+
+	for f in $files
+	do
+		local kpriv="$path/$f-priv.pem"
+		local kpub="$path/$f-pub.pem"
+		local src_kpriv="$path/$src_key-priv.pem"
+		local src_kpub="$path/$src_key-pub.pem"
+		cp $src_kpriv $kpriv
+		cp $src_kpub $kpub
+		echo $kpriv
+		echo $kpub
+	done
+}
+
 ek_gen() {
 	local chain_num=$1
 	local path=$2
@@ -54,6 +75,22 @@ ek_gen() {
 	done
 }
 
+ek_copy() {
+	local chain_num=$1
+	local path=$2
+	local files=$3
+	local src_file=$4
+
+	echo "Copy $chain_num EKs ..."
+
+	for f in $files
+	do
+		local file="$path/$f"
+		cp "$path/$src_file" $file
+		echo $file
+	done
+}
+
 nonce_gen() {
 	local chain_num=$1
 	local path=$2
@@ -67,6 +104,22 @@ nonce_gen() {
 		echo $file
 		dd if=/dev/random of=$file iflag=fullblock bs=16 count=1
 		#xxd -p -c16 $file
+	done
+}
+
+nonce_copy() {
+	local chain_num=$1
+	local path=$2
+	local files=$3
+	local src_file=$4
+
+	echo "Copy $chain_num NONCE ..."
+
+	for f in $files
+	do
+		local file="$path/$f"
+		cp "$path/$src_file" $file
+		echo $file
 	done
 }
 
@@ -201,9 +254,13 @@ if [ $stage == "boot-blobs" ]; then
 		mkdir -p $boot_blobs_rsa_path/nonce
 
 		echo "Generate $stage chain #$i certificate"
-		rsa_gen $i "$boot_blobs_rsa_path/key" "level-1-rsa level-2-rsa" $size
-		ek_gen $i "$boot_blobs_rsa_path/epk" "lvl1cert-epks.bin lvl2cert-epks.bin"
-		nonce_gen $i "$boot_blobs_rsa_path/nonce" "device-lvl1rsa-nonce.bin device-lvl2rsa-nonce.bin"
+		rsa_gen $i "$boot_blobs_rsa_path/key" "level-1-rsa" $size
+		ek_gen $i "$boot_blobs_rsa_path/epk" "lvl1cert-epks.bin"
+		nonce_gen $i "$boot_blobs_rsa_path/nonce" "device-lvl1rsa-nonce.bin"
+
+		rsa_copy $i "$boot_blobs_rsa_path/key" "level-2-rsa" "level-1-rsa"
+		ek_copy $i "$boot_blobs_rsa_path/epk" "lvl2cert-epks.bin" "lvl1cert-epks.bin"
+		nonce_copy $i "$boot_blobs_rsa_path/nonce" "device-lvl2rsa-nonce.bin" "device-lvl1rsa-nonce.bin"
 	done
 fi
 
@@ -227,8 +284,12 @@ if [ $stage == "fip" ]; then
 		mkdir -p $fip_rsa_path/nonce
 
 		echo "Generate ${stage^^} chain #$i certificate"
-		rsa_gen $i "$fip_rsa_path/key" "bl30-level-3-rsa bl31-level-3-rsa bl32-level-3-rsa bl33-level-3-rsa bl40-level-3-rsa krnl-level-3-rsa" $size
-		ek_gen $i "$fip_rsa_path/epk" "bl30-lvl3cert-epks.bin bl31-lvl3cert-epks.bin bl32-lvl3cert-epks.bin bl33-lvl3cert-epks.bin bl40-lvl3cert-epks.bin krnl-lvl3cert-epks.bin"
-		nonce_gen $i "$fip_rsa_path/nonce" "bl30-dvlvl3cert-nonce.bin bl31-dvlvl3cert-nonce.bin bl32-dvlvl3cert-nonce.bin bl33-dvlvl3cert-nonce.bin bl40-dvlvl3cert-nonce.bin krnl-dvlvl3cert-nonce.bin"
+		rsa_gen $i "$fip_rsa_path/key" "bl30-level-3-rsa krnl-level-3-rsa" $size
+		ek_gen $i "$fip_rsa_path/epk" "bl30-lvl3cert-epks.bin krnl-lvl3cert-epks.bin"
+		nonce_gen $i "$fip_rsa_path/nonce" "bl30-dvlvl3cert-nonce.bin krnl-dvlvl3cert-nonce.bin"
+
+		rsa_copy $i "$fip_rsa_path/key" "bl31-level-3-rsa bl32-level-3-rsa bl33-level-3-rsa bl40-level-3-rsa" "bl30-level-3-rsa"
+		ek_copy $i "$fip_rsa_path/epk" "bl31-lvl3cert-epks.bin bl32-lvl3cert-epks.bin bl33-lvl3cert-epks.bin bl40-lvl3cert-epks.bin" "bl30-lvl3cert-epks.bin"
+		nonce_copy $i "$fip_rsa_path/nonce" "bl31-dvlvl3cert-nonce.bin bl32-dvlvl3cert-nonce.bin bl33-dvlvl3cert-nonce.bin bl40-dvlvl3cert-nonce.bin" "bl30-dvlvl3cert-nonce.bin"
 	done
 fi

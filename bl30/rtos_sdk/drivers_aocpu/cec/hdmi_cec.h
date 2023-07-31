@@ -7,7 +7,7 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
-#define CEC_VERSION "2022/12/12 T5M bringup"
+#define CEC_VERSION "2023/07/27 TXHD2 bringup"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
@@ -22,7 +22,8 @@ enum cec_chip_ver {
 	CEC_CHIP_S4,
 	CEC_CHIP_T3,
 	CEC_CHIP_S5,
-	CEC_CHIP_T5M
+	CEC_CHIP_T5M,
+	CEC_CHIP_TXHD2
 };
 
 #define CEC_A 0

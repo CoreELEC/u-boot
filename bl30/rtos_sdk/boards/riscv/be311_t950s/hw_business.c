@@ -82,7 +82,7 @@ void hw_business_process(void)
 
 	vMbInit();
 	vCoreFsmIdleInit();
-	// vCecCallbackInit(CEC_CHIP_T5);
+	vCecCallbackInit(CEC_CHIP_TXHD2);
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();

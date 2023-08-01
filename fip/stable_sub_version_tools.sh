@@ -24,13 +24,13 @@ else
 fi
 
 if [[ -z "${ANDROID_ROOT_DIR}" ]]; then
-	ANDROID_ROOT_DIR="/mnt/fileroot/wenbo.wang/Android/android_T"
+	ANDROID_ROOT_DIR="/mnt/fileroot/wenbo.wang/Android/android_R"
 else
 	echo "External settings env: ANDROID_ROOT_DIR=${ANDROID_ROOT_DIR}"
 fi
 
 if [[ -z "${ANDROID_TARGET_BRANCH}" ]]; then
-	ANDROID_TARGET_BRANCH="t-tv-dev"
+	ANDROID_TARGET_BRANCH="r-tv-dev"
 else
 	echo "External settings env: ANDROID_TARGET_BRANCH=${ANDROID_TARGET_BRANCH}"
 fi
@@ -143,7 +143,7 @@ declare -a BLX_STABLE_BRANCH=(			        \
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
-	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
+	"projects/openlinux/bl-$STABLE_MAJOR_VERSION-3.18"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION")
 
@@ -448,6 +448,7 @@ function modify_stable_branch_version() {
 	for((i=0;i<${#BLX_NAME[@]}-1;i++)); do
 		if [ -d $rootdir/${BLX_PATH[$i]} ]; then
 			cd $rootdir/${BLX_PATH[$i]}
+			echo "`pwd -P`"
 			modify_stable_branch_version_info $i
 			
 		fi
@@ -598,8 +599,8 @@ function switch_to_target_branch() {
 }
 
 function modify_stable_sub_version() {
-	echo
-	echo "# push_uboot_img_to_android_repo"
+	echo "###modify_stable_sub_version"
+	
 	# 1. switch to target branch
 	if [ $SWITCH_TARGET_BRANCH -ne 0 ]; then
 		switch_to_target_branch
@@ -630,7 +631,8 @@ function modify_stable_sub_version() {
 }
 
 function compile_stable_uboot_bin() {
-
+	echo "# push_uboot_img_to_android_repo"
+	
 	for((i=0;i<${#OPENLINUX_BOARD_TYPE[@]};i++)); do
 		echo
 		echo "<$i.${OPENLINUX_BOARD_TYPE[$i]}>############################### push_uboot_img_to_android_repo."

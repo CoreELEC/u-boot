@@ -27,8 +27,6 @@
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
 
-#define VCC5V_GPIO	GPIOZ_6
-
 static int vdd_ee;
 static TaskHandle_t vadTask;
 
@@ -96,6 +94,8 @@ void str_hw_disable(void)
 	vRestoreGpioIrqReg();
 }
 
+#define DVB_PWR_EN_GPIO	GPIO_TEST_N
+#define VCC5V_GPIO	GPIOZ_6
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -108,14 +108,31 @@ void str_power_on(int shutdown_flag)
 		printf("VDD_EE pwm set fail\n");
 		return;
 	}
+	/***power on vcc3.3v en***/
+	ret = xGpioSetDir(DVB_PWR_EN_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc3.3v en pin set gpio dir fail\n");
+		return;
+	}
+
+	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("DVB_PWR en pin gpio val fail\n");
+		return;
+	}
 
 	/***power on vcc_5v***/
-	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_IN);
+	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
 
+	ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc_5v gpio val fail\n");
+		return;
+	}
 	/*Wait 10ms for VDDCPU statable*/
 	vTaskDelay(pdMS_TO_TICKS(10));
 
@@ -140,7 +157,17 @@ void str_power_off(int shutdown_flag)
 		printf("vcc_5v gpio val fail\n");
 		return;
 	}
-
+	/***power off vcc3.3v en***/
+	ret = xGpioSetDir(DVB_PWR_EN_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc3.3v en pin set gpio dir fail\n");
+		return;
+	}
+	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc3.3v en pin gpio val fail\n");
+		return;
+	}
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 	if (vdd_ee < 0) {
@@ -148,7 +175,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 869);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;

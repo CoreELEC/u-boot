@@ -76,6 +76,7 @@ void str_hw_init(void)
 
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
+	vKeyPadInit();
 }
 
 void str_hw_disable(void)
@@ -88,6 +89,8 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
+
+	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
 

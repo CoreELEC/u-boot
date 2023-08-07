@@ -63,7 +63,7 @@ void hw_business_process(void)
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 	vMbInit();
-	vCecCallbackInit(CEC_CHIP_S5);
+	vCecCallbackInit(CEC_CHIP_S1A);
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();

@@ -55,7 +55,7 @@ template_dir=""
 rootkey_index=0
 output_dir=""
 arb_config=""
-device_soc=""
+device_soc="s1a"
 
 parse_main() {
     local i=0

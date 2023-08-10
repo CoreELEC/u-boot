@@ -70,7 +70,7 @@ output_dir=""
 arb_config=""
 boot_blobs_arb_args=""
 device_fip_arb_args=""
-device_soc=""
+device_soc="s1a"
 storage_type=".sto"
 
 parse_main() {

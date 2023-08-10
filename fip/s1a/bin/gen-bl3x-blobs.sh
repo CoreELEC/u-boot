@@ -70,6 +70,9 @@ EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl${BLOB_NAME}-payload=${BASEDIR_AESKEY_
 ### Output: blobs ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-blob-bl${BLOB_NAME}=${BASEDIR_OUTPUT_BLOB}/blob-bl${BLOB_NAME}.bin${postfix}"
 
+### compact Device FIP Header
+EXEC_ARGS="${EXEC_ARGS} --header-layout=compact"
+
 #echo ${EXEC_ARGS}
 
 #

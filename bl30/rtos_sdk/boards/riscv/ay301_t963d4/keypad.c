@@ -25,8 +25,8 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 {
 	uint32_t buf[4] = { 0 };
 #ifdef KEYPAD_USED
-#ifdef CONFIG_WIFI_WAKE_UP
 	switch (event.ulCode) {
+#ifdef CONFIG_WIFI_WAKE_UP
 	case GPIO_KEY_ID_WIFI_WAKE:
 		buf[0] = WIFI_WAKEUP;
 		STR_Wakeup_src_Queue_Send_FromISR(buf);

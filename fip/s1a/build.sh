@@ -477,7 +477,7 @@ function mk_uboot() {
 	ddr_fip="${input_payloads}/ddr-fip.bin"
 	if [ ! -f ${ddr_fip} ]; then
 		echo "==== use empty ddr-fip ===="
-		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
+		dd if=/dev/zero of=${ddr_fip} bs=1024 count=0 status=none
 	fi
 
 	#cat those together with 4K upper aligned for sdcard

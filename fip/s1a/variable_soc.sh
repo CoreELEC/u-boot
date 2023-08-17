@@ -68,7 +68,7 @@ declare -a BLX_BIN_SIZE=("149504"	\
 			 "74864"	\
 			 "74864"	\
 			 "66672"	\
-			 "266240"	\
+			 "176128"	\
 			 "528384"	\
 			 "102400"	\
 			 "NULL")
@@ -77,7 +77,7 @@ declare BL2_BIN_SIZE="134048"
 declare BL2E_BIN_SIZE="65536"
 declare BL2X_BIN_SIZE="65536"
 declare BL30_BIN_SIZE="65536"
-declare BL33_BIN_SIZE="1572864"
+declare BL33_BIN_SIZE="768000"
 declare DEV_ACS_BIN_SIZE="4096"
 declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\

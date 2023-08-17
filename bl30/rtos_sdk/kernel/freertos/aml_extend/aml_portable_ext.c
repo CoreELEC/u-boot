@@ -152,7 +152,6 @@ void vPortHaltSystem(Halt_Action_e act)
 				plat_gic_irq_unregister(irq + i);
 		}
 	}
-
 	configPREPARE_CPU_HALT();
 
 	vBeforeExceptionShutdown(act);
@@ -191,6 +190,7 @@ void vHardwareResourceRecord(void)
 }
 
 /*-----------------------------------------------------------*/
+#define IRQ_ARM_ISP_NUM            (145 + 32)
 void vHardwareResourceRelease(void)
 {
 	/// timer
@@ -213,6 +213,10 @@ void vHardwareResourceRelease(void)
 	plat_gic_irq_register_with_default(321, 1, 0);
 	/* timerA irq*/
 	plat_gic_irq_register_with_default(32, 0, 0);
+#endif
+
+#if defined(CONFIG_SOC_C3)
+	plat_gic_irq_register_with_default(IRQ_ARM_ISP_NUM, 1, 1);
 #endif
 }
 

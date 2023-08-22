@@ -611,7 +611,7 @@ parse_main() {
         *--audio-id*)
             generate_audio_id_pattern "$@"
             ;;
-        *--device-scs-segid*)
+        *--device-scs-vendor-segid*)
             generate_mkt_id_pattern "$@"
             ;;
         *--kl*)

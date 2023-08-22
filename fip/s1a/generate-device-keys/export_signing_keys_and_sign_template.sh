@@ -139,6 +139,15 @@ fi
 
 if [ -s "${arb_config}" ]; then
     source ${arb_config}
+    if [ $device_soc == "s1a" ]; then
+        if [ -z ${device_vers} ] || [ -z ${device_scs_vendor_segid} ]; then
+            echo Error: ${arb_config} format not match with SoC $device_soc
+            usage
+        elif [ ${DEVICE_SCS_SEGID} != ${DEVICE_VENDOR_SEGID} ] || [ ${DEVICE_TEE_VERS} != ${DEVICE_REE_VERS} ]; then
+            echo Error: ${arb_config} format is invalid with SoC $device_soc
+            usage
+        fi
+    fi
     boot_blobs_arb_args="--device-scs-segid ${DEVICE_SCS_SEGID} --device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-scs-vers ${DEVICE_SCS_VERS} --device-tee-vers ${DEVICE_TEE_VERS} --device-lvl1cert-vers-submask ${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}"
     device_fip_arb_args="--device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-tee-vers ${DEVICE_TEE_VERS} --device-ree-vers ${DEVICE_REE_VERS}"
 fi

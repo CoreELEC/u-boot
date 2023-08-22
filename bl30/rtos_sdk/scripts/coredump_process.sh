@@ -14,6 +14,11 @@ function usage() {
     exit 1
 }
 
+if [ -z "$ARCH" ]; then
+    echo -e "\033[41;33m Please execute source scripts/env.sh \033[0m"
+    exit 1
+fi
+
 if [ -s "$1" ] && [ -s "$2" ]; then
     COREDUMP_LOG=$(readlink -f "$2")
     COREDUMP_BIN=$(dirname "$COREDUMP_LOG")/coredump.bin
@@ -36,9 +41,17 @@ if [ -s "$1" ] && [ -s "$2" ]; then
     fi
 
     # Start gdbstub terminal
-    pushd $RTOS_BASE_DIR/output/toolchains/gcc-aarch64-none-elf/bin
-    aarch64-none-elf-gdb $COREDUMP_ELF
-    popd
+    if [ "$ARCH" = "riscv" ]; then
+        echo "riscv coredump process"
+        pushd $RTOS_BASE_DIR/output/toolchains/gcc-riscv-none/bin
+        riscv-none-embed-gdb $COREDUMP_ELF
+        popd
+    else
+        echo "arm64 coredump process"
+        pushd $RTOS_BASE_DIR/output/toolchains/gcc-aarch64-none-elf/bin
+        aarch64-none-elf-gdb $COREDUMP_ELF
+        popd
+    fi
 
     # Clean up the abnormal exit problem of gdbstub
     pid=$(lsof -t -i :1234)

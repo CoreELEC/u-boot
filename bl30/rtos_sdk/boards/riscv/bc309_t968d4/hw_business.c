@@ -61,7 +61,7 @@ void hw_business_process(void)
 
 	config_eclic_irqs();
 	vMbInit();
-	vCecCallbackInit(CEC_CHIP_T5M);
+	vCecCallbackInit(CEC_CHIP_T3X);
 	vRtcInit();
 	//rtc_init();
 	vETHMailboxCallback();

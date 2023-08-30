@@ -21,4 +21,7 @@
 
 #define SARADC_REG_NUM (39 + 1)
 
+/* enable software calibration */
+#define SARADC_SOFTWARE_CALIBRATION
+
 #endif

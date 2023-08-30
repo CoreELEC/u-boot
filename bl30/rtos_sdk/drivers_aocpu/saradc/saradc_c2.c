@@ -94,7 +94,10 @@
 #define SARADC_DELTA_10 0x28
 
 #define SARADC_REG13 0x34
+#define SARADC_C2_REG13_VREF_SEL BIT(19)
+#define SARADC_C2_REG13_VCM_SEL BIT(18)
 #define SARADC_C2_REG13_VBG_SEL BIT(16)
+#define SARADC_C2_REG13_DEM_EN BIT(7)
 #define SARADC_C2_REG13_EN_VCM0P9 BIT(1)
 
 #define SARADC_REG14 0x38
@@ -180,6 +183,23 @@ void vAdcInit(void)
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG14),
 			  SARADC_C2_REG13_VBG_SEL | SARADC_C2_REG13_EN_VCM0P9,
 			  SARADC_C2_REG13_VBG_SEL | SARADC_C2_REG13_EN_VCM0P9);
+#if defined(SARADC_SOFTWARE_CALIBRATION)
+	/* configured in single-ended mode */
+	REG32_UPDATE_BITS(P_SARADC(SARADC_REG13),
+			  SARADC_C2_REG13_DEM_EN |
+			  SARADC_C2_REG13_VREF_SEL |
+			  SARADC_C2_REG13_VCM_SEL,
+			  SARADC_C2_REG13_DEM_EN |
+			  SARADC_C2_REG13_VREF_SEL |
+			  SARADC_C2_REG13_VCM_SEL);
+	REG32_UPDATE_BITS(P_SARADC(SARADC_REG14),
+			  SARADC_C2_REG13_DEM_EN |
+			  SARADC_C2_REG13_VREF_SEL |
+			  SARADC_C2_REG13_VCM_SEL,
+			  SARADC_C2_REG13_DEM_EN |
+			  SARADC_C2_REG13_VREF_SEL |
+			  SARADC_C2_REG13_VCM_SEL);
+#endif
 
 	/* disable diff, enable normal mode */
 	for (i = 0; i < SARADC_CH_MAX; i++) {
@@ -190,6 +210,16 @@ void vAdcInit(void)
 				  SARADC_C2_CH0_CTRL1_AUX_DIFF_EN |
 					  SARADC_C2_CH0_CTRL1_AUX_MODE_SEL,
 				  SARADC_C2_CH0_CTRL1_AUX_MODE_SEL);
+#if defined(SARADC_SOFTWARE_CALIBRATION)
+		/* configured in single-ended mode */
+		REG32_UPDATE_BITS(P_SARADC(SARADC_C2_CH0_CTRL1 + i * 12),
+				  SARADC_C2_REG13_DEM_EN |
+				  SARADC_C2_REG13_VREF_SEL |
+				  SARADC_C2_REG13_VCM_SEL,
+				  SARADC_C2_REG13_DEM_EN |
+				  SARADC_C2_REG13_VREF_SEL |
+				  SARADC_C2_REG13_VCM_SEL);
+#endif
 	}
 
 	/* clock initialization: 1.2M=24M/(0x13 + 1) */
@@ -334,7 +364,12 @@ static int32_t prvAdcReadRawSample(uint16_t *data, uint16_t datNum, struct AdcIn
 				return -pdFREERTOS_ERRNO_EINVAL;
 
 			data[count] = rVal & SARADC_FIFO_RD_SAMPLE_VALUE_MASK;
-
+#if defined(SARADC_SOFTWARE_CALIBRATION)
+			/* Keep as 12-bit value after calibration */
+			data[count] = data[count] > 0x3ff ? data[count] - 0x3ff : 0;
+			data[count] <<= 1;
+			data[count] = data[count] > 0xfff ? 0xfff : data[count];
+#endif
 			count++;
 		}
 	} else {

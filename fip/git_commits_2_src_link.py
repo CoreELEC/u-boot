@@ -257,9 +257,13 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
             log_list[i] = str(re.sub(r'"",', r'>",', str(log_list[i])))
             log_list[i] = str(re.sub(r' "', r' <', str(log_list[i])))
             log_list[i] = str(re.sub(r'" ', r'> ', str(log_list[i])))
+            log_list[i] = str(re.sub(r' `', r' ', str(log_list[i])))
+            log_list[i] = str(re.sub(r'&', r' ', str(log_list[i])))
+            log_list[i] = str(re.sub(r'loc\'', r'loc', str(log_list[i])))
+            log_list[i] = str(re.sub(r'">"', r'>"', str(log_list[i])))
+            log_list[i] = str(re.sub(r'">', r' >', str(log_list[i])))
 
-            if debug_enable:
-                print(' >    [%d] %s'%(i,log_list[i]))
+            print(' >    [%d] %s'%(i,log_list[i]))
         except:
             pass
     # eval special special characters

@@ -400,27 +400,27 @@ function package_binary()
 
 function mk_ddr_fip()
 {
-	FAST_BOOT_RESOURCE="fastboot"
-	test -f ${FAST_BOOT_RESOURCE}/bl22.bin && cp ${FAST_BOOT_RESOURCE}/bl22.bin ${BUILD_PATH}/bl22.bin
-	test -f ${FAST_BOOT_RESOURCE}/rtos_1.bin && cp ${FAST_BOOT_RESOURCE}/rtos_1.bin ${BUILD_PATH}/rtos_1.bin
-	test -f ${FAST_BOOT_RESOURCE}/rtos_2.bin && cp ${FAST_BOOT_RESOURCE}/rtos_2.bin ${BUILD_PATH}/rtos_2.bin
+	if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ] && [ "ipc" != "${CONFIG_CHIPSET_VARIANT_IPC}" ]; then
+		FAST_BOOT_RESOURCE="fastboot"
+		test -f ${FAST_BOOT_RESOURCE}/bl22.bin && cp ${FAST_BOOT_RESOURCE}/bl22.bin ${BUILD_PATH}/bl22.bin
+		test -f ${FAST_BOOT_RESOURCE}/rtos_1.bin && cp ${FAST_BOOT_RESOURCE}/rtos_1.bin ${BUILD_PATH}/rtos_1.bin
+		test -f ${FAST_BOOT_RESOURCE}/rtos_2.bin && cp ${FAST_BOOT_RESOURCE}/rtos_2.bin ${BUILD_PATH}/rtos_2.bin
 
-	if [ ! -e ${BUILD_PATH}/rtos_1.bin ]; then
-		echo ==== rtos_1.bin not exist, use a empty one ====
-		dd if=/dev/zero of=${BUILD_PATH}/rtos_1.bin bs=1 count=8192
-	fi
+		if [ ! -e ${BUILD_PATH}/rtos_1.bin ]; then
+			echo ==== rtos_1.bin not exist, use a empty one ====
+			dd if=/dev/zero of=${BUILD_PATH}/rtos_1.bin bs=1 count=8192
+		fi
 
-	if [ ! -e ${BUILD_PATH}/rtos_2.bin ]; then
-		echo ==== rtos_2.bin not exist, use a empty one ====
-		dd if=/dev/zero of=${BUILD_PATH}/rtos_2.bin bs=1 count=16384
-	fi
+		if [ ! -e ${BUILD_PATH}/rtos_2.bin ]; then
+			echo ==== rtos_2.bin not exist, use a empty one ====
+			dd if=/dev/zero of=${BUILD_PATH}/rtos_2.bin bs=1 count=16384
+		fi
 
-	build_header ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_1.bin ${BUILD_PATH}/rtos_2.bin
-	package_binary ${BUILD_PATH}/_tmp_hdr.bin ${BUILD_PATH}/bl22.bin bl22.bin
-	package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_1.bin bl22.bin
-	package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_2.bin ddr-fip.bin
+		build_header ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_1.bin ${BUILD_PATH}/rtos_2.bin
+		package_binary ${BUILD_PATH}/_tmp_hdr.bin ${BUILD_PATH}/bl22.bin bl22.bin
+		package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_1.bin bl22.bin
+		package_binary ${BUILD_PATH}/bl22.bin ${BUILD_PATH}/rtos_2.bin ddr-fip.bin
 
-	if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
 		if [ -n "${CONFIG_BUILD_UNSIGN}" ]; then
 			echo "==== build unsigned ===="
 			dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=256 &> /dev/null

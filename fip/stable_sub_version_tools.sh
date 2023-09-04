@@ -24,13 +24,13 @@ else
 fi
 
 if [[ -z "${ANDROID_ROOT_DIR}" ]]; then
-	ANDROID_ROOT_DIR="/mnt/fileroot/wenbo.wang/Android/android_R"
+	ANDROID_ROOT_DIR="/mnt/fileroot/wenbo.wang/Android/android_U"
 else
 	echo "External settings env: ANDROID_ROOT_DIR=${ANDROID_ROOT_DIR}"
 fi
 
 if [[ -z "${ANDROID_TARGET_BRANCH}" ]]; then
-	ANDROID_TARGET_BRANCH="r-tv-dev"
+	ANDROID_TARGET_BRANCH="u-tv-dev"
 else
 	echo "External settings env: ANDROID_TARGET_BRANCH=${ANDROID_TARGET_BRANCH}"
 fi
@@ -94,9 +94,9 @@ declare -a BLX_PATH=(		\
 	"bl2/tee"				\
 	"bl30/src_ao"			\
 	"bl30/rtos_sdk"			\
-	"bl31_1.3/src"		\
-	"bl32_3.8/src"		\
-	"bl32_3.18/src"	\
+	"bl31/bl31_1.3/src"		\
+	"bl32/bl32_3.8/src"		\
+	"bl32/bl32_3.18/src"	\
 	"bl33/v2019"			\
 	"fip"		)
 

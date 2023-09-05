@@ -115,7 +115,7 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_HIGH);
+	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("DVB_PWR en pin gpio val fail\n");
 		return;
@@ -163,7 +163,7 @@ void str_power_off(int shutdown_flag)
 		printf("vcc3.3v en pin set gpio dir fail\n");
 		return;
 	}
-	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_LOW);
+	ret = xGpioSetValue(DVB_PWR_EN_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vcc3.3v en pin gpio val fail\n");
 		return;

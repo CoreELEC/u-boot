@@ -85,6 +85,7 @@ SECTIONS
 #endif
     .data :
     {
+	. = ALIGN(4);
         _data = .;
         *(vtable)
 #if defined (SOC_t3)
@@ -93,16 +94,19 @@ SECTIONS
 	KEEP (*(SORT(.sdata.__initcall*)))
 	_module_pm_end = .;
         *(.sdata* .data*)
+	. = ALIGN(4);
         _edata = .;
     } > bss_ram AT > ram
 #else
         *(.sdata* .data*)
+	. = ALIGN(4);
         _edata = .;
     } > ram
 #endif
 
     .bss :
     {
+	. = ALIGN(4);
         _bss = .;
         *(.sbss*)
         *(.gnu.linkonce.sb.*)

@@ -13,15 +13,18 @@ SECTIONS
     {
  KEEP (*(SORT_NONE(.init)))
         . = ALIGN(4);
-        *(.text)
+        *(.text*)
         *(.rodata*)
+	. = ALIGN(4);
         _etext = .;
     } > ram
     .data :
     {
+	. = ALIGN(4);
         _data = .;
         *(vtable)
-        *(.data)
+        *(.sdata* .data*)
+	. = ALIGN(4);
         _edata = .;
     } > ram
     .bss :

@@ -150,15 +150,8 @@ void rtc_enable_irq(void)
 void rtc_disable_irq(void)
 {
 	int ret, val;
-	u32 alarm, time;
 
-	alarm = REG32(RTC_DIG_ALARM0_REG);
-	time = REG32(RTC_DIG_REAL_TIME);
-#ifdef CONFIG_RTC_STORAGE_FORMAT_GRAY
-	alarm = gray_to_binary(alarm);
-	time = gray_to_binary(time);
-#endif
-	val = alarm - time;
+	val = GetIrqInner(RTC_IRQ);
 	if (val > 0) {
 		DisableIrq(RTC_IRQ);
 		ret = UnRegisterIrq(RTC_IRQ);

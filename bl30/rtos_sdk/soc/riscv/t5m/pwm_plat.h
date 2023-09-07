@@ -50,14 +50,6 @@ struct xPwmMesonVoltage {
 	uint32_t Duty_reg;
 };
 
-struct xPwmMesonChip {
-	uint32_t chip_id;
-	unsigned long addr;
-	uint32_t mask;
-	/*transfers the clk div, clk gate, and clk mux to the clktree.*/
-	unsigned long clk_addr;
-};
-
 uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id);
 uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id);
 struct xPwmMesonVoltage *vPwmMesonGetVoltTable(uint32_t voltage_id);

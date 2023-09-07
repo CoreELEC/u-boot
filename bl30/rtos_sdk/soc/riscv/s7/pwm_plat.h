@@ -34,10 +34,16 @@ enum meson_pwm_id {
 
 /* There are x pwm controllers in s7 */
 enum pwm_chip_id {
-	PWM_AB = 0,
-	PWM_CD,
-	PWM_EF,
-	PWM_GH,
+	PWM_A = 0,
+	PWM_B,
+	PWM_C,
+	PWM_D,
+	PWM_E,
+	PWM_F,
+	PWM_G,
+	PWM_H,
+	PWM_I,
+	PWM_J,
 	PWM_MUX,
 };
 
@@ -50,14 +56,6 @@ enum pwm_voltage_id {
 struct xPwmMesonVoltage {
 	uint32_t Voltage_mv;
 	uint32_t Duty_reg;
-};
-
-struct xPwmMesonChip {
-	uint32_t chip_id;
-	unsigned long addr;
-	uint32_t mask;
-	/*transfers the clk div, clk gate, and clk mux to the clktree.*/
-	unsigned long clk_addr;
 };
 
 uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id);

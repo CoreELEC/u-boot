@@ -41,8 +41,14 @@ static uint32_t gray_to_binary(uint32_t gray)
 static void vRTCInterruptHandler(void)
 {
 	uint32_t buf[4] = { 0 };
+	uint32_t reg_val;
 
 	alarm_flags = 1;
+	reg_val = REG32(RTC_DIG_INT_STATUS) & 0x1;
+	/* Clear alarm0 int status */
+	if (reg_val)
+		REG32(RTC_DIG_INT_CLR) = 0x1;
+
 	printf("[%s]: rtc alarm fired\n", TAG);
 
 	buf[0] = RTC_WAKEUP;
@@ -126,7 +132,13 @@ void rtc_enable_irq(void)
 {
 	int ret, val;
 	u32 alarm, time;
+	int irq_num;
+	uint32_t reg_val;
 
+	irq_num = RTC_IRQ % 32;
+	reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
+	if (reg_val)
+		REG32(IRQCTRL_IRQ_LATCH_CLR4) |= (0x1 << irq_num);
 	alarm = REG32(RTC_DIG_ALARM0_REG);
 	time = REG32(RTC_DIG_REAL_TIME);
 #ifdef CONFIG_RTC_STORAGE_FORMAT_GRAY
@@ -163,9 +175,15 @@ void rtc_disable_irq(void)
 static void rtc_alarm_timer_handler(TimerHandle_t xAlarmTimer)
 {
 	static int rtc_irq, status;
+	int irq_num;
+	uint32_t reg_val;
 
 	status = REG32(RTC_DIG_INT_STATUS) & 0x1;
 	if (status && !alarm_flags) {
+		printf("warning: rtc interrupt lost!trigger rtc interrupt manually!\n");
+		irq_num = RTC_IRQ % 32;
+		reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
+		printf("[%s]: timer read rtc irqctrl status: 0x%x !!\n", TAG, reg_val);
 		rtc_irq = GetIrqInner(RTC_IRQ);
 		if (rtc_irq)
 			eclic_set_pending(rtc_irq);
@@ -175,8 +193,18 @@ static void rtc_alarm_timer_handler(TimerHandle_t xAlarmTimer)
 
 void alarm_clr(void)
 {
+	int irq_num;
+	uint32_t reg_val;
+
 	if (xAlarmTimer != NULL)
 		xTimerStop(xAlarmTimer, 0);
+
+	irq_num = RTC_IRQ % 32;
+	reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
+	printf("[%s]: rtc irqctrl status: 0x%x !!\n", TAG, reg_val);
+	if (reg_val)
+		REG32(IRQCTRL_IRQ_LATCH_CLR4) |= (0x1 << irq_num);
+	reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
 }
 
 static void rtc_alarm_timer_init(void)

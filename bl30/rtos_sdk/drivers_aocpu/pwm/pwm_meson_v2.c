@@ -278,9 +278,13 @@ static void prvMesonConfig(struct xPwmMesondevice *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 		/*set div and clock enable */
+		/* If using clktree */
 		if (pwm->chip->clk_addr) {
-			/* If using clktree */
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
+			if (pwm->chip->channel_separated && !pwm->chip->even_channel)
+				prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 24)));
+			else
+				prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
 				       ((pwm->pwm_pre_div << 0) | (1 << 8)));
 		} else {
 			prvPwmRegWrite((uint32_t)&reg->miscr,
@@ -322,13 +326,18 @@ static void prvMesonConfigExt(struct xPwmMesondevice *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_2:
 		/*set div and clock enable */
-		if (pwm->chip->clk_addr)
-			prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
+		if (pwm->chip->clk_addr) {
+			if (pwm->chip->channel_separated && !pwm->chip->even_channel)
+				prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 16) | (1 << 24)),
+				       ((pwm->pwm_pre_div << 16) | (1 << 24)));
+			else
+				prvPwmRegWrite(pwm->chip->clk_addr, ((0xff << 0) | (1 << 8)),
 				       ((pwm->pwm_pre_div) | (1 << 8)));
-		else
+		} else {
 			prvPwmRegWrite((uint32_t)&reg->miscr,
 				       ((0x3 << 4) | (0x7f << 8) | (1 << 15)),
 				       ((pwm->pwm_pre_div << 8) | (1 << 15)));
+		}
 		/*set duty */
 		prvPwmRegWrite((uint32_t)&reg->da2r, 0xffffffff,
 			       ((pwm->pwm_hi << 16) | (pwm->pwm_lo)));
@@ -632,7 +641,10 @@ struct xPwmMesondevice *xPwmMesonChannelApply(uint32_t chip_id, uint32_t channel
 		printf("can not get pwm Controller!\n");
 		return NULL;
 	}
-
+	if (chip->channel_separated && channel_id != MESON_PWM_0 && channel_id != MESON_PWM_2) {
+		printf("It is separated pwm and channel id is invail!\n");
+		return NULL;
+	}
 	if (chip->mask & (1 << channel_id)) {
 		printf("pwm channel is applied already!\n");
 		return NULL;

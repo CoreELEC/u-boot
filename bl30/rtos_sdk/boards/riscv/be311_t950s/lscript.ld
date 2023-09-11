@@ -27,9 +27,11 @@ SECTIONS
     } > ram
     .data :
     {
+	. = ALIGN(4);
         _data = .;
         *(vtable)
         *(.sdata* .data*)
+	. = ALIGN(4);
         _edata = .;
     } > ram
     .bss :

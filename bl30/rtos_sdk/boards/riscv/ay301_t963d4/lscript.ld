@@ -27,6 +27,7 @@ SECTIONS
     } > ram
     .data :
     {
+	. = ALIGN(4);
         _data = .;
         *(vtable)
 	. = ALIGN(4);
@@ -34,6 +35,7 @@ SECTIONS
 	KEEP (*(SORT(.sdata.__initcall*)))
 	_module_pm_end = .;
         *(.sdata* .data*)
+	. = ALIGN(4);
         _edata = .;
     } > ram
     .bss :

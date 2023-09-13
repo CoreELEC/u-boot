@@ -47,7 +47,7 @@
 #define CMD_GET_IR_INFO         0xF8
 #define CMD_PM_FREEZE           0xF9
 #define CMD_SET_MID             0xFA
-
+#define CMD_SUSPEND_WITH_DSP    0x66
 
 
 /*******************************************************************************
@@ -74,5 +74,6 @@
 #define MBX_CMD_GET_STICK_REBOOT_FLAG __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_STICK_REBOOT_FLAG)
 #define MBX_CMD_SET_ETHERNET_WOL	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_ETHERNET_WOL)
 #define MBX_CMD_SET_MID	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_MID)
+#define MBX_CMD_SUSPEND_WITH_DSP __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SUSPEND_WITH_DSP)
 
 #endif

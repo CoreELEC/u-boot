@@ -137,6 +137,16 @@ __attribute__((weak)) void vCLK_resume(uint32_t st_f)
 	st_f = st_f;
 }
 
+__attribute__((weak)) void vDSP_suspend(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
+__attribute__((weak)) void vDSP_resume(uint32_t st_f)
+{
+	st_f = st_f;
+}
+
 void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
@@ -144,6 +154,7 @@ void system_resume(uint32_t pm)
 	if (pm == PM_SHUTDOWN_FLAG)
 		shutdown_flag = 1;
 
+	vDSP_resume(shutdown_flag);
 	vCLK_resume(shutdown_flag);
 	/*Need clr alarm ASAP*/
 	alarm_clr();
@@ -178,6 +189,7 @@ void system_suspend(uint32_t pm)
 	vDDR_suspend(shutdown_flag);
 	str_power_off(shutdown_flag);
 	vCLK_suspend(shutdown_flag);
+	vDSP_suspend(shutdown_flag);
 }
 
 void set_reason_flag(char exit_reason)

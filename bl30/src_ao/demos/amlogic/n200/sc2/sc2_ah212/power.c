@@ -34,7 +34,7 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 #include "wifi_bt_wake.h"
-
+#include "dsp_suspend.h"
 #include "hdmi_cec.h"
 
 #include "interrupt_control_eclic.h"
@@ -100,6 +100,7 @@ void str_hw_init(void)
 #endif
 
 	wifi_bt_wakeup_init();
+	vDSPVadWakeupInit();
 }
 
 void str_hw_disable(void)
@@ -118,6 +119,7 @@ void str_hw_disable(void)
 	vKeyPadDeinit();
 	printf("vGpioKeyDisable\n");
 	vRestoreGpioIrqReg();
+	vDSPVadWakeupDeinit();
 }
 
 void str_power_on(int shutdown_flag)

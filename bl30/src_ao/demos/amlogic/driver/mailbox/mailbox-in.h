@@ -70,7 +70,7 @@ typedef struct __attribute__((__packed__)) {
     configASSERT(cmd <= MAILBOX_CMD_MAX && size <= MAILBOX_BUFFER_SIZE)
 
 #define VALID_CHANNEL(chan) \
-    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL || chan == AODSPA_CHANNEL)
+    configASSERT(chan == AOREE_CHANNEL || chan == AOTEE_CHANNEL || chan == AODSPA_CHANNEL || chan == AO2DSPA_CHANNEL)
 
 #define VALID_BUFFER_SIZE(size) \
     configASSERT(size <= MAILBOX_BUFFER_SIZE)
@@ -129,6 +129,7 @@ static inline uint32_t xGetSendMbox(uint32_t ulChan)
 {
 	switch (ulChan) {
 	case AODSPA_CHANNEL:
+	case AO2DSPA_CHANNEL:
 		return MAILBOX_AO2DSPA;
 	case AOREE_CHANNEL:
 	case AOTEE_CHANNEL:

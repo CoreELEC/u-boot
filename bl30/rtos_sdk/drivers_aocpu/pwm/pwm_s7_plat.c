@@ -13,10 +13,16 @@
 #include <pwm.h>
 
 struct xPwmMesonChip meson_pwm_chip[] = {
-	{ PWM_AB, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL },
-	{ PWM_CD, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_CD_CTRL },
-	{ PWM_EF, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_EF_CTRL },
-	{ PWM_GH, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_GH_CTRL },
+	{ PWM_A, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL, pdTRUE, pdTRUE},
+	{ PWM_B, PWM_PWM_B, 0, CLKCTRL_PWM_CLK_AB_CTRL, pdTRUE },
+	{ PWM_C, PWM_PWM_C, 0, CLKCTRL_PWM_CLK_CD_CTRL, pdTRUE, pdTRUE},
+	{ PWM_D, PWM_PWM_D, 0, CLKCTRL_PWM_CLK_CD_CTRL, pdTRUE },
+	{ PWM_E, PWM_PWM_E, 0, CLKCTRL_PWM_CLK_EF_CTRL, pdTRUE, pdTRUE},
+	{ PWM_F, PWM_PWM_F, 0, CLKCTRL_PWM_CLK_EF_CTRL, pdTRUE },
+	{ PWM_G, PWM_PWM_G, 0, CLKCTRL_PWM_CLK_GH_CTRL, pdTRUE, pdTRUE},
+	{ PWM_H, PWM_PWM_H, 0, CLKCTRL_PWM_CLK_GH_CTRL, pdTRUE },
+	{ PWM_I, PWM_PWM_I, 0, CLKCTRL_PWM_CLK_IJ_CTRL, pdTRUE, pdTRUE},
+	{ PWM_J, PWM_PWM_J, 0, CLKCTRL_PWM_CLK_IJ_CTRL, pdTRUE, },
 };
 
 /* VDDEE voltage table  volt must ascending */
@@ -51,10 +57,10 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-		return PWM_EF;
+		return PWM_E;
 
 	case VDDCPU_VOLT:
-		return PWM_EF;
+		return PWM_F;
 
 	default:
 		break;
@@ -68,17 +74,7 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
  */
 uint32_t prvMesonVoltToPwmchannel(enum pwm_voltage_id voltage_id)
 {
-	switch (voltage_id) {
-	case VDDEE_VOLT:
-		return MESON_PWM_0;
-
-	case VDDCPU_VOLT:
-		return MESON_PWM_1;
-
-	default:
-		break;
-	}
-	return MESON_PWM_2;
+	return MESON_PWM_0;
 }
 
 struct xPwmMesonVoltage *vPwmMesonGetVoltTable(uint32_t voltage_id)

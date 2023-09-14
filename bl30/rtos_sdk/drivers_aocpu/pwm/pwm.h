@@ -17,6 +17,16 @@ extern "C" {
 #define MESON_PWM_2 2
 #define MESON_PWM_3 3
 
+struct xPwmMesonChip {
+	uint32_t chip_id;
+	unsigned long addr;
+	uint32_t mask;
+	/*transfers the clk div, clk gate, and clk mux to the clktree.*/
+	unsigned long clk_addr;
+	int channel_separated;
+	int even_channel;
+};
+
 struct xPwmMesondevice {
 	struct xPwmMesonChip *chip;
 	uint32_t hwpwm;

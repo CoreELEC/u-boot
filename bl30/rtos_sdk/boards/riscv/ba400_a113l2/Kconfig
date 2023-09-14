@@ -18,6 +18,7 @@ config BOARD_BA400_A113L2
 	select PWM
 	select LEDS
 	select I2C_SLAVE
+	select I2C
 	select TIMER_SOURCE
 	select SARADC
 	select IR

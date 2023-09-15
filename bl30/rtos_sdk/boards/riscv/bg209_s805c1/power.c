@@ -133,8 +133,8 @@ void str_power_on(int shutdown_flag)
 		printf("vcc_5v gpio val fail\n");
 		return;
 	}
-	/*Wait 10ms for VDDCPU statable*/
-	vTaskDelay(pdMS_TO_TICKS(10));
+	/*Wait 20ms for VDDCPU statable*/
+	vTaskDelay(pdMS_TO_TICKS(20));
 
 	printf("vdd_cpu on\n");
 }

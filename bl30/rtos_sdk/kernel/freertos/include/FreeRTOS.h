@@ -73,6 +73,11 @@ extern "C" {
 #if ( configUSE_NEWLIB_REENTRANT == 1 )
 	#include <reent.h>
 #endif
+
+#ifdef CONFIG_BARECTF
+#include "freertos-trace.h"
+#endif
+
 /*
  * Check all the required application specific macros have been defined.
  * These macros are application specific and (as downloaded) are defined

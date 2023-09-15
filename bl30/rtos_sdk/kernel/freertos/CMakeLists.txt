@@ -44,5 +44,8 @@ aml_library_link_libraries(drivers)
 if(CONFIG_BACKTRACE)
 aml_library_link_libraries(lib__backtrace)
 endif()
+if(CONFIG_BARECTF)
+aml_library_link_libraries(utilities__barectf)
+endif()
 
 aml_link_libraries()

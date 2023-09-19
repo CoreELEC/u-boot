@@ -665,6 +665,13 @@ function process_blx() {
 		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
+	if [ -n "${CONFIG_BOOT_DEVICE_DFU_ROOT_PUBKEY_INDEX}" ]; then
+		if [ ${CONFIG_BOOT_DEVICE_DFU_ROOT_PUBKEY_INDEX} -ge 0 ] && [ ${CONFIG_BOOT_DEVICE_DFU_ROOT_PUBKEY_INDEX} -le 3 ]; then
+			echo $(printf %02x $CONFIG_BOOT_DEVICE_DFU_ROOT_PUBKEY_INDEX) | xxd -r -p > ${BUILD_PATH}/device.dfu.rootpubkey.index.bin
+			dd if=${BUILD_PATH}/device.dfu.rootpubkey.index.bin of=${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed bs=1 seek=3472 count=1 conv=notrunc >& /dev/null
+		fi
+	fi
+
 	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
 	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
 

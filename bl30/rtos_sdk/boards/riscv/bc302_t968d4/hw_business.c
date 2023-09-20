@@ -60,6 +60,7 @@ void hw_business_process(void)
 	uint8_t i = 0;
 
 	config_eclic_irqs();
+	config_pmp();
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_T3X);
 	vRtcInit();

@@ -30,6 +30,7 @@ void pmp_open_all_space(void){
 	asm volatile ("csrw pmpcfg0, x6":::);
 }
 
+#ifndef N200_REVA
 /*
  * -- Configure PMP --
  * For both Machine and User mode.
@@ -123,6 +124,7 @@ uint32_t config_pmp(void)
 
 	return 0;
 }
+#endif
 
 void switch_m2u_mode(void){
 	clear_csr (mstatus,MSTATUS_MPP);

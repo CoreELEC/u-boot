@@ -1,10 +1,18 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "lscript.h"
+
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
               "elf32-littleriscv")
 OUTPUT_ARCH("riscv")
 ENTRY( _start )
 MEMORY
 {
-    ram (rw) : ORIGIN = 0x10000000, LENGTH = (64 * 1024)
+    ram (rw) : ORIGIN = configMEM_START, LENGTH = configMEM_LEN
 }
 SECTIONS
 {

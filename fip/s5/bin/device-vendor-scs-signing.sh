@@ -32,6 +32,15 @@ check_value() {
 	fi
 }
 
+check_opt_boolean() {
+    if [ -n "$2" ]; then
+        if [ "$2" != "true" ] && [ "$2" != "false" ]; then
+            echo Error: invalid value $1: \""$2"\"
+            exit 1
+        fi
+    fi
+}
+
 function mk_uboot() {
 	output_images=$1
 	input_payloads=$2
@@ -161,6 +170,7 @@ Usage: $(basename $0) --help | --version
 		{--rootkey-index [0 | 1 | 2 | 3]} \\
 		{--chipset-variant <chipset-variant>} \\
 		{--arb-config <arb-config-file>} \\
+		{--disable-device-aes-crypto true} \\
 		--out-dir <output-dir>
 EOF
     exit 1
@@ -219,6 +229,9 @@ parse_main() {
 		;;
             --arb-config)
                 arb_config="${argv[$i]}"
+		;;
+		--disable-device-aes-crypto)
+                disable_device_aes_crypto="${argv[$i]}"
 		;;
             --out-dir)
                 output_dir="${argv[$i]}"
@@ -291,6 +304,11 @@ if [ -s "${fw_arb_cfg}" ]; then
 	export DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
 	export DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
 	export DEVICE_REE_VERS=${DEVICE_REE_VERS}
+fi
+
+check_opt_boolean disable-device-aes-crypto "$disable_device_aes_crypto"
+if [ "$disable_device_aes_crypto" == "true" ]; then
+    export DEVICE_NO_CRYPTO_AES=y
 fi
 
 #export DEVICE_SCS_KEY_TOP=$(pwd)/${key_dir}

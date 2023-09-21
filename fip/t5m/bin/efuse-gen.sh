@@ -57,6 +57,7 @@ Usage: $(basename $0) --help
                       [--enable-dif-password true] \\
                       [--enable-dvuk-derive-with-cid true] \\
                       [--enable-device-vendor-scs true] \\
+                      [--disable-device-aes-crypto true] \\
                       -o pattern.efuse
        $(basename $0) --audio-id audio_id_value \\
                       -o audio_id.efuse
@@ -95,6 +96,8 @@ function generate_efuse_device_pattern() {
                 enable_dvuk_derive_with_cid="${argv[$i]}" ;;
             --enable-device-vendor-scs)
                 enable_device_vendor_scs="${argv[$i]}" ;;
+            --disable-device-aes-crypto)
+                disable_device_aes_crypto="${argv[$i]}" ;;
             *)
                 echo "Unknown option $arg"; exit 1
                 ;;
@@ -114,6 +117,7 @@ function generate_efuse_device_pattern() {
     check_opt_boolean enable-dif-password "$enable_dif_password"
     check_opt_boolean enable-dvuk-derive-with-cid "$enable_dvuk_derive_with_cid"
     check_opt_boolean enable-device-vendor-scs "$enable_device_vendor_scs"
+    check_opt_boolean disable-device-aes-crypto "$disable_device_aes_crypto"
 
     if [ "$dvgk" != "" ]; then
         keyinfo="$(xxd -p -c 16 $dvgk)"
@@ -140,8 +144,10 @@ function generate_efuse_device_pattern() {
         echo "efuse_obj set FEAT_ENABLE_DEVICE_LVL1_PUBRSA_PROT 01" >> $patt_text
         echo "efuse_obj set FEAT_ENABLE_DEVICE_LVLX_PUBRSA_PROT 01" >> $patt_text
         echo "efuse_obj set FEAT_ENABLE_DEVICE_VENDOR_SIG 01" >> $patt_text
-        echo "efuse_obj set FEAT_ENABLE_DEVICE_PROT 01" >> $patt_text
         echo "efuse_obj set FEAT_ENABLE_DEVICE_SCS_SIG 01" >> $patt_text
+    fi
+    if [ "$disable_device_aes_crypto" != "true" ]; then
+        echo "efuse_obj set FEAT_ENABLE_DEVICE_PROT 01" >> $patt_text
     fi
 
     if [ "$enable_usb_password" == "true" ]; then

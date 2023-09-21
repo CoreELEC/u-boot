@@ -736,6 +736,9 @@ function build_signed() {
 			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
 		fi
 		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
+		if [ "y" == "${CONFIG_DEVICE_NO_CRYPTO_AES}" ]; then
+			export DEVICE_NO_CRYPTO_AES=${CONFIG_DEVICE_NO_CRYPTO_AES}
+		fi
 
 		export DEVICE_STORAGE_SUFFIX=.sto
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs

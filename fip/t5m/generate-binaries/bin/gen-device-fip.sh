@@ -76,10 +76,14 @@ EXEC_ARGS="${EXEC_ARGS} --infile-bl33-payload=${BASEDIR_PAYLOAD}/bl33-payload.bi
 
 # Device Vendor binaries
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl30-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-rsa-priv.pem"
-EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl30-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl30.bin"
-
+if [ "y" != "${DEVICE_NO_CRYPTO_AES}" ]; then
+	EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl30-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl30.bin"
+fi
+echo DEVICE_NO_CRYPTO_AES ${DEVICE_NO_CRYPTO_AES}
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl33-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl33-level-3-rsa-priv.pem"
-EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl33-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl33.bin"
+if [ "y" != "${DEVICE_NO_CRYPTO_AES}" ]; then
+	EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl33-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl33.bin"
+fi
 
 # Chipset Manufacturer binaries
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl40-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl40-level-3-rsa-priv.pem"

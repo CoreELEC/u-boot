@@ -167,6 +167,21 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
+	if (shutdown_flag) {
+		/***power on VDDQ***/
+		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("VDDQ set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("VDDQ set gpio val fail\n");
+			return;
+		}
+	}
+
 	/*Wait 20ms for VDDCPU statable*/
 	vTaskDelay(pdMS_TO_TICKS(20));
 
@@ -178,6 +193,21 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
+
+	if (shutdown_flag) {
+		/***power off VDDQ***/
+		ret = xGpioSetDir(GPIOD_4, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("VDDQ set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_4, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("VDDQ set gpio val fail\n");
+			return;
+		}
+	}
 
 	/***power off vcc_5v***/
 	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);

@@ -652,7 +652,7 @@ function bin_path_parser() {
 					( [ "${cas}" == "vmx" ] && [ "${CUR_SOC}" == "gxl" ] ); then
 					CONFIG_CAS=${cas}
 				fi
-				if [ "${CUR_SOC}" == "sc2" ] && [ "${cas}" == "nsk" ]; then
+				if [ "${cas}" == "nsk" ]; then
 					CONFIG_CAS=${cas}
 				fi
 				if [[ "${CONFIG_CAS}" == "irdeto" || \

@@ -27,7 +27,7 @@ function package_target_verify() {
 
     #parameter check
     if [ -z "$PACKAGE_ARRY" ]; then
-        echo -e "\033[41;33m package list is not set, please execute source scripts/pkg_env.sh \033[0m"
+        echo -e "\033[41;33m package list is not set, please execute scripts/pkg_env.sh \033[0m"
         exit 1
     fi
 
@@ -52,6 +52,41 @@ function package_target_verify() {
     # create mirror file directory
     rm -fr $AML_IMAGE_STORAGE_PATH
     mkdir -p $AML_IMAGE_STORAGE_PATH
+}
+
+function package_kernel_for_mcuboot() {
+    MCUBOOT_LIB_DIR=${RTOS_BUILD_DIR}/lib/mcuboot
+    MCUBOOT_SIGNTOOL_DIR=${MCUBOOT_LIB_DIR}/scripts
+    MCUBOOT_SIGNTOOL=${MCUBOOT_SIGNTOOL_DIR}/imgtool.py
+    MCUBOOT_OUT_DIR=${RTOS_BUILD_DIR}/output/$1-$2-mcuboot
+    MCUBOOT_CFG=$MCUBOOT_OUT_DIR/$KERNEL/.config
+    IMGTOOL_INPUT_FILE=$OUTPUT_PATH/$KERNEL/$KERNEL.bin
+    IMGTOOL_OUTPUT_FILE=$OUTPUT_PATH/images/$KERNEL-signed.bin
+
+    KERNEL_SLOT_SZ="$(grep -E \
+    "^CONFIG_LIB_MCUBOOT_KERNEL_SIZE=" "$MCUBOOT_CFG" | cut -d '=' -f2)"
+
+    python3 $MCUBOOT_SIGNTOOL sign --key $MCUBOOT_LIB_DIR/root-rsa-2048.pem \
+            --header-size 0x1000 --align 4 --slot-size ${KERNEL_SLOT_SZ} \
+            --pad  --version 1.0.0 --pad-header --load-addr 0x10000 \
+            ${IMGTOOL_INPUT_FILE} \
+            ${IMGTOOL_OUTPUT_FILE}
+
+    cp ${IMGTOOL_OUTPUT_FILE} ${IMAGE_PATH}/rtos-uImage
+
+    PRODUCT_CFG=${RTOS_BUILD_DIR}/output/$1-$2-$3/$KERNEL/.config
+    BT_INPUT_FILE=${RTOS_BUILD_DIR}/boards/${pkg_arch[0]}/${pkg_board[0]}/bt_fw.bin
+    BT_OUTPUT_FILE=$AML_IMAGE_STORAGE_PATH/bt-signed.bin
+    BT_SLOT_SZ="$(grep -E "^CONFIG_LIB_MCUBOOT_BT_SIZE=" "$MCUBOOT_CFG" | cut -d '=' -f2)"
+
+    python3 $MCUBOOT_SIGNTOOL sign --key $MCUBOOT_LIB_DIR/root-rsa-2048.pem \
+            --header-size 0x1000 --align 4 --slot-size  ${BT_SLOT_SZ} \
+            --version 1.0.0 \
+            --pad-header \
+            ${BT_INPUT_FILE} \
+            ${BT_OUTPUT_FILE}
+    cp $BT_OUTPUT_FILE ${IMAGE_PATH}/bt
+
 }
 
 function compile_rtos_for_arm() {
@@ -96,9 +131,14 @@ function compile_rtos_for_arm() {
         cp ${OUTPUT_PATH}/${KERNEL}/${KERNEL}.bin ${BINARY_FILE}
     fi
 
-    mkimage -A ${ARCH} -O u-boot -T standalone -C none -a ${RTOS_LOAD_ADDR} -e ${RTOS_LOAD_ADDR} -n rtos -d ${BINARY_FILE} ${IMAGE_PATH}/rtos-uImage
+	if [ -n "$BUILD_MCUBOOT" ]; then
+        package_kernel_for_mcuboot $1 $3 $4
+	else
+    	mkimage -A ${ARCH} -O u-boot -T standalone -C none -a ${RTOS_LOAD_ADDR} \
+        -e ${RTOS_LOAD_ADDR} -n rtos -d ${BINARY_FILE} ${IMAGE_PATH}/rtos-uImage
+    fi
 
-    if [ "$RTOS_XIP" = "1" ]; then
+	if [ "$RTOS_XIP" = "1" ]; then
         cp ${OUTPUT_PATH}/freertos/freertos_b.bin ${IMAGE_PATH}/rtos-xipA
         cp ${IMAGE_PATH}/* $AML_IMAGE_STORAGE_PATH/
     else
@@ -157,25 +197,31 @@ function build_bootloader() {
     echo "start compiling bootloader ..."
     echo "<-------------- ${pkg_arch[0]} ${pkg_soc[0]} ${pkg_board[0]} ${pkg_product[0]} -------------->"
 
-    #Select the compile parameters of the bootstrap
-    case ${pkg_board[0]} in
-    'ad401_a113l')
-        uboot_type="a1_ad401_nand_rtos"
-        ;;
-    'ad403_a113l')
-        uboot_type="a1_ad403_nand_rtos"
-        ;;
-    *) ;;
-    esac
-
-    if [ -z "$uboot_type" ]; then
-        echo "Waring: Select board(${pkg_board[0]}) not support compile uboot"
-        exit 1
+    if [ "$1" == "mcuboot" ]; then
+        source $RTOS_BUILD_DIR/scripts/package_mcuboot.sh
+        compile_mcuboot ${pkg_arch[0]} ${pkg_soc[0]} ${pkg_board[0]} mcuboot $AML_IMAGE_STORAGE_PATH
+        echo "Compilation of MCUBoot is successful"
     else
-        pushd $RTOS_BUILD_DIR/boot/u-boot
-        ./mk $uboot_type
-        test -f build/u-boot.bin && cp -av build/u-boot.bin* $AML_IMAGE_STORAGE_PATH
-        popd
+        #Select the compile parameters of the bootstrap
+        case ${pkg_board[0]} in
+        'ad401_a113l')
+            uboot_type="a1_ad401_nand_rtos"
+            ;;
+        'ad403_a113l')
+            uboot_type="a1_ad403_nor_rtos"
+            ;;
+        *) ;;
+        esac
+
+        if [ -z "$uboot_type" ]; then
+            echo "Waring: Select board(${pkg_board[0]}) not support compile uboot"
+            exit 1
+        else
+            pushd $RTOS_BUILD_DIR/boot/u-boot
+            ./mk $uboot_type
+            test -f build/u-boot.bin && cp -av build/u-boot.bin* $AML_IMAGE_STORAGE_PATH
+            popd
+        fi
     fi
 }
 
@@ -184,12 +230,20 @@ function aml_image_package() {
     install $IMAGE_BOARD_CONFIG_DIR/usb_flow.aml $AML_IMAGE_STORAGE_PATH/
     install $IMAGE_BOARD_CONFIG_DIR/aml_sdc_burn.ini $AML_IMAGE_STORAGE_PATH/
 
-    if [ -e "$AML_IMAGE_STORAGE_PATH/dspboot.bin" ]; then
-        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-    elif [ -e "$AML_IMAGE_STORAGE_PATH/rtos-xipA.bin" ]; then
-        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-    else
-        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+    if [ -e "$AML_IMAGE_STORAGE_PATH/mcuboot.bin" ]; then
+        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_mcuboot.conf \
+        $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+    elif [ -e "$AML_IMAGE_STORAGE_PATH/u-boot.bin" ]; then
+        if [ -e "$AML_IMAGE_STORAGE_PATH/dspboot.bin" ]; then
+            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf \
+            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+        elif [ -e "$AML_IMAGE_STORAGE_PATH/rtos-xipA.bin" ]; then
+            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf \
+            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+        elif [ -e "$AML_IMAGE_STORAGE_PATH/u-boot.bin" ]; then
+            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf \
+            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
+        fi
     fi
 
     $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf $AML_IMAGE_STORAGE_PATH $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.img
@@ -198,6 +252,6 @@ function aml_image_package() {
 }
 
 package_target_verify
+build_bootloader mcuboot
 compile_rtos_for_all
-build_bootloader
 aml_image_package

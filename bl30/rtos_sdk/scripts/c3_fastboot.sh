@@ -159,7 +159,7 @@ fi
 #Compile toolchain preparation
 toolchain_prepare
 #compile the rtos image
-cd $RTOS_BASE_DIR && make scatter
+cd $RTOS_BASE_DIR && make
 #lz4 compression
 lz4_rtos
 #compile the bl22 image

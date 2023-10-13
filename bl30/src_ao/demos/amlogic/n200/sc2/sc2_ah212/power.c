@@ -33,7 +33,7 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
-#include "btwake.h"
+#include "wifi_bt_wake.h"
 
 #include "hdmi_cec.h"
 
@@ -90,10 +90,14 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
+
 #ifdef UART_BT_QCOM
-	bt_suspend_handle();
+	if (get_power_mode() != PM_SHUTDOWN_FLAG) {  // skip poweroff sdandby
+		bt_suspend_handle();
+	}
 #endif
-	bt_task_start();
+
+	wifi_bt_wakeup_init();
 }
 
 void str_hw_disable(void)
@@ -106,8 +110,9 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 		/*printf("del cec task\n");*/
 	}
-	bt_task_disable();
-	printf("bt task disable\n");
+
+	wifi_bt_wakeup_deinit();
+
 	vKeyPadDeinit();
 	printf("vGpioKeyDisable\n");
 	vRestoreGpioIrqReg();

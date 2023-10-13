@@ -24,24 +24,24 @@
 #define ADC_KEY_ID_ESC 523
 #define ADC_KEY_ID_HOME 524
 
-static void vGpioKeyCallBack(struct xReportEvent event)
-{
-	uint32_t buf[4] = { 0 };
+//static void vGpioKeyCallBack(struct xReportEvent event)
+//{
+//	uint32_t buf[4] = { 0 };
 
-	switch (event.ulCode) {
-	case GPIO_KEY_ID_POWER:
-	case GPIO_KEY_ID_WIFI_WAKE:
-		buf[0] = POWER_KEY_WAKEUP;
-		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		//wakeup_dsp();
-		break;
-	default:
-		break;
-	}
+//	switch (event.ulCode) {
+//	case GPIO_KEY_ID_POWER:
+//	case GPIO_KEY_ID_WIFI_WAKE:
+//		buf[0] = POWER_KEY_WAKEUP;
+//		STR_Wakeup_src_Queue_Send_FromISR(buf);
+//		//wakeup_dsp();
+//		break;
+//	default:
+//		break;
+//	}
 
-	printf("GPIO key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
-	       event.responseTime);
-}
+//	printf("GPIO key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
+//	       event.responseTime);
+//}
 
 static void vAdcKeyCallBack(struct xReportEvent event)
 {
@@ -62,12 +62,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 }
 
 struct xGpioKeyInfo gpioKeyInfo[] = {
-	/*
-	 * GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT,
-	 *		vGpioKeyCallBack, NULL),
-	 */
-	GPIO_KEY_INFO(GPIOA_1, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL)
-
+	//GPIO_KEY_INFO(GPIO_KEY_ID_POWER, HIGH, EVENT_SHORT, vGpioKeyCallBack, NULL),
 };
 
 struct xAdcKeyInfo adcKeyInfo[] = {

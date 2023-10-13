@@ -72,7 +72,7 @@ function package_kernel_for_mcuboot() {
             ${IMGTOOL_INPUT_FILE} \
             ${IMGTOOL_OUTPUT_FILE}
 
-    cp ${IMGTOOL_OUTPUT_FILE} ${IMAGE_PATH}/rtos-uImage
+    cp ${IMGTOOL_OUTPUT_FILE} ${IMAGE_PATH}/rtos-mcuImage
 
     PRODUCT_CFG=${RTOS_BUILD_DIR}/output/$1-$2-$3/$KERNEL/.config
     BT_INPUT_FILE=${RTOS_BUILD_DIR}/boards/${pkg_arch[0]}/${pkg_board[0]}/bt_fw.bin
@@ -142,7 +142,8 @@ function compile_rtos_for_arm() {
         cp ${OUTPUT_PATH}/freertos/freertos_b.bin ${IMAGE_PATH}/rtos-xipA
         cp ${IMAGE_PATH}/* $AML_IMAGE_STORAGE_PATH/
     else
-        test -f ${IMAGE_PATH}/rtos-uImage && cp ${IMAGE_PATH}/rtos-uImage $AML_IMAGE_STORAGE_PATH/rtos-uImage
+        test -f ${IMAGE_PATH}/rtos-mcuImage && cp \
+	${IMAGE_PATH}/rtos-mcuImage $AML_IMAGE_STORAGE_PATH/rtos-mcuImage
     fi
 
     test -f ${DEBUG_FILE_PREFIX}.lst && cp ${DEBUG_FILE_PREFIX}.lst $AML_IMAGE_STORAGE_PATH/$1-$3.lst

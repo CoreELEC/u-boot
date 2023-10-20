@@ -61,12 +61,22 @@ scatter:\n\
 
 #Parse object file segment information
 function parse_segment_information() {
-	TEXT_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.text[^ ]*' | sort -u | uniq)
-	DATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.data[^ ]*' | sort -u | uniq)
-	RODATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.rodata[^ ]*' | sort -u | uniq)
+	if [ "$ARCH" = "xtensa" ]; then
+		TEXT_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.text' | sort -u | uniq)
+		DATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.data' | sort -u | uniq)
+		RODATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.rodata' | sort -u | uniq)
+		BSS_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.bss' | sort -u | uniq)
+	else
+		TEXT_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.text[^ ]*' | sort -u | uniq)
+		DATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.data[^ ]*' | sort -u | uniq)
+		RODATA_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.rodata[^ ]*' | sort -u | uniq)
+		BSS_SECTION=$(${OBJDUMP} -h $1 | grep -wo '\.bss[^ ]*' | sort -u | uniq)
+	fi
+
 	TEXT_ARRY=(${TEXT_SECTION// /})
 	DATA_ARRY=(${DATA_SECTION// /})
 	RODATA_ARRY=(${RODATA_SECTION// /})
+	BSS_SECTION=(${BSS_SECTION// /})
 }
 
 #Replace the target file segment name
@@ -85,6 +95,12 @@ function rename_target_file_segment() {
 	for value in ${RODATA_ARRY[@]}; do
 		RELINK_FLAG="${RELINK_FLAG}"" --rename-section ${value}=.${SEGMENT_PREFIX}${value}"
 	done
+
+	if [ "$ARCH" = "xtensa" ]; then
+		for value in ${BSS_SECTION[@]}; do
+			RELINK_FLAG="${RELINK_FLAG}"" --rename-section ${value}=.${SEGMENT_PREFIX}${value}"
+		done
+	fi
 
 	if [ "$RELINK_FLAG" != "-p" ]; then
 		${OBJCOPY} ${RELINK_FLAG} $1 $1

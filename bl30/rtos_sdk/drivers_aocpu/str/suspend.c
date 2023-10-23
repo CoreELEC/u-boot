@@ -29,11 +29,16 @@
 #include "wakeup.h"
 #include "stick_mem.h"
 #include "pm.h"
+#include "suspend_debug.h"
 
 SemaphoreHandle_t xSTRSemaphore;
 QueueHandle_t xSTRQueue;
 SemaphoreHandle_t xSTRFlagSem;
 uint32_t suspend_flag;
+#if BL30_SUSPEND_DEBUG_EN
+uint32_t suspend_debug_flag;
+static TaskHandle_t printTask;
+#endif
 uint32_t power_mode;
 
 struct WakeUp_Reason vWakeupReason[] = {
@@ -102,9 +107,37 @@ __weak void vCLK_resume(uint32_t st_f)
 	(void)st_f;
 }
 
+#if BL30_SUSPEND_DEBUG_EN
+inline void split_suspend_flag(uint32_t *temp)
+{
+	suspend_debug_flag = (*temp) & SUSPEND_DEBUG_MASK;
+	*temp = (*temp) & ~SUSPEND_DEBUG_MASK;
+}
+
+inline uint32_t get_suspend_flag(void)
+{
+	return suspend_debug_flag;
+}
+
+void vDebugPrintTask(void *pvParameters)
+{
+	/*make compiler happy*/
+	(void) pvParameters;
+
+	for ( ;; ) {
+		printf("vPTask1...\n");
+		vTaskDelay(pdMS_TO_TICKS(TEST_TASK1_DELAY));
+	}
+}
+#endif
+
 void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
+
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+#endif
 
 	if (pm == 0xf)
 		shutdown_flag = 1;
@@ -112,7 +145,10 @@ void system_resume(uint32_t pm)
 	/*Need clr alarm ASAP*/
 	alarm_clr();
 	str_power_on(shutdown_flag);
-	vDDR_resume(shutdown_flag);
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SKIP_DDR_SUSPEND))
+#endif
+		vDDR_resume(shutdown_flag);
 	str_hw_disable();
 	vRTC_update();
 	wakeup_ap();
@@ -123,12 +159,21 @@ void system_resume(uint32_t pm)
 		store_rtc();
 		watchdog_reset_system();
 	}
+
+#if BL30_SUSPEND_DEBUG_EN
+	stop_debug_task();
+	exit_func_print();
+#endif
 }
 
 void system_suspend(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
-
+#if BL30_SUSPEND_DEBUG_EN
+	split_suspend_flag(&pm);
+	enter_func_print();
+	start_debug_task();
+#endif
 	if (pm == 0xf)
 		shutdown_flag = 1;
 
@@ -139,9 +184,15 @@ void system_suspend(uint32_t pm)
 	set_suspend_flag();
 	/*Delay 500ms for FSM switch to off*/
 	vTaskDelay(pdMS_TO_TICKS(500));
-	vDDR_suspend(shutdown_flag);
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SKIP_DDR_SUSPEND))
+#endif
+		vDDR_suspend(shutdown_flag);
 	str_power_off(shutdown_flag);
 	vCLK_suspend(shutdown_flag);
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
 }
 
 void set_reason_flag(char exit_reason)
@@ -236,7 +287,7 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
-	printf("power_mode=0x%x\n", power_mode);
+	printf("power_mode=0x%x\n", power_mode & POWER_MODE_MASK);
 	STR_Start_Sem_Give();
 
 	return NULL;

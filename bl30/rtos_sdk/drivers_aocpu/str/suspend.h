@@ -1,9 +1,11 @@
 /*
- * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ * Copyright (c) 2021-2023 Amlogic, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: MIT
  */
 
+#ifndef __SUSPEND_H__
+#define __SUSPEND_H__
 /* wake up reason*/
 #define UDEFINED_WAKEUP 0
 #define CHARGING_WAKEUP 1
@@ -44,3 +46,5 @@ extern void STR_Start_Sem_Give(void);
 extern void STR_Wakeup_src_Queue_Send_FromISR(uint32_t *src);
 extern void STR_Wakeup_src_Queue_Send(uint32_t *src);
 extern void *xMboxSuspend_Sem(void *msg);
+#endif /* __SUSPEND_H__ */
+

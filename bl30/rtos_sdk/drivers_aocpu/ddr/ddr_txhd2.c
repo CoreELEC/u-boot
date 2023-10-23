@@ -11,6 +11,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "soc.h"
+#include "suspend_debug.h"
 
 #define timere_read()	REG32(TIMERE_LOW_REG)
 /* io defines */
@@ -76,8 +77,17 @@ void vDDR_suspend(uint32_t st_f)
 
 	while (AML_DDR_CHANNEL_ALL_IDLE != rd_reg(DMC_CHAN_STS)) {
 		printf("DMC_CHAN_STS: 0x%x\n", rd_reg(DMC_CHAN_STS));
+#if BL30_SUSPEND_DEBUG_EN
+/* ddr suspend debug : print vio reg and clear */
+	dmc_status_print_clear();
+#endif
 		vTaskDelay(pdMS_TO_TICKS(100000));
 	}
+
+#if BL30_SUSPEND_DEBUG_EN
+/* ddr suspend debug : print vio before REQ_CTRL disabled*/
+	dmc_status_disable_print();
+#endif
 
 	/*backup and clear DMC req*/
 	g_nDMCReqBack = rd_reg(DMC_REQ_CTRL);
@@ -253,6 +263,12 @@ void vDDR_resume(uint32_t st_f)
 		printf("DMC_DRAM_STAT3-ch0: 0x%x\n", rd_reg(DMC_DRAM_STAT));
 		_udelay(1);
 	}
+
+#if BL30_SUSPEND_DEBUG_EN
+/* ddr suspend debug : print vio reg and channel status before resume */
+	show_dmc_port_status();
+#endif
+
 	wr_reg(DMC_REQ_CTRL, g_nDMCReqBack);
 
 	wr_reg(DMC_DRAM_APD_CTRL, g_nAPDBack);

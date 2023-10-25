@@ -22,6 +22,8 @@
 
 extern xRtosInfo_t xRtosInfo;
 
+static ipi_process_handle ipi_handler;
+
 static unsigned char irq_mask[portMAX_IRQ_NUM / 8];
 
 /*-----------------------------------------------------------*/
@@ -238,4 +240,20 @@ int xRtosLoadStageIndicator(void)
 #endif
 
 	return 1;
+}
+
+/*-----------------------------------------------------------*/
+void xIpiProcessCallbackRegister(ipi_process_handle handler)
+{
+	ipi_handler = handler;
+}
+
+/*-----------------------------------------------------------*/
+void xIpiCommonProcess(void *args)
+{
+	if (ipi_handler)
+		ipi_handler(args);
+#if defined(CONFIG_SOC_T7) || defined(CONFIG_SOC_T7C)
+	vPortHaltSystem(2);
+#endif
 }

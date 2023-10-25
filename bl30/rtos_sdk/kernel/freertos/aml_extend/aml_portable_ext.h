@@ -68,6 +68,8 @@ static inline void _irq_restore(unsigned long flags)
 
 #endif
 
+typedef void (*ipi_process_handle)(void *);
+
 void vLowPowerSystem(void);
 
 unsigned int xPortIsIsrContext(void);
@@ -89,5 +91,9 @@ void vHardwareResourceRelease(void);
 int xRtosLoadStageIndicator(void);
 
 extern void _global_constructors(void);
+
+void xIpiProcessCallbackRegister(ipi_process_handle handler);
+
+void xIpiCommonProcess(void *args);
 
 #endif

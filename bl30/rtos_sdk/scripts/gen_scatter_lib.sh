@@ -140,6 +140,8 @@ if [ -s "$1" ] && [ -f "$1" ]; then
 	rename_target_file_segment $1
 elif [ -d "$1" ]; then
 	search_and_process_specified_directory $1
+elif [ "$1" = "-empty" ]; then
+	echo "<---generate empty rule--->"
 else
 	show_help
 	exit 1

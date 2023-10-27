@@ -1,0 +1,9 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_S7D
+	bool "S7D"
+	select RISCV
+	help
+	  Enable S7D SOC of RISCV.

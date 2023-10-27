@@ -22,3 +22,4 @@ riscv s5 ax201_s928x aocpu
 riscv s5 ax208_s928x aocpu
 riscv s5 ax209_s928x aocpu
 riscv s7 s7_skt aocpu
+riscv s7d s7d_skt aocpu

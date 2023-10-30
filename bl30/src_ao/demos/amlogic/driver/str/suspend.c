@@ -65,7 +65,7 @@ SemaphoreHandle_t xSTRSemaphore = NULL;
 QueueHandle_t xSTRQueue = NULL;
 SemaphoreHandle_t xSTRFlagSem = NULL;
 uint32_t suspend_flag;
-uint32_t power_mode;
+static uint32_t power_mode;
 
 WakeUp_Reason vWakeupReason[] = {
 	[UDEFINED_WAKEUP] = { .name = "undefine" },
@@ -91,6 +91,12 @@ void set_suspend_flag(void)
 	taskEXIT_CRITICAL();
 	EnableIrq(IRQ_ETH_PMT_NUM);
 }
+
+uint32_t get_power_mode(void)
+{
+	return power_mode;
+}
+
 __attribute__((weak)) void vDDR_suspend(uint32_t st_f)
 {
 	st_f = st_f;
@@ -135,8 +141,9 @@ void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 
-	if (pm == 0xf)
+	if (pm == PM_SHUTDOWN_FLAG)
 		shutdown_flag = 1;
+
 	vCLK_resume(shutdown_flag);
 	/*Need clr alarm ASAP*/
 	alarm_clr();
@@ -158,7 +165,7 @@ void system_suspend(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 
-	if (pm == 0xf)
+	if (pm == PM_SHUTDOWN_FLAG)
 		shutdown_flag = 1;
 
 	/*Need set alarm ASAP*/

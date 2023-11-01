@@ -35,9 +35,9 @@
 extern "C" {
 #endif
 #include "register.h"
-#define	GPIO_NUM_MAX	113 /*actual numbers of pins*/
+#define	GPIO_NUM_MAX	132  /*actual numbers of pins*/
 #define	BANK_NUM_MAX	11   /*numbers of gpio bank*/
-#define	IRQ_REG_NUM	4  /* numbers of irq relative reg*/
+#define	IRQ_REG_NUM	4    /* numbers of irq relative reg*/
 #define	GPIO_INVALID	0xffff
 #ifdef AO_IRQ_GPIO_REG
 #define GPIO_AO_IRQ_BASE	AO_IRQ_GPIO_REG

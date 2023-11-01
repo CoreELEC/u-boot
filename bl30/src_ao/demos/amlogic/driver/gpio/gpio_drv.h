@@ -60,15 +60,17 @@ typedef struct GpioDomain {
 
 typedef struct GpioBank {
 	const char *name;
+	const uint8_t pin_num;
 	const GpioDomain_t *domain;
 	GpioRegDesc_t regs[NUM_REG];
 } GpioBank_t;
 
 const GpioBank_t *pGetGpioBank(void);
 
-#define BANK(n, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)	\
+#define BANK_V2(n, pn, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)\
 {										\
 	.name   = n,								\
+	.pin_num = pn,								\
 	.domain = d,								\
 	.regs	= {								\
 		[REG_PULLEN]	= {per, peb},					\
@@ -80,5 +82,8 @@ const GpioBank_t *pGetGpioBank(void);
 		[REG_DRV]	= {sr, sb},					\
 	},									\
 }
+
+#define BANK(n, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)	\
+	BANK_V2(n, 0, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)
 
 #endif

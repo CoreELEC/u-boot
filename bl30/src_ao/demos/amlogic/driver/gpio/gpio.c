@@ -32,12 +32,20 @@
 #include <common.h>
 #include <task.h>
 #include <gpio.h>
+#include <stdbool.h>
 #include "util.h"
 #include "projdefs.h"
 #include "gpio_drv.h"
 #include "portmacro.h"
 
 #define DRIVER_NAME "gpio"
+
+typedef struct {
+	uint32_t pinmux[4];
+	uint32_t oen;
+} BankBackup_t;
+
+static BankBackup_t stateBackup[BANK_NUM_MAX];
 
 extern unsigned int xPortIsIsrContext(void);
 static void prvEnterCritical(UBaseType_t *uxIsr)
@@ -221,6 +229,100 @@ int xPinmuxSet(uint16_t gpio, enum PinMuxType func)
 	bit = (desc->bit + (offset << 2)) % 32;
 
 	prvGpioRegWrite(bk->domain->rMux + (reg << 2), 0xf << bit, func << bit);
+
+	return 0;
+}
+
+static void prvOenStateHandle(const GpioBank_t *bk, BankBackup_t *bbk, bool isBackup)
+{
+	uint8_t reg, bit, end;
+
+	bit = bk->regs[REG_DIR].bit;
+	end = bit + bk->pin_num;
+	reg = bk->regs[REG_DIR].reg;
+
+	while (bit < end) {
+		if (isBackup) {
+			bbk->oen &= ~(0x1 << bit);
+			bbk->oen |= REG32(bk->domain->rGpio + (reg << 2)) & (0x1 << bit);
+			prvGpioRegWrite(bk->domain->rGpio + (reg << 2), 0x1 << bit, 0x1 << bit);
+		} else {
+			prvGpioRegWrite(bk->domain->rGpio + (reg << 2), 0x1 << bit, bbk->oen);
+		}
+		bit++;
+	}
+}
+
+static void prvPinmuxStateHandle(const GpioBank_t *bk, BankBackup_t *bbk, bool isBackup)
+{
+	uint8_t reg, offset, bit, begin, end;
+
+	begin = bk->regs[REG_MUX].bit;
+	end = begin + bk->pin_num * 4;
+	reg = bk->regs[REG_MUX].reg;
+
+	while (begin < end) {
+		offset = begin >> 5;
+		bit = begin & 0x1f;
+		if (isBackup) {
+			bbk->pinmux[offset] &= ~(0xf << bit);
+			bbk->pinmux[offset] |= REG32(bk->domain->rMux + ((reg + offset) << 2)) & (0xf << bit);
+			prvGpioRegWrite(bk->domain->rMux + ((reg + offset) << 2), 0xf << bit, 0);
+		} else {
+			prvGpioRegWrite(bk->domain->rMux + ((reg + offset) << 2), 0xf << bit, bbk->pinmux[offset]);
+		}
+		begin += 4;
+	}
+}
+
+static int prvBankCheck(const char *name, const GpioBank_t **bk)
+{
+	int index;
+	const GpioBank_t *gpk = pGetGpioBank();
+
+	/* Find bank */
+	for (index = 0; index < BANK_NUM_MAX; index++) {
+		if (!strcasecmp(gpk[index].name, name)) {
+			*bk = &gpk[index];
+			break;
+		}
+	}
+
+	if (index == BANK_NUM_MAX)
+		return -pdFREERTOS_ERRNO_ENXIO;
+
+	if (!(*bk)->pin_num)
+		return -pdFREERTOS_ERRNO_EINVAL;
+
+	return index;
+}
+
+int xBankStateBackup(const char *name)
+{
+	int index;
+	const GpioBank_t *bk;
+
+	index = prvBankCheck(name, &bk);
+	if (index < 0)
+		return index;
+
+	prvOenStateHandle(bk, &stateBackup[index], true);
+	prvPinmuxStateHandle(bk, &stateBackup[index], true);
+
+	return 0;
+}
+
+int xBankStateRestore(const char *name)
+{
+	int index;
+	const GpioBank_t *bk;
+
+	index = prvBankCheck(name, &bk);
+	if (index < 0)
+		return index;
+
+	prvPinmuxStateHandle(bk, &stateBackup[index], false);
+	prvOenStateHandle(bk, &stateBackup[index], false);
 
 	return 0;
 }

@@ -87,13 +87,13 @@ static const GpioDomain_t eeDomain = {
 };
 
 static const GpioBank_t gpioBanks[BANK_NUM_MAX] = {
-			  /* pullen pull  dir    out   in     mux   drv*/
-	BANK("D", &aoDomain, 3, 0,  2, 0, 0, 0,  4, 0, 1, 0,  0, 0, 0, 0),
-	BANK("H", &eeDomain, 2, 0,  2, 0, 6, 0,  7, 0, 8, 0,  5, 0, 2, 0),
-	BANK("B", &eeDomain, 0, 0,  0, 0, 0, 0,  1, 0, 2, 0,  0, 0, 0, 0),
-	BANK("Z", &eeDomain, 1, 0,  1, 0, 3, 0,  4, 0, 5, 0,  4, 0, 1, 0),
-	BANK("W", &eeDomain, 3, 0,  3, 0, 9, 0,  10, 0, 11, 0, 2,0, 3, 9),
-	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 0),
+	/* name   pin_num   domain   pullen   pull   dir   out   in   mux   drv  */
+	BANK_V2("D", 11, &aoDomain, 3,  0,  2,  0, 0,  0,  4,  0,  1,  0, 0,  0, 0, 0),
+	BANK_V2("H", 22, &eeDomain, 2,  0,  2,  0, 6,  0,  7,  0,  8,  0, 5,  0, 2, 0),
+	BANK_V2("B", 14, &eeDomain, 0,  0,  0,  0, 0,  0,  1,  0,  2,  0, 0,  0, 0, 0),
+	BANK_V2("Z",  7, &eeDomain, 1,  0,  1,  0, 3,  0,  4,  0,  5,  0, 4,  0, 1, 0),
+	BANK_V2("W", 13, &eeDomain, 3,  0,  3,  0, 9,  0, 10,  0, 11,  0, 2,  0, 3, 9),
+	BANK_V2("E",  3, &aoDomain, 3, 16,  2, 16, 0, 16,  4, 16,  1, 16, 1, 16, 1, 0),
 };
 
 static ParentIRQDesc_t eeIRQs[] = {

@@ -44,6 +44,8 @@
 #include "uart_bt.h"
 #endif
 
+#define ALWAYS_ON_5V_PW
+
 static TaskHandle_t cecTask = NULL;
 static int vdd_ee;
 
@@ -130,6 +132,7 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
+#ifndef ALWAYS_ON_5V_PW
     /***power on vcc_5v***/
 	ret = xPinmuxSet(GPIOH_8,PIN_FUNC0);
 	if (ret < 0) {
@@ -142,6 +145,9 @@ void str_power_on(int shutdown_flag)
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
+#else
+	printf("Need to keep 5V always on..\n");
+#endif
 
     /***power on vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);
@@ -179,6 +185,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
+#ifndef ALWAYS_ON_5V_PW
     /***power off vcc_5v***/
 	ret = xPinmuxSet(GPIOH_8,PIN_FUNC0);
 	if (ret < 0) {
@@ -191,6 +198,9 @@ void str_power_off(int shutdown_flag)
 		printf("vcc_5v set gpio dir fail\n");
 		return;
 	}
+#else
+	printf("Need to keep 5V always on..\n");
+#endif
 
 	/***power off vdd_cpu***/
 	ret = xGpioSetDir(GPIO_TEST_N,GPIO_DIR_OUT);

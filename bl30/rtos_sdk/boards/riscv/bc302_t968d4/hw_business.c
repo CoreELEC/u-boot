@@ -61,6 +61,8 @@ void hw_business_process(void)
 
 	config_eclic_irqs();
 	config_pmp();
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_T3X);
 	vRtcInit();

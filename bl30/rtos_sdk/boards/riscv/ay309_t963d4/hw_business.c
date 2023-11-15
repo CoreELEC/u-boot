@@ -63,6 +63,8 @@ void hw_business_process(void)
 	config_pmp();
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_T5M);
 	vRtcInit();

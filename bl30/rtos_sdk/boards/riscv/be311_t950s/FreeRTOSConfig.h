@@ -66,10 +66,11 @@
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 6
 #define configMAX_API_CALL_INTERRUPT_PRIORITY 6
 
+#define configSTICK_MEM_SIZE    128
 #define configDEFAULT_HEAP_ADDR 0xfffc0000
-#define configDEFAULT_HEAP_SIZE (26 * 1024)
-#define configSTICK_REG_ADDR (configDEFAULT_HEAP_ADDR + configDEFAULT_HEAP_SIZE)
-#define configSTICK_REG_SIZE 128
+#define configDEFAULT_HEAP_SIZE (26 * 1024 - configSTICK_MEM_SIZE)
+// FIXME: Need to redefine configSTICK_MEM_ADDR to a appropriate address.
+#define configSTICK_MEM_ADDR (configDEFAULT_HEAP_ADDR + configDEFAULT_HEAP_SIZE)
 
 #define portCRITICAL_NESTING_IN_TCB 1
 

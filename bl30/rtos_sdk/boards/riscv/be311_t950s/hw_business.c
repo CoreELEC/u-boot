@@ -72,9 +72,8 @@ void hw_business_process(void)
 	for (i = 0; i < 8; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 
-	stick_mem_init();
-	//write watchdog flag
-	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
+//	stick_mem_init();
+//	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i)

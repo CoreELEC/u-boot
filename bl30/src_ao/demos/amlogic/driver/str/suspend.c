@@ -360,6 +360,8 @@ static void vSTRTask( void *pvParameters )
 					exit_reason = HDMI_RX_WAKEUP;
 					break;
 				default:
+					printf("unknown exit_reason %d\n", exit_reason);
+					set_suspend_flag();
 					break;
 			}
 

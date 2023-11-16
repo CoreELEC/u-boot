@@ -28,6 +28,7 @@ declare -a  COMPILE_PARA_LIST=("--h" "--help" "--config" "--chip-varient" "--che
 			"--jenkins-sign" "--former-sign" "--build-unsign" "--build-nogit" \
 			"--nasc_nagra_tier_1" "--cas" "--systemroot" "--avb2" "--vab" \
 			"--fastboot-write" "--signpipe" "--avb2-recovery" "--patch" "--gpt" \
+			"--display-pipeline" \
 			)
 
 function parse_bl33_global_config() {
@@ -287,8 +288,12 @@ function build() {
 
 	# pre-build, get .config defines
 	if [ ! $BOARD_COMPILE_HDMITX_ONLY ]; then
-            echo "export BOARD_COMPILE_HDMITX_ONLY=null"
-	    export BOARD_COMPILE_HDMITX_ONLY=null
+		echo "export BOARD_COMPILE_HDMITX_ONLY=null"
+		export BOARD_COMPILE_HDMITX_ONLY=null
+	fi
+	if [ ! $BOARD_DISPLAY_PIPELINE ]; then
+		echo "export BOARD_DISPLAY_PIPELINE=null"
+		export BOARD_DISPLAY_PIPELINE=null
 	fi
 	pre_build_uboot $@
 
@@ -524,6 +529,10 @@ function parser() {
 			--hdmitx-only)
 				echo "export BOARD_COMPILE_HDMITX_ONLY=true"
 				export BOARD_COMPILE_HDMITX_ONLY=true
+				continue ;;
+			--display-pipeline)
+				export BOARD_DISPLAY_PIPELINE="${argv[$i]}"
+				echo "export BOARD_DISPLAY_PIPELINE="${argv[$i]}""
 				continue ;;
 			--clean|--distclean)
 				clean

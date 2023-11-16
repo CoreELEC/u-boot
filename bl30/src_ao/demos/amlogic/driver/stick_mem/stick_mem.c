@@ -28,8 +28,8 @@
 #include "FreeRTOSConfig.h"
 
 extern unsigned int __stick_base;
-unsigned int last_stick_reboot_flag;
-unsigned int *p_stick_mem = (unsigned int *)configSTICK_REG_ADDR;//&__stick_base;
+static unsigned int last_stick_reboot_flag;
+unsigned int *p_stick_mem = (unsigned int *)configSTICK_MEM_ADDR;//&__stick_base;
 
 int stick_mem_read(enum stick_mem_idx index, unsigned int *buf)
 {
@@ -82,4 +82,9 @@ void stick_mem_init(void)
 	}
 
 	return;
+}
+
+unsigned int get_stick_reboot_flag(void)
+{
+	return last_stick_reboot_flag;
 }

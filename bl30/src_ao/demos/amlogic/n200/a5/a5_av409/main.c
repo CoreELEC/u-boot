@@ -50,6 +50,7 @@
 #include "mailbox-api.h"
 #include "version.h"
 #include "eth.h"
+#include "stick_mem.h"
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -158,8 +159,9 @@ int main(void)
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
-
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);

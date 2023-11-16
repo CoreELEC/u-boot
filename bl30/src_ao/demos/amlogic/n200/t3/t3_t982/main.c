@@ -129,9 +129,6 @@ int main(void)
 	printf("\nStarting AOCPU FreeRTOS...\r\n");
 	version();
 
-	stick_mem_init();
-	//write watchdog flag
-	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 
@@ -139,8 +136,9 @@ int main(void)
 	for (i = 0; i < 4; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n",REG32(AOCPU_IRQ_SEL0 + i*4));
 
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
-
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);

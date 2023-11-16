@@ -50,12 +50,15 @@
 #include "pm.h"
 #include "irq.h"
 
+#ifndef UNUSED
+#define UNUSED(x) ((void)x)
+#endif
+
 void system_resume(uint32_t pm);
 void system_suspend(uint32_t pm);
 void set_reason_flag(char exit_reason);
 void create_str_task(void);
 uint32_t get_reason_flag(void);
-uint32_t get_stick_reboot_flag(void);
 void *xMboxGetWakeupReason(void *msg);
 void *xMboxClrWakeupReason(void *msg);
 void *xMboxGetStickRebootFlag(void *msg);
@@ -207,16 +210,6 @@ uint32_t get_reason_flag(void)
 	return REG32(WAKEUP_REASON_STICK_REG) & 0x7f;
 }
 
-uint32_t get_stick_reboot_flag(void)
-{
-#if (configSUPPORT_STICK_MEM == 1)
-	return last_stick_reboot_flag;
-#else
-	printf("Don't support stick memory!\r\n");
-	return 0;
-#endif
-}
-
 void *xMboxGetWakeupReason(void *msg)
 {
 	*(uint32_t *)msg = get_reason_flag();
@@ -231,8 +224,12 @@ void *xMboxClrWakeupReason(void *msg)
 
 void *xMboxGetStickRebootFlag(void *msg)
 {
+#if (configSUPPORT_STICK_MEM == 1)
 	*(uint32_t *)msg = get_stick_reboot_flag();
-
+#else
+	UNUSED(msg);
+	printf("Don't support stick memory!\r\n");
+#endif
 	return NULL;
 }
 

@@ -39,6 +39,7 @@
 #include "mailbox-api.h"
 #include "version.h"
 #include "hdmi_cec.h"
+#include "stick_mem.h"
 #include "eth.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -175,6 +176,8 @@ int main(void)
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i);
 
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
 	vCoreFsmIdleInit();
 	// Create timer

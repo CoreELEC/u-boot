@@ -173,13 +173,12 @@ int main(void)
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 	vPICInit();
-	stick_mem_init();
-	//write watchdog flag
-	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
 
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i);
 
+	stick_mem_init();
+	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	vMbInit();
 	vCoreFsmIdleInit();
 	// Create timer

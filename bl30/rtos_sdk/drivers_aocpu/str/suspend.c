@@ -210,16 +210,6 @@ uint32_t get_reason_flag(void)
 	return REG32(WAKEUP_REASON_STICK_REG) & 0x7f;
 }
 
-uint32_t get_stick_reboot_flag(void)
-{
-#if (configSUPPORT_STICK_MEM == 1)
-	return last_stick_reboot_flag;
-#else
-	printf("Don't support stick memory!\r\n");
-	return 0;
-#endif
-}
-
 void *xMboxGetWakeupReason(void *msg)
 {
 	*(uint32_t *)msg = get_reason_flag();
@@ -234,8 +224,11 @@ void *xMboxClrWakeupReason(void *msg)
 
 void *xMboxGetStickRebootFlag(void *msg)
 {
+#ifdef CONFIG_STICK_MEM
 	*(uint32_t *)msg = get_stick_reboot_flag();
-
+#else
+	printf("Don't support stick memory!\r\n");
+#endif
 	return NULL;
 }
 

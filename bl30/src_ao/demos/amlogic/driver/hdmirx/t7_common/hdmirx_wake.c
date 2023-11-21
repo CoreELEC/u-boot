@@ -28,8 +28,8 @@ static void hdmirx_IRQHandle(void)
 			xGpioGetValue(GPIO_HDMI_RX1_POWER),
 			xGpioGetValue(GPIO_HDMI_RX2_POWER),
 			xGpioGetValue(GPIO_HDMI_RX3_POWER));
+		STR_Wakeup_src_Queue_Send_FromISR(buf);
 	}
-	STR_Wakeup_src_Queue_Send_FromISR(buf);
 }
 
 void hdmirx_GpioIRQRegister(void)

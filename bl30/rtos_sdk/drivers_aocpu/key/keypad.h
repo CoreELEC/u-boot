@@ -108,6 +108,8 @@ void vDestroyAdcKey(void);
 void vAdcKeyEnable(void);
 void vAdcKeyDisable(void);
 int vAdcKeyIsEmpty(void);
+void vAdcKeySetShortPressCycle(uint16_t cycle);
+void vAdcKeySetLongPressCycle(uint16_t cycle);
 
 void vKeyPadCreate(void);
 void vKeyPadInit(void);

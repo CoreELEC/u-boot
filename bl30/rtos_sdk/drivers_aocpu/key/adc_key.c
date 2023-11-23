@@ -8,6 +8,7 @@
 #include "common.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <timers.h>
 #include <task.h>
@@ -16,13 +17,20 @@
 
 struct xOneAdcKeyInfo {
 	enum KeyState keyState;
+	uint16_t jitterCount;
+	uint16_t keepCount;
+	bool ignoreEvent;
 	struct xAdcKeyInfo *adcKeyInfo;
 	struct xOneAdcKeyInfo *xNext;
 };
 
-static int jitterCount;
 static struct xOneAdcKeyInfo *xHeadKey;
 static TimerHandle_t xAdcKeyCycleTimer;
+
+/* short press: 100ms */
+static uint16_t shortPressCycle = (100 / TIMER_CYCLE_TIME);
+/* long press: 8000ms */
+static uint16_t longPressCycle = (8000 / TIMER_CYCLE_TIME);
 
 static void prReportEvent(struct xAdcKeyInfo *xKey, uint32_t event)
 {
@@ -54,23 +62,61 @@ static void prAdcKeyProcess(TimerHandle_t xTimer)
 		min = adcKeyInfo->ulValue > SAMPLE_DEVIATION ?
 		      adcKeyInfo->ulValue - SAMPLE_DEVIATION : 0;
 		if (xPassBtn->keyState == UP) {
+			/*
+			 * The pressing time exceeds the jitter time,
+			 * indicating that the pressing is effective.
+			 */
 			if (usAdcData >= min && usAdcData <= max) {
-				if (jitterCount < KEY_JITTER_COUNT) {
-					jitterCount++;
+				if (xPassBtn->jitterCount < KEY_JITTER_COUNT) {
+					xPassBtn->jitterCount++;
 					return;
 				}
-				jitterCount = 0;
+				xPassBtn->keepCount = xPassBtn->jitterCount;
 				xPassBtn->keyState = DOWN;
-				prReportEvent(xPassBtn->adcKeyInfo, EVENT_SHORT);
 			}
+			/* Reset jitter count */
+			xPassBtn->jitterCount = 0;
 		} else if (xPassBtn->keyState == DOWN) {
+			/*
+			 * Short press and then release, we will report
+			 * the short press event after the jitter time has elapsed.
+			 */
 			if (usAdcData <= min || usAdcData >= max) {
-				if (jitterCount < KEY_JITTER_COUNT) {
-					jitterCount++;
+				if (xPassBtn->jitterCount < KEY_JITTER_COUNT) {
+					xPassBtn->jitterCount++;
 					return;
 				}
-				jitterCount = 0;
+				if ((xPassBtn->keepCount >= shortPressCycle) &&
+				    xPassBtn->ignoreEvent == false)
+					prReportEvent(adcKeyInfo, EVENT_SHORT);
+				xPassBtn->jitterCount = 0;
 				xPassBtn->keyState = UP;
+				xPassBtn->ignoreEvent = false;
+			} else {
+				xPassBtn->jitterCount = 0;
+				/* We keep counting for the duration of the press */
+				if (xPassBtn->keepCount < longPressCycle)
+					xPassBtn->keepCount++;
+				if (xPassBtn->ignoreEvent)
+					continue;
+				/*
+				 * After reaching the maximum time, we directly
+				 * report the event and ignore subsequent events
+				 * that occur when the button is released or continuously pressed.
+				 */
+				if (adcKeyInfo->keyInitInfo.eventMask & EVENT_LONG) {
+					if (xPassBtn->keepCount >= longPressCycle) {
+						xPassBtn->keyState = UP;
+						prReportEvent(adcKeyInfo, EVENT_LONG);
+						xPassBtn->ignoreEvent = true;
+					}
+				} else if (adcKeyInfo->keyInitInfo.eventMask & EVENT_SHORT) {
+					if (xPassBtn->keepCount >= shortPressCycle) {
+						xPassBtn->keyState = UP;
+						prReportEvent(adcKeyInfo, EVENT_SHORT);
+						xPassBtn->ignoreEvent = true;
+					}
+				}
 			}
 		}
 	}
@@ -132,6 +178,16 @@ fail_alloc1:
 	vPortFree(xOneKey);
 fail_alloc2:
 	printf("adc key: [%d] malloc failed!\n", i);
+}
+
+void vAdcKeySetShortPressCycle(uint16_t cycle)
+{
+	shortPressCycle = cycle;
+}
+
+void vAdcKeySetLongPressCycle(uint16_t cycle)
+{
+	longPressCycle = cycle;
 }
 
 void vDestroyAdcKey(void)

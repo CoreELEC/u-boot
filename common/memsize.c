@@ -6,6 +6,8 @@
  */
 
 #include <common.h>
+#include <asm/arch/io.h>
+#include <asm/arch/secure_apb.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -80,13 +82,18 @@ long get_ram_size(long *base, long maxsize)
 	return (maxsize);
 }
 
-phys_size_t __weak get_effective_memsize(void)
+/* SECTION_SHIFT is 29 that means 512MB size */
+#define SECTION_SHIFT		29
+phys_size_t get_effective_memsize(void)
 {
-#ifndef CONFIG_VERY_BIG_RAM
-	return gd->ram_size;
-#else
-	/* limit stack to what we can reasonable map */
-	return ((gd->ram_size > CONFIG_MAX_MEM_MAPPED) ?
-		CONFIG_MAX_MEM_MAPPED : gd->ram_size);
+	phys_size_t size_aligned;
+
+	size_aligned = (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4);
+	size_aligned = ((size_aligned >> SECTION_SHIFT) << SECTION_SHIFT);
+
+#if defined(CONFIG_SYS_MEM_TOP_HIDE)
+	size_aligned = size_aligned - CONFIG_SYS_MEM_TOP_HIDE;
 #endif
+
+	return size_aligned;
 }

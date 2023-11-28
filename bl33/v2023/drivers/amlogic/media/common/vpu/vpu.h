@@ -33,7 +33,8 @@ enum vpu_chip_e {
 	VPU_CHIP_A4,   /* 16 */
 	VPU_CHIP_S1A,  /* 17 */
 	VPU_CHIP_S7,   /* 18 */
-	VPU_CHIP_MAX,  /* 19 */
+	VPU_CHIP_S7D,  /* 19 */
+	VPU_CHIP_MAX,  /* 20 */
 };
 
 struct vpu_arb_table_s {

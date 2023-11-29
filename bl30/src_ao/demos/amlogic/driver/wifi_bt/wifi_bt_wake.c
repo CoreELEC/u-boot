@@ -162,6 +162,10 @@ correcting clock inaccuracies 2 ticks≈40ms */
 			INFO("netflix key:%u ms", (flag*DELAY_INTERVAL));
 			key_val = REMOTE_CUS_WAKEUP;
 			STR_Wakeup_src_Queue_Send(&key_val);
+		} else if (flag > 14) {
+			INFO("any key:%u ms", (flag*DELAY_INTERVAL));
+			key_val = BT_WAKEUP;
+			STR_Wakeup_src_Queue_Send(&key_val);
 		} else {
 			INFO("unknown key:%u ms, redetect", (flag*DELAY_INTERVAL));
 			vEnableGpioIRQ(BT_WAKE_HOST);

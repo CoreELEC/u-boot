@@ -483,7 +483,8 @@ static void _hdmitx21_set_clk(void)
 	set_vid_clk_div(1);
 	set_hdmi_tx_pixel_div(1);
 
-	if ((hdev->chip_type == MESON_CPU_ID_S1A) || (hdev->chip_type == MESON_CPU_ID_S7))
+	if ((hdev->chip_type == MESON_CPU_ID_S1A) || (hdev->chip_type == MESON_CPU_ID_S7)
+		|| (hdev->chip_type == MESON_CPU_ID_S7D))
 		set_encp_div(0);
 	else
 		set_encp_div(1);
@@ -1276,6 +1277,8 @@ void hdmitx21_set(struct hdmitx_dev *hdev)
 	// [21:12] hdmi_dith_new
 	// [23:22] chroma_dnsmp_v. 0=use line 0; 1=use line 1; 2=use average.
 	// [27:24] pix_repeat
+	// [   31] for s7d: cntl_hdmi_matrix_en. 1=enable(yuv2rgb or rgb2yuv);
+	// VPU_HDMI_FMT_CTRL in every chips need check
 	data32 = 0;
 	switch (hdev->chip_type) {
 	case MESON_CPU_ID_S1A:
@@ -1293,6 +1296,7 @@ void hdmitx21_set(struct hdmitx_dev *hdev)
 			  (0 << 24);
 		break;
 	case MESON_CPU_ID_S7:
+	case MESON_CPU_ID_S7D:
 		//bit[1,0] = 3 enable ycbcr2rgb
 		data32 = (((para->cs == HDMI_COLORSPACE_RGB) ? 3 :
 			(para->cs == HDMI_COLORSPACE_YUV420) ? 2 :
@@ -1306,6 +1310,9 @@ void hdmitx21_set(struct hdmitx_dev *hdev)
 			  (0 << 12) |
 			  (2 << 22) |
 			  (0 << 24);
+		if (hdev->chip_type == MESON_CPU_ID_S7D &&
+			para->cs == HDMI_COLORSPACE_RGB)
+			data32 |= 1 << 31;
 		break;
 	case MESON_CPU_ID_T7:
 	case MESON_CPU_ID_S5:
@@ -1487,6 +1494,21 @@ void hdmitx21_set(struct hdmitx_dev *hdev)
 					(para->cs == HDMI_COLORSPACE_RGB) ? 1 : 0) << 5);
 		data32 |= (((para->cs == HDMI_COLORSPACE_YUV420) ? 1 : 0) << 20);
 		break;
+	case MESON_CPU_ID_S7D:
+		switch (hdev->vic) {
+		case HDMI_7_720x480i60_16x9:
+		case HDMI_22_720x576i50_16x9:
+			data32 |= 1;
+			break;
+		default:
+			data32 |= 2;
+			break;
+		}
+		data32 |= (para->timing.h_pol << 2);
+		data32 |= (para->timing.v_pol << 3);
+		data32 |= (0 << 5);
+		data32 |= (((para->cs == HDMI_COLORSPACE_RGB) ? 1 : 0) << 16);
+		break;
 	case MESON_CPU_ID_T7:
 	default:
 		data32 |= ((hdev->enc_idx == 0) ? 1 : 2);
@@ -1505,7 +1527,8 @@ void hdmitx21_set(struct hdmitx_dev *hdev)
 			vpu_hdmi_set_matrix_ycbcr2rgb();
 
 	/* for s7, ycbcr -> rgb */
-	if (hdev->chip_type == MESON_CPU_ID_S7) {
+	if (hdev->chip_type == MESON_CPU_ID_S7 ||
+		hdev->chip_type == MESON_CPU_ID_S7D) {
 		if (hdev->para->cs == HDMI_COLORSPACE_RGB)
 			vpu_hdmi_set_matrix_ycbcr2rgb();
 	}
@@ -1909,6 +1932,7 @@ static void hdmitx_set_div40(bool div40)
 		hdmitx21_set_reg_bits(HDMITX_TOP_BIST_CNTL, 1, 12, 1);
 		break;
 	case MESON_CPU_ID_S7:
+	case MESON_CPU_ID_S7D:
 	case MESON_CPU_ID_T7:
 	default:
 		set_t7_top_div40(div40);

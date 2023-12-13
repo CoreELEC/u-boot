@@ -63,11 +63,6 @@ function init_vari() {
 		CHIPSET_VARIANT_SUFFIX=""
 	fi
 
-	#special case for c3(min bl32)
-	if [ "${CONFIG_CHIPSET_VARIANT_MIN}" == "1m" ]; then
-		CHIPSET_VARIANT_MIN_SUFFIX=".1m"
-	fi
-
 	if [ -n "${CONFIG_AMLOGIC_KEY_TYPE}" ]; then
 		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
 	fi
@@ -741,8 +736,8 @@ function build_signed() {
 		mk_ddr_fip ${BUILD_PATH}
 	fi
 
-	if [ ".1m" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ]; then
-		./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_MIN_SUFFIX} ${CHIPSET_VARIANT_SUFFIX}
+	if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ]; then
+		./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX} ${CHIPSET_VARIANT_MIN_SUFFIX}
 	else
 		./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
 	fi

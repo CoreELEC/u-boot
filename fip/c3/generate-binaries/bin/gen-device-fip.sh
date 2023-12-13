@@ -8,10 +8,15 @@ set -e
 #
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
-ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
-if [ ".fastboot" == "${DEVICE_VARIANT_SUFFIX}" ]; then
+
+if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${DEVICE_VARIANT_SUFFIX}" ]; then
+	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-oversea
+elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${DEVICE_VARIANT_SUFFIX}" ]; then
 	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot
+else
+	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
 fi
+
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 
 #

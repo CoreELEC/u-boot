@@ -7,6 +7,8 @@
 #ifndef _GPIO_DRIVER_H_
 #define _GPIO_DRIVER_H_
 
+#include <stdint.h>
+
 /**
  * enum GpioRegType - type of registers encoded in @meson_reg_desc
  */
@@ -38,21 +40,25 @@ struct GpioDomain {
 
 struct GpioBank {
 	const char *name;
+	const uint8_t pin_num;
 	const struct GpioDomain *domain;
 	struct GpioRegDesc regs[NUM_REG];
 };
 
 const struct GpioBank *pGetGpioBank(void);
 
-#define BANK(n, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)                       \
-	{                                                                                          \
-		.name = n, .domain = d,                                                            \
-		.regs = {                                                                          \
-			[REG_PULLEN] = { per, peb }, [REG_PULL] = { pr, pb },                      \
-			[REG_DIR] = { dr, db },	     [REG_OUT] = { or, ob },                       \
-			[REG_IN] = { ir, ib },	     [REG_MUX] = { mr, mb },                       \
-			[REG_DRV] = { sr, sb },                                                    \
-		},                                                                                 \
+#define BANK_V2(n, pn, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)	\
+	{										\
+		.name = n, .pin_num = pn, .domain = d,					\
+		.regs = {								\
+			[REG_PULLEN] = { per, peb }, [REG_PULL] = { pr, pb },		\
+			[REG_DIR] = { dr, db },	     [REG_OUT] = { or, ob },		\
+			[REG_IN] = { ir, ib },	     [REG_MUX] = { mr, mb },		\
+			[REG_DRV] = { sr, sb },						\
+		},									\
 	}
+
+#define BANK(n, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)		\
+	BANK_V2(n, 0, d, per, peb, pr, pb, dr, db, or, ob, ir, ib, mr, mb, sr, sb)
 
 #endif

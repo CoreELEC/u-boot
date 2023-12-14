@@ -155,6 +155,16 @@ extern void vDisableGpioIRQ(uint16_t gpio);
  */
 extern void vRestoreGpioIrqReg(void);
 extern void vBackupAndClearGpioIrqReg(void);
+
+/**
+ * restore and backup gpio register
+ * @name : Bank name
+ *
+ * Returns 0 on success, negative value on error.
+ */
+	extern int xBankStateBackup(const char *name);
+	extern int xBankStateRestore(const char *name);
+
 #ifdef __cplusplus
 }
 #endif

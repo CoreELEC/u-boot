@@ -62,18 +62,18 @@ static const struct GpioDomain eeDomain = {
 };
 
 static const struct GpioBank gpioBanks[BANK_NUM_MAX] = {
-	/* pullen pull  dir    out   in     mux   drv*/
-	BANK("D", &aoDomain, 3, 0, 2, 0, 0, 0, 4, 0, 1, 0, 0, 0, 0, 0),
-	BANK("H", &eeDomain, 2, 0, 2, 0, 6, 0, 7, 0, 8, 0, 5, 0, 3, 0),
-	BANK("B", &eeDomain, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0),
-	BANK("Z1", &eeDomain, 1, 0, 1, 0, 3, 0, 4, 0, 5, 0, 4, 0, 1, 0),
-	BANK("Z2", &eeDomain, 1, 7, 1, 7, 3, 7, 4, 7, 5, 7, 8, 0, 1, 14),
-	BANK("W", &eeDomain, 3, 0, 3, 0, 9, 0, 10, 0, 11, 0, 2, 0, 5, 0),
-	BANK("E", &aoDomain, 3, 16, 2, 16, 0, 16, 4, 16, 1, 16, 1, 16, 1, 16),
-	BANK("M", &eeDomain, 4, 0, 4, 0, 12, 0, 13, 0, 14, 0, 0xa, 0, 6, 0),
-	BANK("C1", &eeDomain, 5, 0, 5, 0, 16, 0, 17, 0, 18, 0, 0xf, 0, 0x28, 0),
-	BANK("C2", &eeDomain, 4, 8, 4, 8, 16, 8, 17, 8, 18, 8, 0x2a, 0, 0x28, 8),
-	BANK("H2", &eeDomain, 2, 24, 2, 24, 6, 24, 7, 24, 8, 24, 0x2b, 0, 3, 24),
+	/* name   pin_num   domain   pullen   pull   dir   out   in   mux   drv  */
+	BANK_V2("D",  11, &aoDomain, 3,  0,  2,  0,  0,  0,  4,  0,  1,  0,    0,  0,    0,  0),
+	BANK_V2("H",  24, &eeDomain, 2,  0,  2,  0,  6,  0,  7,  0,  8,  0,    5,  0,    3,  0),
+	BANK_V2("B",  14, &eeDomain, 0,  0,  0,  0,  0,  0,  1,  0,  2,  0,    0,  0,    0,  0),
+	BANK_V2("Z1",  8, &eeDomain, 1,  0,  1,  0,  3,  0,  4,  0,  5,  0,    4,  0,    1,  0),
+	BANK_V2("Z2", 12, &eeDomain, 1,  7,  1,  7,  3,  7,  4,  7,  5,  7,    8,  0,    1, 14),
+	BANK_V2("W",  13, &eeDomain, 3,  0,  3,  0,  9,  0, 10,  0, 11,  0,    2,  0,    5,  0),
+	BANK_V2("E",   2, &aoDomain, 3, 16,  2, 16,  0, 16,  4, 16,  1, 16,    1, 16,    1, 16),
+	BANK_V2("M",  30, &eeDomain, 4,  0,  4,  0, 12,  0, 13,  0, 14,  0,  0xa,  0,    6,  0),
+	BANK_V2("C1",  8, &eeDomain, 5,  0,  5,  0, 16,  0, 17,  0, 18,  0,  0xf,  0, 0x28,  0),
+	BANK_V2("C2",  8, &eeDomain, 4,  8,  4,  8, 16,  8, 17,  8, 18,  8, 0x2a,  0, 0x28,  8),
+	BANK_V2("H2",  2, &eeDomain, 2, 24,  2, 24,  6, 24,  7, 24,  8, 24, 0x2b,  0,    3, 24),
 };
 
 static struct ParentIRQDesc eeIRQs[] = {

@@ -65,6 +65,24 @@ void str_hw_disable(void)
 #endif
 }
 
+static void str_gpio_backup(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateBackup("A"))
+	// 	printf("xBankStateBackup fail\n");
+}
+
+static void str_gpio_restore(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateRestore("A"))
+	// 	printf("xBankStateRestore fail\n");
+}
+
 void str_power_on(int shutdown_flag)
 {
 	shutdown_flag = shutdown_flag;
@@ -95,10 +113,16 @@ void str_power_on(int shutdown_flag)
 	vTaskDelay(pdMS_TO_TICKS(20));
 #endif
 	printf("vdd_cpu on\n");
+
+	/*Wait 20ms for VDDIO stable*/
+	vTaskDelay(pdMS_TO_TICKS(20));
+	str_gpio_restore();
 }
 
 void str_power_off(int shutdown_flag)
 {
+	str_gpio_backup();
+
 	shutdown_flag = shutdown_flag;
 #if DEF_PWM_PWR    //todo for pmic
 	int ret;

@@ -107,6 +107,24 @@ void str_hw_disable(void)
 #endif
 }
 
+static void str_gpio_backup(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateBackup("A"))
+	// 	printf("xBankStateBackup fail\n");
+}
+
+static void str_gpio_restore(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateRestore("A"))
+	// 	printf("xBankStateRestore fail\n");
+}
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -136,11 +154,15 @@ void str_power_on(int shutdown_flag)
 	/*Wait 20ms for VDDCPU stable*/
 	vTaskDelay(pdMS_TO_TICKS(20));
 	printf("vdd_cpu on\n");
+
+	str_gpio_restore();
 }
 
 void str_power_off(int shutdown_flag)
 {
 	int ret;
+
+	str_gpio_backup();
 #if 0
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesonGetVoltage(VDDEE_VOLT);

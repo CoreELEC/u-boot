@@ -86,6 +86,24 @@ void str_hw_disable(void)
 	}
 }
 
+static void str_gpio_backup(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateBackup("A"))
+	// 	printf("xBankStateBackup fail\n");
+}
+
+static void str_gpio_restore(void)
+{
+	// TODO:
+
+	// Example:
+	// if (xBankStateRestore("A"))
+	// 	printf("xBankStateRestore fail\n");
+}
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -111,11 +129,17 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 #endif
+
+	/*Wait 20ms for VDDIO stable*/
+	vTaskDelay(pdMS_TO_TICKS(20));
+	str_gpio_restore();
 }
 
 void str_power_off(int shutdown_flag)
 {
 	int ret;
+
+	str_gpio_backup();
 
 	shutdown_flag = shutdown_flag;
 	/***set vdd_ee val***/

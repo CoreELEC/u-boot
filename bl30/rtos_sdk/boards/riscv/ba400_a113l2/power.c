@@ -106,6 +106,24 @@ void str_hw_disable(void)
 	rtc_disable_irq();
 }
 
+static void str_gpio_backup(void)
+{
+	//TODO:
+
+	//Example:
+	//if (xBankStateBackup("A"))
+	//	printf("xBankStateBackup fail\n");
+}
+
+static void str_gpio_restore(void)
+{
+	//TODO:
+
+	//Example:
+	//if (xBankStateRestore("A"))
+	//	printf("xBankStateRestore fail\n");
+}
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -178,11 +196,15 @@ void str_power_on(int shutdown_flag)
 	/* this reset must excute immediately after power on because the wrapper is reseted*/
 	if (shutdown_flag)
 		watchdog_reset_system();
+
+	str_gpio_restore();
 }
 
 void str_power_off(int shutdown_flag)
 {
 	int ret;
+
+	str_gpio_backup();
 
 	(void)shutdown_flag;
 

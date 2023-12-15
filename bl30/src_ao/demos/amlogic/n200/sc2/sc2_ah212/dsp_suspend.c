@@ -70,33 +70,9 @@ static void wakeup_dsp(void)
 	vTaskDelay(2);
 }
 
-static void clear_dsp_wakeup_trigger(void)
-{
-	REG32(DSP_FSM_TRIGER_SRC) = 0;
-	REG32(DSP_FSM_TRIGER_CTRL) = 0;
-}
-
-void vDSP_suspend(uint32_t st_f)
-{
-	int xIdx = 0;
-
-	if (!st_f) {
-		xIdx = WAIT_SWITCH_TO_250MHZ;
-		xTransferMessageAsync(MAILBOX_AO2DSPA, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-		vTaskDelay(pdMS_TO_TICKS(90));
-	}
-}
-
 void vDSP_resume(uint32_t st_f)
 {
-	int xIdx;
-
-	if ((!st_f) && (get_reason_flag() != VAD_WAKEUP)) {
+	if ((!st_f) && (get_reason_flag() != VAD_WAKEUP))
 		wakeup_dsp();
-		vTaskDelay(pdMS_TO_TICKS(90));
-		xIdx = WAKEUP_FROM_OTHER_KEY;
-		xTransferMessageAsync(MAILBOX_AO2DSPA, MBX_CMD_SUSPEND_WITH_DSP, &xIdx, 4);
-		clear_dsp_wakeup_trigger();
-	}
 }
 

@@ -24,13 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define DSP_VAD_WAKUP_ARM	0x5555AAAA
-#define WAIT_SWITCH_TO_24MHZ	0x5A5A5A5A
-#define WAIT_SWITCH_TO_250MHZ	0xA5A5A5A5
-#define WAKEUP_FROM_OTHER_KEY	0xA8A8A8A8
-
 void vDSPVadWakeupInit(void);
 void vDSPVadWakeupDeinit(void);
-void vDSP_suspend(uint32_t st_f);
 void vDSP_resume(uint32_t st_f);
 extern uint32_t get_reason_flag(void);

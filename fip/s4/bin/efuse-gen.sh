@@ -51,6 +51,7 @@ usage() {
 Usage: $(basename $0) --help
        $(basename $0) --version
        $(basename $0) [--input base.efuse.bin] \\
+                      [--dfu-device-roothash dfu-device_roothash.bin] \\
                       [--device-roothash device_roothash.bin] \\
                       [--dvgk dvgk.bin] \\
                       [--dvuk dvuk.bin] \\
@@ -101,6 +102,8 @@ function generate_efuse_device_pattern() {
                 dvuk="${argv[$i]}" ;;
 			--device-roothash)
                 device_roothash="${argv[$i]}" ;;
+			--dfu-device-roothash)
+                dfu_roothash="${argv[$i]}" ;;
             --enable-usb-password)
                 enable_usb_password="${argv[$i]}" ;;
             --enable-dif-password)
@@ -123,6 +126,7 @@ function generate_efuse_device_pattern() {
     check_opt_file dvgk 16 "$dvgk"
     check_opt_file dvuk 16 "$dvuk"
     check_opt_file device_roothash 32 "$device_roothash"
+    check_opt_file dfu-roothash 32 "$dfu_roothash"
 
     check_opt_boolean enable-usb-password "$enable_usb_password"
     check_opt_boolean enable-dif-password "$enable_dif_password"
@@ -146,6 +150,15 @@ function generate_efuse_device_pattern() {
 		keyinfo="$(xxd -p -c 32 $device_roothash)"
 		echo "efuse_obj set HASH_NORMAL_DEVICE_ROOTCERT $keyinfo" >> $patt_text
 		echo "efuse_obj lock HASH_NORMAL_DEVICE_ROOTCERT" >> $patt_text
+		if [ "$dfu_roothash" != "" ]; then
+			keyinfo="$(xxd -p -c 32 $dfu_roothash)"
+		fi
+		echo "efuse_obj set HASH_DFU_DEVICE_ROOTCERT $keyinfo" >> $patt_text
+		echo "efuse_obj lock HASH_DFU_DEVICE_ROOTCERT" >> $patt_text
+	fi
+
+	if [ "$dfu_roothash" != "" ] && [ -z "$device_roothash" ]; then
+		keyinfo="$(xxd -p -c 32 $dfu_roothash)"
 		echo "efuse_obj set HASH_DFU_DEVICE_ROOTCERT $keyinfo" >> $patt_text
 		echo "efuse_obj lock HASH_DFU_DEVICE_ROOTCERT" >> $patt_text
 	fi
@@ -208,6 +221,12 @@ function generate_efuse_device_pattern() {
 		b_1d2="$(printf %02x $(( 0x$b_1d2 | 0x80 )))"
 		b_1d3="$(printf %02x $(( 0x$b_1d3 | 0x07 )))"
 	fi
+
+    if [ "$dfu_roothash" != "" ]; then
+	    dd if="$dfu_roothash" of="$patt" bs=16 seek=25 count=2 \
+            conv=notrunc >& /dev/null
+		b_1d3="$(printf %02x $(( 0x$b_1d3 | 0x06 )))"
+    fi
 
 	echo $b_1d2 | xxd -r -p > $efusebit
 	dd if=$efusebit of=$wrlock bs=1 seek=2 count=1 conv=notrunc >& /dev/null

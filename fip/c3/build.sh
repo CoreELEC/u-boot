@@ -642,15 +642,6 @@ function process_blx() {
 		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
 			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
-if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
-			if [ "bl32" == "${BLX_NAME[$loop]}" ] || \
-				[ "bl40" == "${BLX_NAME[$loop]}" ]; then
-				cp ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}  ${BUILD_PATH}/temp
-				dd if=${BUILD_PATH}/temp of=${BUILD_PATH}/${BLX_BIN_NAME[$loop]}   bs=${BLX_BIN_SIZE[$loop]}  count=1
-				echo $loop
-				rm ${BUILD_PATH}/temp
-			fi
-fi
 			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
 			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
 				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
@@ -716,11 +707,7 @@ fi
 
 	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
 		echo "Warning: local bl40"
-if [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
-		dd if=bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed of=${BUILD_PATH}/blob-bl40.bin.signed bs=${BLX_BIN_SIZE[7]}  count=1
-else
-		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
-fi
+		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}
 	fi
 	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
 		echo "Warning: local device fip header templates"
@@ -751,9 +738,11 @@ function build_signed() {
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 
-	list_pack="${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
-	list_pack="$list_pack ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
-	list_pack="$list_pack ${BUILD_PATH}/blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl40.bin.signed"
+	# process loop
+	list_pack=
+	for loop in ${!BLX_NAME[@]}; do
+		list_pack="$list_pack ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}"
+	done
 	list_pack="$list_pack ${BUILD_PATH}/bl30-payload.bin ${BUILD_PATH}/bl33-payload.bin ${BUILD_PATH}/dvinit-params.bin"
 	if [ -f ${BUILD_PATH}/ddr-fip.bin ]; then
 		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"

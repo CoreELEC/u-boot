@@ -42,7 +42,7 @@ function mk_uboot() {
 	device_fip="${input_payloads}/device-fip.bin${postfix}"
 	bb1st="${input_payloads}/bb1st${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
 	bl2e="${input_payloads}/blob-bl2e${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
-	bl2x="${input_payloads}/blob-bl2x.bin${postfix}"
+	bl2x="${input_payloads}/blob-bl2x${chipset_variant_suffix}.bin${postfix}"
 
 	if [ ! -f ${device_fip} ] || \
 	   [ ! -f ${bb1st} ] || \

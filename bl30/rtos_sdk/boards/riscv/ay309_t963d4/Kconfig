@@ -25,6 +25,5 @@ config BOARD_AY309_T963D4
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
 	select HDMIRX
-	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic AY309 Board.

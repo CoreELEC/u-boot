@@ -24,6 +24,5 @@ config BOARD_SKY_T3X
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
-	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic T3X SKY Board.

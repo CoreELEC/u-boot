@@ -24,6 +24,5 @@ config BOARD_AV400_A113X2
 	select RTC
 	select I2C
 	select VERSION_FULL_INFO
-	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic AV400 Board.

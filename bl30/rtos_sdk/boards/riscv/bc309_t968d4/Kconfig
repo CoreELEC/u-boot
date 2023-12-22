@@ -24,6 +24,5 @@ config BOARD_BC309_T968D4
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
-	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic BC309 Board.

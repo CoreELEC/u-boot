@@ -23,6 +23,5 @@ config BOARD_AV409_A113X2
 	select IR
 	select ETHERNET
 	select VERSION_FULL_INFO
-	select BL30_VERSION_SAVE
 	help
 	  Enable Amlogic AV409 Board.

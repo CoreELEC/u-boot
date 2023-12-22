@@ -175,9 +175,9 @@ int main(void)
 	//vCecCallbackInit(CEC_CHIP_T7);
 	vRtcInit();
 	create_str_task();
-
+#if configBL30_VERSION_SAVE
 	bl30_plat_save_version();
-
+#endif
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();
 

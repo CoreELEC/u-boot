@@ -182,9 +182,9 @@ int main(void)
 
 	// Create timer
 	xSoftTimer = xTimerCreate("Timer", pdMS_TO_TICKS(100), pdTRUE, NULL, vPrintSystemStatus);
-
+#if configBL30_VERSION_SAVE
 	bl30_plat_save_version();
-
+#endif
 	printf("Starting timer ...\r\n");
 	xTimerStart(xSoftTimer, 0);
 

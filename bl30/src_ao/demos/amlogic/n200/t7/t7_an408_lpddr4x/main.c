@@ -175,9 +175,9 @@ int main(void)
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();
-
+#if configBL30_VERSION_SAVE
 	bl30_plat_save_version();
-
+#endif
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();
 

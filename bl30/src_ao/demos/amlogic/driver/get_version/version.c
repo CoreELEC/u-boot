@@ -1,5 +1,5 @@
 #include "FreeRTOSConfig.h"
-#ifdef configBL30_VERSION_SAVE
+#if configBL30_VERSION_SAVE
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +15,7 @@ int version(void)
 	return 0;
 }
 
-#ifdef configBL30_VERSION_SAVE
+#if configBL30_VERSION_SAVE
 #define TAG_NAME "BL30: "
 static int version_string(char *buf)
 {

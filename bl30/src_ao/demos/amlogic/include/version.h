@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 int version(void);
-#ifdef configBL30_VERSION_SAVE
+#if configBL30_VERSION_SAVE
 int bl30_plat_save_version(void);
 
 #define PARAM_MESSAGE	0x04

@@ -277,6 +277,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 			if (time_count > I2C_TIMEOUT_MS) {
 				prvClrBitsLe32(&i2cs[current_id].regs->ctrl, REG_CTRL_START);
 				iprintf("meson i2c: timeout\n");
+				taskEXIT_CRITICAL();
 				return -1;
 			}
 			udelay(1);

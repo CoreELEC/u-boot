@@ -322,6 +322,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 				prvClrBitsLe32(&i2cs[current_id].regs->ctrl,
 					       REG_CTRL_START);
 				iprintf("meson i2c: timeout\n");
+				taskEXIT_CRITICAL();
 				return -1;
 			}
 			udelay(1);
@@ -332,6 +333,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 
 		if (REG32(ctrl) & REG_CTRL_ERROR) {
 			iprintf("meson i2c: error(0x%x)\n", REG32(ctrl));
+			taskEXIT_CRITICAL();
 			return -1;
 		}
 

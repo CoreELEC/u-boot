@@ -1,0 +1,8 @@
+#
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
+CONFIG_BOARD_BH202_S905Y5=y
+

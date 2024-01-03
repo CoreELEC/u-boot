@@ -47,6 +47,7 @@ enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
 	VDDCPU_VOLT,
 	VDDDOS_NPU_VPU,
+	GPU_VOLT,
 	MAX_ITEM_VOLT,
 };
 

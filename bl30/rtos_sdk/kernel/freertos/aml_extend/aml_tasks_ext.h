@@ -11,12 +11,16 @@
 
 void vTaskRename(void *pvTaskHandle, const char *pcName);
 
-uint8_t pcTaskSetName(void *pvTaskHandle, const char *pcName);
+BaseType_t xTaskSetName(void *pvTaskHandle, const char *pcName);
 
 void vTaskDumpStack(void *pvTaskHandle);
 
 #if (configUSE_TRACE_FACILITY == 1)
 void *pvGetTaskHandleOfNum(uint32_t tasknum);
+#endif
+
+#if CONFIG_BACKTRACE
+void task_stack_range(void *pvTaskHandle, unsigned long *low, unsigned long *high);
 #endif
 
 #endif

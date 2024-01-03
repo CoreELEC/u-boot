@@ -37,7 +37,7 @@ void vTaskRename(void *pvTaskHandle, const char *pcName)
 	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
 }
 
-uint8_t pcTaskSetName(void *pvTaskHandle, const char *pcName)
+BaseType_t xTaskSetName(void *pvTaskHandle, const char *pcName)
 {
 	TCB_t *pxTCB;
 	UBaseType_t x;
@@ -85,7 +85,7 @@ void vTaskDumpStack(void *pvTaskHandle)
 	pxTCB = prvGetTCBFromHandle((TaskHandle_t)pvTaskHandle);
 	if (!pxTCB)
 		return;
-	p = pxTCB->pxStack + pxTCB->uStackDepth - 1;
+	p = pxTCB->pxStack + pxTCB->xStackDepth - 1;
 	printf("Dump Stack:\n");
 	while (p >= pxTCB->pxStack) {
 		printf("%p:", p);
@@ -159,3 +159,20 @@ void xIterateOverAllThreads(void (*process_task_list)(List_t *list))
 #endif
 }
 #endif
+
+#if CONFIG_BACKTRACE
+void task_stack_range(void *pvTaskHandle, unsigned long *low, unsigned long *high)
+{
+	TCB_t *pxTCB;
+
+	pxTCB = prvGetTCBFromHandle( pvTaskHandle );
+	if (NULL != pxTCB) {
+		*low = (unsigned long)pxTCB->pxStack;
+		*high = *low + pxTCB->xStackDepth * sizeof(StackType_t);
+	} else {
+		*low = 0;
+		*high = 0;
+	}
+}
+#endif
+

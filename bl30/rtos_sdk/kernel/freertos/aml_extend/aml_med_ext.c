@@ -17,7 +17,7 @@
 #define TAIL_CANARY_PATTERN ((size_t)(0x6061626364656667))
 #define HEAD_CANARY(x) ((x)->head_canary)
 #define TAIL_CANARY(x, y) \
-	(*(size_t *)((size_t)(x) + ((y) & ~xBlockAllocatedBit) - sizeof(size_t)))
+	(*(size_t *)((size_t)(x) + ((y) & ~(heapBLOCK_ALLOCATED_BITMASK)) - sizeof(size_t)))
 
 #ifdef CONFIG_MEMORY_ERROR_DETECTION_BENCHMARKS
 #define DEBUG_PRINT(...)
@@ -135,7 +135,7 @@ static int xPrintOutOfBoundSite(size_t pos)
 		size_t buffer_address =
 		    (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
 		size_t buffer_size =
-		    allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
+		    allocList[pos].allocHandle->xBlockSize & (~heapBLOCK_ALLOCATED_BITMASK);
 
 		if (allocList[pos].xOwner) {
 			vTaskGetInfo(allocList[pos].xOwner, &status, 0, 0);
@@ -163,7 +163,7 @@ static int xPrintOutOfBoundSite(size_t pos)
 		size_t buffer_address =
 		    (size_t)(allocList[pos].allocHandle) + xHeapStructSize;
 		size_t buffer_size =
-		    allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
+		    allocList[pos].allocHandle->xBlockSize & (~heapBLOCK_ALLOCATED_BITMASK);
 
 		DEBUG_PRINT("ERROR!!! detected buffer overflow(TAIL)\r\n");
 
@@ -194,7 +194,7 @@ static int xPrintOutOfBoundSite(size_t pos)
 static void printMemoryLeakSite(size_t pos, size_t allocatedAddress)
 {
 	TaskStatus_t status;
-	size_t buffer_size = allocList[pos].allocHandle->xBlockSize & ~xBlockAllocatedBit;
+	size_t buffer_size = allocList[pos].allocHandle->xBlockSize & (~heapBLOCK_ALLOCATED_BITMASK);
 
 	DEBUG_PRINT("WARNING!!! detected buffer leak\r\n");
 

@@ -34,6 +34,7 @@ static TaskHandle_t cecTask;
 
 static int vdd_ee;
 static int vdddos_npu_vpu;
+static int gpu_vol;
 static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
@@ -142,6 +143,15 @@ void str_power_on(int shutdown_flag)
 		}
 	}
 
+	/* Restore gpu's voltage */
+	if (gpu_vol) {
+		ret = vPwmMesonsetvoltage(GPU_VOLT, gpu_vol);
+		if (ret < 0) {
+			printf("gpu pwm set fail.\n");
+			return;
+		}
+	}
+
 	/***set vdd_ee val***/
 	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
 	if (ret < 0) {
@@ -149,19 +159,17 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
+	/***power on vcc_3.3v***/
+	ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
+		return;
+	}
 
-		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
+	ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
+	if (ret < 0) {
+		printf("vcc_3.3v gpio val fail\n");
+		return;
 	}
 
 	/***power on vcc_5v***/
@@ -196,19 +204,17 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
+	/***power off vcc_3.3v***/
+	ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
+	if (ret < 0) {
+		printf("vcc_3.3v set gpio dir fail\n");
+		return;
+	}
 
-		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
+	ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
+	if (ret < 0) {
+		printf("vcc_3.3v gpio val fail\n");
+		return;
 	}
 
 	/***set vdd_ee val***/
@@ -233,6 +239,16 @@ void str_power_off(int shutdown_flag)
 		ret = vPwmMesonsetvoltage(VDDDOS_NPU_VPU, 770);
 		if (ret < 0)
 			printf("vdd_dos_npu_vpu pwm set fail\n");
+	}
+
+	gpu_vol = vPwmMesongetvoltage(GPU_VOLT);
+	if (gpu_vol < 0) {
+		printf("GPU pwm get fail\n");
+		gpu_vol = 0;
+	} else {
+		ret = vPwmMesonsetvoltage(GPU_VOLT, 800);
+		if (ret < 0)
+			printf("gpu pwm set fail.\n");
 	}
 
 	/***power off A55 vdd_cpu***/

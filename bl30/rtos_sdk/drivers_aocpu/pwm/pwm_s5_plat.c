@@ -61,6 +61,14 @@ struct xPwmMesonVoltage vdddos_npu_vpu_table[] = {
 	{853, 0x00020010}, {863, 0x00010011}, {871, 0x00000012},
 };
 
+struct xPwmMesonVoltage gpu_table[] = {
+	{720, 0x00120000}, {730, 0x00110001}, {740, 0x00100002}, {750, 0x000f0003},
+	{760, 0x000e0004}, {770, 0x000d0005}, {780, 0x000c0006}, {790, 0x000b0007},
+	{800, 0x000a0008}, {810, 0x00090009}, {820, 0x0008000a}, {830, 0x0007000b},
+	{840, 0x0006000c}, {850, 0x0005000d}, {860, 0x0004000e}, {870, 0x0003000f},
+	{880, 0x00020010}, {890, 0x00010011}, {900, 0x00000012},
+};
+
 struct board_pwm_cfg_t {
 	uint32_t pwm_ctrl;
 	uint32_t pwm_chn;
@@ -76,6 +84,7 @@ struct board_pwm_cfg_t board_cfg[] = {
 	[VDDEE_VOLT] = {PWM_AB, MESON_PWM_1, VOLTAGE_TABLE_INFO(vddee_table)},
 	[VDDCPU_VOLT] = {PWM_AB, MESON_PWM_0, VOLTAGE_TABLE_INFO(vddcpu_table)},
 	[VDDDOS_NPU_VPU] = {PWM_EF, MESON_PWM_0, VOLTAGE_TABLE_INFO(vdddos_npu_vpu_table)},
+	[GPU_VOLT] = {PWM_CD, MESON_PWM_0, VOLTAGE_TABLE_INFO(gpu_table)},
 };
 
 /*

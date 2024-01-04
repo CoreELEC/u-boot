@@ -9,8 +9,8 @@
 RTOS_BASE_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
 #Board Mapping Combination
-BOARD_DEFINE_REF=(c3_aw409 c3_aw402 c3_aw419)
-BOARD_DEFINE_PAR=(aw409_c302x aw402_c302x aw419_c308l)
+BOARD_DEFINE_REF=(c3_aw409 c3_aw402 c3_aw402s c3_aw419)
+BOARD_DEFINE_PAR=(aw409_c302x aw402_c302x aw402s_c302x aw419_c308l)
 
 ## external resource path ##
 if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]; then
@@ -37,12 +37,14 @@ done
 #parameter check
 if [ -z $BOARD_TYPE_MAPPING ]; then
 	echo -e "\033[41;33m Notice: parameter error !!! \033[0m"
-	echo -e "\033[33m board_type: aw409_c302x / aw402_c302x / aw419_c308l\033[0m"
+	echo -e "\033[33m board_type: aw409_c302x / aw402_c302x / aw402s_c302x / aw419_c308l\033[0m"
 	exit 1
 fi
 
 #release flow
-if [ -d $RTOS_BASE_DIR/binary_release ] && [ -d $RTOS_BASE_DIR/bl22_bin ] && [ "$BOARD_TYPE_MAPPING" == "c3_aw402" ]; then
+if [ -d $RTOS_BASE_DIR/binary_release ] && [ -d $RTOS_BASE_DIR/bl22_bin ] &&\
+       	{ [ "$BOARD_TYPE_MAPPING" == "c3_aw402" ] ||\
+	       	[ "$BOARD_TYPE_MAPPING" == "c3_aw402s" ]; }; then
 	pushd $UBOOT_DIR
 	if [ -d ./fastboot ]; then
 		rm -rf ./fastboot
@@ -62,6 +64,9 @@ if [ -z $RTOS_TARGET_ADDRESS ]; then
 		RTOS_TARGET_ADDRESS=0x5400000
 		;;
 	'c3_aw402')
+		RTOS_TARGET_ADDRESS=0x7600000
+		;;
+	'c3_aw402s')
 		RTOS_TARGET_ADDRESS=0x7600000
 		;;
 	*)

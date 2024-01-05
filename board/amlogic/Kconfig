@@ -294,6 +294,11 @@ config RADXA_ZERO2
 	select ODROID_COMMON
 	default n
 
+config ALTA
+	bool "Support Libre Computer Alta board"
+	select ODROID_COMMON
+	default n
+
 if GXB_SKT_V1
 source "board/amlogic/gxb_skt_v1/Kconfig"
 endif
@@ -569,4 +574,8 @@ endif
 
 if RADXA_ZERO2
 source "board/radxa/radxa_zero2/Kconfig"
+endif
+
+if ALTA
+source "board/librecomputer/alta/Kconfig"
 endif

@@ -59,8 +59,8 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
 			 "blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 			 "blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}.bin.signed" \
-			 "blob-bl40.bin.signed")
+			 "blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
+			 "blob-bl40${CHIPSET_VARIANT_SUFFIX}.bin.signed")
 fi
 
 if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then

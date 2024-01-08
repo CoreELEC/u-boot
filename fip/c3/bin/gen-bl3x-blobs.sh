@@ -9,7 +9,9 @@ set -e
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool
-
+if [ "fastboot" == "$7" ]; then
+    ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+fi
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 
 #

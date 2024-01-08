@@ -94,9 +94,9 @@ EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl31-device-lvl3=${BASEDIR_FIP_RSAKEY_R
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl32-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl32-level-3-rsa-priv.pem"
 
 ### Input: chipset blobs ###
-EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl40=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl40.bin${input_postfix}"
+EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl40=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl40${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
 EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl31=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl31${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
-EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32${DEVICE_VARIANT_MIN_SUFFIX}.bin${input_postfix}"
+EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32${DEVICE_VARIANT_MIN_SUFFIX}${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
 
 ### Features, flags and switches ###
 

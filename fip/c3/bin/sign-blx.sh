@@ -144,6 +144,12 @@ function sign_blx() {
 	export FEAT_BL2_TEMPLATE_TYPE
 	export FEAT_BL2E_SIGPROT_MODE
 
+	#special case for c3 fastboot
+	if [ "fastboot" == "${tool_type}" ]; then
+		BLX_BIN_SIZE[6]="4096" #bl32 size
+		BLX_BIN_SIZE[7]="4096" #bl40 size
+	fi
+
 	if [ -z ${key_type} ]; then
 		key_type="dev-keys"
 	fi
@@ -206,7 +212,7 @@ function sign_blx() {
 		if [ ${blxname} == "bl31" ]; then
 			${EXEC_BASEDIR}/pack_aucpu_key.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc}
 		fi
-		${EXEC_BASEDIR}/gen-bl3x-blobs.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc}
+		${EXEC_BASEDIR}/gen-bl3x-blobs.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${tool_type}
 	fi
 
 	if [ ${blxname} == "bl2" ]; then

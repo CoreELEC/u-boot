@@ -24,5 +24,6 @@ config BOARD_AV400_A113X2
 	select RTC
 	select I2C
 	select VERSION_FULL_INFO
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic AV400 Board.

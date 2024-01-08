@@ -9,7 +9,7 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #BASEDIR_BUILD="${BASEDIR_TOP}/output"
 BASEDIR_BUILD="${BASEDIR_TOP}/`date +%Y%m%d%H%M%S%N`"
 postfix=.signed
-declare -a BLX_BIN_SIZE=("183200" "65536" "65536" "2048" "212992" "262144" "524288"  "98304")
+declare -a BLX_BIN_SIZE=("183200" "98304" "98304" "2048" "212992" "262144" "524288"  "98304")
 
 declare CHIPACS_SIZE=${BLX_BIN_SIZE[3]}
 declare DDRFW_SIZE=${BLX_BIN_SIZE[4]}

@@ -91,13 +91,13 @@ function mk_bl2ex() {
 	dd if=/dev/zero of=${payload}/bl2.bin.usb bs=183200 count=1
 	dd if=${output}/bl2.bin.usb of=${payload}/bl2.bin.usb conv=notrunc
 
-	dd if=/dev/zero of=${payload}/bl2e.bin.sto bs=65536 count=1
+	dd if=/dev/zero of=${payload}/bl2e.bin.sto bs=98304 count=1
 	dd if=${output}/bl2e.bin.sto of=${payload}/bl2e.bin.sto conv=notrunc
 
-	dd if=/dev/zero of=${payload}/bl2e.bin.usb bs=65536 count=1
+	dd if=/dev/zero of=${payload}/bl2e.bin.usb bs=98304 count=1
 	dd if=${output}/bl2e.bin.usb of=${payload}/bl2e.bin.usb conv=notrunc
 
-	dd if=/dev/zero of=${payload}/bl2x.bin bs=65536 count=1
+	dd if=/dev/zero of=${payload}/bl2x.bin bs=98304 count=1
 	dd if=${output}/bl2x.bin of=${payload}/bl2x.bin conv=notrunc
 
 
@@ -145,7 +145,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
-			--scs-family=s5 \
+			--scs-family=s7 \
 			--outfile-bb1st=${output}/bb1st.sto.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.sto.bin \
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin
@@ -156,7 +156,7 @@ function mk_bl2ex() {
 			--infile-bl2x-payload=${payload}/bl2x.bin \
 			--infile-dvinit-params=${payload}/device_acs.bin \
 			--infile-csinit-params=${payload}/chip_acs.bin \
-			--scs-family=s5 \
+			--scs-family=s7 \
 			--outfile-bb1st=${output}/bb1st.usb.bin \
 			--outfile-blob-bl2e=${output}/blob-bl2e.usb.bin \
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin

@@ -269,6 +269,9 @@ BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-bl30=${BASEDIR_OUTPUT_PROTKEY}/genke
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-bl33=${BASEDIR_OUTPUT_PROTKEY}/genkey-prot-bl33.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-krnl=${BASEDIR_OUTPUT_PROTKEY}/genkey-prot-krnl.bin"
 
+### full Device FIP Header
+BB1ST_ARGS="${BB1ST_ARGS} --header-layout=full"
+
 echo ${TOOLS_ARGS}
 
 #

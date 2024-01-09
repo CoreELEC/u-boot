@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "lscript.h"
+
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
               "elf32-littleriscv")
 OUTPUT_ARCH("riscv")
 ENTRY( _start )
 MEMORY
 {
-    ram (rw) : ORIGIN = 0xf7018000, LENGTH = (64 * 1024)
+    ram (rw) : ORIGIN = configMEM_START, LENGTH = configMEM_LEN
 }
 SECTIONS
 {
@@ -21,7 +23,7 @@ SECTIONS
  PROVIDE( _text = . );
  *(.init)
         *(.text* .rodata*)
-        . = ALIGN(0x100);
+        . = ALIGN(0x400);
         PROVIDE( _etext = . );
  *(.vtable)
     } > ram

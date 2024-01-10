@@ -142,24 +142,13 @@ static void setup_internal_phy(struct udevice *dev)
 //	setbits_le32(ETHTOP_CNTL0, mc_val);
 	setbits_le32(eth_top.start, mc_val);
 	/*pll*/
-#if 0
-	writel(pll_val[0] | 0x30000000, eth_cfg.start + AML_ETH_PLL_CTL0);
-	writel(pll_val[1], eth_cfg.start + AML_ETH_PLL_CTL1);
-	writel(pll_val[2], eth_cfg.start + AML_ETH_PLL_CTL2);
-	writel(0x00000000, eth_cfg.start + AML_ETH_PLL_CTL3);
+	writel(0x00510630, eth_cfg.start + AML_ETH_PLL_CTL0);
+	writel(0x222210a0, eth_cfg.start + AML_ETH_PLL_CTL1);
+	writel(0x00518630, eth_cfg.start + AML_ETH_PLL_CTL0);
 	udelay(200);
-	writel(pll_val[0] | 0x10000000, eth_cfg.start + AML_ETH_PLL_CTL0);
-#else
-	pr_info("wzh 22nm\n");
-	writel(0x608200a0, eth_cfg.start + AML_ETH_PLL_CTL0);
-	writel(0xea002000, eth_cfg.start + AML_ETH_PLL_CTL1);
-	writel(0x00000150, eth_cfg.start + AML_ETH_PLL_CTL2);
-	writel(0x00000000, eth_cfg.start + AML_ETH_PLL_CTL3);
-	writel(0x708200a0, eth_cfg.start + AML_ETH_PLL_CTL0);
+	writel(0x222200a0, eth_cfg.start + AML_ETH_PLL_CTL1);
 	udelay(200);
-	writel(0x508200a0, eth_cfg.start + AML_ETH_PLL_CTL0);
-	writel(0x00000110, eth_cfg.start + AML_ETH_PLL_CTL2);
-#endif
+	writel(0x00118630, eth_cfg.start + AML_ETH_PLL_CTL0);
 
 	/*analog*/
 	writel(analog_val[0], eth_cfg.start + AML_ETH_PLL_CTL5);
@@ -183,7 +172,7 @@ static void setup_internal_phy(struct udevice *dev)
 		clrbits_le32(ANACTRL_PLL_GATE_DIS, (0x1 << 7));
 		clrbits_le32(ANACTRL_PLL_GATE_DIS, (0x1 << 19));
 	}
-	/*s1a analog amp*/
+	/*s7 analog amp*/
 	writel(0x00000023, eth_cfg.start + AML_ETH_PLL_CTL7);
 	writel(0x0000c001, eth_cfg.start + AML_ETH_PLL_CTL6);
 	writel(0x20220000, eth_cfg.start + AML_ETH_PLL_CTL5);

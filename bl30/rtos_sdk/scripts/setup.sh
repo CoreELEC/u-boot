@@ -70,8 +70,13 @@ cp -arf $RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
 
 if [[ "$PRODUCT" == aocpu ]]; then
 	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE
+	sed -i '/path="drivers_wcncpu"/d' $RTOS_SDK_MANIFEST_FILE
+elif [[ "$PRODUCT" == wcn ]]; then
+	sed -i '/path="drivers"/d' $RTOS_SDK_MANIFEST_FILE
+	sed -i '/path="drivers_aocpu"/d' $RTOS_SDK_MANIFEST_FILE
 else
 	sed -i '/path="drivers_aocpu"/d' $RTOS_SDK_MANIFEST_FILE
+	sed -i '/path="drivers_wcncpu"/d' $RTOS_SDK_MANIFEST_FILE
 fi
 
 # Write the fixed content to CMakeLists.txt
@@ -148,6 +153,13 @@ do
 				* ) cmake_path=$repo_path
 				    kconfig_path=$repo_path;;
 			esac
+
+			# multiple types of SoC states
+			if [ ! -n "$SPLIT_ARCH_DIR" ] && [[ $cmake_path == *"/riscv/"* ]]; then
+				continue
+			elif [[ $cmake_path == *"/riscv/"* ]] && [[ ! $cmake_path == *"/riscv/$SPLIT_ARCH_DIR"* ]]; then
+				continue
+			fi
 
 			# Generate root CMakeLists.txt
 			if [ -f $repo_path/CMakeLists.txt ]; then

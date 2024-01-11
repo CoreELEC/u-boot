@@ -114,6 +114,14 @@ case $ARCH in
 	*) echo "Failed to identify ARCH $ARCH";return 1;;
 esac
 
+unset SPLIT_ARCH_DIR
+for split in ${SPLITARCH[*]}; do
+	result=$(find $PWD/boards/$ARCH/$split -type d -name "$BOARD" 2>/dev/null)
+	if [ -n "$result" ]; then
+		SPLIT_ARCH_DIR=$(basename "$(dirname "$result")")
+	fi
+done
+
 CONF_FILE="$PWD/products/$PRODUCT/prj.conf"
 BACKTRACE_ENABLE=0
 if [ $(grep -c "CONFIG_BACKTRACE=y" $CONF_FILE) -ne '0' ]; then
@@ -122,4 +130,4 @@ fi
 
 KERNEL=freertos
 
-export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD TOOLCHAIN_PATH BACKTRACE_ENABLE
+export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD TOOLCHAIN_PATH BACKTRACE_ENABLE SPLIT_ARCH_DIR

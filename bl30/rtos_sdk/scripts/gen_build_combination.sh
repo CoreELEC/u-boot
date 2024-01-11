@@ -65,9 +65,18 @@ check_build_combination()
 unset ARCHS SOCS BOARDS PRODUCTS
 
 ARCHS=($(find $PWD/arch -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
-SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
-BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
 PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
+
+if [ -e "$PWD/boards/riscv/CMakeLists.txt" ]; then
+	SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
+	BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | xargs basename -a | sort -n))
+else
+	SPLITARCH=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | grep "$PWD/boards/riscv" | xargs basename -a | sort -n))
+	BOARDS=($(find $PWD/boards -mindepth 2 -maxdepth 2 -type d ! -name ".*" | grep -v "$PWD/boards/riscv" | xargs basename -a | sort -n))
+	BOARDS+=($(find $PWD/boards -mindepth 3 -maxdepth 3 -type d ! -name ".*" | grep "$PWD/boards/riscv" | xargs basename -a | sort -n))
+	SOCS=($(find $PWD/soc -mindepth 2 -maxdepth 2 -type d ! -name ".*" | grep -v "$PWD/soc/riscv" | xargs basename -a | sort -n))
+	SOCS+=($(find $PWD/soc -mindepth 3 -maxdepth 3 -type d ! -name ".*" | grep "$PWD/soc/riscv" | xargs basename -a | sort -n))
+fi
 
 export BUILD_COMBINATION="$PWD/output/build_combination.txt"
 
@@ -77,21 +86,44 @@ fi
 
 for arch in ${ARCHS[*]}; do
 	BUILD_COMBINATION_INPUT="$PWD/boards/$arch/build_combination.in"
-	if [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
-		:> $BUILD_COMBINATION
+	if [ -e $BUILD_COMBINATION_INPUT ]; then
+		if [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
+			:> $BUILD_COMBINATION
+		fi
+	else
+		for split in ${SPLITARCH[*]}; do
+			BUILD_COMBINATION_INPUT="$PWD/boards/$arch/$split/build_combination.in"
+			if [ $BUILD_COMBINATION -ot $BUILD_COMBINATION_INPUT ]; then
+				:> $BUILD_COMBINATION
+			fi
+		done
 	fi
 done
 
 if [ ! -s "$BUILD_COMBINATION" ]; then
 	for arch in ${ARCHS[*]}; do
 		BUILD_COMBINATION_INPUT="$PWD/boards/$arch/build_combination.in"
-		while IFS= read -r LINE; do
-			a=`echo "$LINE"|awk '{print $1}'`
-			s=`echo "$LINE"|awk '{print $2}'`
-			b=`echo "$LINE"|awk '{print $3}'`
-			p=`echo "$LINE"|awk '{print $4}'`
-			check_build_combination $a $s $b $p
-			[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
-		done < $BUILD_COMBINATION_INPUT
+		if [ -e $BUILD_COMBINATION_INPUT ]; then
+			while IFS= read -r LINE; do
+				a=`echo "$LINE"|awk '{print $1}'`
+				s=`echo "$LINE"|awk '{print $2}'`
+				b=`echo "$LINE"|awk '{print $3}'`
+				p=`echo "$LINE"|awk '{print $4}'`
+				check_build_combination $a $s $b $p
+				[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
+			done < $BUILD_COMBINATION_INPUT
+		else
+			for split in ${SPLITARCH[*]}; do
+				BUILD_COMBINATION_INPUT="$PWD/boards/$arch/$split/build_combination.in"
+				while IFS= read -r LINE; do
+					a=`echo "$LINE"|awk '{print $1}'`
+					s=`echo "$LINE"|awk '{print $2}'`
+					b=`echo "$LINE"|awk '{print $3}'`
+					p=`echo "$LINE"|awk '{print $4}'`
+					check_build_combination $a $s $b $p
+					[ "$?" -eq 0 ] && echo $LINE >> $BUILD_COMBINATION
+				done < $BUILD_COMBINATION_INPUT
+			done
+		fi
 	done
 fi

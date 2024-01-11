@@ -8,6 +8,7 @@ message(STATUS "@@${CURRENT_LIBRARY_TYPE}: ${CURRENT_LIBRARY}")
 
 aml_add_library_spec(${CURRENT_LIBRARY} ${CURRENT_LIBRARY_TYPE})
 
+add_subdirectory(common)
 add_subdirectory_if_kconfig(stick_mem)
 add_subdirectory_if_kconfig(uart)
 add_subdirectory_if_kconfig(cec)
@@ -52,6 +53,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/ethernet
 	${SDK_BASE}/drivers_aocpu/hdmirx
 	${SDK_BASE}/drivers_aocpu/pm
+	${SDK_BASE}/drivers_aocpu/common
 )
 
 aml_library_link_libraries(arch__${ARCH})

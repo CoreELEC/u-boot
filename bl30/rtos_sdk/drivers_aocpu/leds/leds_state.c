@@ -511,22 +511,29 @@ int32_t xLedsStateInit(void)
 	/* TODO: free */
 	/* apply pwm */
 	for (i = 0; i < LED_ID_MAX; i++) {
-		MesonLeds[i].pwm =
-			xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
-					      MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
-		if (!MesonLeds[i].pwm) {
-			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n",
-				DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+		if (MesonLeds[i].hardware_id == MESON_PWM_INVALID) {
+			MesonLeds[i].pwm =
+				xPwmMesonChannelApply(MesonLeds[i].pwm_chip_id, MESON_PWM_0);
+			MesonLeds[i].pwm_sub =
+				xPwmMesonChannelApply(MesonLeds[i].pwm_chip_id, MESON_PWM_2);
+		} else {
+			MesonLeds[i].pwm =
+				xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
 				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT);
+			MesonLeds[i].pwm_sub =
+				xPwmMesonChannelApply(MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
+				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
+		}
+
+		if (!MesonLeds[i].pwm) {
+			iprintf("%s: id: %ld hardware_id: %ld chip_id: %ld apply pwm main fail!\n",
+				DRIVER_NAME, i, MesonLeds[i].hardware_id, MesonLeds[i].pwm_chip_id);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
-		MesonLeds[i].pwm_sub = xPwmMesonChannelApply(
-			MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
-			MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
+
 		if (!MesonLeds[i].pwm_sub) {
-			iprintf("%s: id: %ld chip: %ld channel: %ld apply pwm channel fail!\n",
-				DRIVER_NAME, i, MesonLeds[i].hardware_id / LED_PWM_CHAN_CNT,
-				MesonLeds[i].hardware_id % LED_PWM_CHAN_CNT + LED_PWM_CHAN_CNT);
+			iprintf("%s: id: %ld hardware_id: %ld chip_id: %ld apply pwm sub fail!\n",
+				DRIVER_NAME, i, MesonLeds[i].hardware_id, MesonLeds[i].pwm_chip_id);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
 		/*comfirmed disabled before mux pins*/

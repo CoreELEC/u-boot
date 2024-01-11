@@ -85,6 +85,7 @@ struct LedDevice {
 	uint32_t breathtime;
 	uint32_t id;
 	uint32_t hardware_id;
+	uint32_t pwm_chip_id;//after s7 soc, only use chip id
 	uint32_t brightness;
 	uint32_t polarity;
 	struct xPwmMesondevice *pwm;

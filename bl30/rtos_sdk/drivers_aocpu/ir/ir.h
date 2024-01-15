@@ -49,7 +49,7 @@ enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
  *  @usGpio: which gpio is used as input.
  *  @func: function number of gpio use as ir input.
  */
-extern void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
+extern uint32_t vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 		    struct IRPowerKey *ulPowerKeyList, uint8_t ucPowerKeyNum,
 		    void (*vIRHandler)(struct IRPowerKey *pkey));
 
@@ -75,7 +75,7 @@ extern int8_t ucIsIRInit(void);
  *  vIRDeint() - deinit ir
  */
 extern void vIRDeint(void);
-extern void vIRMailboxEnable(void);
+extern uint32_t vIRMailboxEnable(void);
 extern void vIRGetKeyCode(struct IRPowerKey *ulPowerKeyList);
 extern void vIR32KInit(uint32_t ulFrame0, uint32_t ulFrame1);
 #ifdef __cplusplus

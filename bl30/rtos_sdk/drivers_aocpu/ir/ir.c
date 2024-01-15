@@ -16,11 +16,16 @@
 #include "mailbox-api.h"
 
 #include "ir_drv.h"
+#include "drv_errno.h"
 
-static uint8_t ucIsDebugEnable;
 static struct IRPowerKey prvKeyCodeList[MAX_KEY_NUM] = {};
 static uint32_t key_cnt;
 
+#define ERR_IR(errno) (DRV_ERRNO_IR_BASE | errno)
+#define IR_PRT_ENABLE	0
+
+#if (IR_PRT_ENABLE)
+static uint8_t ucIsDebugEnable;
 #define IRDebug(fmt, x...)                                                                         \
 	do {                                                                                       \
 		if (ucIsDebugEnable)                                                               \
@@ -28,6 +33,10 @@ static uint32_t key_cnt;
 	} while (0)
 
 #define IRError(fmt, x...) printf("%sError: %s: " fmt, DRIVE_NAME, __func__, ##x)
+#else
+#define IRDebug(fmt, x...)
+#define IRError(fmt, x...)
+#endif
 
 static inline void prvIRRegWrite(uint8_t ucCTL, uint8_t ucAddr, uint32_t ulval)
 {
@@ -49,7 +58,7 @@ static inline uint32_t prvIRRegRead(uint8_t ucCTL, uint8_t ucAddr)
 
 	if (!IR_BASE_ADDR || !IR_BASE_ADDR_OLD) {
 		IRError("IR_BASE_ADDR not found!\n");
-		return -1;
+		return ERR_IR(DRV_ERROR_PARAMETER);
 	}
 
 	ulRegBase = IS_LEGACY_CTRL(ucCTL);
@@ -187,7 +196,7 @@ int8_t ucIsIRInit(void)
 	return xDrvData->ucIsInit;
 }
 
-void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
+uint32_t vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 	     struct IRPowerKey *ulPowerKeyList, uint8_t ucPowerKeyNum,
 	     void (*vIRHandler)(struct IRPowerKey *pkey))
 {
@@ -195,22 +204,22 @@ void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 
 	if (ucIsIRInit()) {
 		IRError("all ready init\n");
-		return;
+		return ERR_IR(DRV_ERROR_BUSY);
 	}
 
 	if (!IR_INTERRUPT_NUM || !IRQ_NUM_IRIN) {
 		IRError("ir irq number not found, ir init failed\n");
-		return;
+		return ERR_IR(DRV_ERROR_IRQ);
 	}
 
 	if (ulPowerKeyList == NULL || !ucPowerKeyNum) {
 		IRError("not set power key list, ir init failed\n");
-		return;
+		return ERR_IR(DRV_ERROR_SIZE);
 	}
 
 	if (xPinmuxSet(usGpio, func)) {
 		IRError("pin mux setting error\n");
-		return;
+		return ERR_IR(DRV_ERROR_UNSUPPORTED);
 	}
 
 	xDrvData = pGetIRDrvData();
@@ -225,6 +234,8 @@ void vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 	EnableIrq(IRQ_NUM_IRIN);
 
 	xDrvData->ucIsInit = 1;
+
+	return 0;
 }
 
 void vIRDeint(void)
@@ -269,16 +280,17 @@ static void *prvIRGetInfo(void *msg)
 	return NULL;
 }
 
-void vIRMailboxEnable(void)
+uint32_t vIRMailboxEnable(void)
 {
 	int32_t ret;
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_IR_INFO,
 						    prvIRGetInfo, 1);
-	if (ret) {
-		printf("mailbox cmd 0x%x register fail\n");
-		return;
+	if (ret == MBOX_CALL_MAX) {
+		IRError("mailbox cmd 0x%x register fail\n");
+		return ERR_IR(DRV_ERROR_UNSUPPORTED);
 	}
+	return 0;
 }
 
 void vIR32KInit(uint32_t ulFrame0, uint32_t ulFrame1)

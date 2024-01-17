@@ -21,6 +21,7 @@ add_subdirectory_if_kconfig(gpio)
 add_subdirectory_if_kconfig(key)
 add_subdirectory_if_kconfig(pwm)
 add_subdirectory_if_kconfig(leds)
+add_subdirectory_if_kconfig(fd650)
 add_subdirectory_if_kconfig(timer_source)
 add_subdirectory_if_kconfig(saradc)
 add_subdirectory_if_kconfig(ir)
@@ -44,6 +45,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/key
 	${SDK_BASE}/drivers_aocpu/pwm
 	${SDK_BASE}/drivers_aocpu/leds
+	${SDK_BASE}/drivers_aocpu/fd650
 	${SDK_BASE}/drivers_aocpu/timer_source
 	${SDK_BASE}/drivers_aocpu/saradc
 	${SDK_BASE}/drivers_aocpu/ir

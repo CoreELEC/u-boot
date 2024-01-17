@@ -30,6 +30,15 @@ else()
 aml_library_sources(
 	portable/MemMang/heap_5.c
 )
+
+redefine_file_macro()
+
+target_compile_options(
+    ${CURRENT_LIBRARY}
+    PRIVATE
+    -Wno-builtin-macro-redefined
+)
+
 endif()
 
 aml_library_include_directories(

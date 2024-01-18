@@ -27,7 +27,8 @@
 static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO	GPIOC_7
-#define VCC3V3_GPIO	GPIOD_10
+/* make it invalid for pin bringup compile*/
+#define VCC3V3_GPIO	GPIO_INVALID
 #define VDDCPU_A55_GPIO	GPIOD_3
 #define VDDCPU_A76_GPIO	GPIO_TEST_N
 

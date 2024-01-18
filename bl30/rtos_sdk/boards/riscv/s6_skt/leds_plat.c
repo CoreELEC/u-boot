@@ -69,5 +69,7 @@ int32_t vLedPlatInit(int32_t **stickmem)
 int32_t vLedPinmuxInit(void)
 {
 	/* set pinmux */
-	return xPinmuxSet(GPIOD_8, PIN_FUNC3);
+	/* comment for bringup */
+	//return xPinmuxSet(GPIOD_8, PIN_FUNC3);
+	return 0;
 }

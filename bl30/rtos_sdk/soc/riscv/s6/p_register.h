@@ -13,7 +13,7 @@
 //
 // Project name: s6
 //
-// Create time: Thu Jan  4 19:40:24 CST 2024 by chong.gu
+// Create time: Tue Jan 16 19:54:06 CST 2024 by chong.gu
 //
 // ./REG_LIST_RTL.h
 //
@@ -534,6 +534,7 @@
 #define P_SYSCTRL_AXI_PIPE_CTRL0                   (volatile uint32_t *)0xfe010154
 #define P_SYSCTRL_AXI_PIPE_CTRL1                   (volatile uint32_t *)0xfe010158
 #define P_SYSCTRL_AXI_PIPE_CTRL2                   (volatile uint32_t *)0xfe010174
+#define P_SYSCTRL_AXI_PIPE_CTRL3                   (volatile uint32_t *)0xfe010178
 #define P_SYSCTRL_TIMER90K                         (volatile uint32_t *)0xfe01015c
 #define P_SYSCTRL_SCR                              (volatile uint32_t *)0xfe010160
 #define P_SYSCTRL_HPG_TIMER                        (volatile uint32_t *)0xfe010164
@@ -618,7 +619,7 @@
 #define P_SYSCTRL_MALI_TEXFMTENABLE                (volatile uint32_t *)0xfe010400
 #define P_SYSCTRL_MALI_CONFIG                      (volatile uint32_t *)0xfe010404
 #define P_SYSCTRL_CPU_RAM_EMA_CTRL                 (volatile uint32_t *)0xfe010440
-#define P_SYSCTRL_DSP_BUS_CFG                      (volatile uint32_t *)0xfe010444
+#define P_SYSCTRL_BUS_CFG                          (volatile uint32_t *)0xfe010444
 //========================================================================
 //  CLK_CTRL
 //========================================================================
@@ -991,10 +992,11 @@
 #define P_PWRCTRL_SYSPWR_TIMER_TH_45               (volatile uint32_t *)0xfe00c58c
 #define P_PWRCTRL_SYSPWR_TIMER_TH_67               (volatile uint32_t *)0xfe00c590
 #define P_PWRCTRL_SYSPWR_TIMER_TH_89               (volatile uint32_t *)0xfe00c594
-#define P_PWRCTRL_SYSPWR_MEMPD_STS                 (volatile uint32_t *)0xfe00c598
-#define P_PWRCTRL_SYSPWR_FSM_STS0                  (volatile uint32_t *)0xfe00c59c
-#define P_PWRCTRL_SYSPWR_FSM_STS1                  (volatile uint32_t *)0xfe00c5a0
-#define P_PWRCTRL_SYSPWR_FSM_STS2                  (volatile uint32_t *)0xfe00c5a4
+#define P_PWRCTRL_SYSPWR_MEMPD_INIT_SET            (volatile uint32_t *)0xfe00c598
+#define P_PWRCTRL_SYSPWR_MEMPD_STS                 (volatile uint32_t *)0xfe00c59c
+#define P_PWRCTRL_SYSPWR_FSM_STS0                  (volatile uint32_t *)0xfe00c5a0
+#define P_PWRCTRL_SYSPWR_FSM_STS1                  (volatile uint32_t *)0xfe00c5a4
+#define P_PWRCTRL_SYSPWR_FSM_STS2                  (volatile uint32_t *)0xfe00c5c0
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL0      10'h160
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL1      10'h161
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL2      10'h162
@@ -1780,15 +1782,21 @@
 #define P_CPUCTRL_SYS_CPU_CFG11                    (volatile uint32_t *)0xfe00e274
 #define P_CPUCTRL_SYS_CPU_CFG12                    (volatile uint32_t *)0xfe00e278
 #define P_CPUCTRL_SYS_CPU_CFG13                    (volatile uint32_t *)0xfe00e27c
-#define P_CPUCTRL_SYS_CPU_STATUS0                  (volatile uint32_t *)0xfe00e280
-#define P_CPUCTRL_SYS_CPU_STATUS1                  (volatile uint32_t *)0xfe00e284
-#define P_CPUCTRL_SYS_CPU_STATUS2                  (volatile uint32_t *)0xfe00e288
-#define P_CPUCTRL_SYS_CPU_STATUS3                  (volatile uint32_t *)0xfe00e28c
-#define P_CPUCTRL_SYS_CPU_STATUS4                  (volatile uint32_t *)0xfe00e290
-#define P_CPUCTRL_SYS_CPU_STATUS5                  (volatile uint32_t *)0xfe00e294
-#define P_CPUCTRL_SYS_CPU_STATUS6                  (volatile uint32_t *)0xfe00e298
-#define P_CPUCTRL_SYS_CPU_STATUS7                  (volatile uint32_t *)0xfe00e29c
-#define P_CPUCTRL_SYS_GIC_CFG0                     (volatile uint32_t *)0xfe00e2a0
+#define P_CPUCTRL_SYS_CPU_CFG14                    (volatile uint32_t *)0xfe00e280
+#define P_CPUCTRL_SYS_CPU_CFG15                    (volatile uint32_t *)0xfe00e284
+#define P_CPUCTRL_SYS_CPU_STATUS0                  (volatile uint32_t *)0xfe00e288
+#define P_CPUCTRL_SYS_CPU_STATUS1                  (volatile uint32_t *)0xfe00e28c
+#define P_CPUCTRL_SYS_CPU_STATUS2                  (volatile uint32_t *)0xfe00e290
+#define P_CPUCTRL_SYS_CPU_STATUS3                  (volatile uint32_t *)0xfe00e294
+#define P_CPUCTRL_SYS_CPU_STATUS4                  (volatile uint32_t *)0xfe00e298
+#define P_CPUCTRL_SYS_CPU_STATUS5                  (volatile uint32_t *)0xfe00e29c
+#define P_CPUCTRL_SYS_CPU_STATUS6                  (volatile uint32_t *)0xfe00e2a0
+#define P_CPUCTRL_SYS_CPU_STATUS7                  (volatile uint32_t *)0xfe00e2a4
+#define P_CPUCTRL_SYS_CPU_STATUS8                  (volatile uint32_t *)0xfe00e2a8
+#define P_CPUCTRL_SYS_CPU_STATUS9                  (volatile uint32_t *)0xfe00e2ac
+#define P_CPUCTRL_SYS_CPU_STATUS10                 (volatile uint32_t *)0xfe00e2b0
+#define P_CPUCTRL_SYS_CPU_STATUS11                 (volatile uint32_t *)0xfe00e2b4
+#define P_CPUCTRL_SYS_GIC_CFG0                     (volatile uint32_t *)0xfe00e2b8
 //`define SYS_CPU_MISC                        8'ha8
 //========================================================================
 //  SAR_ADC
@@ -29576,9 +29584,9 @@
 //Bit  11:0        reg_rdmif_lbuf_depth  // unsigned, RW, default = 512
 #define P_AFBCDM_VDTOP_CTRL1                       (volatile uint32_t *)0xff0150e4
 //Bit  31:30       reserved                //
-//bit  29:16       reg_fgrain_ppconv_vsize // unsigned, RW, default = 2160
+//Bit  29:16       reg_fgrain_ppconv_vsize // unsigned, RW, default = 2160
 //Bit  15:14       reserved                //
-//bit  13: 0       reg_fgrain_ppconv_hsize // unsigned, RW, default = 3840
+//Bit  13: 0       reg_fgrain_ppconv_hsize // unsigned, RW, default = 3840
 //==========================================================================
 // AFBC_DEC
 //==========================================================================

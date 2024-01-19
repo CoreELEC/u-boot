@@ -13,7 +13,7 @@
 //
 // Project name: s6
 //
-// Create time: Thu Jan  4 19:40:24 CST 2024 by chong.gu
+// Create time: Tue Jan 16 19:54:06 CST 2024 by chong.gu
 //
 // ./REG_LIST_RTL.h
 //
@@ -546,6 +546,7 @@
 #define SYSCTRL_AXI_PIPE_CTRL0                     ((0x0055  << 2) + 0xfe010000)
 #define SYSCTRL_AXI_PIPE_CTRL1                     ((0x0056  << 2) + 0xfe010000)
 #define SYSCTRL_AXI_PIPE_CTRL2                     ((0x005d  << 2) + 0xfe010000)
+#define SYSCTRL_AXI_PIPE_CTRL3                     ((0x005e  << 2) + 0xfe010000)
 #define SYSCTRL_TIMER90K                           ((0x0057  << 2) + 0xfe010000)
 #define SYSCTRL_SCR                                ((0x0058  << 2) + 0xfe010000)
 #define SYSCTRL_HPG_TIMER                          ((0x0059  << 2) + 0xfe010000)
@@ -630,7 +631,7 @@
 #define SYSCTRL_MALI_TEXFMTENABLE                  ((0x0100  << 2) + 0xfe010000)
 #define SYSCTRL_MALI_CONFIG                        ((0x0101  << 2) + 0xfe010000)
 #define SYSCTRL_CPU_RAM_EMA_CTRL                   ((0x0110  << 2) + 0xfe010000)
-#define SYSCTRL_DSP_BUS_CFG                        ((0x0111  << 2) + 0xfe010000)
+#define SYSCTRL_BUS_CFG                            ((0x0111  << 2) + 0xfe010000)
 //========================================================================
 //  CLK_CTRL
 //========================================================================
@@ -1003,10 +1004,11 @@
 #define PWRCTRL_SYSPWR_TIMER_TH_45                 ((0x0163  << 2) + 0xfe00c000)
 #define PWRCTRL_SYSPWR_TIMER_TH_67                 ((0x0164  << 2) + 0xfe00c000)
 #define PWRCTRL_SYSPWR_TIMER_TH_89                 ((0x0165  << 2) + 0xfe00c000)
-#define PWRCTRL_SYSPWR_MEMPD_STS                   ((0x0166  << 2) + 0xfe00c000)
-#define PWRCTRL_SYSPWR_FSM_STS0                    ((0x0167  << 2) + 0xfe00c000)
-#define PWRCTRL_SYSPWR_FSM_STS1                    ((0x0168  << 2) + 0xfe00c000)
-#define PWRCTRL_SYSPWR_FSM_STS2                    ((0x0169  << 2) + 0xfe00c000)
+#define PWRCTRL_SYSPWR_MEMPD_INIT_SET              ((0x0166  << 2) + 0xfe00c000)
+#define PWRCTRL_SYSPWR_MEMPD_STS                   ((0x0167  << 2) + 0xfe00c000)
+#define PWRCTRL_SYSPWR_FSM_STS0                    ((0x0168  << 2) + 0xfe00c000)
+#define PWRCTRL_SYSPWR_FSM_STS1                    ((0x0169  << 2) + 0xfe00c000)
+#define PWRCTRL_SYSPWR_FSM_STS2                    ((0x0170  << 2) + 0xfe00c000)
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL0      10'h160
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL1      10'h161
 //`define PWRCTRL_DSPB_AUTO_OFF_CTRL2      10'h162
@@ -1792,15 +1794,21 @@
 #define CPUCTRL_SYS_CPU_CFG11                      ((0x009d  << 2) + 0xfe00e000)
 #define CPUCTRL_SYS_CPU_CFG12                      ((0x009e  << 2) + 0xfe00e000)
 #define CPUCTRL_SYS_CPU_CFG13                      ((0x009f  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS0                    ((0x00a0  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS1                    ((0x00a1  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS2                    ((0x00a2  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS3                    ((0x00a3  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS4                    ((0x00a4  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS5                    ((0x00a5  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS6                    ((0x00a6  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_CPU_STATUS7                    ((0x00a7  << 2) + 0xfe00e000)
-#define CPUCTRL_SYS_GIC_CFG0                       ((0x00a8  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_CFG14                      ((0x00a0  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_CFG15                      ((0x00a1  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS0                    ((0x00a2  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS1                    ((0x00a3  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS2                    ((0x00a4  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS3                    ((0x00a5  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS4                    ((0x00a6  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS5                    ((0x00a7  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS6                    ((0x00a8  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS7                    ((0x00a9  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS8                    ((0x00aa  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS9                    ((0x00ab  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS10                   ((0x00ac  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_CPU_STATUS11                   ((0x00ad  << 2) + 0xfe00e000)
+#define CPUCTRL_SYS_GIC_CFG0                       ((0x00ae  << 2) + 0xfe00e000)
 //`define SYS_CPU_MISC                        8'ha8
 //========================================================================
 //  SAR_ADC
@@ -29588,9 +29596,9 @@
 //Bit  11:0        reg_rdmif_lbuf_depth  // unsigned, RW, default = 512
 #define AFBCDM_VDTOP_CTRL1                         ((0x5439  << 2) + 0xff000000)
 //Bit  31:30       reserved                //
-//bit  29:16       reg_fgrain_ppconv_vsize // unsigned, RW, default = 2160
+//Bit  29:16       reg_fgrain_ppconv_vsize // unsigned, RW, default = 2160
 //Bit  15:14       reserved                //
-//bit  13: 0       reg_fgrain_ppconv_hsize // unsigned, RW, default = 3840
+//Bit  13: 0       reg_fgrain_ppconv_hsize // unsigned, RW, default = 3840
 //==========================================================================
 // AFBC_DEC
 //==========================================================================

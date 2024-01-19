@@ -5651,7 +5651,7 @@
 // HEVCD_MPP_VDEC_MCR_CTL
 // [0]        -- mcr_mdec_mode : 1:mcr fetch used by vdec:mdec
 // [3:1]      -- reserved
-// [4]        -- mcr_mdec_8byte_endianness : 1:big 0:little
+// [4]        -- mcr_mdec_8byte_endian : 1:big 0:little
 // [31:5]     -- reserved
 #define P_HEVCD_MPP_VDEC_MCR_CTL                   (volatile uint32_t *)0xfe32d320
 #define P_HEVCD_MPP_VDEC_MCR_CTL_DBE1              (volatile uint32_t *)0xfe32e720
@@ -15527,7 +15527,7 @@
 // HEVCD_MPP_VDEC_MCR_CTL
 // [0]        -- mcr_mdec_mode : 1:mcr fetch used by vdec:mdec
 // [3:1]      -- reserved
-// [4]        -- mcr_mdec_8byte_endianness : 1:big 0:little
+// [4]        -- mcr_mdec_8byte_endian : 1:big 0:little
 // [31:5]     -- reserved
 #define P_VDEC2_HEVCD_MPP_VDEC_MCR_CTL             (volatile uint32_t *)0xfe329320
 //////////////////////////////////////////////////////////////////////////////

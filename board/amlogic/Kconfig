@@ -299,6 +299,11 @@ config ALTA
 	select ODROID_COMMON
 	default n
 
+config SOLITUDE
+	bool "Support Libre Computer Solitude board"
+	select ODROID_COMMON
+	default n
+
 if GXB_SKT_V1
 source "board/amlogic/gxb_skt_v1/Kconfig"
 endif
@@ -578,4 +583,8 @@ endif
 
 if ALTA
 source "board/librecomputer/alta/Kconfig"
+endif
+
+if SOLITUDE
+source "board/librecomputer/solitude/Kconfig"
 endif

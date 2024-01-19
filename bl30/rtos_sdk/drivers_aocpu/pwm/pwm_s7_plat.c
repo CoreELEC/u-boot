@@ -25,16 +25,13 @@ struct xPwmMesonChip meson_pwm_chip[] = {
 	{ PWM_J, PWM_PWM_J, 0, CLKCTRL_PWM_CLK_IJ_CTRL, pdTRUE, },
 };
 
-/* VDDEE voltage table  volt must ascending */
 struct xPwmMesonVoltage vddee_table[] = {
-	{ 700, 0x140000 }, { 710, 0x120000 }, { 720, 0x110001 }, { 730, 0x100002 },
-	{ 740, 0x0f0003 }, { 750, 0x0e0004 }, { 760, 0x0d0005 }, { 770, 0x0c0006 },
-	{ 780, 0x0b0007 }, { 790, 0x0a0008 }, { 800, 0x090009 }, { 810, 0x08000a },
-	{ 820, 0x07000b }, { 830, 0x06000c }, { 840, 0x05000d }, { 850, 0x04000e },
-	{ 860, 0x03000f }, { 870, 0x020010 }, { 880, 0x010011 }, { 890, 0x12 },
-	{ 900, 0x14 },
+	{ 700, 0x120000 }, { 710, 0x110001 }, { 720, 0x100002 }, { 730, 0xf0003 },
+	{ 740, 0xe0004 }, { 750, 0xd0005 }, { 760, 0xc0006 }, { 770, 0xb0007 },
+	{ 780, 0xa0008 }, { 790, 0x90009 }, { 800, 0x8000a }, { 810, 0x7000b },
+	{ 820, 0x6000c }, { 830, 0x5000d }, { 840, 0x4000e }, { 850, 0x3000f },
+	{ 860, 0x20010 }, { 870, 0x10011 }, { 880, 0x12 },
 };
-
 /* VDDCPU voltage table  volt must ascending */
 struct xPwmMesonVoltage vddcpu_table[] = {
 	{ 690, 0x00240000 },  { 700, 0x00220000 },  { 710, 0x00210001 },  { 720, 0x00200002 },
@@ -57,10 +54,10 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-		return PWM_E;
+		return PWM_H;
 
 	case VDDCPU_VOLT:
-		return PWM_F;
+		return PWM_J;
 
 	default:
 		break;

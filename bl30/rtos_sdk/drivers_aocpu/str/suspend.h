@@ -26,6 +26,9 @@
 #define STR_QUEUE_ITEM_SIZE 4
 #define EXIT_REASON_EXTENSION_FLAG	(1 << 7)
 
+#define DELAY_TIME_MS 20	//20ms
+#define POWERON_VDDCPU_DELAY (pdMS_TO_TICKS(DELAY_TIME_MS) + 1)
+
 struct WakeUp_Reason {
 	char *name;
 };

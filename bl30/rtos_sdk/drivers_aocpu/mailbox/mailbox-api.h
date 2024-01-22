@@ -18,7 +18,7 @@ extern "C" {
 #include "rpc-user.h"
 
 #define TICKS_TO_WAIT 100
-#define TASK_PRIORITY 4
+#define TASK_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define MBOX_BUF_LEN MHU_DATA_SIZE
 

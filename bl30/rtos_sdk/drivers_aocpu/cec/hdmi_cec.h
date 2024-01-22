@@ -34,7 +34,7 @@ enum cec_chip_ver {
 
 /*cec API for suspend*/
 
-#define CEC_TASK_PRI 5
+#define CEC_TASK_PRI 4
 #define CEC_TASK_STACK_SIZE 1024
 
 #define CEC_CFG_FUNC_EN 0x01

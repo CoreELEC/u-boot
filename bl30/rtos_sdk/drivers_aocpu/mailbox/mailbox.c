@@ -34,9 +34,6 @@
 #define MHU_MB_STK_SIZE 2048
 #define MB_DATA_SHR_SIZE 240
 
-#undef TASK_PRIORITY
-#define TASK_PRIORITY 0x2
-
 #define AO_MBOX_ONLY_SYNC 1
 
 void *g_tbl_ao;

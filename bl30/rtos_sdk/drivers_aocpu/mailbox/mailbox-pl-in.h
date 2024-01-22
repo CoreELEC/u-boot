@@ -20,7 +20,7 @@
 #if (configMAX_PRIORITIES < 2)
 #error configMAX_PRIORITIES should no less than 3
 #endif
-#define MHU_MB_TASK_PRIORITIES (configMAX_PRIORITIES - 2)
+#define MHU_MB_TASK_PRIORITIES (configMAX_PRIORITIES - 1)
 
 #define MAILBOX_BUFFER_SIZE MHU_MAX_SIZE
 #define MAILBOX_CMD_MAX 0xFFFF

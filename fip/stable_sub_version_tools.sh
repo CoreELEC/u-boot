@@ -151,7 +151,7 @@ declare -a BLX_REMOTE=(		\
 	"uboot"					\
 	"fip")
 
-declare -a BLX_STABLE_BRANCH=(			        \
+declare -a BLX_STABLE_BRANCH=(			       		    \
 	"projects/openlinux/bl-sc2-$STABLE_MAJOR_VERSION"	\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
@@ -159,8 +159,8 @@ declare -a BLX_STABLE_BRANCH=(			        \
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
-	"projects/openlinux/bl-$STABLE_MAJOR_VERSION-3.2.7"		\
-	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"	\
+	"projects/openlinux/bl-$STABLE_MAJOR_VERSION-2.7"	\
+	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION-3.18"	\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION"		\
 	"projects/openlinux/bl-$STABLE_MAJOR_VERSION-2023"	\

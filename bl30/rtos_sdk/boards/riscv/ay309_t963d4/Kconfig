@@ -25,5 +25,6 @@ config BOARD_AY309_T963D4
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
 	select HDMIRX
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic AY309 Board.

@@ -26,5 +26,6 @@ config BOARD_AY301_T963D4
 	select VERSION_FULL_INFO
 	select HDMIRX
 	select PM
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic AY301 Board.

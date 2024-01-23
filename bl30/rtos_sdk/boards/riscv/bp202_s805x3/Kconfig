@@ -24,5 +24,6 @@ config BOARD_BP202_S805X3
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic BP202_S805X3 Board.

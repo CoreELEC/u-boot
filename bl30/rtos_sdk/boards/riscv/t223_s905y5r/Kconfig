@@ -24,5 +24,6 @@ config BOARD_T223_S905Y5R
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic T223_S905Y5R Board.

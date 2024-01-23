@@ -267,6 +267,7 @@ function mk_devfip() {
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-device-fip \
 			--infile-bl30-payload=${payload}/bl30.bin \
 			--infile-bl40-payload=${payload}/bl40.bin \
+			--header-layout=full \
 			--infile-bl31-payload=${payload}/bl31.bin \
 			--infile-bl32-payload=${payload}/bl32.bin \
 			--infile-bl33-payload=${payload}/bl33.bin \

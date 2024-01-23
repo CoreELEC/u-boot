@@ -34,6 +34,8 @@ class SectionSize:
     def total(self):
         return self.text + self.data + self.bss
     def add_gcc_section(self, section, size):
+        if current_section is None:
+            return;
         if section.startswith('.comment'):
             return
         if section.startswith('.debug'):
@@ -57,6 +59,8 @@ class SectionSize:
                 print("customer section:%s, size:%d" % (section, size))
                 self.customize += size
     def add_xcc_section(self, section, size):
+        if current_section is None:
+            return;
         if section.startswith('.comment'):
             return
         if section.startswith('.debug'):

@@ -16,15 +16,11 @@ aml_library_sources(
 	timers.c
 )
 
-aml_library_sources(
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}/port.c
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}/portASM.S
-)
+add_subdirectory(portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR})
 
 if(CONFIG_XTENSA)
 aml_library_sources(
 	portable/MemMang/heap_4.c
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}/portclib.c
 )
 else()
 aml_library_sources(
@@ -43,7 +39,6 @@ endif()
 
 aml_library_include_directories(
 	include
-	portable/${CONFIG_KERNEL_COMPILER_DIR}/${CONFIG_KERNEL_ARCH_DIR}
 	aml_extend
 )
 

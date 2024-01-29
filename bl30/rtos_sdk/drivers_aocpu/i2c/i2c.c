@@ -12,6 +12,9 @@
 #include <i2c_plat.h>
 #include "timer_source.h"
 #include <string.h>
+#include "drv_errno.h"
+
+#define ERR_I2C(errno) (DRV_ERRNO_I2C_BASE | errno)
 
 #define BIT(nr) (1UL << (nr))
 #define GENMASK(h, l) (((~0UL) << (l)) & (~0UL >> (BITS_PER_LONG - 1 - (h))))
@@ -279,7 +282,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 				prvClrBitsLe32(&i2cs[current_id].regs->ctrl, REG_CTRL_START);
 				iprintf("meson i2c: timeout\n");
 				taskEXIT_CRITICAL();
-				return -1;
+				return ERR_I2C(DRV_ERROR_TIMEOUT);
 			}
 			udelay(1);
 			time_count++;
@@ -290,7 +293,7 @@ static int32_t prvMesonI2cXferMsg(struct xI2cMsg *msg, uint32_t last)
 		if (REG32(ctrl) & REG_CTRL_ERROR) {
 			iprintf("meson i2c: error(0x%x)\n", REG32(ctrl));
 			taskEXIT_CRITICAL();
-			return -1;
+			return ERR_I2C(DRV_ERROR_ACCESS);
 		}
 
 		if ((msg->flags & I2C_M_RD) && i2cs[current_id].count) {
@@ -352,7 +355,7 @@ int32_t xI2cMesonRead(uint32_t addr, uint8_t offset, uint8_t *buffer, uint32_t l
 
 	if (!len) {
 		iprintf("invalid length\n");
-		return -1;
+		return ERR_I2C(DRV_ERROR_PARAMETER);
 	}
 
 	ptr = msg;
@@ -411,7 +414,7 @@ int32_t xI2cMesonRead16(uint32_t addr, unsigned int offset, uint8_t *buffer, uin
 
 	if (!len) {
 		iprintf("invalid length\n");
-		return -1;
+		return ERR_I2C(DRV_ERROR_PARAMETER);
 	}
 
 	offset_buf[0] = offset >> 8;

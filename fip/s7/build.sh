@@ -726,8 +726,17 @@ function build_signed() {
 	zip -j $u_pack ${list_pack} >& /dev/null
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
-		if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
-			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
+		if [ "${CONFIG_S7_T223}" == "y" ]; then
+			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys" ]; then
+				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys projects/s7/bayside/normal
+			fi
+			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys" ]; then
+				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys projects/s7/bayside/dfu
+			fi
+		else
+			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
+				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
+			fi
 		fi
 
 		fw_arb_cfg=${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg
@@ -740,7 +749,11 @@ function build_signed() {
 			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
 			export DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}
 		fi
-		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
+		if [ "${CONFIG_S7_T223}" == "y" ]; then
+			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys
+		else
+			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
+		fi
 		export DEVICE_INPUT_PATH=$(pwd)/${BUILD_PATH}
 		export DEVICE_OUTPUT_PATH=$(pwd)/${BUILD_PATH}
 		export PROJECT=${CHIPSET_NAME}
@@ -754,6 +767,11 @@ function build_signed() {
 		export DEVICE_STORAGE_SUFFIX=.sto
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
 		export DEVICE_STORAGE_SUFFIX=.usb
+		if [ "${CONFIG_S7_T223}" == "y" ]; then
+			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys
+		else
+			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
+		fi
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
 
 		make -C ./${FIP_FOLDER}${CUR_SOC} dv-device-fip

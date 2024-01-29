@@ -9,6 +9,7 @@ key_type=$1
 soc=$2
 key_name=$3
 key_path=$4
+key_branch=$5
 
 #chipset repo-name
 CHIPSET_REPO_NAME[0]="/keys/${key_type}/${soc}/chipset/bl2/aes"
@@ -22,7 +23,7 @@ CHIPSET_REPO_NAME[7]="/keys/${key_type}/${soc}/chipset/bl40/rsa"
 CHIPSET_REPO_NAME[8]="/keys/${key_type}/${soc}/chipset/cert-template"
 
 #device repo-name
-DEVICE_REPO_FOLDER="/keys/${key_type}/${soc}/device/"
+DEVICE_REPO_FOLDER="/keys/dev-keys/${soc}/device/"
 DEVICE_REPO_NAME[0]="boot-blobs"
 DEVICE_REPO_NAME[1]="fip"
 
@@ -38,6 +39,9 @@ elif [ ${key_name} == "device"  ]; then
 	do
 		if [ ! -d ${key_path}/${NAME} ]; then
 			git clone ${REPO_ADDR_HEAD}${DEVICE_REPO_FOLDER}${NAME} ${key_path}/${NAME}
+			cd ${key_path}/${NAME}
+			git checkout ${key_branch}
+			cd -
 		fi
 	done
 fi

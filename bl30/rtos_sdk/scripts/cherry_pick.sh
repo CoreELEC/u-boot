@@ -17,7 +17,6 @@ get_repo_path() {
 cherry_pick() {
 	if [ -d "$repo_path" ]; then
 		pushd $repo_path > /dev/null
-		echo -e "========toby debug (1):$GERRIT_SERVER (2):$GERRIT_PORT (3):$GERRIT_PROJECT (4):$GERRIT_REFSPEC ========"
 		git fetch ssh://${GERRIT_SERVER}:${GERRIT_PORT}/${GERRIT_PROJECT} ${GERRIT_REFSPEC}
 		git cherry-pick FETCH_HEAD
 		if [ "$?" -ne 0 ]; then

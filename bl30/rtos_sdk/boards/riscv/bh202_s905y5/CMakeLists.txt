@@ -7,7 +7,6 @@ aml_library_include_directories(
 )
 
 aml_library_sources(
-	keypad.c
 	power.c
 	hw_business.c
 )

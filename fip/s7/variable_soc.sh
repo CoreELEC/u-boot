@@ -180,6 +180,8 @@ elif [ "${BL30_SELECT}" == "s7_bh209" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="bh209_s905y5"
 elif [ "${BL30_SELECT}" == "s7_t223" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="t223_s905y5r"
+elif [ "${BL30_SELECT}" == "s7_bp202" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bp202_s805x3"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s7_skt"
 fi

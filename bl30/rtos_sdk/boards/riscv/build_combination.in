@@ -25,6 +25,7 @@ riscv s6 s6_skt aocpu
 riscv s7 s7_skt aocpu
 riscv s7 bh201_s905y5 aocpu
 riscv s7 bh202_s905y5 aocpu
+riscv s7 bp202_s805x3 aocpu
 riscv s7 bh209_s905y5 aocpu
 riscv s7 t223_s905y5r aocpu
 riscv s7d s7d_skt aocpu

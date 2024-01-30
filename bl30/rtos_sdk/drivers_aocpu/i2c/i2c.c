@@ -31,6 +31,7 @@
 #define I2C_DEBUG 0
 
 #define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
+#undef  MIN
 #define MIN(X, Y)\
 ({\
 	typeof(X) x_ = (X);\

@@ -21,7 +21,7 @@ enum{
 	DRV_ERROR_ACCESS,              // Invalid access
 	DRV_ERROR_ALIGN,               // Invalid alignment
 	DRV_ERROR_BUSY,                // Driver is busy
-	DRV_ERROR_IQR,                 // IQRnumber error
+	DRV_ERROR_IRQ,                 // IRQ number error
 	DRV_ERROR_PARAMETER,           // Parameter error
 	DRV_ERROR_PWRSTATE,	           // Invalid power state
 	DRV_ERROR_TIMEOUT,             // Timeout occurred

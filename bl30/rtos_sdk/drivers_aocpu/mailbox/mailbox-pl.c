@@ -281,10 +281,11 @@ static void vMbHandleTeeIsr(void)
 	vAoRevTeeMbHandler(MAILBOX_ARMTEE2AO);
 }
 
-void vMbInit(void)
+int vMbInit(void)
 {
-	PRINT("[%s]: mailbox init start\n", MBTAG);
+	int ret;
 
+	PRINT("[%s]: mailbox init pl start\n", MBTAG);
 	mailbox_htbl_init(&g_tbl_ao);
 
 	RegisterIrq(MAILBOX_AOCPU_REE_IRQ, 6, vMbHandleReeIsr);
@@ -299,25 +300,38 @@ void vMbInit(void)
 	xTaskCreate(vReeSyncTask, "AoReeSyncTask", configMINIMAL_STACK_SIZE, 0,
 		    MHU_MB_TASK_PRIORITIES, (TaskHandle_t *)&mbReeHandler);
 
-	vRpcUserCmdInit();
-	PRINT("[%s]: mailbox -v1 init end\n", MBTAG);
+	ret = vRpcUserCmdInit();
+	PRINT("[%s]: mailbox pl init end\n", MBTAG);
+	return ret;
 }
 
-BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
+int xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(handler)(void *), uint8_t needFdBak)
 {
+	uint32_t ret;
+
 	VALID_CHANNEL(ulChan);
 	UNUSED(ulChan);
-	return mailbox_htbl_reg_feedback(g_tbl_ao, cmd, handler, needFdBak);
+	ret = mailbox_htbl_reg_feedback(g_tbl_ao, cmd, handler, needFdBak);
+	if (ret == MAX_ENTRY_NUM)
+		return ERR_MBOX(ENOSPC);
+
+	return 0;
 }
 
-BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
+int xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
 {
+	uint32_t ret;
+
 	UNUSED(ulChan);
-	return mailbox_htbl_unreg(g_tbl_ao, cmd);
+	ret = mailbox_htbl_unreg(g_tbl_ao, cmd);
+	if (ret == MAX_ENTRY_NUM)
+		return ERR_MBOX(EINVAL);
+
+	return 0;
 }
 
-BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+int xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
 				 void *data, size_t size)
 {
 

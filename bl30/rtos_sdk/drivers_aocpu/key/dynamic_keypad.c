@@ -83,6 +83,6 @@ void vDynamicKeypadInit(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, CMD_SET_KEYPAD, xMboxSetKeypad,
 						    0);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", CMD_SET_KEYPAD);
 }

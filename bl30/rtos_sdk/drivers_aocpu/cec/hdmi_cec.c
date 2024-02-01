@@ -2314,17 +2314,17 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	/* for shutdown/resume case */
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO1,
 						    cec_get_wakeup_info1, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO1);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO2,
 						    cec_get_wakeup_info2, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO2);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_CEC_DATA,
 						    cec_update_config_data, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
 
 	/* only for suspend/resume case, for shutdown/resume
@@ -2334,12 +2334,12 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	 */
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_OTP_MSG,
 						    cec_get_wakeup_otp_msg, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_OTP_MSG);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_AS_MSG,
 						    cec_get_wakeup_as_msg, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_AS_MSG);
 
 		/* only for temp debug, only for no resume function */

@@ -311,8 +311,10 @@ static void vDspSyncTask(void *pvParameters)
 	}
 }
 
-void vMbInit(void)
+int vMbInit(void)
 {
+	int ret;
+
 	PRINT("[%s]: mailbox init start\n", MBTAG);
 	mailbox_htbl_init(&g_tbl_ao);
 
@@ -340,25 +342,38 @@ void vMbInit(void)
 	xTaskCreate(vDspSyncTask, "AODspSyncTask", configMINIMAL_STACK_SIZE, 0, TASK_PRIORITY,
 		    (TaskHandle_t *)&DspmbHandler);
 
-	vRpcUserCmdInit();
-	PRINT("[%s]: mailbox init end\n", MBTAG);
+	ret = vRpcUserCmdInit();
+	PRINT("[%s]: mailbox pl init end\n", MBTAG);
+	return ret;
 }
 
-BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
+int xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(*handler)(void *), uint8_t needFdBak)
 {
+	uint32_t ret;
+
 	VALID_CHANNEL(ulChan);
 	UNUSED(ulChan);
-	return mailbox_htbl_reg_feedback(g_tbl_ao, cmd, handler, needFdBak);
+	ret = mailbox_htbl_reg_feedback(g_tbl_ao, cmd, handler, needFdBak);
+	if (ret == MAX_ENTRY_NUM)
+		return ERR_MBOX(ENOSPC);
+
+	return 0;
 }
 
-BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
+int xUninstallRemoteMessageCallback(uint32_t ulChan, int32_t cmd)
 {
+	uint32_t ret;
+
 	UNUSED(ulChan);
-	return mailbox_htbl_unreg(g_tbl_ao, cmd);
+	ret = mailbox_htbl_unreg(g_tbl_ao, cmd);
+	if (ret == MAX_ENTRY_NUM)
+		return ERR_MBOX(EINVAL);
+
+	return 0;
 }
 
-BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+int xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
 				 void *data, size_t size)
 {
 	struct mboxData mbData;
@@ -384,10 +399,12 @@ BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
 	vSetMboxStats(MAILBOX_SET(mboxId), st);
 	xPreVal = ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(3000));
 	if (xPreVal == 0) {
+		PRINT_ERR("[%s]: mailbox transfer message time out!\n", MBTAG);
 		st.cmd = 0;
 		st.size = 0;
 		st.sync = 0;
 		vSetMboxStats(MAILBOX_SET(mboxId), st);
+		return ERR_MBOX(ETIME);
 	} else {
 		vClrMbInterrupt(IRQ_SENDACK_BIT(mboxId));
 		vEnableMbInterrupt(IRQ_SENDACK_BIT(mboxId));

@@ -96,7 +96,7 @@ void vETHMailboxCallback(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_ETHERNET_WOL,
 		prvETHSetWol, 1);
-	if (ret == MBOX_CALL_MAX) {
+	if (ret) {
 		printf("mailbox cmd 0x%x register fail\n");
 		return;
 	}

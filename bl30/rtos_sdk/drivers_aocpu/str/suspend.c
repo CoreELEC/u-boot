@@ -391,12 +391,12 @@ void create_str_task(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
 						    xMboxSuspend_Sem, 0);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SUSPEND);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_REASON,
 						    xMboxGetWakeupReason, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_REASON);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_REASON,
@@ -404,11 +404,11 @@ void create_str_task(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_STICK_REBOOT_FLAG,
 						    xMboxGetStickRebootFlag, 1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE, xMboxpm_sem,
 						    1);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_PM_FREEZE);
 }

@@ -19,8 +19,8 @@
  */
 typedef void *(*handler_t)(void *);
 
-void mailbox_htbl_init(void **pHTbl);
-void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen);
+int mailbox_htbl_init(void **pHTbl);
+int mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen);
 uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, handler_t handler);
 uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd, handler_t handle,
 				   uint8_t needFdBak);

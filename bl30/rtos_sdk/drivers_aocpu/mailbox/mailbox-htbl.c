@@ -42,34 +42,36 @@ static inline void *mbmemcpy(void *dst, const void *src, size_t len)
 	return dst;
 }
 
-void mailbox_htbl_init(void **pHTbl)
+int mailbox_htbl_init(void **pHTbl)
 {
 	size_t size = sizeof(struct entry) * MAX_ENTRY_NUM;
 	struct entry *p = NULL;
 
 	p = malloc(size);
 	if (p == NULL)
-		return;
+		return ERR_MBOX(ENOMEM);
 	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = MAX_ENTRY_NUM;
+	return 0;
 }
 
-void mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen)
+int mailbox_htbl_init_size(void **pHTbl, uint32_t tabLen)
 {
 	size_t size = sizeof(struct entry) * tabLen;
 	struct entry *p = NULL;
 
 	if (tabLen == 0) {
 		PRINT_ERR("tabLen == 0\n");
-		return;
+		return ERR_MBOX(EINVAL);
 	}
 	p = malloc(size);
 	if (p == NULL)
-		return;
+		return ERR_MBOX(ENOMEM);
 	mbmemset(p, 0x00, size);
 	*pHTbl = p;
 	p[0].tabLen = tabLen;
+	return 0;
 }
 
 uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, handler_t handler)

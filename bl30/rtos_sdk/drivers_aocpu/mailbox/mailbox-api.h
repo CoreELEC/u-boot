@@ -16,6 +16,7 @@ extern "C" {
 #include "task.h"
 #include "mailbox.h"
 #include "rpc-user.h"
+#include "drv_errno.h"
 
 #define TICKS_TO_WAIT 100
 #define TASK_PRIORITY (configMAX_PRIORITIES - 1)
@@ -28,16 +29,18 @@ extern "C" {
 #define AODSPA_CHANNEL 0xc
 
 #define MBOX_CALL_MAX MAX_ENTRY_NUM
+#define ERR_MBOX(errno) (DRV_ERRNO_MAILBOX_BASE | errno)
+
 /*note: aoree channel support feedback, aotee channel no support feedback*/
-BaseType_t xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
+int xInstallRemoteMessageCallbackFeedBack(uint32_t ulChan, uint32_t cmd,
 						 void *(*handler)(void *), uint8_t needFdBak);
 
-BaseType_t xUninstallRemoteMessageCallback(uint32_t ulChan,
+int xUninstallRemoteMessageCallback(uint32_t ulChan,
 					   int32_t cmd);
-BaseType_t xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
+int xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
 				 void *data, size_t size);
 
-void vMbInit(void);
+int vMbInit(void);
 #if __cplusplus
 }
 #endif

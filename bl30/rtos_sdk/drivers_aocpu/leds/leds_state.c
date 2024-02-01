@@ -544,7 +544,7 @@ int32_t xLedsStateInit(void)
 	/* register mailbox */
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_LED_INFO,
 						    prvLedGetInfo, 1);
-	if (ret == MBOX_CALL_MAX) {
+	if (ret) {
 		iprintf("%s: mbox cmd 0x%x register fail\n", DRIVER_NAME, MBX_CMD_GET_LED_INFO);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}

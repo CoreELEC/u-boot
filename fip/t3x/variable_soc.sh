@@ -164,6 +164,8 @@ declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="t3x"
 if [ "${BL30_SELECT}" == "t3x_bc302" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="bc302_t968d4"
+if [ "${BL30_SELECT}" == "t3x_bc303" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bc303_t968d4"
 elif [ "${BL30_SELECT}" == "t3x_sky" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="t3x_sky"
 else

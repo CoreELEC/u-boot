@@ -476,6 +476,13 @@ function parser() {
 				export CONFIG_AML_UASAN=1
 				export UASAN_DDR_SIZE
 				continue ;;
+			# this option can be used to control log output of each blx
+			# eg: enable silent in bl33 when enable this option
+			--noverbose)
+				echo ~~~~~~ noverbose build ~~~~~~
+				CONFIG_NOVERBOSE_BUILD=1
+				export CONFIG_NOVERBOSE_BUILD=1
+				continue;;
 			--enable-bl33z)
 				CONFIG_SUPPORT_BL33Z=1
 				export CONFIG_SUPPORT_BL33Z

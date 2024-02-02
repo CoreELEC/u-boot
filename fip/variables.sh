@@ -56,7 +56,7 @@ declare serverAddr="https://10.68.11.138"
 declare -a  COMPILE_PARA_LIST=("--h" "--help" "--config" "--chip-varient" "--check-compile" \
 			"--cov" "--cov-high" "--enable-ramdump" "--uasan" "--enable-bl33z" \
 			"--disable-bl33z" "--compress-bl2e" "--chipid" "--build-version" \
-			"--ab-update" "--hdmitx-only" "--clean"\
+			"--ab-update" "--hdmitx-only" "--clean" "--noverbose" \
 			"--distclean" "--bl2" "--bl2e" "--bl2x" "--bl30" "--bl31" \
 			"--bl32" "--bl40" "--ddr-fip" "--sign-bl40" "--update-bl2" \
 			"--update-bl2e" "--update-bl2x" "--update-ddr-fip" "--update-bl30" \

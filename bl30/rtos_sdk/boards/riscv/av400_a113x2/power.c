@@ -85,7 +85,7 @@ void str_hw_init(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
 									xMboxVadWakeup, 0);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 
 	vBackupAndClearGpioIrqReg();

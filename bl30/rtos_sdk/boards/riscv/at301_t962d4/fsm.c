@@ -88,7 +88,7 @@ void vCoreFsmIdleInit(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_CPU_FSM_IDLE,
 						    xMboxCoreFsmIdle, 0);
-	if (ret == MBOX_CALL_MAX)
+	if (ret)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CPU_FSM_IDLE);
 
 	RegisterIrq(IRQ_NUM_OUT_0, 1, xCore0FsmIdleHandleIsr);

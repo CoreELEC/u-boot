@@ -268,8 +268,8 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 
-		/*Wait 20ms for VDDCPU statable*/
-		vTaskDelay(pdMS_TO_TICKS(20));
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+		vTaskDelay(POWERON_VDDCPU_DELAY);
 
 		printf("vdd_cpu on\n");
 		str_gpio_restore();

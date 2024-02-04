@@ -120,8 +120,8 @@ void str_power_on(int shutdown_flag)
 	if (shutdown_flag) {
 		/***power on VDDQ***/
 		REG32(AO_GPIO_TEST_N) = REG32(AO_GPIO_TEST_N) | (1 << 31);
-		/*Wait 20ms for VDDCPU statable*/
-		vTaskDelay(pdMS_TO_TICKS(20));
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+		vTaskDelay(POWERON_VDDCPU_DELAY);
 	}
 
 	/***power on 5v***/
@@ -137,8 +137,8 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/*Wait 20ms for VDDIO stable*/
-	vTaskDelay(pdMS_TO_TICKS(20));
+	/*Wait POWERON_VDDIO_DELAY for VDDIO stable*/
+	vTaskDelay(POWERON_VDDIO_DELAY);
 	str_gpio_restore();
 }
 

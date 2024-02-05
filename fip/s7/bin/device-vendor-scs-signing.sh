@@ -293,6 +293,7 @@ if [ -s "${fw_arb_cfg}" ]; then
 	export DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
 	export DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
 	export DEVICE_REE_VERS=${DEVICE_REE_VERS}
+	export DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}
 fi
 
 #export DEVICE_SCS_KEY_TOP=$(pwd)/${key_dir}

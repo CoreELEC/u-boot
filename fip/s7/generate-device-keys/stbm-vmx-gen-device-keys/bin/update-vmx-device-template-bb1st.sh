@@ -126,7 +126,7 @@ device_scs_segid=0x0
 device_vendor_segid=0x0
 device_scs_vers=0x0
 device_tee_vers=0x0
-device_soc=s4
+device_soc=""
 storage_type=""
 
 parse_main "$@"

@@ -16,7 +16,6 @@
 #include "common.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
-#include "stick_mem.h"
 #include "keypad.h"
 #include "fsm.h"
 
@@ -71,10 +70,6 @@ void hw_business_process(void)
 	config_eclic_irqs();
 	for (i = 0; i < 8; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
-
-	stick_mem_init();
-	//write watchdog flag
-	stick_mem_write(STICK_REBOOT_FLAG, 0xd);
 
 	// Delay
 	for (uint32_t i = 0; i < 0xffff; ++i)

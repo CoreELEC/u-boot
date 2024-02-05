@@ -49,6 +49,9 @@
 /* power mode flag */
 #define PM_SHUTDOWN_FLAG	0xF
 
+#define DELAY_TIME_MS 20	//20ms
+#define POWERON_VDDCPU_DELAY (pdMS_TO_TICKS(DELAY_TIME_MS) + 1)
+
 typedef struct {
 	char* name;
 } WakeUp_Reason;

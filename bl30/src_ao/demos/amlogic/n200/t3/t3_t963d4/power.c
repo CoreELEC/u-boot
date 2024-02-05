@@ -208,8 +208,8 @@ void str_power_on(int shutdown_flag)
 	/***power on vcc5v***/
 	power_on_vcc5v();
 
-	/*Wait 20ms for VDDCPU stable*/
-	vTaskDelay(pdMS_TO_TICKS(20));
+	/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+	vTaskDelay(POWERON_VDDCPU_DELAY);
 
 	str_gpio_restore();
 }

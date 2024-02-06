@@ -30,6 +30,7 @@
 
 #define DELAY_TIME_MS 20	//20ms
 #define POWERON_VDDCPU_DELAY (pdMS_TO_TICKS(DELAY_TIME_MS) + 1)
+#define POWERON_VDDIO_DELAY (pdMS_TO_TICKS(DELAY_TIME_MS) + 1)
 
 struct WakeUp_Reason {
 	char *name;

@@ -62,7 +62,7 @@ check_build_combination()
 	return 0
 }
 
-unset ARCHS SOCS BOARDS PRODUCTS
+unset ARCHS SOCS BOARDS PRODUCTS SPLITARCH
 
 ARCHS=($(find $PWD/arch -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))
 PRODUCTS=($(find $PWD/products -mindepth 1 -maxdepth 1 -type d ! -name ".*" | xargs basename -a | sort -n))

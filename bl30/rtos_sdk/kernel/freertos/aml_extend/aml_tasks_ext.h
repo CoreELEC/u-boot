@@ -23,4 +23,8 @@ void *pvGetTaskHandleOfNum(uint32_t tasknum);
 void task_stack_range(void *pvTaskHandle, unsigned long *low, unsigned long *high);
 #endif
 
+#if ((configUSE_TRACE_FACILITY == 1) && (configUSE_STATS_FORMATTING_FUNCTIONS > 0))
+void vTaskRuntimeStatsList(char *pcWriteBuffer);
+#endif
+
 #endif

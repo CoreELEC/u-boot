@@ -176,3 +176,83 @@ void task_stack_range(void *pvTaskHandle, unsigned long *low, unsigned long *hig
 }
 #endif
 
+#if ((configUSE_TRACE_FACILITY == 1) && (configUSE_STATS_FORMATTING_FUNCTIONS > 0))
+void vTaskRuntimeStatsList(char *pcWriteBuffer)
+{
+	TaskStatus_t *pxTaskStatusArray;
+	UBaseType_t uxArraySize, x;
+	char cStatus;
+	uint32_t ulTotalTime, ulStatsAsPercentage;
+	configSTACK_DEPTH_TYPE xStackDepth;
+
+	/* Make sure the write buffer does not contain a string. */
+	*pcWriteBuffer = (char) 0x00;
+	uxArraySize = uxCurrentNumberOfTasks;
+
+	pxTaskStatusArray = pvPortMalloc(uxArraySize * sizeof(TaskStatus_t));
+	if (pxTaskStatusArray == NULL)
+		return;
+
+	/* Generate the (binary) data. */
+	uxArraySize = uxTaskGetSystemState(pxTaskStatusArray, uxArraySize, &ulTotalTime);
+	ulTotalTime /= 100UL;
+
+	/* Create a human readable table from the binary data. */
+	for (x = 0; x < uxArraySize; x++) {
+		switch (pxTaskStatusArray[x].eCurrentState) {
+		case eRunning:
+			cStatus = tskRUNNING_CHAR;
+			break;
+		case eReady:
+			cStatus = tskREADY_CHAR;
+			break;
+		case eBlocked:
+			cStatus = tskBLOCKED_CHAR;
+			break;
+		case eSuspended:
+			cStatus = tskSUSPENDED_CHAR;
+			break;
+		case eDeleted:
+			cStatus = tskDELETED_CHAR;
+			break;
+		case eInvalid:
+			cStatus = (char) 0x00;
+			break;
+		default:
+			cStatus = (char) 0x00;
+			break;
+		}
+
+		pcWriteBuffer = prvWriteNameToBuffer(pcWriteBuffer,
+			pxTaskStatusArray[x].pcTaskName);
+		ulStatsAsPercentage = ulTotalTime == 0 ?
+			0 : pxTaskStatusArray[x].ulRunTimeCounter / ulTotalTime;
+		xStackDepth = xTaskGetHandle(pxTaskStatusArray[x].pcTaskName)->xStackDepth;
+		/* Write the rest of the string. */
+		if (ulStatsAsPercentage > 0) {
+			sprintf(pcWriteBuffer, "\t%u\t%c\t%u\t\t%u\t\t%u\t\t%u\t%u%%\t\r\n",
+				(unsigned int) pxTaskStatusArray[x].xTaskNumber,
+				cStatus,
+				(unsigned int) pxTaskStatusArray[x].uxCurrentPriority,
+				(unsigned int) xStackDepth,
+				(unsigned int) pxTaskStatusArray[x].usStackHighWaterMark,
+				(unsigned int) pxTaskStatusArray[x].ulRunTimeCounter,
+				(unsigned int) ulStatsAsPercentage);
+		} else {
+			sprintf(pcWriteBuffer, "\t%u\t%c\t%u\t\t%u\t\t%u\t\t%u\t<1%%\t\r\n",
+				(unsigned int) pxTaskStatusArray[x].xTaskNumber,
+				cStatus,
+				(unsigned int) pxTaskStatusArray[x].uxCurrentPriority,
+				(unsigned int) xStackDepth,
+				(unsigned int) pxTaskStatusArray[x].usStackHighWaterMark,
+				(unsigned int) pxTaskStatusArray[x].ulRunTimeCounter);
+		}
+
+		pcWriteBuffer += strlen(pcWriteBuffer);
+	}
+
+	vPortFree(pxTaskStatusArray);
+}
+
+#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) ) */
+

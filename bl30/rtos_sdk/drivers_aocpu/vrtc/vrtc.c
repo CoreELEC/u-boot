@@ -47,6 +47,32 @@ void vRTC_update(void)
 	}
 }
 
+static void rtc_sec_to_tm(uint32_t sec, struct rtc_time *tm)
+{
+	uint32_t min;
+
+	tm->tm_sec = sec % 60;
+	min = sec / 60;
+	tm->tm_min = min % 60;
+}
+
+void poweroff_get_rtc_min_sec(char *time)
+{
+	uint32_t secs;
+	struct rtc_time tm;
+
+	if (power_mode == 0xf) {
+		secs = REG32(VRTC_STICKY_REG) + timere_read() - last_time;
+		rtc_sec_to_tm(secs, &tm);
+
+		sprintf(time, "%02d", tm.tm_min);
+		sprintf(time+2, "%02d", tm.tm_sec);
+	} else {
+		printf("non-poweroff mode callback, invalid called !\n");
+		time = NULL;
+	}
+}
+
 void *xMboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;

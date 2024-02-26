@@ -60,6 +60,33 @@
 #define P_UART_MISC(uart_base) P_UART(uart_base, UART_MISC)
 #define P_UART_REG5(uart_base) P_UART(uart_base, UART_REG5)
 
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+#include "stick_mem.h"
+#include "mailbox-api.h"
+static uint8_t bl30_print_en;
+void enable_bl30_print(uint8_t enable)
+{
+	/* Applied to output important logs */
+	bl30_print_en = enable;
+}
+
+/* Applied to enable or disable bl30 start logs before first
+ * suspend or shutdown when compile with '--noverbose'.
+ */
+static void *xMboxBL30PrintEn(void *msg)
+{
+	stick_mem_write(STICK_BL30_PRINT_EN, *(uint32_t *)msg);
+
+	return NULL;
+}
+
+void vBL30PrintControlInit(void)
+{
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+		MBX_CMD_SET_BL30_PRINT, xMboxBL30PrintEn, 0);
+}
+#endif
+
 static int prvUartTxIsFull(void)
 {
 	return REG32(P_UART_STATUS(UART_PORT_CONS)) & UART_STAT_MASK_TFIFO_FULL;
@@ -73,6 +100,14 @@ void vUartTxFlush(void)
 
 void vUartPutc(const char c)
 {
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+	unsigned int stick_mem_bl30_print_en;
+
+	stick_mem_read(STICK_BL30_PRINT_EN, &stick_mem_bl30_print_en);
+	if ((REG32(SYSCTRL_SEC_STATUS_REG4) & ACS_DIS_PRINT_FLAG) && !bl30_print_en
+		&& (stick_mem_bl30_print_en != STICK_MEM_EN_BL30_PRINT_FLAG))
+		return;
+#endif
 	while (prvUartTxIsFull())
 		;
 	REG32(P_UART_WFIFO(UART_PORT_CONS)) = (char)c;

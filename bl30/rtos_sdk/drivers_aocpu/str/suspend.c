@@ -30,6 +30,7 @@
 #include "stick_mem.h"
 #include "pm.h"
 #include "suspend_debug.h"
+#include "uart.h"
 
 SemaphoreHandle_t xSTRSemaphore;
 QueueHandle_t xSTRQueue;
@@ -280,6 +281,10 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+	enable_bl30_print(1);
+#endif
+
 	printf("power_mode=0x%x\n", power_mode & POWER_MODE_MASK);
 	STR_Start_Sem_Give();
 
@@ -293,6 +298,10 @@ void *xMboxpm_sem(void *msg);
 void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
+
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+	enable_bl30_print(1);
+#endif
 
 #ifdef CONFIG_PM
 	if (mode == FREEZE_ENTER)

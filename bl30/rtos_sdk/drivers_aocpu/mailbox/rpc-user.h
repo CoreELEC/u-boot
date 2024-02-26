@@ -55,6 +55,7 @@
 #define CMD_SUSPEND_WITH_DSP    0x66
 #define CMD_GET_FD650_INFO      0x68
 #define CMD_GET_SPINLOCK    0x69
+#define CMD_SET_BL30_PRINT	0x6A
 
 /*******************************************************************************
  * Mssage Comopsition
@@ -82,4 +83,5 @@
 #define MBX_CMD_SET_ETHERNET_WOL	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_ETHERNET_WOL)
 #define MBX_CMD_GET_SPINLOCK __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_SPINLOCK)
 #define MBX_CMD_GET_FD650_INFO __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_GET_FD650_INFO)
+#define MBX_CMD_SET_BL30_PRINT __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_BL30_PRINT)
 #endif

@@ -13,6 +13,13 @@ extern "C" {
 #include <stdint.h>
 #include "gpio.h"
 
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+/* Control uart print by acs flag in bl30 */
+#define ACS_DIS_PRINT_FLAG	(1 << 7)
+void enable_bl30_print(uint8_t enable);
+void vBL30PrintControlInit(void);
+#endif
+
 extern void vUartInit(void);
 
 extern int vUartPuts(const char *s);

@@ -49,6 +49,7 @@
 #include "stick_mem.h"
 #include "pm.h"
 #include "irq.h"
+#include "uart.h"
 
 #ifndef UNUSED
 #define UNUSED(x) ((void)x)
@@ -281,6 +282,10 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
+#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+	enable_bl30_print(1);
+#endif
+
 	printf("power_mode=0x%x\n",power_mode);
 	STR_Start_Sem_Give();
 
@@ -294,6 +299,10 @@ void *xMboxpm_sem(void *msg);
 void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
+
+#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+	enable_bl30_print(1);
+#endif
 
 	if (mode == FREEZE_ENTER) {
 		pm_enter();

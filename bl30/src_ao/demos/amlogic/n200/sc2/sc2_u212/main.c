@@ -176,6 +176,10 @@ int main(void)
 	vCecCallbackInit(CEC_CHIP_SC2);
 	vRtcInit();
 	create_str_task();
+#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+	if (REG32(SYSCTRL_SEC_STATUS_REG4) & ACS_DIS_PRINT_FLAG)
+		vBL30PrintControlInit();
+#endif
 
 	printf("Starting task scheduler ...\r\n");
 	vTaskStartScheduler();

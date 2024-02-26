@@ -34,6 +34,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+	/* Control uart print by acs flag in bl30 */
+	#define ACS_DIS_PRINT_FLAG	(1 << 7)
+	void enable_bl30_print(uint8_t enable);
+	void vBL30PrintControlInit(void);
+#endif
 	extern void vUartInit(void);
 	extern void vUartPuts(const char *s);
 	extern void vUartTxFlush(void);

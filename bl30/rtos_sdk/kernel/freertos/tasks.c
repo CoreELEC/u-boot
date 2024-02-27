@@ -40,6 +40,9 @@
 #include "task.h"
 #include "timers.h"
 #include "stack_macros.h"
+#if CONFIG_FTRACE
+#include "ftrace.h"
+#endif
 
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
  * because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
@@ -3040,6 +3043,9 @@ void vTaskSwitchContext( void )
             if( ulTotalRunTime > ulTaskSwitchedInTime )
             {
                 pxCurrentTCB->ulRunTimeCounter += ( ulTotalRunTime - ulTaskSwitchedInTime );
+#if CONFIG_FTRACE
+				vTraceSwitchContext((uint32_t)pxCurrentTCB->uxTCBNumber);
+#endif
             }
             else
             {

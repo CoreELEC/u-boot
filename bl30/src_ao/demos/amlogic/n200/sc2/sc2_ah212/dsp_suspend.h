@@ -26,5 +26,4 @@
 
 void vDSPVadWakeupInit(void);
 void vDSPVadWakeupDeinit(void);
-void vDSP_resume(uint32_t st_f);
-extern uint32_t get_reason_flag(void);
+

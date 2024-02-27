@@ -29,9 +29,10 @@
 #include "suspend.h"
 #include "mailbox-api.h"
 
+extern uint32_t suspend_flag;
 static void *xMboxVadWakeup(void *msg)
 {
-	(void)msg;
+	*(uint32_t *)msg = suspend_flag;
 	uint32_t buf[4] = {0};
 
 	buf[0] = VAD_WAKEUP;
@@ -53,26 +54,5 @@ void vDSPVadWakeupInit(void)
 void vDSPVadWakeupDeinit(void)
 {
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
-}
-
-/*use timerI to wakeup dsp FSM*/
-static void wakeup_dsp(void)
-{
-	uint32_t value;
-
-	/*set alarm timer*/
-	REG32(DSP_FSM_TRIGER_SRC) = 10;/*10us*/
-
-	value = REG32(DSP_FSM_TRIGER_CTRL);
-	value &= ~((1 << 7) | (0x3) | (1 << 6));
-	value |= ((1 << 7) | (0 << 6) | (0x3));
-	REG32(DSP_FSM_TRIGER_CTRL) = value;
-	vTaskDelay(2);
-}
-
-void vDSP_resume(uint32_t st_f)
-{
-	if ((!st_f) && (get_reason_flag() != VAD_WAKEUP))
-		wakeup_dsp();
 }
 

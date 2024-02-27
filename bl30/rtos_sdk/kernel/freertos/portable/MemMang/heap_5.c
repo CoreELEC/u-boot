@@ -223,6 +223,9 @@ void * pvPortMalloc( size_t xWantedSize )
                 mtCOVERAGE_TEST_MARKER();
             }
 
+#ifdef CONFIG_MEMORY_ERROR_DETECTION
+			xWantedSize += sizeof(size_t); // add size of tail_canary
+#endif
             /* The wanted size must be increased so it can contain a BlockLink_t
              * structure in addition to the requested amount of bytes. Some
              * additional increment may also be needed for alignment. */
@@ -231,9 +234,6 @@ void * pvPortMalloc( size_t xWantedSize )
             if( heapADD_WILL_OVERFLOW( xWantedSize, xAdditionalRequiredSize ) == 0 )
             {
                 xWantedSize += xAdditionalRequiredSize;
-#ifdef CONFIG_MEMORY_ERROR_DETECTION
-                xWantedSize += sizeof(size_t); // add size of tail_canary
-#endif
             }
             else
             {

@@ -239,7 +239,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --feature-device-root-pubrsa-prot-mrk"
 
 BB1ST_ARGS="${BB1ST_ARGS} --switch-device-sign-blob=0"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s4"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s7d"
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st${storage_type}.bin.device"

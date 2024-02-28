@@ -62,7 +62,7 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-chipset-lvl2=${BASEDIR_RSAKEY_LVLX_BL
 ### Input: pre-generated ProtKey for payloads
 BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-bl2-payload=${BASEDIR_AESKEY_PROT_BL2}/genkey-prot-bl2.bin"
 
-BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s5"
+BB1ST_ARGS="${BB1ST_ARGS} --scs-family=s7d"
 
 ### Features, flags and switches ###
 

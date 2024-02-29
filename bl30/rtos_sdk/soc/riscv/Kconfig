@@ -4,3 +4,7 @@
 
 rsource "${SOC}/Kconfig"
 
+config SOC_OLD_ARCH
+	bool "Soc Old Arch"
+	help
+	  chip old architecture

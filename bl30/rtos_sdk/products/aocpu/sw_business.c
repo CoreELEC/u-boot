@@ -5,8 +5,12 @@
  */
 
 #include "sw_business.h"
+#include "register.h"
 #ifdef CONFIG_PM
 #include "pm.h"
+#endif
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+#include "uart.h"
 #endif
 
 #define BRINGUP_TEST	(0)
@@ -71,6 +75,10 @@ void sw_business_process(void)
 #endif
 #ifdef CONFIG_PM
 	find_static_power_dev();
+#endif
+#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+	if (*(volatile uint32_t *)(SYSCTRL_SEC_STATUS_REG4) & ACS_DIS_PRINT_FLAG)
+		vBL30PrintControlInit();
 #endif
 }
 

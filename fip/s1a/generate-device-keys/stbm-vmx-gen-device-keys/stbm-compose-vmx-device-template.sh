@@ -53,6 +53,7 @@ Usage: $(basename $0) --help | --version
        $(basename $0)
 		--stbm-key-dir <key-dir> \\
 		--project <project-name> \\
+		--template-dir  <SOC template dir> \\
 		--vmx-cert-path  <VMX cert path> \\
 		--rootkey-index [0 | 1 | 2 | 3] \\
 		--arb-config <arb-config-file> \\
@@ -72,6 +73,7 @@ boot_blobs_arb_args=""
 device_fip_arb_args=""
 device_soc="s1a"
 storage_type=".sto"
+template_dir=""
 
 parse_main() {
     local i=0
@@ -106,7 +108,11 @@ parse_main() {
 		;;
             --storage-type)
                 storage_type="${argv[$i]}"
-        ;;
+	        ;;
+	    --template-dir)
+                template_dir="${argv[$i]}"
+		check_dir "${template_dir}"
+		;;
             --vmx-cert-path)
                 vmx_cert_path="${argv[$i]}"
 		check_dir "${vmx_cert_path}"
@@ -179,7 +185,13 @@ mv "${OUTDIR_TEMPLATE_BB1ST}/bb1st${storage_type}.bin.device" \
 
 OUTDIR_TEMPLATE_DEVICE_FIP_HEADER="${OUTPUT_BASEDIR}/fip/template/${part}/rootrsa-${rootkey_index}"
 mkdir -p "${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}"
-cp ${vmx_cert_path}/${part}/device-fip-header*.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
+if [ -z "$template_dir" ]; then
+	cp ${vmx_cert_path}/${part}/device-fip-header*.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
+else
+	${EXEC_BASEDIR}/../bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "$template_dir" ${device_fip_arb_args}
+	cp ${key_dir}/fip/template/${part}/rootrsa-$rootkey_index/device-fip-header.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
+fi
+
 
 # Copy other files
 #LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/template/${part}/rootrsa-${rootkey_index}/device-fip-header.bin"
@@ -191,6 +203,7 @@ LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/k
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl31-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl32-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl33-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/krnl-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl30.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-krnl.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl33.bin"

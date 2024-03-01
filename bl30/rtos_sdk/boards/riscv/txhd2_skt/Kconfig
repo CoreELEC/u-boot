@@ -5,6 +5,7 @@
 config BOARD_TXHD2_SKT
 	bool "Amlogic TXHD2_SKT Board"
 	select SOC_TXHD2
+	select BRINGUP
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION

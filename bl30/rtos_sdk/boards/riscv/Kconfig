@@ -7,4 +7,9 @@ config BL30_VERSION_SAVE
 	help
 	  Enable BL30 VERSION SAVE.
 
+config BRINGUP
+	bool "BL30 BRINGUP BOARD"
+	help
+	  Mark as bringup board.
+
 rsource "${BOARD}/Kconfig"

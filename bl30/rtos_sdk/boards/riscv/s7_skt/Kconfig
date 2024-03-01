@@ -5,6 +5,7 @@
 config BOARD_S7_SKT
 	bool "Amlogic S7_SKT Board"
 	select SOC_S7
+	select BRINGUP
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION

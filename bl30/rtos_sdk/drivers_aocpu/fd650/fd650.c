@@ -226,7 +226,7 @@ static void fd650ShowTime(TimerHandle_t xTimer)
 	char str[5];
 
 	if (fd650_state == FD650_STATE_TIME) {
-		get_poweroff_rtc_time(str);
+		poweroff_get_rtc_min_sec(str);
 		led_show_650(str, 1, 1);
 	}
 }

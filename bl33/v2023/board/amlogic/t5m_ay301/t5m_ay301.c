@@ -136,10 +136,6 @@ int board_init(void)
 {
 	printf("board init\n");
 
-	/* The non-secure watchdog is enabled in BL2 TEE, disable it */
-	run_command("watchdog off", 0);
-	printf("watchdog disable\n");
-
 	run_command("gpio set GPIO_TEST_N0", 0);
 	run_command("gpio clr GPIOD_11", 0);
 	aml_set_bootsequence(0);

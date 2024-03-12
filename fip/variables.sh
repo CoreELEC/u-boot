@@ -64,5 +64,5 @@ declare -a  COMPILE_PARA_LIST=("--h" "--help" "--config" "--chip-varient" "--che
 			"--jenkins-sign" "--former-sign" "--build-unsign" "--build-nogit" \
 			"--nasc_nagra_tier_1" "--cas" "--systemroot" "--avb2" "--vab" \
 			"--fastboot-write" "--signpipe" "--avb2-recovery" "--patch" "--gpt" \
-			"--display-pipeline" \
+			"--display-pipeline" "--testkey" \
 			)

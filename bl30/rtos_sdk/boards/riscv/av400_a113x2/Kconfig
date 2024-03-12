@@ -8,6 +8,7 @@ config BOARD_AV400_A113X2
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION
+	select BL30_VERSION_SAVE
 	select STICK_MEM
 	select UART
 	select CEC

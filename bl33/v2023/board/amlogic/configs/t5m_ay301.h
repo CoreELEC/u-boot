@@ -79,6 +79,7 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 		"systemsuspend_switch=0\0"\
 		"ddr_resume=0\0"\
+		"baudrate=115200\0"\
 		"panel_type=lvds_1\0" \
 		"lcd_ctrl=0x00000000\0" \
 		"lcd_debug=0x00000000\0" \

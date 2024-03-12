@@ -5,15 +5,15 @@
 
 /dts-v1/;
 
-#include "amlogic/meson-s7d-skt.dtsi"
-#include "amlogic/meson-s7d_skt-panel.dtsi"
+#include "amlogic/meson-s7d-bm202.dtsi"
+#include "amlogic/meson-s7d_bm202-panel.dtsi"
 
 / {
 	compatible =  "amlogic,s7d-txxx", "amlogic,meson-s7d";
-	model = "Amlogic Meson s7d skt Board";
+	model = "Amlogic Meson s7d bm202 Board";
 
 	cvbsout {
-		compatible = "amlogic, cvbsout-s7";
+		compatible = "amlogic, cvbsout-s7d";
 		status = "okay";
 
 		/* performance: reg_address, reg_value */

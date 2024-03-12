@@ -26,3 +26,11 @@
 SOC=t7
 ARCH_CPU=RISC_V_N205
 BOARD=t7_an400_lpddr4x
+
+#config bt wakeup interrupt sampling
+#BT_WAKE_CFG: 1 power and netflix key low level sampling
+CFLAGS += -DBT_WAKE_CFG=1 -DBT_WAKE_HOST=GPIOX_18 -DBT_EN=GPIOX_17
+
+#config wifi wakeup interrupt sampling
+#WIFI_WAKE_CFG: 1
+#CFLAGS += -DWIFI_WAKE_CFG=1 -DWIFI_WAKE_HOST=GPIOX_7 -DWIFI_PWREN=GPIOX_6

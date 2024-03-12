@@ -1,0 +1,28 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_BM209_S905X5M
+	bool "Amlogic BM209_S905X5M Board"
+	select SOC_S7D
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select STICK_MEM
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+#	select I2C_SLAVE
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VRTC
+	select VERSION_FULL_INFO
+	help
+	  Enable Amlogic BM209_S905X5M Board.

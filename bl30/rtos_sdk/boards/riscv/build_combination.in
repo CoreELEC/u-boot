@@ -30,3 +30,6 @@ riscv s7 bp202_s805x3 aocpu
 riscv s7 bh209_s905y5 aocpu
 riscv s7 t223_s905y5r aocpu
 riscv s7d s7d_skt aocpu
+riscv s7d bm201_s905x5m aocpu
+riscv s7d bm202_s905x5m aocpu
+riscv s7d bm209_s905x5m aocpu

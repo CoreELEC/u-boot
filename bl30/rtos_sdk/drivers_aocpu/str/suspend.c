@@ -108,6 +108,11 @@ __weak void vCLK_resume(uint32_t st_f)
 	(void)st_f;
 }
 
+__weak void check_poweroff_status(void)
+{
+	vTaskDelay(pdMS_TO_TICKS(500));
+}
+
 #if BL30_SUSPEND_DEBUG_EN
 inline void split_suspend_flag(uint32_t *temp)
 {
@@ -183,8 +188,8 @@ void system_suspend(uint32_t pm)
 	str_hw_init();
 	/*Set flag befor delay. It can be wakeup during delay*/
 	set_suspend_flag();
-	/*Delay 500ms for FSM switch to off*/
-	vTaskDelay(pdMS_TO_TICKS(500));
+	/*Wait for FSM switch to off*/
+	check_poweroff_status();
 #if BL30_SUSPEND_DEBUG_EN
 	if (!IS_EN(BL30_SKIP_DDR_SUSPEND))
 #endif

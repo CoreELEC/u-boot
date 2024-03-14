@@ -49,6 +49,7 @@
 #define CMD_SET_MID             0xFA
 #define CMD_SUSPEND_WITH_DSP    0x66
 #define CMD_SET_BL30_PRINT	0x6A
+#define CMD_SAVE_BL30_VERSION	0x6B
 
 /*******************************************************************************
  * Mssage Composition
@@ -76,5 +77,6 @@
 #define MBX_CMD_SET_MID	__MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_MID)
 #define MBX_CMD_SUSPEND_WITH_DSP __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SUSPEND_WITH_DSP)
 #define MBX_CMD_SET_BL30_PRINT __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SET_BL30_PRINT)
+#define MBX_CMD_SAVE_BL30_VERSION __MBX_COMPOSE_MSG(MBX_SYSTEM, CMD_SAVE_BL30_VERSION)
 
 #endif

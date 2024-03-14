@@ -177,6 +177,11 @@ int main(void)
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();
+
+#if configBL30_VERSION_SAVE
+	bl30_plat_save_version();
+#endif
+
 #if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
 	if (REG32(SYSCTRL_SEC_STATUS_REG4) & ACS_DIS_PRINT_FLAG)
 		vBL30PrintControlInit();

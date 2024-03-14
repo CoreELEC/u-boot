@@ -201,6 +201,10 @@ int main(void)
 	create_str_task();
 	vKeyPadCreate();
 
+#if configBL30_VERSION_SAVE
+	bl30_plat_save_version();
+#endif
+
 	vUartPuts("Starting task scheduler ...\n");
 
 #define RTOS_RUN_SUCC			(1 << 0)

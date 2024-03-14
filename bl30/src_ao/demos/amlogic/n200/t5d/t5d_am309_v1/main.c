@@ -199,6 +199,10 @@ int main(void)
 	vETHMailboxCallback();
 	create_str_task();
 
+#if configBL30_VERSION_SAVE
+	bl30_plat_save_version();
+#endif
+
 	vUartPuts("Starting task scheduler ...\n");
 
 #define RTOS_RUN_SUCC			(1 << 0)

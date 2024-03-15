@@ -61,6 +61,28 @@ static void *xMboxVadWakeup(void *msg)
 	return NULL;
 }
 
+void check_poweroff_status(void)
+{
+	const TickType_t xTimeout = pdMS_TO_TICKS(500);	//Set timeout duration to 500ms
+	TickType_t xStartTick;
+
+	xStartTick = xTaskGetTickCount();
+
+	/*Wait for cputop fsm switch to WAIT_ON*/
+	while (((REG32(PWRCTRL_CPUTOP_FSM_STS0) >> 12) & 0x1F) != 16) {
+		if (xTaskGetTickCount() - xStartTick >= xTimeout) {
+			printf("cputop fsm check timed out!\n");
+			printf("PWRCTRL_CPUTOP_FSM_STS0: %x\n", REG32(PWRCTRL_CPUTOP_FSM_STS0));
+			printf("PWRCTRL_CPU0_FSM_STS0: %x\n", REG32(PWRCTRL_CPU0_FSM_STS0));
+			printf("PWRCTRL_CPU1_FSM_STS0: %x\n", REG32(PWRCTRL_CPU1_FSM_STS0));
+			printf("PWRCTRL_CPU2_FSM_STS0: %x\n", REG32(PWRCTRL_CPU2_FSM_STS0));
+			printf("PWRCTRL_CPU3_FSM_STS0: %x\n", REG32(PWRCTRL_CPU3_FSM_STS0));
+			printf("PWRCTRL_CPU4_FSM_STS0: %x\n", REG32(PWRCTRL_CPU4_FSM_STS0));
+			vTaskSuspend(NULL);
+		}
+	}
+}
+
 void str_hw_init(void)
 {
 	int ret;

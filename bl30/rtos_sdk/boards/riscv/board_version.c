@@ -44,6 +44,7 @@ int version_string(char *buf)
 		size += 1;
 		if (size > BL30_VERSION_LEN_MAX)
 			return -ENOMEM;
+
 #ifdef BL2E_VER_BUFF_BASE_ADDR
 		memcpy((void *)tmp_buf, (void *)TAG_NAME, strlen(TAG_NAME));
 		tmp_buf += strlen(TAG_NAME);
@@ -159,6 +160,7 @@ static void *xMboxBL30VersionSave(void *msg)
 	if (size == -ENOMEM || size > BL30_VERSION_LEN_MAX ||
 		ver_get_size >= BL30_VERSION_LEN_MAX) {
 		printf("bl30 version message get fail: length overflow\n");
+		*(uint32_t *)msg = 0;
 		return NULL;
 	}
 
@@ -168,6 +170,10 @@ static void *xMboxBL30VersionSave(void *msg)
 	} else if (*(uint32_t *)msg == GET_BL30_VERSION_INFO) {
 		memcpy(msg, &vs[ver_get_size], BL30_VERSION_LEN_ONCE);
 		ver_get_size += BL30_VERSION_LEN_ONCE;
+	} else {
+		printf("bl30 version message get invalid msg\n");
+		*(uint32_t *)msg = 0;
+		return NULL;
 	}
 
 	return NULL;

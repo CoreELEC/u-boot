@@ -247,20 +247,6 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	/***power off wol en***/
-	ret = xGpioSetDir(WOL_EN_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("wol en pin set gpio dir fail\n");
-		return;
-	}
-	if (get_ETHWol_flag() == 0) {
-		ret = xGpioSetValue(WOL_EN_GPIO, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("wol en pin gpio val fail\n");
-			return;
-		}
-	}
-
 	/***set vdd_ee val***/
 	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 	if (vdd_ee < 0) {

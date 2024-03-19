@@ -505,6 +505,8 @@ function mk_uboot() {
 
 	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=440 conv=notrunc status=none
 
+	add_blob_hdr ${bootloader}
+
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"
 		total_size=$[total_size+512]
@@ -512,7 +514,6 @@ function mk_uboot() {
 		dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
 		dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
 		dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
-
 		mv ${bootloader} ${output_images}/u-boot.bin${postfix}
 	fi
 
@@ -786,5 +787,17 @@ function package() {
 	fi
 	#copy_file
 	cleanup
+
 	echo "Bootloader build done!"
 }
+
+function add_blob_hdr () {
+	local bootloader_folder=$1
+	if [ -f "${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr" ]; then
+		echo "$bootloader_folder add_blob_hdr"
+		BLOB_HDR_FOLDER="${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr"
+		cat $BLOB_HDR_FOLDER  ${bootloader_folder} > ${bootloader_folder}.hdr
+		mv ${bootloader_folder}.hdr ${bootloader_folder}
+	fi
+}
+

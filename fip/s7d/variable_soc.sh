@@ -181,3 +181,5 @@ elif [ "${BL30_SELECT}" == "s7d_bm209" ]; then
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
 fi
+
+declare BLOB_HDR_FOLDER=""

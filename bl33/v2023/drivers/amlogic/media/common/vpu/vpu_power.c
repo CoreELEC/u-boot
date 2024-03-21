@@ -63,9 +63,9 @@ void vpu_module_init_config(void)
 		vpu_vcbus_write(VPU_RDARB_MODE_L1C1, 0x0); //0x210000
 		vpu_vcbus_write(VPU_RDARB_MODE_L1C2, 0x10000);
 	}
-	if (vpu_conf.data->chip_type == VPU_CHIP_T5M)
+	if (vpu_conf.data->chip_type == VPU_CHIP_T5M) {
 		vpu_vcbus_write(VPU_RDARB_MODE_L2C1, 0x400000);
-	else if (vpu_conf.data->chip_type == VPU_CHIP_S1A) {
+	} else if (vpu_conf.data->chip_type == VPU_CHIP_S1A) {
 		/*S1A ONLY VPU0 READ*/
 		vpu_vcbus_write(VPU_RDARB_MODE_L2C1, 0x0);
 #ifdef VPP_RDARB_MODE
@@ -75,10 +75,10 @@ void vpu_module_init_config(void)
 		vpu_vcbus_write(VPU_RDARB_UGT_L2C1, 0xf);
 #endif
 	} else if (vpu_conf.data->chip_type == VPU_CHIP_S7) {
-		/*S7 ONLY VPU0 READ*/
-		vpu_vcbus_write(VPU_RDARB_MODE_L2C1, 0x00000);
-	} else
+		init_arb_urgent_table();
+	} else {
 		vpu_vcbus_write(VPU_RDARB_MODE_L2C1, 0x900000);
+	}
 
 	vpu_vcbus_write(VPU_WRARB_MODE_L2C1, 0x20000);
 #ifdef CONFIG_AMLOGIC_TEE

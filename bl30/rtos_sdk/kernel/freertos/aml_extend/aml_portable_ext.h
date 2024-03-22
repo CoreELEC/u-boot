@@ -84,20 +84,16 @@ void vPortHaltSystem(Halt_Action_e act);
 
 void *pvPortRealloc(void *ptr, size_t size);
 
-void vPortConfigLogBuf(uint32_t pa, uint32_t len);
-
 void vHardwareResourceRecord(void);
 
 void vHardwareResourceRelease(void);
 
 int xRtosLoadStageIndicator(void);
 
-void _global_constructors(void);
+extern void _global_constructors(void);
 
 void xIpiProcessCallbackRegister(ipi_process_handle handler);
 
 void xIpiCommonProcess(void *args);
-
-void prvSleep(TickType_t xExpectedIdleTime);
 
 #endif

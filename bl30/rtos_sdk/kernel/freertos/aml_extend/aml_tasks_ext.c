@@ -37,7 +37,7 @@ void vTaskRename(void *pvTaskHandle, const char *pcName)
 	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
 }
 
-BaseType_t xTaskSetName(void *pvTaskHandle, const char *pcName)
+uint8_t xTaskSetName(void *pvTaskHandle, const char *pcName)
 {
 	TCB_t *pxTCB;
 	UBaseType_t x;
@@ -85,7 +85,7 @@ void vTaskDumpStack(void *pvTaskHandle)
 	pxTCB = prvGetTCBFromHandle((TaskHandle_t)pvTaskHandle);
 	if (!pxTCB)
 		return;
-	p = pxTCB->pxStack + pxTCB->xStackDepth - 1;
+	p = pxTCB->pxStack + pxTCB->uStackDepth - 1;
 	printf("Dump Stack:\n");
 	while (p >= pxTCB->pxStack) {
 		printf("%p:", p);
@@ -161,14 +161,13 @@ void xIterateOverAllThreads(void (*process_task_list)(List_t *list))
 #endif
 
 #if CONFIG_BACKTRACE
-void task_stack_range(void *pvTaskHandle, unsigned long *low, unsigned long *high)
+void task_stack_range(void* xTask, unsigned long *low, unsigned long *high)
 {
 	TCB_t *pxTCB;
-
-	pxTCB = prvGetTCBFromHandle( pvTaskHandle );
+	pxTCB = prvGetTCBFromHandle( xTask );
 	if (NULL != pxTCB) {
 		*low = (unsigned long)pxTCB->pxStack;
-		*high = *low + pxTCB->xStackDepth * sizeof(StackType_t);
+		*high = *low + pxTCB->uStackDepth * sizeof(StackType_t);
 	} else {
 		*low = 0;
 		*high = 0;
@@ -227,7 +226,7 @@ void vTaskRuntimeStatsList(char *pcWriteBuffer)
 			pxTaskStatusArray[x].pcTaskName);
 		ulStatsAsPercentage = ulTotalTime == 0 ?
 			0 : pxTaskStatusArray[x].ulRunTimeCounter / ulTotalTime;
-		xStackDepth = xTaskGetHandle(pxTaskStatusArray[x].pcTaskName)->xStackDepth;
+		xStackDepth = xTaskGetHandle(pxTaskStatusArray[x].pcTaskName)->uStackDepth;
 		/* Write the rest of the string. */
 		if (ulStatsAsPercentage > 0) {
 			sprintf(pcWriteBuffer, "\t%u\t%c\t%u\t\t%u\t\t%u\t\t%u\t%u%%\t\r\n",
@@ -255,4 +254,3 @@ void vTaskRuntimeStatsList(char *pcWriteBuffer)
 }
 
 #endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) ) */
-

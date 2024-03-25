@@ -286,7 +286,7 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
-#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+#ifdef ACS_DIS_PRINT_FLAG
 	enable_bl30_print(1);
 #endif
 
@@ -304,7 +304,7 @@ void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
 
-#if defined(CONFIG_RISCV) && !defined(CONFIG_SOC_OLD_ARCH) && !defined(CONFIG_BRINGUP)
+#ifdef ACS_DIS_PRINT_FLAG
 	enable_bl30_print(1);
 #endif
 

@@ -198,8 +198,9 @@ int main(void)
 	vRtcInit();
 	vETHMailboxCallback();
 	create_str_task();
-#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
-	if (REG32(SYSCTRL_SEC_STATUS_REG4) & ACS_DIS_PRINT_FLAG)
+
+#if defined(ACS_DIS_PRINT_FLAG) && configSUPPORT_STICK_MEM
+	if (REG32(ACS_DIS_PRINT_REG) & ACS_DIS_PRINT_FLAG)
 		vBL30PrintControlInit();
 #endif
 

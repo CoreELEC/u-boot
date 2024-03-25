@@ -282,7 +282,7 @@ void *xMboxSuspend_Sem(void *msg)
 {
 	power_mode = *(uint32_t *)msg;
 
-#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+#ifdef ACS_DIS_PRINT_FLAG
 	enable_bl30_print(1);
 #endif
 
@@ -300,7 +300,7 @@ void *xMboxpm_sem(void *msg)
 {
 	uint32_t mode = *(uint32_t *)msg;
 
-#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+#ifdef ACS_DIS_PRINT_FLAG
 	enable_bl30_print(1);
 #endif
 

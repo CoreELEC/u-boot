@@ -42,6 +42,7 @@
 #include "stick_mem.h"
 #include "keypad.h"
 #include "eth.h"
+#include "uart.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
 #define INT_TEST_TASK_DELAY  50 // ms
@@ -203,6 +204,11 @@ int main(void)
 
 #if configBL30_VERSION_SAVE
 	bl30_plat_save_version();
+#endif
+
+#if defined(ACS_DIS_PRINT_FLAG) && configSUPPORT_STICK_MEM
+	if (REG32(ACS_DIS_PRINT_REG) & ACS_DIS_PRINT_FLAG)
+		vBL30PrintControlInit();
 #endif
 
 	vUartPuts("Starting task scheduler ...\n");

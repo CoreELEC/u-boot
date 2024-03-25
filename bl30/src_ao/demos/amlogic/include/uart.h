@@ -34,11 +34,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#if (ARCH_CPU == RISC_V_N205) && !defined(N200_REVA)
+#if (ARCH_CPU == RISC_V_N205)
 	/* Control uart print by acs flag in bl30 */
 	#define ACS_DIS_PRINT_FLAG	(1 << 7)
+#ifdef N200_REVA
+	#define ACS_DIS_PRINT_REG AO_SEC_GP_CFG7
+#else
+	#define ACS_DIS_PRINT_REG SYSCTRL_SEC_STATUS_REG4
+#endif
 	void enable_bl30_print(uint8_t enable);
+#if configSUPPORT_STICK_MEM
 	void vBL30PrintControlInit(void);
+#endif
 #endif
 	extern void vUartInit(void);
 	extern void vUartPuts(const char *s);

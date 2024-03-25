@@ -11,7 +11,7 @@
 #include <asm/amlogic/arch/secure_apb.h>
 #include <asm/amlogic/arch/stick_mem.h>
 
-#define INVALID_FLAG  0xFF
+#define INVALID_FLAG 0XFF
 
 //stick reboot flag saved in aocpu local sram, and can
 //be fetched from mailbox
@@ -33,3 +33,9 @@ u32 get_stick_reboot_flag(void)
 {
 	return stick_reboot_flag;
 }
+
+u32 get_stick_reboot_flag(void)
+{
+	return stick_reboot_flag;
+}
+

@@ -15,10 +15,5 @@ void str_power_on(int shutdown_flag);
 
 void str_power_off(int shutdown_flag);
 
-void Bt_GpioIRQRegister(void);
-
-void Bt_GpioIRQFree(void);
-
-
 #endif
 

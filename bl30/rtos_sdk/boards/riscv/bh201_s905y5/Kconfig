@@ -25,5 +25,7 @@ config BOARD_BH201_S905Y5
 	select VRTC
 	select VERSION_FULL_INFO
 	select AOCPU_ALIVE_DETECTION
+	select WIFI_BT_WAKE
+
 	help
 	  Enable Amlogic BH201_S905Y5 Board.

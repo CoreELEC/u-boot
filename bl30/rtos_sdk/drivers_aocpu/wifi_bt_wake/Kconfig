@@ -1,0 +1,8 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config WIFI_BT_WAKE
+	bool "WIFI BT Wake up Sampling"
+	help
+	    help select wifi/bt wake up function setting.

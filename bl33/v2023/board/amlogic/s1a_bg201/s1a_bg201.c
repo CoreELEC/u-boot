@@ -450,6 +450,21 @@ static const struct mtd_partition spinand_partitions[] = {
 		.offset = 0,
 		.size = 4 * SZ_1M,
 	},
+	{
+		.name = "ccaconfig",
+		.offset = 0,
+		.size = SZ_128K,
+	},
+	{
+		.name = "rescuelist",
+		.offset = 0,
+		.size = SZ_128K,
+	},
+	{
+		.name = "rescuelist_bk",
+		.offset = 0,
+		.size = SZ_128K,
+	},
 	/* last partition get the rest capacity */
 	{
 		.name = "data",

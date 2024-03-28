@@ -535,14 +535,14 @@ void bt_suspend_handle(void)
 static void mbox_bt_name(void *msg)
 {
     char recv[20] = {'\0'};
-    char bt_name[] = {"qca_bt"};
+    char bt_name[] = {"qca6174"};
 
     memcpy(recv, msg, sizeof(recv));
     memset(msg, 0, MBOX_BUF_LEN);
     DEBUG("[%s]: from ARM REE: %s", MBTAG, recv);
 
     if (memcmp(recv, bt_name, (sizeof(bt_name) - 1)) == 0) {
-        INFO("bt_name is qca_bt");
+        INFO("bt_name is qca6174");
         set_qcom_uart_bt_flag(true);
     }
 }

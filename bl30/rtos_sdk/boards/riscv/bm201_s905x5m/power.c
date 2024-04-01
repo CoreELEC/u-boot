@@ -27,9 +27,9 @@
 static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO	GPIOC_7
-#define VCC3V3_GPIO	GPIOD_10
-#define VDDCPU_A55_GPIO	GPIOD_3
-#define VDDCPU_A76_GPIO	GPIO_TEST_N
+#define VDDCPU_A55_GPIO	GPIO_TEST_N
+
+#define PWR_STATE_WAIT_ON	16
 
 static int vdd_ee;
 static int vdddos_npu_vpu;
@@ -66,6 +66,28 @@ static void *xMboxVadWakeup(void *msg)
 	STR_Wakeup_src_Queue_Send(buf);
 
 	return NULL;
+}
+
+
+void check_poweroff_status(void)
+{
+	const TickType_t xTimeout = pdMS_TO_TICKS(500);	//Set timeout duration to 500ms
+	TickType_t xStartTick;
+
+	xStartTick = xTaskGetTickCount();
+
+	/*Wait for cputop fsm switch to WAIT_ON*/
+	while (((REG32(PWRCTRL_CPUTOP_FSM_STS0) >> 12) & 0x1F) != PWR_STATE_WAIT_ON) {
+		if (xTaskGetTickCount() - xStartTick >= xTimeout) {
+			printf("cputop fsm check timed out!\n");
+			printf("PWRCTRL_CPUTOP_FSM_STS0: %x\n", REG32(PWRCTRL_CPUTOP_FSM_STS0));
+			printf("PWRCTRL_CPU0_FSM_STS0: %x\n", REG32(PWRCTRL_CPU0_FSM_STS0));
+			printf("PWRCTRL_CPU1_FSM_STS0: %x\n", REG32(PWRCTRL_CPU1_FSM_STS0));
+			printf("PWRCTRL_CPU2_FSM_STS0: %x\n", REG32(PWRCTRL_CPU2_FSM_STS0));
+			printf("PWRCTRL_CPU3_FSM_STS0: %x\n", REG32(PWRCTRL_CPU3_FSM_STS0));
+			vTaskSuspend(NULL);
+		}
+	}
 }
 
 void str_hw_init(void)
@@ -114,19 +136,6 @@ void str_power_on(int shutdown_flag)
 	}
 
 	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
-
-	/***power on A76 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_HIGH);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;
@@ -226,19 +235,6 @@ void str_power_off(int shutdown_flag)
 	}
 
 	ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
-
-	/***power off A76 vdd_cpu***/
-	ret = xGpioSetDir(VDDCPU_A76_GPIO, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(VDDCPU_A76_GPIO, GPIO_LEVEL_LOW);
 	if (ret < 0) {
 		printf("vdd_cpu set gpio val fail\n");
 		return;

@@ -19,6 +19,7 @@ void Bt_GpioIRQRegister(void);
 
 void Bt_GpioIRQFree(void);
 
+void check_poweroff_status(void);
 
 #endif
 

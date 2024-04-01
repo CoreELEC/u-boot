@@ -64,6 +64,9 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_INPUT_BLOB}/blob-bl32${CHIP
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin.signed"
 
+if [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${CHIPSET_VARIANT_SUFFIX}" ]; then
+	EXEC_ARGS="${EXEC_ARGS}	--header-layout=full"
+fi
 #echo ${EXEC_ARGS}
 
 #

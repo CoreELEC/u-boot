@@ -146,6 +146,7 @@ function sign_blx() {
 
 	#special case for c3 fastboot
 	if [ "fastboot" == "${tool_type}" ]; then
+		BLX_BIN_SIZE[5]="94208" #bl31 size
 		BLX_BIN_SIZE[6]="4096" #bl32 size
 		BLX_BIN_SIZE[7]="4096" #bl40 size
 	fi

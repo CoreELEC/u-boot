@@ -80,11 +80,11 @@ elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIP
 				"74864"	\
 				"74864"	\
 				"66672"	\
-				"266240"	\
+				"98304"	\
 				"8192"	\
 				"8192")
-	declare BL30_BIN_SIZE="65536"
-	declare BL33_BIN_SIZE="524288"
+	declare BL30_BIN_SIZE="4096"
+	declare BL33_BIN_SIZE="323584"
 else
 	declare -a BLX_BIN_SIZE=("169984"	\
 				"169984"	\

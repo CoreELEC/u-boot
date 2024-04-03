@@ -59,6 +59,7 @@ void hw_business_process(void)
 	uint8_t i = 0;
 
 	config_eclic_irqs();
+	config_pmp();
 	stick_mem_init();
 	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 	for (i = 0; i < 4; ++i)

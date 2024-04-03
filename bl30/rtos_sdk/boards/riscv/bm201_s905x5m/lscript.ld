@@ -23,7 +23,7 @@ SECTIONS
  PROVIDE( _text = . );
  *(.init)
         *(.text* .rodata*)
-        . = ALIGN(0x100);
+        . = ALIGN(0x400);
         PROVIDE( _etext = . );
  *(.vtable)
     } > ram

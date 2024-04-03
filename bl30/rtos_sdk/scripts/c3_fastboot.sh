@@ -123,6 +123,10 @@ function bl22_compile() {
 		pushd $BL22_DIR
 		if [ -f ./mk ]; then
 			./mk c3 $BOARD_TYPE
+			if [ "$?" -ne 0 ]; then
+				echo "RTOS-SDK: BL22 compilation failed !!!"
+				exit 1
+			fi
 		fi
 		cp ./bl22.bin $RTOS_BUILD_DIR/bl22.bin
 		popd
@@ -142,6 +146,10 @@ function package_fastboot() {
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./blob-bl31.bin.signed
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./fip/blob-bl31.bin.signed
 	./mk $BOARD_TYPE_MAPPING
+	if [ "$?" -ne 0 ]; then
+		echo "RTOS-SDK: Uboot compilation failed !!!"
+		exit 1
+	fi
 	popd
 }
 
@@ -165,6 +173,10 @@ fi
 toolchain_prepare
 #compile the rtos image
 cd $RTOS_BASE_DIR && make
+if [ "$?" -ne 0 ]; then
+	echo "RTOS-SDK: RTOS compilation failed !!!"
+	exit 1
+fi
 #lz4 compression
 lz4_rtos
 #compile the bl22 image

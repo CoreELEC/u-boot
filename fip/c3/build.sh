@@ -471,7 +471,10 @@ function mk_uboot() {
 
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
-	if [ ! -f ${ddr_fip} ]; then
+	if [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
+		dd if=/dev/zero of=${ddr_fip} bs=1024 count=0 status=none
+	fi
+	if [ ! -f ${ddr_fip} ] ; then
 		echo "==== use empty ddr-fip ===="
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	fi
@@ -513,7 +516,11 @@ function mk_uboot() {
 	for file in ${bb1st} ${bl2e} ${bl2x} ${ddr_fip} ${device_fip}; do
 		size=`stat -c "%s" ${file}`
 		size_sector=$[(size+align_base-1)/align_base*align_base]
-		nPayloadSize=$[size_sector]
+		if [ "${CONFIG_IPC_TYPE}" == "normal" ] && [ ${ddr_fip} == ${file} ] ; then
+			nPayloadSize=0
+		else
+			nPayloadSize=$[size_sector]
+		fi
 		size_sector=$[size_sector/sector]
 		seek_sector=$[seek/sector+seek_sector]
 		#nPayloadOffset=$[sector*(seek_sector+1)]

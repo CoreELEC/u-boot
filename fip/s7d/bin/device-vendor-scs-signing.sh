@@ -32,6 +32,16 @@ check_value() {
 	fi
 }
 
+function add_blob_hdr () {
+	local bootloader_folder=$1
+	if [ -f "${EXEC_BASEDIR}/hdr" ]; then
+		echo "$bootloader_folder add_blob_hdr"
+		BLOB_HDR_FOLDER="${EXEC_BASEDIR}/hdr"
+		cat $BLOB_HDR_FOLDER  ${bootloader_folder} > ${bootloader_folder}.hdr
+		mv ${bootloader_folder}.hdr ${bootloader_folder}
+	fi
+}
+
 function mk_uboot() {
 	output_images=$1
 	input_payloads=$2
@@ -132,6 +142,8 @@ function mk_uboot() {
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
 	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=438 conv=notrunc status=none
+
+	add_blob_hdr ${bootloader}
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		total_size=$[total_size+512]

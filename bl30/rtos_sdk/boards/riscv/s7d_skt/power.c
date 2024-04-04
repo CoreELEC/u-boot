@@ -72,7 +72,7 @@ void str_hw_init(void)
 {
 	int ret;
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+	vIRInit(MODE_HARD_NEC, GPIODV_0, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
 
@@ -81,7 +81,7 @@ void str_hw_init(void)
 
 	//vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
-	vKeyPadInit();
+	//vKeyPadInit();
 	//Bt_GpioIRQRegister();
 }
 
@@ -96,7 +96,7 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 	//Bt_GpioIRQFree();
-	vKeyPadDeinit();
+	//vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
 
@@ -141,6 +141,7 @@ void str_power_on(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power on vcc_3.3v***/
+		/*
 		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vcc_3.3v set gpio dir fail\n");
@@ -152,6 +153,7 @@ void str_power_on(int shutdown_flag)
 			printf("vcc_3.3v gpio val fail\n");
 			return;
 		}
+		*/
 	}
 
 	/***power on vcc_5v***/
@@ -188,6 +190,7 @@ void str_power_off(int shutdown_flag)
 
 	if (shutdown_flag) {
 		/***power off vcc_3.3v***/
+		/*
 		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vcc_3.3v set gpio dir fail\n");
@@ -199,6 +202,7 @@ void str_power_off(int shutdown_flag)
 			printf("vcc_3.3v gpio val fail\n");
 			return;
 		}
+		*/
 	}
 
 	/***set vdd_ee val***/

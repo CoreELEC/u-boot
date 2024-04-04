@@ -12,7 +12,7 @@ aml_library_sources(
 	hw_business.c
 )
 
-#aml_library_sources_ifdef(
-#	CONFIG_LEDS
-#	leds_plat.c
-#)
+aml_library_sources_ifdef(
+	CONFIG_LEDS
+	leds_plat.c
+)

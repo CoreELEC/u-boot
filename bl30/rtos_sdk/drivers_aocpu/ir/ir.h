@@ -43,6 +43,9 @@ enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
 /* sample for multi-protocol */
 /* #define MODE_HARD_RCA_NEC	(MODE_HARD_RCA | MODE_HARD_LEAGCY_NEC << 8) */
 
+/* for 2 multi-format controller */
+/* #define MODE_HARD_NEC_NEC	(MODE_HARD_NEC | MODE_HARD_NEC << 8) */
+
 /**
  *  xIRInit() - IR hardware initialize.
  *  @usWorkMode: supported protocol.

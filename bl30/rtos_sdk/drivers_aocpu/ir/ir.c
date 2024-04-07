@@ -232,6 +232,10 @@ uint32_t vIRInit(uint16_t usWorkMode, uint16_t usGpio, enum PinMuxType func,
 
 	RegisterIrq(IRQ_NUM_IRIN, 2, vIRIntteruptHandler);
 	EnableIrq(IRQ_NUM_IRIN);
+#if defined(IRQ_NUM_IRIN_EXT)
+	RegisterIrq(IRQ_NUM_IRIN_EXT, 2, vIRIntteruptHandler);
+	EnableIrq(IRQ_NUM_IRIN_EXT);
+#endif
 
 	xDrvData->ucIsInit = 1;
 
@@ -249,6 +253,10 @@ void vIRDeint(void)
 
 	DisableIrq(IRQ_NUM_IRIN);
 	UnRegisterIrq(IRQ_NUM_IRIN);
+#if defined(IRQ_NUM_IRIN_EXT)
+	DisableIrq(IRQ_NUM_IRIN_EXT);
+	UnRegisterIrq(IRQ_NUM_IRIN_EXT);
+#endif
 }
 
 void vIRGetKeyCode(struct IRPowerKey *PowerKeyList)

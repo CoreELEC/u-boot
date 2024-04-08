@@ -11,6 +11,7 @@ riscv t5w at301_t962d4 aocpu
 riscv t5w at309_t962d4 aocpu
 riscv t5m ay301_t963d4 aocpu
 riscv t5m ay309_t963d4 aocpu
+riscv t6d t6d_skt aocpu
 riscv txhd2 txhd2_skt aocpu
 riscv txhd2 be301_t950s aocpu
 riscv txhd2 be309_t950s aocpu

@@ -1,0 +1,10 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_T6D
+	bool "T6D"
+	select RISCV
+	help
+	  Enable T6D SOC of RISCV.
+

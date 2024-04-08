@@ -12,7 +12,9 @@
 #include "task.h" /* RTOS task related API prototypes. */
 #include "common.h"
 
+#ifndef CONFIG_BRINGUP
 #define BL30_SUSPEND_DEBUG_EN 1
+#endif
 #define POWER_MODE_MASK 0xF
 
 #if BL30_SUSPEND_DEBUG_EN

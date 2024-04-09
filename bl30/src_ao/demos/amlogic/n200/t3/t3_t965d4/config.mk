@@ -26,3 +26,11 @@
 SOC=t3
 ARCH_CPU=RISC_V_N205
 BOARD=t3_t965d4
+
+#config bt wakeup interrupt sampling
+#BT_WAKE_CFG: 1 power and netflix key low level sampling
+CFLAGS += -DBT_WAKE_CFG=1 -DBT_WAKE_HOST=GPIOC_14 -DBT_EN=GPIOC_13
+
+#config wifi wakeup interrupt sampling
+#WIFI_WAKE_CFG: 1
+CFLAGS += -DWIFI_WAKE_CFG=1 -DWIFI_WAKE_HOST=GPIOC_12 -DWIFI_PWREN=GPIOC_11

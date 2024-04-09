@@ -36,7 +36,7 @@
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
 #include "hdmirx_wake.h"
-#include "btwake.h"
+#include "wifi_bt_wake.h"
 #include "interrupt_control_eclic.h"
 #include "eth.h"
 
@@ -98,7 +98,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vKeyPadInit();
 	vGpioIRQInit();
-	Bt_GpioIRQRegister();
+	wifi_bt_wakeup_init();
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP, xMboxVadWakeup, 0);
 	if (ret == MBOX_CALL_MAX)
@@ -118,9 +118,10 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	Bt_GpioIRQFree();
+	wifi_bt_wakeup_deinit();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
+
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	hdmirx_GpioIRQFree();

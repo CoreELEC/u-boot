@@ -33,6 +33,7 @@ aml_library_sources(
 	aml_strlen.c
 	aml_strnlen.c
 	aml_strcpy.c
+	aml_stpcpy.c
 	aml_strncpy.c
 	aml_strtoul.c
 	aml_sprintf.c

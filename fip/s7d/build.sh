@@ -100,13 +100,6 @@ function mk_bl2ex() {
 	dd if=/dev/zero of=${payload}/bl2x.bin bs=98304 count=1
 	dd if=${output}/bl2x.bin of=${payload}/bl2x.bin conv=notrunc
 
-
-
-
-
-
-
-
 	echo "===================================================="
 	echo "------ process for device and chip params ------"
 	INPUT_PARAMS=${output}
@@ -171,6 +164,27 @@ function mk_bl2ex() {
 		exit -1
 	fi
 	echo "done to generate bb1st.bin folder"
+}
+
+function amfc_compress() {
+	local path=$1
+	local comp_lv=$2
+	amfc_zstd_hdr=$1/amfc_zstd_hdr.bin
+	./fip/tools/zstd $1/bl33.bin.org -$comp_lv -o $1/bl33.bin.zstd
+	bin_org_size=`stat -c %s $1/bl33.bin.org`
+	bin_zstd_size=`stat -c %s $1/bl33.bin.zstd`
+	printf "%s" "@ZSTD" >  $amfc_zstd_hdr
+
+	printf "%02x%02x%02x%02x" $[(bin_org_size) & 0xff] \
+	$[((bin_org_size) >> 8) & 0xff] $[((bin_org_size) >> 16) & 0xff] \
+	$[((bin_org_size) >> 24) & 0xff] | xxd -r -ps >>  $amfc_zstd_hdr
+
+	printf "%02x%02x%02x%02x" $[(bin_zstd_size) & 0xff] \
+	$[((bin_zstd_size) >> 8) & 0xff] $[((bin_zstd_size) >> 16) & 0xff] \
+	$[((bin_zstd_size) >> 24) & 0xff] | xxd -r -ps >>  $amfc_zstd_hdr
+
+	cat $amfc_zstd_hdr $1/bl33.bin.zstd > $1/bl33.bin
+	rm $amfc_zstd_hdr -f
 }
 
 function mk_devfip() {
@@ -242,12 +256,12 @@ function mk_devfip() {
 	fi
 	dd if=/dev/zero of=${payload}/bl32.bin bs=524288 count=1
 	dd if=${output}/bl32.bin of=${payload}/bl32.bin conv=notrunc
-
 	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
 		mv -f ${output}/bl33.bin  ${output}/bl33.bin.org
-		encrypt_step --bl3sig  --input ${output}/bl33.bin.org --output ${output}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		amfc_compress ${output} 9
+#encrypt_step --bl3sig  --input ${output}/bl33.bin.org --output ${output}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
 		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
-		dd if=${output}/bl33.bin.org.lz4 of=${output}/bl33.bin bs=1 skip=1824 >& /dev/null
+#dd if=${output}/bl33.bin.org.lz4 of=${output}/bl33.bin bs=1 skip=1824 >& /dev/null
 	fi
 	# fix size for BL33 1024KB + 512 KB
 	if [ ! -f ${output}/bl33.bin ]; then
@@ -664,12 +678,12 @@ function process_blx() {
 	fi
 	dd if=/dev/zero of=${BUILD_PATH}/bl30-payload.bin bs=${BL30_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl30.bin of=${BUILD_PATH}/bl30-payload.bin conv=notrunc &> /dev/null
-
 	if [ "y" == "${CONFIG_AML_BL33_COMPRESS_ENABLE}" ]; then
 		mv -f ${BUILD_PATH}/bl33.bin  ${BUILD_PATH}/bl33.bin.org
-		encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin.org --output ${BUILD_PATH}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
+		amfc_compress ${BUILD_PATH} 9
+#encrypt_step --bl3sig  --input ${BUILD_PATH}/bl33.bin.org --output ${BUILD_PATH}/bl33.bin.org.lz4 --compress lz4 --level v3 --type bl33
 		#get LZ4 format bl33 image from bl33.bin.enc with offset 0x720
-		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
+#		dd if=${BUILD_PATH}/bl33.bin.org.lz4 of=${BUILD_PATH}/bl33.bin bs=1 skip=1824 >& /dev/null
 	fi
 
 	# fix size for BL33 1024KB

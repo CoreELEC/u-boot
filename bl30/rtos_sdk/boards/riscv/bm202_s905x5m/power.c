@@ -79,9 +79,8 @@ void str_hw_init(void)
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
 
-	//vBackupAndClearGpioIrqReg();
+	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
-	//vKeyPadInit();
 	//Bt_GpioIRQRegister();
 }
 
@@ -96,7 +95,6 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 	//Bt_GpioIRQFree();
-	//vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }
 

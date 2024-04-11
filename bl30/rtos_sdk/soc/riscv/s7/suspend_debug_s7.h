@@ -13,22 +13,9 @@
 extern struct xPwmMesonVoltage vddee_table[];
 extern struct xPwmMesonVoltage vddcpu_table[];
 
-static inline uint32_t get_pwm_duty(uint32_t duty_reg)
-{
-	uint32_t hi = (duty_reg >> 16) & 0xFFFF;
-	uint32_t lo = duty_reg & 0xFFFF;
-
-	float duty_value = ((float)(hi + 1) / (float)(hi + lo + 2) * 100.0f);
-
-	if (duty_value > (uint32_t)duty_value)
-		return duty_value++;
-
-	return duty_value;
-}
-
 static inline void show_pwm_regs(void)
 {
-	uint32_t duty_reg, vol, table_size, duty_value;
+	uint32_t duty_reg, vol, table_size;
 
 	if (IS_EN(BL30_SHOW_PWM_VOLT)) {
 		// printf("PADCTRL_PIN_MUX_REGD 0x%x\n", REG32(PADCTRL_PIN_MUX_REGD));
@@ -47,15 +34,13 @@ static inline void show_pwm_regs(void)
 
 		if (xGpioGetValue(GPIO_TEST_N) != GPIO_LEVEL_LOW) {
 			duty_reg = REG32(PWM_PWM_J);
-			duty_value = get_pwm_duty(duty_reg);
 			table_size = vPwmMesonGetVoltTableSize(VDDCPU_VOLT);
 			for (int i = 0; i < table_size; i++)
-				if (duty_value == vddcpu_table[i].Duty_reg) {
+				if (duty_reg == vddcpu_table[i].Duty_reg) {
 					vol = vddcpu_table[i].Voltage_mv;
 					break;
 				}
-			printf("PWM_PWM_J 0x%x, duty value %d, vddcpu vol %d mV\n",
-				duty_reg, duty_value, vol);
+			printf("PWM_PWM_J 0x%x,  vddcpu vol %d mV\n", duty_reg, vol);
 		} else
 			printf("vddcpu is poweroff\n");
 	}

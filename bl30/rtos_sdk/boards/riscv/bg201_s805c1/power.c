@@ -32,6 +32,7 @@ static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
+	{ 0xff00fe03, IR_NORMAL }, /* sei rcu pwr */
 	{ 0xba45bd02, IR_NORMAL }, /* small ir pwr */
 	{ 0xef10fb04, IR_NORMAL }, /* old ref tv pwr */
 	{ 0xe51afb04, IR_NORMAL },

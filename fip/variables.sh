@@ -57,7 +57,7 @@ declare -a  COMPILE_PARA_LIST=("--h" "--help" "--config" "--chip-varient" "--che
 			"--cov" "--cov-high" "--enable-ramdump" "--uasan" "--enable-bl33z" \
 			"--disable-bl33z" "--compress-bl2e" "--chipid" "--build-version" \
 			"--ab-update" "--hdmitx-only" "--clean" "--noverbose" \
-			"--distclean" "--bl2" "--bl2e" "--bl2x" "--bl30" "--bl31" \
+			"--distclean" "--bl2" "--bl2e" "--bl2e-size" "--bl2x" "--bl30" "--bl31" \
 			"--bl32" "--bl40" "--ddr-fip" "--sign-bl40" "--update-bl2" \
 			"--update-bl2e" "--update-bl2x" "--update-ddr-fip" "--update-bl30" \
 			"--update-bl31" "--update-bl32" "--bl2-branch" "--ddrfw" \

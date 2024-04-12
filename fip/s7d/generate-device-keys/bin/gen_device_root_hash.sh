@@ -92,6 +92,9 @@ parse_main() {
             --device-tee-vers)
                 device_tee_vers="${argv[$i]}"
 		;;
+            --device-lvl1cert-vers-submask)
+                device_lvl1cert_vers_submask="${argv[$i]}"
+		;;
             --device-soc)
                 device_soc="${argv[$i]}"
         ;;
@@ -142,11 +145,12 @@ DEVICE_SCS_SEGID=${device_scs_segid}
 DEVICE_VENDOR_SEGID=${device_vendor_segid}
 DEVICE_SCS_VERS=${device_scs_vers}
 DEVICE_TEE_VERS=${device_tee_vers}
-
+DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${device_lvl1cert_vers_submask}
 echo DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
 echo DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
 echo DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
 echo DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
+echo DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}
 
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
@@ -272,6 +276,9 @@ BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-segid=${DEVICE_SCS_SEGID}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-scs-vers=${DEVICE_SCS_VERS}"
 BB1ST_ARGS="${BB1ST_ARGS} --val-device-tee-vers=${DEVICE_TEE_VERS}"
+if  [ "1" == "${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}" ]; then
+BB1ST_ARGS="${BB1ST_ARGS} --switch-device-lvl1cert-vers-submask=1"
+fi
 
 ### Output: blobs ###
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-bb1st=${BASEDIR_OUTPUT_BLOB}/bb1st.bin"

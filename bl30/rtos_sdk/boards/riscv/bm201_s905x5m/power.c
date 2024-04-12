@@ -18,7 +18,9 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 #include "timer_source.h"
-#include "wakeup.h"
+#if CONFIG_WIFI_BT_WAKE
+#include "wifi_bt_wake.h"
+#endif
 #include "power.h"
 #include "mailbox-api.h"
 
@@ -104,7 +106,9 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
 	vKeyPadInit();
-	//Bt_GpioIRQRegister();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_init();
+#endif
 }
 
 void str_hw_disable(void)
@@ -117,7 +121,9 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	//Bt_GpioIRQFree();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_deinit();
+#endif
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }

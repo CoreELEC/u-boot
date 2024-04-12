@@ -24,6 +24,7 @@ config BOARD_BM201_S905X5M
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
+	select WIFI_BT_WAKE
 	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic BM201_S905X5M Board.

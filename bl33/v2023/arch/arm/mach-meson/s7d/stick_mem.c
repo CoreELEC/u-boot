@@ -33,9 +33,3 @@ u32 get_stick_reboot_flag(void)
 {
 	return stick_reboot_flag;
 }
-
-u32 get_stick_reboot_flag(void)
-{
-	return stick_reboot_flag;
-}
-

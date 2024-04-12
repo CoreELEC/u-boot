@@ -147,8 +147,15 @@ function package_fastboot() {
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./fip/blob-bl31.bin.signed
 	./mk $BOARD_TYPE_MAPPING
 	if [ "$?" -ne 0 ]; then
+		if [ -d ./fastboot ]; then
+			rm -rf ./fastboot
+		fi
 		echo "RTOS-SDK: Uboot compilation failed !!!"
 		exit 1
+	fi
+
+	if [ -d ./fastboot ]; then
+		rm -rf ./fastboot
 	fi
 	popd
 }

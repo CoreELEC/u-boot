@@ -64,6 +64,7 @@ void *xMboxGetWakeupReason(void *msg);
 void *xMboxClrWakeupReason(void *msg);
 void *xMboxGetStickRebootFlag(void *msg);
 void set_suspend_flag(void);
+void check_poweroff_status(void);
 
 SemaphoreHandle_t xSTRSemaphore = NULL;
 QueueHandle_t xSTRQueue = NULL;
@@ -151,6 +152,11 @@ __attribute__((weak)) void vDSP_resume(uint32_t st_f)
 	st_f = st_f;
 }
 
+__attribute__((weak)) void check_poweroff_status(void)
+{
+	vTaskDelay(pdMS_TO_TICKS(500));
+}
+
 void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
@@ -188,8 +194,8 @@ void system_suspend(uint32_t pm)
 	str_hw_init();
 	/*Set flag befor delay. It can be wakeup during delay*/
 	set_suspend_flag();
-	/*Delay 500ms for FSM switch to off*/
-	vTaskDelay(pdMS_TO_TICKS(500));
+	/*Wait for FSM switch to off*/
+	check_poweroff_status();
 	vDDR_suspend(shutdown_flag);
 	str_power_off(shutdown_flag);
 	vCLK_suspend(shutdown_flag);

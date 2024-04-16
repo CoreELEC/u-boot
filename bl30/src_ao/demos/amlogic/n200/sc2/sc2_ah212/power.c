@@ -94,7 +94,7 @@ void str_hw_init(void)
 	vGpioIRQInit();
 
 #ifdef UART_BT_QCOM
-	if (get_power_mode() != PM_SHUTDOWN_FLAG) {  // skip poweroff sdandby
+	if (get_power_mode() != POWER_MODE_POWER_OFF) {  // skip poweroff sdandby
 		bt_suspend_handle();
 	}
 #endif

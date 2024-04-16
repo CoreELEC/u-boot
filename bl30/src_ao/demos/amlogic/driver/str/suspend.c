@@ -161,7 +161,7 @@ void system_resume(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 
-	if (pm == PM_SHUTDOWN_FLAG)
+	if (pm == POWER_MODE_POWER_OFF)
 		shutdown_flag = 1;
 
 	vDSP_resume(shutdown_flag);
@@ -186,7 +186,7 @@ void system_suspend(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 
-	if (pm == PM_SHUTDOWN_FLAG)
+	if (pm == POWER_MODE_POWER_OFF)
 		shutdown_flag = 1;
 
 	/*Need set alarm ASAP*/
@@ -292,7 +292,19 @@ void *xMboxSuspend_Sem(void *msg)
 	enable_bl30_print(1);
 #endif
 
-	printf("power_mode=0x%x\n",power_mode);
+	switch (power_mode & POWER_MODE_MASK) {
+	case POWER_MODE_SUSPEND_1:
+	case POWER_MODE_SUSPEND_2:
+		printf("power_mode: SUSPEND\n");
+		break;
+	case POWER_MODE_POWER_OFF:
+		printf("power_mode: POWER OFF\n");
+		break;
+	default:
+		printf("power_mode: UNKNOWN\n");
+		break;
+	}
+
 	STR_Start_Sem_Give();
 
 	return NULL;

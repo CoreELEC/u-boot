@@ -47,7 +47,10 @@
 #define EXIT_REASON_EXTENSION_FLAG	(1 << 7)
 
 /* power mode flag */
-#define PM_SHUTDOWN_FLAG	0xF
+#define POWER_MODE_MASK 0xF
+#define POWER_MODE_SUSPEND_1 0x0
+#define POWER_MODE_SUSPEND_2 0x3
+#define POWER_MODE_POWER_OFF 0xF
 
 #define DELAY_TIME_MS 20	//20ms
 #define POWERON_VDDCPU_DELAY (pdMS_TO_TICKS(DELAY_TIME_MS) + 1)

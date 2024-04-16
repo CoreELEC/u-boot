@@ -724,6 +724,61 @@ is_android9_img() {
     fi
 }
 
+# Check input is android R format or not
+# 1: input
+# returns True or False
+# android R file format: 4KB header + kernel/ramdisk/dtb
+# file header as following
+#define ANDROID_R_IMG_VER  (3)
+#typedef struct {
+#	char 	magic[ANDR_BOOT_MAGIC_SIZE]; /*"ANDROID!"*/
+#
+#	u32 	kernel_size;	/* size in bytes */
+#	u32 	ramdisk_size;	/* size in bytes */
+#
+#   /* Operating system version and security patch level.
+#       For version "A.B.C" and patch level "Y-M-D":
+#      (7 bits for each of A, B, C; 7 bits for (Y-2000), 4 bits for M)
+#     os_version = A[31:25] B[24:18] C[17:11] (Y-2000)[10:4] M[3:0]
+#       */
+#
+#	uint32_t os_version;
+#	uint32_t header_size;
+#	uint32_t reserved[4];
+#
+#	uint32_t header_version;   /* Version of the boot image header */
+#	char     cmdline[BOOT_ARGS_SIZE + BOOT_EXTRA_ARGS_SIZE];
+#	unsigned char szReserved[BOOT_IMG_V3_HDR_SIZE - 1580];       /*align to 4KB header,1580 is size before this*/
+#}boot_img_hdr_v3_t, * p_boot_img_hdr_v3_t;
+is_androidR_img() {
+    local input=$1
+    if [ ! -f "$1" ]; then
+        echo "Argument error, \"$1\""
+        exit 1
+    fi
+    local insize=$(wc -c < $input)
+    if [ $insize -le 4096 ]; then
+        # less than size of img header
+        echo False
+        return
+    fi
+
+    local inmagic=$(xxd -p -l 8 $input)
+
+    if [ "$inmagic" == "414e44524f494421" ]; then
+      inversion=$(xxd -p -seek 40 -l 4 $input)
+      if [ "$inversion" == "03000000" ]; then
+        echo True
+      else
+        echo False
+      fi
+    elif [ "$inmagic" == "564e4452424f4f54" ]; then
+      echo True
+    else
+      echo False
+    fi
+}
+
 # Encrypt/sign kernel
 #typedef struct {
 #	uint32_t magic;
@@ -851,6 +906,11 @@ sign_kernel() {
     if [ "$(is_android9_img ${input})" == "True" ]; then
             local tempfile=${output}.`date +%Y%m%d%H%M%S`
             dd if=${input} of=${tempfile} bs=512 count=4 &> /dev/null
+            cat ${output} >> ${tempfile}
+            mv -f ${tempfile} ${output}
+    elif [ "$(is_androidR_img ${input})" == "True" ]; then
+            local tempfile=${output}.`date +%Y%m%d%H%M%S`
+            dd if=${input} of=${tempfile} bs=512 count=8 &> /dev/null
             cat ${output} >> ${tempfile}
             mv -f ${tempfile} ${output}
     fi

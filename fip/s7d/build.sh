@@ -476,7 +476,7 @@ function mk_uboot() {
 
 	sector=512
 	seek=0
-	seek_sector=0
+	seek_sector=8
 	dateStamp=S7D-${CHIPSET_NAME}-`date +%y%m%d%H%M%S`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
@@ -502,7 +502,7 @@ function mk_uboot() {
 		seek_sector=$[seek/sector+seek_sector]
 		#nPayloadOffset=$[sector*(seek_sector+1)]
 		nPayloadOffset=$[sector*(seek_sector)]
-		echo ${file} ${seek_sector} ${size_sector}
+		echo ${file} ${seek_sector} ${size_sector} $[sector*(seek_sector)] 
 		dd if=${file} of=${bootloader} bs=${sector} seek=${seek_sector} conv=notrunc status=none
 
 		echo ${arrPayload[$index]} > ${file_info_cfg_temp}.x
@@ -522,7 +522,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=438 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=446 conv=notrunc status=none
 
 	add_blob_hdr ${bootloader}
 
@@ -815,8 +815,8 @@ function add_blob_hdr () {
 	if [ -f "${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr" ]; then
 		echo "$bootloader_folder add_blob_hdr"
 		BLOB_HDR_FOLDER="${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr"
-		cat $BLOB_HDR_FOLDER  ${bootloader_folder} > ${bootloader_folder}.hdr
-		mv ${bootloader_folder}.hdr ${bootloader_folder}
+		dd if=$BLOB_HDR_FOLDER  of=${bootloader_folder} bs=512 count=8 conv=notrunc 
+#mv ${bootloader_folder}.hdr ${bootloader_folder}
 	fi
 }
 

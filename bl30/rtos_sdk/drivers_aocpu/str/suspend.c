@@ -145,7 +145,7 @@ void system_resume(uint32_t pm)
 	enter_func_print();
 #endif
 
-	if (pm == 0xf)
+	if (pm == POWER_MODE_POWER_OFF)
 		shutdown_flag = 1;
 	vCLK_resume(shutdown_flag);
 	/*Need clr alarm ASAP*/
@@ -180,7 +180,7 @@ void system_suspend(uint32_t pm)
 	enter_func_print();
 	start_debug_task();
 #endif
-	if (pm == 0xf)
+	if (pm == POWER_MODE_POWER_OFF)
 		shutdown_flag = 1;
 
 	/*Need set alarm ASAP*/
@@ -290,7 +290,19 @@ void *xMboxSuspend_Sem(void *msg)
 	enable_bl30_print(1);
 #endif
 
-	printf("power_mode=0x%x\n", power_mode & POWER_MODE_MASK);
+	switch (power_mode & POWER_MODE_MASK) {
+	case POWER_MODE_SUSPEND_1:
+	case POWER_MODE_SUSPEND_2:
+		printf("power_mode: SUSPEND\n");
+		break;
+	case POWER_MODE_POWER_OFF:
+		printf("power_mode: POWER OFF\n");
+		break;
+	default:
+		printf("power_mode: UNKNOWN\n");
+		break;
+	}
+
 	STR_Start_Sem_Give();
 
 	return NULL;

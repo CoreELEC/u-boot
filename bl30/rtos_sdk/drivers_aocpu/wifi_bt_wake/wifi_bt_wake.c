@@ -16,6 +16,8 @@
 #include "timers.h"   /* Software timer related API prototypes. */
 #include "semphr.h"   /* Semaphore related API prototypes. */
 
+#include "timer_source.h"
+
 #include "wifi_bt_cfg.h"
 #include "wifi_bt_wake.h"
 
@@ -41,7 +43,9 @@ do { \
 
 #endif
 
-#define DELAY_INTERVAL 40
+#define ONE_TICK_MS (1000 / configTICK_RATE_HZ)
+#define BT_DELAY_INTERVAL 40
+#define WIFI_DELAY_INTERVAL (ONE_TICK_MS * 2)
 
 #ifdef WIFI_WAKE_CFG
 
@@ -109,32 +113,49 @@ static TaskHandle_t wifi_task;
 
 static void vWIFIWakeup(void)
 {
+	uint32_t key_val = WIFI_WAKEUP;
+
 	vDisableGpioIRQ(WIFI_WAKE_HOST);
-	xTaskResumeFromISR(wifi_task);
+	if (xGpioGetValue(WIFI_PWREN)) {
+		INFO("wifi wakeup from ISR");
+		STR_Wakeup_src_Queue_Send_FromISR(&key_val);
+	} else
+		INFO("wifi power off");
 };
 
 static void wifi_wakeup_task(void *args)
 {
-	uint32_t key_val;
+	uint32_t key_val = WIFI_WAKEUP, delay_us = 10;
+	int32_t n;
 
 	UNUSED(args);
-	wakeup_special_handle(WIFI_PWREN, WIFI_WAKE_HOST, WIFI_WAKEUP);
 	//xPinmuxSet(WIFI_WAKE_HOST, PIN_FUNC0);
 	xGpioSetDir(WIFI_WAKE_HOST, GPIO_DIR_IN);
 	//xPinconfSet(WIFI_WAKE_HOST, PINF_CONFIG_BIAS_PULL_UP);
 	xRequestGpioIRQ(WIFI_WAKE_HOST, vWIFIWakeup, IRQF_TRIGGER_FALLING);
 
 	while (1) {
-		vTaskSuspend(wifi_task);
-		vTaskDelay(pdMS_TO_TICKS(DELAY_INTERVAL));  // waiting fall to low level
-		if (!xGpioGetValue(WIFI_WAKE_HOST)) {
-			INFO("wifi wakeup");
-			key_val = WIFI_WAKEUP;
-			STR_Wakeup_src_Queue_Send(&key_val);
-		} else {
-			INFO("abnormal waveform, redetect");
-			vEnableGpioIRQ(WIFI_WAKE_HOST);
+		if (!xGpioGetValue(WIFI_PWREN)) {
+			INFO("wifi power off");
+			goto suspend;
 		}
+		n = ONE_TICK_MS * 1000 / delay_us / 2;
+		while (n > 0) {
+			if (!xGpioGetValue(WIFI_WAKE_HOST))
+				goto wakeup;
+			n--;
+			udelay(delay_us);
+		}
+		vTaskDelay(pdMS_TO_TICKS(WIFI_DELAY_INTERVAL));
+		if (!xGpioGetValue(WIFI_WAKE_HOST))
+			goto wakeup;
+		else
+			continue;
+wakeup:
+		INFO("wifi wakeup");
+		STR_Wakeup_src_Queue_Send(&key_val);
+suspend:
+		vTaskSuspend(wifi_task);
 	}
 }
 #endif
@@ -161,33 +182,33 @@ static void bt_wakeup_task(void *args)
 		vTaskSuspend(bt_task);
 		flag = 0;
 
-		vTaskDelay(pdMS_TO_TICKS(DELAY_INTERVAL));  // waiting fall to low level
+		vTaskDelay(pdMS_TO_TICKS(BT_DELAY_INTERVAL));  // waiting fall to low level
 		while (flag < 20) {
 			if (!xGpioGetValue(BT_WAKE_HOST)) {  // detected as low level
 				flag++;
 			} else {
 				break;
 			}
-			vTaskDelay(pdMS_TO_TICKS(DELAY_INTERVAL));
+			vTaskDelay(pdMS_TO_TICKS(BT_DELAY_INTERVAL));
 		}
 
 /* power key: 200ms low level; judgment range <=240ms; netflix key: 400ms~500ms low level;
  * judgment range 240~560ms; correcting clock inaccuracies 2 ticks≈40ms
  */
 		if ((flag > 0) && (flag <= 7)) {
-			INFO("power key:%u ms", (flag*DELAY_INTERVAL));
+			INFO("power key:%u ms", (flag*BT_DELAY_INTERVAL));
 			key_val = BT_WAKEUP;
 			STR_Wakeup_src_Queue_Send(&key_val);
 		} else if ((flag > 7) && (flag <= 14)) {
-			INFO("netflix key:%u ms", (flag*DELAY_INTERVAL));
+			INFO("netflix key:%u ms", (flag*BT_DELAY_INTERVAL));
 			key_val = REMOTE_CUS_WAKEUP;
 			STR_Wakeup_src_Queue_Send(&key_val);
 		} else if (flag > 14) {
-			INFO("any key:%u ms", (flag*DELAY_INTERVAL));
+			INFO("any key:%u ms", (flag*BT_DELAY_INTERVAL));
 			key_val = BT_WAKEUP;
 			STR_Wakeup_src_Queue_Send(&key_val);
 		} else {
-			INFO("unknown key:%u ms, redetect", (flag*DELAY_INTERVAL));
+			INFO("unknown key:%u ms, redetect", (flag*BT_DELAY_INTERVAL));
 			vEnableGpioIRQ(BT_WAKE_HOST);
 		}
 	}

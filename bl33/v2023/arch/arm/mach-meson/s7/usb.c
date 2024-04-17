@@ -18,6 +18,7 @@
 #include <linux/compat.h>
 #include <linux/ioport.h>
 #include <asm-generic/gpio.h>
+#include <asm/amlogic/arch/timer.h>
 
 #define PHY20_RESET_LEVEL_BIT	8
 #define PHY21_RESET_LEVEL_BIT	9
@@ -45,11 +46,6 @@ struct ctr_info {
 
 static struct ctr_info ctr[AMLOGIC_CTR_COUNT];
 //static struct phy usb_phys[4];
-
-static uint32_t get_time(void)
-{
-	return readl(SYSCTRL_TIMERE);
-}
 
 void usb_udelay(unsigned int us)
 {

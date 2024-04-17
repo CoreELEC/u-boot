@@ -172,10 +172,12 @@ ADVANCED_BOOTLOADER=1
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="s7d"
 
-if [ "${BL30_SELECT}" == "s7d_pxp" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
-#elif [ "${BL30_SELECT}" == "a4_ba409" ]; then
-#	declare CONFIG_BOARD_PACKAGE_NAME="ba409_a113l2"
+if [ "${BL30_SELECT}" == "s7d_bm201" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bm201_s905x5m"
+elif [ "${BL30_SELECT}" == "s7d_bm202" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bm202_s905x5m"
+elif [ "${BL30_SELECT}" == "s7d_bm209" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bm209_s905x5m"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
 fi

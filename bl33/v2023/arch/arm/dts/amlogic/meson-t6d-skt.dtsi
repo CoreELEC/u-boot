@@ -70,7 +70,7 @@
 
 	sdio_pwrseq: sdio-pwrseq {
 		compatible = "mmc-pwrseq-simple";
-		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
+		// reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
 		clocks = <&wifi32k>;
 		clock-names = "ext_clock";
 	};
@@ -135,7 +135,7 @@
 	max-frequency = <100000000>;
 	disable-wp;
 
-	cd-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
+	// cd-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	cd-inverted;
 
 	card_type = <5>;

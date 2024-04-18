@@ -165,24 +165,6 @@
 	clock-names = "xtal", "adc_mux", "adc_div", "adc_gate";
 };
 
-&sd_emmc_a {
-	 clocks = <&clkc CLKID_SD_EMMC_A_MUX>,
-	 	    <&clkc CLKID_SD_EMMC_A_DIV>,
-	 		<&clkc CLKID_SD_EMMC_A>,
-	 		<&clkc CLKID_FCLK_DIV2>,
-	 		<&clkc CLKID_XTAL>;
-	 		clock-names = "mux", "div", "gate", "clkin", "xtal";
-};
-
-&sd_emmc_b {
-	clocks = <&clkc CLKID_SD_EMMC_B_MUX>,
-		    <&clkc CLKID_SD_EMMC_B_DIV>,
-			<&clkc CLKID_SD_EMMC_B>,
-			<&clkc CLKID_FCLK_DIV2>,
-			<&clkc CLKID_XTAL>;
-			clock-names = "mux", "div", "gate", "clkin", "xtal";
-};
-
 &sd_emmc_c {
 	 clocks = <&clkc CLKID_SD_EMMC_C_MUX>,
 			<&clkc CLKID_SD_EMMC_C_DIV>,

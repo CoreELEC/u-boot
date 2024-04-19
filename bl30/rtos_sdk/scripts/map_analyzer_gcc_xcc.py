@@ -27,28 +27,25 @@ class SectionSize:
     customize = 0
     system_heap = 0
     system_stack = 0
-    def rom(self):
-        return self.text + self.data
-    def ram(self):
-        return self.data + self.bss
+    rodata = 0
+    rom_usage = 0
+    ram_usage = 0
+
     def total(self):
         return self.text + self.data + self.bss
-    def add_gcc_section(self, section, size):
-        if current_section is None:
-            return;
-        if section.startswith('.comment'):
-            return
-        if section.startswith('.debug'):
-            return
-        if section.startswith('.ARM.attributes'):
-            return
-        if section.startswith('.text'):
+
+    def add_text_with_rodata(self, section, size):
+        if section.startswith('.text') or section.startswith('.rodata'):
             self.text += size
+            #add the .rodata to data in order to match the result of size command with gcc's elf file
+            #the elf file generate by riscv then toolchain add the .rodata to .text
+            if section.startswith('.rodata'):
+                self.rodata += size
         elif section.startswith('.rela.dyn'):
             self.rela_text += size
         elif section.startswith('.bss') or section.startswith('.common') or section.startswith('.sbss'):
             self.bss += size
-        elif section.startswith('.data') or section.startswith('.rodata'):
+        elif section.startswith('.data'):
             self.data += size
         elif section.startswith('.heap'):
             SectionSize.system_heap += size
@@ -58,6 +55,49 @@ class SectionSize:
             if (size > 0):
                 print("customer section:%s, size:%d" % (section, size))
                 self.customize += size
+        self.rom_usage = (self.text + self.data)
+        self.ram_usage = (self.data + self.bss)
+
+    def add_data_with_rodata(self, section, size):
+        #arch is arm64 and arm32
+        if section.startswith('.text'):
+            self.text += size
+        elif section.startswith('.rela.dyn'):
+            self.rela_text += size
+        elif section.startswith('.bss') or section.startswith('.common') or section.startswith('.sbss'):
+            self.bss += size
+        elif section.startswith('.data') or section.startswith('.rodata'):
+            #add the .rodata to data in order to match the result of size command with gcc's elf file
+            #the elf file generate by arm toolchain then it add the .rodata to .data
+            self.data += size
+            if section.startswith('.rodata'):
+                self.rodata += size
+        elif section.startswith('.heap'):
+            SectionSize.system_heap += size
+        elif section.startswith('.stack'):
+            SectionSize.system_stack += size
+        else:
+            if (size > 0):
+                print("customer section:%s, size:%d" % (section, size))
+                self.customize += size
+        self.rom_usage = (self.text + self.data)
+        self.ram_usage = (self.data + self.bss - self.rodata)
+
+    def add_gcc_section(self, section, size):
+        if current_section is None:
+            return;
+        if section.startswith('.comment'):
+            return
+        if section.startswith('.debug'):
+            return
+        if section.startswith('.ARM.attributes'):
+            return
+
+        if os.getenv('ARCH') == "riscv":
+            self.add_text_with_rodata(section, size)
+        else:
+            self.add_data_with_rodata(section, size)
+
     def add_xcc_section(self, section, size):
         if current_section is None:
             return;
@@ -70,7 +110,10 @@ class SectionSize:
         if section.startswith('.text') or section.endswith('.text') \
             or section.startswith('.literal') or section.endswith('.literal') \
             or section.startswith('.rodata') or section.endswith('.rodata'):
+            #add the .rodata to text in order to match the result of size command with xcc's elf file
             self.text += size
+            if section.startswith('.rodata') or section.endswith('.rodata'):
+                self.rodata += size
         elif section.startswith('.rela.dyn'):
             self.rela_text += size
         elif section.startswith('.bss') or section.startswith('.common') or section.startswith('.sbss'):
@@ -87,6 +130,82 @@ class SectionSize:
             if (size > 0):
                 print("customer section:%s, size:%d" % (section, size))
                 self.customize += size
+        self.rom_usage = (self.text + self.data)
+        self.ram_usage = (self.data + self.bss)
+
+def print_codesize_module_text_with_rodata():
+    print('---------------------------------------------------------------------------------------------------')
+    col_format = "%-20s\t%-12s\t%-12s\t%-10s%-10s\t%-12s\t%-12s\t%-7s"
+    print(col_format % ("module file", "ROM(text+data)", "RAM(data+bss)", ".text", "(.rodata)", ".data", ".bss", "customize"))
+    col_format = "%-20s\t%-12s\t%-12s\t%-10s(%-10s)\t%-12s\t%-12s\t%-7s"
+    for source in sources:
+        size = size_by_source[source]
+        print(col_format % (os.path.basename(source)[:20], size.rom_usage, size.ram_usage, size.text, size.rodata, size.data, size.bss, size.customize))
+    print('---------------------------------------------------------------------------------------------------')
+
+def print_codesize_module_data_with_rodata():
+    print('---------------------------------------------------------------------------------------------------')
+    col_format = "%-20s\t%-12s\t%-12s\t%-7s\t%-10s%-10s\t%-12s\t%-7s"
+    print(col_format % ("module file", "ROM(text+data)", "RAM(data+bss)", ".text", ".data", "(.rodata)", ".bss", "customize"))
+    col_format = "%-20s\t%-12s\t%-12s\t%-7s\t%-10s(%-10s)\t%-12s\t%-7s"
+    for source in sources:
+        size = size_by_source[source]
+        print(col_format % (os.path.basename(source)[:20], size.rom_usage, size.ram_usage, size.text, size.data, size.rodata, size.bss, size.customize))
+    print('---------------------------------------------------------------------------------------------------')
+
+def print_codesize_summary_text_with_rodata():
+    global sumrom
+    global sumram
+    global sumcode
+    global sumdata
+    global sumbss
+    global sumcustomize
+    global sumrodata
+    global sys_mem_usage
+
+    for source in sources:
+        size = size_by_source[source]
+        sumcode += size.text
+        sumdata += size.data
+        sumbss  += size.bss
+        sumrodata += size.rodata
+        sumrom += size.rom_usage
+        sumram += size.ram_usage
+        sumcustomize += size.customize
+
+    print('---------------------------------------------------------------------------------------------------')
+    col_format = "%-5s\t%-12s\t%-12s\t%-12s%-12s\t%-12s\t%-12s\t%-7s\t%-7s\t%-7s"
+    print(col_format % ("    ", "ROM(text+data)", "RAM(data+bss)", ".text", "(.rodata)", ".data", ".bss", "cust", "stack", "heap" ))
+    col_format = "%-5s\t%-12s\t%-12s\t%-12s(%-12s)\t%-12s\t%-12s\t%-7s\t%-7s\t%-7s"
+    print(col_format % ("total", sumrom, sumram + sys_mem_usage, sumcode, sumrodata, sumdata, sumbss + sys_mem_usage, sumcustomize, SectionSize.system_stack, SectionSize.system_heap))
+    print('---------------------------------------------------------------------------------------------------')
+
+def print_codesize_summary_data_with_rodata():
+    global sumrom
+    global sumram
+    global sumcode
+    global sumdata
+    global sumbss
+    global sumcustomize
+    global sumrodata
+    global sys_mem_usage
+
+    for source in sources:
+        size = size_by_source[source]
+        sumcode += size.text
+        sumdata += size.data
+        sumbss  += size.bss
+        sumrodata += size.rodata
+        sumrom += size.rom_usage
+        sumram += size.ram_usage
+        sumcustomize += size.customize
+
+    print('---------------------------------------------------------------------------------------------------')
+    col_format = "%-5s\t%-12s\t%-12s\t%-7s\t%-12s%-12s\t%-12s\t%-7s\t%-7s\t%-7s"
+    print(col_format % ("    ", "ROM(text+data)", "RAM(data+bss)", ".text", ".data", "(.rodata)", ".bss", "cust", "stack", "heap" ))
+    col_format = "%-5s\t%-12s\t%-12s\t%-7s\t%-12s(%-12s)\t%-12s\t%-7s\t%-7s\t%-7s"
+    print(col_format % ("total", sumrom, sumram + sys_mem_usage, sumcode, sumdata, sumrodata, sumbss + sys_mem_usage, sumcustomize, SectionSize.system_stack, SectionSize.system_heap))
+    print('---------------------------------------------------------------------------------------------------')
 
 size_by_source = {}
 with open(args.map_file) as f:
@@ -175,27 +294,17 @@ with open(args.map_file) as f:
                 else:
                     size_by_source[source].add_gcc_section(current_section, size)
 
-# Print out summary
 sources = list(size_by_source.keys())
 sources.sort(key = lambda x: size_by_source[x].total())
-sumrom = sumram = sumcode = sumdata = sumbss = sumcustomize = 0
-
-print('---------------------------------------------------------------------------------------------------')
-col_format = "%-20s\t%-12s\t%-12s\t%-7s\t%-12s\t%-12s\t%-7s"
-print(col_format % ("module file", "ROM(text+data)", "RAM(data+bss)", ".text", ".data", ".bss", "customize"))
-for source in sources:
-    size = size_by_source[source]
-    sumcode += size.text
-    sumdata += size.data
-    sumbss  += size.bss
-    sumrom += size.rom()
-    sumram += size.ram()
-    sumcustomize += size.customize
-    print(col_format % (os.path.basename(source), size.rom(), size.ram(), size.text, size.data, size.bss, size.customize))
-
-print('---------------------------------------------------------------------------------------------------')
-col_format = "%-5s\t%-12s\t%-12s\t%-7s\t%-12s\t%-12s\t%-7s\t%-7s\t%-7s"
+sumrom = sumram = sumcode = sumdata = sumbss = sumcustomize = sumrodata = 0
 sys_mem_usage = SectionSize.system_stack  + SectionSize.system_heap
-print(col_format % ("    ", "ROM(text+data)", "RAM(data+bss)", ".text", ".data", ".bss", "cust", "stack", "heap" ))
-print(col_format % ("total", sumrom, sumram + sys_mem_usage, sumcode, sumdata, sumbss + sys_mem_usage, sumcustomize, SectionSize.system_stack, SectionSize.system_heap))
-print('---------------------------------------------------------------------------------------------------')
+if os.getenv('COMPILER') == "xcc":
+    print_codesize_module_text_with_rodata()
+    print_codesize_summary_text_with_rodata()
+else:
+    if os.getenv('ARCH') == "riscv":
+        print_codesize_module_text_with_rodata()
+        print_codesize_summary_text_with_rodata()
+    else:
+        print_codesize_module_data_with_rodata()
+        print_codesize_summary_data_with_rodata()

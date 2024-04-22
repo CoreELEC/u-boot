@@ -11,4 +11,5 @@ if LIBC
 	rsource "aml/Kconfig"
 	rsource "newlib/Kconfig"
 	rsource "qlibc/Kconfig"
+	rsource "test/Kconfig"
 endif

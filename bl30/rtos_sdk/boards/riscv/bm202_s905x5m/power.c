@@ -41,6 +41,7 @@ static struct IRPowerKey prvPowerKeyList[] = {
 	{ 0xef10fb04, IR_NORMAL }, /* old ref tv pwr */
 	{ 0xf20dfe01, IR_NORMAL },
 	{ 0xe51afb04, IR_NORMAL },
+	{ 0xde217788, IR_NORMAL },
 	{ 0x3ac5bd02, IR_CUSTOM },
 	{}
 };

@@ -10,9 +10,15 @@ OBJCOPY=${TOOLCHAIN_KEYWORD}-objcopy
 OBJDUMP=${TOOLCHAIN_KEYWORD}-objdump
 RTOS_BUILD_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
+#Default configuration parameters
+SEGMENT_NAME=""
+SEGMENT_CONFIG_FILE=""
+SEGMENT_RENAME_FILE=""
+SEGMENT_RENAME_DIRECTORY=""
+SEGMENT_RENAME_IGNORE_LIST=()
+
 #Get specified segment name.
 function generate_segment_name() {
-
 	SEGMENT_PREFIX="late"
 
 	if [ ! -z "$1" ]; then
@@ -113,8 +119,18 @@ function search_and_process_specified_directory() {
 	OBJ_FILES=$(find $1 -type f -name "*.obj")
 
 	for file in $OBJ_FILES; do
-		parse_segment_information $file
-		rename_target_file_segment $file
+		ignore_file_flag=false
+		for item in "${SEGMENT_RENAME_IGNORE_LIST[@]}"; do
+			ignore_file=$(basename "$item")
+			if [[ "$file" == *"$ignore_file"* ]]; then
+				ignore_file_flag=true
+				break
+			fi
+		done
+		if ! $ignore_file_flag; then
+			parse_segment_information $file
+			rename_target_file_segment $file
+		fi
 	done
 }
 
@@ -132,17 +148,69 @@ function show_help() {
 	exit 1
 }
 
-generate_segment_name $2
-generate_segment_rule_file
+arg1=$1
 
-if [ -s "$1" ] && [ -f "$1" ]; then
-	parse_segment_information $1
-	rename_target_file_segment $1
-elif [ -d "$1" ]; then
-	search_and_process_specified_directory $1
-elif [ "$1" = "-empty" ]; then
+#Script Execution Parameter Parsing
+while getopts ":e:c:h:d:n:f:i:" opt; do
+case ${opt} in
+	c )
+	SEGMENT_CONFIG_FILE=$OPTARG
+	echo $OPTARG
+	;;
+	d )
+	SEGMENT_RENAME_DIRECTORY=$OPTARG
+	;;
+	f )
+	SEGMENT_RENAME_FILE=$OPTARG
+	;;
+	n )
+	SEGMENT_NAME=$OPTARG
+	;;
+	i )
+	SEGMENT_RENAME_IGNORE_LIST+=($OPTARG)
+	;;
+	e )
 	echo "<---generate empty rule--->"
-else
+	exit 0
+	;;
+	h )
 	show_help
 	exit 1
+	;;
+	\? )
+	echo "Invalid option: -$OPTARG" 1>&2
+	exit 1
+	;;
+	: )
+	echo "Option -$OPTARG requires an argument" 1>&2
+	exit 1
+	;;
+esac
+done
+shift $((OPTIND -1))
+
+#Segment Renaming Business Processing
+if [[ ${arg1:0:1} != "-" ]]; then
+	generate_segment_name $2
+	generate_segment_rule_file
+
+	if [ -s "$1" ] && [ -f "$1" ]; then
+		parse_segment_information $1
+		rename_target_file_segment $1
+	elif [ -d "$1" ]; then
+		search_and_process_specified_directory $1
+	else
+		show_help
+		exit 1
+	fi
+else
+	generate_segment_name $SEGMENT_NAME
+	generate_segment_rule_file
+
+	if [ -s "$SEGMENT_RENAME_FILE" ] && [ -f "$SEGMENT_RENAME_FILE" ]; then
+		parse_segment_information $SEGMENT_RENAME_FILE
+		rename_target_file_segment $SEGMENT_RENAME_FILE
+	elif [ -d "$SEGMENT_RENAME_DIRECTORY" ]; then
+		search_and_process_specified_directory $SEGMENT_RENAME_DIRECTORY
+	fi
 fi

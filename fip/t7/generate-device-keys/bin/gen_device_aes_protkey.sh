@@ -76,6 +76,11 @@ parse_main() {
                 template_dir="${argv[$i]}"
 		check_dir "${template_dir}"
 		;;
+	    --signpipe)
+                CONFIG_SIGNPIPE=1
+                echo "Enable SignPipe"
+                export CONFIG_SIGNPIPE
+                continue ;;
             --rootkey-index)
                 rootkey_index="${argv[$i]}"
 		check_value $rootkey_index 0 3
@@ -107,6 +112,7 @@ parse_main() {
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
+SIGNPIPE_TOOL=${EXEC_BASEDIR}/../../binary-tool/demo-sign.py
 key_dir=""
 template_dir=""
 rootkey_index=0
@@ -190,7 +196,9 @@ check_dir "${BASEDIR_FIP_RSAKEY_ROOT}"
 check_dir "${BASEDIR_TEMPLATE}"
 
 check_file "${BASEDIR_TEMPLATE}/${project}/device-fip-header.bin"
+if [ "x" == "x${CONFIG_SIGNPIPE}" ]; then
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-priv.pem"
+fi
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/lvl2cert-epks.bin"
 check_file "${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-rsa-pub.pem"
 check_file "${BASEDIR_FIP_RSAKEY_ROOT}/epk/bl30-lvl3cert-epks.bin"
@@ -222,7 +230,9 @@ BB1ST_ARGS="${BB1ST_ARGS}"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-template-chipset-fip-header=${BASEDIR_TEMPLATE}/${project}/device-fip-header.bin"
 
 ### Input: Device Level-2 private RSA Key ###
+if [ "x" == "x${CONFIG_SIGNPIPE}" ]; then
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-priv.pem"
+fi
 BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-device-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/lvl2cert-epks.bin"
 
 ### Input: Device Level-3 Certs  ###
@@ -274,9 +284,14 @@ echo ${TOOLS_ARGS}
 #
 # Main
 #
-
+if [ "x" == "x${CONFIG_SIGNPIPE}" ]; then
 ${ACPU_IMAGETOOL} \
         create-device-fip \
         ${BB1ST_ARGS}
-
+else
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+		--cmd-signpipe-device-lvl2="${SIGNPIPE_TOOL} ${EXEC_BASEDIR}/../../../../dv_scs_keys/boot-blobs/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}/key/level-2-rsa-priv.pem" \
+        ${BB1ST_ARGS}
+fi
 # vim: set tabstop=2 expandtab shiftwidth=2:

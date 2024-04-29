@@ -83,6 +83,7 @@ static lc_result LoaderPartition_enable_usb(unsigned char download_mode)
 	lc_result result = LC_SUCCESS;
 	lc_loader_pt_st pt;
 
+	memset(&pt, 0x0, sizeof(pt));
 	/* write a normal LoaderPartition */
 	result = LoaderPartition_usb_init(&pt, download_mode);
 
@@ -145,6 +146,7 @@ static lc_result LoaderPartition_enable_ota(unsigned char download_mode)
 	lc_result result = LC_SUCCESS;
 	lc_loader_pt_st pt;
 
+	memset(&pt, 0x0, sizeof(pt));
 	/* write a normal LoaderPartition */
 	result = LoaderPartition_ota_init(&pt, download_mode);
 

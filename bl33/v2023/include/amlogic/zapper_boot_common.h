@@ -58,10 +58,10 @@
 /* Size of Download info */
 #define LD_AREA_DOWNLOAD_INFO_SIZE (14)  /* size of download_info, same with downloader loadercore */
 /* Size of OTA parameters. */
-#define OTA_PARAMETER_SIZE (60)	/* included in shared-mem, same with downloader loadercore */
+#define OTA_PARAMETER_SIZE (98)	/* included in shared-mem, same with downloader loadercore */
 
 /* size of shared-mem, same with downloader loadercore */
-#define LD_SHARED_MEM_SIZE		(2 * OTA_PARAMETER_SIZE + 1 + 1 + 4 + 6)
+#define LD_SHARED_MEM_SIZE		(3 * OTA_PARAMETER_SIZE + 1 + 1 + 4 + 5 + 3 + 4)
 
 /* = LDR_SHARED_MEM_SIZE + LDR_AREA_DOWNLOAD_INFO_SIZE */
 #define LD_LENGTH	(LD_SHARED_MEM_SIZE + LD_AREA_DOWNLOAD_INFO_SIZE)

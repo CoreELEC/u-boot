@@ -527,6 +527,14 @@ function parser() {
 				export BOARD_DISPLAY_PIPELINE="${argv[$i]}"
 				echo "export BOARD_DISPLAY_PIPELINE="${argv[$i]}""
 				continue ;;
+			--ipc-ddr-size)
+				CONFIG_IPC_DDR_SIZE="${argv[$i]}"
+				export CONFIG_IPC_DDR_SIZE
+				continue ;;
+			--ipc-tee-type)
+				CONFIG_TEE_TYPE="${argv[$i]}"
+				export CONFIG_TEE_TYPE
+				continue ;;
 			--clean|--distclean)
 				clean
 				exit ;;

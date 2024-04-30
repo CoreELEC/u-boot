@@ -62,6 +62,9 @@ function build_bl31_v1_3() {
 	if [ "$soc" == "t5d" ]; then
 		soc="t5"
 	fi
+	if [ "$soc" == "c3" ]; then
+		check_branch_bl2x_bl31
+	fi
 	/bin/bash mk $soc
 	if [ $? != 0 ]; then
 		cd ${MAIN_FOLDER}

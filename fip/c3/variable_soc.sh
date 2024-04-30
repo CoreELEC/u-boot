@@ -11,6 +11,24 @@ if [ -n "${SCRIPT_ARG_CHIPSET_VARIANT}" ]; then
 	declare CHIPSET_VARIANT_SUFFIX=".${SCRIPT_ARG_CHIPSET_VARIANT}"
 elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
 	declare CHIPSET_VARIANT_SUFFIX=".${CONFIG_CHIPSET_VARIANT}"
+	if [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
+		declare CHIPSET_VARIANT_SUFFIX_IPC=".ipc"
+	elif [ "${CONFIG_IPC_TYPE}" == "fastboot" ]; then
+		declare CHIPSET_VARIANT_SUFFIX_IPC=".fastboot"
+	else
+		echo "Not setting the correct range CONFIG_IPC_TYPE ${CONFIG_IPC_TYPE}"
+		declare CHIPSET_VARIANT_SUFFIX_IPC=".${CONFIG_CHIPSET_VARIANT}"
+	fi
+	if [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ]; then
+		declare CHIPSET_VARIANT_SUFFIX_DDR=".${CONFIG_CHIPSET_VARIANT}_256"
+		if [ "${CONFIG_TEE_TYPE}" == "8m" ]; then
+			CHIPSET_VARIANT_MIN_SUFFIX=".8m"
+		elif [ "${CONFIG_TEE_TYPE}" == "1m" ]; then
+			CHIPSET_VARIANT_MIN_SUFFIX=".1m"
+		fi
+	else
+		declare CHIPSET_VARIANT_SUFFIX_DDR=".${CONFIG_CHIPSET_VARIANT}"
+	fi
 else
 	declare CHIPSET_VARIANT_SUFFIX=""
 fi
@@ -53,12 +71,12 @@ declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "bl40.bin")
 
 else
-declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX_IPC}.bin.signed"     \
+			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX_IPC}.bin.signed"     \
 			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
 			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-			 "blob-bl2x${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "blob-bl31${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
+			 "blob-bl2x${CHIPSET_VARIANT_SUFFIX_DDR}.bin.signed"     \
+			 "blob-bl31${CHIPSET_VARIANT_SUFFIX_DDR}.bin.signed"     \
 			 "blob-bl32${CHIPSET_VARIANT_MIN_SUFFIX}${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
 			 "blob-bl40${CHIPSET_VARIANT_SUFFIX}.bin.signed")
 fi
@@ -183,3 +201,75 @@ DDR_FW_NAME="aml_ddr.fw"
 
 CONFIG_NEED_BL32=y
 ADVANCED_BOOTLOADER=1
+
+BL2X_BL31_BRANCH="projects/fastboot/c3"
+BL2X_BL31_256_BRANCH="projects/fastboot/c3_256"
+local find_base='0'
+
+function get_branch() {
+	local oldifs="$IFS"
+	local base_branch=""
+	local tmp=""
+	IFS=$'\n'
+
+	tmp=`git branch`
+	# Eg: * (HEAD detached at firmware/projects/sc2)
+	if [[ "${tmp}" =~ "HEAD detached " ]]; then
+		tmp=`git branch -vv | grep '^\*.*\[.*\]' | awk '{print $5}'`
+	else
+		tmp=`git branch -vv | grep '^\*.*\[.*\]' | awk '{print $4}'`
+	fi
+
+	if [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ] && [[ "${tmp}" =~ "${BL2X_BL31_256_BRANCH}" ]]; then
+		base_branch=${BL2X_BL31_256_BRANCH}
+		find_base=1
+	elif [ "${CONFIG_IPC_DDR_SIZE}" == "128m" ] && [[ "${tmp}" =~ "${BL2X_BL31_BRANCH}" ]] && [[ ! "${tmp}" =~ "${BL2X_BL31_256_BRANCH}" ]]; then
+		base_branch=${BL2X_BL31_BRANCH}
+		find_base=1
+	fi
+	IFS="$oldifs"
+	CURRENT_BL_BRANCH=${base_branch}
+	export CURRENT_BL_BRANCH
+	echo "CURRENT_BL_BRANCH ${CURRENT_BL_BRANCH}"
+	return
+}
+
+# Check the correct use of (aw402/aw409) bl2x bl31 branch for ddr size
+function check_branch_bl2x_bl31() {
+	if [ -n "${CONFIG_CHIPSET_VARIANT}" ] && [ -z "${CONFIG_CHIPSET_VARIANT_MIN}" ]; then
+		if [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ]; then
+			local dest_branch=${BL2X_BL31_256_BRANCH}
+		elif [ "${CONFIG_IPC_DDR_SIZE}" == "128m" ]; then
+			local dest_branch=${BL2X_BL31_BRANCH}
+		else
+			echo -e "Not setting the correct range CONFIG_IPC_DDR_SIZE ${CONFIG_IPC_DDR_SIZE}"
+			exit -1
+		fi
+		local str=`git branch --remote | grep ${dest_branch}`
+
+		# 1, check if existed amlogic git branch name format
+		if [ "${str}" == "" ]; then
+			echo "can't find ${dest_branch}"
+		else
+			local cur_branch=''
+			local diff=`git diff`
+
+			# 2, check current branch is based on target soc?
+			get_branch
+			if [ "${find_base}" -eq 0 ]; then
+				echo ==== BRANCH ${dest_branch} not found ====
+				exit -1
+			fi
+			find_base=0  # reset find_base
+			echo ==== current branch:${CURRENT_BL_BRANCH} ====
+			if [[ "${CURRENT_BL_BRANCH}" == *"${dest_branch}" ]]; then
+				echo ==== NO NEED TO SWITCH BRANCH ====
+				return
+			else
+				echo ==== NEED TO SWITCH BRANCH ${dest_branch}====
+				exit -1
+			fi
+
+		fi
+	fi
+}

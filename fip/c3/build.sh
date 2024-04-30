@@ -68,7 +68,7 @@ function init_vari() {
 	fi
 
 	echo "------------------------------------------------------"
-	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE}"
+	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} CONFIG_IPC_TYPE: ${CONFIG_IPC_TYPE} CONFIG_IPC_DDR_SIZE: ${CONFIG_IPC_DDR_SIZE}"
 	echo "------------------------------------------------------"
 }
 
@@ -439,10 +439,17 @@ function mk_uboot() {
 	chipset_variant_suffix=$5
 
 	device_fip="${input_payloads}/device-fip.bin${postfix}"
-	bb1st="${input_payloads}/bb1st${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
+	if [ "${CONFIG_CHIPSET_VARIANT}" == "fastboot" ] && [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
+		bb1st="${input_payloads}/bb1st${storage_type_suffix}.ipc.bin${postfix}"
+	else
+		bb1st="${input_payloads}/bb1st${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
+	fi
 	bl2e="${input_payloads}/blob-bl2e${storage_type_suffix}${chipset_variant_suffix}.bin${postfix}"
-	bl2x="${input_payloads}/blob-bl2x${chipset_variant_suffix}.bin${postfix}"
-
+	if [ "${CONFIG_CHIPSET_VARIANT}" == "fastboot" ] && [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ]; then
+		bl2x="${input_payloads}/blob-bl2x${chipset_variant_suffix}_256.bin${postfix}"
+	else
+		bl2x="${input_payloads}/blob-bl2x${chipset_variant_suffix}.bin${postfix}"
+	fi
 	if [ ! -f ${device_fip} ] || \
 	   [ ! -f ${bb1st} ] || \
 	   [ ! -f ${bl2e} ] || \
@@ -657,9 +664,14 @@ function process_blx() {
 		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	if [ "${CONFIG_CHIPSET_VARIANT}" == "fastboot" ] && [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
+		./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto.ipc.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto.ipc.bin.signed ${CUR_SOC}
+		./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb.ipc.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb.ipc.bin.signed ${CUR_SOC}
 
+	else
+		./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+		./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	fi
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then
 		#blx_size=`du -b ${BUILD_PATH}/bl30.bin | awk '{print int(${BUILD_PATH}/bl30.bin)}'`

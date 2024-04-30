@@ -144,6 +144,9 @@ function build_bl2x() {
 
 	# $1: src_folder, $2: bin_folder, $3: soc
 	cd $1
+	if [ "$3" == "c3" ]; then
+		check_branch_bl2x_bl31
+	fi
 	/bin/bash mk $3
 
 	if [ $? != 0 ]; then

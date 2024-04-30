@@ -15,6 +15,7 @@ build_dir="build_system"
 exclude_dirs="boot products docs"
 special_dirs="arch soc boards"
 
+SOC_MANIFEST="$PWD/soc/$ARCH/$SOC/rtos_sdk_manifest.xml"
 DEFAULT_RTOS_SDK_MANIFEST="$PWD/products/$PRODUCT/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_OLD_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest_old.xml"
@@ -27,14 +28,10 @@ RTOS_SDK_VERSION_FILE="$BUILD_DIR/sdk_ver.h"
 repo manifest 2>&1 | grep -q $build_dir
 if [ "$?" -ne 0 ]; then
 	echo "Non-repo source code"
-	if [ -f $DEFAULT_RTOS_SDK_MANIFEST ]; then
-		if [ -s "$RTOS_EXTERN_SDK_XML" ]; then
-			echo "Use specific manifest: $RTOS_EXTERN_SDK_XML"
-			cp -f $RTOS_EXTERN_SDK_XML $RTOS_SDK_MANIFEST_FILE
-			RTOS_EXTERN_SDK_MARK=$(grep build_system $RTOS_SDK_MANIFEST_FILE)
-			RTOS_EXTERN_SDK_MARK=${RTOS_EXTERN_SDK_MARK#*project}
-			RTOS_EXTERN_SDK_MARK=${RTOS_EXTERN_SDK_MARK%%build_system*}
-			sed -i "s|$RTOS_EXTERN_SDK_MARK| path=\"|" $RTOS_SDK_MANIFEST_FILE
+	if [ -s $DEFAULT_RTOS_SDK_MANIFEST ]; then
+		if [ -s $SOC_MANIFEST ]; then
+			echo "Use specific manifest: $SOC_MANIFEST"
+			cat $DEFAULT_RTOS_SDK_MANIFEST $SOC_MANIFEST > $RTOS_SDK_MANIFEST_FILE
 		else
 			echo "Use default manifest: $DEFAULT_RTOS_SDK_MANIFEST"
 			cp -f $DEFAULT_RTOS_SDK_MANIFEST $RTOS_SDK_MANIFEST_FILE

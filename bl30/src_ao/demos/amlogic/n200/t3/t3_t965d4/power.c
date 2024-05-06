@@ -96,8 +96,8 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	wifi_bt_wakeup_init();
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP, xMboxVadWakeup, 0);

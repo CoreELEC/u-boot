@@ -85,8 +85,8 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	bt_task_init();
 }
 

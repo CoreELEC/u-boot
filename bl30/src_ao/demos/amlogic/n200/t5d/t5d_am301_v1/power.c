@@ -85,8 +85,8 @@ void str_hw_init(void)
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	bt_task_init();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	hdmirx_GpioIRQRegister();

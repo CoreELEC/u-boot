@@ -90,8 +90,8 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 
 #ifdef UART_BT_QCOM
 	if (get_power_mode() != POWER_MODE_POWER_OFF) {  // skip poweroff sdandby

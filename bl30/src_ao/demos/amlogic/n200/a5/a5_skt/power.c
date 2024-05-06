@@ -76,8 +76,8 @@ void str_hw_init(void)
 	vETHInit(IRQ_ETH_PMT_NUM,eth_handler);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 }
 
 

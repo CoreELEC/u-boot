@@ -82,8 +82,8 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 
 	wifi_bt_wakeup_init();
 

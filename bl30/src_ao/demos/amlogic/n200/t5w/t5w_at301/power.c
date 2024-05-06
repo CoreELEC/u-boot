@@ -93,8 +93,8 @@ void str_hw_init(void)
 		    NULL, CEC_TASK_PRI, &cecTask);
 #endif
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	Bt_GpioIRQRegister();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	hdmirx_GpioIRQRegister();

@@ -51,8 +51,8 @@ void str_hw_init(void)
 	/*enable device & wakeup source interrupt*/
 #if DEF_P1_AWAKE_SOURCE  //TODO
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 #endif
 }
 

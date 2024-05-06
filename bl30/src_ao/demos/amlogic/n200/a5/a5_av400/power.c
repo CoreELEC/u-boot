@@ -99,8 +99,8 @@ void str_hw_init(void)
 		    NULL, VAD_TASK_PRI, &vadTask);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 }
 
 

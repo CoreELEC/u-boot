@@ -74,8 +74,8 @@ void str_hw_init(void)
 
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 }
 
 void str_hw_disable(void)

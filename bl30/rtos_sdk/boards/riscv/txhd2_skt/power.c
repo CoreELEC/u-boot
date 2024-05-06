@@ -56,8 +56,8 @@ void str_hw_init(void)
 	vETHInit(1);
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI, &cecTask);
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	//Bt_GpioIRQRegister();
 }
 

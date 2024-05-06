@@ -96,8 +96,8 @@ void str_hw_init(void)
 
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	Bt_GpioIRQRegister();
 }
 

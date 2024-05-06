@@ -89,8 +89,8 @@ void str_hw_init(void)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 	rtc_enable_irq();
 }
 

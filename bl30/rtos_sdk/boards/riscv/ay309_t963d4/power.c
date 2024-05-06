@@ -78,8 +78,8 @@ void str_hw_init(void)
 
 
 	vBackupAndClearGpioIrqReg();
-	vKeyPadInit();
 	vGpioIRQInit();
+	vKeyPadInit();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 		hdmirx_GpioIRQRegister();
 #endif

@@ -148,7 +148,7 @@ void vDestroyGpioKey(void)
 	uint32_t key_id;
 
 	for (xPassBtn = xHeadKey; xPassBtn != NULL;) {
-		key_id = xHeadKey->gpioKeyInfo->keyInitInfo.ulKeyId;
+		key_id = xPassBtn->gpioKeyInfo->keyInitInfo.ulKeyId;
 
 		vPortFree(xPassBtn->gpioKeyInfo);
 

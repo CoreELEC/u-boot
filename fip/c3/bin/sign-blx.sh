@@ -140,6 +140,7 @@ function sign_blx() {
 	if [ "fastboot" == "${tool_type}" ]; then
 		chipset_variant_suffix=""
 	fi
+	chipset_name=${chipset_name}".compact-fip"
 
 	export FEAT_BL2_TEMPLATE_TYPE
 	export FEAT_BL2E_SIGPROT_MODE

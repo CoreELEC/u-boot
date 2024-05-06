@@ -48,7 +48,11 @@ function init_vari() {
 		CHIPSET_VARIANT_SUFFIX=".${CHIPSET_VARIANT}"
 	elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
 		if [ "${CONFIG_CHIPSET_VARIANT}" == "fastboot" ]; then
-			CHIPSET_VARIANT="general"
+			if [ -n "${CONFIG_FORMER_SIGN}" ]; then
+				CHIPSET_VARIANT="no_variant"
+			else
+				CHIPSET_VARIANT="general"
+			fi
 			CHIPSET_VARIANT_SUFFIX=".fastboot"
 		else
 			CHIPSET_VARIANT="${CONFIG_CHIPSET_VARIANT}"

@@ -92,9 +92,7 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_INPUT_BLOB}/blob-bl32${CHIP
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin.signed"
 
 ## fastboot/ipc branch
-if [ ".fastboot" == "${CHIPSET_VARIANT_SUFFIX}" ] && [ "" != "${CONFIG_IPC_DDR_SIZE}" ]; then
-	EXEC_ARGS="${EXEC_ARGS}	--header-layout=full"
-fi
+EXEC_ARGS="${EXEC_ARGS}	--header-layout=compact"
 #echo ${EXEC_ARGS}
 
 #

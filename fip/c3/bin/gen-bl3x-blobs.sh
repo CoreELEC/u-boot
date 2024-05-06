@@ -8,9 +8,10 @@ set -e
 #
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
-ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool
 if [ "fastboot" == "$7" ]; then
-    ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+else
+	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool
 fi
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 
@@ -72,10 +73,8 @@ EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl${BLOB_NAME}-payload=${BASEDIR_AESKEY_
 ### Output: blobs ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-blob-bl${BLOB_NAME}=${BASEDIR_OUTPUT_BLOB}/blob-bl${BLOB_NAME}.bin${postfix}"
 
-if [ "fastboot" == "$7" ]; then
 ### full Device FIP Header
-	EXEC_ARGS="${EXEC_ARGS} --header-layout=full"
-fi
+EXEC_ARGS="${EXEC_ARGS} --header-layout=compact"
 
 #echo ${EXEC_ARGS}
 

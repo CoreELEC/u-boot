@@ -136,47 +136,45 @@ void vAdcInit(void)
 {
 	vBackupSaradcReg();
 
-	/* filter control */
+	/* Filter control */
 	REG32(P_SARADC(SARADC_REG7)) = 0x00000c21;
 	REG32(P_SARADC(SARADC_REG8)) = 0x0280614d;
 
-	/* delay */
+	/* Delay configure */
 	REG32(P_SARADC(SARADC_REG3)) = 0x10a02403;
 	REG32(P_SARADC(SARADC_REG4)) = 0x00000080;
-	REG32(P_SARADC(SARADC_REG5)) = 0x0010341b;
+	REG32(P_SARADC(SARADC_REG5)) = 0x0010340b;
+
+	/* Control */
 	REG32(P_SARADC(SARADC_REG6)) = 0x00000031;
 
-	/* set aux and extern vref */
+	/* Set aux and extern vref */
 	REG32(P_SARADC(SARADC_REG9)) = 0x0000e4e4;
 	REG32(P_SARADC(SARADC_REG10)) = 0x74543414;
 	REG32(P_SARADC(SARADC_REG11)) = 0xf4d4b494;
 
-	/* other */
-	REG32(P_SARADC(SARADC_REG12)) = 0x00000000;
-	REG32(P_SARADC(SARADC_REG13)) = 0x00000000;
-	REG32(P_SARADC(SARADC_REG14)) = 0x00000000;
-
-	/* set average */
+	/* Configure the averaging mode of the channels we use */
 	REG32(P_SARADC(SARADC_REG2)) = (0x00000000);
 
+	/* ADC is disabled by default */
 	REG32(P_SARADC(SARADC_REG0)) = (0x00400000);
 
-	/* clock initialization: 1.2M=24M/(0x13 + 1) */
-	REG32_UPDATE_BITS(SAR_CLK_BASE, SAR_CLK_DIV_MASK, 0x13 << SAR_CLK_DIV_SHIFT);
+	/* Clock initialization: 3M=24M/(0x7 + 1) */
+	REG32_UPDATE_BITS(SAR_CLK_BASE, SAR_CLK_DIV_MASK, 0x7 << SAR_CLK_DIV_SHIFT);
 
-	/* interrupt initialization */
+	/* Interrupt initialization */
 	RegisterIrq(SARADC_INTERRUPT_NUM, 1, vAdcHandlerISR);
 	EnableIrq(SARADC_INTERRUPT_NUM);
 
-	/* create mutex semaphore */
+	/* Create mutex semaphore */
 	adcSemaphoreMutex = xSemaphoreCreateMutex();
 	configASSERT(adcSemaphoreMutex != NULL);
 
-	/* create binary semaphore */
+	/* Create binary semaphore */
 	adcSemaphoreBinary = xSemaphoreCreateBinary();
 	configASSERT(adcSemaphoreBinary != NULL);
 
-	/* get the parameters required for calibration */
+	/* Get the parameters required for calibration */
 	xAdcDoCalibration();
 }
 

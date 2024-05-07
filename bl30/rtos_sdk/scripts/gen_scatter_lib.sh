@@ -170,7 +170,9 @@ case ${opt} in
 	SEGMENT_RENAME_IGNORE_LIST+=($OPTARG)
 	;;
 	e )
-	echo "<---generate empty rule--->"
+	generate_segment_name $SEGMENT_NAME
+	generate_segment_rule_file
+	echo "<---generate default rule--->"
 	exit 0
 	;;
 	h )

@@ -15,6 +15,6 @@
 /* s7d saradc interrupt num */
 #define SARADC_INTERRUPT_NUM 181
 
-#define SARADC_REG_NUM (21 + 1)
+#define SARADC_REG_NUM ((0x3c >> 2) + 1)
 
 #endif

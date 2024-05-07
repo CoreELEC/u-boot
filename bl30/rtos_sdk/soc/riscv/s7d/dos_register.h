@@ -3706,7 +3706,19 @@
 // -----------------------------------------------
 #define HEVC_ASSIST_AFIFO_CTRL                     ((0x3001  << 2) + 0xfe320000)
 #define HEVC_ASSIST_AFIFO_CTRL1                    ((0x3002  << 2) + 0xfe320000)
-#define HEVC_ASSIST_GCLK_EN                        ((0x3003  << 2) + 0xfe320000)
+//bit[11]     - back path
+//bit[10]     - front path
+//bit[ 9]     - ow
+//bit[ 8]     - mcr
+//bit[ 7]     - mpred
+//bit[ 6]     - dblk
+//bit[ 5]     - ipp
+//bit[ 4]     - iqit
+//bit[ 3]     - parser
+//bit[ 2]     - vcpu
+//bit[ 1]     - ddr
+//bit[ 0]     - assist
+#define HEVC_ASSIST_AUTO_CG_DISABLE                ((0x3003  << 2) + 0xfe320000)
 #define HEVC_ASSIST_SW_RESET                       ((0x3004  << 2) + 0xfe320000)
 #define HEVC_ASSIST_AFIFO_CTRL2                    ((0x3005  << 2) + 0xfe320000)
 // bit[31:28] - hed_wr_id (Write Only)
@@ -4630,7 +4642,6 @@
 // bit[31:0] - HEVC input stream CRC result
 #define HEVC_STREAM_CRC                            ((0x3173  << 2) + 0xfe320000)
 #define VP9_ACP_CTRL                               ((0x3174  << 2) + 0xfe320000)
-#define HEVC_SLICE_DATA_CTL                        ((0x3175  << 2) + 0xfe320000)
 // bit[31:7] reserved
 // bit[6]    acp status byte: 0-idel  1-done
 // bit[5]    select prob_ram ofset
@@ -4638,6 +4649,16 @@
 // bit[2]    prev_kf:whether last frame is key frame
 // bit[1]    cur_kf: whether cur is key or intra frame
 // bit[0]    acp start crtl bit:set 1 to start process
+#define HEVC_SLICE_DATA_CTL                        ((0x3175  << 2) + 0xfe320000)
+#define PARSER_TOP_CLK_GATING_CTL                  ((0x3178  << 2) + 0xfe320000)
+// bit[31:24] top_clk_gating_interface_delay_count
+// bit[23:16] top_clk_gating_decode_delay_count
+// bit[15:8]  top_clk_gating_stream_delay_count
+// bit[7:4]   top_clk_gating_cbus_delay_count
+// bit[3]     top_clk_gating_interface_no_delay
+// bit[2]     top_clk_gating_decode_no_delay
+// bit[1]     top_clk_gating_stream_no_delay
+// bit[0]     top_clk_gating_cbus_no_delay
 //
 // Closing file:  hevc_parser_regs.h
 //
@@ -4960,7 +4981,8 @@
 // [3]      -- mpp_4x4mcr_clkgate_disbl
 // [4]      -- mpp_ref_pack_clkgate_disbl
 // [5]      -- mpp_mdec_if_clkgate_disbl
-// [7:6]    -- reserved
+// [6]      -- mpp_av1_compound
+// [7]      -- mpp_av1_interintra_buff
 // [8]      -- ipp_res_fetch_clkgate_disbl
 // [9]      -- ipp_iqitIf_clkgate_disbl
 // [10]     -- ipp_dblkCmdIf_clkgate_disbl
@@ -4991,7 +5013,8 @@
 // [3]      -- mpp_4x4mcr_clkgate
 // [4]      -- mpp_ref_pack_clkgate
 // [5]      -- mpp_mdec_if_clkgate
-// [7:6]    -- reserved
+// [6]      -- mpp_av1_compound
+// [7]      -- mpp_av1_interintra_buff
 // [8]      -- ipp_res_fetch_clkgate
 // [9]      -- ipp_iqitIf_clkgate
 // [10]     -- ipp_dblkCmdIf_clkgate
@@ -5013,6 +5036,15 @@
 // [27]     -- reserved
 // [30:28]  -- reserved
 // [31]     -- mcrcc_axi_clkgate
+#define HEVCD_MPP_SUB_DYNCLKGATE_CONFIG            ((0x3422  << 2) + 0xfe320000)
+// [2:0]    -- av1_compound_sub
+// [3]      -- av1_interintra_buff_sub
+// [5:4]    -- hinterpol_sub
+// [7:6]    -- vinterpol_sub
+// [14:8]   -- ref_fetch_sub
+// [15]     -- imp_cmd_if
+// [30]     -- 4x4mcr_cpop
+// [31]     -- 4x4mcr_ypop
 #define HEVCD_IPP_DBG_SEL                          ((0x3430  << 2) + 0xfe320000)
 // [3:0]    -- module_level_sel
 // [7:4]    -- mpp_ipp_top_level
@@ -5908,6 +5940,8 @@
 //                 };
 #define HEVC_PATH_MONITOR_DATA                     ((0x3713  << 2) + 0xfe320000)
 #define HEVC_IQIT_STAT_GEN3                        ((0x3720  << 2) + 0xfe320000)
+#define HEVC_IQIT_RES_CNT                          ((0x3723  << 2) + 0xfe320000)
+#define HEVC_IQIT_ERR_STATUS                       ((0x373f  << 2) + 0xfe320000)
 //
 // Closing file:  hevc_iqit_regs.h
 //

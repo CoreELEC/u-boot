@@ -11,9 +11,9 @@
 //
 // and was applied to the file
 //
-// Project name: s7
+// Project name: s7d
 //
-// Create time: Tue Jul 18 12:06:34 CST 2023 by chong.gu
+// Create time: Thu Nov 30 14:29:59 CST 2023 by chong.gu
 //
 // ./REG_LIST_RTL.h
 //
@@ -25,2190 +25,28 @@
 #define P_REGISTER_H
 
 
-#include "p_dos_register.h"
+//#include "p_dos_register.h"
 
 //
 // Reading file:  ./REG_LIST_RTL.h
 //
 // synopsys translate_off
 // synopsys translate_on
+////////////////////////////////////////////// NOTE ////////////////////////////////////
+// Note: Move these files to $include/mmc_reg.vh which will be sourced by
+//       create_headers_for_mmc_register_map_h.pl.
+//       MMC Verification env also use create_headers_for_mmc_register_map_h.pl generate register.h
+//       We MUST keep them same
 //
 //`include "../mmc_lp4/dmc/rtl/dmc_sec.vh"
 //`include "../mmc_lp4/dmc_clk_freq/rtl/dmc_clk_freq.vh"
 //`include "../mmc_lp4/dmc/rtl/dmc_reg.vh"
 //`include "../mmc_lp4/dmc/rtl/dmc_siu_reg.vh"
 //`include "../mmc_lp4/dmc/rtl/dmc_sticky_reg.vh"
-//
-// Reading file:  ../dmc_v26/rtl/dmc_reg.vh
-//
-//`define DMC_FREQ_REG_BASE   32'hfe036000
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe036000
-// -----------------------------------------------
-#define P_DMC_REQ_CTRL                             (volatile uint32_t *)0xfe036000
-  //bit 13.   enable dmc request of axibus chan 13.  GE2D Async interface.
-  //bit 12.   enable dmc request of axibus chan 12.  GPU Async interface.
-  //bit 11.   enable dmc request of axibus chan 11.  DEMUX async interface.
-  //bit 10.   enable dmc request of axibus chan 10.  system Async interface.
-  //bit 9.   enable dmc request of axibus chan 9.  HCODEC Async interface.
-  //bit 8.   enable dmc request of axibus chan 8.  VDEC Async interface.
-  //bit 7.   enable dmc request of axibus chan 7.  HEVC Async interface.
-  //bit 6.   enable dmc request of axibus chan 6.  VPU4 async interface.
-  //bit 5.   enable dmc request of axibus chan 5.  reserved for dmc_test.
-  //bit 4.   enable dmc request of axibus chan 4.  VPU3 Async interface.
-  //bit 3.   enable dmc request of axibus chan 3.  VPU2 Async interface.
-  //bit 2.   enable dmc request of axibus chan 2.  VPU1 Async interface.
-  //bit 1.   enable dmc request of axibus chan 1.  VPU0 Async interface.
-  //bit 0.   enable dmc request of axibus chan 0.  CPU/A55   async interface.
-//DMC CLK and RESET domain register. please check DMC_SEC_APB_CTRLx register for access details.
-#define P_DMC_SOFT_RST                             (volatile uint32_t *)0xfe036004
-  //bit 31~14. reserved for future.
-  //bit 13:0. 14 software reset for 14 axi ports n clock domain.
-#define P_DMC_SOFT_RST1                            (volatile uint32_t *)0xfe036008
-  //To reset the Async interface, you need to disable the interface both clock domain, then reset both n_clk and m_clk domain
-  //bit 31~14 not used.  all channels are synchronous interface.
-  //bit 13~0. 14 software reset for 14 axi ports master clock domain.
-#define P_DMC_SOFT_RST2                            (volatile uint32_t *)0xfe03600c
-  //bit 31  DMC channel 1 dfi misc module soft reset_n.
-  //bit 30  DMC channel 1 dfi data module soft reset_n.
-  //bit 29  DMC channel 1 dfi cmd module soft reset_n.
-  //bit 28  DMC channel 1 dmc dram control module soft reset_n.
-  //bit 27  DMC channel 1 dmc cmd filter module soft reset_n.
-  //bit 26  DMC channel 1 dmc wbuf module soft reset_n.
-  //bit 25  DMC channel 1 dmc rbuf module soft reset_n.
-  //bit 24  DMC channel 1 dfi low power control module soft reset_n.
-  //bit 23  DMC channel 0 dfi misc module soft reset_n.
-  //bit 22  DMC channel 0 dfi data module soft reset_n.
-  //bit 21  DMC channel 0 dfi cmd module soft reset_n.
-  //bit 20  DMC channel 0 dmc dram control module soft reset_n.
-  //bit 19  DMC channel 0 dmc cmd filter module soft reset_n.
-  //bit 18  DMC channel 0 dmc wbuf module soft reset_n.
-  //bit 17  DMC channel 0 dmc rbuf module soft reset_n.
-  //bit 16  DMC channel 0 dfi low power control module soft reset_n.
-  //bit 9   DMC siu soft reset_n .
-  //bit 8   DMC test soft reset_n .
-  //bit 7   DMC read response soft reset_n .
-  //bit 6   DMC read split soft reset_n.
-  //bit 5.  DMC read sec check soft reset_n.
-  //bit 4.  DMC write response module soft reset_n.
-  //bit 3.  DMC wd ctrl module soft reset_n.
-  //bit 2.  DMC qos monitor module soft reset_n.
-  //bit 1.  not used.
-  //bit 0.  DMC command buffers and command generation modules soft reset.
-#define P_DMC_RST_STS1                             (volatile uint32_t *)0xfe036010
-  //31~14.  not used.
-  //13~0.   14 software reset for 14 axi ports master clock domain.. Read only.
-#define P_DMC_CLKG_CTRL0                           (volatile uint32_t *)0xfe036018
-  //bit 31:14  not used.
-  //bit 13:0.  enable the 14 axi interfaces  m_clk auto clock gating function. each 1 bit for one interface.
-#define P_DMC_CLKG_CTRL1                           (volatile uint32_t *)0xfe03601c
-  //bit 31:14. not used.
-  //bit 13:0.  force to disable the 14 axi interfaces m_clk. each 1 bit for one interface.
-#define P_DMC_CLKG_CTRL2                           (volatile uint32_t *)0xfe036020
-  //bit 31  enalbe auto clock gating for channel 1 dfi misc.
-  //bit 30  enalbe auto clock gating for channel 1 dfi data.
-  //bit 29  enable auto clock gating for channel 1 dfi command generation.
-  //bit 28  enable auto clock gating for channel 1 dram controller
-  //bit 27  enable auto clock gating for channel 1 command filter.
-  //bit 26  enalbe auto clock gating for channel 1 wbuf generation.
-  //bit 25  enalbe auto clock gating for channel 1 rbuf generation.
-  //bit 24  enalbe auto clock gating for channel 1 ddr0 command filter.
-  //bit 23  enalbe auto clock gating for channel 0 dfi misc.
-  //bit 22  enalbe auto clock gating for channel 0 dfi data.
-  //bit 21  enable auto clock gating for channel 0 dfi command generation.
-  //bit 20  enable auto clock gating for channel 0 dram controller
-  //bit 19  enable auto clock gating for channel 0 command filter.
-  //bit 18  enalbe auto clock gating for channel 0 wbuf generation.
-  //bit 17  enalbe auto clock gating for channel 0 rbuf generation.
-  //bit 16  enalbe auto clock gating for channel 0 ddr0 command filter.
-  //bit 8.  enalbe auto clock gating for test.
-  //bit 7.  enalbe auto clock gating for rd response.
-  //bit 6.  enalbe auto clock gating for read split.
-  //bit 5.  enalbe auto clock gating for read sec check.
-  //bit 4.  enalbe auto clock gating for write response.
-  //bit 3.  enalbe auto clock gating for wd control.
-  //bit 2.  enalbe auto clock gating for qos monitor.
-  //bit 1:0.  not used.
-#define P_DMC_CLKG_CTRL3                           (volatile uint32_t *)0xfe036024
-  //bit 31  force to disable the clock of channel 1 dfi misc.
-  //bit 30  force to disable the clock of channel 1 dfi data.
-  //bit 29  force to disable the clock of channel 1 dfi command generation.
-  //bit 28  force to disable the clock of channel 1 dram controller
-  //bit 27  force to disable the clock of channel 1 command filter.
-  //bit 26  force to disable the clock of channel 1 wbuf generation.
-  //bit 25  force to disable the clock of channel 1 rbuf generation.
-  //bit 24  force to disable the clock of channel 1 ddr0 command filter.
-  //bit 23  force to disable the clock of channel 0 dfi misc.
-  //bit 22  force to disable the clock of channel 0 dfi data.
-  //bit 21  force to disable the clock of channel 0 dfi command generation.
-  //bit 20  force to disable the clock of channel 0 dram controller
-  //bit 19  force to disable the clock of channel 0 command filter.
-  //bit 18  force to disable the clock of channel 0 wbuf generation.
-  //bit 17  force to disable the clock of channel 0 rbuf generation.
-  //bit 16  force to disable the clock of channel 0 ddr0 command filter.
-  //bit 8.  test.
-  //bit 7.  rd response.
-  //bit 6.  read split.
-  //bit 5.  read sec check.
-  //bit 4.  write response.
-  //bit 3.  wd control.
-  //bit 2.  qos monitor.
-  //bit 1:0.    not used.
-#define P_DMC_MON_CTRL0                            (volatile uint32_t *)0xfe036040
-   //bit 31.   qos_mon_en.    write 1 to trigger the enable. polling this bit 0, means finished.  or use interrupt to check finish.
-   //bit 30.   qos_mon interrupt clear.  clear the qos monitor result.  read 1 = qos mon finish interrupt.
-   //bit 7:0    bw_mon_range_en.    enables 8 monitor channels.
-#define P_DMC_MON_TIMER                            (volatile uint32_t *)0xfe036044
- // timer for the monitor period.
-#define P_DMC_MON_ALL_IDLE_CNT                     (volatile uint32_t *)0xfe036048
-  // at the test period,  the whole MMC all channel IDLE time. unit, dmc clock.
-#define P_DMC_MON_ALL_BW                           (volatile uint32_t *)0xfe03604c
-  // at the test period,  the whole MMC granted data cycles. units one data clock cycle = 16bytes.
-#define P_DMC_MON_ALL16_BW                         (volatile uint32_t *)0xfe036050
-  // at the test period,  the whole MMC granted data cycles which goes to 16bits ddr. units one data clock cycle = 16byte.
-#define P_DMC_MON0_CTRL1                           (volatile uint32_t *)0xfe036060
-//bit 31:16 not used.
-//bit 15:0. mon0 R/W ack AXI subid enable.
-#define P_DMC_MON1_CTRL1                           (volatile uint32_t *)0xfe036064
-//bit 31:16 not used.
-//bit 15:0. mon1 R/W ack AXI subid enable.
-#define P_DMC_MON2_CTRL1                           (volatile uint32_t *)0xfe036068
-//bit 31:16 not used.
-//bit 15:0. mon2 R/W ack AXI subid enable.
-#define P_DMC_MON3_CTRL1                           (volatile uint32_t *)0xfe03606c
-//bit 31:16 not used.
-//bit 15:0. mon3 R/W ack AXI subid enable.
-#define P_DMC_MON4_CTRL1                           (volatile uint32_t *)0xfe036070
-//bit 31:16 not used.
-//bit 15:0. mon4 R/W ack AXI subid enable.
-#define P_DMC_MON5_CTRL1                           (volatile uint32_t *)0xfe036074
-//bit 31:16 not used.
-//bit 15:0. mon5 R/W ack AXI subid enable.
-#define P_DMC_MON6_CTRL1                           (volatile uint32_t *)0xfe036078
-//bit 31:16 not used.
-//bit 15:0. mon6 R/W ack AXI subid enable.
-#define P_DMC_MON7_CTRL1                           (volatile uint32_t *)0xfe03607c
-//bit 31:16 not used.
-//bit 15:0. mon7 R/W ack AXI subid enable.
-//each monitor can check upto 3 master IDs.
-#define P_DMC_MON0_STA                             (volatile uint32_t *)0xfe036080
-  //bit 31:20. not used.
-  //bit 19:0  MON0 start address unit 4Kbyte.
-#define P_DMC_MON0_EDA                             (volatile uint32_t *)0xfe036084
-  //bit 31:20. Not used.
-  //bit 19:0  MON0 end address unit 4Kbyte.
-#define P_DMC_MON0_CTRL                            (volatile uint32_t *)0xfe036088
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON0_BW                              (volatile uint32_t *)0xfe03608c
-  //monitor bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON1_STA                             (volatile uint32_t *)0xfe036090
-  //bit 31:20. not used.
-  //bit 19:0  MON0 start address unit 4Kbyte.
-#define P_DMC_MON1_EDA                             (volatile uint32_t *)0xfe036094
-  //bit 31:20. Not used.
-  //bit 19:0  MON0 end address unit 4Kbyte.
-#define P_DMC_MON1_CTRL                            (volatile uint32_t *)0xfe036098
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON1_BW                              (volatile uint32_t *)0xfe03609c
-  //monitor 1 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON2_STA                             (volatile uint32_t *)0xfe0360a0
-  //bit 31:20. not used.
-  //bit 19:0  MON0 start address unit 4Kbyte.
-#define P_DMC_MON2_EDA                             (volatile uint32_t *)0xfe0360a4
-  //bit 31:20. Not used.
-  //bit 19:0  MON2 end address unit 4Kbyte.
-#define P_DMC_MON2_CTRL                            (volatile uint32_t *)0xfe0360a8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON2_BW                              (volatile uint32_t *)0xfe0360ac
-  //monitor 2 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON3_STA                             (volatile uint32_t *)0xfe0360b0
-  //bit 31:20. not used.
-  //bit 19:0  MON3 start address unit 4Kbyte.
-#define P_DMC_MON3_EDA                             (volatile uint32_t *)0xfe0360b4
-  //bit 31:20. Not used.
-  //bit 19:0  MON3 end address unit 4Kbyte.
-#define P_DMC_MON3_CTRL                            (volatile uint32_t *)0xfe0360b8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON3_BW                              (volatile uint32_t *)0xfe0360bc
-  //monitor 3 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON4_STA                             (volatile uint32_t *)0xfe0360c0
-  //bit 31:20. not used.
-  //bit 19:0  MON4 start address unit 4Kbyte.
-#define P_DMC_MON4_EDA                             (volatile uint32_t *)0xfe0360c4
-  //bit 31:20. Not used.
-  //bit 19:0  MON4 end address unit 4Kbyte.
-#define P_DMC_MON4_CTRL                            (volatile uint32_t *)0xfe0360c8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON4_BW                              (volatile uint32_t *)0xfe0360cc
-  //monitor 4 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON5_STA                             (volatile uint32_t *)0xfe0360d0
-  //bit 31:20. not used.
-  //bit 19:0  MON5 start address unit 4Kbyte.
-#define P_DMC_MON5_EDA                             (volatile uint32_t *)0xfe0360d4
-  //bit 31:20. Not used.
-  //bit 19:0  MON4 end address unit 4Kbyte.
-#define P_DMC_MON5_CTRL                            (volatile uint32_t *)0xfe0360d8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON5_BW                              (volatile uint32_t *)0xfe0360dc
-  //monitor 5 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON6_STA                             (volatile uint32_t *)0xfe0360e0
-  //bit 31:20. not used.
-  //bit 19:0  MON6 start address unit 4Kbyte.
-#define P_DMC_MON6_EDA                             (volatile uint32_t *)0xfe0360e4
-  //bit 31:20. Not used.
-  //bit 19:0  MON6 end address unit 4Kbyte.
-#define P_DMC_MON6_CTRL                            (volatile uint32_t *)0xfe0360e8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON6_BW                              (volatile uint32_t *)0xfe0360ec
-  //monitor 6 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_MON7_STA                             (volatile uint32_t *)0xfe0360f0
-  //bit 31:20. not used.
-  //bit 19:0  MON7 start address unit 4Kbyte.
-#define P_DMC_MON7_EDA                             (volatile uint32_t *)0xfe0360f4
-  //bit 31:20. Not used.
-  //bit 19:0  MON7 end address unit 4Kbyte.
-#define P_DMC_MON7_CTRL                            (volatile uint32_t *)0xfe0360f8
-  //bit 31:24. not used.
-  //bit 23:0. master ID number.
-#define P_DMC_MON7_BW                              (volatile uint32_t *)0xfe0360fc
-  //monitor 7 bandwidth report. read only.  unit: 1 clock cycle data transfer = 16byte.
-#define P_DMC_CMD_FILTER_CTRL0                     (volatile uint32_t *)0xfe036128
-  //23:16   urgent4 bank hold
-  //15:8    rbuf urgent5 hold
-  //7:0     rbuf urgent4 hold
-#define P_DMC_CMD_FILTER_CTRL1                     (volatile uint32_t *)0xfe036100
-  //31:24   rbuf urgent3 hold
-  //23:16   rbuf urgent2 hold
-  //15:8    rbuf urgent1 hold
-  //7:0     rbuf urgent0 hold
-#define P_DMC_CMD_FILTER_CTRL2                     (volatile uint32_t *)0xfe036104
-  //31:24. keep the bank active if there's urgent level 3 read bank hit request.
-  //23:16. keep the bank active if there's urgent level 2 read bank hit request.
-  //15:8.  keep the bank active if there's urgent level 1 read bank hit request.
-  //7:0.   keep the bank active if there's urgent level 0 read bank hit request.
-#define P_DMC_CMD_FILTER_CTRL3                     (volatile uint32_t *)0xfe036108
-  //bit 31.    force wbuf empty.
-  //bit 30:26  wbuf high level number
-  //bit 25:21  wbuf mid  level number
-  //bit 20:16  wbuf low level number
-  //bit 14:10  rbuf high level number
-  //bit 9:5    rbuf middle level number
-  //bit 4:0    rbuf low level number
-#define P_DMC_CMD_FILTER_CTRL4                     (volatile uint32_t *)0xfe03610c
-  //bit 31:26.  rank write min number
-  //bit 25:20.  rank read min number
-  //bit 19:12   tAP auto precharge the bank not used if idle that long time.
-  //bit 11:6    write to read accesses if there write hit request.
-  //bit 5:0     read to write accesses if there write hit request.
-#define P_DMC_CMD_FILTER_CTRL5                     (volatile uint32_t *)0xfe036110
-  //bit 31:24   Once ddr data bus switch to read, the maxmum read command number to give up the bus when there's write request pending for write buffer.
-  //bit 23:16   Once ddr data bus switch to write, the maxmum write command number to give up the bus when there's read request pending too long.
-  //bit 15:8.   Once ddr data bus switch to read, the minimum read command number to transfer back to write stage if there's still pending read request.
-  //bit 7:0.    Once ddr data bus switch to write, the minimum write command number to transfer back to read stage if there's still pending write request.
-#define P_DMC_CMD_FILTER_CTRL6                     (volatile uint32_t *)0xfe036114
-  //bit 31:24   write urgent 3 request pending hold num.
-  //bit 23:16   write urgent 2 request pending hold num.
-  //bit 15:8.   write urgent 1 request pending hold num.
-  //bit 7:0.    write urgent 0 request pending hold num.
-#define P_DMC_CMD_FILTER_CTRL7                     (volatile uint32_t *)0xfe036118
-  //bit 31:24.  aw_req_pending singal assertion after wbuf full.
-  //bit 23:16   aw_req_pending singal hold how long if wbuf not full.
-  //bit 15:8    write to read waiting cycles if there write hit request.
-  //bit 7:0     read to write waiting cycles if there write hit request.
-#define P_DMC_CMD_FILTER_CTRL8                     (volatile uint32_t *)0xfe03611c
-  //bit 31:24   tITW_short
-  //bit 23:16   tITW_long
-  //bit 15:8    rank limit minmum to change to another rank if another rank has hit request.
-  //bit 7:0     rank limit to change to another rank.
-#define P_DMC_CMD_BUFFER_CTRL                      (volatile uint32_t *)0xfe036120
-  //bit 31:26  total write buffer number. default 32.
-  //bit 25:20  total read buffer number. default 32.
-  //bit 19:8   reserved.
-  //bit 7:0    aw_pending_inc_num.  incease write ugent level 1 when write command waiting to in write buffer that long.
-#define P_DMC_CMD_BUFFER_CTRL1                     (volatile uint32_t *)0xfe036124
-  //bit 31.    rbuf urgent 4 read hit request high priority enable.
-  //bit 29:24  read buffer number in non-urgent request.
-  //bit 23:16  read buffer bank miss watch dog threshold.
-  //bit 15:12  read buffer urgent level 3 counter inc weight.
-  //bit 11:8   read buffer urgent level 2 counter inc weight.
-  //bit 7:4    read buffer urgent level 1 counter inc weight.
-  //bit 3:0    read buffer urgent level 0 counter inc weight.
-#define P_DMC_2ARB_CTRL                            (volatile uint32_t *)0xfe036130
-  //32:24. Waiting limit to use the highest urgent level in the pipelines.
-  //23:10.  Not used.
-  //9:0.   cfg_inc_ugt_limit. increase urgent level if the arbiter wait that long.
-#define P_DMC_VERSION                              (volatile uint32_t *)0xfe03613c
-   //read only 32'h01000024  for s7
-#define P_DMC_AXI0_CHAN_CTRL                       (volatile uint32_t *)0xfe036200
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI0_HOLD_CTRL                       (volatile uint32_t *)0xfe036204
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI0_CHAN_CTRL1                      (volatile uint32_t *)0xfe036208
-  //31:28.  FIQ  chan0 QOS setting.
-  //27:24.  IRQ  chan0 QOS setting.
-  //23:23.  chan0 write QOS with VPU request.
-  //19:16.  chan0 write QOS with other request .
-  //15:12.  chan0 write QOS with none other requests.
-  //11:8.   chan0 read QOS with VPU request.
-  //7:4.    chan0 read QOS with other request .
-  //3:0.    chan0 read QOS with none other requests.
-#define P_DMC_AXI0_CHAN_CTRL2                      (volatile uint32_t *)0xfe03620c
- //bit 31:4.  Not used.
- //bit 3.     CPU FIQ QOS ctrl_en.
- //bit 2.     CPU IRQ QOS ctrl_en.
- //bit 1.     CPU read channel auto QOS enable (based on other traffic).
- //bit 0.     CPU write channel auto QOS enable( based on other traffic).
-#define P_DMC_AXI1_CHAN_CTRL                       (volatile uint32_t *)0xfe036210
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      canvas arbiter arbiter weight
-#define P_DMC_AXI1_HOLD_CTRL                       (volatile uint32_t *)0xfe036214
-  //bit 31:24 write hold num.   max outstanding request number.
-  //bit 23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-  //bit 15:8 read hold num.   max outstanding request number.
-  //bit 7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI1_CHAN_CTRL1                      (volatile uint32_t *)0xfe036218
-   //bit 30     cfg_wrdata_mode
-   //bit 30:29. not used.
-   //bit 29:16. when write/read side band singal used to block other request. configure which master we can block. each bit for  one master.
-                //Note. don't block vpu itself and  CPU or other urgent request.
-   //bit 15:12. Not used.
-   //bit 11.   use side band write urgent control signal to control AWQOS.  1: enabe. 0: disable.
-   //bit 10.   use side band read  urgent control signal to control ARQOS.  1: enabe. 0: disable.
-   //bit 9.    use side band write urgent control singal to block other master request.  1: enable. 0 disable.
-   //bit 8.    use side band read urgent control singal to block other master request.  1: enable. 0 disable.
-   //bit 7:4.  the AWQOS value when side band write urgent control signal = 1 while bit 19 enabled.
-   //bit 3:0.  the ARQOS value when side band read  urgent control signal = 1 while bit 18 enabled.
-#define P_DMC_AXI2_CHAN_CTRL                       (volatile uint32_t *)0xfe036220
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI2_HOLD_CTRL                       (volatile uint32_t *)0xfe036224
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI2_CHAN_CTRL1                      (volatile uint32_t *)0xfe036228
-   //bit 30     cfg_wrdata_mode
-   //bit 30:29. not used.
-   //bit 29:16. when write/read side band singal used to block other request. configure which master we can block. each bit for  one master.
-                //Note. don't block vpu itself and  CPU or other urgent request.
-   //bit 15:12. Not used.
-   //bit 11.   use side band write urgent control signal to control AWQOS.  1: enabe. 0: disable.
-   //bit 10.   use side band read  urgent control signal to control ARQOS.  1: enabe. 0: disable.
-   //bit 9.    use side band write urgent control singal to block other master request.  1: enable. 0 disable.
-   //bit 8.    use side band read urgent control singal to block other master request.  1: enable. 0 disable.
-   //bit 7:4.  the AWQOS value when side band write urgent control signal = 1 while bit 19 enabled.
-   //bit 3:0.  the ARQOS value when side band read  urgent control signal = 1 while bit 18 enabled.
-#define P_DMC_AXI3_CHAN_CTRL                       (volatile uint32_t *)0xfe036230
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI3_HOLD_CTRL                       (volatile uint32_t *)0xfe036234
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI3_CHAN_CTRL1                      (volatile uint32_t *)0xfe036238
-#define P_DMC_AXI4_CHAN_CTRL                       (volatile uint32_t *)0xfe036240
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI4_HOLD_CTRL                       (volatile uint32_t *)0xfe036244
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI4_CHAN_CTRL1                      (volatile uint32_t *)0xfe036248
-#define P_DMC_AXI5_CHAN_CTRL                       (volatile uint32_t *)0xfe036250
-  //not used.
-#define P_DMC_AXI5_HOLD_CTRL                       (volatile uint32_t *)0xfe036254
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI6_CHAN_CTRL                       (volatile uint32_t *)0xfe036260
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI6_HOLD_CTRL                       (volatile uint32_t *)0xfe036264
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI6_CHAN_CTRL1                      (volatile uint32_t *)0xfe036268
-#define P_DMC_AXI7_CHAN_CTRL                       (volatile uint32_t *)0xfe036270
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI7_HOLD_CTRL                       (volatile uint32_t *)0xfe036274
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI7_CHAN_CTRL1                      (volatile uint32_t *)0xfe036278
-#define P_DMC_AXI0_CHAN_STS                        (volatile uint32_t *)0xfe036280
-  // AXI0 Async interface status.
-  //31:24.  read command pending transaction number.
-  //23:16.  write command pending transaction number.
-  //15:8.   not used.
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI1_CHAN_STS                        (volatile uint32_t *)0xfe036284
-  // AXI1 Async interface status
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI2_CHAN_STS                        (volatile uint32_t *)0xfe036288
-  //AXI chan2 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI3_CHAN_STS                        (volatile uint32_t *)0xfe03628c
-  //AXI chan3 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI4_CHAN_STS                        (volatile uint32_t *)0xfe036290
-  //AXI chan4 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI5_CHAN_STS                        (volatile uint32_t *)0xfe036294
-  //AXI chan4 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  write address without read data counter.
-  //7:0.  not used.
-#define P_DMC_AXI6_CHAN_STS                        (volatile uint32_t *)0xfe036298
-  //AXI channel 6 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI7_CHAN_STS                        (volatile uint32_t *)0xfe03629c
-  //AXI channel 7 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI8_CHAN_STS                        (volatile uint32_t *)0xfe0362a0
-  //AXI channel 7 status.
-  //31:24. read command pending transaction number.
-  //23:16. write command pending transaction number.
-  //15:8.  AWVALID without WDATA transaction number..
-  //7:0.   read back data waiting counter.( RVALID high with RREADY low max time counter.
-#define P_DMC_AXI8_CHAN_CTRL                       (volatile uint32_t *)0xfe0362b0
-  //bit 29:20.   write request pending cycle number  to inc urgent level if not granted.
-  //bit 19:16.   QOS value if this port is define use register value.
-  //bit 15       force this ports QOS to use this register bit 19:16.
-  //bit 13:4.    read request pending cycle number  to inc urgent level if not granted.
-  //bit 3:0      arbiter weight
-#define P_DMC_AXI8_HOLD_CTRL                       (volatile uint32_t *)0xfe0362b4
-    //31:24 write hold num.   max outstanding request number.
-    //23:16  write hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-    //15:8 read hold num.   max outstanding request number.
-    //7:0  read hold release num. if the outstanding request == hold num, then hold this request unless the outstanding request number bellow the hold release number, then continue to request.
-#define P_DMC_AXI8_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362b8
-#define P_DMC_AXI9_CHAN_CTRL                       (volatile uint32_t *)0xfe0362c0
-#define P_DMC_AXI9_HOLD_CTRL                       (volatile uint32_t *)0xfe0362c4
-#define P_DMC_AXI9_CHAN_CTRL1                      (volatile uint32_t *)0xfe0362c8
-#define P_DMC_AXI9_CHAN_STS                        (volatile uint32_t *)0xfe0362cc
-#define P_DMC_AXI10_CHAN_CTRL                      (volatile uint32_t *)0xfe0362d0
-#define P_DMC_AXI10_HOLD_CTRL                      (volatile uint32_t *)0xfe0362d4
-#define P_DMC_AXI10_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362d8
-#define P_DMC_AXI10_CHAN_STS                       (volatile uint32_t *)0xfe0362dc
-#define P_DMC_AXI11_CHAN_CTRL                      (volatile uint32_t *)0xfe0362e0
-#define P_DMC_AXI11_HOLD_CTRL                      (volatile uint32_t *)0xfe0362e4
-#define P_DMC_AXI11_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362e8
-#define P_DMC_AXI11_CHAN_STS                       (volatile uint32_t *)0xfe0362ec
-#define P_DMC_AXI12_CHAN_CTRL                      (volatile uint32_t *)0xfe0362f0
-#define P_DMC_AXI12_HOLD_CTRL                      (volatile uint32_t *)0xfe0362f4
-#define P_DMC_AXI12_CHAN_CTRL1                     (volatile uint32_t *)0xfe0362f8
-#define P_DMC_AXI12_CHAN_STS                       (volatile uint32_t *)0xfe0362fc
-#define P_DMC_AXI13_CHAN_CTRL                      (volatile uint32_t *)0xfe036300
-#define P_DMC_AXI13_HOLD_CTRL                      (volatile uint32_t *)0xfe036304
-#define P_DMC_AXI13_CHAN_CTRL1                     (volatile uint32_t *)0xfe036308
-#define P_DMC_AXI13_CHAN_STS                       (volatile uint32_t *)0xfe03630c
-#define P_DMC_AXI0_CHAN_STS1                       (volatile uint32_t *)0xfe036310
-  //7:4. CPU FIQ STS
-  //3:0. CPU IRQ STS.
-#define P_DMC_CHAN_STS                             (volatile uint32_t *)0xfe036330
-  // read only register.
-  //bit 31:30   not used. always 1
-  //bit 29      ddr1 read buf idle.  1 : idle 0: busy.
-  //bit 28      ddr0 read buf idle.  1 : idle 0: busy.
-  //bit 27      ddr1 write data buffer idle. 1 : idle 0: busy.
-  //bit 26      ddr0 write data buffer idle. 1 : idle 0: busy.
-  //bit 25      ddr1 wbuf idle.              1 : idle 0: busy.
-  //bit 24      ddr0 wbuf idle.              1 : idle 0: busy.
-  //bit 23:14    not used.   always 1.
-  //bit 13       AXI channel13 idle.
-  //bit 12       AXI channel12 idle.
-  //bit 11       AXI channel11 idle.
-  //bit 10       AXI channel10 idle.
-  //bit 9       AXI channel9 idle.
-  //bit 8       AXI channel8 idle.
-  //bit 7       AXI channel7 idle.
-  //bit 6       AXI channel6 idle.
-  //bit 5       AXI channel5 idle.
-  //bit 4       AXI channel4 idle.
-  //bit 3       AXI channel3 idle.
-  //bit 2       AXI channel2 idle.
-  //bit 1       AXI channel1 idle.
-  //bit 0       AXI channel0 idle.
-#define P_DMC_MON_IRQ_STS                          (volatile uint32_t *)0xfe03636c
-  //bit 31:1   Not used.
-  //bit 0 :    QOS Monitor interrupt flag.  1: means there's QOS monitor interrup.  write 1 to clean this interrupt.
-//DMC protection function domain register.
-// one protection can chose upto 4 master IDs to monitors.
-//for these 4 master IDs, you can chose either include them. or exclude them.
-#define P_DMC_PROT0_STA                            (volatile uint32_t *)0xfe036380
-  //31:20. not used.
-  //19:0   protection 0 start address . unit 4Kbyte.
-#define P_DMC_PROT0_EDA                            (volatile uint32_t *)0xfe036384
-  //31:20. not used.
-  //19:0   protection 0 end address. unit 4Kbyte.
-#define P_DMC_PROT0_CTRL                           (volatile uint32_t *)0xfe036388
-  //bit 31:16. not used.
-  //bit 15:0.  prot0 id enable.
-#define P_DMC_PROT0_CTRL1                          (volatile uint32_t *)0xfe03638c
-  //bit 31:27. not used.
-  //bit 26:    (read channel) prot0 enable.
-  //bit 25:    not used.
-  //bit 24:    (write channel) prot0 enable.
-  //bit 23:16  not used.
-  //bit 15:0.  prot0 subid enable.
-#define P_DMC_PROT1_STA                            (volatile uint32_t *)0xfe036390
-  //bit 31:20. not used.
-  //bit 19:0   protection 1 start address . unit 4Kbyte.
-#define P_DMC_PROT1_EDA                            (volatile uint32_t *)0xfe036394
-  //bit 31:20. not used.
-  //bit 19:0   protection 1 end address. unit 4Kbyte.
-#define P_DMC_PROT1_CTRL                           (volatile uint32_t *)0xfe036398
-  //bit 31:16. not used.
-  //bit 15:0.  prot1 id enable.
-#define P_DMC_PROT1_CTRL1                          (volatile uint32_t *)0xfe03639c
-  //bit 31:27. not used.
-  //bit 26:    (read channel) prot1 enable.
-  //bit 25:    not used.
-  //bit 24:    (write channel) prot1 enable.
-  //bit 23:16  not used.
-  //bit 15:0.  prot1 subid enable.
-#define P_DMC_PROT_VIO_0                           (volatile uint32_t *)0xfe0363a0
-  //protection write violation low 32bits address.
-#define P_DMC_PROT_VIO_1                           (volatile uint32_t *)0xfe0363a4
-  //bit 31:12. not used.
-  //bit 11.    protection 1 write violation.
-  //bit 10.    protection 0 write violation.
-  //bit 9:0    AWUSER. please refer  AXI bus AWUSER bits define.
-#define P_DMC_PROT_VIO_2                           (volatile uint32_t *)0xfe0363a8
-  //protection read violation low 32bits address. ARADDR[31:0].
-#define P_DMC_PROT_VIO_3                           (volatile uint32_t *)0xfe0363ac
-  //bit 31:12. not used.
-  //bit 11.    protection 1 read violation.
-  //bit 10.    protection 0 read violation.
-  //bit 9:0    ARUSER. please refer AXI bus ARUSER bits define.
-#define P_DMC_PROT_IRQ_CTRL_STS                    (volatile uint32_t *)0xfe0363b0
-  //bit 2.   protection IRQ enable.
-  //bit 1.   read for write prot violation. write 1 to clean the write protection status and interrup.
-  //bit 0.   read for read prot violation. write 1 to clean the read protection status and interrup.
-#define P_DMC_PROT0_CTRL2                          (volatile uint32_t *)0xfe0363b4
-  //bit 19.  prot0 SubID3 en for prot0 id3.
-  //bit 18.  prot0 SubID2 en for prot0 id2.
-  //bit 17.  prot0 SubID1 en for prot0 id1.
-  //bit 16.  prot0 SubID0 en for prot0 id0.
-  //bit 15:12.prot0 subid3 id number.
-  //bit 11:8. prot0 subid2 id number.
-  //bit 7:4.  prot0 subid1 id number.
-  //bit 3:0.  prot0 subid0 id number.
-#define P_DMC_PROT1_CTRL2                          (volatile uint32_t *)0xfe0363b8
-  //bit 19.   prot1 SubID3 en for prot0 id3.
-  //bit 18.   prot1 SubID2 en for prot0 id2.
-  //bit 17.   prot1 SubID1 en for prot0 id1.
-  //bit 16.   prot1 SubID0 en for prot0 id0.
-  //bit 15:12.prot1 subid3 id number.
-  //bit 11:8. prot1 subid2 id number.
-  //bit 7:4.  prot1 subid1 id number.
-  //bit 3:0.  prot1 subid0 id number.
-//SIU register.
-//there's 2 set of timing DDR timing parameter for 2 set of DDR freqency parameter.
-//when change frequency, the hardware would automatically select one of these two set of timing parameter
-//DMC_DRAM_* is for Frequency set 0.
-//DMC_NFQ_* is for Freqency set 1.
-#define P_DMC_DRAM_TMRD                            (volatile uint32_t *)0xfe036400
-   //bit 7:0.  tMRD. //MR command cycles, in DDR3/4.  in LPDDR4, it should be value of tMRW
-#define P_DMC_DRAM_TRFC                            (volatile uint32_t *)0xfe036404
-   //bit 25:16 tRFCpb
-   //bit 9:0   tRFCab
-#define P_DMC_DRAM_TRP                             (volatile uint32_t *)0xfe036408
-   //bit 23:16.  tRP for precharge all banks.
-   //bit 7:0.    tRP for precharge one bank.
-#define P_DMC_DRAM_TRTW                            (volatile uint32_t *)0xfe03640c
-   //bit 31:8:   Not used.
-   //bit 7:0     DDR3/4 mode : tRTW.
-   // For LPDDR4 .  The total read command -> write command = (RL + BL/2 - tWODTON) + TDQSCK_MAX + tWPRE +RD(tRPST).
-   //                 tRTW = TDQSCK_max + tWPRE + tRD(tRPST)  + (delay margin)
-#define P_DMC_DRAM_TCL                             (volatile uint32_t *)0xfe036410
-  //bit 7:0  tCL/tRL. read latency.
-#define P_DMC_DRAM_TCWL                            (volatile uint32_t *)0xfe036414
-  //bit 7:0.  CWL:  write latency.
-#define P_DMC_DRAM_TRAS                            (volatile uint32_t *)0xfe036418
-  //bit 7:0.  tRAS.  minimum active to precharge time for same bank.
-#define P_DMC_DRAM_TRC                             (volatile uint32_t *)0xfe03641c
-  //bit 7:0.  tRC.  minimum active to active time for same bank.
-#define P_DMC_DRAM_TRCD                            (volatile uint32_t *)0xfe036420
-  //bit 7:0  tRCD  active to read/write timing for same bank.
-#define P_DMC_DRAM_TRRD                            (volatile uint32_t *)0xfe036424
-  //bit 23:16.  tRRD_l  active bank A to active B in same band group for DDR4.
-  //bit 7:0.    tRRD/tRRD_s   active bank A to active bank b time.
-              //tRRD_s:   active bank A to active bank b in different bank grousp for DDR4.
-#define P_DMC_DRAM_TFAW                            (volatile uint32_t *)0xfe036428
-  //bit 8:0   tFAW.  four active command windows
-#define P_DMC_DRAM_TRTP                            (volatile uint32_t *)0xfe03642c
-  //bit 7:0  tRTP. in LPDDR5 should be tBL + tRBTP
-#define P_DMC_DRAM_TWR                             (volatile uint32_t *)0xfe036430
-  //bit 7:0 tWR.
-#define P_DMC_DRAM_TWTR                            (volatile uint32_t *)0xfe036434
-  //bit 23:16 tWTR_l   For DDR4 WTR_l.  FOR DDR3/LPDDR4 same as tWTR_s.
-  //bit 7:0 tWTR_s.
-#define P_DMC_DRAM_TCCD                            (volatile uint32_t *)0xfe036438
-  //bit 21:16. tCCD/tCCD_l.
-  //bit 5:0 tCCD/tCCD_s    read to read command time or write to write command time.
-#define P_DMC_DRAM_TEXSR                           (volatile uint32_t *)0xfe03643c
-  //bit 12:0. tEXSR.  EXIT SELF-REFRESH to read/write command.
-#define P_DMC_DRAM_TXS                             (volatile uint32_t *)0xfe036440
-  //bit 10:0  tXS.  EXIT SELF_REFRESH to other command time
-#define P_DMC_DRAM_TXP                             (volatile uint32_t *)0xfe036444
-  //bit 6:0. LPDDR4 tXP.  EXIT power down to other command time
-             //LPDDR5 tCSL
-#define P_DMC_DRAM_TXPDLL                          (volatile uint32_t *)0xfe036448
-  //bit 12:0.  tXPDLL,  EXIT power down to read/write command time(need to relock PLL).
-#define P_DMC_DRAM_TZQCS                           (volatile uint32_t *)0xfe03644c
-  //bit 7:0.  ZQCS command to other command time.
-#define P_DMC_DRAM_TCKSRE                          (volatile uint32_t *)0xfe036450
-  //bit 7:0. enter self refresh to disable clock time.
-#define P_DMC_DRAM_TCKSRX                          (volatile uint32_t *)0xfe036454
-  //bit 7:0. enable clock to exit self refresh time.
-#define P_DMC_DRAM_TCKE                            (volatile uint32_t *)0xfe036458
-  //bit 7:0.  CKE high or low minimum time.
-             //LPDDR5: tCSPD. power down to power up
-#define P_DMC_DRAM_TMOD                            (volatile uint32_t *)0xfe03645c
-  //bit 7:0  tMOD.  MRR/MRW to other command time. in LPDDR4, still use this register but it called tMRD.
-#define P_DMC_DRAM_TDQS                            (volatile uint32_t *)0xfe036460
-  //bit 31:28 reserved
-  //bit 27:24 tDQS_wr. the delay for write after read in different rank.
-  //bit 23:20 reserved
-  //bit 19:16 tDQS_rw. the delay for read after write in different rank.
-  //bit 15:12 reserved
-  //bit 11:8  tDQS_ww. the delay for write after write in different rank.
-  //bit 7:4 reserved
-  //bit 3:0 tDQS_rr. the delay for read after read in different rank.
-#define P_DMC_DRAM_TRSTL                           (volatile uint32_t *)0xfe036464
-  //bit 6:0 t_tstl. not used.
-#define P_DMC_DRAM_TZQLAT                          (volatile uint32_t *)0xfe036468
-  //bit 7:0 ZQ LATCH command to other comand timing in LPDDR4 mode.
-#define P_DMC_DRAM_TMRR                            (volatile uint32_t *)0xfe03646c
-  //bit 7:0 tMRR  not used in DMC.
-#define P_DMC_DRAM_TCKESR                          (volatile uint32_t *)0xfe036470
- //bit 9:0 tCKESR.   CKE low minimum pulse in self refresh mode.
-#define P_DMC_DRAM_TDPD                            (volatile uint32_t *)0xfe036474
- //bit 9:0 tdpd. not support.
-#define P_DMC_DRAM_DFITCTRLDELAY                   (volatile uint32_t *)0xfe036478
-  //bit 5:0. DFI_t_ctrldelay
-#define P_DMC_DRAM_DFITPHYWRDATA                   (volatile uint32_t *)0xfe03647c
-  //bit 5:0.  dfi_t_phy_wrdata.
-#define P_DMC_DRAM_DFITPHYWRLAT                    (volatile uint32_t *)0xfe036480
-  //bit 7:0.  dfi_t_phy_wrlat.  in DDR3/4/LPDDR3 mode:   WL -5.   in LPDDR4 mode: WL -5 + 2.
-#define P_DMC_DRAM_DFITRDDATAEN                    (volatile uint32_t *)0xfe036484
-  //bit 7:0.  dfi_t_rddata_en.  in DDR3/4/LPDDR3 mode: RL -5. in LPDDR4 mode : RL -5 + 1.
-#define P_DMC_DRAM_DFITPHYRDLAT                    (volatile uint32_t *)0xfe036488
-  //bit 7:0.  dfi_t_rdlat.
-#define P_DMC_DRAM_DFITCTRLUPDMIN                  (volatile uint32_t *)0xfe03648c
-  //bit 15:0.  CTRLUPD_MIN  minimum clock cycle to maintain CTRLUPD_REQ.
-#define P_DMC_DRAM_DFITCTRLUPDMAX                  (volatile uint32_t *)0xfe036490
-  //bit 15:0   CTRLUPD_MAX.  maximum clock cycle to maintain CTRLUPD_REQ if no CTRLUPD_ACK response.
-#define P_DMC_DRAM_DFITREFMSKI                     (volatile uint32_t *)0xfe036498
-  //not used.
-#define P_DMC_DRAM_DFITCTRLUPDI                    (volatile uint32_t *)0xfe03649c
-  //bit 31:0    frq0_dfitctrlupdi. not used.
-#define P_DMC_DRAM_DFITDRAMCLK                     (volatile uint32_t *)0xfe0364a0
-//bit 17    dram clk1 enable.
-//bit 16    dram clk0 enable.
-//bit 15:8  DRAM CLK disable waiting time
-//bit 7:0   DRAM CLK enable  enable timer
-#define P_DMC_DRAM_DFITLPRESP                      (volatile uint32_t *)0xfe0364a8
-  //bit 4:0.  dfi_lp_ctrl_req response time. after dfi_lp_ctrl_req asserted, and after response time if there's still no dfi_lp_ack respone, then drop the dfi_lp_ctrl_req.
-#define P_DMC_DRAM_TCKECK                          (volatile uint32_t *)0xfe0364b0
- //bit 7:0. tCKECK  from CKE low to assert dfi_dram_clk_disable time. this time + dfi_t_ctrl_delay
-            //in LPDDR5 tCSLCK
-#define P_DMC_DRAM_TREFI                           (volatile uint32_t *)0xfe0364b4
- //write this register will update the auto refresh related register to the auto refresh control logic.
- //bit 31:24:  tZQCI dmc send zqci period.  unit is how much auto refresh period.
- //bit 23:16   pvti  dmc send dfi_ctrlupd_req period.  unit is one auto refresh period.
- //bit 15:0.   tREFI.dmc send auto refresh command period. unit is dmc clock cycles
-#define P_DMC_DRAM_TSR                             (volatile uint32_t *)0xfe0364b8
-  //bit 7:0 tSR.  self resfresh enter to exit time.
-#define P_DMC_DRAM_TCCDMW                          (volatile uint32_t *)0xfe0364bc
-  //bit 7:0.  4*tCCD in LPDDR4 mask write.
-#define P_DMC_DRAM_TESCKE                          (volatile uint32_t *)0xfe0364c0
-  //bit 7:0  tESCKE.  enter self refresh to power time for LPDDR4.
-#define P_DMC_DRAM_TREFI_DDR3                      (volatile uint32_t *)0xfe0364c4
-  //9:0. use this register to reset refi_disable_cnt. the unit is t100ns.
-  //use this to check in 8*tREFI time, the DMC should not sent more than 16 auto REFRESH command.
-#define P_DMC_DRAM_TZQCAL                          (volatile uint32_t *)0xfe0364c8
-  //15:0. ZQCAL for LPDDR4.  tZQCAL4/8/16 for LP5.
-#define P_DMC_DRAM_T10US                           (volatile uint32_t *)0xfe0364cc
-  //bit 15:0 10us clock cycle number used for LP2 mode.
-#define P_DMC_DRAM_TMRRI                           (volatile uint32_t *)0xfe0364d0
-//bit 7:0   tMRRI for MRR
-#define P_DMC_DRAM_TXS_FAST                        (volatile uint32_t *)0xfe0364d4
- //bit 9:0 DDR4 mode XS_FAST exit self_refrest to zqcl/zqcs/mrs command.
-#define P_DMC_DRAM_DFIODTCFG                       (volatile uint32_t *)0xfe0364d8
-  //bit 12.  rank1 ODT default. default value for ODT[1] pins if theres no read/write activity.
-  //bit 11.  rank1 ODT write sel.  enable ODT[1] if there's write occur in rank1.
-  //bit 10.  rank1 ODT write nsel. enable ODT[1] if theres's write occur in rank0.
-  //bit 9.   rank1 odt read sel.   enable ODT[1] if there's read occur in rank1.
-  //bit 8.   rank1 odt read nsel.  enable ODT[1] if there's read occure in rank0.
-  //bit 4.   rank0 ODT default.    default value for ODT[0] pins if theres no read/write activity.
-  //bit 3.   rank0 ODT write sel.  enable ODT[0] if there's write occur in rank0.
-  //bit 2.   rank0 ODT write nsel. enable ODT[0] if theres's write occur in rank1.
-  //bit 1.   rank0 odt read sel.   enable ODT[0] if there's read occur in rank0.
-  //bit 0.   rank0 odt read nsel.  enable ODT[0] if there's read occure in rank1.
-#define P_DMC_DRAM_DFIODTCFG1                      (volatile uint32_t *)0xfe0364dc
-  //bit 28:24  ODT length for BL8 read transfer.
-  //bit 20:16. ODT length for BL8 write transfer.
-  //bit 13:8.  ODT latency for reads.  suppose to be 0.
-  //bit 5:0.   ODT latency for writes.  suppose to be 0.
-#define P_DMC_DRAM_TWODTON                         (volatile uint32_t *)0xfe0364e0
-  //bit 7:0   DRAM write access ODT on time.
-  //   in DDR3/4 should be same as WL.
-  //   in LPDDR4 ODT enable  mode:  tODTLon + tODTon.min
-  //   In LPDDR4 ODT disable mode:  tWL.
-#define P_DMC_DRAM_PHYADDRON                       (volatile uint32_t *)0xfe0364e8
-  //bit 5:0 PHY_CTRL_ADDR_ON for new PHY. default : 12 unit: DfiClk
-#define P_DMC_DRAM_PHYWRON                         (volatile uint32_t *)0xfe0364ec
-  //bit 6:0 PHY_CTRL_WR_ON.  = 20 + WL + (tDQSS+ tDQS2DQ + tWPST)/ddr_clk + BL/2
-#define P_DMC_DRAM_PHYRDON                         (volatile uint32_t *)0xfe0364f0
-  //bit 6:0 PHY_CTRL_RD_ON.  = 20 + RL + (tDQSCK+ tRPST + tDQSQ)/ddr_clk + BL/2
-#define P_DMC_DRAM_ZQCTRL                          (volatile uint32_t *)0xfe0364f4
-  //tZQCI bits in DMC_DRAM_TREFI  defined how many refresh period send ZQCS/ZQUPD/command.
-  //this register defines in 0~tZQCI period, which refresh period count to send ZQCS/ZACAL/ZQUPD command
-  //31:24.  in LPDDR4 case when to send ZQLAT comman to both RANKs of LPDDR4 SDRAM
-  //23:16.  when to send PHY ZQ UPDATE command.
-  //15:8.   when to send ZQCS/ZQCAL to rank1 DDR SDRAM.
-  //7:0.    when to senc ZQCS/ZQCAL to rank0 DDR SDRAM.
-#define P_DMC_DRAM_DFITPHYWRLATCSN                 (volatile uint32_t *)0xfe0364f8
-  //not used. bit 5:0.  dfi_t_phy_wrlat.  in DDR3/4/LPDDR3 mode:   WL -5.   in LPDDR4 mode: WL -5 + 2.
-#define P_DMC_DRAM_DFITRDDATACSN                   (volatile uint32_t *)0xfe0364fc
-  //not used. bit 5:0.  dfi_t_rddata_en.  in DDR3/4/LPDDR3 mode: RL -5. in LPDDR4 mode : RL -5 + 1.
-#define P_DMC_DRAM_TPBR                            (volatile uint32_t *)0xfe036680
-  //bit 23:16 tPBR2ACT
-  //bit 9:0   tPBR2PBR
-#define P_DMC_DRAM_TWCK_FS                         (volatile uint32_t *)0xfe036684
-  //not used. timing for wck_fs sync command
-  //bit 31:24 tWCKOFF
-  //bit 23:16 tWCKPRE_TOGGLE
-  //bit 15:8  tWCKPRE_STATIC
-  //bit 7:0   tWCKENL
-#define P_DMC_DRAM_TWCK_WR                         (volatile uint32_t *)0xfe036688
-  //not used. timing for wck_wr sync command
-  //bit 31:24 tWCKOFF
-  //bit 23:16 tWCKPRE_TOGGLE
-  //bit 15:8  tWCKPRE_STATIC
-  //bit 7:0   tWCKENL
-#define P_DMC_DRAM_TWCK_RD                         (volatile uint32_t *)0xfe03668c
-  //not used. timing for wck_rd sync command
-  //bit 31:24 tWCKOFF
-  //bit 23:16 tWCKPRE_TOGGLE
-  //bit 15:8  tWCKPRE_STATIC
-  //bit 7:0   tWCKENL
-#define P_DMC_DRAM_TWCK_OFF                        (volatile uint32_t *)0xfe036690
-  //not used. timing for wck_rd sync command
-  //bit 31:24 not used.
-  //bit 23:16 timing from write command to wck off timing.
-             //  = WL + BURST + TWCKPOST + tWCK2DQI ?
-  //bit 15:8  WCKOFF cmd to other command timing.
-  //bit 7:0   timing from read command to wck off timing.
-             //  = RL + BURST + TWCKPOST + tWCK2DQO ?
-#define P_DMC_DRAM_TPPD                            (volatile uint32_t *)0xfe036694
-  //bit 31:24 not used.
-  //bit 7:0.  tPPD. precharge to precharge delay in LPDDR5.
-#define P_DMC_DRAM_TCSH                            (volatile uint32_t *)0xfe036698
-  //bit 7:0.  tCSH for LPDDR5
-#define P_DMC_DRAM_TCMDPD                          (volatile uint32_t *)0xfe03669c
-  //bit 7:0.  tCMDPD for LPDDR5
-#define P_DMC_DRAM_TOSCPD                          (volatile uint32_t *)0xfe0366a0
-  //bit 15:0.  tOSCPD for LPDDR5 : tOSCPD + tOSC
-#define P_DMC_DRAM_TWCK2DQ                         (volatile uint32_t *)0xfe0366a4
- //not used.
- //bit 23:16. tWCK2DQI max
- //bit 7:0.   tWCK2DQO max
-#define P_DMC_DRAM_TRFM                            (volatile uint32_t *)0xfe0366a8
- //not used.
- //9:0. tRFMpb for lpddr5
-#define P_DMC_DRAM_TCKMAX                          (volatile uint32_t *)0xfe0366ac
- //9:0  tclk(max).    100ns in LPDDR4.
-//timing parameter for frequency set 1.
-#define P_DMC_NFQ_TMRD                             (volatile uint32_t *)0xfe036500
-#define P_DMC_NFQ_TRFC                             (volatile uint32_t *)0xfe036504
-#define P_DMC_NFQ_TRP                              (volatile uint32_t *)0xfe036508
-#define P_DMC_NFQ_TRTW                             (volatile uint32_t *)0xfe03650c
-#define P_DMC_NFQ_TCL                              (volatile uint32_t *)0xfe036510
-#define P_DMC_NFQ_TCWL                             (volatile uint32_t *)0xfe036514
-#define P_DMC_NFQ_TRAS                             (volatile uint32_t *)0xfe036518
-#define P_DMC_NFQ_TRC                              (volatile uint32_t *)0xfe03651c
-#define P_DMC_NFQ_TRCD                             (volatile uint32_t *)0xfe036520
-#define P_DMC_NFQ_TRRD                             (volatile uint32_t *)0xfe036524
-#define P_DMC_NFQ_TFAW                             (volatile uint32_t *)0xfe036528
-#define P_DMC_NFQ_TRTP                             (volatile uint32_t *)0xfe03652c
-#define P_DMC_NFQ_TWR                              (volatile uint32_t *)0xfe036530
-#define P_DMC_NFQ_TWTR                             (volatile uint32_t *)0xfe036534
-#define P_DMC_NFQ_TCCD                             (volatile uint32_t *)0xfe036538
-#define P_DMC_NFQ_TEXSR                            (volatile uint32_t *)0xfe03653c
-#define P_DMC_NFQ_TXS                              (volatile uint32_t *)0xfe036540
-#define P_DMC_NFQ_TXP                              (volatile uint32_t *)0xfe036544
-#define P_DMC_NFQ_TXPDLL                           (volatile uint32_t *)0xfe036548
-#define P_DMC_NFQ_TZQCS                            (volatile uint32_t *)0xfe03654c
-#define P_DMC_NFQ_TCKSRE                           (volatile uint32_t *)0xfe036550
-#define P_DMC_NFQ_TCKSRX                           (volatile uint32_t *)0xfe036554
-#define P_DMC_NFQ_TCKE                             (volatile uint32_t *)0xfe036558
-#define P_DMC_NFQ_TMOD                             (volatile uint32_t *)0xfe03655c
-#define P_DMC_NFQ_TDQS                             (volatile uint32_t *)0xfe036560
-#define P_DMC_NFQ_TRSTL                            (volatile uint32_t *)0xfe036564
-#define P_DMC_NFQ_TZQLAT                           (volatile uint32_t *)0xfe036568
-#define P_DMC_NFQ_TMRR                             (volatile uint32_t *)0xfe03656c
-#define P_DMC_NFQ_TCKESR                           (volatile uint32_t *)0xfe036570
-#define P_DMC_NFQ_TDPD                             (volatile uint32_t *)0xfe036574
-#define P_DMC_NFQ_DFITCTRLDELAY                    (volatile uint32_t *)0xfe036578
-#define P_DMC_NFQ_DFITPHYWRDATA                    (volatile uint32_t *)0xfe03657c
-#define P_DMC_NFQ_DFITPHYWRLAT                     (volatile uint32_t *)0xfe036580
-#define P_DMC_NFQ_DFITRDDATAEN                     (volatile uint32_t *)0xfe036584
-#define P_DMC_NFQ_DFITPHYRDLAT                     (volatile uint32_t *)0xfe036588
-#define P_DMC_NFQ_DFITCTRLUPDMIN                   (volatile uint32_t *)0xfe03658c
-#define P_DMC_NFQ_DFITCTRLUPDMAX                   (volatile uint32_t *)0xfe036590
-#define P_DMC_NFQ_DFITREFMSKI                      (volatile uint32_t *)0xfe036598
-#define P_DMC_NFQ_DFITCTRLUPDI                     (volatile uint32_t *)0xfe03659c
-#define P_DMC_NFQ_DFITDRAMCLK                      (volatile uint32_t *)0xfe0365a0
-#define P_DMC_NFQ_DFITLPRESP                       (volatile uint32_t *)0xfe0365a8
-#define P_DMC_NFQ_TCKECK                           (volatile uint32_t *)0xfe0365b0
-#define P_DMC_NFQ_TREFI                            (volatile uint32_t *)0xfe0365b4
-#define P_DMC_NFQ_TSR                              (volatile uint32_t *)0xfe0365b8
-#define P_DMC_NFQ_TCCDMW                           (volatile uint32_t *)0xfe0365bc
-#define P_DMC_NFQ_TESCKE                           (volatile uint32_t *)0xfe0365c0
-#define P_DMC_NFQ_TREFI_DDR3                       (volatile uint32_t *)0xfe0365c4
-#define P_DMC_NFQ_TZQCAL                           (volatile uint32_t *)0xfe0365c8
-#define P_DMC_NFQ_T10US                            (volatile uint32_t *)0xfe0365cc
-#define P_DMC_NFQ_TMRRI                            (volatile uint32_t *)0xfe0365d0
-#define P_DMC_NFQ_TXS_FAST                         (volatile uint32_t *)0xfe0365d4
-#define P_DMC_NFQ_DFIODTCFG                        (volatile uint32_t *)0xfe0365d8
-#define P_DMC_NFQ_DFIODTCFG1                       (volatile uint32_t *)0xfe0365dc
-#define P_DMC_NFQ_TWODTON                          (volatile uint32_t *)0xfe0365e0
-#define P_DMC_NFQ_PHYADDRON                        (volatile uint32_t *)0xfe0365e8
-#define P_DMC_NFQ_PHYWRON                          (volatile uint32_t *)0xfe0365ec
-#define P_DMC_NFQ_PHYRDON                          (volatile uint32_t *)0xfe0365f0
-#define P_DMC_NFQ_ZQCTRL                           (volatile uint32_t *)0xfe0365f4
-#define P_DMC_NFQ_DFITPHYWRLATCSN                  (volatile uint32_t *)0xfe0365f8
-#define P_DMC_NFQ_DFITRDDATACSN                    (volatile uint32_t *)0xfe0365fc
-#define P_DMC_NFQ_TPBR                             (volatile uint32_t *)0xfe0366c0
-#define P_DMC_NFQ_TWCK_FS                          (volatile uint32_t *)0xfe0366c4
-#define P_DMC_NFQ_TWCK_WR                          (volatile uint32_t *)0xfe0366c8
-#define P_DMC_NFQ_TWCK_RD                          (volatile uint32_t *)0xfe0366cc
-#define P_DMC_NFQ_TWCK_OFF                         (volatile uint32_t *)0xfe0366d0
-#define P_DMC_NFQ_TPPD                             (volatile uint32_t *)0xfe0366d4
-#define P_DMC_NFQ_TCSH                             (volatile uint32_t *)0xfe0366d8
-#define P_DMC_NFQ_TCMDPD                           (volatile uint32_t *)0xfe0366dc
-#define P_DMC_NFQ_TOSCPD                           (volatile uint32_t *)0xfe0366e0
-#define P_DMC_NFQ_TWCK2DQ                          (volatile uint32_t *)0xfe0366e4
-#define P_DMC_NFQ_TRFM                             (volatile uint32_t *)0xfe0366e8
-#define P_DMC_NFQ_TCKMAX                           (volatile uint32_t *)0xfe0366ec
-#define P_DMC_DRAM_DFITPHYUPDTYPE0                 (volatile uint32_t *)0xfe036600
- //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 0.
-#define P_DMC_DRAM_DFITPHYUPDTYPE1                 (volatile uint32_t *)0xfe036604
- //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 1.
-#define P_DMC_DRAM_DFITPHYUPDTYPE2                 (volatile uint32_t *)0xfe036608
- //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 2.
-#define P_DMC_DRAM_DFITPHYUPDTYPE3                 (volatile uint32_t *)0xfe03660c
- //bit 7:0. dfi_phyupd_ack hold time for dfi_phyupd_req type = 3.
-#define P_DMC_DRAM_MCFG                            (volatile uint32_t *)0xfe036618
- //bit 31:28  not used.
- //bit 27:24  rank1_d16_sel.  16bit mode, rank 1 byte selection.
- //bit 23:20  rank0_d16_sel.  16bit mode, rank 0 byte selection.
- //bit 19.   send PHY ZQ command  after siu self refresh exit. 1 : enable.  0 : disable.
- //bit 18.   send retrain command after siu self refresh exit. 1 : enable. 0 : disable.
- //bit 17.   in DDR3/4 mode, send ZQCL command after exit register triggered self refresh.
- //bit 16.   send refresh command after finish frequency change. 1 : enable. 0 : disable.
- //bit 15.   send refresh command after finish LPDDR4 retraining. 1 : enable. 0 : disable.
- //bit 14.   1: cke init low.  0 : cke init high.
- //bit 13    1: dbi write enable only for LPDDR4.
- //bit 12.   1: dbi read inversion.   0:  dbi read high inversion.
- //bit 11.   1: dbi read enable. 0:  dbi not enabled.
- //bit 10    1: enable staggered chip select for 2 ranks DRAM.
- //bit 9     1: enable send auto refresh command to DDR SDRAM when PCTL is in CFG/STOP state.
- //bit 8     send auto refr cmd before enter register triggered  self refresh
- //bit 7     send auto refr cmd after exit register triggered self refresh mode.
- //bit 6     disable dram clock after enter register triggered self refresh.
- //bit 5     send DFI_LP_REQ to PHY after enter register triggered elf refresh mode.
- //bit 4     send DRAM to power down mode after enter self refresh. ONLY for LPDDR4.
- //bit 3     send DFI_CTRLUPD_REQ after exit register triggered self refresh.
- //bit 2     send ZQCS command after exit register triggered self refresh.
- //bit 1     enable PHY triggered DFI_PHYUPD_REQ.
- //bit 0     2T mode. always 1 in DDR3/4 mode.
-#define P_DMC_DRAM_ZQ_CTRL                         (volatile uint32_t *)0xfe03661c
- //bit 31:16. how long PHY will finish PHY ZQ calibration. so DMC can send update request.
- //bit 15:4 not used.
- //bit 3  enable PHY ZQ CAL in ASR mode.
- //bit 2  ZQ command must be send in different time.
- //bit 1  ZQ command can be send at same time.
- //bit 0  rank0 ZQ only
-#define P_DMC_DRAM_MCFG1                           (volatile uint32_t *)0xfe036620
- //bit 26.  siu_srx_phymr_en
- //bit 25.  siu_lp4_r17_en
- //bit 23.  mrr_dbi_en. to enable dbi function for MR read.
- //bit 21;  enable separate dfi_lp_data_req. 1: enable. 0: dfi_lp_data_req same as dfi_lp_ctrl_req.
- //bit 20:16 dfi_lp_data_wakeup value.
- //bit 14.  enable SIU read data with DBI result.
- //bit 13.  LPDDR5 LINK_ECC read enable.
- //bit 12.  LPDDR5 LINK_ECC write enable.
- //bit 9.   LPDDR5 use WCK always on mode.
- //bit 8    LPDDR5 wck use WCK_FS command for fast 2 rank wck sync command.
- //bit 7:0.  LPDDR4 MRW DBI data mask pattern.  //default 8'b11111000;
-#define P_DMC_DRAM_DFI_CTRL                        (volatile uint32_t *)0xfe036624
-  //bit 31 siu_dfi_lat err generation enable.  1: if dfi read latency violation, generate data error. 0 : disable.
-  //bit 19: dfi_init_complete wait enable.  1: after dfi_init_complete, wait additional EXSR time for new command. 0: phy will handle all the timing    after dfi_init_complete DMC can do everything they want.
-  //bit 18:  dfi_rddata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
-  //bit 17:  dfi_wrdata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
-#define P_DMC_DRAM_DFIINITCFG                      (volatile uint32_t *)0xfe036628
-  //bit 31.     dfi_init_complete status. read only.
-  //bit 19:18.  Frequency set 1 dfi_freq_fsp value.
-  //bit 17:16.  Frequency set 0 dfi_freq_fsp value.
-  //bit 15:14.  Frequency set 1 dfi_freq_ratio value.
-  //bit 12:8    Frequency set 1 dfi_freq value.
-  //bit 7:6     Frequency set 0 dfi_freq_ratio value.
-  //bit 5:1     Frequency set 0 dfi_freq value.
-  //bit 0.      dfi_init_start value  can be use manually config dfi_init_start signal.
-#define P_DMC_DRAM_APD_CTRL                        (volatile uint32_t *)0xfe036630
- //bit 20:16  DFI_LP_WAKEUP value in APD DFI_LP_REQ mode
- //bit 12    1: exit power down slow mode(waiting PLL LOCK).  0 : fast mode.
- //bit 11    enable DFI_LP_REQ when enter Auto power down mode.
- //bit 10    disable DFI_clk_disable when enter auto power down mode.
- //bit 9:0    0  disable auto power down mode.
-            //non zero value to enable auto power down when DMC is in idle state for this number of clock cycles.
-#define P_DMC_DRAM_ASR_CTRL                        (volatile uint32_t *)0xfe036634
-  //bit 31. enable RETRAIN PHY after auto selfrefresh exit. for AM_PHY only.
-  //bit 30. in DDR3/4 mode, send ZQCL command after exit from auto self refresh mode.
-  //bit 29. enable PHY clock in LP2 mode.  1: enable. 0 : disable.
-  //bit [28:24] DFI_LP_WAKEUP value in self refresh DFI_LP_REQ mode.
-  //bit 23 : send REFRESH command after exit from auto self refersh mode(ASR).
-  //bit 22 : send REFERSH command before enter to Auto self refresh mode(ASR).
-  //bit 21 : send ZQCS command after exit from Auto self refresh mode(ASR).
-  //bit 20 : send dfi_ctrl_upd after exit from ASR mode
-  //bit 19 : send power down command when enter ASR mode. //for LPDDR4 only.
-  //bit 18 : set the PHY enter LP2 mode after enter ASR mode. //not support for P1 LP5PHY
-  //bit 17 : send DFI_LP_REQ  after enter ASR mode.
-  //bit 16 : set DFI_CLK_DISABLE after enter ASR mode.
-  //bit 15:0.   0 disable auto ASR mode.
-             // Non-zero value enable ASR mode. when DMC is in idle state for this number of clock cycles, the DMC will enter ASR mode.
-#define P_DMC_DRAM_REFR_CTRL                       (volatile uint32_t *)0xfe036648
-  //bit 28  enable send phy pvt request after PHY ZQ calibration request.
-  //bit 27:24 not used.
-  //bit 23  enable Per Bank refresh mode.
-  //bit 22  dmc to control DFI_CTRLUPD_REQ  with zq generation together.
-  //bit 21  dmc to control PHY ZQ generation enable.
-  //bit 20  dmc to control zqlat(in LPDDR4 mode) generation enable.
-  //bit 19  dmc to control zqcs1 generation enable.
-  //bit 18  dmc to control zqcs0 generation enable.
-  //bit 17:8 auto refresh request pending cnt if there's page hit request.
-  //bit 7  not used.
-  //bit 6  not used.
-  //bit 5  enable dmc send ZQCS command .
-  //bit 4. enable dmc send DFI_CTRUPD_REQ.
-  //bit 3:1. how many refresh command send for one period. = this number + 1
-  //bit 0.  enable dmc send auto refresh command.
-#define P_DMC_DRAM_FREQ_CTRL                       (volatile uint32_t *)0xfe03664c
-//bit 31 .  chan0 write 1 to change freqency   read 0: finished.
-//bit 30.   chan0 waiting for software to send some manual command.  1 : waiting. 0 : not ready yet.
-//bit 29 .  chan1 write 1 to change freqency   read 0: finished.
-//bit 28.   chan1 waiting for software to send some manual command.  1 : waiting. 0 : not ready yet.
-//bit 27:23.  not used.
-//bit 22    siu_freq_refr_en, enter FREQ_AUTO_REFR after DFI freq init start complete
-//bit 21     after Freqchange send PHY ZQ update.
-//bit 20    send CTRLUPD_REQ to PHY after freq_change finished.
-//bit 19:16. how many cycles to send PLL change req after init_complete signal to low.
-//bit 15.   freq pre  config_en. Before freq enter stop state let DMC configure DDR SDRAM.
-//bit 14.   freq post config_en. After  freq enter stop state let DMC configure DDR SDRAM.
-//bit 13.   send zqcl after freq change in DDR3/4 mode.
-//bit 12.   send zqcs after freq change. 1: enable. 0 not send.
-//bit 11.   in AUTO MRW function: the data format.  1: use USR_CMD format.  0: MRW format.
-//bit 10.   AUTO MRW function:  1 use hardware auto MRW function.  0: don't do auto MRW.
-//bit 9.  1 : FREQ MRW done. let FREQ change machine continue.
-//bit 8   FREQ WAIT. 1 when freq change finishes, state machine stop at self refresh state in case there's something need to handle.
-              //     0 after freq change finishes  the state machine go back to access state.
-//bit 7   when change PLL setting, disable dmc clock
-//bit 6   when change PLL setting, disable PHY DfiClk and DfiCtlClk.
-//bit 5   check vpu_sleep_en ==1 when do FREQ change.  if vpu_sleep_en == 0, just wait.
-//bit 4   nxt frequency selection.  1 = freq1. 0 = freq0.
-//bit 3:1.  not used.
-//bit 0.   current frequency selection.
-#define P_DMC_DRAM_SCFG                            (volatile uint32_t *)0xfe036650
-  // bit 2:0 only one bit can be high at same time.
-  // bit 2  1 : to ask PCTL enter ACCESS STATE.  0 : deassert the request.
-  // bit 1  1 : to ask PCTL enter SELF REFRESH STATE.  0 : deassert the request.
-  // bit 0  1 : to ask PCTL enter STOP/CONFIG STATE .  0 : deassert the request.
-#define P_DMC_DRAM_STAT                            (volatile uint32_t *)0xfe036654
-  //bit 31     rd latency error. 1: means after dfiphytrdlat cycles, the read data still not back.
-  //bit 30:29.     not used.
-  //bit 28:24   dram_sr_state
-  //bit 23:20   stop_st
-  //bit 19:16  freq_st.
-    //4'h0 : IDLE
-    //4'h1 : FREQ_CHECK_VPU
-    //4'h2 : FREQ_WAITING_STOP
-    //4'h3 : FREQ_DRAM_CFG.  waiting DMC/software to send special MRW/MPC command to configure DDR SDRAM either before Freq change or after freq change.
-    //4'h4 : FREQ_SELF_REFR_ST.
-    //4'h5 : FREQ_SET_DFI_FREQ.
-    //4'h6 : FREQ_DFI_INIT_START_HIGH.
-    //4'h7 : FREQ_CHANGE PLL_ST.
-    //4'h8 : FREQ_UPDATA REG.
-    //4'h9 : FREQ_DFI_INIT_START_LOW.
-    //4'ha : FREQ_WAITING_FINISH
-    //4'hb : FREQ_ZQCS
-    //4'hc : FREQ_ZQ_LATCH
-    //4'hd : FREQ_PVT
-  //bit 15:12  ACCESS STATUS 0 :  ACCESS is in normal working mode.
-                          //1 :   ACCESS sending precharge command.
-                          //2 :   ACCESS sending AUTO REFRESH command.
-                          //3 :   ACCESS sending DIF_CTRLUPD_REQ command.
-                          //4 :   ACCESS sending ZQCS command to DDR DRAM(ZQCAL for LPDDR4).
-                          //5 :   ACCESS sending ZQLATCH command to  LPDDR4 only.
-  //bit 11:8   APD STATUS:   0 :   APD_IDLE
-                          //1 :    APD sending PRECHARGE command
-                          //2 :    APD sending CKE low command
-                          //3 :    APD sending DISABLE DRAM CLOCK command
-                          //4 :    APD sending DFI_LP_CTRL_REQ
-                          //5 :    APD in Auto Power down mode.
-                          //6 :    APD deassert DFI_LP_CTRL_REQ
-                          //7 :    APD sending enable DRAM CLOCK command
-                          //8 :    APD sending out CKE high command.
-  //bit 7:4: DRAM_STATUS:  0  :    DRAM IDLE
-                         //1  :    DRAM_STOP/DRAM_CFG
-                         //2  :    DRAM_ACCESS
-                         //3  :    DRAM_SLEEP
-                         //4  :    DRAM APD(AUTO POWER DOWN).
-                         //5  :    IDLE -> STOP/CONFIG
-                         //6  :    STOP -> SLEEP
-                         //7  :    STOP -> ACCESS
-                         //8  :    ACCESS -> SLEEP.
-                         //9  :    ACCESS -> STOP
-                         //A  :    ACCESS -> APD
-                         //B  :    SLEEP -> STOP
-                         //C  :    SLEEP -> ACCESS
-                         //D  :    APD -> ACCESS
-   //bit 3        reserved.
-   //bit 2        1 : DRAM enter normal working state.
-   //bit 1        1 : DRAM enter sleep state. self refresh state.
-   //bit 0        1 : dram enter cfg state.
-#define P_DMC_DRAM_STAT1                           (volatile uint32_t *)0xfe036658
-  //bit 12:8   sleep_st
-  //bit  7:5   train_st
-  //bit  4:0   dram_phy_st
-#define P_DMC_PHY_RETRAINING_CTRL                  (volatile uint32_t *)0xfe03665c
-  //bit 31 :  phy_retraining enable.
-  //bit 30 :  check  vpu sleep_en.
-  //bit 29 :  retrain_only 1: use full 28:24 as retrain dfi_freq value 0: use only 28:27 + original dfi_freq2:0 as the retrain dfi_freq.
-  //bit 28:24 : retraining dfi_freq[4:3], the [2:0] bit still use the dfi_freq bits to keep the frequency.
-  //bit 23:    retrain cke mode enable use for LPDDR4 mode. before send dfi_init_start request to DDR_PHY,
-               //1: put LPDDR4 SDRAM into self_refresh + power down mode. 0: put LPDDR4 SDRAM in self-refresh  mode.
-  //bit 22:16:  reserved
-  //bit 15:0: retraining period unit : one refresh period.
-#define P_DMC_DFI_ERR_STAT                         (volatile uint32_t *)0xfe036660
- //not used
- //LPDDR4 PHY DFI error information.
- //bit 31:20. not used.
- //bit 9.    ddr0_dfi_error
- //bit 8:5   ddr0_dfi_error_info.
- //bit 4.    ddr1_dfi_error.
- //bit 3:0.  ddr1_dfi_error_info.
-#define P_DMC_LP2_TIMER                            (volatile uint32_t *)0xfe036668
-//bit 15:0.   timer setting to measure how long the chip is entered LP2 mode.
-//this timer is 40bits counter with DMC PCLK.
-//we use the high 16bits to compare this register. if the counter is large than this number,  that means  the PHY need addition 10us after wakeup the PHY and before exit self_refresh mode.
-#define P_DMC_DRAM_COMPLETE_WAIT                   (volatile uint32_t *)0xfe03666c
- //read only how long to waiting for DFI_INIT_COMPLETE become high after DFI_INIT_START triggered.
-#define P_DMC_OSC_CTRL                             (volatile uint32_t *)0xfe036670
-//bit 31  osc_en. for LPDDR4 enable MPC DQS2DQ OSC counter .
-//bit 30:16.  siu_osc_run.  LPDDR4 DQS interval timer run time in n_clk unit.
-//bit 15:0 osc counter value in tREFI time. how long to trigger one DQS2DQ retraining.
-#define P_DMC_TEMP_CTRL                            (volatile uint32_t *)0xfe036674
-//bit 31  mr temp read control.
-//bit 15:0 counter value in t100NS.
-#define P_DMC_TEMP_CTRL1                           (volatile uint32_t *)0xfe036678
-//bit 7:0  mr index.
-#define P_DMC_DRAM_DFI_SWAP_0                      (volatile uint32_t *)0xfe036700
-#define P_DMC_DRAM_DFI_SWAP_1                      (volatile uint32_t *)0xfe036704
-#define P_DMC_DRAM_DFI_SWAP_2                      (volatile uint32_t *)0xfe036708
-#define P_DMC_DRAM_DFI_SWAP_3                      (volatile uint32_t *)0xfe03670c
-#define P_DMC_DRAM_DFI_SWAP_4                      (volatile uint32_t *)0xfe036710
-#define P_DMC_DRAM_CMD                             (volatile uint32_t *)0xfe036740
- //bit 31. cmd done.  write 0 to clean.
- //bit 30. cmd r/w channel select. 1:chan1  0:chan0
- //bit 8 . dram command is for data 16 bits.
- //bit 7:6 2'b01: user command with data read.
-         //2'b10: user command with data write.
-         //2'b00: user command without data.
- //bit 5.  user defined command.
- //bit 4.  LPDDR4 MPC write data command( MPC WR FIFO). not support in LPDDR5.
- //bit 3.  LPDDR4 MPC read data command (MPC RD Calibration and RD FIFO). not support in LPDDR5
- //bit 2.  LPDDR4 MPC-1 command ( NOP,  Start DQS interval ....)
- //bit 1.  mrr comand.
- //bit 0.  mrw command.
-#define P_DMC_DRAM_CMD_CODE                        (volatile uint32_t *)0xfe036744
-  //bit 27:26. 128bits data cycles . 0: 1 clock cycles;  1: 2  clock cycles; 2: 3 clock cycles; 3:4 clock cycles.
-        //LPDDR4 : 2 clock cycles;
-        //LPDDR5 : 2 clock cycles for MRR command.  4 cycles for RFF command.
-#define P_DMC_DRAM_CMD_TIME                        (volatile uint32_t *)0xfe036748
-//bit 31:16  PRE  CMD timer. //delay how many cycle to start the command.
-//bit 15:0   POST CMD timer  //delay how many cycle after the command execute.
-#define P_DMC_DRAM_WSTRB0                          (volatile uint32_t *)0xfe03674c
-#define P_DMC_DRAM_WSTRB1                          (volatile uint32_t *)0xfe036750
-#define P_DMC_DRAM_RDBI0                           (volatile uint32_t *)0xfe036754
-  //MPC RD FIFO command DBI read back data
-  //bit 31:16  the second cycle.
-  //bit 15:0   the first cycle.
-#define P_DMC_DRAM_RDBI1                           (volatile uint32_t *)0xfe036758
-  //MPC RD FIFO command DBI read back data
-  //bit 31:16. the Forth cycle.
-  //bit 15:0.  the third cycle.
-#define P_DMC_DRAM_RSTS                            (volatile uint32_t *)0xfe03675c
-    //bit3 data cnt 3 for dfi phy read latency error
-    //bit2 data cnt 2 for dfi phy read latency error
-    //bit1 data cnt 1 for dfi phy read latency error
-    //bit0 data cnt 0 for dfi phy read latency error
-//WD0~16 and RD0~16 can be used as MRW command as Frequency change .
-//WD0~16 is for Freq1 DRAM MR setting, it would send to DRAM right before FREQ0-> FREQ1
-//RD0_16 is for Freq0 DRAM MR setting. it would send to DRAM right before FREQ1-> FREQ0.
-//each register can be one MRW command. So total 16 MRW command can be sent to DRAM.
-//The register formats:
-//bit 31.   MRW/USER comand enable.  1: enabled command. 0 not enabled.
-//bit 30.   last MRW/USER command.   if this bit =1, After send this command, the DRAM controller will contine frequency next stage.
-//bit 29:26. USER COMMAND parameter: in DDR3/DDR4.  {act_n, ras_n, cas_n, we_n} value for user command
-                                     //in LPDDR4.  bit 16: 1 4 cycles command.  0 2 cycles command.
-//bit 25     MRW/USER command rank 1 select.  1: select.  0: not select.
-//bit 24.    MRW/USER command rank 0 select.  1: select.  0: not select.
-//bit 23:0.  USER command.
-             //DDR3:    18:16 bank address. 15:0:  address.
-             //DDR4:    20:19 bank group address.   18:16: bank address. 15:0 address.
-             //LPDDR3:   9:0. rising edge address.  19:10.  falling edge address.
-             //LPDDR4.   5:0, first edge address,  11:6 second edge address, 17:12: third edge address. 23:18, forth edge address.
-           //MRW command format:
-              //bit 23:16  MR addr.  DDR4 case :  18:16 ba[2:0].    20:19 BG[1:0].
-              //bit 15:0   opcode.
-#define P_DMC_DRAM_WD0                             (volatile uint32_t *)0xfe036780
-#define P_DMC_DRAM_WD1                             (volatile uint32_t *)0xfe036784
-#define P_DMC_DRAM_WD2                             (volatile uint32_t *)0xfe036788
-#define P_DMC_DRAM_WD3                             (volatile uint32_t *)0xfe03678c
-#define P_DMC_DRAM_WD4                             (volatile uint32_t *)0xfe036790
-#define P_DMC_DRAM_WD5                             (volatile uint32_t *)0xfe036794
-#define P_DMC_DRAM_WD6                             (volatile uint32_t *)0xfe036798
-#define P_DMC_DRAM_WD7                             (volatile uint32_t *)0xfe03679c
-#define P_DMC_DRAM_WD8                             (volatile uint32_t *)0xfe0367a0
-#define P_DMC_DRAM_WD9                             (volatile uint32_t *)0xfe0367a4
-#define P_DMC_DRAM_WD10                            (volatile uint32_t *)0xfe0367a8
-#define P_DMC_DRAM_WD11                            (volatile uint32_t *)0xfe0367ac
-#define P_DMC_DRAM_WD12                            (volatile uint32_t *)0xfe0367b0
-#define P_DMC_DRAM_WD13                            (volatile uint32_t *)0xfe0367b4
-#define P_DMC_DRAM_WD14                            (volatile uint32_t *)0xfe0367b8
-#define P_DMC_DRAM_WD15                            (volatile uint32_t *)0xfe0367bc
-#define P_DMC_DRAM_RD0                             (volatile uint32_t *)0xfe0367c0
-#define P_DMC_DRAM_RD1                             (volatile uint32_t *)0xfe0367c4
-#define P_DMC_DRAM_RD2                             (volatile uint32_t *)0xfe0367c8
-#define P_DMC_DRAM_RD3                             (volatile uint32_t *)0xfe0367cc
-#define P_DMC_DRAM_RD4                             (volatile uint32_t *)0xfe0367d0
-#define P_DMC_DRAM_RD5                             (volatile uint32_t *)0xfe0367d4
-#define P_DMC_DRAM_RD6                             (volatile uint32_t *)0xfe0367d8
-#define P_DMC_DRAM_RD7                             (volatile uint32_t *)0xfe0367dc
-#define P_DMC_DRAM_RD8                             (volatile uint32_t *)0xfe0367e0
-#define P_DMC_DRAM_RD9                             (volatile uint32_t *)0xfe0367e4
-#define P_DMC_DRAM_RD10                            (volatile uint32_t *)0xfe0367e8
-#define P_DMC_DRAM_RD11                            (volatile uint32_t *)0xfe0367ec
-#define P_DMC_DRAM_RD12                            (volatile uint32_t *)0xfe0367f0
-#define P_DMC_DRAM_RD13                            (volatile uint32_t *)0xfe0367f4
-#define P_DMC_DRAM_RD14                            (volatile uint32_t *)0xfe0367f8
-#define P_DMC_DRAM_RD15                            (volatile uint32_t *)0xfe0367fc
-//chan1 control register.
-#define P_DMC_DRAM1_SCFG                           (volatile uint32_t *)0xfe036a00
-  // bit 2:0 only one bit can be high at same time.
-  // bit 2  1 : to ask PCTL enter ACCESS STATE.  0 : deassert the request.
-  // bit 1  1 : to ask PCTL enter SELF REFRESH STATE.  0 : deassert the request.
-  // bit 0  1 : to ask PCTL enter STOP/CONFIG STATE .  0 : deassert the request.
-#define P_DMC_DRAM1_STAT                           (volatile uint32_t *)0xfe036a04
-  //bit 31     rd latency error. 1: means after dfiphytrdlat cycles, the read data still not back.
-  //bit 30:29.     not used.
-  //bit 28:24   dram_sr_state
-  //bit 23:20   stop_st
-  //bit 19:16  freq_st.
-    //4'h0 : IDLE
-    //4'h1 : FREQ_CHECK_VPU
-    //4'h2 : FREQ_WAITING_STOP
-    //4'h3 : FREQ_DRAM_CFG.  waiting DMC/software to send special MRW/MPC command to configure DDR SDRAM either before Freq change or after freq change.
-    //4'h4 : FREQ_SELF_REFR_ST.
-    //4'h5 : FREQ_SET_DFI_FREQ.
-    //4'h6 : FREQ_DFI_INIT_START_HIGH.
-    //4'h7 : FREQ_CHANGE PLL_ST.
-    //4'h8 : FREQ_UPDATA REG.
-    //4'h9 : FREQ_DFI_INIT_START_LOW.
-    //4'ha : FREQ_WAITING_FINISH
-    //4'hb : FREQ_ZQCS
-    //4'hc : FREQ_ZQ_LATCH
-    //4'hd : FREQ_PVT
-  //bit 15:12  ACCESS STATUS 0 :  ACCESS is in normal working mode.
-                          //1 :   ACCESS sending precharge command.
-                          //2 :   ACCESS sending AUTO REFRESH command.
-                          //3 :   ACCESS sending DIF_CTRLUPD_REQ command.
-                          //4 :   ACCESS sending ZQCS command to DDR DRAM(ZQCAL for LPDDR4).
-                          //5 :   ACCESS sending ZQLATCH command to  LPDDR4 only.
-  //bit 11:8   APD STATUS:   0 :   APD_IDLE
-                          //1 :    APD sending PRECHARGE command
-                          //2 :    APD sending CKE low command
-                          //3 :    APD sending DISABLE DRAM CLOCK command
-                          //4 :    APD sending DFI_LP_CTRL_REQ
-                          //5 :    APD in Auto Power down mode.
-                          //6 :    APD deassert DFI_LP_CTRL_REQ
-                          //7 :    APD sending enable DRAM CLOCK command
-                          //8 :    APD sending out CKE high command.
-  //bit 7:4: DRAM_STATUS:  0  :    DRAM IDLE
-                         //1  :    DRAM_STOP/DRAM_CFG
-                         //2  :    DRAM_ACCESS
-                         //3  :    DRAM_SLEEP
-                         //4  :    DRAM APD(AUTO POWER DOWN).
-                         //5  :    IDLE -> STOP/CONFIG
-                         //6  :    STOP -> SLEEP
-                         //7  :    STOP -> ACCESS
-                         //8  :    ACCESS -> SLEEP.
-                         //9  :    ACCESS -> STOP
-                         //A  :    ACCESS -> APD
-                         //B  :    SLEEP -> STOP
-                         //C  :    SLEEP -> ACCESS
-                         //D  :    APD -> ACCESS
-   //bit 3        reserved.
-   //bit 2        1 : DRAM enter normal working state.
-   //bit 1        1 : DRAM enter sleep state. self refresh state.
-   //bit 0        1 : dram enter cfg state.
-#define P_DMC_DRAM1_STAT1                          (volatile uint32_t *)0xfe036a08
-  //bit 12:8   sleep_st
-  //bit  7:5   train_st
-  //bit  4:0   dram_phy_st
-#define P_DMC_DRAM1_DFI_CTRL                       (volatile uint32_t *)0xfe036a24
-//not used
-  //bit 31  siu_dfi_lat err generation enable.  1: if dfi read latency violation, generate data error. 0 : disable.
-  //bit 19: dfi_init_complete wait enable.  1: after dfi_init_complete, wait additional EXSR time for new command. 0: phy will handle all the timing    after dfi_init_complete DMC can do everything they want.
-  //bit 18:  dfi_rddata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
-  //bit 17:  dfi_wrdata_cs_n polarity.  0:  rank0 select = 2'b10. rank1 select = 2'b10. 1: rank0 select = 2'b01, rank1_select = 2'b10.
-#define P_DMC_DRAM1_DFIINITCFG                     (volatile uint32_t *)0xfe036a28
-  //bit 31.     dfi_init_complete status. read only.
-  //bit 19:18.  Frequency set 1 dfi_freq_fsp value.
-  //bit 17:16.  Frequency set 0 dfi_freq_fsp value.
-  //bit 15:14.  Frequency set 1 dfi_freq_ratio value.
-  //bit 12:8    Frequency set 1 dfi_freq value.
-  //bit 7:6     Frequency set 0 dfi_freq_ratio value.
-  //bit 5:1     Frequency set 0 dfi_freq value.
-  //bit 0.      dfi_init_start value  can be use manually config dfi_init_start signal.
-#define P_DMC_DRAM1_APD_CTRL                       (volatile uint32_t *)0xfe036a30
- //bit 20:16  DFI_LP_WAKEUP value in APD DFI_LP_REQ mode
- //bit 12    1: exit power down slow mode(waiting PLL LOCK).  0 : fast mode.
- //bit 11    enable DFI_LP_REQ when enter Auto power down mode.
- //bit 10    disable DFI_clk_disable when enter auto power down mode.
- //bit 9:0    0  disable auto power down mode.
-            //non zero value to enable auto power down when DMC is in idle state for this number of clock cycles.
-#define P_DMC_DRAM1_ASR_CTRL                       (volatile uint32_t *)0xfe036a34
-  //bit 31. enable RETRAIN PHY after auto selfrefresh exit. for AM_PHY only.
-  //bit 30. in DDR3/4 mode, send ZQCL command after exit from auto self refresh mode.
-  //bit 29. enable PHY clock in LP2 mode.  1: enable. 0 : disable.
-  //bit [28:24] DFI_LP_WAKEUP value in self refresh DFI_LP_REQ mode.
-  //bit 23 : send REFRESH command after exit from auto self refersh mode(ASR).
-  //bit 22 : send REFERSH command before enter to Auto self refresh mode(ASR).
-  //bit 21 : send ZQCS command after exit from Auto self refresh mode(ASR).
-  //bit 20 : send dfi_ctrl_upd after exit from ASR mode
-  //bit 19 : send power down command when enter ASR mode. //for LPDDR4 only.
-  //bit 18 : set the PHY enter LP2 mode after enter ASR mode. //not support for P1 LP5PHY
-  //bit 17 : send DFI_LP_REQ  after enter ASR mode.
-  //bit 16 : set DFI_CLK_DISABLE after enter ASR mode.
-  //bit 15:0.   0 disable auto ASR mode.
-             // Non-zero value enable ASR mode. when DMC is in idle state for this number of clock cycles, the DMC will enter ASR mode.
-#define P_DMC_DRAM1_REFR_CTRL                      (volatile uint32_t *)0xfe036a38
-  //bit 28  enable send phy pvt request after PHY ZQ calibration request.
-  //bit 27:24 refresh post. not used.
-  //bit 23  enable Per Bank refresh mode.
-  //bit 22  dmc to control DFI_CTRLUPD_REQ  with zq generation together.
-  //bit 21  dmc to control PHY ZQ generation enable.
-  //bit 20  dmc to control zqlat(in LPDDR4 mode) generation enable.
-  //bit 19  dmc to control zqcs1 generation enable.
-  //bit 18  dmc to control zqcs0 generation enable.
-  //bit 17:8 auto refresh request pending cnt if there's page hit request.
-  //bit 7  not used.
-  //bit 6  Not used.
-  //bit 5  enable dmc send ZQCS command .
-  //bit 4. enable dmc send DFI_CTRUPD_REQ.
-  //bit 3:1. how many refresh command send for one period. = this number + 1
-  //bit 0.  enable dmc send auto refresh command.
-#define P_DMC_DRAM1_OSC_CTRL                       (volatile uint32_t *)0xfe036a3c
-//bit 31  osc_en. for LPDDR4 enable MPC DQS2DQ OSC counter .
-//bit 30:16.  siu_osc_run.  LPDDR4 DQS interval timer run time in n_clk unit.
-//bit 15:0 osc counter value in tREFI time. how long to trigger one DQS2DQ retraining.
-#define P_DMC_DRAM1_TEMP_CTRL                      (volatile uint32_t *)0xfe036a40
-//bit 31  mr temp read control.
-//bit 15:0 counter value in t100NS.
-#define P_DMC_DRAM1_TEMP_CTRL1                     (volatile uint32_t *)0xfe036a44
-//bit 7:0  mr index.
-#define P_DMC_DRAM1_DFI_SWAP_0                     (volatile uint32_t *)0xfe036a60
-#define P_DMC_DRAM1_DFI_SWAP_1                     (volatile uint32_t *)0xfe036a64
-#define P_DMC_DRAM1_DFI_SWAP_2                     (volatile uint32_t *)0xfe036a68
-#define P_DMC_DRAM1_DFI_SWAP_3                     (volatile uint32_t *)0xfe036a6c
-#define P_DMC_DRAM1_DFI_SWAP_4                     (volatile uint32_t *)0xfe036a70
-#define P_DMC_DRAM1_COMPLETE_WAIT                  (volatile uint32_t *)0xfe036a74
- //read only how long to waiting for DFI_INIT_COMPLETE become high after DFI_INIT_START triggered.
-#define P_DMC_DRAM_MRR0                            (volatile uint32_t *)0xfe036a80
- //15:0  the 1st MR read result for snoop
-#define P_DMC_DRAM_MRR1                            (volatile uint32_t *)0xfe036a84
- //15:0  the 2nd MR read result for snoop
-#define P_DMC_DRAM1_MRR0                           (volatile uint32_t *)0xfe036a88
- //15:0  the 2nd MR read result for rfc rate
-#define P_DMC_DRAM1_MRR1                           (volatile uint32_t *)0xfe036a8c
- //15:0  the 2nd MR read result for rfc rate
-//STICKY registers.
-//those register is for software save some temporary value. and because it's in RAM. it won't lose if DMC get reseted.
-#define P_DMC_STICKY_0                             (volatile uint32_t *)0xfe036800
-#define P_DMC_STICKY_1                             (volatile uint32_t *)0xfe036804
-#define P_DMC_STICKY_2                             (volatile uint32_t *)0xfe036808
-#define P_DMC_STICKY_3                             (volatile uint32_t *)0xfe03680c
-#define P_DMC_STICKY_4                             (volatile uint32_t *)0xfe036810
-#define P_DMC_STICKY_5                             (volatile uint32_t *)0xfe036814
-#define P_DMC_STICKY_6                             (volatile uint32_t *)0xfe036818
-#define P_DMC_STICKY_7                             (volatile uint32_t *)0xfe03681c
-#define P_DMC_STICKY_8                             (volatile uint32_t *)0xfe036820
-#define P_DMC_STICKY_9                             (volatile uint32_t *)0xfe036824
-#define P_DMC_STICKY_10                            (volatile uint32_t *)0xfe036828
-#define P_DMC_STICKY_11                            (volatile uint32_t *)0xfe03682c
-#define P_DMC_STICKY_12                            (volatile uint32_t *)0xfe036830
-#define P_DMC_STICKY_13                            (volatile uint32_t *)0xfe036834
-#define P_DMC_STICKY_14                            (volatile uint32_t *)0xfe036838
-#define P_DMC_STICKY_15                            (volatile uint32_t *)0xfe03683c
-#define P_DMC_STICKY_16                            (volatile uint32_t *)0xfe036840
-#define P_DMC_STICKY_17                            (volatile uint32_t *)0xfe036844
-#define P_DMC_STICKY_18                            (volatile uint32_t *)0xfe036848
-#define P_DMC_STICKY_19                            (volatile uint32_t *)0xfe03684c
-#define P_DMC_STICKY_20                            (volatile uint32_t *)0xfe036850
-#define P_DMC_STICKY_21                            (volatile uint32_t *)0xfe036854
-#define P_DMC_STICKY_22                            (volatile uint32_t *)0xfe036858
-#define P_DMC_STICKY_23                            (volatile uint32_t *)0xfe03685c
-#define P_DMC_STICKY_24                            (volatile uint32_t *)0xfe036860
-#define P_DMC_STICKY_25                            (volatile uint32_t *)0xfe036864
-#define P_DMC_STICKY_26                            (volatile uint32_t *)0xfe036868
-#define P_DMC_STICKY_27                            (volatile uint32_t *)0xfe03686c
-#define P_DMC_STICKY_28                            (volatile uint32_t *)0xfe036870
-#define P_DMC_STICKY_29                            (volatile uint32_t *)0xfe036874
-#define P_DMC_STICKY_30                            (volatile uint32_t *)0xfe036878
-#define P_DMC_STICKY_31                            (volatile uint32_t *)0xfe03687c
-#define P_DMC_STICKY_32                            (volatile uint32_t *)0xfe036880
-#define P_DMC_STICKY_33                            (volatile uint32_t *)0xfe036884
-#define P_DMC_STICKY_34                            (volatile uint32_t *)0xfe036888
-#define P_DMC_STICKY_35                            (volatile uint32_t *)0xfe03688c
-#define P_DMC_STICKY_36                            (volatile uint32_t *)0xfe036890
-#define P_DMC_STICKY_37                            (volatile uint32_t *)0xfe036894
-#define P_DMC_STICKY_38                            (volatile uint32_t *)0xfe036898
-#define P_DMC_STICKY_39                            (volatile uint32_t *)0xfe03689c
-#define P_DMC_STICKY_40                            (volatile uint32_t *)0xfe0368a0
-#define P_DMC_STICKY_41                            (volatile uint32_t *)0xfe0368a4
-#define P_DMC_STICKY_42                            (volatile uint32_t *)0xfe0368a8
-#define P_DMC_STICKY_43                            (volatile uint32_t *)0xfe0368ac
-#define P_DMC_STICKY_44                            (volatile uint32_t *)0xfe0368b0
-#define P_DMC_STICKY_45                            (volatile uint32_t *)0xfe0368b4
-#define P_DMC_STICKY_46                            (volatile uint32_t *)0xfe0368b8
-#define P_DMC_STICKY_47                            (volatile uint32_t *)0xfe0368bc
-#define P_DMC_STICKY_48                            (volatile uint32_t *)0xfe0368c0
-#define P_DMC_STICKY_49                            (volatile uint32_t *)0xfe0368c4
-#define P_DMC_STICKY_50                            (volatile uint32_t *)0xfe0368c8
-#define P_DMC_STICKY_51                            (volatile uint32_t *)0xfe0368cc
-#define P_DMC_STICKY_52                            (volatile uint32_t *)0xfe0368d0
-#define P_DMC_STICKY_53                            (volatile uint32_t *)0xfe0368d4
-#define P_DMC_STICKY_54                            (volatile uint32_t *)0xfe0368d8
-#define P_DMC_STICKY_55                            (volatile uint32_t *)0xfe0368dc
-#define P_DMC_STICKY_56                            (volatile uint32_t *)0xfe0368e0
-#define P_DMC_STICKY_57                            (volatile uint32_t *)0xfe0368e4
-#define P_DMC_STICKY_58                            (volatile uint32_t *)0xfe0368e8
-#define P_DMC_STICKY_59                            (volatile uint32_t *)0xfe0368ec
-#define P_DMC_STICKY_60                            (volatile uint32_t *)0xfe0368f0
-#define P_DMC_STICKY_61                            (volatile uint32_t *)0xfe0368f4
-#define P_DMC_STICKY_62                            (volatile uint32_t *)0xfe0368f8
-#define P_DMC_STICKY_63                            (volatile uint32_t *)0xfe0368fc
-//DMC Security control registers.
-//DMC use 15bits ARUSER/AWUSER bits to identify AXI input ports master ID and security requirement and the necessary subID for bandwidth monitor protection functions. .
-//bit 7:0.   for upto 256 Master-ID.
-//bit  14:8.  for each Master-ID, the master can use those bits to define particular security requirements or bandwidth and protection function special requirements.
-//region0(RANGE0) related register.
-#define P_DMC_SEC_RANGE0_STA                       (volatile uint32_t *)0xfe037000
-  //bit 31:20. not used.
-  //bit 19:0.   region start address AXI address [31:12] unit 4Kbyte.
-#define P_DMC_SEC_RANGE0_EDA                       (volatile uint32_t *)0xfe037004
-  //bit 31:20. not used.
-  //bit 19:0.   region end address.for AXI address[33:12]. unit 4Kbyte.
-#define P_DMC_SEC_RANGE0_CTRL                      (volatile uint32_t *)0xfe037008
-  //bit 7:5.range0_security_level
-  //bit 4.  range0_prot_en. range 0 protect monitor function control
-  //bit 3.  range0_des_en. range 0 data scrambling enable
-  //bit 2.  range0 lock.
-  //bit 1.  range0 key select
-  //bit 0.  range0 enable
-#define P_DMC_SEC_RANGE0_RID_CTRL0                 (volatile uint32_t *)0xfe03700c
-  //range_rd_sid_en[31:0];
-#define P_DMC_SEC_RANGE0_RID_CTRL1                 (volatile uint32_t *)0xfe037010
-  //range_rd_sid_en[63:32];
-#define P_DMC_SEC_RANGE0_RID_CTRL2                 (volatile uint32_t *)0xfe037014
-  //range_rd_sid_en[95:64];
-#define P_DMC_SEC_RANGE0_RID_CTRL3                 (volatile uint32_t *)0xfe037018
-  //not used
-#define P_DMC_SEC_RANGE0_WID_CTRL0                 (volatile uint32_t *)0xfe037020
-  //range_rd_sid_en[31:0];
-#define P_DMC_SEC_RANGE0_WID_CTRL1                 (volatile uint32_t *)0xfe037024
-  //range_rd_sid_en[63:32];
-#define P_DMC_SEC_RANGE0_WID_CTRL2                 (volatile uint32_t *)0xfe037028
-  //range_rd_sid_en[95:64];
-#define P_DMC_SEC_RANGE0_WID_CTRL3                 (volatile uint32_t *)0xfe03702c
-  //not used
-//region0(RANGE1) related register.
-#define P_DMC_SEC_RANGE1_STA                       (volatile uint32_t *)0xfe037040
-#define P_DMC_SEC_RANGE1_EDA                       (volatile uint32_t *)0xfe037044
-#define P_DMC_SEC_RANGE1_CTRL                      (volatile uint32_t *)0xfe037048
-#define P_DMC_SEC_RANGE1_RID_CTRL0                 (volatile uint32_t *)0xfe03704c
-#define P_DMC_SEC_RANGE1_RID_CTRL1                 (volatile uint32_t *)0xfe037050
-#define P_DMC_SEC_RANGE1_RID_CTRL2                 (volatile uint32_t *)0xfe037054
-#define P_DMC_SEC_RANGE1_RID_CTRL3                 (volatile uint32_t *)0xfe037058
-#define P_DMC_SEC_RANGE1_WID_CTRL0                 (volatile uint32_t *)0xfe037060
-#define P_DMC_SEC_RANGE1_WID_CTRL1                 (volatile uint32_t *)0xfe037064
-#define P_DMC_SEC_RANGE1_WID_CTRL2                 (volatile uint32_t *)0xfe037068
-#define P_DMC_SEC_RANGE1_WID_CTRL3                 (volatile uint32_t *)0xfe03706c
-//region2(RANGE2) related register.
-#define P_DMC_SEC_RANGE2_STA                       (volatile uint32_t *)0xfe037080
-#define P_DMC_SEC_RANGE2_EDA                       (volatile uint32_t *)0xfe037084
-#define P_DMC_SEC_RANGE2_CTRL                      (volatile uint32_t *)0xfe037088
-#define P_DMC_SEC_RANGE2_RID_CTRL0                 (volatile uint32_t *)0xfe03708c
-#define P_DMC_SEC_RANGE2_RID_CTRL1                 (volatile uint32_t *)0xfe037090
-#define P_DMC_SEC_RANGE2_RID_CTRL2                 (volatile uint32_t *)0xfe037094
-#define P_DMC_SEC_RANGE2_RID_CTRL3                 (volatile uint32_t *)0xfe037098
-#define P_DMC_SEC_RANGE2_WID_CTRL0                 (volatile uint32_t *)0xfe0370a0
-#define P_DMC_SEC_RANGE2_WID_CTRL1                 (volatile uint32_t *)0xfe0370a4
-#define P_DMC_SEC_RANGE2_WID_CTRL2                 (volatile uint32_t *)0xfe0370a8
-#define P_DMC_SEC_RANGE2_WID_CTRL3                 (volatile uint32_t *)0xfe0370ac
-//region3(RANGE3) related register.
-#define P_DMC_SEC_RANGE3_STA                       (volatile uint32_t *)0xfe0370c0
-#define P_DMC_SEC_RANGE3_EDA                       (volatile uint32_t *)0xfe0370c4
-#define P_DMC_SEC_RANGE3_CTRL                      (volatile uint32_t *)0xfe0370c8
-#define P_DMC_SEC_RANGE3_RID_CTRL0                 (volatile uint32_t *)0xfe0370cc
-#define P_DMC_SEC_RANGE3_RID_CTRL1                 (volatile uint32_t *)0xfe0370d0
-#define P_DMC_SEC_RANGE3_RID_CTRL2                 (volatile uint32_t *)0xfe0370d4
-#define P_DMC_SEC_RANGE3_RID_CTRL3                 (volatile uint32_t *)0xfe0370d8
-#define P_DMC_SEC_RANGE3_WID_CTRL0                 (volatile uint32_t *)0xfe0370e0
-#define P_DMC_SEC_RANGE3_WID_CTRL1                 (volatile uint32_t *)0xfe0370e4
-#define P_DMC_SEC_RANGE3_WID_CTRL2                 (volatile uint32_t *)0xfe0370e8
-#define P_DMC_SEC_RANGE3_WID_CTRL3                 (volatile uint32_t *)0xfe0370ec
-//region4(RANGE4) related register.
-#define P_DMC_SEC_RANGE4_STA                       (volatile uint32_t *)0xfe037100
-#define P_DMC_SEC_RANGE4_EDA                       (volatile uint32_t *)0xfe037104
-#define P_DMC_SEC_RANGE4_CTRL                      (volatile uint32_t *)0xfe037108
-#define P_DMC_SEC_RANGE4_RID_CTRL0                 (volatile uint32_t *)0xfe03710c
-#define P_DMC_SEC_RANGE4_RID_CTRL1                 (volatile uint32_t *)0xfe037110
-#define P_DMC_SEC_RANGE4_RID_CTRL2                 (volatile uint32_t *)0xfe037114
-#define P_DMC_SEC_RANGE4_RID_CTRL3                 (volatile uint32_t *)0xfe037118
-#define P_DMC_SEC_RANGE4_WID_CTRL0                 (volatile uint32_t *)0xfe037120
-#define P_DMC_SEC_RANGE4_WID_CTRL1                 (volatile uint32_t *)0xfe037124
-#define P_DMC_SEC_RANGE4_WID_CTRL2                 (volatile uint32_t *)0xfe037128
-#define P_DMC_SEC_RANGE4_WID_CTRL3                 (volatile uint32_t *)0xfe03712c
-//region5(RANGE5) related register.
-#define P_DMC_SEC_RANGE5_STA                       (volatile uint32_t *)0xfe037140
-#define P_DMC_SEC_RANGE5_EDA                       (volatile uint32_t *)0xfe037144
-#define P_DMC_SEC_RANGE5_CTRL                      (volatile uint32_t *)0xfe037148
-#define P_DMC_SEC_RANGE5_RID_CTRL0                 (volatile uint32_t *)0xfe03714c
-#define P_DMC_SEC_RANGE5_RID_CTRL1                 (volatile uint32_t *)0xfe037150
-#define P_DMC_SEC_RANGE5_RID_CTRL2                 (volatile uint32_t *)0xfe037154
-#define P_DMC_SEC_RANGE5_RID_CTRL3                 (volatile uint32_t *)0xfe037158
-#define P_DMC_SEC_RANGE5_WID_CTRL0                 (volatile uint32_t *)0xfe037160
-#define P_DMC_SEC_RANGE5_WID_CTRL1                 (volatile uint32_t *)0xfe037164
-#define P_DMC_SEC_RANGE5_WID_CTRL2                 (volatile uint32_t *)0xfe037168
-#define P_DMC_SEC_RANGE5_WID_CTRL3                 (volatile uint32_t *)0xfe03716c
-//region6(RANGE6) related register.
-#define P_DMC_SEC_RANGE6_STA                       (volatile uint32_t *)0xfe037180
-#define P_DMC_SEC_RANGE6_EDA                       (volatile uint32_t *)0xfe037184
-#define P_DMC_SEC_RANGE6_CTRL                      (volatile uint32_t *)0xfe037188
-#define P_DMC_SEC_RANGE6_RID_CTRL0                 (volatile uint32_t *)0xfe03718c
-#define P_DMC_SEC_RANGE6_RID_CTRL1                 (volatile uint32_t *)0xfe037190
-#define P_DMC_SEC_RANGE6_RID_CTRL2                 (volatile uint32_t *)0xfe037194
-#define P_DMC_SEC_RANGE6_RID_CTRL3                 (volatile uint32_t *)0xfe037198
-#define P_DMC_SEC_RANGE6_WID_CTRL0                 (volatile uint32_t *)0xfe0371a0
-#define P_DMC_SEC_RANGE6_WID_CTRL1                 (volatile uint32_t *)0xfe0371a4
-#define P_DMC_SEC_RANGE6_WID_CTRL2                 (volatile uint32_t *)0xfe0371a8
-#define P_DMC_SEC_RANGE6_WID_CTRL3                 (volatile uint32_t *)0xfe0371ac
-//region7(RANGE7) related register.
-#define P_DMC_SEC_RANGE7_STA                       (volatile uint32_t *)0xfe0371c0
-#define P_DMC_SEC_RANGE7_EDA                       (volatile uint32_t *)0xfe0371c4
-#define P_DMC_SEC_RANGE7_CTRL                      (volatile uint32_t *)0xfe0371c8
-#define P_DMC_SEC_RANGE7_RID_CTRL0                 (volatile uint32_t *)0xfe0371cc
-#define P_DMC_SEC_RANGE7_RID_CTRL1                 (volatile uint32_t *)0xfe0371d0
-#define P_DMC_SEC_RANGE7_RID_CTRL2                 (volatile uint32_t *)0xfe0371d4
-#define P_DMC_SEC_RANGE7_RID_CTRL3                 (volatile uint32_t *)0xfe0371d8
-#define P_DMC_SEC_RANGE7_WID_CTRL0                 (volatile uint32_t *)0xfe0371e0
-#define P_DMC_SEC_RANGE7_WID_CTRL1                 (volatile uint32_t *)0xfe0371e4
-#define P_DMC_SEC_RANGE7_WID_CTRL2                 (volatile uint32_t *)0xfe0371e8
-#define P_DMC_SEC_RANGE7_WID_CTRL3                 (volatile uint32_t *)0xfe0371ec
-//region8(RANGE8) related register.
-#define P_DMC_SEC_RANGE8_STA                       (volatile uint32_t *)0xfe037200
-#define P_DMC_SEC_RANGE8_EDA                       (volatile uint32_t *)0xfe037204
-#define P_DMC_SEC_RANGE8_CTRL                      (volatile uint32_t *)0xfe037208
-#define P_DMC_SEC_RANGE8_RID_CTRL0                 (volatile uint32_t *)0xfe03720c
-#define P_DMC_SEC_RANGE8_RID_CTRL1                 (volatile uint32_t *)0xfe037210
-#define P_DMC_SEC_RANGE8_RID_CTRL2                 (volatile uint32_t *)0xfe037214
-#define P_DMC_SEC_RANGE8_RID_CTRL3                 (volatile uint32_t *)0xfe037218
-#define P_DMC_SEC_RANGE8_WID_CTRL0                 (volatile uint32_t *)0xfe037220
-#define P_DMC_SEC_RANGE8_WID_CTRL1                 (volatile uint32_t *)0xfe037224
-#define P_DMC_SEC_RANGE8_WID_CTRL2                 (volatile uint32_t *)0xfe037228
-#define P_DMC_SEC_RANGE8_WID_CTRL3                 (volatile uint32_t *)0xfe03722c
-//region9(RANGE9) related register.
-#define P_DMC_SEC_RANGE9_STA                       (volatile uint32_t *)0xfe037240
-#define P_DMC_SEC_RANGE9_EDA                       (volatile uint32_t *)0xfe037244
-#define P_DMC_SEC_RANGE9_CTRL                      (volatile uint32_t *)0xfe037248
-#define P_DMC_SEC_RANGE9_RID_CTRL0                 (volatile uint32_t *)0xfe03724c
-#define P_DMC_SEC_RANGE9_RID_CTRL1                 (volatile uint32_t *)0xfe037250
-#define P_DMC_SEC_RANGE9_RID_CTRL2                 (volatile uint32_t *)0xfe037254
-#define P_DMC_SEC_RANGE9_RID_CTRL3                 (volatile uint32_t *)0xfe037258
-#define P_DMC_SEC_RANGE9_WID_CTRL0                 (volatile uint32_t *)0xfe037260
-#define P_DMC_SEC_RANGE9_WID_CTRL1                 (volatile uint32_t *)0xfe037264
-#define P_DMC_SEC_RANGE9_WID_CTRL2                 (volatile uint32_t *)0xfe037268
-#define P_DMC_SEC_RANGE9_WID_CTRL3                 (volatile uint32_t *)0xfe03726c
-//region10(RANGE10) related register.
-#define P_DMC_SEC_RANGE10_STA                      (volatile uint32_t *)0xfe037280
-#define P_DMC_SEC_RANGE10_EDA                      (volatile uint32_t *)0xfe037284
-#define P_DMC_SEC_RANGE10_CTRL                     (volatile uint32_t *)0xfe037288
-#define P_DMC_SEC_RANGE10_RID_CTRL0                (volatile uint32_t *)0xfe03728c
-#define P_DMC_SEC_RANGE10_RID_CTRL1                (volatile uint32_t *)0xfe037290
-#define P_DMC_SEC_RANGE10_RID_CTRL2                (volatile uint32_t *)0xfe037294
-#define P_DMC_SEC_RANGE10_RID_CTRL3                (volatile uint32_t *)0xfe037298
-#define P_DMC_SEC_RANGE10_WID_CTRL0                (volatile uint32_t *)0xfe0372a0
-#define P_DMC_SEC_RANGE10_WID_CTRL1                (volatile uint32_t *)0xfe0372a4
-#define P_DMC_SEC_RANGE10_WID_CTRL2                (volatile uint32_t *)0xfe0372a8
-#define P_DMC_SEC_RANGE10_WID_CTRL3                (volatile uint32_t *)0xfe0372ac
-//region9(RANGE11) related register.
-#define P_DMC_SEC_RANGE11_STA                      (volatile uint32_t *)0xfe0372c0
-#define P_DMC_SEC_RANGE11_EDA                      (volatile uint32_t *)0xfe0372c4
-#define P_DMC_SEC_RANGE11_CTRL                     (volatile uint32_t *)0xfe0372c8
-#define P_DMC_SEC_RANGE11_RID_CTRL0                (volatile uint32_t *)0xfe0372cc
-#define P_DMC_SEC_RANGE11_RID_CTRL1                (volatile uint32_t *)0xfe0372d0
-#define P_DMC_SEC_RANGE11_RID_CTRL2                (volatile uint32_t *)0xfe0372d4
-#define P_DMC_SEC_RANGE11_RID_CTRL3                (volatile uint32_t *)0xfe0372d8
-#define P_DMC_SEC_RANGE11_WID_CTRL0                (volatile uint32_t *)0xfe0372e0
-#define P_DMC_SEC_RANGE11_WID_CTRL1                (volatile uint32_t *)0xfe0372e4
-#define P_DMC_SEC_RANGE11_WID_CTRL2                (volatile uint32_t *)0xfe0372e8
-#define P_DMC_SEC_RANGE11_WID_CTRL3                (volatile uint32_t *)0xfe0372ec
-//region12(RANGE12) related register.
-#define P_DMC_SEC_RANGE12_STA                      (volatile uint32_t *)0xfe037300
-#define P_DMC_SEC_RANGE12_EDA                      (volatile uint32_t *)0xfe037304
-#define P_DMC_SEC_RANGE12_CTRL                     (volatile uint32_t *)0xfe037308
-#define P_DMC_SEC_RANGE12_RID_CTRL0                (volatile uint32_t *)0xfe03730c
-#define P_DMC_SEC_RANGE12_RID_CTRL1                (volatile uint32_t *)0xfe037310
-#define P_DMC_SEC_RANGE12_RID_CTRL2                (volatile uint32_t *)0xfe037314
-#define P_DMC_SEC_RANGE12_RID_CTRL3                (volatile uint32_t *)0xfe037318
-#define P_DMC_SEC_RANGE12_WID_CTRL0                (volatile uint32_t *)0xfe037320
-#define P_DMC_SEC_RANGE12_WID_CTRL1                (volatile uint32_t *)0xfe037324
-#define P_DMC_SEC_RANGE12_WID_CTRL2                (volatile uint32_t *)0xfe037328
-#define P_DMC_SEC_RANGE12_WID_CTRL3                (volatile uint32_t *)0xfe03732c
-//region13(RANGE13) related register.
-#define P_DMC_SEC_RANGE13_STA                      (volatile uint32_t *)0xfe037340
-#define P_DMC_SEC_RANGE13_EDA                      (volatile uint32_t *)0xfe037344
-#define P_DMC_SEC_RANGE13_CTRL                     (volatile uint32_t *)0xfe037348
-#define P_DMC_SEC_RANGE13_RID_CTRL0                (volatile uint32_t *)0xfe03734c
-#define P_DMC_SEC_RANGE13_RID_CTRL1                (volatile uint32_t *)0xfe037350
-#define P_DMC_SEC_RANGE13_RID_CTRL2                (volatile uint32_t *)0xfe037354
-#define P_DMC_SEC_RANGE13_RID_CTRL3                (volatile uint32_t *)0xfe037358
-#define P_DMC_SEC_RANGE13_WID_CTRL0                (volatile uint32_t *)0xfe037360
-#define P_DMC_SEC_RANGE13_WID_CTRL1                (volatile uint32_t *)0xfe037364
-#define P_DMC_SEC_RANGE13_WID_CTRL2                (volatile uint32_t *)0xfe037368
-#define P_DMC_SEC_RANGE13_WID_CTRL3                (volatile uint32_t *)0xfe03736c
-//region14(RANGE14) related register.
-#define P_DMC_SEC_RANGE14_STA                      (volatile uint32_t *)0xfe037380
-#define P_DMC_SEC_RANGE14_EDA                      (volatile uint32_t *)0xfe037384
-#define P_DMC_SEC_RANGE14_CTRL                     (volatile uint32_t *)0xfe037388
-#define P_DMC_SEC_RANGE14_RID_CTRL0                (volatile uint32_t *)0xfe03738c
-#define P_DMC_SEC_RANGE14_RID_CTRL1                (volatile uint32_t *)0xfe037390
-#define P_DMC_SEC_RANGE14_RID_CTRL2                (volatile uint32_t *)0xfe037394
-#define P_DMC_SEC_RANGE14_RID_CTRL3                (volatile uint32_t *)0xfe037398
-#define P_DMC_SEC_RANGE14_WID_CTRL0                (volatile uint32_t *)0xfe0373a0
-#define P_DMC_SEC_RANGE14_WID_CTRL1                (volatile uint32_t *)0xfe0373a4
-#define P_DMC_SEC_RANGE14_WID_CTRL2                (volatile uint32_t *)0xfe0373a8
-#define P_DMC_SEC_RANGE14_WID_CTRL3                (volatile uint32_t *)0xfe0373ac
-//region15(RANGE15) related register.
-#define P_DMC_SEC_RANGE15_STA                      (volatile uint32_t *)0xfe0373c0
-#define P_DMC_SEC_RANGE15_EDA                      (volatile uint32_t *)0xfe0373c4
-#define P_DMC_SEC_RANGE15_CTRL                     (volatile uint32_t *)0xfe0373c8
-#define P_DMC_SEC_RANGE15_RID_CTRL0                (volatile uint32_t *)0xfe0373cc
-#define P_DMC_SEC_RANGE15_RID_CTRL1                (volatile uint32_t *)0xfe0373d0
-#define P_DMC_SEC_RANGE15_RID_CTRL2                (volatile uint32_t *)0xfe0373d4
-#define P_DMC_SEC_RANGE15_RID_CTRL3                (volatile uint32_t *)0xfe0373d8
-#define P_DMC_SEC_RANGE15_WID_CTRL0                (volatile uint32_t *)0xfe0373e0
-#define P_DMC_SEC_RANGE15_WID_CTRL1                (volatile uint32_t *)0xfe0373e4
-#define P_DMC_SEC_RANGE15_WID_CTRL2                (volatile uint32_t *)0xfe0373e8
-#define P_DMC_SEC_RANGE15_WID_CTRL3                (volatile uint32_t *)0xfe0373ec
-#define P_DMC_DES_PADDING                          (volatile uint32_t *)0xfe037400
-  //bit 31:0 | 0 | des_pading | 32bits address padding used for DES dkey generation.
-#define P_DMC_DES_CTRL                             (volatile uint32_t *)0xfe037404
- //bit 1 | 0 | GLOBAL_DES_EN |  1: Global DES enable. 0 : global DES disable.  default is 0.
- //bit 0 | 0 | DES_lock  |  one time lock bit. after write 1 to this bit, DMC_DES_CTRL,DMC_DES_PADDING  can't be write and read.
-#define P_DMC_DES_CTRL1                            (volatile uint32_t *)0xfe037428
- //bit 31:16 : reserved
- //bit 15 : range15_des_en policy : 1 range15_des_en = range15_local_des_en && GLOBAL_DES_EN. 0 : range15_des_en = range15_local_des_en ||  GLOBAL_DES_EN.
- //bit 14 : range14_des_en policy : 1 range14_des_en = range14_local_des_en && GLOBAL_DES_EN. 0 : range14_des_en = range14_local_des_en ||  GLOBAL_DES_EN.
- //bit 13 : range13_des_en policy : 1 range13_des_en = range13_local_des_en && GLOBAL_DES_EN. 0 : range13_des_en = range13_local_des_en ||  GLOBAL_DES_EN.
- //bit 12 : range12_des_en policy : 1 range12_des_en = range12_local_des_en && GLOBAL_DES_EN. 0 : range12_des_en = range12_local_des_en ||  GLOBAL_DES_EN.
- //bit 11 : range11_des_en policy : 1 range11_des_en = range11_local_des_en && GLOBAL_DES_EN. 0 : range11_des_en = range11_local_des_en ||  GLOBAL_DES_EN.
- //bit 10 : range10_des_en policy : 1 range11_des_en = range10_local_des_en && GLOBAL_DES_EN. 0 : range10_des_en = range10_local_des_en ||  GLOBAL_DES_EN.
- //bit  9 : range9_des_en policy  : 1  range9_des_en =  range9_local_des_en && GLOBAL_DES_EN. 0 :  range9_des_en =  range9_local_des_en ||  GLOBAL_DES_EN.
- //bit  8 : range8_des_en policy  : 1  range8_des_en =  range8_local_des_en && GLOBAL_DES_EN. 0 :  range8_des_en =  range8_local_des_en ||  GLOBAL_DES_EN.
- //bit  7 : range7_des_en policy  : 1  range7_des_en =  range7_local_des_en && GLOBAL_DES_EN. 0 :  range7_des_en =  range7_local_des_en ||  GLOBAL_DES_EN.
- //bit  6 : range6_des_en policy  : 1  range6_des_en =  range6_local_des_en && GLOBAL_DES_EN. 0 :  range6_des_en =  range6_local_des_en ||  GLOBAL_DES_EN.
- //bit  5 : range5_des_en policy  : 1  range5_des_en =  range5_local_des_en && GLOBAL_DES_EN. 0 :  range5_des_en =  range5_local_des_en ||  GLOBAL_DES_EN.
- //bit  4 : range4_des_en policy  : 1  range4_des_en =  range4_local_des_en && GLOBAL_DES_EN. 0 :  range4_des_en =  range4_local_des_en ||  GLOBAL_DES_EN.
- //bit  3 : range3_des_en policy  : 1  range3_des_en =  range3_local_des_en && GLOBAL_DES_EN. 0 :  range3_des_en =  range3_local_des_en ||  GLOBAL_DES_EN.
- //bit  2 : range2_des_en policy  : 1  range2_des_en =  range2_local_des_en && GLOBAL_DES_EN. 0 :  range2_des_en =  range2_local_des_en ||  GLOBAL_DES_EN.
- //bit  1 : range1_des_en policy  : 1  range1_des_en =  range1_local_des_en && GLOBAL_DES_EN. 0 :  range1_des_en =  range1_local_des_en ||  GLOBAL_DES_EN.
- //bit  0 : range0_des_en policy  : 1  range0_des_en =  range0_local_des_en && GLOBAL_DES_EN. 0 :  range0_des_en =  range0_local_des_en ||  GLOBAL_DES_EN.
-#define P_DMC_DES_KEY0_REG0                        (volatile uint32_t *)0xfe037408
-#define P_DMC_DES_KEY0_REG1                        (volatile uint32_t *)0xfe03740c
-#define P_DMC_DES_KEY0_REG2                        (volatile uint32_t *)0xfe037410
-#define P_DMC_DES_KEY0_REG3                        (volatile uint32_t *)0xfe037414
-#define P_DMC_DES_KEY1_REG0                        (volatile uint32_t *)0xfe037418
-#define P_DMC_DES_KEY1_REG1                        (volatile uint32_t *)0xfe03741c
-#define P_DMC_DES_KEY1_REG2                        (volatile uint32_t *)0xfe037420
-#define P_DMC_DES_KEY1_REG3                        (volatile uint32_t *)0xfe037424
-//FROM SC2, the APB bus provided Master ID through PUSER.
-//after ID_REMAP, this PUSE provided 8 master ID type.
-//they are:
-//  8'b0000_0001 : TEE
-//  8'h0000_0010 : REE
-//  8'h0000_0100 : JTAG
-//  8'h0000_1000 : AOCPU
-//  8'h0001_0000 : DSPA
-//  8'h0010_0000 : DSPB
-//  no others.
-//FROM SC2, the APB bus provided Master ID through PUSER signals.
-//there's total 8 master IDs could access DMC non-secure registers.
-//we assign 1 control bit for each APB Master and each DMC non-secure register domains
-//and we added one lock bits to lock this setting can't be modified any more.
-#define P_DDR_APB_SEC_CTRL0                        (volatile uint32_t *)0xfe037440
-   // APB access  control for dmc REQUEST control register access control register.
-   // default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL1                        (volatile uint32_t *)0xfe037444
-   // APB access control for DMC DRAM timing parameter and DFI interface registers.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL2                        (volatile uint32_t *)0xfe037448
-   // APB access control for DMC PLL clock frequency control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL3                        (volatile uint32_t *)0xfe03744c
-   // APB access control for DMC sticky control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL4                        (volatile uint32_t *)0xfe037450
-   // APB access control for DMC test control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL5                        (volatile uint32_t *)0xfe037454
-   // APB access control for DMC clk reset control register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL6                        (volatile uint32_t *)0xfe037458
-   // APB access control for DMC protection register.
-   //default : 0x005
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL7                        (volatile uint32_t *)0xfe03745c
-   // APB access control for DMC normal register.
-   //default : 0x0ff
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-#define P_DDR_APB_SEC_CTRL8                        (volatile uint32_t *)0xfe037460
-   // APB access control for DDR PHY group 0 registers.
-   //default : 0x005
-   //bit 23:16. PHY PRODUCTION control register enable.
-   //bit 10  PHY IMEM control 1: force PHY IMEM output 0. 0: normal working mode.
-   //bit 9   PHY DMEM control 1: force PHY DMEM output 0. 0: normal working mode.
-   //bit 8    lock bit if this bit =  1,  this register is locked and cannot modified anymore.
-   //bit 7:0.  APB access enable for each APB user ID. one ID one bit. 1: enable. 0 disable.
-//registers to check the security protection and watch point error information.
-#define P_DMC_SEC_STATUS                           (volatile uint32_t *)0xfe037468
- //bit 31~2. not used.
- //bit 6
- //bit 5
- //bit 4
- //bit 3   1 : normal security register write violation.( APB bus WDATA not equal to the register value when APB write).  write 1 to clean this bit to 0.
- //bit 2   sec_alert.   1 DMC security register alert function triggered. can't clean. only reset DMC can clear this bit.
- //bit 1   write security violation.
- //bit 0.  read security violation.
-#define P_DMC_VIO_ADDR0                            (volatile uint32_t *)0xfe03746c
-  //ddr0 write secure violation address[31:0].
-#define P_DMC_VIO_ADDR1                            (volatile uint32_t *)0xfe037470
-  //bit 31:12 . not used. always 0.
-  //11.    ddr0 write address secure check error.
-  //10     ddr0 write address overflow or not in this DDR channel.
-  //9:0   ddr0_write violation USER BIT.
-#define P_DMC_VIO_ADDR2                            (volatile uint32_t *)0xfe037474
-  //ddr0 read secure violation address[31:0]
-#define P_DMC_VIO_ADDR3                            (volatile uint32_t *)0xfe037478
-  //bit 31:12 not used.
-  //11.    ddr0 read address secure check error.
-  //10     ddr0 read address overflow or not in this DDR channel.
-  //9:0   ddr0_read violation USER BIT.
-//16Gbyte AXI address remap tp 4Gbyte DDR address.
-#define P_DMC_AXI2DDR0                             (volatile uint32_t *)0xfe037480
-  //for AXI address 0x0_2000_0000 ~ 0x0_3fff_ffff
-  //bit 31:8. not used.
-  //bit 7:  pure 16bit DDR SDRAM
-  //bit 6.  addr_top vio enable
-  //bit 5. rank_sel.  1 : rank1.  0 : rank0.
-  //bit 4  16bit in 32bit DDR SDRAM.
-  //bti 3:0. temp addr[31:28]
-#define P_DMC_AXI2DDR1                             (volatile uint32_t *)0xfe037484
-#define P_DMC_AXI2DDR2                             (volatile uint32_t *)0xfe037488
-#define P_DMC_AXI2DDR3                             (volatile uint32_t *)0xfe03748c
-#define P_DMC_AXI2DDR4                             (volatile uint32_t *)0xfe037490
-#define P_DMC_AXI2DDR5                             (volatile uint32_t *)0xfe037494
-#define P_DMC_AXI2DDR6                             (volatile uint32_t *)0xfe037498
-#define P_DMC_AXI2DDR7                             (volatile uint32_t *)0xfe03749c
-#define P_DMC_AXI2DDR8                             (volatile uint32_t *)0xfe0374a0
-#define P_DMC_AXI2DDR9                             (volatile uint32_t *)0xfe0374a4
-#define P_DMC_AXI2DDRA                             (volatile uint32_t *)0xfe0374a8
-#define P_DMC_AXI2DDRB                             (volatile uint32_t *)0xfe0374ac
-#define P_DMC_AXI2DDRC                             (volatile uint32_t *)0xfe0374b0
-#define P_DMC_AXI2DDRD                             (volatile uint32_t *)0xfe0374b4
-#define P_DMC_AXI2DDRE                             (volatile uint32_t *)0xfe0374b8
-#define P_DMC_AXI2DDRF                             (volatile uint32_t *)0xfe0374bc
-#define P_DMC_DDR_CTRL                             (volatile uint32_t *)0xfe037500
-  //bit 24:22   3'b000 : ddr3 mode.
-              //3'b001 : ddr4 mode.
-              //3'b011 : lpddr4 mode.
-   //bit 21.   rank1 enable bit. if 1,  rank1 used the address map is as bit 5:3 defined.
-   //bit 20    DDR4 BG1 enable bit.
-   //bit 18:   ddrphy_16b, DDR PHY DDR SDRAM data bits width.  1: 16bits. 0 : 32 bits.
-   //bit 16.   ddr_16b,   1: only use 16bits data in a 32bits DDR PHY data interface. 0 : normal data interface.
-   //bit 11:9:  strip pos
-   //bit 8: channel 1 enable
-  //bit 7:4 :  ddr1_size.  DDR rank1 size control.
-     //4'b0000 : DDR rank 1 is 128Mbyte.
-     //4'b0001 : DDR rank 1 is 256Mbyte.
-     //4'b0010 : DDR rank 1 is 512Mbyte.
-     //4'b0011 : DDR rank 1 is 1Gbyte.
-     //4'b0100 : DDR rank 1 is 2Gbyte.
-     //4'b1000 : DDR rank 1 is 192Mbyte.
-     //4'b1001 : DDR rank 1 is 384Mbyte.
-     //4'b1010 : DDR rank 1 is 768Mbyte.
-     //4'b1011 : DDR rank 1 is 1.5Gbyte.
-     //4'b1100 : DDR rank 1 is 3Gbyte.
-     //others :  reserved.
-  //bit 3:0  :  ddr0_size. DDR rank0 size control.
-     //4'b0000 : DDR rank 0 is 128Mbyte.
-     //4'b0001 : DDR rank 0 is 256Mbyte.
-     //4'b0010 : DDR rank 0 is 512Mbyte.
-     //4'b0011 : DDR rank 0 is 1Gbyte.
-     //4'b0100 : DDR rank 0 is 2Gbyte.
-     //4'b1000 : DDR rank 0 is 192Mbyte.
-     //4'b1001 : DDR rank 0 is 384Mbyte.
-     //4'b1010 : DDR rank 0 is 768Mbyte.
-     //4'b1011 : DDR rank 0 is 1.5Gbyte.
-     //4'b1100 : DDR rank 0 is 3Gbyte.
-     //others :  reserved.
-#define P_DMC_DDR_CTRL1                            (volatile uint32_t *)0xfe037504
-  //bit 8.  dmc_ba_hash_en,  1: enable bank[2:0] more disorder
-  //bit 7.  dmc_fake_chan_en, in DDR3/DDR4 case, enable this feature to reuse some write read buffer for DFI1 channel in LPDDR4 mode.
-  //bit 6.  strict security level control for DMA channel. 1: only sec level input == region sec level is allowed.  0:  sec_level input >= region sec level is allow to write.
-#define P_DMC_RANK0_ADDRMAP_0                      (volatile uint32_t *)0xfe037508
-  //29:25 ca8.
-  //24:20 ca7.
-  //19:15 ca6.
-  //14:10 ca5.
-  //9:5   ca4.
-  //4:0   ca3.
-#define P_DMC_RANK0_ADDRMAP_1                      (volatile uint32_t *)0xfe03750c
-  //29:25 ra2.
-  //24:20 ra1.
-  //19:15 ra0.
-  //14:10 ca11.
-  //9:5   ca10.
-  //4:0   ca9.
-#define P_DMC_RANK0_ADDRMAP_2                      (volatile uint32_t *)0xfe037510
-  //29:25 ra8.
-  //24:20 ra7.
-  //19:15 ra6.
-  //14:10 ra5.
-  //9:5   ra4.
-  //4:0   ra3.
-#define P_DMC_RANK0_ADDRMAP_3                      (volatile uint32_t *)0xfe037514
-  //29:25 ra14.
-  //24:20 ra13.
-  //19:15 ra12.
-  //14:10 ra11.
-  //9:5   ra10.
-  //4:0   ra9.
-#define P_DMC_RANK0_ADDRMAP_4                      (volatile uint32_t *)0xfe037518
-  //29:25 ra16
-  //24:20 bg1
-  //19:15 ba2.
-  //14:10 ba1.
-  //9:5   ba0.
-  //4:0   ra15.
-#define P_DMC_RANK1_ADDRMAP_0                      (volatile uint32_t *)0xfe037520
-#define P_DMC_RANK1_ADDRMAP_1                      (volatile uint32_t *)0xfe037524
-#define P_DMC_RANK1_ADDRMAP_2                      (volatile uint32_t *)0xfe037528
-#define P_DMC_RANK1_ADDRMAP_3                      (volatile uint32_t *)0xfe03752c
-#define P_DMC_RANK1_ADDRMAP_4                      (volatile uint32_t *)0xfe037530
-//DMC TEST.
-#define P_DMC_TEST_STA                             (volatile uint32_t *)0xfe037940
-  //test start address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
-  //                     for sha mode,      address must be in 64 bytes boundary. that mean the last 6 bits must be 0.
-#define P_DMC_TEST_EDA                             (volatile uint32_t *)0xfe037944
-  //test end address.  for non-sha mode,  the last 5 bits would be ignored. the test address at 32bytes boundary.
-  //                   for sha mode,       address must be in 64 bytes boundary. that mean the last 6bits must be 1.
-#define P_DMC_TEST_CTRL                            (volatile uint32_t *)0xfe037948
-   //bit 31.  enable test.
-   //bit 30.  when enable test, enable the write to DDR function.
-   //bit 29.  when enable test, enable the read from DDR function.
-   //bit 28.  when enable test,  enable the sha calculation function  must be same as read enable but without write function.
-   //bit 27.  enabe to compare data.  when do the read enable to enable the error comparison. suppose the read data should be same as the data in the write buffer.
-   //bit 26.  0: save sha result to test_sha_message registers.  1 : don't save.
-   //bit 25.  address generation type.  0: continuous increase the address in the range of test start address and test end address.
-   //                                   1: test module would pick the random address from test start address  and test end address.
-   //bit 24.  done type.      0 : use the DMC_TEST_NUM register as the counter of test numbers.
-   //                             for write if the write command number == the DMC_TEST_NUM, the write is done.
-   //                             for read if the read command number == the DMC TEST_num, the read id done. for one read command can be repeated repeat number times.
-   //                         1 : finshed at end address.
-   //bit 23.  wdata type.     1 : the first write is {WD3, WD2,WD1,WD0}, then the latter is the previous data plus a pattern.( { + WD7,  + WD6, + WD5, + WD4}).
-   //                         0 : the WDATA is the data in write register.
-   //bit 23.  1  compare the sha result with the test sha message registers. 0 : dont compare the result.
-   //bit 22:20.   read repeat times.  for non-sha function, we can define multi times of the read. the test module would repeat the same adddress repeat times.
-   //bit 19.     limit write.  0: no outstanding write request limitation.
-   //                          1: limit the outstanding write commands to the number of bits [15:8]
-   //bit 18.     limit read.   0. no outstanding read request limitation.
-   //                          1. limit the read outstanding request to the number of bits[7:0].
-   //bit 17:16.  sha mode for sha function enabled.  00 : not used.  01 : sha1. 2: sha2-256. 3: sha2_224. not used in GXL fixed to be  Sha 2.
-   //bit 15:8.   write outstanding commands limit.
-   //bit 7:0.    read  outstanding commands limit.
-#define P_DMC_TEST_NUM                             (volatile uint32_t *)0xfe03794c
-   // how many test command for the test if the DMC_TEST_CTRL bit 24 is 0.
-#define P_DMC_TEST_WDG                             (volatile uint32_t *)0xfe037950
-  //31:16.  write response watch dog.
-  //15:0.   read response  watch dog.
-#define P_DMC_TEST_COMP_MASK                       (volatile uint32_t *)0xfe037954
-  //32bits for DMC TEST COMPARE bit enable.
-  //1 : to MASK this bit.  0: compare this bit.
-#define P_DMC_TEST_WSTRB0                          (volatile uint32_t *)0xfe037958
-  //MPC WR FIFO command DM bit write data
-  //bit 31:16  the second cycle.
-  //bit 15:0   the first cycle.
-#define P_DMC_TEST_WSTRB1                          (volatile uint32_t *)0xfe03795c
-  //MPC WR FIFO command DM bit write data
-  //bit 31:16. the Forth cycle.
-  //bit 15:0.  the third cycle.
-#define P_DMC_TEST_WD0                             (volatile uint32_t *)0xfe037980
-   // write data 0 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD1                             (volatile uint32_t *)0xfe037984
-   // write data 1 for write command. also for read back data comparison.
-#define P_DMC_TEST_WD2                             (volatile uint32_t *)0xfe037988
-#define P_DMC_TEST_WD3                             (volatile uint32_t *)0xfe03798c
-#define P_DMC_TEST_WD4                             (volatile uint32_t *)0xfe037990
-#define P_DMC_TEST_WD5                             (volatile uint32_t *)0xfe037994
-#define P_DMC_TEST_WD6                             (volatile uint32_t *)0xfe037998
-#define P_DMC_TEST_WD7                             (volatile uint32_t *)0xfe03799c
-#define P_DMC_TEST_WD8                             (volatile uint32_t *)0xfe0379a0
-#define P_DMC_TEST_WD9                             (volatile uint32_t *)0xfe0379a4
-#define P_DMC_TEST_WD10                            (volatile uint32_t *)0xfe0379a8
-#define P_DMC_TEST_WD11                            (volatile uint32_t *)0xfe0379ac
-#define P_DMC_TEST_WD12                            (volatile uint32_t *)0xfe0379b0
-#define P_DMC_TEST_WD13                            (volatile uint32_t *)0xfe0379b4
-#define P_DMC_TEST_WD14                            (volatile uint32_t *)0xfe0379b8
-#define P_DMC_TEST_WD15                            (volatile uint32_t *)0xfe0379bc
-   // write data 15 for write command. also for read back data comparison.
-#define P_DMC_TEST_RD0                             (volatile uint32_t *)0xfe0378c0
-   // the read back data 0.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD1                             (volatile uint32_t *)0xfe0378c4
-   // the read back data 1.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD2                             (volatile uint32_t *)0xfe0378c8
-   // the read back data 2.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD3                             (volatile uint32_t *)0xfe0378cc
-   // the read back data 3.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD4                             (volatile uint32_t *)0xfe0378d0
-   // the read back data 4.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD5                             (volatile uint32_t *)0xfe0378d4
-   // the read back data 5.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD6                             (volatile uint32_t *)0xfe0378d8
-   // the read back data 6.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD7                             (volatile uint32_t *)0xfe0378dc
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD8                             (volatile uint32_t *)0xfe0378e0
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD9                             (volatile uint32_t *)0xfe0378e4
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD10                            (volatile uint32_t *)0xfe0378e8
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD11                            (volatile uint32_t *)0xfe0378ec
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD12                            (volatile uint32_t *)0xfe0378f0
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD13                            (volatile uint32_t *)0xfe0378f4
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD14                            (volatile uint32_t *)0xfe0378f8
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_RD15                            (volatile uint32_t *)0xfe0378fc
-   // the read back data 7.  if error happens, it would capture the first error data.
-#define P_DMC_TEST_ERR_ADDR                        (volatile uint32_t *)0xfe037900
-  //read only. it capture the first error address.
-#define P_DMC_TEST_ERR_CNT                         (volatile uint32_t *)0xfe037904
-  //read only. how many data error happens in the whole test period.
-#define P_DMC_TEST_STS                             (volatile uint32_t *)0xfe037908
-  //read only.
-  //bit 31,   test done bit. write 1 to clean.
-  //bit 30,   indicate address err
-  //bit 29~7.  not used.
-  //bit 6.    read data resp error(caused by security or rd latency).
-  //bit 5.    test MRR/MPR rd latency error. write 1 clear
-  //bit 4,    sha done.     write 1 to clean.
-  //bit 3,    write done.   write 1 to clean.
-  //bit 2,    read done.    write 1 to clean
-  //bit 1,    write watchdog triggered.   write 1 to clean
-  //bit 0,    read watchdog triggered.    write 1 to clean.
-#define P_DMC_TEST_WRCMD_ADDR                      (volatile uint32_t *)0xfe03790c
-  //read only. the current write cmd address.
-#define P_DMC_TEST_RDCMD_ADDR                      (volatile uint32_t *)0xfe037910
-   //read only. the current read command address.
-#define P_DMC_TEST_RDRSP_ADDR                      (volatile uint32_t *)0xfe037914
-  //read only. the failed read response address(for error data )
-//
-// Closing file:  ../dmc_v26/rtl/dmc_reg.vh
-//
-//
-// Reading file:  dmc_clk_freq.vh
-//
-//dmc pll and frequency domain control registers.
-//`define DMC_FREQ_REG_BASE   32'hfe036c00
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfe036c00
-// -----------------------------------------------
-//
-//              |               |            |---------->  1/(OD,OD1) -->ddr_dpll_clk_out_a
-//  VCO ------> |  1/ reve[5:4] | --VCO_A--->|
-//              |               |            |----inv--->  1/(OD,OD1) -->ddr_dpll_clk_out_b
-#define P_AM_DDR_PLL_CNTL0                         (volatile uint32_t *)0xfe036c00
-  //bit 31    : dpll_lock
-  //bit 29    : dpll_reset.
-  //bit 28    : dpll_en.
-  //bit 27:26 : dpll_clk_en  2'b10: pll_clock output enable. 4xclk output disable..   2'b11,  pll_clock and 4xclk output enable.
-                 //if set ddr_freq_sel , it would replaced by AM_DDR_FREQ_CTRL bit[11:10];
-  //bit 25    : dpll_inv_sel.  4xclk inverter. if set ddr_freq_sel, it would replaced by AM_DDR_FREQ_CTRL bit[12]
-  //bit 21:19 : od1; if set ddr_freq_sel, it would replaced by AM_DDR_FREQ_CTRL[6:4]
-  //bit 18:16 : od;  if set ddr_freq_sel, it would replaced by AM_DDR_FREQ_CTRL[2:0]
-  //bit 14:10 : dpll_ref_div_n
-  //bit 8:0   : dpll_int_num
-#define P_AM_DDR_PLL_CNTL1                         (volatile uint32_t *)0xfe036c04
-  //bit 18:0    : ddr_dpll_frac
-#define P_AM_DDR_PLL_CNTL2                         (volatile uint32_t *)0xfe036c08
-  //bit 22:20  : fref_sel
-  //bit 17:16  : os_ssc
-  //bit 15:12  : ssc_str_m
-  //bit 8      : ssc_en
-  //bit 7:4    : ssc_dep_sel
-  //bit 1:0    : dpll ss_mode.
-#define P_AM_DDR_PLL_CNTL3                         (volatile uint32_t *)0xfe036c0c
-  //bit 31     : afc bypass
-  //bit 30     : afc clk sel
-  //bit 29     : code new
-  //bit 28     : dco_m_en
-  //bit 27     : dco_sdm_en
-  //bit 26     : div2
-  //bit 25     : div mode
-  //bit 24     : fast_lock mode
-  //bit 23     : fb_pre_div
-  //bit 22     : filter_mode
-  //bit 21     : fix_en
-  //bit 20     : freq_shift_en
-  //bit 19     : load
-  //bit 18     : load_en
-  //bit 17     : lock_f
-  //bit 16     : pulse_width_en
-  //bit 15     : sdmnc_en
-  //bit 14     : sdmnc_mode
-  //bit 13     : sdmnc_range
-  //bit 12     : tdc_en
-  //bit 11     : tdc_mode_sel
-  //bit 10     :  wait_en
-#define P_AM_DDR_PLL_CNTL4                         (volatile uint32_t *)0xfe036c10
-  //bit 1:0    : pfd_gain
-  //bit 7:4    : filter_pvt1
-  //bit 11:8   : filter pvt2
-  //bit 13:12  : acq_gain
-  //bit 18:16  : lambda0
-  //bit 27:24  : rou
-  //bit 31:28  : alpha
-#define P_AM_DDR_PLL_CNTL5                         (volatile uint32_t *)0xfe036c14
-  //bit
-  //bit 30:28  : adj_vco_ldo
-  //bit 27:24  : lm_w
-  //bit 21:16  : lm_s
-  //bit 15:6   : reve[15:6]
-  //bit 5:4.   : reve[5:4] for chan_A, chan_B phase control. if freq =1, it would replaced by AM_DDR_FREQ_CTRL bit[11:10];
-  //bit 3:0    : reve[3:0]
-#define P_AM_DDR_PLL_CNTL6                         (volatile uint32_t *)0xfe036c18
-  //bit 31:30  : afc_hold_t
-  //bit 29:28  : lkw_sel
-  //bit 27:26  : dco_sdm_clk_sel
-  //bit 25:24  : afc_in
-  //bit 23:22  : afc_nt
-  //bit 21:20  : vc_in
-  //bit 19:18  : lock_long
-  //bit 17:16  : freq_shift_v
-  //bit 15     : not used.
-  //bit 14:12  : data_sel
-  //bit 10:8   : sdmnc_ulms
-  //bit 6:0    : sdmnc_power
-#define P_AM_DDR_PLL_STS                           (volatile uint32_t *)0xfe036c1c
-  //bit 31     : DDR_PLL_LOCK
-  //bit 30     : lock_a
-  //bit 29     : afc_done
-  //bit 22:16  : sdmnc_monitor
-  //bit 9:0    : out_rsv
-#define P_AM_DDR_CLK_CNTL_EXT                      (volatile uint32_t *)0xfe036c20
-  //bit 31     Channel 0 ddr_pll_clk enable. enable the clock from DDR_PLL to clock generateion.
-               // whenever change the DDR_PLL frequency, disable the clock, after the DDR_PLL locked, then enable it again.
-  //bit 30.    channel 0 ddr_pll_prod_test_en.  enable the clock to clock/32 which to clock frequency measurement and production test pin.
-  //bit 29.    pll production  clock output selection. 1: select ddr_dpll_clk_out_b. : 0 : select ddr_dpll_clk_out_a;
-  //bit 28.    clock generation logic soft reset_n. 0: reset. 1: normal mode.
-  //bit 27.    channel 0 phy_4xclk phase inverter..
-  //bit 25.    Channel 0 DDRPHY DfiClk/DfiCtlClk/DMC clock selection.  1:  AM_PLL clk output /2.  0: directly output from AM_PLL .
-  //bit 24.    Channel 0 AM_PLL CLK output /2 function.   1: enable.  0: disable.   if try to use this clkoutput/2 function.
-  //bit 23     Channel 1 ddr_pll_clk enable. enable the clock from DDR_PLL to clock generateion.
-               // whenever change the DDR_PLL frequency, disable the clock, after the DDR_PLL locked, then enable it again.
-  //bit 22.    channel 1 ddr_pll_prod_test_en.  enable the clock to clock/32 which to clock frequency measurement and production test pin.
-  //bit 21:20. not used.
-  //bit 19.    channel 1 phy_4xclk phase inverter..
-  //bit 17.    Channel 1 DDRPHY DfiClk/DfiCtlClk/DMC clock selection.  1:  AM_PLL clk output /2.  0: directly output from AM_PLL .
-  //bit 16.    Channel 1 AM_PLL CLK output /2 function.   1: enable.  0: disable.   if try to use this clkoutput/2 function.
-  //bit 12. ddr1 def_clk_sel   1: select reference clock as LPDDR4-PHY clock.  0: normal.
-  //bit 11.  ddr1 default clock enable. enable PCLK as LPDDR4_PHY clock. 0: disable.
-  //bit 10. freq1_used_lpclk.
-  //bit 9.  lpclk_sel.  1:use lp_clk
-  //bit 8.  lpclk_reset.
-  //bit 4.  ddr0 def_clk_sel   1: select reference clock as LPDDR4-PHY clock.  0: normal.
-  //bit 3.  ddr0 default clock enable. enable PCLK as LPDDR4_PHY clock. 0: disable.
-  //bit 2.  enable ddr channel 0 dmc_clk.
-  //bit 1.  enable LPDDR4-PHY channel 0 DfiClk.
-  //bit 0.  enable LPDDR4-PHY channel 0 DfiCtlClk.
-#define P_AM_DDR_PHY_CTRL                          (volatile uint32_t *)0xfe036c24
-  // LPDDR4 power on reset need to special combination of PwrOkIn and phy_reset_n.
-  // please check the PHY PUB data book for detail.
-  //bit 31:8.  Not used.
-  //bit 7.   use dmc_clk_freq to control DDR-PHY channel 1 refresh/retraining/frequency change/phy power etc.
-  //bit 6.   use dmc_clk_freq to control DDR-PHY channel 0 refresh/retraining/frequency change/phy power etc.
-  //bit 5.   DDR_PHY 1 PwrOkIn pin.
-  //bit 4.   DDR_PHY 0 PwrOkIn pin.
-  //bit 3.   DDR_PHY 1 APB soft reset_n.
-  //bit 2.   DDR_PHY 1 phy_reset_n.
-  //bit 1.   DDR_PHY 0 APB soft reset_n.
-  //bit 0.   DDR_PHY 0 phy_reset_n.
-#define P_AM_DDR_FREQ_CTRL                         (volatile uint32_t *)0xfe036c28
-  //bit 31.  write trigger the DDR frequency change procedure.  read =0 the frequency change done.
-  //bit 30     currunt FREQ selection.  it can forced to change to select which frequency to select, or it can auto changed by FREQ change hardware.
-  //bit 29     next freq for frequency change.
-  //bit 12.    ddr_dpll_inv_sel in frequency1 for 4xclk inverter.
-  //bit 11:10. ddr_dpll_clk_en in frequency1 for 4xclk and clock output.
-  //bit 9:8. pll_reseve in frequency1. pll_reseve[5:4] used to tune 2 DMC channel clock phase.
-  //bit 6:4   OD1 number in frequency 1.
-  //bit 2:0.  OD  number in frequency 1.
-#define P_AM_DDR_TIMING_F0                         (volatile uint32_t *)0xfe036c2c
-  //frequency 0  auto refresh timing.
-  //bit 7:0. T100ns. how many clock cycle for 100ns.
-  //bit15:8. refresh period in 100ns.
-#define P_AM_DDR_TIMING_F1                         (volatile uint32_t *)0xfe036c30
-  //frequency 1  auto refresh timing.
-  //bit 7:0. T100ns. how many clock cycle for 100ns.
-  //bit15:8. refresh period in 100ns.
-#define P_AM_DDR_TIMING_CFG                        (volatile uint32_t *)0xfe036c34
-  //bit 31.  cfg ddr timing.  write 1 to save the timing parameters to ddr clock domain.
-  //bit 30.  dmc_clk_freq control the LPDDR4 retraining.
-  //bit 29.  dmc_clk_freq control the auto refresh timing.
-  //bit 28:24. not use.
-  //bit 23:0.  lpddr4 phy retraining timer counter in 100ns.
-//
-// Closing file:  dmc_clk_freq.vh
-//
-//
-// Reading file:  ddrphy_clk_freq.vh
-//
-//ddr deskew pll : in project s7
-// -----------------------------------------------
-// REG_BASE:  REGISTER_BASE_ADDR = 0xfc00e000
-// -----------------------------------------------
-#define P_AM_DDR_CLK_CNTL_INT                      (volatile uint32_t *)0xfc00e000
-  //[8] [9] [10] [30], function same as AM_DDR_CLK_CNTL_EXT
-  //bit 30.     channel 0 ddr_pll_prod_test_en.  enable the clock to clock/32 which to clock frequency measurement and production test pin.
-  //bit 10.     freq1_used_lpclk.
-  //bit 9.      lpclk_sel.  1:use lp_clk
-  //bit 8.      lpclk_reset.
-#define P_AM_DDR_POR                               (volatile uint32_t *)0xfc00e004
-  //bit 2. r_mem_resetn_value    //1
-  //bit 1. r_pwr_ok_dly_ctrl     //1
-  //bit 0. r_clr_por_mem_reset   //0
-#define P_AM_DDR_DESKEW_PLL0                       (volatile uint32_t *)0xfc00e008
-  //bit 5. deskew_pll_en
-  //bit 4. deskew_pll_dis
-  //bit 3. deskew_pll_pclk_en
-  //bit 2. deskew_pll_en
-  //bit 1. deskew_pll_rst
-  //bit 0. deskew_pll_div_rstn
-#define P_AM_DDR_DESKEW_PLL1                       (volatile uint32_t *)0xfc00e00c
-#define P_AM_DDR_DESKEW_PLL2                       (volatile uint32_t *)0xfc00e010
-//
-// Closing file:  ddrphy_clk_freq.vh
-//
+//`include "../dmc_v26/rtl/dmc_reg.vh"
+//`include "dmc_clk_freq.vh"          //used for DDR PHY
+//`include "ddrphy_clk_freq.vh"   // separate in s7
+////////////////////////////////////////////// NOTE /////////////////////////////////////
 //========================================================================
 // STARTUP
 //========================================================================
@@ -2487,7 +325,7 @@
 // -----------------------------------------------
 #define P_PADCTRL_PIN_MUX_REG0                     (volatile uint32_t *)0xfe004000
 #define P_PADCTRL_PIN_MUX_REG1                     (volatile uint32_t *)0xfe004004
-//`define PADCTRL_PIN_MUX_REG2          8'h02
+#define P_PADCTRL_PIN_MUX_REG2                     (volatile uint32_t *)0xfe004008
 #define P_PADCTRL_PIN_MUX_REG3                     (volatile uint32_t *)0xfe00400c
 #define P_PADCTRL_PIN_MUX_REG4                     (volatile uint32_t *)0xfe004010
 #define P_PADCTRL_PIN_MUX_REG5                     (volatile uint32_t *)0xfe004014
@@ -2573,14 +411,14 @@
 #define P_PADCTRL_GPIOB_LOCK                       (volatile uint32_t *)0xfe004254
 #define P_PADCTRL_GPIOB_PROT                       (volatile uint32_t *)0xfe004258
 #define P_PADCTRL_GPIOB_DS                         (volatile uint32_t *)0xfe00425c
-//`define PADCTRL_GPIOA_I               8'hA0
-//`define PADCTRL_GPIOA_O               8'hA1
-//`define PADCTRL_GPIOA_OEN             8'hA2
-//`define PADCTRL_GPIOA_PULL_EN         8'hA3
-//`define PADCTRL_GPIOA_PULL_UP         8'hA4
-//`define PADCTRL_GPIOA_LOCK            8'hA5
-//`define PADCTRL_GPIOA_PROT            8'hA6
-//`define PADCTRL_GPIOA_DS              8'hA7
+#define P_PADCTRL_GPIODV_I                         (volatile uint32_t *)0xfe004280
+#define P_PADCTRL_GPIODV_O                         (volatile uint32_t *)0xfe004284
+#define P_PADCTRL_GPIODV_OEN                       (volatile uint32_t *)0xfe004288
+#define P_PADCTRL_GPIODV_PULL_EN                   (volatile uint32_t *)0xfe00428c
+#define P_PADCTRL_GPIODV_PULL_UP                   (volatile uint32_t *)0xfe004290
+#define P_PADCTRL_GPIODV_LOCK                      (volatile uint32_t *)0xfe004294
+#define P_PADCTRL_GPIODV_PROT                      (volatile uint32_t *)0xfe004298
+#define P_PADCTRL_GPIODV_DS                        (volatile uint32_t *)0xfe00429c
 #define P_PADCTRL_TESTN_I                          (volatile uint32_t *)0xfe0042c0
 #define P_PADCTRL_TESTN_O                          (volatile uint32_t *)0xfe0042c4
 #define P_PADCTRL_TESTN_OEN                        (volatile uint32_t *)0xfe0042c8
@@ -2597,6 +435,8 @@
 #define P_CC_GPIO_OEN                              (volatile uint32_t *)0xfe004308
 #define P_CC_GPIO_PROT                             (volatile uint32_t *)0xfe00430c
 #define P_CC_GPIO_LOCK                             (volatile uint32_t *)0xfe004310
+#define P_RGMII_DLY                                (volatile uint32_t *)0xfe004328
+#define P_EMMC_DLY                                 (volatile uint32_t *)0xfe00432c
 #define P_PADCTRL_LOCK_PIN_MUX0                    (volatile uint32_t *)0xfe004340
 #define P_PADCTRL_LOCK_PIN_MUX1                    (volatile uint32_t *)0xfe004344
 #define P_PADCTRL_LOCK_PIN_MUX2                    (volatile uint32_t *)0xfe004348
@@ -2744,8 +584,8 @@
 #define P_SYSCTRL_MSG_INDEX1_STICKY                (volatile uint32_t *)0xfe0103c4
 #define P_SYSCTRL_MSG_INDEX2_STICKY                (volatile uint32_t *)0xfe0103c8
 #define P_SYSCTRL_MSG_INDEX3_STICKY                (volatile uint32_t *)0xfe0103cc
-//`define SYSCTRL_MALI_TEXFMTENABLE               10'h100
-//`define SYSCTRL_MALI_CONFIG                     10'h101
+#define P_SYSCTRL_MALI_TEXFMTENABLE                (volatile uint32_t *)0xfe010400
+#define P_SYSCTRL_MALI_CONFIG                      (volatile uint32_t *)0xfe010404
 #define P_SYSCTRL_CPU_RAM_EMA_CTRL                 (volatile uint32_t *)0xfe010440
 //========================================================================
 //  CLK_CTRL
@@ -2820,6 +660,7 @@
 //`define CLKCTRL_WAVE420L_CLK_CTRL2      10'h55
 #define P_CLKCTRL_TS_CLK_CTRL                      (volatile uint32_t *)0xfe000158
 #define P_CLKCTRL_MALI_CLK_CTRL                    (volatile uint32_t *)0xfe00015c
+#define P_CLKCTRL_MALI_STACK_CLK_CTRL              (volatile uint32_t *)0xfe000160
 //`define CLKCTRL_VIPNANOQ_CLK_CTRL       10'h58
 #define P_CLKCTRL_ETH_CLK_CTRL                     (volatile uint32_t *)0xfe000164
 #define P_CLKCTRL_NAND_CLK_CTRL                    (volatile uint32_t *)0xfe000168
@@ -2833,6 +674,7 @@
 #define P_CLKCTRL_PWM_CLK_EF_CTRL                  (volatile uint32_t *)0xfe000188
 #define P_CLKCTRL_PWM_CLK_GH_CTRL                  (volatile uint32_t *)0xfe00018c
 #define P_CLKCTRL_PWM_CLK_IJ_CTRL                  (volatile uint32_t *)0xfe000190
+#define P_CLKCTRL_AMFC_CLK_CTRL                    (volatile uint32_t *)0xfe000194
 //`define CLKCTRL_DEMOD_CLK_CTRL          10'h80
 //`define CLKCTRL_DEMOD_CLK_CTRL1         10'h81
 //`define CLKCTRL_DEMOD_32K_CTRL0         10'h82
@@ -2851,6 +693,7 @@
 #define P_CLKCTRL_EFUSE_HEVCB_CFG01                (volatile uint32_t *)0xfe000490
 #define P_CLKCTRL_EFUSE_HEVCB_CFG2                 (volatile uint32_t *)0xfe000494
 #define P_CLKCTRL_EFUSE_LOCK                       (volatile uint32_t *)0xfe000498
+#define P_CLKCTRL_EFUSE_MALI_STACK_CFG01           (volatile uint32_t *)0xfe00049c
 //========================================================================
 //  PWR_CTRL
 //========================================================================
@@ -3107,6 +950,16 @@
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe448000
 // -----------------------------------------------
 #define P_RSA_BASE                                 (volatile uint32_t *)0xfe448000
+//========================================================================
+// PQC
+//========================================================================
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe460000
+// -----------------------------------------------
+#define P_PQC_READY                                (volatile uint32_t *)0xfe460000
+#define P_PQC_DEBUG                                (volatile uint32_t *)0xfe460004
+#define P_PQC_CFG0                                 (volatile uint32_t *)0xfe460008
+#define P_PQC_CFG1                                 (volatile uint32_t *)0xfe46000c
 //========================================================================
 //  AOCPU
 //========================================================================
@@ -3812,23 +1665,36 @@
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe026000
 // -----------------------------------------------
 #define P_SAR_ADC_REG0                             (volatile uint32_t *)0xfe026000
-#define P_SAR_ADC_CHAN_LIST                        (volatile uint32_t *)0xfe026004
-#define P_SAR_ADC_AVG_CNTL                         (volatile uint32_t *)0xfe026008
+#define P_SAR_ADC_REG1                             (volatile uint32_t *)0xfe026004
+#define P_SAR_ADC_REG2                             (volatile uint32_t *)0xfe026008
 #define P_SAR_ADC_REG3                             (volatile uint32_t *)0xfe02600c
-#define P_SAR_ADC_DELAY                            (volatile uint32_t *)0xfe026010
-#define P_SAR_ADC_LAST_RD                          (volatile uint32_t *)0xfe026014
-#define P_SAR_ADC_FIFO_RD                          (volatile uint32_t *)0xfe026018
-#define P_SAR_ADC_AUX_SW                           (volatile uint32_t *)0xfe02601c
-#define P_SAR_ADC_CHAN_10_SW                       (volatile uint32_t *)0xfe026020
-#define P_SAR_ADC_DETECT_IDLE_SW                   (volatile uint32_t *)0xfe026024
-#define P_SAR_ADC_DELTA_10                         (volatile uint32_t *)0xfe026028
+#define P_SAR_ADC_REG4                             (volatile uint32_t *)0xfe026010
+#define P_SAR_ADC_REG5                             (volatile uint32_t *)0xfe026014
+#define P_SAR_ADC_REG6                             (volatile uint32_t *)0xfe026018
+#define P_SAR_ADC_REG7                             (volatile uint32_t *)0xfe02601c
+#define P_SAR_ADC_REG8                             (volatile uint32_t *)0xfe026020
+#define P_SAR_ADC_REG9                             (volatile uint32_t *)0xfe026024
+#define P_SAR_ADC_REG10                            (volatile uint32_t *)0xfe026028
 #define P_SAR_ADC_REG11                            (volatile uint32_t *)0xfe02602c
 #define P_SAR_ADC_REG12                            (volatile uint32_t *)0xfe026030
 #define P_SAR_ADC_REG13                            (volatile uint32_t *)0xfe026034
-#define P_SAR_ADC_CHNL01                           (volatile uint32_t *)0xfe026038
-#define P_SAR_ADC_CHNL23                           (volatile uint32_t *)0xfe02603c
-#define P_SAR_ADC_CHNL45                           (volatile uint32_t *)0xfe026040
-#define P_SAR_ADC_CHNL67                           (volatile uint32_t *)0xfe026044
+#define P_SAR_ADC_REG14                            (volatile uint32_t *)0xfe026038
+#define P_SAR_ADC_STATUS0                          (volatile uint32_t *)0xfe02603c
+#define P_SAR_ADC_STATUS1                          (volatile uint32_t *)0xfe026040
+#define P_SAR_ADC_STATUS2                          (volatile uint32_t *)0xfe026044
+#define P_SAR_ADC_STATUS3                          (volatile uint32_t *)0xfe026048
+#define P_SAR_ADC_STATUS4                          (volatile uint32_t *)0xfe02604c
+#define P_SAR_ADC_STATUS5                          (volatile uint32_t *)0xfe026050
+#define P_SAR_ADC_STATUS6                          (volatile uint32_t *)0xfe026054
+#define P_SAR_ADC_STATUS7                          (volatile uint32_t *)0xfe026058
+#define P_SAR_ADC_STATUS8                          (volatile uint32_t *)0xfe02605c
+#define P_SAR_ADC_STATUS9                          (volatile uint32_t *)0xfe026060
+#define P_SAR_ADC_STATUS10                         (volatile uint32_t *)0xfe026064
+#define P_SAR_ADC_STATUS11                         (volatile uint32_t *)0xfe026068
+#define P_SAR_ADC_STATUS12                         (volatile uint32_t *)0xfe02606c
+#define P_SAR_ADC_STATUS13                         (volatile uint32_t *)0xfe026070
+#define P_SAR_ADC_STATUS14                         (volatile uint32_t *)0xfe026074
+#define P_SAR_ADC_STATUS15                         (volatile uint32_t *)0xfe026078
 #define P_SAR_ADC_RDY                              (volatile uint32_t *)0xfe026080
 //========================================================================
 //  ANA_CTRL - Registers
@@ -3838,18 +1704,19 @@
 // -----------------------------------------------
 #define P_ANACTRL_SYS0PLL_CTRL0                    (volatile uint32_t *)0xfe008000
 #define P_ANACTRL_SYS0PLL_CTRL1                    (volatile uint32_t *)0xfe008004
-#define P_ANACTRL_SYS1PLL_CTRL0                    (volatile uint32_t *)0xfe008008
-#define P_ANACTRL_SYS1PLL_CTRL1                    (volatile uint32_t *)0xfe00800c
-//`define ANACTRL_SYSPLL_CTRL4    8'h04
-//`define ANACTRL_SYSPLL_CTRL5    8'h05
-//`define ANACTRL_SYSPLL_CTRL6    8'h06
-#define P_ANACTRL_SYS0PLL_STS                      (volatile uint32_t *)0xfe00801c
-#define P_ANACTRL_SYS1PLL_STS                      (volatile uint32_t *)0xfe008020
+#define P_ANACTRL_SYS0PLL_CTRL2                    (volatile uint32_t *)0xfe008008
+#define P_ANACTRL_SYS0PLL_CTRL3                    (volatile uint32_t *)0xfe00800c
+#define P_ANACTRL_SYS1PLL_CTRL0                    (volatile uint32_t *)0xfe008010
+#define P_ANACTRL_SYS1PLL_CTRL1                    (volatile uint32_t *)0xfe008014
+#define P_ANACTRL_SYS1PLL_CTRL2                    (volatile uint32_t *)0xfe008018
+#define P_ANACTRL_SYS1PLL_CTRL3                    (volatile uint32_t *)0xfe00801c
+#define P_ANACTRL_SYS0PLL_STS                      (volatile uint32_t *)0xfe008020
+#define P_ANACTRL_SYS1PLL_STS                      (volatile uint32_t *)0xfe008024
 #define P_ANACTRL_FIXPLL_CTRL0                     (volatile uint32_t *)0xfe008040
 #define P_ANACTRL_FIXPLL_CTRL1                     (volatile uint32_t *)0xfe008044
-//`define ANACTRL_FIXPLL_CTRL2    8'h12
-//`define ANACTRL_FIXPLL_CTRL3    8'h13
-//`define ANACTRL_FIXPLL_CTRL4    8'h14
+#define P_ANACTRL_FIXPLL_CTRL2                     (volatile uint32_t *)0xfe008048
+#define P_ANACTRL_FIXPLL_CTRL3                     (volatile uint32_t *)0xfe00804c
+#define P_ANACTRL_FIXPLL_CTRL4                     (volatile uint32_t *)0xfe008050
 //`define ANACTRL_FIXPLL_CTRL5    8'h15
 //`define ANACTRL_FIXPLL_CTRL6    8'h16
 #define P_ANACTRL_FIXPLL_STS                       (volatile uint32_t *)0xfe00805c
@@ -3857,14 +1724,14 @@
 #define P_ANACTRL_GP0PLL_CTRL1                     (volatile uint32_t *)0xfe008084
 #define P_ANACTRL_GP0PLL_CTRL2                     (volatile uint32_t *)0xfe008088
 #define P_ANACTRL_GP0PLL_CTRL3                     (volatile uint32_t *)0xfe00808c
-//`define ANACTRL_GP0PLL_CTRL4    8'h24
+#define P_ANACTRL_GP0PLL_CTRL4                     (volatile uint32_t *)0xfe008090
 //`define ANACTRL_GP0PLL_CTRL5    8'h25
 //`define ANACTRL_GP0PLL_CTRL6    8'h26
 #define P_ANACTRL_GP0PLL_STS                       (volatile uint32_t *)0xfe00809c
 #define P_ANACTRL_GP1PLL_CTRL0                     (volatile uint32_t *)0xfe0080c0
 #define P_ANACTRL_GP1PLL_CTRL1                     (volatile uint32_t *)0xfe0080c4
-//`define ANACTRL_GP1PLL_CTRL2    8'h32
-//`define ANACTRL_GP1PLL_CTRL3    8'h33
+#define P_ANACTRL_GP1PLL_CTRL2                     (volatile uint32_t *)0xfe0080c8
+#define P_ANACTRL_GP1PLL_CTRL3                     (volatile uint32_t *)0xfe0080cc
 //`define ANACTRL_GP1PLL_CTRL4    8'h34
 //`define ANACTRL_GP1PLL_CTRL5    8'h35
 //`define ANACTRL_GP1PLL_CTRL6    8'h36
@@ -3873,12 +1740,14 @@
 #define P_ANACTRL_HIFI0PLL_CTRL1                   (volatile uint32_t *)0xfe008104
 #define P_ANACTRL_HIFI0PLL_CTRL2                   (volatile uint32_t *)0xfe008108
 #define P_ANACTRL_HIFI0PLL_CTRL3                   (volatile uint32_t *)0xfe00810c
-#define P_ANACTRL_HIFI1PLL_CTRL0                   (volatile uint32_t *)0xfe008110
-#define P_ANACTRL_HIFI1PLL_CTRL1                   (volatile uint32_t *)0xfe008114
-#define P_ANACTRL_HIFI1PLL_CTRL2                   (volatile uint32_t *)0xfe008118
-#define P_ANACTRL_HIFI1PLL_CTRL3                   (volatile uint32_t *)0xfe00811c
-#define P_ANACTRL_HIFI0PLL_STS                     (volatile uint32_t *)0xfe008120
-#define P_ANACTRL_HIFI1PLL_STS                     (volatile uint32_t *)0xfe008124
+#define P_ANACTRL_HIFI0PLL_CTRL4                   (volatile uint32_t *)0xfe008110
+#define P_ANACTRL_HIFI1PLL_CTRL0                   (volatile uint32_t *)0xfe008114
+#define P_ANACTRL_HIFI1PLL_CTRL1                   (volatile uint32_t *)0xfe008118
+#define P_ANACTRL_HIFI1PLL_CTRL2                   (volatile uint32_t *)0xfe00811c
+#define P_ANACTRL_HIFI1PLL_CTRL3                   (volatile uint32_t *)0xfe008120
+#define P_ANACTRL_HIFI1PLL_CTRL4                   (volatile uint32_t *)0xfe008124
+#define P_ANACTRL_HIFI0PLL_STS                     (volatile uint32_t *)0xfe008128
+#define P_ANACTRL_HIFI1PLL_STS                     (volatile uint32_t *)0xfe00812c
 //`define ANACTRL_PCIEPLL_CTRL0    8'h50
 //`define ANACTRL_PCIEPLL_CTRL1    8'h51
 //`define ANACTRL_PCIEPLL_CTRL2    8'h52
@@ -3900,7 +1769,7 @@
 #define P_ANACTRL_HDMIPLL_CTRL1                    (volatile uint32_t *)0xfe0081c4
 #define P_ANACTRL_HDMIPLL_CTRL2                    (volatile uint32_t *)0xfe0081c8
 #define P_ANACTRL_HDMIPLL_CTRL3                    (volatile uint32_t *)0xfe0081cc
-//`define ANACTRL_HDMIPLL_CTRL4    8'h74
+#define P_ANACTRL_HDMIPLL_CTRL4                    (volatile uint32_t *)0xfe0081d0
 //`define ANACTRL_HDMIPLL_CTRL5    8'h75
 //`define ANACTRL_HDMIPLL_CTRL6    8'h76
 #define P_ANACTRL_HDMIPLL_STS                      (volatile uint32_t *)0xfe0081dc
@@ -3966,6 +1835,7 @@
 #define P_ETH_PHY_CNTL1                            (volatile uint32_t *)0xfe360084
 #define P_ETH_PHY_CNTL2                            (volatile uint32_t *)0xfe360088
 #define P_ETH_PHY_CNTL3                            (volatile uint32_t *)0xfe36008c
+#define P_ETH_PHY_CNTL4                            (volatile uint32_t *)0xfe360090
 #define P_ETH_PHY_STS0                             (volatile uint32_t *)0xfe360094
 #define P_ETH_PHY_STS1                             (volatile uint32_t *)0xfe360098
 #define P_ETH_PHY_STS2                             (volatile uint32_t *)0xfe36009c
@@ -3994,50 +1864,72 @@
 // -----------------------------------------------
 // REG_BASE:  REGISTER_BASE_ADDR = 0xfe084000
 // -----------------------------------------------
-#define P_IRCTRL_IR_DEC_LDR_ACTIVE                 (volatile uint32_t *)0xfe084000
-#define P_IRCTRL_IR_DEC_LDR_IDLE                   (volatile uint32_t *)0xfe084004
-#define P_IRCTRL_IR_DEC_LDR_REPEAT                 (volatile uint32_t *)0xfe084008
-#define P_IRCTRL_IR_DEC_BIT_0                      (volatile uint32_t *)0xfe08400c
-#define P_IRCTRL_IR_DEC_REG0                       (volatile uint32_t *)0xfe084010
-#define P_IRCTRL_IR_DEC_FRAME                      (volatile uint32_t *)0xfe084014
-#define P_IRCTRL_IR_DEC_STATUS                     (volatile uint32_t *)0xfe084018
-#define P_IRCTRL_IR_DEC_REG1                       (volatile uint32_t *)0xfe08401c
-#define P_IRCTRL_MF_IR_DEC_LDR_ACTIVE              (volatile uint32_t *)0xfe084040
-#define P_IRCTRL_MF_IR_DEC_LDR_IDLE                (volatile uint32_t *)0xfe084044
-#define P_IRCTRL_MF_IR_DEC_LDR_REPEAT              (volatile uint32_t *)0xfe084048
-#define P_IRCTRL_MF_IR_DEC_BIT_0                   (volatile uint32_t *)0xfe08404c
-#define P_IRCTRL_MF_IR_DEC_REG0                    (volatile uint32_t *)0xfe084050
-#define P_IRCTRL_MF_IR_DEC_FRAME                   (volatile uint32_t *)0xfe084054
-#define P_IRCTRL_MF_IR_DEC_STATUS                  (volatile uint32_t *)0xfe084058
-#define P_IRCTRL_MF_IR_DEC_REG1                    (volatile uint32_t *)0xfe08405c
-#define P_IRCTRL_MF_IR_DEC_REG2                    (volatile uint32_t *)0xfe084060
-#define P_IRCTRL_MF_IR_DEC_DURATN2                 (volatile uint32_t *)0xfe084064
-#define P_IRCTRL_MF_IR_DEC_DURATN3                 (volatile uint32_t *)0xfe084068
-#define P_IRCTRL_MF_IR_DEC_FRAME1                  (volatile uint32_t *)0xfe08406c
-#define P_IRCTRL_MF_IR_DEC_STATUS1                 (volatile uint32_t *)0xfe084070
-#define P_IRCTRL_MF_IR_DEC_STATUS2                 (volatile uint32_t *)0xfe084074
-#define P_IRCTRL_MF_IR_DEC_REG3                    (volatile uint32_t *)0xfe084078
-#define P_IRCTRL_MF_IR_DEC_FRAME_RSV0              (volatile uint32_t *)0xfe08407c
-#define P_IRCTRL_MF_IR_DEC_FRAME_RSV1              (volatile uint32_t *)0xfe084080
-#define P_IRCTRL_MF_IR_DEC_FILTE                   (volatile uint32_t *)0xfe084084
-#define P_IRCTRL_MF_IR_DEC_IRQ_CTL                 (volatile uint32_t *)0xfe084088
-#define P_IRCTRL_MF_IR_DEC_FIFO_CTL                (volatile uint32_t *)0xfe08408c
-#define P_IRCTRL_MF_IR_DEC_WIDTH_NEW               (volatile uint32_t *)0xfe084090
-#define P_IRCTRL_MF_IR_DEC_REPEAT_DET              (volatile uint32_t *)0xfe084094
-#define P_IRCTRL_IR_DEC_DEMOD_CNTL0                (volatile uint32_t *)0xfe0840c0
-#define P_IRCTRL_IR_DEC_DEMOD_CNTL1                (volatile uint32_t *)0xfe0840c4
-#define P_IRCTRL_IR_DEC_DEMOD_IIR_THD              (volatile uint32_t *)0xfe0840c8
-#define P_IRCTRL_IR_DEC_DEMOD_THD0                 (volatile uint32_t *)0xfe0840cc
-#define P_IRCTRL_IR_DEC_DEMOD_THD1                 (volatile uint32_t *)0xfe0840d0
-#define P_IRCTRL_IR_DEC_DEMOD_SUM_CNT0             (volatile uint32_t *)0xfe0840d4
-#define P_IRCTRL_IR_DEC_DEMOD_SUM_CNT1             (volatile uint32_t *)0xfe0840d8
-#define P_IRCTRL_IR_DEC_DEMOD_CNT0                 (volatile uint32_t *)0xfe0840dc
-#define P_IRCTRL_IR_DEC_DEMOD_CNT1                 (volatile uint32_t *)0xfe0840e0
-#define P_IRCTRL_IR_DEC_DEMOD_FILTER               (volatile uint32_t *)0xfe0840e4
-#define P_IRCTRL_IR_BLASTER_ADDR0                  (volatile uint32_t *)0xfe08410c
-#define P_IRCTRL_IR_BLASTER_ADDR1                  (volatile uint32_t *)0xfe084110
-#define P_IRCTRL_IR_BLASTER_ADDR2                  (volatile uint32_t *)0xfe084114
-#define P_IRCTRL_IR_BLASTER_ADDR3                  (volatile uint32_t *)0xfe084118
+//`define IRCTRL_IR_DEC_LDR_ACTIVE        8'h00
+//`define IRCTRL_IR_DEC_LDR_IDLE          8'h01
+//`define IRCTRL_IR_DEC_LDR_REPEAT        8'h02
+//`define IRCTRL_IR_DEC_BIT_0             8'h03
+//`define IRCTRL_IR_DEC_REG0              8'h04
+//`define IRCTRL_IR_DEC_FRAME             8'h05
+//`define IRCTRL_IR_DEC_STATUS            8'h06
+//`define IRCTRL_IR_DEC_REG1              8'h07
+#define P_IRCTRL_MF_IR_DEC0_LDR_ACTIVE             (volatile uint32_t *)0xfe084000
+#define P_IRCTRL_MF_IR_DEC0_LDR_IDLE               (volatile uint32_t *)0xfe084004
+#define P_IRCTRL_MF_IR_DEC0_LDR_REPEAT             (volatile uint32_t *)0xfe084008
+#define P_IRCTRL_MF_IR_DEC0_BIT_0                  (volatile uint32_t *)0xfe08400c
+#define P_IRCTRL_MF_IR_DEC0_REG0                   (volatile uint32_t *)0xfe084010
+#define P_IRCTRL_MF_IR_DEC0_FRAME                  (volatile uint32_t *)0xfe084014
+#define P_IRCTRL_MF_IR_DEC0_STATUS                 (volatile uint32_t *)0xfe084018
+#define P_IRCTRL_MF_IR_DEC0_REG1                   (volatile uint32_t *)0xfe08401c
+#define P_IRCTRL_MF_IR_DEC0_REG2                   (volatile uint32_t *)0xfe084020
+#define P_IRCTRL_MF_IR_DEC0_DURATN2                (volatile uint32_t *)0xfe084024
+#define P_IRCTRL_MF_IR_DEC0_DURATN3                (volatile uint32_t *)0xfe084028
+#define P_IRCTRL_MF_IR_DEC0_FRAME1                 (volatile uint32_t *)0xfe08402c
+#define P_IRCTRL_MF_IR_DEC0_STATUS1                (volatile uint32_t *)0xfe084030
+#define P_IRCTRL_MF_IR_DEC0_STATUS2                (volatile uint32_t *)0xfe084034
+#define P_IRCTRL_MF_IR_DEC0_REG3                   (volatile uint32_t *)0xfe084038
+#define P_IRCTRL_MF_IR_DEC0_FRAME_RSV0             (volatile uint32_t *)0xfe08403c
+#define P_IRCTRL_MF_IR_DEC0_FRAME_RSV1             (volatile uint32_t *)0xfe084040
+#define P_IRCTRL_MF_IR_DEC0_FILTE                  (volatile uint32_t *)0xfe084044
+#define P_IRCTRL_MF_IR_DEC0_IRQ_CTL                (volatile uint32_t *)0xfe084048
+#define P_IRCTRL_MF_IR_DEC0_FIFO_CTL               (volatile uint32_t *)0xfe08404c
+#define P_IRCTRL_MF_IR_DEC0_WIDTH_NEW              (volatile uint32_t *)0xfe084050
+#define P_IRCTRL_MF_IR_DEC0_REPEAT_DET             (volatile uint32_t *)0xfe084054
+#define P_IRCTRL_MF_IR_DEC1_LDR_ACTIVE             (volatile uint32_t *)0xfe084080
+#define P_IRCTRL_MF_IR_DEC1_LDR_IDLE               (volatile uint32_t *)0xfe084084
+#define P_IRCTRL_MF_IR_DEC1_LDR_REPEAT             (volatile uint32_t *)0xfe084088
+#define P_IRCTRL_MF_IR_DEC1_BIT_0                  (volatile uint32_t *)0xfe08408c
+#define P_IRCTRL_MF_IR_DEC1_REG0                   (volatile uint32_t *)0xfe084090
+#define P_IRCTRL_MF_IR_DEC1_FRAME                  (volatile uint32_t *)0xfe084094
+#define P_IRCTRL_MF_IR_DEC1_STATUS                 (volatile uint32_t *)0xfe084098
+#define P_IRCTRL_MF_IR_DEC1_REG1                   (volatile uint32_t *)0xfe08409c
+#define P_IRCTRL_MF_IR_DEC1_REG2                   (volatile uint32_t *)0xfe0840a0
+#define P_IRCTRL_MF_IR_DEC1_DURATN2                (volatile uint32_t *)0xfe0840a4
+#define P_IRCTRL_MF_IR_DEC1_DURATN3                (volatile uint32_t *)0xfe0840a8
+#define P_IRCTRL_MF_IR_DEC1_FRAME1                 (volatile uint32_t *)0xfe0840ac
+#define P_IRCTRL_MF_IR_DEC1_STATUS1                (volatile uint32_t *)0xfe0840b0
+#define P_IRCTRL_MF_IR_DEC1_STATUS2                (volatile uint32_t *)0xfe0840b4
+#define P_IRCTRL_MF_IR_DEC1_REG3                   (volatile uint32_t *)0xfe0840b8
+#define P_IRCTRL_MF_IR_DEC1_FRAME_RSV0             (volatile uint32_t *)0xfe0840bc
+#define P_IRCTRL_MF_IR_DEC1_FRAME_RSV1             (volatile uint32_t *)0xfe0840c0
+#define P_IRCTRL_MF_IR_DEC1_FILTE                  (volatile uint32_t *)0xfe0840c4
+#define P_IRCTRL_MF_IR_DEC1_IRQ_CTL                (volatile uint32_t *)0xfe0840c8
+#define P_IRCTRL_MF_IR_DEC1_FIFO_CTL               (volatile uint32_t *)0xfe0840cc
+#define P_IRCTRL_MF_IR_DEC1_WIDTH_NEW              (volatile uint32_t *)0xfe0840d0
+#define P_IRCTRL_MF_IR_DEC1_REPEAT_DET             (volatile uint32_t *)0xfe0840d4
+#define P_IRCTRL_IR_DEC_DEMOD_CNTL0                (volatile uint32_t *)0xfe084100
+#define P_IRCTRL_IR_DEC_DEMOD_CNTL1                (volatile uint32_t *)0xfe084104
+#define P_IRCTRL_IR_DEC_DEMOD_IIR_THD              (volatile uint32_t *)0xfe084108
+#define P_IRCTRL_IR_DEC_DEMOD_THD0                 (volatile uint32_t *)0xfe08410c
+#define P_IRCTRL_IR_DEC_DEMOD_THD1                 (volatile uint32_t *)0xfe084110
+#define P_IRCTRL_IR_DEC_DEMOD_SUM_CNT0             (volatile uint32_t *)0xfe084114
+#define P_IRCTRL_IR_DEC_DEMOD_SUM_CNT1             (volatile uint32_t *)0xfe084118
+#define P_IRCTRL_IR_DEC_DEMOD_CNT0                 (volatile uint32_t *)0xfe08411c
+#define P_IRCTRL_IR_DEC_DEMOD_CNT1                 (volatile uint32_t *)0xfe084120
+#define P_IRCTRL_IR_DEC_DEMOD_FILTER               (volatile uint32_t *)0xfe084124
+#define P_IRCTRL_IR_BLASTER_ADDR0                  (volatile uint32_t *)0xfe08414c
+#define P_IRCTRL_IR_BLASTER_ADDR1                  (volatile uint32_t *)0xfe084150
+#define P_IRCTRL_IR_BLASTER_ADDR2                  (volatile uint32_t *)0xfe084154
+#define P_IRCTRL_IR_BLASTER_ADDR3                  (volatile uint32_t *)0xfe084158
 //========================================================================
 //  I2C Master A
 //========================================================================
@@ -4583,6 +2475,7 @@
 //`define CAPU_ACCESS_EN_AHB_ETH                        8'hC2
 //`define CAPU_ACCESS_EN_AHB_USB0                       8'hC1
 //`define CAPU_ACCESS_EN_AHB_USB1                       8'hC0
+#define P_CAPU_ACCESS_EN_8M_SLOT0                  (volatile uint32_t *)0xfe012300
 #define P_CAPU_ACCESS_EN_16M_SLOT0                 (volatile uint32_t *)0xfe0122c0
 #define P_CAPU_ACCESS_EN_256K_SLOT1                (volatile uint32_t *)0xfe012284
 #define P_CAPU_ACCESS_EN_256K_SLOT0                (volatile uint32_t *)0xfe012280
@@ -6863,7 +4756,10 @@
 //Bit   29,     reg_rst_afifo_out_n           unsigned, default = 0, reset afifo out side
 //Bit   28,     reg_rst_afifo_in_n            unsigned, default = 0, reset afifo in side
 //Bit   27,     reg_lr_check                  unsigned, default = 0, enable lr_check
-//Bit   26:7,   reserved
+//Bit   26:10,   reserved
+//Bit   9,      rg_mute_bch_data_en           unsigned, default = 0,
+//Bit   8,      rg_mute_bch_err_en            unsigned, default = 0,
+//Bit   7,      reserved
 //Bit   6,      reg_bchout_data_ml            unsigned, default = 0, bch output 16bit data msb is 27 or 19
 //Bit   5,      reg_bchout_data_rsv           unsigned, default = 0, bch output data revers
 //Bit   4,      reg_bchin_ecc_ml              unsigned, default = 0, bch input ecc msb/lsb
@@ -9706,6 +7602,232 @@
 //=======================================================================
 //`include "demod_reg.h"
 //`include "demod_dvbt2_reg.h"
+//=======================================================================
+// AMFC
+// -----------------------------------------------
+// REG_BASE:  REGISTER_BASE_ADDR = 0xfe024000
+// -----------------------------------------------
+//
+// Reading file:  amfc_regs.h
+//
+// synopsys translate_off
+// synopsys translate_on
+#define P_AMFC_GL_VERSION                          (volatile uint32_t *)0xfe024000
+//Bit 31:16        reserved
+//Bit 15:8         ro_major_version                   //unsigned , RO,  a 8 bit value to show VLSI major version
+//Bit  7:0         ro_minor_version                   //unsigned , RO,  a 8 bit value to show VLSI minor version
+#define P_AMFC_GL_MISC                             (volatile uint32_t *)0xfe024004
+//Bit 31:1         reserved
+//Bit  0           reg_cmds_split_mode               //unsigned , RW, default = 1 0: both cmd0 and cmd1 can work as enc,dec,or enc/dec. 1: cmd0 only for enc and cmd1 for dec
+#define P_AMFC_GL_CMD0_DESC_BASE0_ADDR             (volatile uint32_t *)0xfe024008
+//Bit 31: 0        reg_cmd0_desc_base0_addr           // unsigned ,RW, default = 0  base address of descriptor list; Physical address = DESCRIPTOR BASE ADDDR<<5
+#define P_AMFC_GL_CMD0_CURR_DESC_ADDR              (volatile uint32_t *)0xfe02400c
+//Bit 31: 0        ro_cmd0_cur_desc_addr             // unsigned ,RO, default = 0  address of current processing descriptor
+#define P_AMFC_GL_CMD0_CONTROL                     (volatile uint32_t *)0xfe024010
+//Bit 31           reg_cmd0_sw_rst                   // unsigned ,    RW, default = 0  reset AMFC state machine
+//Bit 30: 5        reserved
+//Bit 4            reg_cmd0_global_irq_en            // unsigned ,    RW, default = 0  1 to enable interrupt
+//Bit 3: 2         reserved
+//Bit 1            reg_cmd0_sw_terminate             // unsigned ,    RW, default = 0  1: terminate current processing
+//Bit 0            reg_cmd0_sw_start                 // unsigned ,    RW, default = 0  1: trigger hardware process descriptor list
+#define P_AMFC_GL_CMD0_CONFIG                      (volatile uint32_t *)0xfe024014
+//Bit 31: 0        reg_cmd0_config                   // unsigned,     RW, default = 0
+#define P_AMFC_GL_CMD0_STATUS                      (volatile uint32_t *)0xfe024018
+//Bit 31: 26       reserved
+//Bit 25           ro_cmd0_erro_irq                  // unsigned ,     RO, default = 0  1: has irq signal
+//Bit 24           ro_cmd0_done_irq                  // unsigned ,     RO, default = 0  1: has irq signal
+//Bit 23: 16       reserved
+//Bit 15: 8        ro_cmd0_err_code                  // unsigned ,     RO, default = 0
+//Bit 7 : 0        ro_cmd0_status                    // unsigned ,     RO, default = 0  0: idle  1: busy  2: pending
+#define P_AMFC_GL_CMD0_FEATURE                     (volatile uint32_t *)0xfe02401c
+//Bit 31: 5        reserved
+//Bit 4            ro_cmd0_feat_zlib                 // unsigned ,    RW, default = 0
+//Bit 3            ro_cmd0_feat_deflate              // unsigned ,    RW, default = 0
+//Bit 2            ro_cmd0_feat_gzip                 // unsigned ,    RW, default = 0
+//Bit 1            ro_cmd0_feat_lz4                  // unsigned ,    RW, default = 0
+//Bit 0            ro_cmd0_feat_zstd                 // unsigned ,    RW, default = 1 , if the whole module works as dma, write 'hf in this reg
+#define P_AMFC_GL_CMD0_IRQCLR                      (volatile uint32_t *)0xfe024020
+//Bit 31: 2        reserved
+//Bit 1            reg_cmd0_erro_irq_clr             // unsigned,     RW, default = 0  clear irq state
+//Bit 0            reg_cmd0_done_irq_clr             // unsigned,     RW, default = 0  clear irq state
+//--------------------------
+#define P_AMFC_GL_CMD1_DESC_BASE0_ADDR             (volatile uint32_t *)0xfe024048
+//Bit 31: 0        reg_cmd1_desc_base0_addr           // unsigned ,RW, default = 0  base address of descriptor list; Physical address = DESCRIPTOR BASE ADDDR<<5
+#define P_AMFC_GL_CMD1_CURR_DESC_ADDR              (volatile uint32_t *)0xfe02404c
+//Bit 31: 0        ro_cmd1_cur_desc_addr             // unsigned ,RO, default = 0  address of current processing descriptor
+#define P_AMFC_GL_CMD1_CONTROL                     (volatile uint32_t *)0xfe024050
+//Bit 31           reg_cmd1_sw_rst                   // unsigned ,    RW, default = 0  reset AMFC state machine
+//Bit 30: 5        reserved
+//Bit 4            reg_cmd1_global_irq_en            // unsigned ,    RW, default = 0 1 to enable interrupt
+//Bit 3: 2         reserved
+//Bit 1            reg_cmd1_sw_terminate              // unsigned ,    RW, default = 0  1: terminate current processing
+//Bit 0            reg_cmd1_sw_start                 // unsigned ,    RW, default = 0  1: trigger hardware process descriptor list
+#define P_AMFC_GL_CMD1_CONFIG                      (volatile uint32_t *)0xfe024054
+//Bit 31: 0        reg_cmd1_config                   // unsigned,     RW, default = 0
+#define P_AMFC_GL_CMD1_STATUS                      (volatile uint32_t *)0xfe024058
+//Bit 31: 26       reserved
+//Bit 25           ro_cmd1_erro_irq                  // unsigned ,     RO, default = 0  1: has irq signal
+//Bit 24           ro_cmd1_done_irq                  // unsigned ,     RO, default = 0  1: has irq signal
+//Bit 23: 16       reserved
+//Bit 15: 8        ro_cmd1_err_code                  // unsigned ,     RO, default = 0
+//Bit 7 : 0        ro_cmd1_status                    // unsigned ,     RO, default = 0  0: idle  1: busy  2: pending
+#define P_AMFC_GL_CMD1_FEATURE                     (volatile uint32_t *)0xfe02405c
+//Bit 31: 5        reserved
+//Bit 4            ro_cmd1_feat_zlib                 // unsigned ,    RW, default = 0
+//Bit 3            ro_cmd1_feat_deflate              // unsigned ,    RW, default = 0
+//Bit 2            ro_cmd1_feat_gzip                 // unsigned ,    RW, default = 0
+//Bit 1            ro_cmd1_feat_lz4                  // unsigned ,    RW, default = 0
+//Bit 0            ro_cmd1_feat_zstd                 // unsigned ,    RW, default = 1 , if the whole module works as dma, write 'hf in this reg
+#define P_AMFC_GL_CMD1_IRQCLR                      (volatile uint32_t *)0xfe024060
+//Bit 31: 2        reserved
+//Bit 1            reg_cmd1_erro_irq_clr             // unsigned,     RW, default = 0  clear irq state
+//Bit 0            reg_cmd1_done_irq_clr             // unsigned,     RW, default = 0  clear irq state
+#define P_AMFC_CMD0_TIME_MEASURE                   (volatile uint32_t *)0xfe024070
+//Bit 31:0         ro_cmd0_time_measure                  // unsigned , RO, default = 0, cmd0 work time/count measured by wclk
+#define P_AMFC_CMD1_TIME_MEASURE                   (volatile uint32_t *)0xfe024074
+//Bit 31:0         ro_cmd1_time_measure                  // unsigned , RO, default = 0, cmd1 work time/count measured by wclk
+//---------------------------------------------
+//Gate clock control
+#define P_AMFC_CMD_GATE_CLK_CTRL                   (volatile uint32_t *)0xfe024080
+//Bit 31: 0        reg_cmd_gclk_ctrl                 // unsigned ,     RW, default = 0  gated clock control
+#define P_AMFC_ENC_GATE_CTRL_CTRL_0                (volatile uint32_t *)0xfe024084
+//Bit 31: 0        reg_enc_gclk_ctrl_0               // unsigned ,     RW, default = 0  gated clock control
+#define P_AMFC_ENC_GATE_CTRL_CTRL_1                (volatile uint32_t *)0xfe024088
+//Bit 31: 0        reg_enc_gclk_ctrl_1               // unsigned ,     RW, default = 0  gated clock control
+#define P_AMFC_DEC_GATE_CTRL_CTRL_0                (volatile uint32_t *)0xfe02408c
+//Bit 31: 0        reg_dec_gclk_ctrl_0               // unsigned ,     RW, default = 0  gated clock control
+#define P_AMFC_DEC_GATE_CTRL_CTRL_1                (volatile uint32_t *)0xfe024090
+//Bit 31: 0        reg_dec_gclk_ctrl_1               // unsigned ,     RW, default = 0  gated clock control
+//CODEC
+#define P_AMFC_CODEC_CTRL                          (volatile uint32_t *)0xfe0240a0
+//Bit 31:8         reserved
+//Bit  7:6         reg_cmd1_dst_end_mode             // unsigned ,     RW, default = 2,  0: mif req end;  1: data write done;  2: mif write respond done
+//Bit  5:4         reg_cmd0_dst_end_mode             // unsigned ,     RW, default = 2,  0: mif req end;  1: data write done;  2: mif write respond done
+//Bit  3:2         reserved
+//Bit  1           reg_decmpr_enable                 // unsigned ,     RW, default = 0, 1 to enable the decompr
+//Bit  0           reg_cmpr_enable                   // unsigned ,     RW, default = 0, 1 to enable the compr
+#define P_AMFC_COMPR_STATUS                        (volatile uint32_t *)0xfe0240a4
+//Bit 31:0         ro_cmpr_status                    // unsigned ,     RO, default = 0, compr status
+#define P_AMFC_DECOMPR_STATUS_0                    (volatile uint32_t *)0xfe0240a8
+//Bit 31:0         ro_decmpr_status_0               // unsigned ,     RO, default = 0, decompr status
+#define P_AMFC_DECOMPR_STATUS_1                    (volatile uint32_t *)0xfe0240ac
+//Bit 31:0         ro_decmpr_status_1               // unsigned ,     RO, default = 0, decompr status
+#define P_AMFC_DECOMPR_STATUS_2                    (volatile uint32_t *)0xfe0240b0
+//Bit 31:0         ro_decmpr_status_2               // unsigned ,     RO, default = 0, decompr status
+#define P_AMFC_DECOMPR_STATUS_3                    (volatile uint32_t *)0xfe0240b4
+//Bit 31:0         ro_decmpr_bsinfo                // unsigned ,     RO, default = 0, decompr status
+#define P_AMFC_DECOMPR_STATUS_4                    (volatile uint32_t *)0xfe0240b8
+//Bit 31:0         ro_decmpr_iraminfo              // unsigned ,     RO, default = 0, decompr status
+//----------------------------------
+#define P_AMFC_ZSTD_MODE_MISC                      (volatile uint32_t *)0xfe0240c0
+//Bit 31:18        reserved
+//Bit 17           reg_dec_head_skip_mode         // unsigned , RW, default=  0
+//Bit 16           reg_dec_frame_mode             // unsigned , RW, default = 0, 0: 1 only decode one frame
+//Bit 15:4         reserved
+//Bit  3           reg_enc_fse_norm2_dis          // unsigned , RW, default = 0, 1 to disable FSE normalize2 encode
+//Bit  2           reg_enc_lz77_srch_mode         // unsigned , RW, default = 0, 0: search window is not across the block boundary. 1: search window is across the block boundary.
+//Bit  1           reg_enc_lz77_disable           // unsigned , RW, default = 0, 1 to disable LZ77 in enc
+//Bit  0           reg_enc_fse_default_allowed    // unsigned , RW, default = 1, 1 to enable FSE default table for compr
+#define P_AMFC_ZSTD_HASH_TBL_INIT                  (volatile uint32_t *)0xfe0240c4
+//Bit 31:6         reserved
+//Bit 5:4          reg_enc_hash_tbl_init_mode       // unsigned , RW, default = 0, hash table initial mode. 1:initial the hash table for each block. 2:initial the hash table for each frame. 0/3: no init
+//Bit 3:1          reserved
+//Bit  0           reg_enc_hash_tbl_init            // unsigned , RW, default = 0, write 1 to initial the hash table
+#define P_AMFC_ZSTD_LZ77_SRCH_WIN                  (volatile uint32_t *)0xfe0240c8
+//Bit 31:16        reserved
+//Bit 15:0         reg_enc_lz77_srch_wsize        // unsigned , RW, default = 4096, max search win size for LZ77, it is only valid when  reg_enc_lz77_srch_mode=1
+#define P_AMFC_ZSTD_DEC_ERR_MSK                    (volatile uint32_t *)0xfe0240cc
+//Bit 31:0         reg_dec_error_msk                // unsigned , RW, default =0, 1 to mask the dec error
+//------------------------------------------
+//MIF register
+#define P_AMFC_WR_MIF_CTRL                         (volatile uint32_t *)0xfe024100
+//Bit  31:24   reserved
+//Bit  23:16   reg_wrmif_canvas_id             // unsigned , RW, default = 0, axi canvas id num
+//Bit  15:11   reserved
+//Bit  10:8    reg_wrmif_burst_len             // unsigned , RW, default = 2, burst type: 0-single 1-bst2 2-bst4 3-bst8 4-bst16
+//Bit  7:6     reserved
+//Bit  5       reg_wrmif_swap_64bit            // unsigned , RW, default = 0, 64bits of 128bit swap enable
+//Bit  4       reg_wrmif_little_endian         // unsigned , RW, default = 0, big endian enable
+//Bit  3:1     reserved
+//Bit  0       reg_wrmif_enable                // unsigned , RW, default = 1  1 to mif
+#define P_AMFC_WR_MIF_STATUS                       (volatile uint32_t *)0xfe024104
+//Bit  31:0    ro_wrmif_status              // unsigned ,  RO, default = 0, wrmif status
+#define P_AMFC_RD_MIF_CTRL                         (volatile uint32_t *)0xfe024108
+//Bit  31:24   reserved
+//Bit  23:16   reg_rdmif_canvas_id           // unsigned , RW, default = 0, axi canvas id num
+//Bit  15:11   reserved
+//Bit  10:8    reg_rdmif_burst_len           // unsigned , RW, default = 2, burst type: 0-single 1-bst2 2-bst4 3-bst8 4-bst16
+//Bit  7:6     reserved
+//Bit  5       reg_rdmif_swap_64bit          // unsigned , RW, default = 0, 64bits of 128bit swap enable
+//Bit  4       reg_rdmif_little_endian       // unsigned , RW, default = 0, big endian enable
+//Bit  3:1     reserved
+//Bit  0       reg_rdmif_enable              // unsigned , RW, default = 1  1 to mif
+#define P_AMFC_RD_MIF_STATUS                       (volatile uint32_t *)0xfe02410c
+//Bit  31:0    ro_rdmif_status               // unsigned , RO, default = 0, rdmif status
+#define P_AMFC_MIF_QOS_UGT                         (volatile uint32_t *)0xfe024110
+//Bit  31:16   reserved
+//Bit  15      reg_decmpr_arugt              // unsigned , RW, default =0,  decmpr mif read Urgent
+//Bit  14      reg_decmpr_arqos              // unsigned , RW, default =0,  decmpr mif read  QOS
+//Bit  13      reg_decmpr_awugt              // unsigned , RW, default =0,  decmpr mif write Urgent
+//Bit  12      reg_decmpr_awqos              // unsigned , RW, default =0,  decmpr mif write QOS
+//Bit  11      reg_cmpr_arugt                // unsigned , RW, default =0,  cmpr mif read Urgent
+//Bit  10      reg_cmpr_arqos                // unsigned , RW, default =0,  cmpr mif read  QOS
+//Bit   9      reg_cmpr_awugt                // unsigned , RW, default =0,  cmpr mif write Urgent
+//Bit   8      reg_cmpr_awqos                // unsigned , RW, default =0,  cmpr mif write QOS
+//Bit   7      reg_cmd1_arugt                // unsigned , RW, default =0,  cmd1 mif read Urgent
+//Bit   6      reg_cmd1_arqos                // unsigned , RW, default =0,  cmd1 mif read  QOS
+//Bit   5      reg_cmd1_awugt                // unsigned , RW, default =0,  cmd1 mif write Urgent
+//Bit   4      reg_cmd1_awqos                // unsigned , RW, default =0,  cmd1 mif write QOS
+//Bit   3      reg_cmd0_arugt                // unsigned , RW, default =0,  cmd0 mif read Urgent
+//Bit   2      reg_cmd0_arqos                // unsigned , RW, default =0,  cmd0 mif read  QOS
+//Bit   1      reg_cmd0_awugt                // unsigned , RW, default =0,  cmd0 mif write Urgent
+//Bit   0      reg_cmd0_awqos                // unsigned , RW, default =0,  cmd0 mif write QOS
+#define P_AMFC_MIF_BW_CTRL                         (volatile uint32_t *)0xfe024114
+//Bit 31:11    reserved
+//Bit 10:8     reg_rdmif_bw_ctrl_en          // unsigned , RW, default = 0  1 to enable rdmif bandwidth control,bit8 for control_0 and bit9 for control_1
+//Bit  7:3     reserved
+//Bit  2:0     reg_wrmif_bw_ctrl_en          // unsigned , RW, default = 0  1 to enable wrmif bandwidth control,bit0 for control_0 and bit1 for control_1
+#define P_AMFC_WRMIF_BW_TRICK0                     (volatile uint32_t *)0xfe024118
+//Bit 31:24    reg_wrmif_bw_dn_magin0        // unsigned , RW, default = 0  threshold down margin for wrmif bandwidth control_0
+//Bit 23:16    reg_wrmif_bw_up_magin0        // unsigned , RW, default = 0  threshold up margin for wrmif bandwidth control_0
+//Bit 15:0     reg_wrmif_bw_tick0            // unsigned , RW, default = 0  tick sample number for wrmif bandwidth control_0, measured with wclk
+#define P_AMFC_WRMIF_BW_THRD0                      (volatile uint32_t *)0xfe02411c
+//Bit 31:24    reserved
+//Bit 23:0     reg_wrmif_bw_thrd0            // unsigned , RW, default = 0 threshold for wrmif bandwidth control_0.
+#define P_AMFC_WRMIF_BW_TRICK1                     (volatile uint32_t *)0xfe024120
+//Bit 31:24    reg_wrmif_bw_dn_magin1        // unsigned , RW, default = 0  threshold down margin for wrmif bandwidth control_1
+//Bit 23:16    reg_wrmif_bw_up_magin1        // unsigned , RW, default = 0  threshold up margin for wrmif bandwidth control_1
+//Bit 15:0     reg_wrmif_bw_tick1            // unsigned , RW, default = 0  tick sample number for wrmif bandwidth control_1, measured with wclk
+#define P_AMFC_WRMIF_BW_THRD1                      (volatile uint32_t *)0xfe024124
+//Bit 31:24    reserved
+//Bit 23:0     reg_wrmif_bw_thrd1            // unsigned , RW, default = 0 threshold for wrmif bandwidth control_1.
+#define P_AMFC_WRMIF_BW_CTRL2                      (volatile uint32_t *)0xfe024128
+//Bit 31:24    reserved
+//Bit 23:8     reg_wrmif_bw_thrd2            // unsigned , RW, default = 0 threshold for wrmif bandwidth control_2.
+//Bit  7:0     reg_wrmif_bw_tick2            // unsigned , RW, default = 0 tick sample number for wrmif bandwidth control_2, measured with wclk
+#define P_AMFC_RDMIF_BW_TRICK0                     (volatile uint32_t *)0xfe02412c
+//Bit 31:24    reg_rdmif_bw_dn_magin0        // unsigned , RW, default = 0  threshold down margin for rdmif bandwidth control_0
+//Bit 23:16    reg_rdmif_bw_up_magin0        // unsigned , RW, default = 0  threshold up margin for rdmif bandwidth control_0
+//Bit 15:0     reg_rdmif_bw_tick0            // unsigned , RW, default = 0  tick sample number for rdmif bandwidth control_0, measured with wclk
+#define P_AMFC_RDMIF_BW_THRD0                      (volatile uint32_t *)0xfe024130
+//Bit 31:24    reserved
+//Bit 23:0     reg_rdmif_bw_thrd0            // unsigned , RW, default = 0 threshold for rdmif bandwidth control_0.
+#define P_AMFC_RDMIF_BW_TRICK1                     (volatile uint32_t *)0xfe024134
+//Bit 31:24    reg_rdmif_bw_dn_magin1        // unsigned , RW, default = 0  threshold down margin for rdmif bandwidth control_1
+//Bit 23:16    reg_rdmif_bw_up_magin1        // unsigned , RW, default = 0  threshold up margin for rdmif bandwidth control_1
+//Bit 15:0     reg_rdmif_bw_tick1            // unsigned , RW, default = 0  tick sample number for rdmif bandwidth control_1, measured with wclk
+#define P_AMFC_RDMIF_BW_THRD1                      (volatile uint32_t *)0xfe024138
+//Bit 31:24    reserved
+//Bit 23:0     reg_rdmif_bw_thrd1            // unsigned , RW, default = 0 threshold for rdmif bandwidth control_1.
+#define P_AMFC_RDMIF_BW_CTRL2                      (volatile uint32_t *)0xfe02413c
+//Bit 31:24    reserved
+//Bit 23:8     reg_rdmif_bw_thrd2            // unsigned , RW, default = 0 threshold for rdmif bandwidth control_2.
+//Bit  7:0     reg_rdmif_bw_tick2            // unsigned , RW, default = 0 tick sample number for rdmif bandwidth control_2, measured with wclk
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  amfc_regs.h
+//
 // synopsys translate_off
 // synopsys translate_on
 //
@@ -11926,7 +10048,7 @@
 #define P_NR2_MET_NM_CTRL                          (volatile uint32_t *)0xff005d14
 //Bit 28,	   reg_NM_reset	          Reset to the status of the Loop filter.
 //Bit 27:24,   reg_NM_calc_length	  Length mode of the Noise measurement sample number for statistics.
-//                                    0:  256 samples;    1: 512 samples;    2: 1024 samples;   ¡­X: 2^(8+x) samples
+//                                    0:  256 samples;    1: 512 samples;    2: 1024 samples;   Â¡Â­X: 2^(8+x) samples
 //Bit 23:20,   reg_NM_inc_step	      Loop filter input gain increase step.
 //Bit 19:16,   reg_NM_dec_step	      Loop filter input gain decrease step.
 //Bit 15:8,	   reg_NM_YHPmot_thrd	  Luma channel HP portion motion for condition of pixels included in Luma Noise measurement.
@@ -15770,6 +13892,9 @@
 //Bit 23:16     blackext_slope1
 //Bit 15:8      blackext_midpt
 //Bit 7:0       blackext_slope2
+#define P_VPP_OSD_HDR_DIV_ALPHA                    (volatile uint32_t *)0xff0075fc
+//Bit 9:5   reg_osd2_hdr_div_alpha
+//Bit 4:0   reg_osd1_hdr_div_alpha
 #define P_VPP_BLACKEXT_CTRL                        (volatile uint32_t *)0xff007600
 //Bit 31:24     bottom of region03 output value
 //Bit 23:16     bottom of region02 output value
@@ -15954,6 +14079,12 @@
 //Bit 28:16  vppin_line_length  / unsigned  , default = 780   vppout_line_length
 //Bit 15:13  reserved
 //Bit 12:0   vppin_pic_height   // unsigned  , default = 438  vppout_pic_height
+//
+#define P_VPP_P2I_H_V_SIZE                         (volatile uint32_t *)0xff00769c
+//Bit 31:29  reserved
+//Bit 28:16  p2i_line_length  // unsigned  , default = 780  ve_line_length
+//Bit 15:13  reserved
+//Bit 12:0   p2i_pic_height   // unsigned  , default = 438  ve_pic_height
 #define P_VPP_VDO_MEAS_CTRL                        (volatile uint32_t *)0xff0076a0
 //Bit 31:11  reserved
 //Bit 10:0   vdo_meas_ctrl    // unsigned  , default = 0  vdo_meas_ctrl
@@ -16212,7 +14343,10 @@
 //Bit 31:16       // default ==    0
 //Bit 15:0        // default ==    0
 #define P_VPP_GCLK_CTRL2                           (volatile uint32_t *)0xff0077c8
-//`define VPP_BLEND_SRC_SEL               8'hf3
+//`define VPP_BLEND_SRC_SEL             8'hf3
+#define P_VPP_OSD2_IN_SIZE                         (volatile uint32_t *)0xff0077cc
+//Bit 31:16       // default ==    0
+//Bit 15:0        // default ==    0
 #define P_VD2_PPS_DUMMY_DATA                       (volatile uint32_t *)0xff0077d0
 #define P_VPP_OSD1_BLD_H_SCOPE                     (volatile uint32_t *)0xff0077d4
 #define P_VPP_OSD1_BLD_V_SCOPE                     (volatile uint32_t *)0xff0077d8
@@ -19034,8 +17168,8 @@
 //                               2'b0x: whole line is left or right;
 //                               2'b10: d2p_lar=1(D2P_PARAM_1), rlrlrlrl inteleave in one line,
 //                                      d2p_lar=0(D2P_PARAM_1), lrlrlrlr inteleave in one line,
-//                               2'b11: d2p_lar=1(D2P_PARAM_1), rrrrr�lllll, half line is right, another half is left,
-//                                      d2p_lar=0(D2P_PARAM_1), lllll�rrrrr, half line is left, another half is right,
+//                               2'b11: d2p_lar=1(D2P_PARAM_1), rrrrr­lllll, half line is right, another half is left,
+//                                      d2p_lar=0(D2P_PARAM_1), lllll­rrrrr, half line is left, another half is right,
 #define P_D2D3_DBR_DDD_CTRL                        (volatile uint32_t *)0xff00acb0
 // Bit 31:0  RW, ddd_dbg_ctrl,   no use
 #define P_D2D3_DBR_DDD_DBG                         (volatile uint32_t *)0xff00acb4
@@ -26133,2819 +24267,3195 @@
 // REG_BASE:  VPPC_VCBUS_BASE = 0x50
 // -----------------------------------------------
 //
-// Reading file:  srsharp_regs.h
+// Reading file:  vsr_top_regs.h
 //
 // synopsys translate_off
 // synopsys translate_on
-//SRSHARP0        8'h00  - 8'hff
-//SRSHARP1        8'h100 - 8'1ff
-#define  SRSHARP0_OFFSET   (0x000<<2)
-#define  SRSHARP1_OFFSET   (0x200<<2)
-
+#define P_VPP_VSR_TOP_MISC                         (volatile uint32_t *)0xff014000
+//Bit 31:16        reg_sync_ctrl               // unsigned ,    RW, default = 0
+//Bit 15:3         reserved
+//Bit 2            reg_use_inp_fmt             // unsigned ,    RW, default = 1
+//Bit 1            reg_inp_422                 // unsigned ,    RW, default = 0
+//Bit 0            reg_vsr_en                  // unsigned ,    RW, default = 0
+#define P_VPP_VSR_TOP_GCLK_CTRL                    (volatile uint32_t *)0xff014004
+//Bit 31:0         reg_gclk_ctrl               // unsigned ,    RW, default = 0
 //
-// Reading file:  sharp_regs.h
-//
-#define P_SHARP_HVSIZE                             (volatile uint32_t *)0xff014000
-//Bit 31:29,        reserved
-//Bit 28:16,        reg_pknr_hsize                                                                                                              . unsigned  , default = 1920
-//Bit 15:13,        reserved
-//Bit 12: 0,        reg_pknr_vsize                                                                                                              . unsigned  , default = 1080
-#define P_SHARP_HVBLANK_NUM                        (volatile uint32_t *)0xff014004
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_deband_hblank
-//Bit 15: 8,        reg_pknr_hblank_num                                                                                                         . unsigned  , default = 20
-//Bit  7: 0,        reg_pknr_vblank_num                                                                                                         . unsigned  , default = 73
-#define P_NR_GAUSSIAN_MODE                         (volatile uint32_t *)0xff014008
-//Bit 31:14,        reserved
-//Bit 13:12,        reg_nr_gau_ynorm                      : C adpative coef norm, 0: 128, 1: 256, 2: 512, 3: 1024                         . unsigned  , default = 0
-//Bit 11:10,        reserved
-//Bit  9: 8,        reg_nr_gau_cnorm                      : C adpative coef norm, 0: 128, 1: 256, 2: 512, 3: 1024                         . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 4,        reg_nr_gau_ymode                      : 0 3x3 filter; 1: 5x5 filter; 2/3:adpative coef                                . unsigned  , default = 1
-//Bit  3: 2,        reserved
-//Bit  1: 0,        reg_nr_gau_cmode                      : 0 3x3 filter; 1: 5x5 filter; 2/3:adpative coef                                . unsigned  , default = 1
-#define P_PK_CON_2CIRHPGAIN_TH_RATE                (volatile uint32_t *)0xff014014
-//Bit 31:24,        reg_pk_cirhpcon2gain0                       : threshold0 of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 25
-//Bit 23:16,        reg_pk_cirhpcon2gain1                       : threshold1 of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 60
-//Bit 15: 8,        reg_pk_cirhpcon2gain5                       : rate0 (for hpcon<th0) of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 80
-//Bit  7: 0,        reg_pk_cirhpcon2gain6                       : rate1 (for hpcon>th1) of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 20
-#define P_PK_CON_2CIRHPGAIN_LIMIT                  (volatile uint32_t *)0xff014018
-//Bit 31:24,        reg_pk_cirhpcon2gain2                       : level limit(for hpcon<th0) of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 155
-//Bit 23:16,        reg_pk_cirhpcon2gain3                       : level limit(for th0<hpcon<th1) of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 150
-//Bit 15: 8,        reg_pk_cirhpcon2gain4                       : level limit(for hpcon>th1) of curve to map hpcon to hpgain for circle hp filter (all 8 direction same). 0~255.. unsigned  , default = 5
-//Bit  7: 0,        reserved
-#define P_PK_CON_2CIRBPGAIN_TH_RATE                (volatile uint32_t *)0xff01401c
-//Bit 31:24,        reg_pk_cirbpcon2gain0                       : threshold0 of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 20
-//Bit 23:16,        reg_pk_cirbpcon2gain1                       : threshold1 of curve to map bpcon to bpgain for circle bp filter (all 8 direction same).. unsigned  , default = 50
-//Bit 15: 8,        reg_pk_cirbpcon2gain5                       : rate0 (for bpcon<th0) of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 50
-//Bit  7: 0,        reg_pk_cirbpcon2gain6                       : rate1 (for bpcon>th1) of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 25
-#define P_PK_CON_2CIRBPGAIN_LIMIT                  (volatile uint32_t *)0xff014020
-//Bit 31:24,        reg_pk_cirbpcon2gain2                       : level limit(for bpcon<th0) of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 155
-//Bit 23:16,        reg_pk_cirbpcon2gain3                       : level limit(for th0<bpcon<th1) of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 150
-//Bit 15: 8,        reg_pk_cirbpcon2gain4                       : level limit(for bpcon>th1) of curve to map bpcon to bpgain for circle bp filter (all 8 direction same). 0~255.. unsigned  , default = 5
-//Bit  7: 0,        reserved
-#define P_PK_CON_2DRTHPGAIN_TH_RATE                (volatile uint32_t *)0xff014024
-//Bit 31:24,        reg_pk_drthpcon2gain0                       : threshold0 of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 25
-//Bit 23:16,        reg_pk_drthpcon2gain1                       : threshold1 of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 60
-//Bit 15: 8,        reg_pk_drthpcon2gain5                       : rate0 (for hpcon<th0) of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 80
-//Bit  7: 0,        reg_pk_drthpcon2gain6                       : rate1 (for hpcon>th1) of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 20
-#define P_PK_CON_2DRTHPGAIN_LIMIT                  (volatile uint32_t *)0xff014028
-//Bit 31:24,        reg_pk_drthpcon2gain2                       : level limit(for hpcon<th0) of curve to map hpcon to hpgain for directional hp filter (best direction).. unsigned  , default = 105
-//Bit 23:16,        reg_pk_drthpcon2gain3                       : level limit(for th0<hpcon<th1) of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 96
-//Bit 15: 8,        reg_pk_drthpcon2gain4                       : level limit(for hpcon>th1) of curve to map hpcon to hpgain for directional hp filter (best direction). 0~255.. unsigned  , default = 5
-//Bit  7: 0,        reserved
-#define P_PK_CON_2DRTBPGAIN_TH_RATE                (volatile uint32_t *)0xff01402c
-//Bit 31:24,        reg_pk_drtbpcon2gain0                       : threshold0 of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 20
-//Bit 23:16,        reg_pk_drtbpcon2gain1                       : threshold1 of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 50
-//Bit 15: 8,        reg_pk_drtbpcon2gain5                       : rate0 (for bpcon<th0) of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 50
-//Bit  7: 0,        reg_pk_drtbpcon2gain6                       : rate1 (for bpcon>th1) of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 25
-#define P_PK_CON_2DRTBPGAIN_LIMIT                  (volatile uint32_t *)0xff014030
-//Bit 31:24,        reg_pk_drtbpcon2gain2                       : level limit(for bpcon<th0) of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 55
-//Bit 23:16,        reg_pk_drtbpcon2gain3                       : level limit(for th0<bpcon<th1) of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 40
-//Bit 15: 8,        reg_pk_drtbpcon2gain4                       : level limit(for bpcon>th1) of curve to map bpcon to bpgain for directional bp filter (best direction). 0~255.. unsigned  , default = 5
-//Bit  7: 0,        reserved
-#define P_PK_CIRFB_LPF_MODE                        (volatile uint32_t *)0xff014034
-//Bit 31:30,        reserved
-//Bit 29:28,        reg_cirhp_horz_mode                         : no horz filter on HP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8                        . unsigned  , default = 1
-//Bit 27:26,        reserved
-//Bit 25:24,        reg_cirhp_vert_mode                         : no vert filter on HP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8                        . unsigned  , default = 1
-//Bit 23:22,        reserved
-//Bit 21:20,        reg_cirhp_diag_mode                         : filter on HP; 1: [1 2 1]/4;                                                   . unsigned  , default = 1
-//Bit 19:14,        reserved
-//Bit 13:12,        reg_cirbp_horz_mode                         : no horz filter on BP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8                        . unsigned  , default = 1
-//Bit 11:10,        reserved
-//Bit  9: 8,        reg_cirbp_vert_mode                         : no vert filter on BP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8                        . unsigned  , default = 1
-//Bit  7: 6,        reserved
-//Bit  5: 4,        reg_cirbp_diag_mode                         : filter on BP; 1: [1 2 1]/4;                                                   . unsigned  , default = 1
-//Bit  3: 0,        reserved
-#define P_PK_DRTFB_LPF_MODE                        (volatile uint32_t *)0xff014038
-//Bit 31:30,        reserved
-//Bit 29:28,        reg_drthp_horz_mode                         : no horz filter on HP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8  2                     . unsigned  , default = 1
-//Bit 27:26,        reserved
-//Bit 25:24,        reg_drthp_vert_mode                         : no vert filter on HP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8  2                     . unsigned  , default = 1
-//Bit 23:22,        reserved
-//Bit 21:20,        reg_drthp_diag_mode                         : filter on HP; 1: [1 2 1]/4;                             1                     . unsigned  , default = 1
-//Bit 19:14,        reserved
-//Bit 13:12,        reg_drtbp_horz_mode                         : no horz filter on BP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8  2                     . unsigned  , default = 1
-//Bit 11:10,        reserved
-//Bit  9: 8,        reg_drtbp_vert_mode                         : no vert filter on BP; 1: [1 2 1]/4; 2/3: [1 2 2 2 1]/8  2                     . unsigned  , default = 1
-//Bit  7: 6,        reserved
-//Bit  5: 4,        reg_drtbp_diag_mode                         : filter on BP; 1: [1 2 1]/4;                             1                     . unsigned  , default = 1
-//Bit  3: 0,        reserved
-#define P_PK_CIRFB_HP_CORING                       (volatile uint32_t *)0xff01403c
-//Bit 31:22,        reserved
-//Bit 21:16,        reg_cirhp_horz_core                         : coring of HP for Horz                                                         . unsigned  , default = 0
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_cirhp_vert_core                         : coring of HP for Vert                                                         . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_cirhp_diag_core                         : coring of HP for Diag                                                         . unsigned  , default = 0
-#define P_PK_CIRFB_BP_CORING                       (volatile uint32_t *)0xff014040
-//Bit 31:22,        reserved
-//Bit 21:16,        reg_cirbp_horz_core                         : coring of HP for Horz                                                         . unsigned  , default = 1
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_cirbp_vert_core                         : coring of HP for Vert                                                         . unsigned  , default = 1
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_cirbp_diag_core                         : coring of HP for Diag                                                         . unsigned  , default = 1
-#define P_PK_DRTFB_HP_CORING                       (volatile uint32_t *)0xff014044
-//Bit 31:22,        reserved
-//Bit 21:16,        reg_drthp_horz_core                         : coring of HP for Horz                                                         . unsigned  , default = 1
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_drthp_vert_core                         : coring of HP for Vert                                                         . unsigned  , default = 1
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_drthp_diag_core                         : coring of HP for Diag                                                         . unsigned  , default = 1
-#define P_PK_DRTFB_BP_CORING                       (volatile uint32_t *)0xff014048
-//Bit 31:22,        reserved
-//Bit 21:16,        reg_drtbp_horz_core                         : coring of HP for Horz                                                         . unsigned  , default = 1
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_drtbp_vert_core                         : coring of HP for Vert                                                         . unsigned  , default = 1
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_drtbp_diag_core                         : coring of HP for Diag                                                         . unsigned  , default = 1
-#define P_PK_CIRFB_BLEND_GAIN                      (volatile uint32_t *)0xff01404c
-//Bit 31:28,        reg_hp_cir_hgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit 27:24,        reg_hp_cir_vgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit 23:20,        reg_hp_cir_dgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit 19:16,        reserved
-//Bit 15:12,        reg_bp_cir_hgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit 11: 8,        reg_bp_cir_vgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit  7: 4,        reg_bp_cir_dgain                            : normalized 8 as '1'                                                           . unsigned  , default = 8
-//Bit  3: 0,        reserved
-#define P_NR_ALPY_SSD_GAIN_OFST                    (volatile uint32_t *)0xff014050
-//Bit 31:16,        reserved
-//Bit 15: 8,        reg_nr_alp0_ssd_gain                        : gain to max ssd normalized 16 as '1'                                          . unsigned  , default = 16
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_nr_alp0_ssd_ofst                        : offset to ssd before dividing to min_err                                      . signed    , default = -2
-#define P_NR_ALP0Y_ERR2CURV_TH_RATE                (volatile uint32_t *)0xff014054
-//Bit 31:24,        reg_nr_alp0_minerr_ypar0                    : threshold0 of curve to map mierr to alp0 for luma channel, this will be set value of flat region mierr that no need blur. 0~255.. unsigned  , default = 10
-//Bit 23:16,        reg_nr_alp0_minerr_ypar1                    : threshold1 of curve to map mierr to alp0 for luma channel,this will be set value of texture region mierr that can not blur.. unsigned  , default = 25
-//Bit 15: 8,        reg_nr_alp0_minerr_ypar5                    : rate0 (for mierr<th0) of curve to map mierr to alp0 for luma channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 80
-//Bit  7: 0,        reg_nr_alp0_minerr_ypar6                    : rate1 (for mierr>th1) of curve to map mierr to alp0 for luma channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 64
-#define P_NR_ALP0Y_ERR2CURV_LIMIT                  (volatile uint32_t *)0xff014058
-//Bit 31:24,        reg_nr_alp0_minerr_ypar2                    : level limit(for mierr<th0) of curve to map mierr to alp0 for luma channel, this will be set to alp0 that we can do for flat region. 0~255.. unsigned  , default = 63
-//Bit 23:16,        reg_nr_alp0_minerr_ypar3                    : level limit(for th0<mierr<th1) of curve to map mierr to alp0 for luma channel, this will be set to alp0 that we can do for misc region. 0~255.. unsigned  , default = 0
-//Bit 15: 8,        reg_nr_alp0_minerr_ypar4                    : level limit(for mierr>th1) of curve to map mierr to alp0 for luma channel, this will be set to alp0 that we can do for texture region. 0~255.. unsigned  , default = 63
-//Bit  7: 0,        reserved
-#define P_NR_ALP0C_ERR2CURV_TH_RATE                (volatile uint32_t *)0xff01405c
-//Bit 31:24,        reg_nr_alp0_minerr_cpar0                    : threshold0 of curve to map mierr to alp0 for chroma channel, this will be set value of flat region mierr that no need blur.. unsigned  , default = 10
-//Bit 23:16,        reg_nr_alp0_minerr_cpar1                    : threshold1 of curve to map mierr to alp0 for chroma channel,this will be set value of texture region mierr that can not blur.. unsigned  , default = 25
-//Bit 15: 8,        reg_nr_alp0_minerr_cpar5                    : rate0 (for mierr<th0) of curve to map mierr to alp0 for chroma channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 80
-//Bit  7: 0,        reg_nr_alp0_minerr_cpar6                    : rate1 (for mierr>th1) of curve to map mierr to alp0 for chroma channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 64
-#define P_NR_ALP0C_ERR2CURV_LIMIT                  (volatile uint32_t *)0xff014060
-//Bit 31:24,        reg_nr_alp0_minerr_cpar2                    : level limit(for mierr<th0) of curve to map mierr to alp0 for chroma channel, this will be set to alp0 that we can do for flat region. 0~255.. unsigned  , default = 63
-//Bit 23:16,        reg_nr_alp0_minerr_cpar3                    : level limit(for th0<mierr<th1) of curve to map mierr to alp0 for chroma channel, this will be set to alp0 that we can do for misc region. 0~255.. unsigned  , default = 0
-//Bit 15: 8,        reg_nr_alp0_minerr_cpar4                    : level limit(for mierr>th1) of curve to map mierr to alp0 for chroma channel, this will be set to alp0 that we can do for texture region. 0~255.. unsigned  , default = 63
-//Bit  7: 0,        reserved
-#define P_NR_ALP0_MIN_MAX                          (volatile uint32_t *)0xff014064
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_nr_alp0_ymin                            : normalized to 64 as '1'                                                       . unsigned  , default = 0
-//Bit 23:22,        reserved
-//Bit 21:16,        reg_nr_alp0_ymax                            : normalized to 64 as '1'                                                       . unsigned  , default = 63
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_nr_alp0_cmin                            : normalized to 64 as '1'                                                       . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_nr_alp0_cmax                            : normalized to 64 as '1'                                                       . unsigned  , default = 63
-#define P_NR_ALP1_MIERR_CORING                     (volatile uint32_t *)0xff014068
-//Bit 31:17,        reserved
-//Bit 16,            reg_nr_alp1_maxerr_mode                     : 0 max err; 1: xerr                                                            . unsigned  , default = 0
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_nr_alp1_core_rate                       : normalized 64 as "1"                                                          . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_nr_alp1_core_ofst                       : normalized 64 as "1"                                                          . signed    , default = 3
-#define P_NR_ALP1_ERR2CURV_TH_RATE                 (volatile uint32_t *)0xff01406c
-//Bit 31:24,        reg_nr_alp1_minerr_par0                     : threshold0 of curve to map mierr to alp1 for luma/chroma channel, this will be set value of flat region mierr that no need directional NR. 0~255.. unsigned  , default = 0
-//Bit 23:16,        reg_nr_alp1_minerr_par1                     : threshold1 of curve to map mierr to alp1 for luma/chroma  channel,this will be set value of texture region mierr that can not do directional NR. 0~255.. unsigned  , default = 24
-//Bit 15: 8,        reg_nr_alp1_minerr_par5                     : rate0 (for mierr<th0) of curve to map mierr to alp1 for luma/chroma  channel. the larger of the value, the deep of the slope.. unsigned  , default = 0
-//Bit  7: 0,        reg_nr_alp1_minerr_par6                     : rate1 (for mierr>th1) of curve to map mierr to alp1 for luma/chroma  channel. the larger of the value, the deep of the slope. 0~255. unsigned  , default = 20
-#define P_NR_ALP1_ERR2CURV_LIMIT                   (volatile uint32_t *)0xff014070
-//Bit 31:24,        reg_nr_alp1_minerr_par2                     : level limit(for mierr<th0) of curve to map mierr to alp1 for luma/chroma  channel, this will be set to alp1 that we can do for flat region. 0~255.. unsigned  , default = 0
-//Bit 23:16,        reg_nr_alp1_minerr_par3                     : level limit(for th0<mierr<th1) of curve to map mierr to alp1 for luma/chroma  channel, this will be set to alp1 that we can do for misc region. 0~255.. unsigned  , default = 16
-//Bit 15: 8,        reg_nr_alp1_minerr_par4                     : level limit(for mierr>th1) of curve to map mierr to alp1 for luma/chroma  channel, this will be set to alp1 that we can do for texture region. 0~255.255 before. unsigned  , default = 63
-//Bit  7: 0,        reserved
-#define P_NR_ALP1_MIN_MAX                          (volatile uint32_t *)0xff014074
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_nr_alp1_ymin                            : normalized to 64 as '1'                                                       . unsigned  , default = 0
-//Bit 23:22,        reserved
-//Bit 21:16,        reg_nr_alp1_ymax                            : normalized to 64 as '1'                                                       . unsigned  , default = 63
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_nr_alp1_cmin                            : normalized to 64 as '1'                                                       . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_nr_alp1_cmax                            : normalized to 64 as '1'                                                       . unsigned  , default = 63
-#define P_PK_ALP2_MIERR_CORING                     (volatile uint32_t *)0xff014078
-//Bit 31:17,        reserved
-//Bit 16,            reg_pk_alp2_maxerr_mode                     : 0 max err; 1: xerr                                                            . unsigned  , default = 1
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_pk_alp2_core_rate                       : normalized 64 as "1"                                                          . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_pk_alp2_core_ofst                       : normalized 64 as "1"                                                          . signed    , default = 1
-#define P_PK_ALP2_ERR2CURV_TH_RATE                 (volatile uint32_t *)0xff01407c
-//Bit 31:24,        reg_pk_alp2_minerr_par0                     : threshold0 of curve to map mierr to alp2 for luma channel, this will be set value of flat region mierr that no need peaking.. unsigned  , default = 0
-//Bit 23:16,        reg_pk_alp2_minerr_par1                     : threshold1 of curve to map mierr to alp2 for luma  channel,this will be set value of texture region mierr that can not do peaking. 0~255.. unsigned  , default = 24
-//Bit 15: 8,        reg_pk_alp2_minerr_par5                     : rate0 (for mierr<th0) of curve to map mierr to alp2 for luma  channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 0
-//Bit  7: 0,        reg_pk_alp2_minerr_par6                     : rate1 (for mierr>th1) of curve to map mierr to alp2 for luma  channel. the larger of the value, the deep of the slope. 0~255.. unsigned  , default = 20
-#define P_PK_ALP2_ERR2CURV_LIMIT                   (volatile uint32_t *)0xff014080
-//Bit 31:24,        reg_pk_alp2_minerr_par2                     : level limit(for mierr<th0) of curve to map mierr to alp2 for luma  channel, this will be set to alp2 that we can do for flat region. 0~255.. unsigned  , default = 0
-//Bit 23:16,        reg_pk_alp2_minerr_par3                     : level limit(for th0<mierr<th1) of curve to map mierr to alp2 for luma  channel, this will be set to alp2 that we can do for misc region. 0~255.. unsigned  , default = 16
-//Bit 15: 8,        reg_pk_alp2_minerr_par4                     : level limit(for mierr>th1) of curve to map mierr to alp2 for luma  channel, this will be set to alp2 that we can do for texture region. 0~255. default = 32;. unsigned  , default = 32
-//Bit  7: 0,        reserved
-#define P_PK_ALP2_MIN_MAX                          (volatile uint32_t *)0xff014084
-//Bit 31:14,        reserved
-//Bit 13: 8,        reg_pk_alp2_min                             : normalized to 64 as '1'                                                       . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_pk_alp2_max                             : normalized to 64 as '1'                                                       . unsigned  , default = 63
-#define P_PK_FINALGAIN_HP_BP                       (volatile uint32_t *)0xff014088
-//Bit 31:18,        reserved
-//Bit 17:16,        reg_final_gain_rs                           : s2: right shift bits for the gain normalization, 0 normal to 32 as 1; 1 normalize to 64 as 1; -2 normalized to 8 as 1; -1 normalize 16 as 1. default = 0
-//Bit 15: 8,        reg_hp_final_gain                           : gain to highpass boost result (including directional/circle blending), normalized 32 as '1', 0~255. 1.25 * 32. unsigned  , default = 40
-//Bit  7: 0,        reg_bp_final_gain                           : gain to bandpass boost result (including directional/circle blending), normalized 32 as '1', 0~255. 1.25 * 32. unsigned  , default = 30
-#define P_PK_OS_HORZ_CORE_GAIN                     (volatile uint32_t *)0xff01408c
-//Bit 31:24,        reg_pk_os_hsidecore                         : side coring (not to current pixel) to adaptive overshoot margin in horizontal direction. the larger of this value, the less overshoot admitted 0~255;. unsigned  , default = 8
-//Bit 23:16,        reg_pk_os_hsidegain                         : side gain (not to current pixel) to adaptive overshoot margin in horizontal direction. normalized to 32 as '1'. 0~255;. unsigned  , default = 20
-//Bit 15: 8,        reg_pk_os_hmidcore                          : midd coring (to current pixel) to adaptive overshoot margin in horizontal direction. the larger of this value, the less overshoot admitted 0~255;. unsigned  , default = 2
-//Bit  7: 0,        reg_pk_os_hmidgain                          : midd gain (to current pixel) to adaptive overshoot margin in horizontal direction. normalized to 32 as '1'. 0~255;. unsigned  , default = 20
-#define P_PK_OS_VERT_CORE_GAIN                     (volatile uint32_t *)0xff014090
-//Bit 31:24,        reg_pk_os_vsidecore                         : side coring (not to current pixel) to adaptive overshoot margin in vertical direction. the larger of this value, the less overshoot admitted 0~255;. unsigned  , default = 8
-//Bit 23:16,        reg_pk_os_vsidegain                         : side gain (not to current pixel) to adaptive overshoot margin in vertical direction. normalized to 32 as '1'. 0~255;. unsigned  , default = 20
-//Bit 15: 8,        reg_pk_os_vmidcore                          : midd coring (to current pixel) to adaptive overshoot margin in vertical direction. the larger of this value, the less overshoot admitted 0~255;. unsigned  , default = 2
-//Bit  7: 0,        reg_pk_os_vmidgain                          : midd gain (to current pixel) to adaptive overshoot margin in vertical direction. normalized to 32 as '1'. 0~255;. unsigned  , default = 20
-#define P_PK_OS_ADPT_MISC                          (volatile uint32_t *)0xff014094
-//Bit 31:24,        reg_pk_os_minerr_core                       : coring to minerr for adaptive overshoot margin. the larger of this value, the less overshoot admitted 0~255;. unsigned  , default = 40
-//Bit 23:16,        reg_pk_os_minerr_gain                       : gain to minerr based adaptive overshoot margin. normalized to 64 as '1'. 0~255;. unsigned  , default = 6
-//Bit 15: 8,        reg_pk_os_adpt_max                          : maximum limit adaptive overshoot margin (4x). 0~255;                          . unsigned  , default = 200
-//Bit  7: 0,        reg_pk_os_adpt_min                          : minimun limit adaptive overshoot margin (1x). 0~255;                          . unsigned  , default = 20
-#define P_PK_OS_STATIC                             (volatile uint32_t *)0xff014098
-//Bit 31:30,        reserved
-//Bit 29:28,        reg_pk_osh_mode                             : 0~3: (2x+1) window in H direction                                             . unsigned  , default = 2
-//Bit 27:26,        reserved
-//Bit 25:24,        reg_pk_osv_mode                             : 0~3: (2x+1) window in V direction                                             . unsigned  , default = 2
-//Bit 23:22,        reserved
-//Bit 21:12,        reg_pk_os_down                              : static negative overshoot margin. 0~1023;                                     . unsigned  , default = 200
-//Bit 11:10,        reserved
-//Bit  9: 0,        reg_pk_os_up                                : static positive overshoot margin. 0~1023;                                     . unsigned  , default = 200
-#define P_PK_NR_ENABLE                             (volatile uint32_t *)0xff01409c
-//Bit 31: 4,        reserved
-//Bit  3: 2,        reg_3d_mode                                 , 0: no 3D; 1: L/R; 2: T/B; 3: horizontal interleaved, dft = 0                                             //. unsigned  , default = 0
-//Bit  1,            reg_pk_en                                                                                                                   . unsigned  , default = 1
-//Bit  0,            reg_nr_en                                                                                                                   . unsigned  , default = 1
-#define P_PK_DRT_SAD_MISC                          (volatile uint32_t *)0xff0140a0
-//Bit 31:24,        reg_pk_sad_ver_gain                         : gain to sad[4], 16 normalized to "1";                                         . unsigned  , default = 32
-//Bit 23:16,        reg_pk_sad_hor_gain                         : gain to sad[0], 16 normalized to "1";                                         . unsigned  , default = 24
-//Bit 15:12,        reserved
-//Bit 11            reserved
-//Bit 10: 9,        reg_pk_bias_diag                            : bias towards diag                                                             . unsigned  , default = 0
-//Bit  8,           reserved
-//Bit  7: 5,        reserved
-//Bit  4: 0,        reg_pk_drt_force                            : force direction of drt peaking filter, h2b: 0:hp drt force, 1: bp drt force; 2: bp+hp drt force, 3: no force;. unsigned  , default = 24
-#define P_NR_TI_DNLP_BLEND                         (volatile uint32_t *)0xff0140a4
-//Bit 31:11,        reserved
-//Bit 10: 8,        reg_dnlp_input_mode                         : dnlp input options. 0: org_y; 1: gau_y; 2: gauadp_y; 3: edgadplpf_y; 4: nr_y;5: lti_y; 6: pk_y (before os);7: pk_y (after os). unsigned  , default = 4
-//Bit  7: 4,        reserved
-//Bit  3: 2,        reg_nr_cti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:cti; 2: (nr+cti)/2; 3:cti + dlt_nr  . unsigned  , default = 1
-//Bit  1: 0,        reg_nr_lti_blend_mode                       : blend mode of nr and lti result: 0: nr; 1:lti; 2: (nr+lti)/2; 3:lti + dlt_nr  . unsigned  , default = 2
-////////////////////////////////////////////////////////////////////////////////
-// new ti registers from here
-////////////////////////////////////////////////////////////////////////////////
-#define P_LTI_DIR_CORE_ALPHA                       (volatile uint32_t *)0xff0140a8
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_adp_lti_dir_alp_core_ofst               : ofst to min_err, alpha = (min_err - (max_err-min_err)*rate + ofst)/max_err*64;    dft=10. unsigned  , default = 10
-//Bit 23:20,        reserved
-//Bit 19:16,        reg_adp_lti_dir_alp_core_rate               : ofset to min_err, alpha = (min_err - (max_err-min_err)*rate + ofst)/max_err*64;   dft=0/32. unsigned  , default = 0
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_adp_lti_dir_alpmin                      : min value of alpha, alpha = (min_err+x +ofst)/max_err*64; dft=10              . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_adp_lti_dir_alpmax                      : max value of alpha, alpha = (min_err+x +ofst)/max_err*64; dft=63              . unsigned  , default = 63
-#define P_CTI_DIR_ALPHA                            (volatile uint32_t *)0xff0140ac
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_adp_cti_dir_alp_core_ofst               : ofst to min_err, alpha = (min_err - (max_err-min_err)*rate + ofst)/max_err*64;    dft=10. unsigned  , default = 5
-//Bit 23:20,        reserved
-//Bit 19:16,        reg_adp_cti_dir_alp_core_rate               : ofset to min_err, alpha = (min_err - (max_err-min_err)*rate + ofst)/max_err*64;   dft=0/32. unsigned  , default = 0
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_adp_cti_dir_alpmin                      : min value of alpha, alpha = (min_err +x+ofst)/max_err*64;  dft=10             . unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_adp_cti_dir_alpmax                      : max value of alpha, alpha = (min_err +x+ofst)/max_err*64;  dft=63             . unsigned  , default = 63
-#define P_LTI_CTI_DF_GAIN                          (volatile uint32_t *)0xff0140b0
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_adp_lti_hdf_gain                        : 8 normalized to "1";  default = 12                                            . unsigned  , default = 12
-//Bit 23:22,        reserved
-//Bit 21:16,        reg_adp_lti_vdf_gain                        : 8 normalized to "1";  default = 12                                            . unsigned  , default = 12
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_adp_cti_hdf_gain                        : 8 normalized to "1";  default = 12                                            . unsigned  , default = 12
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_adp_cti_vdf_gain                        : 8 normalized to "1";  default = 12                                            . unsigned  , default = 12
-#define P_LTI_CTI_DIR_AC_DBG                       (volatile uint32_t *)0xff0140b4
-//Bit 31,            reserved
-//Bit 30,            reg_adp_lti_dir_lpf                         : 0: no lpf; 1: [1 2 2 2 1]/8 lpf                                               . unsigned  , default = 1
-//Bit 29,            reserved
-//Bit 28,            reg_adp_lti_dir_difmode                     : 0: y_dif; 1: y_dif + (u_dif+v_dif)/2;                                         . unsigned  , default = 1
-//Bit 27,            reserved
-//Bit 26,            reg_adp_cti_dir_lpf                         : 0: no lpf; 1: [1 2 2 2 1]/8 lpf  dft=1                                        . unsigned  , default = 1
-//Bit 25:24,        reg_adp_cti_dir_difmode                     : 0: (u_dif+v_dif); 1: y_dif/2 + (u_dif+v_dif)*3/4; 2: y_dif + (u_dif+v_dif)/2; 3: y_dif*2 (not recommended). unsigned  , default = 2
-//Bit 23:22,        reg_adp_hvlti_dcblend_mode                  : 0: hlti_dc; 1:vlti_dc; 2: avg  3; blend on alpha                              . unsigned  , default = 3
-//Bit 21:20,        reg_adp_hvcti_dcblend_mode                  : 0: hcti_dc; 1:vcti_dc; 2: avg  3; blend on alpha                              . unsigned  , default = 2
-//Bit 19:18,        reg_adp_hvlti_acblend_mode                  : hlti_ac; 1:vlti_ac; 2: add  3;:adaptive to alpha                              . unsigned  , default = 3
-//Bit 17:16,        reg_adp_hvcti_acblend_mode                  : hcti_ac; 1:vcti_ac; 2: add  3;: adaptive to alpha                             . unsigned  , default = 2
-//Bit 15,            reserved
-//Bit 14:12,        reg_adp_hlti_debug                          , for hlti debug, default = 0                                                   . unsigned  , default = 0
-//Bit 11,            reserved
-//Bit 10: 8,        reg_adp_vlti_debug                          , for vlti debug, default = 0                                                   . unsigned  , default = 0
-//Bit  7,            reserved
-//Bit  6: 4,        reg_adp_hcti_debug                          , for hcti debug, default = 0                                                   . unsigned  , default = 0
-//Bit  3,            reserved
-//Bit  2: 0,        reg_adp_vcti_debug                          , for vcti debug, default = 0                                                   . unsigned  , default = 0
-#define P_HCTI_FLT_CLP_DC                          (volatile uint32_t *)0xff0140b8
-//Bit 31:29,        reserved
-//Bit 28,            reg_adp_hcti_en                             , 0: no cti, 1: new cti, default = 1                                            . unsigned  , default = 1
-//Bit 27:26,        reg_adp_hcti_vdn_flt                        , 0: no lpf; 1:[0,2,4,2,0],  2 : [1 2 2 2 1]/8  3:[1 0 2 0 1]/4, default = 2    . unsigned  , default = 2
-//Bit 25:24,        reg_adp_hcti_hdn_flt                        , 0: no lpf; 1:[0, 0, 0, 4, 8, 4, 0, 0, 0], 2:[0, 0, 2, 4, 4, 4, 2, 0, 0], 3: [1, 2, 2, 2, 2, 2, 2, 2, 1], default = 2. unsigned  , default = 2
-//Bit 23:22,        reg_adp_hcti_ddn_flt                        , 0: no lpf; 1:[0,2,4,2,0],  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2     . unsigned  , default = 2
-//Bit 21:20,        reg_adp_hcti_lpf0_flt                       , 0:no filter; 1:sigma=0.75, 2: sigma = 1.0, 3: sigma = 1.5, default = 1        . unsigned  , default = 1
-//Bit 19:18,        reg_adp_hcti_lpf1_flt                       , 0:no filter; 1:sigma= 2.0, 2: sigma = 3.0, 3: sigma = 4.0, default = 1        . unsigned  , default = 1
-//Bit 17:16,        reg_adp_hcti_lpf2_flt                       , 0:no filter; 1:sigma=5.0,  2: sigma = 9.0, 3: sigma = 13.0, default = 1       . unsigned  , default = 1
-//Bit 15:12,        reg_adp_hcti_hard_clp_win                   , window size, 0~8, default = 5                                                 . unsigned  , default = 5
-//Bit 11: 8,        reg_adp_hcti_hard_win_min                   , window size, 0~8, default = 3                                                 . unsigned  , default = 3
-//Bit  7: 5,        reserved
-//Bit  4,            reg_adp_hcti_clp_mode                       , 0: hard clip, 1: adaptive clip, default = 1                                   . unsigned  , default = 1
-//Bit  3,            reserved
-//Bit  2: 0,        reg_adp_hcti_dc_mode                        , 0:dn, 1:lpf0, 2:lpf1, 3:lpf2, 4: lpf3: 5: vdn result; 6/7:org, default = 0    . unsigned  , default = 0
-#define P_HCTI_BST_GAIN                            (volatile uint32_t *)0xff0140bc
-//Bit 31:24,        reg_adp_hcti_bst_gain0                      : gain of the bandpass 0 (lpf1-lpf2)- LBP, default = 80                         . unsigned  , default = 80
-//Bit 23:16,        reg_adp_hcti_bst_gain1                      : gain of the bandpass 1 (lpf0-lpf1)- BP, default = 96                          . unsigned  , default = 96
-//Bit 15: 8,        reg_adp_hcti_bst_gain2                      : gain of the bandpass 2 (hdn-lpf0)-  HP, default = 64                          . unsigned  , default = 64
-//Bit  7: 0,        reg_adp_hcti_bst_gain3                      : gain of the unsharp band (yuvin-hdn) - US, default = 16                       . unsigned  , default = 16
-#define P_HCTI_BST_CORE                            (volatile uint32_t *)0xff0140c0
-//Bit 31:24,        reg_adp_hcti_bst_core0                      : core of the bandpass 0 (lpf1-lpf2)- LBP, default = 5                          . unsigned  , default = 5
-//Bit 23:16,        reg_adp_hcti_bst_core1                      : core of the bandpass 1 (lpf0-lpf1)- BP, default = 5                           . unsigned  , default = 5
-//Bit 15: 8,        reg_adp_hcti_bst_core2                      : core of the bandpass 2 (hdn-lpf0)-  HP, default = 5                           . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_hcti_bst_core3                      : core of the unsharp band (yuvin-hdn) - US, default = 3                        . unsigned  , default = 5
-#define P_HCTI_CON_2_GAIN_0                        (volatile uint32_t *)0xff0140c4
-//Bit 31:29,        reg_adp_hcti_con_mode                       : con mode 0:[0, 0,-1, 1, 0, 0, 0]+[0, 0, 0, 1,-1, 0, 0], 1: [0, 0,-1, 0, 1, 0, 0], 2: [0,-1, 0, 0, 0, 1, 0], 3:[-1, 0, 0, 0, 0, 0, 1], 4: .... default = 1. unsigned  , default = 1
-//Bit 28:26,        reg_adp_hcti_dx_mode                        : dx mode 0: [-1 1 0]; 1~7: [-1 (2x+1)"0" 1], default = 2                       . unsigned  , default = 2
-//Bit 25:24,        reg_adp_hcti_con_lpf                        : lpf mode of the con: 0: [1 2 1]/4; 1:[1 2 2 2 1]/8, default = 0               . unsigned  , default = 0
-//Bit 23:16,        reg_adp_hcti_con_2_gain0                    , default = 25                                                                  . unsigned  , default = 25
-//Bit 15: 8,        reg_adp_hcti_con_2_gain1                    , default = 60                                                                  . unsigned  , default = 60
-//Bit  7: 0,        reg_adp_hcti_con_2_gain2                    0;, default = 5                                                                 . unsigned  , default = 5
-#define P_HCTI_CON_2_GAIN_1                        (volatile uint32_t *)0xff0140c8
-//Bit 31:24,        reg_adp_hcti_con_2_gain3                    96;, default = 96                                                               . unsigned  , default = 96
-//Bit 23:16,        reg_adp_hcti_con_2_gain4                    5;, default = 5                                                                 . unsigned  , default = 5
-//Bit 15: 8,        reg_adp_hcti_con_2_gain5                    80;, default = 80                                                               . unsigned  , default = 80
-//Bit  7: 0,        reg_adp_hcti_con_2_gain6                    20;, default = 20                                                               . unsigned  , default = 20
-#define P_HCTI_OS_MARGIN                           (volatile uint32_t *)0xff0140cc
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_adp_hcti_os_margin                      : margin for hcti overshoot, default = 0                                        . unsigned  , default = 0
-#define P_HLTI_FLT_CLP_DC                          (volatile uint32_t *)0xff0140d0
-//Bit 31:29,        reserved
-//Bit 28,            reg_adp_hlti_en                             , 0: no cti, 1: new cti, default = 1                                            . unsigned  , default = 1
-//Bit 27:26,        reg_adp_hlti_vdn_flt                        , 0: no lpf; 1:[0,2,4,2,0],   2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2    . unsigned  , default = 2
-//Bit 25:24,        reg_adp_hlti_hdn_flt                        , 0: no lpf; 1:[0, 0, 0, 4, 8, 4, 0, 0, 0], 2:[0, 0, 2, 4, 4, 4, 2, 0, 0], 3: [1, 2, 2, 2, 2, 2, 2, 2, 1], default = 1. unsigned  , default = 1
-//Bit 23:22,        reg_adp_hlti_ddn_flt                        , 0: no lpf; 1:[0,2,4,2,0],   2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 1    . unsigned  , default = 1
-//Bit 21:20,        reg_adp_hlti_lpf0_flt                       , 0:no filter; 1:sigma=0.75, 2: sigma = 1.0, 3: sigma = 1.5, default = 1        . unsigned  , default = 1
-//Bit 19:18,        reg_adp_hlti_lpf1_flt                       , 0:no filter; 1:sigma= 2.0, 2: sigma = 3.0, 3: sigma = 4.0, default = 1        . unsigned  , default = 1
-//Bit 17:16,        reg_adp_hlti_lpf2_flt                       , 0:no filter; 1:sigma=5.0,  2: sigma = 9.0, 3: sigma = 13.0, default = 1       . unsigned  , default = 1
-//Bit 15:12,        reg_adp_hlti_hard_clp_win                   , window size, 0~8, default = 2                                                 . unsigned  , default = 2
-//Bit 11: 8,        reg_adp_hlti_hard_win_min                   , window size, 0~8, default = 1                                                 . unsigned  , default = 1
-//Bit  7: 5,        reserved
-//Bit  4,            reg_adp_hlti_clp_mode                       , 0: hard clip, 1: adaptive clip, default = 0                                   . unsigned  , default = 0
-//Bit  3,            reserved
-//Bit  2: 0,        reg_adp_hlti_dc_mode                        , 0:dn, 1:lpf0, 2:lpf1, 3:lpf2, 4: lpf3: 5: vdn result; 6/7:org, default = 4    . unsigned  , default = 4
-#define P_HLTI_BST_GAIN                            (volatile uint32_t *)0xff0140d4
-//Bit 31:24,        reg_adp_hlti_bst_gain0                      : gain of the bandpass 0 (lpf1-lpf2)- LBP, default = 32                         . unsigned  , default = 32
-//Bit 23:16,        reg_adp_hlti_bst_gain1                      : gain of the bandpass 1 (lpf0-lpf1)- BP, default = 32                          . unsigned  , default = 32
-//Bit 15: 8,        reg_adp_hlti_bst_gain2                      : gain of the bandpass 2 (hdn-lpf0)-  HP, default = 28                          . unsigned  , default = 28
-//Bit  7: 0,        reg_adp_hlti_bst_gain3                      : gain of the unsharp band (yuvin-hdn) - US, default = 12                       . unsigned  , default = 12
-#define P_HLTI_BST_CORE                            (volatile uint32_t *)0xff0140d8
-//Bit 31:24,        reg_adp_hlti_bst_core0                      : core of the bandpass 0 (lpf1-lpf2)- LBP, default = 5                          . unsigned  , default = 5
-//Bit 23:16,        reg_adp_hlti_bst_core1                      : core of the bandpass 1 (lpf0-lpf1)- BP, default = 5                           . unsigned  , default = 5
-//Bit 15: 8,        reg_adp_hlti_bst_core2                      : core of the bandpass 2 (hdn-lpf0)-  HP, default = 5                           . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_hlti_bst_core3                      : core of the unsharp band (yuvin-hdn) - US, default = 3                        . unsigned  , default = 3
-#define P_HLTI_CON_2_GAIN_0                        (volatile uint32_t *)0xff0140dc
-//Bit 31:29,        reg_adp_hlti_con_mode                       : con mode 0:[0, 0,-1, 1, 0, 0, 0]+[0, 0, 0, 1,-1, 0, 0], 1: [0, 0,-1, 0, 1, 0, 0], 2: [0,-1, 0, 0, 0, 1, 0], 3:[-1, 0, 0, 0, 0, 0, 1], 4: ....., default = 1. unsigned  , default = 1
-//Bit 28:26,        reg_adp_hlti_dx_mode                        : dx mode 0: [-1 1 0]; 1~7: [-1 (2x+1)"0" 1], default = 1                       . unsigned  , default = 1
-//Bit 25:24,        reg_adp_hlti_con_lpf                        : lpf mode of the con: 0: [1 2 1]/4; 1:[1 2 2 2 1]/8, default = 0               . unsigned  , default = 0
-//Bit 23:16,        reg_adp_hlti_con_2_gain0                    25;, default = 25                                                               . unsigned  , default = 25
-//Bit 15: 8,        reg_adp_hlti_con_2_gain1                    60;, default = 60                                                               . unsigned  , default = 60
-//Bit  7: 0,        reg_adp_hlti_con_2_gain2                    0;, default = 5                                                                . unsigned  , default = 5
-#define P_HLTI_CON_2_GAIN_1                        (volatile uint32_t *)0xff0140e0
-//Bit 31:24,        reg_adp_hlti_con_2_gain3                    96;, default = 96                                                               . unsigned  , default = 96
-//Bit 23:16,        reg_adp_hlti_con_2_gain4                    5;, default = 95                                                                . unsigned  , default = 95
-//Bit 15: 8,        reg_adp_hlti_con_2_gain5                    80;, default = 80                                                               . unsigned  , default = 80
-//Bit  7: 0,        reg_adp_hlti_con_2_gain6                    20;, default = 20                                                               . unsigned  , default = 20
-#define P_HLTI_OS_MARGIN                           (volatile uint32_t *)0xff0140e4
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_adp_hlti_os_margin                      : margin for hlti overshoot, default = 0                                        . unsigned  , default = 0
-#define P_VLTI_FLT_CON_CLP                         (volatile uint32_t *)0xff0140e8
-//Bit 31:15,        reserved
-//Bit 14,            reg_adp_vlti_en                             : enable bit of vlti, default = 1                                               . unsigned  , default = 1
-//Bit 13:12,        reg_adp_vlti_hxn_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit 11:10,        reg_adp_vlti_dxn_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  9: 8,        reg_adp_vlti_han_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  7: 6,        reg_adp_vlti_dan_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  5: 4,        reg_adp_vlti_dx_mode                        : 0:[-1 1] 1:[-1 0 -1]; 2/3: [-1 0 0 0 -1], default = 1                         . unsigned  , default = 1
-//Bit  3,            reserved
-//Bit  2,            reg_adp_vlti_con_lpf                        : lpf mode of the con: 0: [1 2 1]/4; 1:[1 2 2 2 1]/8, default = 0               . unsigned  , default = 0
-//Bit  1,            reserved
-//Bit  0,            reg_adp_vlti_hard_clp_win                   : window size; 0: 1x3 window; 1: 1x5 window, default = 0                        . unsigned  , default = 0
-#define P_VLTI_BST_GAIN                            (volatile uint32_t *)0xff0140ec
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_adp_vlti_bst_gain0                      : gain to boost filter [-1 2 -1];, default = 32                                 . unsigned  , default = 32
-//Bit 15: 8,        reg_adp_vlti_bst_gain1                      : gain to boost filter [-1 0 2 0 -1];, default = 32                             . unsigned  , default = 32
-//Bit  7: 0,        reg_adp_vlti_bst_gain2                      : gain to boost filter usf, default = 32                                        . unsigned  , default = 32
-#define P_VLTI_BST_CORE                            (volatile uint32_t *)0xff0140f0
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_adp_vlti_bst_core0                      : coring to boost filter [-1 2 -1];, default = 5                                . unsigned  , default = 5
-//Bit 15: 8,        reg_adp_vlti_bst_core1                      : coring to boost filter [-1 0 2 0 -1];, default = 5                            . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_vlti_bst_core2                      : coring to boost filter usf, default = 3                                       . unsigned  , default = 3
-#define P_VLTI_CON_2_GAIN_0                        (volatile uint32_t *)0xff0140f4
-//Bit 31:24,        reg_adp_vlti_con_2_gain0                    25;, default = 25                                                               . unsigned  , default = 25
-//Bit 23:16,        reg_adp_vlti_con_2_gain1                    60;, default = 60                                                               . unsigned  , default = 60
-//Bit 15: 8,        reg_adp_vlti_con_2_gain2                    0;, default = 5                                                                . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_vlti_con_2_gain3                    96;, default = 96                                                               . unsigned  , default = 96
-#define P_VLTI_CON_2_GAIN_1                        (volatile uint32_t *)0xff0140f8
-//Bit 31:24,        reg_adp_vlti_con_2_gain4                    5;, default = 95                                                                . unsigned  , default = 95
-//Bit 23:16,        reg_adp_vlti_con_2_gain5                    80;, default = 80                                                               . unsigned  , default = 80
-//Bit 15: 8,        reg_adp_vlti_con_2_gain6                    20;, default = 20                                                               . unsigned  , default = 20
-//Bit  7: 0,        reg_adp_vlti_os_margin                      : margin for vlti overshoot, default = 0                                        . unsigned  , default = 0
-#define P_VCTI_FLT_CON_CLP                         (volatile uint32_t *)0xff0140fc
-//Bit 31:15,        reserved
-//Bit 14,            reg_adp_vcti_en                             : enable bit of vlti, default = 1                                               . unsigned  , default = 1
-//Bit 13:12,        reg_adp_vcti_hxn_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit 11:10,        reg_adp_vcti_dxn_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  9: 8,        reg_adp_vcti_han_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  7: 6,        reg_adp_vcti_dan_flt                        : 0: no dn; 1: [1 2 1]/4;  2 : [1 2 2 2 1]/8 3:[1 0 2 0 1]/4, default = 2       . unsigned  , default = 2
-//Bit  5: 4,        reg_adp_vcti_dx_mode                        : 0:[-1 1] 1:[-1 0 -1]; 2/3: [-1 0 0 0 -1], default = 1                         . unsigned  , default = 1
-//Bit  3,            reserved
-//Bit  2,            reg_adp_vcti_con_lpf                        : lpf mode of the con: 0: [1 2 1]/4; 1:[1 2 2 2 1]/8, default = 0               . unsigned  , default = 0
-//Bit  1,            reserved
-//Bit  0,            reg_adp_vcti_hard_clp_win                   : window size; 0: 1x3 window; 1: 1x5 window, default = 0                        . unsigned  , default = 0
-#define P_VCTI_BST_GAIN                            (volatile uint32_t *)0xff014100
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_adp_vcti_bst_gain0                      : gain to boost filter [-1 2 -1];, default = 16                                  . unsigned  , default = 16
-//Bit 15: 8,        reg_adp_vcti_bst_gain1                      : gain to boost filter [-1 0 2 0 -1];, default = 16                              . unsigned  , default = 16
-//Bit  7: 0,        reg_adp_vcti_bst_gain2                      : gain to boost filter usf, default = 16                                         . unsigned  , default = 16
-#define P_VCTI_BST_CORE                            (volatile uint32_t *)0xff014104
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_adp_vcti_bst_core0                      : coring to boost filter [-1 2 -1];, default = 5                                . unsigned  , default = 5
-//Bit 15: 8,        reg_adp_vcti_bst_core1                      : coring to boost filter [-1 0 2 0 -1];, default = 5                            . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_vcti_bst_core2                      : coring to boost filter usf, default = 3                                       . unsigned  , default = 3
-#define P_VCTI_CON_2_GAIN_0                        (volatile uint32_t *)0xff014108
-//Bit 31:24,        reg_adp_vcti_con_2_gain0                    25;, default = 25                                                               . unsigned  , default = 25
-//Bit 23:16,        reg_adp_vcti_con_2_gain1                    60;, default = 60                                                               . unsigned  , default = 60
-//Bit 15: 8,        reg_adp_vcti_con_2_gain2                    0;, default = 5                                                                . unsigned  , default = 5
-//Bit  7: 0,        reg_adp_vcti_con_2_gain3                    96;, default = 96                                                               . unsigned  , default = 96
-#define P_VCTI_CON_2_GAIN_1                        (volatile uint32_t *)0xff01410c
-//Bit 31:24,        reg_adp_vcti_con_2_gain4                    5;, default = 95                                                                . unsigned  , default = 95
-//Bit 23:16,        reg_adp_vcti_con_2_gain5                    80;, default = 80                                                               . unsigned  , default = 80
-//Bit 15: 8,        reg_adp_vcti_con_2_gain6                    20;, default = 20                                                               . unsigned  , default = 20
-//Bit  7: 0,        reg_adp_vcti_os_margin                      : margin for vcti overshoot, default = 0                                        . unsigned  , default = 0
-#define P_SHARP_3DLIMIT                            (volatile uint32_t *)0xff014110
-//Bit 31:29,        reserved
-//Bit 28:16,        reg_3d_mid_width                            ,width of left part of 3d input, dft = half size of input width  default = 0    . unsigned  , default = 960
-//Bit 15:13,        reserved
-//Bit 12: 0,        reg_3d_mid_height                           ,height of left part of 3d input, dft = half size of input height  default = 0  . unsigned  , default = 540
-#define P_DNLP_EN                                  (volatile uint32_t *)0xff014114
-//Bit 31:16,        reserved
-//Bit 15: 8,        reg_dnlp_hblank
-//Bit  7: 1,        reserved
-//Bit  0,           reg_dnlp_en                                                                                                                 . unsigned  , default = 1
-#define P_DEMO_CRTL                                (volatile uint32_t *)0xff014158
-//Bit 31:19,        reserved
-//Bit 18:17,        demo_disp_position                                                                                                          . unsigned  , default = 2
-//Bit 16,           demo_hsvsharp_enable                                                                                                        . unsigned  , default = 0
-//Bit 15:13,        reserved
-//Bit 12: 0,        demo_left_top_screen_width                  :                                                                               . unsigned  , default = 360
-#define P_SHARP_SR2_CTRL                           (volatile uint32_t *)0xff01415c
-//Bit 31:25,    reserved
-//Bit 24        reg_sr2_bic_pknr_bypass            :
-//Bit 23:22     reserved
-//Bit 21:16,    reg_sr2_pk_la_err_dis_rate         :     . unsigned  , low angle and high angle error should not be no less than nearby_error*rate/64; default = 24
-//Bit 15:8,     reg_sr2_pk_sad_diag_gain           :     . unsigned  , gain to sad[2] and sad[6], 16 normalized to "1"; default = 16
-//Bit 7,        reg_sr2_vert_outphs                :     . unsigned  , default = 0
-//Bit 6,        reg_sr2_horz_outphs                :     . unsigned  , default = 0
-//Bit 5,        reg_sr2_vert_ratio                 :     . unsigned  , default = 0
-//Bit 4,        reg_sr2_hori_ratio                 :     . unsigned  , default = 0
-//Bit 3,        reg_sr2_bic_norm                   :     . unsigned  , default = 1
-//Bit 2,        reg_sr2_enable                     :     . unsigned  , default = 0
-//Bit 1,        reg_sr2_sharp_prc_lr_hbic          :     . unsigned  , default = 0
-//Bit 0,        reg_sr2_sharp_prc_lr               : lti/cti/nr/peaking processing using LR grid, 0: on HR grid; 1:on LR grid, horizontally no upscale, but using simple bic   . unsigned  , default = 0
-#define P_SHARP_SR2_YBIC_HCOEF0                    (volatile uint32_t *)0xff014160
-//Bit 31:24, reg_sr2_y_bic_hcoef03            Horizontal bi-cubic filter of 1.0 phase of luma channel Filter will be normalized to 128 as ‘1’; default=0
-//Bit 23:16, reg_sr2_y_bic_hcoef02            the same as above; default=0
-//Bit 15: 8, reg_sr2_y_bic_hcoef01            the same as above; default=64
-//Bit  7: 0, reg_sr2_y_bic_hcoef00            the same as above; default=0
-#define P_SHARP_SR2_YBIC_HCOEF1                    (volatile uint32_t *)0xff014164
-//Bit 31:24, reg_sr2_y_bic_hcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channel,Filter will be normalized to 128 as ‘1’; default=-4
-//Bit 23:16, reg_sr2_y_bic_hcoef12            the same as above; default=36
-//Bit 15: 8, reg_sr2_y_bic_hcoef11            the same as above; default=36
-//Bit  7: 0, reg_sr2_y_bic_hcoef10            the same as above; default=-4
-#define P_SHARP_SR2_CBIC_HCOEF0                    (volatile uint32_t *)0xff014168
-//Bit 31:24, reg_sr2_c_bic_hcoef03            Horizontal bi-cubic filter of 1.0 phase of luma channel ,Filter will be normalized to 128 as ‘1’; default=0
-//Bit 23:16, reg_sr2_c_bic_hcoef02            the same as above; default=21
-//Bit 15: 8, reg_sr2_c_bic_hcoef01            the same as above; default=22
-//Bit  7: 0, reg_sr2_c_bic_hcoef00            the same as above; default=21
-#define P_SHARP_SR2_CBIC_HCOEF1                    (volatile uint32_t *)0xff01416c
-//Bit 31:24, reg_sr2_c_bic_hcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channel,Filter will be normalized to 128 as ‘1’; default=-4
-//Bit 23:16, reg_sr2_c_bic_hcoef12            the same as above; default=36
-//Bit 15: 8, reg_sr2_c_bic_hcoef11            the same as above; default=36
-//Bit  7: 0, reg_sr2_c_bic_hcoef10            the same as above; default=-4
-#define P_SHARP_SR2_YBIC_VCOEF0                    (volatile uint32_t *)0xff014170
-//Bit 31:24, reg_sr2_y_bic_vcoef03            Horizontal bi-cubic filter of 1.0 phase of luma channel, Filter will be normalized to 128 as ‘1’; default=0
-//Bit 23:16, reg_sr2_y_bic_vcoef02            the same as above; default=0
-//Bit 15: 8, reg_sr2_y_bic_vcoef01            the same as above; default=64
-//Bit  7: 0, reg_sr2_y_bic_vcoef00            the same as above; default=0
-#define P_SHARP_SR2_YBIC_VCOEF1                    (volatile uint32_t *)0xff014174
-//Bit 31:24, reg_sr2_y_bic_vcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channe, lFilter will be normalized to 128 as ‘1’; default=-4
-//Bit 23:16, reg_sr2_y_bic_vcoef12            the same as above; default=36
-//Bit 15: 8, reg_sr2_y_bic_vcoef11            the same as above; default=36
-//Bit  7: 0, reg_sr2_y_bic_vcoef10            the same as above; default=-4
-#define P_SHARP_SR2_CBIC_VCOEF0                    (volatile uint32_t *)0xff014178
-//Bit 31:24, reg_sr2_c_bic_vcoef03            Horizontal bi-cubic filter of 1.0 phase of luma channel, Filter will be normalized to 128 as ‘1’; default=0
-//Bit 23:16, reg_sr2_c_bic_vcoef02            the same as above; default=21
-//Bit 15: 8, reg_sr2_c_bic_vcoef01            the same as above; default=22
-//Bit  7: 0, reg_sr2_c_bic_vcoef00            the same as above; default=21
-#define P_SHARP_SR2_CBIC_VCOEF1                    (volatile uint32_t *)0xff01417c
-//Bit 31:24, reg_sr2_c_bic_vcoef13            Horizontal bi-cubic filter of 0.5 phase of luma channel,Filter will be normalized to 128 as ‘1’; default=-4
-//Bit 23:16, reg_sr2_c_bic_vcoef12            the same as above; default=36
-//Bit 15: 8, reg_sr2_c_bic_vcoef11            the same as above; default=36
-//Bit  7: 0, reg_sr2_c_bic_vcoef10            the same as above; default=-4
-#define P_SHARP_SR2_MISC                           (volatile uint32_t *)0xff014180
-//Bit 31:2,   reserved
-//Bit 1,      reg_sr2_cmpmux_bef                 :     . unsigned  , default = 0,0 no swap anf for YUV->YUV; 1, swapped and for RGB->GBR;
-//Bit 0,      reg_sr2_cmpmux_aft                 :     . unsigned  , default = 0,0 no swap anf for YUV->YUV; 1, swapped and for GBR-RGB;
-#define P_SHARP_SR3_SAD_CTRL                       (volatile uint32_t *)0xff014184
-//Bit 31:30 reserved
-//Bit 29:24 reg_sr3_pk_sad_core_rate         // u6: rate of coring for sad(theta) - sad(theta+pi/2)*rate/64
-//Bit 23:22 reserved
-//Bit 21:16 reg_sr3_lti_sad_core_rate        // u6: rate of coring for sad(theta) - sad(theta+pi/2)*rate/64 , default= 6
-//Bit 15:14 reserved
-//Bit 13:8  reg_sr3_cti_sad_core_rate        // u6: rate of coring for sad(theta) - sad(theta+pi/2)*rate/64 , default= 6
-//Bit 7,    reg_sr3_lti_hsad_mode            // u1: mode for hsad of lti calculation; 0: block based; 1:other shape; default= 1
-//Bit 6,    reg_sr3_cti_hsad_mode            // u1: mode for hsad of cti calculation; 0: block based; 1:other shape; default= 1
-//Bit 5,    reg_sr3_lti_dsad_mode            // u1: mode for dsad of lti calculation, 0: block based; 1:other shape; default= 1
-//Bit 4,    reg_sr3_cti_dsad_mode            // u1: mode for dsad of cti calculation, 0: block based; 1:other shape; default= 1
-//Bit 3,    reg_sr3_lti_vsad_mode            // u1: mode for vsad of lti calculation, 0: block based; 1:other shape; default= 1
-//Bit 2,    reg_sr3_cti_vsad_mode            // u1: mode for vsad of cti calculation, 0: block based; 1:other shape; default= 1
-//Bit 1,    reg_sr3_lti_hsad_hlpf            // u1: hlpf for hsad of lti calculation, 0: no hlpf; 1: with [1 2 1] hlpf; default= 1
-//Bit 0,    reg_sr3_cti_hsad_hlpf            // u1: hlpf for hsad of cti calculation, 0: no hlpf; 1: with [1 2 1] hlpf; default= 1
-#define P_SHARP_SR3_PK_CTRL0                       (volatile uint32_t *)0xff014188
-//Bit 31:12 reserved
-//Bit 11,   reg_sr3_pk_sad_mode              // u1: mode for sad of peaking and noise reduction, 0: block based; 1:other shape; default= 1
-//Bit 10,   reg_sr3_pk_hsad_hlpf             // u1: hlpf for hsad for peaking calculation, 0: no hlpf; 1: with [1 2 2 2 1] hlpf; default= 1
-//Bit 9,    reg_sr3_pk_vsad_hlpf             // u1: hlpf for vsad for peaking calculation, 0: no hlpf; 1: with [1 2 2 2 1] hlpf; default= 1
-//Bit 8,    reg_sr3_pk_dsad_hlpf             // u1: hlpf for dsad for peaking calculation, 0: no hlpf; 1: with [1 2 2 2 1] hlpf; default= 1
-//Bit 7:6,  reg_sr3_pk_hpdrt_mode            // u2: mode for HPdrt filter:  default= 3
-//Bit 5:4,  reg_sr3_pk_bpdrt_mode            // u2: mode for BPdrt filter:  default= 3
-//Bit 3:2,  reg_sr3_pk_drtbld_range          // u2: range of the min2 and min direction distance; default =1
-//Bit 1,    reserved
-//Bit 0,    reg_sr3_pk_ti_blend_mode         // u1: blend mode of the TI and PK results: default = 0;
-#define P_SHARP_SR3_PK_CTRL1                       (volatile uint32_t *)0xff01418c
-//Bit 31,     reserved
-//Bit 30:28,  reg_sr3_pk_hp_hvcon_replace8_maxsad     //u3: replace HP hvcon by maxsad, default =1
-//Bit 27,     reserved
-//Bit 26:24,  reg_sr3_pk_bp_hvcon_replace8_maxsad     //u3: replace HP hvcon by maxsad, default =1
-//Bit 23:16,  reg_sr3_pk_hp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
-//Bit 15:8,   reg_sr3_pk_bp_hvcon_replace8lv_gain     //u8: gain to local variant before calculating the hv gain for peaking, normalized to 32 as "1" default = 32;
-//Bit 7,      reg_sr3_sad_intlev_mode                 //u1: interleave detection xerr mode: 0 max; 1:sum default=1
-//Bit 6,      reg_sr3_sad_intlev_mode1                //u1: mode 1 of using diagonal protection: 0: no diagonal protection; 1: with diagonal protection default=1
-//Bit 5:0,    reg_sr3_sad_intlev_gain                 //u6: interleave detection for sad gain applied, normalized to 8 as 1  default=12
-#define P_SHARP_DEJ_CTRL                           (volatile uint32_t *)0xff014190
-//Bit 31:4    reserved
-//Bit 15:8,   reg_sr3_dejaggy_hblank           // u8
-//Bit 7:4     reserved
-//Bit 3:2,    reg_sr3_dejaggy_sameside_prtct   // u2:  enable of sr3 dejaggy same side curve protect from filter, [0] for proc, [1] for ctrl path,  default=3
-//Bit 1,      reg_sr3_dejaggy_sameside_mode    // u1: mode of the sameside flag decision: default =1
-//Bit 0,      reg_sr3_dejaggy_enable           // u1: enable of sr3 dejaggy: default =0
-#define P_SHARP_DEJ_ALPHA                          (volatile uint32_t *)0xff014194
-//Bit 31:28,  reg_sr3_dejaggy_ctrlchrm_alpha_1  //u4: alpha for LR video LPF,  default = 0
-//Bit 27:24,  reg_sr3_dejaggy_ctrlchrm_alpha_0  //u4: alpha for LR video LPF,  default = 15
-//Bit 23:20,  reg_sr3_dejaggy_ctrlluma_alpha_1  //u4: alpha for LR video LPF,  default = 0
-//Bit 19:16,  reg_sr3_dejaggy_ctrlluma_alpha_0  //u4: alpha for LR video LPF,  default = 15
-//Bit 15:12,  reg_sr3_dejaggy_procchrm_alpha_1  //u4: alpha for LR video LPF,  default = 4
-//Bit 11:8,   reg_sr3_dejaggy_procchrm_alpha_0  //u4: alpha for LR video LPF,  default = 6
-//Bit 7:4,    reg_sr3_dejaggy_procluma_alpha_1  //u4: alpha for LR video LPF,  default = 4
-//Bit 3:0,    reg_sr3_dejaggy_procluma_alpha_0  //u4: alpha for LR video LPF,  default = 6
-#define P_SHARP_SR3_DRTLPF_EN                      (volatile uint32_t *)0xff014198
-//Bit 31:15   reserved
-//Bit 14:8,   reg_pk_debug_edge                . unsigned  , default = 0
-//Bit  7,     reserved
-//Bit  6:4,   reg_sr3_drtlpf_theta_en           //u1x3 theta (pure vertical and horizontal HF burst protection) enable. 0: not enable, 1:enable protection
-//Bit  3,     reserved
-//Bit  2:0    reg_sr3_drtlpf_enable             //u1x3 directional lpf on luma U and V channels, default = 7
-#define P_SHARP_SR3_DRTLPF_ALPHA_0                 (volatile uint32_t *)0xff01419c
-//Bit 31:30   reserved
-//Bit 29:24   reg_sr3_drtlpf_alpha3             //u6: directional lpf alpha coef for min_sad/max_sad compared, default = 9
-//Bit 23:22   reserved
-//Bit 21:16   reg_sr3_drtlpf_alpha2             //u6: default =10
-//Bit 15:14   reserved
-//Bit 13:8    reg_sr3_drtlpf_alpha1             //u6: default = 11
-//Bit 7:6     reserved
-//Bit 5:0     reg_sr3_drtlpf_alpha0             //u6: default = 12
-#define P_SHARP_SR3_DRTLPF_ALPHA_1                 (volatile uint32_t *)0xff0141a0
-//Bit 31:30   reserved
-//Bit 29:24   reg_sr3_drtlpf_alpha7             //u6: directional lpf alpha coef for min_sad/max_sad compared, default = 1
-//Bit 23:22   reserved
-//Bit 21:16   reg_sr3_drtlpf_alpha6             //u6: default = 4
-//Bit 15:14   reserved
-//Bit 13:8    reg_sr3_drtlpf_alpha5             //u6: default = 7
-//Bit 7:6     reserved
-//Bit 5:0     reg_sr3_drtlpf_alpha4             //u6: default = 8
-#define P_SHARP_SR3_DRTLPF_ALPHA_2                 (volatile uint32_t *)0xff0141a4
-//Bit 31:30   reserved
-//Bit 29:24   reg_sr3_drtlpf_alpha11            //u6: directional lpf alpha coef for min_sad/max_sad compared, default = 0
-//Bit 23:22   reserved
-//Bit 21:16   reg_sr3_drtlpf_alpha10            //u6: default = 0
-//Bit 15:14   reserved
-//Bit 13:8    reg_sr3_drtlpf_alpha9             //u6: default = 0
-//Bit 7:6     reserved
-//Bit 5:0     reg_sr3_drtlpf_alpha8             //u6: default = 0
-#define P_SHARP_SR3_DRTLPF_ALPHA_OFST              (volatile uint32_t *)0xff0141a8
-//Bit 31:28   reg_sr3_drtlpf_alpha_ofst7        //s4: directional lpf alpha coef ofset of each directions, default = -8
-//Bit 27:24   reg_sr3_drtlpf_alpha_ofst6        //s4: default = -8
-//Bit 23:20   reg_sr3_drtlpf_alpha_ofst5        //s4: default = -8
-//Bit 19:16   reg_sr3_drtlpf_alpha_ofst4        //s4: default = -8
-//Bit 15:12   reg_sr3_drtlpf_alpha_ofst3        //s4: default = -8
-//Bit 11:8    reg_sr3_drtlpf_alpha_ofst2        //s4: default = -8
-//Bit 7:4     reg_sr3_drtlpf_alpha_ofst1        //s4: default = -8
-//Bit 3:0     reg_sr3_drtlpf_alpha_ofst0        //s4: default = -8
-#define P_SHARP_SR3_DERING_CTRL                    (volatile uint32_t *)0xff0141ac
-//Bit 31      reserved
-//Bit 30:28   reg_sr3_dering_enable                  // u3: dering enable bits; default = 1
-//Bit 27      reserved
-//Bit 26:24   reg_sr3_dering_varlpf_mode             // u3: local variant LPF mode: 0 no filter, 1, erosion 3x3; 2: 3x3 lpf; 3 and up: 3x3 erosion + lpf default = 3
-//Bit 23:20   reg_sr3_dering_maxrange                // u4: maximum:range of dering in LR resolution, max to 12;  default = 9
-//Bit 19:18   reserved
-//Bit 17:16   reg_sr3_dering_lcvar_blend_mode        // u2: mode for lcvar calculation: 0: HVblend; 1: diagblend; 2: HVblend+V (for hring); 3: HVblend+ DiagBlend default = 2
-//Bit 15:8    reg_sr3_dering_lcvar_gain              // u8: gain to local variant and normalized to 32 as "1"  default = 64
-//Bit 7:0     reg_sr3_dering_lcvar_nearby_maxsad_th  // u8: threshold to use nearer side maxsad if that side sad is larger than this threshold, otherwise, use the max one default = 28
-#define P_SHARP_SR3_DERING_LUMA2PKGAIN_0TO3        (volatile uint32_t *)0xff0141b0
-//Bit 31:24   reg_sr3_dering_luma2pkgain3             // u8: level limit(for th0<bpcon<th1) of curve for dering pkgain based on LPF luma level. default=255
-//Bit 23:16   reg_sr3_dering_luma2pkgain2             // u8: level limit(for bpcon<th0) of curve for dering pkgain based on LPF luma level. default=255
-//Bit 15:8    reg_sr3_dering_luma2pkgain1             // u8: threshold1 of curve for dering pkgain based on LPF luma level  default =200
-//Bit 7:0     reg_sr3_dering_luma2pkgain0             // u8: threshold0 of curve for dering pkgain based on LPF luma level. default =30
-#define P_SHARP_SR3_DERING_LUMA2PKGAIN_4TO6        (volatile uint32_t *)0xff0141b4
-//Bit 31:24   reserved
-//Bit 23:16   reg_sr3_dering_luma2pkgain6             // u8: rate1 (for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkgain5             // u8: rate0 (for bpcon<th0) of curve for dering pkgain based on LPF luma level. default =50
-//Bit 7:0     reg_sr3_dering_luma2pkgain4             // u8: level limit(for bpcon>th1) of curve for dering pkgain based on LPF luma level. default =255
-#define P_SHARP_SR3_DERING_LUMA2PKOS_0TO3          (volatile uint32_t *)0xff0141b8
-//Bit 31:24   reg_sr3_dering_luma2pkos3             // u8: level limit(for th0<bpcon<th1) of curve for dering pkOS based on LPF luma level. default=255
-//Bit 23:16   reg_sr3_dering_luma2pkos2             // u8: level limit(for bpcon<th0) of curve for dering pkOS based on LPF luma level. default=255
-//Bit 15:8    reg_sr3_dering_luma2pkos1             // u8: threshold1 of curve for dering pkOS based on LPF luma level  default =200
-//Bit 7:0     reg_sr3_dering_luma2pkos0             // u8: threshold0 of curve for dering pkOS based on LPF luma leve. default =30
-#define P_SHARP_SR3_DERING_LUMA2PKOS_4TO6          (volatile uint32_t *)0xff0141bc
-//Bit 31:24   reserved
-//Bit 23:16   reg_sr3_dering_luma2pkos6             // u8: rate1 (for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =24
-//Bit 15:8    reg_sr3_dering_luma2pkos5             // u8: rate0 (for bpcon<th0) of curve for dering pkOS based on LPF luma level. default =50
-//Bit 7:0     reg_sr3_dering_luma2pkos4             // u8: level limit(for bpcon>th1) of curve for dering pkOS based on LPF luma level. default =255
-#define P_SHARP_SR3_DERING_GAINVS_MADSAD           (volatile uint32_t *)0xff0141c0
-//Bit 31:28   reg_sr3_dering_gainvs_maxsad7        //u4: pkgain vs maxsad value, 8 node interpolations, default = 0
-//Bit 27:24   reg_sr3_dering_gainvs_maxsad6        //u4: default = 0
-//Bit 23:20   reg_sr3_dering_gainvs_maxsad5        //u4: default = 0
-//Bit 19:16   reg_sr3_dering_gainvs_maxsad4        //u4: default = 0
-//Bit 15:12   reg_sr3_dering_gainvs_maxsad3        //u4: default = 0
-//Bit 11:8    reg_sr3_dering_gainvs_maxsad2        //u4: default = 0
-//Bit 7:4     reg_sr3_dering_gainvs_maxsad1        //u4: default = 4
-//Bit 3:0     reg_sr3_dering_gainvs_maxsad0        //u4: default = 8
-#define P_SHARP_SR3_DERING_GAINVS_VR2MAX           (volatile uint32_t *)0xff0141c4
-//Bit 31:28   reg_sr3_dering_gainvs_vr2max7        //u4: pkgain vs ratio = max(local_var, floor)/maxsad nearby, default = 15
-//Bit 27:24   reg_sr3_dering_gainvs_vr2max6        //u4: default = 15
-//Bit 23:20   reg_sr3_dering_gainvs_vr2max5        //u4: default = 15
-//Bit 19:16   reg_sr3_dering_gainvs_vr2max4        //u4: default = 15
-//Bit 15:12   reg_sr3_dering_gainvs_vr2max3        //u4: default = 14
-//Bit 11:8    reg_sr3_dering_gainvs_vr2max2        //u4: default = 12
-//Bit 7:4     reg_sr3_dering_gainvs_vr2max1        //u4: default = 2
-//Bit 3:0     reg_sr3_dering_gainvs_vr2max0        //u4: default = 0
-#define P_SHARP_SR3_DERING_PARAM0                  (volatile uint32_t *)0xff0141c8
-//Bit 31:24   reserved
-//Bit 23:16   reg_sr3_dering_lcvar_floor        //u8: local variant no smaller than this value to calculate dgain max(localvar,x)/maxsad. default = 10
-//Bit 15:8    reg_sr3_dering_vr2max_gain        //u8: gain to max(local_var, floor)/maxsad  before feeding to LUT. default = 32
-//Bit 7:6     reserved
-//Bit 5:0     reg_sr3_dering_vr2max_limt        //u6: limit of maxsad to max(local_var, floor)*(max(maxsad, lmit))/maxsad.  default = 16
-#define P_SHARP_SR3_DRTLPF_THETA                   (volatile uint32_t *)0xff0141cc
-//Bit 31:0    reg_sr3_drtlpf_theta              //u4x8: directional lpf beta coef for min_sad/min2_sad compared to x=0:7 correspond to[1:8]/16;  0 means no drtLPF, 15: 100% alpha dependant drtLPF
-#define P_SHARP_SATPRT_CTRL                        (volatile uint32_t *)0xff0141d0
-//Bit 31:28   reserved
-//Bit 27:16   reg_satprt_sat_core      //u8: 4x will be coring to cor(irgb_max-irgb_min) to calculate the oy_delt, the smaller the more protection to color, the larger only the rich color will be protected;
-//Bit 15:8    reg_satprt_sat_rate      //u8: rate to cor(irgb_max-irgb_min) to calculate the oy_delt, the larger the more protection to rich color; norm 16 as 1
-//Bit 7:4     reserved
-//Bit 3:2     reg_satprt_csc_mode      //u2: csc mode of current yuv input: 0:601, 1:709, 2:BT2020 NCL, 3:reserved
-//Bit 1       reg_satprt_is_lmt        //u1: flag telling the YUV is limited range data or full range data, 0 full range, 1: limited range
-//Bit 0       reg_satprt_enable        //u1: enable of saturation protection for dnlp adjustments
-#define P_SHARP_SATPRT_DIVM                        (volatile uint32_t *)0xff0141d4
-//Bit 31:24   reserved
-//Bit 23:0    reg_satprt_div_m        //u8x3, 1/m, normalized to 128 as 1, default=1
-#define P_SHARP_DB_FLT_CTRL                        (volatile uint32_t *)0xff0141dc
-//Bit 31:27        reserved
-//Bit 26           reg_nrdeband_reset1
-//Bit 25           reg_nrdeband_reset0
-//Bit 24           reg_nrdeband_rgb          // unsigned , default = 0  0:yuv 1:RGB
-//Bit 23           reg_nrdeband_en11         // unsigned , default = 1  debanding registers of side lines, [0] for luma,   same for below
-//Bit 22           reg_nrdeband_en10         // unsigned , default = 1  debanding registers of side lines, [1] for chroma, same for below
-//Bit 21           reg_nrdeband_siderand     // unsigned , default = 1  options to use side two lines use the rand, instead of use for the YUV three component of middle line, 0: seed[3]/bandrand[3] for middle line yuv; 1: seed[3]/bandrand[3] for nearby three lines Y;
-//Bit 20           reg_nrdeband_randmode     // unsigned , default = 0  mode of rand noise adding, 0: same noise strength for all difs; else: strength of noise will not exceed the difs, MIN((pPKReg->reg_nrdeband_bandrand[m]), noise[m])
-//Bit 19:17        reg_nrdeband_bandrand2    // unsigned , default = 6
-//Bit 16            reserved
-//Bit 15:13        reg_nrdeband_bandrand1    // unsigned , default = 6
-//Bit 12            reserved
-//Bit 11: 9        reg_nrdeband_bandrand0    // unsigned , default = 6
-//Bit  8            reserved
-//Bit  7           reg_nrdeband_hpxor1       // unsigned , default = 1   debanding random hp portion xor, [0] for luma
-//Bit  6           reg_nrdeband_hpxor0       // unsigned , default = 1   debanding random hp portion xor, [1] for chroma
-//Bit  5           reg_nrdeband_en1          // unsigned , default = 1   debanding registers,  for luma
-//Bit  4           reg_nrdeband_en0          // unsigned , default = 1   debanding registers,  for chroma
-//Bit  3: 2        reg_nrdeband_lpf_mode1    // unsigned , default = 2   lpf mode, 0: 3x3, 1:3x5; 2: 5x5; 3:5x7
-//Bit  1: 0        reg_nrdeband_lpf_mode0    // unsigned , default = 2   lpf mode, 0: 3x3, 1:3x5; 2: 5x5; 3:5x7
-#define P_SHARP_DB_FLT_RANDLUT                     (volatile uint32_t *)0xff0141e4
+#define P_VPP_VSR_TOP_IN_SIZE                      (volatile uint32_t *)0xff014008
+//Bit 31:16        reg_in_vsize                // unsigned ,    RW, default = 2160
+//Bit 15:0         reg_in_hsize                // unsigned ,    RW, default = 3840
+#define P_VPP_VSR_TOP_OUT_SIZE                     (volatile uint32_t *)0xff014010
+//Bit 31:16        reg_out_vsize               // unsigned ,    RW, default = 2160
+//Bit 15:0         reg_out_hsize               // unsigned ,    RW, default = 3840
+#define P_VPP_VSR_TOP_C42C44_MODE                  (volatile uint32_t *)0xff014020
+//Bit 31: 8        reserved
+//Bit  7            reserved
+//Bit  6           reg_422to444_en           // unsigned ,    RW, default = 1
+//Bit  5: 4        reg_422to444_mode         // unsigned ,    RW, default = 2
+//Bit  3            reserved
+//Bit  2           reg_444to422_en           // unsigned ,    RW, default = 1
+//Bit  1: 0        reg_444to422_mode         // unsigned ,    RW, default = 2
+#define P_VPP_VSR_PPS_DUMMY_DATA                   (volatile uint32_t *)0xff014024
 //Bit 31:24        reserved
-//Bit 23:21        reg_nrdebandslut7         // unsigned , default = 1   lut0
-//Bit 20:18        reg_nrdebandslut6         // unsigned , default = 1   lut0
-//Bit 17:15        reg_nrdebandslut5         // unsigned , default = 1   lut0
-//Bit 14:12        reg_nrdebandslut4         // unsigned , default = 1   lut0
-//Bit 11: 9        reg_nrdebandslut3         // unsigned , default = 1   lut0
-//Bit  8: 6        reg_nrdebandslut2         // unsigned , default = 1   lut0
-//Bit  5: 3        reg_nrdebandslut1         // unsigned , default = 1   lut0
-//Bit  2: 0        reg_nrdebandslut0         // unsigned , default = 1   lut0
-#define P_SHARP_DB_FLT_PXI_THRD                    (volatile uint32_t *)0xff0141e8
-//Bit 31:26        reserved
-//Bit 25:16        reg_nrdeband_yc_th1       // unsigned , default = 0   to luma/|u/v| for using the denoise
-//Bit 15:10        reserved
-//Bit  9: 0        reg_nrdeband_yc_th0       // unsigned , default = 0   to luma/|u/v| for using the denoise
-#define P_SHARP_DB_FLT_SEED_Y                      (volatile uint32_t *)0xff0141ec
-//Bit 31: 0        reg_nrdeband_seed0        // unsigned , default = 1621438240  noise adding seed for Y. seed[0]= 0x60a52f20; as default
-#define P_SHARP_DB_FLT_SEED_U                      (volatile uint32_t *)0xff0141f0
-//Bit 31: 0        reg_nrdeband_seed1        // unsigned , default = 1621438247  noise adding seed for U. seed[0]= 0x60a52f27; as default
-#define P_SHARP_DB_FLT_SEED_V                      (volatile uint32_t *)0xff0141f4
-//Bit 31: 0        reg_nrdeband_seed2        // unsigned , default = 1621438242  noise adding seed for V. seed[0]= 0x60a52f22; as default
-#define P_SHARP_PKGAIN_VSLUMA_LUT_L                (volatile uint32_t *)0xff0141f8
-//Bit 31:28       reg_pkgain_vsluma_lut7;
-//Bit 27:24       reg_pkgain_vsluma_lut6;
-//Bit 23:20       reg_pkgain_vsluma_lut5;
-//Bit 19:16       reg_pkgain_vsluma_lut4;
-//Bit 15:12       reg_pkgain_vsluma_lut3;
-//Bit 11: 8       reg_pkgain_vsluma_lut2;
-//Bit  7: 4       reg_pkgain_vsluma_lut1;
-//Bit  3: 0       reg_pkgain_vsluma_lut0;
-#define P_SHARP_PKGAIN_VSLUMA_LUT_H                (volatile uint32_t *)0xff0141fc
-//Bit 31: 4       reserved;
-//Bit  3: 0       reg_pkgain_vsluma_lut8;
-#define P_SHARP_PKOSHT_VSLUMA_LUT_L                (volatile uint32_t *)0xff014200
-//Bit 31:28       reg_pkosht_vsluma_lut7;
-//Bit 27:24       reg_pkosht_vsluma_lut6;
-//Bit 23:20       reg_pkosht_vsluma_lut5;
-//Bit 19:16       reg_pkosht_vsluma_lut4;
-//Bit 15:12       reg_pkosht_vsluma_lut3;
-//Bit 11: 8       reg_pkosht_vsluma_lut2;
-//Bit  7: 4       reg_pkosht_vsluma_lut1;
-//Bit  3: 0       reg_pkosht_vsluma_lut0;
-#define P_SHARP_PKOSHT_VSLUMA_LUT_H                (volatile uint32_t *)0xff014204
-//Bit 31: 4       reserved;
-//Bit  3: 0       reg_pkosht_vsluma_lut8;
-#define P_SHARP_SATPRT_LMT_RGB1                    (volatile uint32_t *)0xff014208
-//Bit 31:28       reserved
-//Bit 27:16       reg_satprt_lmt_g      //u12x3, limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023
-//Bit 15:12       reserved
-//Bit 11:0        reg_satprt_lmt_r      //u12x3, limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023
-#define P_SHARP_SATPRT_LMT_RGB2                    (volatile uint32_t *)0xff01420c
-//Bit 31:12       reserved
-//Bit 11:0        reg_satprt_lmt_b      //u12x3, limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023
-#define P_SHARP_GATE_CLK_CTRL_0                    (volatile uint32_t *)0xff014210
-//Bit  31: 0     reg_gate_clk_ctrl_0
-#define P_SHARP_GATE_CLK_CTRL_1                    (volatile uint32_t *)0xff014214
-//Bit  31: 0     reg_gate_clk_ctrl_1
-#define P_SHARP_GATE_CLK_CTRL_2                    (volatile uint32_t *)0xff014218
-//Bit  31: 0     reg_gate_clk_ctrl_2
-#define P_SHARP_GATE_CLK_CTRL_3                    (volatile uint32_t *)0xff01421c
-//Bit  31: 0     reg_gate_clk_ctrl_3
-#define P_SHARP_DPS_CTRL                           (volatile uint32_t *)0xff014220
-//Bit  31: 0     reg_sharp_dps_ctrl
-#define P_DNLP_00                                  (volatile uint32_t *)0xff014240
-//Bit 31: 0,      reg_dnlp_ygrid0                          : dnlp00                                                                        . unsigned  , default = 32'h00008060
-#define P_DNLP_01                                  (volatile uint32_t *)0xff014244
-//Bit 31: 0,      reg_dnlp_ygrid1                          : dnlp01                                                                        . unsigned  , default = 32'h100e0c0a
-#define P_DNLP_02                                  (volatile uint32_t *)0xff014248
-//Bit 31: 0,      reg_dnlp_ygrid2                          : dnlp02                                                                        . unsigned  , default = 32'h1a171412
-#define P_DNLP_03                                  (volatile uint32_t *)0xff01424c
-//Bit 31: 0,      reg_dnlp_ygrid3                          : dnlp03                                                                        . unsigned  , default = 32'h2824201d
-#define P_DNLP_04                                  (volatile uint32_t *)0xff014250
-//Bit 31: 0,      reg_dnlp_ygrid4                          : dnlp04                                                                        . unsigned  , default = 32'h3834302c
-#define P_DNLP_05                                  (volatile uint32_t *)0xff014254
-//Bit 31: 0,      reg_dnlp_ygrid5                          : dnlp05                                                                        . unsigned  , default = 32'h4b45403c
-#define P_DNLP_06                                  (volatile uint32_t *)0xff014258
-//Bit 31: 0,      reg_dnlp_ygrid6                          : dnlp06                                                                        . unsigned  , default = 32'h605b5550
-#define P_DNLP_07                                  (volatile uint32_t *)0xff01425c
-//Bit 31: 0,      reg_dnlp_ygrid7                          : dnlp07                                                                        . unsigned  , default = 32'h80787068
-#define P_DNLP_08                                  (volatile uint32_t *)0xff014260
-//Bit 31: 0,      reg_dnlp_ygrid8                          : dnlp08                                                                        . unsigned  , default = 32'ha0989088
-#define P_DNLP_09                                  (volatile uint32_t *)0xff014264
-//Bit 31: 0,      reg_dnlp_ygrid9                          : dnlp09                                                                        . unsigned  , default = 32'hb8b2aca6
-#define P_DNLP_10                                  (volatile uint32_t *)0xff014268
-//Bit 31: 0,      reg_dnlp_ygrid10                         : dnlp10                                                                        . unsigned  , default = 32'hc8c4c0bc
-#define P_DNLP_11                                  (volatile uint32_t *)0xff01426c
-//Bit 31: 0,      reg_dnlp_ygrid11                         : dnlp11                                                                        . unsigned  , default = 32'hd4d2cecb
-#define P_DNLP_12                                  (volatile uint32_t *)0xff014270
-//Bit 31: 0,      reg_dnlp_ygrid12                         : dnlp12                                                                        . unsigned  , default = 32'hdad8d7d6
-#define P_DNLP_13                                  (volatile uint32_t *)0xff014274
-//Bit 31: 0,      reg_dnlp_ygrid13                         : dnlp13                                                                        . unsigned  , default = 32'he2e0dedc
-#define P_DNLP_14                                  (volatile uint32_t *)0xff014278
-//Bit 31: 0,      reg_dnlp_ygrid14                         : dnlp14                                                                        . unsigned  , default = 32'hf0ece8e4
-#define P_DNLP_15                                  (volatile uint32_t *)0xff01427c
-//Bit 31: 0,      reg_dnlp_ygrid15                         : dnlp15                                                                        . unsigned  , default = 32'hfffcf8f4
-#define P_DNLP_16                                  (volatile uint32_t *)0xff014280
-//Bit 31: 0,      reg_dnlp_ygrid16                         : dnlp16                                                                        . unsigned  , default = 32'h08060402
-#define P_DNLP_17                                  (volatile uint32_t *)0xff014284
-//Bit 31: 0,      reg_dnlp_ygrid17                         : dnlp17                                                                        . unsigned  , default = 32'h100e0c0a
-#define P_DNLP_18                                  (volatile uint32_t *)0xff014288
-//Bit 31: 0,      reg_dnlp_ygrid18                         : dnlp18                                                                        . unsigned  , default = 32'h1a171412
-#define P_DNLP_19                                  (volatile uint32_t *)0xff01428c
-//Bit 31: 0,      reg_dnlp_ygrid19                         : dnlp19                                                                        . unsigned  , default = 32'h2824201d
-#define P_DNLP_20                                  (volatile uint32_t *)0xff014290
-//Bit 31: 0,      reg_dnlp_ygrid20                         : dnlp20                                                                        . unsigned  , default = 32'h3834302c
-#define P_DNLP_21                                  (volatile uint32_t *)0xff014294
-//Bit 31: 0,      reg_dnlp_ygrid21                         : dnlp21                                                                        . unsigned  , default = 32'h4b45403c
-#define P_DNLP_22                                  (volatile uint32_t *)0xff014298
-//Bit 31: 0,      reg_dnlp_ygrid22                         : dnlp22                                                                        . unsigned  , default = 32'h605b5550
-#define P_DNLP_23                                  (volatile uint32_t *)0xff01429c
-//Bit 31: 0,      reg_dnlp_ygrid23                         : dnlp23                                                                        . unsigned  , default = 32'h80787068
-#define P_DNLP_24                                  (volatile uint32_t *)0xff0142a0
-//Bit 31: 0,      reg_dnlp_ygrid24                         : dnlp24                                                                        . unsigned  , default = 32'ha0989088
-#define P_DNLP_25                                  (volatile uint32_t *)0xff0142a4
-//Bit 31: 0,      reg_dnlp_ygrid25                         : dnlp25                                                                        . unsigned  , default = 32'hb8b2aca6
-#define P_DNLP_26                                  (volatile uint32_t *)0xff0142a8
-//Bit 31: 0,      reg_dnlp_ygrid26                         : dnlp26                                                                        . unsigned  , default = 32'hc8c4c0bc
-#define P_DNLP_27                                  (volatile uint32_t *)0xff0142ac
-//Bit 31: 0,      reg_dnlp_ygrid27                         : dnlp27                                                                        . unsigned  , default = 32'hd4d2cecb
-#define P_DNLP_28                                  (volatile uint32_t *)0xff0142b0
-//Bit 31: 0,      reg_dnlp_ygrid28                         : dnlp28                                                                        . unsigned  , default = 32'hdad8d7d6
-#define P_DNLP_29                                  (volatile uint32_t *)0xff0142b4
-//Bit 31: 0,      reg_dnlp_ygrid29                         : dnlp29                                                                        . unsigned  , default = 32'he2e0dedc
-#define P_DNLP_30                                  (volatile uint32_t *)0xff0142b8
-//Bit 31: 0,      reg_dnlp_ygrid30                         : dnlp30                                                                        . unsigned  , default = 32'hf0ece8e4
-#define P_DNLP_31                                  (volatile uint32_t *)0xff0142bc
-//Bit 31: 0,      reg_dnlp_ygrid31                         : dnlp31                                                                        . unsigned  , default = 32'hfffcf8f4
-#define P_SHARP_SYNC_CTRL                          (volatile uint32_t *)0xff0142c0
-//Bit 15: 0,      reg_sync_ctrl                            //reg_sync_ctrl: shadow register control                                       . unsigned  , default = 0
-#define P_LC_INPUT_MUX                             (volatile uint32_t *)0xff0142c4
-//Bit 31:7   reserved
-//Bit 6:4    reg_lcinput_ysel               //u3, local contrast luma input options 0: org_y; 1: gau_y; 2: gauadp_y; 3: edgadplpf_y; 4: nr_y;5: lti_y; 6: pk_y (before os);7: pk_y (after os) . unsigned  , default = 5
-//Bit 3      reserved
-//Bit 2:0    reg_lcinput_csel               //u3, local contrast chroma input options 0: org_c; 1: gau_c; 2: gauadp_c; 3: edgadplpf_c; 4: nr_c;5: cti_c; 6: pk_c . unsigned  , default = 5
-#define P_NR_GAU_YH_COEF02                         (volatile uint32_t *)0xff0142c8
-//Bit 31:30   reserved
-//Bit 29:20   reg_nr_gau_yhcoef_0          //s10, luma's horizontal adaptive coef0   . signed  , default = 32
-//Bit 19:10   reg_nr_gau_yhcoef_1          //s10, luma's horizontal adaptive coef1   . signed  , default = 32
-//Bit  9: 0   reg_nr_gau_yhcoef_2          //s10, luma's horizontal adaptive coef2   . signed  , default = 16
-#define P_NR_GAU_YH_COEF34                         (volatile uint32_t *)0xff0142cc
-//Bit 31:20   reserved
-//Bit 19:10   reg_nr_gau_yhcoef_3          //s10, luma's horizontal adaptive coef3   . signed  , default = 0
-//Bit  9: 0   reg_nr_gau_yhcoef_4          //s10, luma's horizontal adaptive coef4   . signed  , default = 0
-#define P_NR_GAU_YV_COEF1                          (volatile uint32_t *)0xff0142d0
-//Bit 31:30   reserved
-//Bit 29:20   reg_nr_gau_yvcoef_0          //s10, luma's vertical adaptive coef0   . signed  , default = 32
-//Bit 19:10   reg_nr_gau_yvcoef_1          //s10, luma's vertical adaptive coef1   . signed  , default = 32
-//Bit  9: 0   reg_nr_gau_yvcoef_2          //s10, luma's vertical adaptive coef2   . signed  , default = 16
-#define P_NR_GAU_CH_COEF02                         (volatile uint32_t *)0xff0142d4
-//Bit 31:30   reserved
-//Bit 29:20   reg_nr_gau_chcoef_0          //s10, chroma's horizontal adaptive coef0   . signed  , default = 32
-//Bit 19:10   reg_nr_gau_chcoef_1          //s10, chroma's horizontal adaptive coef1   . signed  , default = 32
-//Bit  9: 0   reg_nr_gau_chcoef_2          //s10, chroma's horizontal adaptive coef2   . signed  , default = 16
-#define P_NR_GAU_CH_COEF34                         (volatile uint32_t *)0xff0142d8
-//Bit 31:20   reserved
-//Bit 19:10   reg_nr_gau_chcoef_3          //s10, chroma's horizontal adaptive coef3   . signed  , default = 0
-//Bit  9: 0   reg_nr_gau_chcoef_4          //s10, chroma's horizontal adaptive coef4   . signed  , default = 0
-#define P_NR_GAU_CV_COEF1                          (volatile uint32_t *)0xff0142dc
-//Bit 31:30   reserved
-//Bit 29:20   reg_nr_gau_cvcoef_0          //s10, chroma's vertical adaptive coef0   . signed  , default = 32
-//Bit 19:10   reg_nr_gau_cvcoef_1          //s10, chroma's vertical adaptive coef1   . signed  , default = 32
-//Bit  9: 0   reg_nr_gau_cvcoef_2          //s10, chroma's vertical adaptive coef2   . signed  , default = 16
-#define P_SHARP_DB_FLT_CTRL1                       (volatile uint32_t *)0xff0142e0
-//Bit 31:18        reserved
-//Bit 17:16        reg_nrdeband_noise_rs     // unsigned , default = 2
-//Bit 15:12        reg_nrdeband_randgain     // unsigned , default = 8
-//Bit 11           reserved
-//Bit 10: 8        reserved
-//Bit  7           reserved
-//Bit  6: 4        reserved
-//Bit  3           reserved
-//Bit  2: 0        reserved
-#define P_SHARP_DB_FLT_LUMA_THRD                   (volatile uint32_t *)0xff0142e4
-//Bit 31:30        reserved
-//Bit 29:24        reg_nrdeband_luma_th3     // unsigned , default = 36   , threshold to |Y-Ylpf|, if < th[0] use lpf
-//Bit 23:22        reserved
-//Bit 21:16        reg_nrdeband_luma_th2     // unsigned , default = 28   , elseif <th[1] use (lpf*3 + y)/4
-//Bit 15:14        reserved
-//Bit 13: 8        reg_nrdeband_luma_th1     // unsigned , default = 24   , elseif <th[1] use (lpf*3 + y)/4elseif <th[2] (lpf*1 + y)/2
-//Bit  7: 6        reserved
-//Bit  5: 0        reg_nrdeband_luma_th0     // unsigned , default = 20   , elseif <th[1] use (lpf*3 + y)/4elseif elseif <th[3] (lpf*1 + 3*y)/4; else
-#define P_SHARP_DB_FLT_CHRM_THRD                   (volatile uint32_t *)0xff0142e8
-//Bit 31:30        reserved
-//Bit 29:24        reg_nrdeband_chrm_th3     // unsigned , default = 36   , threshold to |Y-Ylpf|, if < th[0] use lpf
-//Bit 23:22        reserved
-//Bit 21:16        reg_nrdeband_chrm_th2     // unsigned , default = 28   , elseif <th[1] use (lpf*3 + y)/4
-//Bit 15:14        reserved
-//Bit 13: 8        reg_nrdeband_chrm_th1     // unsigned , default = 24   , elseif <th[1] use (lpf*3 + y)/4elseif <th[2] (lpf*1 + y)/2
-//Bit  7: 6        reserved
-//Bit  5: 0        reg_nrdeband_chrm_th0     // unsigned , default = 20   , elseif <th[1] use (lpf*3 + y)/4elseif elseif
-#define P_LC_TOP_CTRL                              (volatile uint32_t *)0xff014300
-    //Bit 31  :8      reg_lc_misc                        U     RW        default = 'h0
-    //Bit 7   :5      reserved                           U     RW        default = 'h0     None
-    //Bit 4           reg_lc_enable                      U     RW        default = 'h1      enable signal for local contrast enhancement, 1-enable; 0 disable
-    //Bit 3   :1      reserved                           U     RW        default = 'h0     None
-    //Bit 0           reg_lc_blkblend_mode               U     RW        default = 'h1      use bilinear interpolation between blocks, 0: no interpolation 1: blender enabled
-#define P_LC_HV_NUM                                (volatile uint32_t *)0xff014304
-    //Bit 31  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :8      reg_lc_blk_hnum                    U     RW        default = 'hc      lc processing region number of V, maximum to (STA_LEN_V-1)   (0~8)
-    //Bit 7   :5      reserved                           U     RW        default = 'h0     None
-    //Bit 4   :0      reg_lc_blk_vnum                    U     RW        default = 'h8      lc processing region number of H, maximum to (STA_LEN_H-1)   (0~12)
-#define P_LC_SAT_LUT_0_1                           (volatile uint32_t *)0xff014308
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_0                 U     RW        default = 'hc      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_1                 U     RW        default = 'h20      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_2_3                           (volatile uint32_t *)0xff01430c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_2                 U     RW        default = 'h38      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_3                 U     RW        default = 'h54      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_4_5                           (volatile uint32_t *)0xff014310
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_4                 U     RW        default = 'h73      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_5                 U     RW        default = 'h95      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_6_7                           (volatile uint32_t *)0xff014314
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_6                 U     RW        default = 'hb9      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_7                 U     RW        default = 'hdf      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_8_9                           (volatile uint32_t *)0xff014318
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_8                 U     RW        default = 'h107      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_9                 U     RW        default = 'h131      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_10_11                         (volatile uint32_t *)0xff01431c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_10                U     RW        default = 'h15c      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_11                U     RW        default = 'h189      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_12_13                         (volatile uint32_t *)0xff014320
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_12                U     RW        default = 'h1b8      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_13                U     RW        default = 'h1e8      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_14_15                         (volatile uint32_t *)0xff014324
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_14                U     RW        default = 'h219      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_15                U     RW        default = 'h24c      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_16_17                         (volatile uint32_t *)0xff014328
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_16                U     RW        default = 'h280      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_17                U     RW        default = 'h2b6      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_18_19                         (volatile uint32_t *)0xff01432c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_18                U     RW        default = 'h2ec      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_19                U     RW        default = 'h324      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_20_21                         (volatile uint32_t *)0xff014330
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_20                U     RW        default = 'h35d      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_21                U     RW        default = 'h397      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_22_23                         (volatile uint32_t *)0xff014334
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_22                U     RW        default = 'h3d2      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_23                U     RW        default = 'h40e      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_24_25                         (volatile uint32_t *)0xff014338
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_24                U     RW        default = 'h44b      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_25                U     RW        default = 'h489      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_26_27                         (volatile uint32_t *)0xff01433c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_26                U     RW        default = 'h4c8      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_27                U     RW        default = 'h507      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_28_29                         (volatile uint32_t *)0xff014340
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_28                U     RW        default = 'h548      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_29                U     RW        default = 'h58a      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_30_31                         (volatile uint32_t *)0xff014344
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_30                U     RW        default = 'h5cd      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_31                U     RW        default = 'h610      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_32_33                         (volatile uint32_t *)0xff014348
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_32                U     RW        default = 'h654      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_33                U     RW        default = 'h69a      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_34_35                         (volatile uint32_t *)0xff01434c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_34                U     RW        default = 'h6e0      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_35                U     RW        default = 'h726      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_36_37                         (volatile uint32_t *)0xff014350
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_36                U     RW        default = 'h76e      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_37                U     RW        default = 'h7b6      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_38_39                         (volatile uint32_t *)0xff014354
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_38                U     RW        default = 'h7ff      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_39                U     RW        default = 'h849      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_40_41                         (volatile uint32_t *)0xff014358
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_40                U     RW        default = 'h894      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_41                U     RW        default = 'h8df      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_42_43                         (volatile uint32_t *)0xff01435c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_42                U     RW        default = 'h92b      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_43                U     RW        default = 'h978      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_44_45                         (volatile uint32_t *)0xff014360
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_44                U     RW        default = 'h9c6      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_45                U     RW        default = 'ha14      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_46_47                         (volatile uint32_t *)0xff014364
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_46                U     RW        default = 'ha63      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_47                U     RW        default = 'hab2      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_48_49                         (volatile uint32_t *)0xff014368
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_48                U     RW        default = 'hb02      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_49                U     RW        default = 'hb53      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_50_51                         (volatile uint32_t *)0xff01436c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_50                U     RW        default = 'hba5      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_51                U     RW        default = 'hbf7      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_52_53                         (volatile uint32_t *)0xff014370
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_52                U     RW        default = 'hc4a      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_53                U     RW        default = 'hc9d      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_54_55                         (volatile uint32_t *)0xff014374
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_54                U     RW        default = 'hcf1      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_55                U     RW        default = 'hd46      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_56_57                         (volatile uint32_t *)0xff014378
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_56                U     RW        default = 'hd9b      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_57                U     RW        default = 'hdf1      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_58_59                         (volatile uint32_t *)0xff01437c
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_58                U     RW        default = 'he47      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_59                U     RW        default = 'he9e      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_60_61                         (volatile uint32_t *)0xff014380
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_satur_lut_60                U     RW        default = 'hef6      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_61                U     RW        default = 'hf4e      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_SAT_LUT_62                            (volatile uint32_t *)0xff014384
-    //Bit 31  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_satur_lut_62                U     RW        default = 'hfa7      saturation protection curve, normalized to 4096 as 1, default = y=x^1.2
-#define P_LC_CURVE_BLK_HIDX_0_1                    (volatile uint32_t *)0xff014388
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_0                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_1                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_2_3                    (volatile uint32_t *)0xff01438c
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_2                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_3                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_4_5                    (volatile uint32_t *)0xff014390
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_4                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_5                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_6_7                    (volatile uint32_t *)0xff014394
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_6                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_7                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_8_9                    (volatile uint32_t *)0xff014398
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_8                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_9                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_10_11                  (volatile uint32_t *)0xff01439c
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_hidx_10                 U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_11                 U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_HIDX_12                     (volatile uint32_t *)0xff0143a0
-    //Bit 31  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_hidx_12                 U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_VIDX_0_1                    (volatile uint32_t *)0xff0143a4
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_vidx_0                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_vidx_1                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_VIDX_2_3                    (volatile uint32_t *)0xff0143a8
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_vidx_2                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_vidx_3                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_VIDX_4_5                    (volatile uint32_t *)0xff0143ac
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_vidx_4                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_vidx_5                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_VIDX_6_7                    (volatile uint32_t *)0xff0143b0
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :16     reg_lc_blk_vidx_6                  U     RW        default = 'h0      block boundary x-index
-    //Bit 15  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_vidx_7                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_CURVE_BLK_VIDX_8                      (volatile uint32_t *)0xff0143b4
-    //Bit 31  :14     reserved                           U     RW        default = 'h0     None
-    //Bit 13  :0      reg_lc_blk_vidx_8                  U     RW        default = 'h0      block boundary x-index
-#define P_LC_YUV2RGB_MAT_0_1                       (volatile uint32_t *)0xff0143b8
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_yuv2rgb_mat3x3_0            S     RW        default =  1192      yuv2rgb 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_yuv2rgb_mat3x3_1            S     RW        default = 'h0        yuv2rgb 3x3 matrix
-#define P_LC_YUV2RGB_MAT_2_3                       (volatile uint32_t *)0xff0143bc
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_yuv2rgb_mat3x3_2            S     RW        default =  1836      yuv2rgb 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_yuv2rgb_mat3x3_3            S     RW        default =  1192       yuv2rgb 3x3 matrix
-#define P_LC_YUV2RGB_MAT_4_5                       (volatile uint32_t *)0xff0143c0
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_yuv2rgb_mat3x3_4            S     RW        default = -218      yuv2rgb 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_yuv2rgb_mat3x3_5            S     RW        default = -547      yuv2rgb 3x3 matrix
-#define P_LC_YUV2RGB_MAT_6_7                       (volatile uint32_t *)0xff0143c4
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_yuv2rgb_mat3x3_6            S     RW        default = 1192      yuv2rgb 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_yuv2rgb_mat3x3_7            S     RW        default = '2166      yuv2rgb 3x3 matrix
-#define P_LC_YUV2RGB_MAT_8                         (volatile uint32_t *)0xff0143c8
-    //Bit 31  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_yuv2rgb_mat3x3_8            S     RW        default = 'h0      yuv2rgb 3x3 matrix
-#define P_LC_RGB2YUV_MAT_0_1                       (volatile uint32_t *)0xff0143cc
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_rgb2yuv_mat3x3_0            S     RW        default =  187      rgb2yuv 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_rgb2yuv_mat3x3_1            S     RW        default =  629      rgb2yuv 3x3 matrix
-#define P_LC_RGB2YUV_MAT_2_3                       (volatile uint32_t *)0xff0143d0
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_rgb2yuv_mat3x3_2            S     RW        default = 63      rgb2yuv 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_rgb2yuv_mat3x3_3            S     RW        default = -103      rgb2yuv 3x3 matrix
-#define P_LC_RGB2YUV_MAT_4_5                       (volatile uint32_t *)0xff0143d4
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_rgb2yuv_mat3x3_4            S     RW        default = -346      rgb2yuv 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_rgb2yuv_mat3x3_5            S     RW        default = 450      rgb2yuv 3x3 matrix
-#define P_LC_RGB2YUV_MAT_6_7                       (volatile uint32_t *)0xff0143d8
-    //Bit 31  :29     reserved                           U     RW        default = 'h0     None
-    //Bit 28  :16     reg_lc_rgb2yuv_mat3x3_6            S     RW        default = 450      rgb2yuv 3x3 matrix
-    //Bit 15  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_rgb2yuv_mat3x3_7            S     RW        default = -409      rgb2yuv 3x3 matrix
-#define P_LC_RGB2YUV_MAT_8                         (volatile uint32_t *)0xff0143dc
-    //Bit 31  :13     reserved                           U     RW        default = 'h0     None
-    //Bit 12  :0      reg_lc_rgb2yuv_mat3x3_8            S     RW        default =  41     rgb2yuv 3x3 matrix
-#define P_LC_YUV2RGB_OFST                          (volatile uint32_t *)0xff0143e0
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_yuv2rgb_ofset_0             U     RW        default = 'h40      yuv2rgb pre-offset to yuv,
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_yuv2rgb_ofset_1             U     RW        default = 'h200      yuv2rgb pre-offset to yuv,
-#define P_LC_YUV2RGB_CLIP                          (volatile uint32_t *)0xff0143e4
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :28     reg_lc_yuv2rgb_rs                  U     RW        default = 'h0       matrix normalization right shift extra bits, norm= (1<<(8+rs))
-    //Bit 27  :16     reg_lc_yuv2rgb_clip_0              U     RW        default = 'h0      yuv2rgb converted RGB clipping range
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_yuv2rgb_clip_1              U     RW        default = 'h3ff      yuv2rgb converted RGB clipping range
-#define P_LC_RGB2YUV_OFST                          (volatile uint32_t *)0xff0143e8
-    //Bit 31  :28     reserved                           U     RW        default = 'h0     None
-    //Bit 27  :16     reg_lc_rgb2yuv_ofset_0             U     RW        default = 'h40      rgb2yuv post-offset to yuv,
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_rgb2yuv_ofset_1             U     RW        default = 'h200      rgb2yuv post-offset to yuv,
-#define P_LC_RGB2YUV_CLIP                          (volatile uint32_t *)0xff0143ec
-    //Bit 31  :30     reserved                           U     RW        default = 'h0     None
-    //Bit 29  :28     reg_lc_rgb2yuv_rs                  U     RW        default = 'h0       matrix normalization right shift extra bits, norm= (1<<(10+rs))
-    //Bit 27  :16     reg_lc_rgb2yuv_clip_0              U     RW        default = 'h0      rgb2yuv converted YUV clipping range
-    //Bit 15  :12     reserved                           U     RW        default = 'h0     None
-    //Bit 11  :0      reg_lc_rgb2yuv_clip_1              U     RW        default = 'h3ff      rgb2yuv converted YUV clipping range
-#define P_LC_MAP_RAM_CTRL                          (volatile uint32_t *)0xff0143f0
-#define P_LC_MAP_RAM_ADDR                          (volatile uint32_t *)0xff0143f4
-#define P_LC_MAP_RAM_DATA                          (volatile uint32_t *)0xff0143f8
-#define P_SHARP_FMETER_CTRL                        (volatile uint32_t *)0xff014224
-//Bit 31:12   reserved
-//Bit 11:10   reg_fmeter_vwin_mm     //u2, vertical window size, 0:1 cloumn, 1:3cloumn, 2or3: 5cloumn .unsigned  , default = 0
-//Bit 9 : 8   reg_fmeter_hwin_mm     //u2, horizontal window size, 0:1x7, 1:1x9, 2or3: 1x11 .unsigned  , default = 0
-//Bit 7       reg_fmeter_d2_mode     //u1, selection filter D2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
-//Bit 6       reg_fmeter_v2_mode     //u1, selection filter V2, 0: [0 -2 0 0 2], 1: [-2 0 0 0 2] .unsigned  , default = 0
-//Bit 5: 4    reg_fmeter_h2_mode     //u2, selection filter H2, 0: [0 0 0 -2 0 0 2 0 0], 1: [-2 0 0 0 2], 2or3: [0-2 0 0 0 0 0 2 0] .unsigned  , default = 0
-//Bit 3: 1    reserved
-//Bit 0       reg_freq_meter_en      //u1, freq meter enable  .unsigned  , default = 0
-#define P_SHARP_FMETER_WIN_HOR                     (volatile uint32_t *)0xff014228
-//Bit 31:29   reserved
-//Bit 28:16   reg_fmeter_xwin_ed     //u13, window location: hend      .unsigned  , default = 1920
-//Bit 15:13   reserved
-//Bit 12: 0   reg_fmeter_xwin_st      //u13, window location: hstart   .unsigned  , default = 0
-#define P_SHARP_FMETER_WIN_VER                     (volatile uint32_t *)0xff01422c
-//Bit 31:29   reserved
-//Bit 28:16   reg_fmeter_ywin_ed      //u14, window location: vend      .unsigned  , default = 1080
-//Bit 15:13   reserved
-//Bit 12: 0   reg_fmeter_ywin_st      //u14, window location: vstart   .unsigned  , default = 0
-#define P_SHARP_FMETER_CORING                      (volatile uint32_t *)0xff014230
-//Bit 31:24  reg_fmeter_low_bound //u8, low bound for threshold  .unsigned  , default = 4
-//Bit 23:16  reg_fmeter_coring_d  //u8, coring of diff before compare with threshold for diagonal frequency .unsigned  , default = 4
-//Bit 15:8   reg_fmeter_coring_v  //u8, coring of diff before compare with threshold for vertical frequency .unsigned  , default = 4
-//Bit 7: 0   reg_fmeter_coring_h  //u8, coring of diff before compare with threshold for horizontal frequency .unsigned  , default = 4
-#define P_SHARP_FMETER_RATIO_H                     (volatile uint32_t *)0xff014234
-//Bit 31:22   reserved
-//Bit 21:16   reg_fmeter_ratio_h2     //u6, ratio for threshold calc. for horizontal frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 15:14   reserved
-//Bit 13: 8   reg_fmeter_ratio_h1     //u6, ratio for threshold calc. for horizontal frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 7 : 6   reserved
-//Bit 5 : 0   reg_fmeter_ratio_h0     //u6, ratio for threshold calc. for horizontal frequency, 16 is normalized as "1" .unsigned  , default = 16
-#define P_SHARP_FMETER_RATIO_V                     (volatile uint32_t *)0xff014238
-//Bit 31:22   reserved
-//Bit 21:16   reg_fmeter_ratio_v2     //u6, ratio for threshold calc. for vertical frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 15:14   reserved
-//Bit 13: 8   reg_fmeter_ratio_v1     //u6, ratio for threshold calc. for vertical frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 7 : 6   reserved
-//Bit 5 : 0   reg_fmeter_ratio_v0     //u6, ratio for threshold calc. for vertical frequency, 16 is normalized as "1" .unsigned  , default = 16
-#define P_SHARP_FMETER_RATIO_D                     (volatile uint32_t *)0xff01423c
-//Bit 31:22   reserved
-//Bit 21:16   reg_fmeter_ratio_d2     //u6, ratio for threshold calc. for diagonal frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 15:14   reserved
-//Bit 13: 8   reg_fmeter_ratio_d1     //u6, ratio for threshold calc. for diagonal frequency, 16 is normalized as "1" .unsigned  , default = 16
-//Bit 7 : 6   reserved
-//Bit 5 : 0   reg_fmeter_ratio_d0     //u6, ratio for threshold calc. for diagonal frequency, 16 is normalized as "1" .unsigned  , default = 16
-#define P_SHARP_RO_FMETER_HCNT_TYPE0               (volatile uint32_t *)0xff014118
-//Bit 31:0 ro_fmeter_hcnt_type0     //u32, count for horizontal frequency
-#define P_SHARP_RO_FMETER_HCNT_TYPE1               (volatile uint32_t *)0xff01411c
-//Bit 31:0 ro_fmeter_hcnt_type1     //u32, count for horizontal frequency
-#define P_SHARP_RO_FMETER_HCNT_TYPE2               (volatile uint32_t *)0xff014120
-//Bit 31:0 ro_fmeter_hcnt_type2     //u32, count for horizontal frequency
-#define P_SHARP_RO_FMETER_HCNT_TYPE3               (volatile uint32_t *)0xff014124
-//Bit 31:0 ro_fmeter_hcnt_type3     //u32, count for horizontal frequency
-#define P_SHARP_RO_FMETER_VCNT_TYPE0               (volatile uint32_t *)0xff014128
-//Bit 31:0 ro_fmeter_vcnt_type0     //u32, count for vertical frequency
-#define P_SHARP_RO_FMETER_VCNT_TYPE1               (volatile uint32_t *)0xff01412c
-//Bit 31:0 ro_fmeter_vcnt_type1     //u32, count for vertical frequency
-#define P_SHARP_RO_FMETER_VCNT_TYPE2               (volatile uint32_t *)0xff014130
-//Bit 31:0 ro_fmeter_vcnt_type2     //u32, count for vertical frequency
-#define P_SHARP_RO_FMETER_VCNT_TYPE3               (volatile uint32_t *)0xff014134
-//Bit 31:0 ro_fmeter_vcnt_type3     //u32, count for vertical frequency
-#define P_SHARP_RO_FMETER_PDCNT_TYPE0              (volatile uint32_t *)0xff014138
-//Bit 31:0 ro_fmeter_pdcnt_type0     //u32, count for positive diagonal frequency
-#define P_SHARP_RO_FMETER_PDCNT_TYPE1              (volatile uint32_t *)0xff01413c
-//Bit 31:0 ro_fmeter_pdcnt_type1     //u32, count for positive diagonal frequency
-#define P_SHARP_RO_FMETER_PDCNT_TYPE2              (volatile uint32_t *)0xff014140
-//Bit 31:0 ro_fmeter_pdcnt_type2     //u32, count for positive diagonal frequency
-#define P_SHARP_RO_FMETER_PDCNT_TYPE3              (volatile uint32_t *)0xff014144
-//Bit 31:0 ro_fmeter_pdcnt_type3     //u32, count for positive diagonal frequency
-#define P_SHARP_RO_FMETER_NDCNT_TYPE0              (volatile uint32_t *)0xff014148
-//Bit 31:0 ro_fmeter_ndcnt_type0     //u32, count for negative diagonal frequency
-#define P_SHARP_RO_FMETER_NDCNT_TYPE1              (volatile uint32_t *)0xff01414c
-//Bit 31:0 ro_fmeter_ndcnt_type1     //u32, count for negative diagonal frequency
-#define P_SHARP_RO_FMETER_NDCNT_TYPE2              (volatile uint32_t *)0xff014150
-//Bit 31:0 ro_fmeter_ndcnt_type2     //u32, count for negative diagonal frequency
-#define P_SHARP_RO_FMETER_NDCNT_TYPE3              (volatile uint32_t *)0xff014154
-//Bit 31:0 ro_fmeter_ndcnt_type3     //u32, count for negative diagonal frequency
-//
-// Closing file:  sharp_regs.h
-//
-
-#define SRSHARP0_SHARP_HVSIZE                      (SRSHARP0_OFFSET + SHARP_HVSIZE                 )  //0x00  //
-#define SRSHARP0_SHARP_HVBLANK_NUM                 (SRSHARP0_OFFSET + SHARP_HVBLANK_NUM            )  //0x01  //
-#define SRSHARP0_NR_GAUSSIAN_MODE                  (SRSHARP0_OFFSET + NR_GAUSSIAN_MODE             )  //0x02  //
-//`define SRSHARP0_PK_HVCON_LPF_MODE                 (`SRSHARP0_OFFSET + `PK_HVCON_LPF_MODE            )  //8'h03  //
-//`define SRSHARP0_PK_CON_BLEND_GAIN                 (`SRSHARP0_OFFSET + `PK_CON_BLEND_GAIN            )  //8'h04  //
-#define SRSHARP0_PK_CON_2CIRHPGAIN_TH_RATE         (SRSHARP0_OFFSET + PK_CON_2CIRHPGAIN_TH_RATE    )  //0x05  //
-#define SRSHARP0_PK_CON_2CIRHPGAIN_LIMIT           (SRSHARP0_OFFSET + PK_CON_2CIRHPGAIN_LIMIT      )  //0x06  //
-#define SRSHARP0_PK_CON_2CIRBPGAIN_TH_RATE         (SRSHARP0_OFFSET + PK_CON_2CIRBPGAIN_TH_RATE    )  //0x07  //
-#define SRSHARP0_PK_CON_2CIRBPGAIN_LIMIT           (SRSHARP0_OFFSET + PK_CON_2CIRBPGAIN_LIMIT      )  //0x08  //
-#define SRSHARP0_PK_CON_2DRTHPGAIN_TH_RATE         (SRSHARP0_OFFSET + PK_CON_2DRTHPGAIN_TH_RATE    )  //0x09  //
-#define SRSHARP0_PK_CON_2DRTHPGAIN_LIMIT           (SRSHARP0_OFFSET + PK_CON_2DRTHPGAIN_LIMIT      )  //0x0a  //
-#define SRSHARP0_PK_CON_2DRTBPGAIN_TH_RATE         (SRSHARP0_OFFSET + PK_CON_2DRTBPGAIN_TH_RATE    )  //0x0b  //
-#define SRSHARP0_PK_CON_2DRTBPGAIN_LIMIT           (SRSHARP0_OFFSET + PK_CON_2DRTBPGAIN_LIMIT      )  //0x0c  //
-#define SRSHARP0_PK_CIRFB_LPF_MODE                 (SRSHARP0_OFFSET + PK_CIRFB_LPF_MODE            )  //0x0d  //
-#define SRSHARP0_PK_DRTFB_LPF_MODE                 (SRSHARP0_OFFSET + PK_DRTFB_LPF_MODE            )  //0x0e  //
-#define SRSHARP0_PK_CIRFB_HP_CORING                (SRSHARP0_OFFSET + PK_CIRFB_HP_CORING           )  //0x0f  //
-#define SRSHARP0_PK_CIRFB_BP_CORING                (SRSHARP0_OFFSET + PK_CIRFB_BP_CORING           )  //0x10  //
-#define SRSHARP0_PK_DRTFB_HP_CORING                (SRSHARP0_OFFSET + PK_DRTFB_HP_CORING           )  //0x11  //
-#define SRSHARP0_PK_DRTFB_BP_CORING                (SRSHARP0_OFFSET + PK_DRTFB_BP_CORING           )  //0x12  //
-#define SRSHARP0_PK_CIRFB_BLEND_GAIN               (SRSHARP0_OFFSET + PK_CIRFB_BLEND_GAIN          )  //0x13  //
-#define SRSHARP0_NR_ALPY_SSD_GAIN_OFST             (SRSHARP0_OFFSET + NR_ALPY_SSD_GAIN_OFST        )  //0x14  //
-#define SRSHARP0_NR_ALP0Y_ERR2CURV_TH_RATE         (SRSHARP0_OFFSET + NR_ALP0Y_ERR2CURV_TH_RATE    )  //0x15  //
-#define SRSHARP0_NR_ALP0Y_ERR2CURV_LIMIT           (SRSHARP0_OFFSET + NR_ALP0Y_ERR2CURV_LIMIT      )  //0x16  //
-#define SRSHARP0_NR_ALP0C_ERR2CURV_TH_RATE         (SRSHARP0_OFFSET + NR_ALP0C_ERR2CURV_TH_RATE    )  //0x17  //
-#define SRSHARP0_NR_ALP0C_ERR2CURV_LIMIT           (SRSHARP0_OFFSET + NR_ALP0C_ERR2CURV_LIMIT      )  //0x18  //
-#define SRSHARP0_NR_ALP0_MIN_MAX                   (SRSHARP0_OFFSET + NR_ALP0_MIN_MAX              )  //0x19  //
-#define SRSHARP0_NR_ALP1_MIERR_CORING              (SRSHARP0_OFFSET + NR_ALP1_MIERR_CORING         )  //0x1a  //
-#define SRSHARP0_NR_ALP1_ERR2CURV_TH_RATE          (SRSHARP0_OFFSET + NR_ALP1_ERR2CURV_TH_RATE     )  //0x1b  //
-#define SRSHARP0_NR_ALP1_ERR2CURV_LIMIT            (SRSHARP0_OFFSET + NR_ALP1_ERR2CURV_LIMIT       )  //0x1c  //
-#define SRSHARP0_NR_ALP1_MIN_MAX                   (SRSHARP0_OFFSET + NR_ALP1_MIN_MAX              )  //0x1d  //
-#define SRSHARP0_PK_ALP2_MIERR_CORING              (SRSHARP0_OFFSET + PK_ALP2_MIERR_CORING         )  //0x1e  //
-#define SRSHARP0_PK_ALP2_ERR2CURV_TH_RATE          (SRSHARP0_OFFSET + PK_ALP2_ERR2CURV_TH_RATE     )  //0x1f  //
-#define SRSHARP0_PK_ALP2_ERR2CURV_LIMIT            (SRSHARP0_OFFSET + PK_ALP2_ERR2CURV_LIMIT       )  //0x20  //
-#define SRSHARP0_PK_ALP2_MIN_MAX                   (SRSHARP0_OFFSET + PK_ALP2_MIN_MAX              )  //0x21  //
-#define SRSHARP0_PK_FINALGAIN_HP_BP                (SRSHARP0_OFFSET + PK_FINALGAIN_HP_BP           )  //0x22  //
-#define SRSHARP0_PK_OS_HORZ_CORE_GAIN              (SRSHARP0_OFFSET + PK_OS_HORZ_CORE_GAIN         )  //0x23  //
-#define SRSHARP0_PK_OS_VERT_CORE_GAIN              (SRSHARP0_OFFSET + PK_OS_VERT_CORE_GAIN         )  //0x24  //
-#define SRSHARP0_PK_OS_ADPT_MISC                   (SRSHARP0_OFFSET + PK_OS_ADPT_MISC              )  //0x25  //
-#define SRSHARP0_PK_OS_STATIC                      (SRSHARP0_OFFSET + PK_OS_STATIC                 )  //0x26  //
-#define SRSHARP0_PK_NR_ENABLE                      (SRSHARP0_OFFSET + PK_NR_ENABLE                 )  //0x27  //
-#define SRSHARP0_PK_DRT_SAD_MISC                   (SRSHARP0_OFFSET + PK_DRT_SAD_MISC              )  //0x28  //
-#define SRSHARP0_NR_TI_DNLP_BLEND                  (SRSHARP0_OFFSET + NR_TI_DNLP_BLEND             )  //0x29  //
-#define SRSHARP0_LTI_DIR_CORE_ALPHA                (SRSHARP0_OFFSET + LTI_DIR_CORE_ALPHA           )  //0x2a  //
-#define SRSHARP0_CTI_DIR_ALPHA                     (SRSHARP0_OFFSET + CTI_DIR_ALPHA                )  //0x2b  //
-#define SRSHARP0_LTI_CTI_DF_GAIN                   (SRSHARP0_OFFSET + LTI_CTI_DF_GAIN              )  //0x2c  //
-#define SRSHARP0_LTI_CTI_DIR_AC_DBG                (SRSHARP0_OFFSET + LTI_CTI_DIR_AC_DBG           )  //0x2d  //
-#define SRSHARP0_HCTI_FLT_CLP_DC                   (SRSHARP0_OFFSET + HCTI_FLT_CLP_DC              )  //0x2e  //
-#define SRSHARP0_HCTI_BST_GAIN                     (SRSHARP0_OFFSET + HCTI_BST_GAIN                )  //0x2f  //
-#define SRSHARP0_HCTI_BST_CORE                     (SRSHARP0_OFFSET + HCTI_BST_CORE                )  //0x30  //
-#define SRSHARP0_HCTI_CON_2_GAIN_0                 (SRSHARP0_OFFSET + HCTI_CON_2_GAIN_0            )  //0x31  //
-#define SRSHARP0_HCTI_CON_2_GAIN_1                 (SRSHARP0_OFFSET + HCTI_CON_2_GAIN_1            )  //0x32  //
-#define SRSHARP0_HCTI_OS_MARGIN                    (SRSHARP0_OFFSET + HCTI_OS_MARGIN               )  //0x33  //
-#define SRSHARP0_HLTI_FLT_CLP_DC                   (SRSHARP0_OFFSET + HLTI_FLT_CLP_DC              )  //0x34  //
-#define SRSHARP0_HLTI_BST_GAIN                     (SRSHARP0_OFFSET + HLTI_BST_GAIN                )  //0x35  //
-#define SRSHARP0_HLTI_BST_CORE                     (SRSHARP0_OFFSET + HLTI_BST_CORE                )  //0x36  //
-#define SRSHARP0_HLTI_CON_2_GAIN_0                 (SRSHARP0_OFFSET + HLTI_CON_2_GAIN_0            )  //0x37  //
-#define SRSHARP0_HLTI_CON_2_GAIN_1                 (SRSHARP0_OFFSET + HLTI_CON_2_GAIN_1            )  //0x38  //
-#define SRSHARP0_HLTI_OS_MARGIN                    (SRSHARP0_OFFSET + HLTI_OS_MARGIN               )  //0x39  //
-#define SRSHARP0_VLTI_FLT_CON_CLP                  (SRSHARP0_OFFSET + VLTI_FLT_CON_CLP             )  //0x3a  //
-#define SRSHARP0_VLTI_BST_GAIN                     (SRSHARP0_OFFSET + VLTI_BST_GAIN                )  //0x3b  //
-#define SRSHARP0_VLTI_BST_CORE                     (SRSHARP0_OFFSET + VLTI_BST_CORE                )  //0x3c  //
-#define SRSHARP0_VLTI_CON_2_GAIN_0                 (SRSHARP0_OFFSET + VLTI_CON_2_GAIN_0            )  //0x3d  //
-#define SRSHARP0_VLTI_CON_2_GAIN_1                 (SRSHARP0_OFFSET + VLTI_CON_2_GAIN_1            )  //0x3e  //
-#define SRSHARP0_VCTI_FLT_CON_CLP                  (SRSHARP0_OFFSET + VCTI_FLT_CON_CLP             )  //0x3f  //
-#define SRSHARP0_VCTI_BST_GAIN                     (SRSHARP0_OFFSET + VCTI_BST_GAIN                )  //0x40  //
-#define SRSHARP0_VCTI_BST_CORE                     (SRSHARP0_OFFSET + VCTI_BST_CORE                )  //0x41  //
-#define SRSHARP0_VCTI_CON_2_GAIN_0                 (SRSHARP0_OFFSET + VCTI_CON_2_GAIN_0            )  //0x42  //
-#define SRSHARP0_VCTI_CON_2_GAIN_1                 (SRSHARP0_OFFSET + VCTI_CON_2_GAIN_1            )  //0x43  //
-#define SRSHARP0_SHARP_3DLIMIT                     (SRSHARP0_OFFSET + SHARP_3DLIMIT                )  //0x44  //
-#define SRSHARP0_DNLP_EN                           (SRSHARP0_OFFSET + DNLP_EN                      )  //0x45  //
-//`define SRSHARP0_DNLP_00                           (`SRSHARP0_OFFSET + `DNLP_00                      )  //8'h46  //
-//`define SRSHARP0_DNLP_01                           (`SRSHARP0_OFFSET + `DNLP_01                      )  //8'h47  //
-//`define SRSHARP0_DNLP_02                           (`SRSHARP0_OFFSET + `DNLP_02                      )  //8'h48  //
-//`define SRSHARP0_DNLP_03                           (`SRSHARP0_OFFSET + `DNLP_03                      )  //8'h49  //
-//`define SRSHARP0_DNLP_04                           (`SRSHARP0_OFFSET + `DNLP_04                      )  //8'h4a  //
-//`define SRSHARP0_DNLP_05                           (`SRSHARP0_OFFSET + `DNLP_05                      )  //8'h4b  //
-//`define SRSHARP0_DNLP_06                           (`SRSHARP0_OFFSET + `DNLP_06                      )  //8'h4c  //
-//`define SRSHARP0_DNLP_07                           (`SRSHARP0_OFFSET + `DNLP_07                      )  //8'h4d  //
-//`define SRSHARP0_DNLP_08                           (`SRSHARP0_OFFSET + `DNLP_08                      )  //8'h4e  //
-//`define SRSHARP0_DNLP_09                           (`SRSHARP0_OFFSET + `DNLP_09                      )  //8'h4f  //
-//`define SRSHARP0_DNLP_10                           (`SRSHARP0_OFFSET + `DNLP_10                      )  //8'h50  //
-//`define SRSHARP0_DNLP_11                           (`SRSHARP0_OFFSET + `DNLP_11                      )  //8'h51  //
-//`define SRSHARP0_DNLP_12                           (`SRSHARP0_OFFSET + `DNLP_12                      )  //8'h52  //
-//`define SRSHARP0_DNLP_13                           (`SRSHARP0_OFFSET + `DNLP_13                      )  //8'h53  //
-//`define SRSHARP0_DNLP_14                           (`SRSHARP0_OFFSET + `DNLP_14                      )  //8'h54  //
-//`define SRSHARP0_DNLP_15                           (`SRSHARP0_OFFSET + `DNLP_15                      )  //8'h55  //
-#define SRSHARP0_DEMO_CRTL                         (SRSHARP0_OFFSET + DEMO_CRTL                    )  //0x56  //
-#define SRSHARP0_SHARP_SR2_CTRL                    (SRSHARP0_OFFSET + SHARP_SR2_CTRL               )  //0x57  //
-#define SRSHARP0_SHARP_SR2_YBIC_HCOEF0             (SRSHARP0_OFFSET + SHARP_SR2_YBIC_HCOEF0        )  //0x58
-#define SRSHARP0_SHARP_SR2_YBIC_HCOEF1             (SRSHARP0_OFFSET + SHARP_SR2_YBIC_HCOEF1        )  //0x59  //
-#define SRSHARP0_SHARP_SR2_CBIC_HCOEF0             (SRSHARP0_OFFSET + SHARP_SR2_CBIC_HCOEF0        )  //0x5a  //
-#define SRSHARP0_SHARP_SR2_CBIC_HCOEF1             (SRSHARP0_OFFSET + SHARP_SR2_CBIC_HCOEF1        )  //0x5b  //
-#define SRSHARP0_SHARP_SR2_YBIC_VCOEF0             (SRSHARP0_OFFSET + SHARP_SR2_YBIC_VCOEF0        )  //0x5c  //
-#define SRSHARP0_SHARP_SR2_YBIC_VCOEF1             (SRSHARP0_OFFSET + SHARP_SR2_YBIC_VCOEF1        )  //0x5d  //
-#define SRSHARP0_SHARP_SR2_CBIC_VCOEF0             (SRSHARP0_OFFSET + SHARP_SR2_CBIC_VCOEF0        )  //0x5e  //
-#define SRSHARP0_SHARP_SR2_CBIC_VCOEF1             (SRSHARP0_OFFSET + SHARP_SR2_CBIC_VCOEF1        )  //0x5f  //
-#define SRSHARP0_SHARP_SR2_MISC                    (SRSHARP0_OFFSET + SHARP_SR2_MISC               )  //0x60  //
-#define SRSHARP0_SR3_SAD_CTRL                   (SRSHARP0_OFFSET + SHARP_SR3_SAD_CTRL                 ) // 0x61  //
-#define SRSHARP0_SR3_PK_CTRL0                   (SRSHARP0_OFFSET + SHARP_SR3_PK_CTRL0                 ) // 0x62
-#define SRSHARP0_SR3_PK_CTRL1                   (SRSHARP0_OFFSET + SHARP_SR3_PK_CTRL1                 ) // 0x63
-#define SRSHARP0_DEJ_CTRL                       (SRSHARP0_OFFSET + SHARP_DEJ_CTRL                     ) // 0x64
-#define SRSHARP0_DEJ_ALPHA                      (SRSHARP0_OFFSET + SHARP_DEJ_ALPHA                    ) // 0x65
-#define SRSHARP0_SR3_DRTLPF_EN                  (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_EN                ) // 0x66
-#define SRSHARP0_SR3_DRTLPF_ALPHA_0             (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_ALPHA_0           ) // 0x67
-#define SRSHARP0_SR3_DRTLPF_ALPHA_1             (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_ALPHA_1           ) // 0x68
-#define SRSHARP0_SR3_DRTLPF_ALPHA_2             (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_ALPHA_2           ) // 0x69
-#define SRSHARP0_SR3_DRTLPF_ALPHA_OFST          (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_ALPHA_OFST        ) // 0x6a
-#define SRSHARP0_SR3_DERING_CTRL                (SRSHARP0_OFFSET + SHARP_SR3_DERING_CTRL              ) // 0x6b
-#define SRSHARP0_SR3_DERING_LUMA2PKGAIN_0TO3    (SRSHARP0_OFFSET + SHARP_SR3_DERING_LUMA2PKGAIN_0TO3  ) // 0x6c
-#define SRSHARP0_SR3_DERING_LUMA2PKGAIN_4TO6    (SRSHARP0_OFFSET + SHARP_SR3_DERING_LUMA2PKGAIN_4TO6  ) // 0x6d
-#define SRSHARP0_SR3_DERING_LUMA2PKOS_0TO3      (SRSHARP0_OFFSET + SHARP_SR3_DERING_LUMA2PKOS_0TO3    ) // 0x6e
-#define SRSHARP0_SR3_DERING_LUMA2PKOS_4TO6      (SRSHARP0_OFFSET + SHARP_SR3_DERING_LUMA2PKOS_4TO6    ) // 0x6f
-#define SRSHARP0_SR3_DERING_GAINVS_MADSAD       (SRSHARP0_OFFSET + SHARP_SR3_DERING_GAINVS_MADSAD     ) // 0x70
-#define SRSHARP0_SR3_DERING_GAINVS_VR2MAX       (SRSHARP0_OFFSET + SHARP_SR3_DERING_GAINVS_VR2MAX     ) // 0x71
-#define SRSHARP0_SR3_DERING_PARAM0              (SRSHARP0_OFFSET + SHARP_SR3_DERING_PARAM0            ) // 0x72
-#define SRSHARP0_SR3_DRTLPF_THETA               (SRSHARP0_OFFSET + SHARP_SR3_DRTLPF_THETA             ) // 0x73
-#define SRSHARP0_SATPRT_CTRL                    (SRSHARP0_OFFSET + SHARP_SATPRT_CTRL                  ) // 0x74
-#define SRSHARP0_SATPRT_DIVM                    (SRSHARP0_OFFSET + SHARP_SATPRT_DIVM                  ) // 0x75
-#define SRSHARP0_DB_FLT_CTRL                    (SRSHARP0_OFFSET + SHARP_DB_FLT_CTRL                  ) // 0x77
-//`define SRSHARP0_DB_FLT_YC_THRD                 (`SRSHARP0_OFFSET + `SHARP_DB_FLT_YC_THRD             ) // 8'h78
-#define SRSHARP0_DB_FLT_CTRL1                   (SRSHARP0_OFFSET + SHARP_DB_FLT_CTRL1                 ) // 0xb8
-#define SRSHARP0_DB_FLT_LUMA_THRD               (SRSHARP0_OFFSET + SHARP_DB_FLT_LUMA_THRD             ) // 0xb9
-#define SRSHARP0_DB_FLT_CHRM_THRD               (SRSHARP0_OFFSET + SHARP_DB_FLT_CHRM_THRD             ) // 0xba
-#define SRSHARP0_DB_FLT_RANDLUT                 (SRSHARP0_OFFSET + SHARP_DB_FLT_RANDLUT               ) // 0x79
-#define SRSHARP0_DB_FLT_PXI_THRD                (SRSHARP0_OFFSET + SHARP_DB_FLT_PXI_THRD              ) // 0x7a
-#define SRSHARP0_DB_FLT_SEED_Y                  (SRSHARP0_OFFSET + SHARP_DB_FLT_SEED_Y                ) // 0x7b
-#define SRSHARP0_DB_FLT_SEED_U                  (SRSHARP0_OFFSET + SHARP_DB_FLT_SEED_U                ) // 0x7c
-#define SRSHARP0_DB_FLT_SEED_V                  (SRSHARP0_OFFSET + SHARP_DB_FLT_SEED_V                ) // 0x7d
-#define SRSHARP0_PKGAIN_VSLUMA_LUT_L            (SRSHARP0_OFFSET + SHARP_PKGAIN_VSLUMA_LUT_L          ) // 0x7e
-#define SRSHARP0_PKGAIN_VSLUMA_LUT_H            (SRSHARP0_OFFSET + SHARP_PKGAIN_VSLUMA_LUT_H          ) // 0x7f
-#define SRSHARP0_PKOSHT_VSLUMA_LUT_L            (SRSHARP0_OFFSET + SHARP_PKOSHT_VSLUMA_LUT_L          ) // 0x80
-#define SRSHARP0_PKOSHT_VSLUMA_LUT_H            (SRSHARP0_OFFSET + SHARP_PKOSHT_VSLUMA_LUT_H          ) // 0x81
-#define SRSHARP0_SATPRT_LMT_RGB1                (SRSHARP0_OFFSET + SHARP_SATPRT_LMT_RGB1              ) // 0x82
-#define SRSHARP0_SATPRT_LMT_RGB2                (SRSHARP0_OFFSET + SHARP_SATPRT_LMT_RGB2              ) // 0x83
-#define SRSHARP0_SHARP_GATE_CLK_CTRL_0          (SRSHARP0_OFFSET + SHARP_GATE_CLK_CTRL_0              ) // 0x84
-#define SRSHARP0_SHARP_GATE_CLK_CTRL_1          (SRSHARP0_OFFSET + SHARP_GATE_CLK_CTRL_1              ) // 0x85
-#define SRSHARP0_SHARP_GATE_CLK_CTRL_2          (SRSHARP0_OFFSET + SHARP_GATE_CLK_CTRL_2              ) // 0x86
-#define SRSHARP0_SHARP_GATE_CLK_CTRL_3          (SRSHARP0_OFFSET + SHARP_GATE_CLK_CTRL_3              ) // 0x87
-#define SRSHARP0_SHARP_DPS_CTRL                 (SRSHARP0_OFFSET + SHARP_DPS_CTRL                     ) // 0x88
-#define SRSHARP0_DNLP_00                        (SRSHARP0_OFFSET + DNLP_00                            ) // 0x90  //
-#define SRSHARP0_DNLP_01                        (SRSHARP0_OFFSET + DNLP_01                            ) // 0x91  //
-#define SRSHARP0_DNLP_02                        (SRSHARP0_OFFSET + DNLP_02                            ) // 0x92  //
-#define SRSHARP0_DNLP_03                        (SRSHARP0_OFFSET + DNLP_03                            ) // 0x93  //
-#define SRSHARP0_DNLP_04                        (SRSHARP0_OFFSET + DNLP_04                            ) // 0x94  //
-#define SRSHARP0_DNLP_05                        (SRSHARP0_OFFSET + DNLP_05                            ) // 0x95  //
-#define SRSHARP0_DNLP_06                        (SRSHARP0_OFFSET + DNLP_06                            ) // 0x96  //
-#define SRSHARP0_DNLP_07                        (SRSHARP0_OFFSET + DNLP_07                            ) // 0x97  //
-#define SRSHARP0_DNLP_08                        (SRSHARP0_OFFSET + DNLP_08                            ) // 0x98  //
-#define SRSHARP0_DNLP_09                        (SRSHARP0_OFFSET + DNLP_09                            ) // 0x99  //
-#define SRSHARP0_DNLP_10                        (SRSHARP0_OFFSET + DNLP_10                            ) // 0x9a  //
-#define SRSHARP0_DNLP_11                        (SRSHARP0_OFFSET + DNLP_11                            ) // 0x9b  //
-#define SRSHARP0_DNLP_12                        (SRSHARP0_OFFSET + DNLP_12                            ) // 0x9c  //
-#define SRSHARP0_DNLP_13                        (SRSHARP0_OFFSET + DNLP_13                            ) // 0x9d  //
-#define SRSHARP0_DNLP_14                        (SRSHARP0_OFFSET + DNLP_14                            ) // 0x9e  //
-#define SRSHARP0_DNLP_15                        (SRSHARP0_OFFSET + DNLP_15                            ) // 0x9f  //
-#define SRSHARP0_DNLP_16                        (SRSHARP0_OFFSET + DNLP_16                            ) // 0xa0  //
-#define SRSHARP0_DNLP_17                        (SRSHARP0_OFFSET + DNLP_17                            ) // 0xa1  //
-#define SRSHARP0_DNLP_18                        (SRSHARP0_OFFSET + DNLP_18                            ) // 0xa2  //
-#define SRSHARP0_DNLP_19                        (SRSHARP0_OFFSET + DNLP_19                            ) // 0xa3  //
-#define SRSHARP0_DNLP_20                        (SRSHARP0_OFFSET + DNLP_20                            ) // 0xa4  //
-#define SRSHARP0_DNLP_21                        (SRSHARP0_OFFSET + DNLP_21                            ) // 0xa5  //
-#define SRSHARP0_DNLP_22                        (SRSHARP0_OFFSET + DNLP_22                            ) // 0xa6  //
-#define SRSHARP0_DNLP_23                        (SRSHARP0_OFFSET + DNLP_23                            ) // 0xa7  //
-#define SRSHARP0_DNLP_24                        (SRSHARP0_OFFSET + DNLP_24                            ) // 0xa8  //
-#define SRSHARP0_DNLP_25                        (SRSHARP0_OFFSET + DNLP_25                            ) // 0xa9  //
-#define SRSHARP0_DNLP_26                        (SRSHARP0_OFFSET + DNLP_26                            ) // 0xaa  //
-#define SRSHARP0_DNLP_27                        (SRSHARP0_OFFSET + DNLP_27                            ) // 0xab  //
-#define SRSHARP0_DNLP_28                        (SRSHARP0_OFFSET + DNLP_28                            ) // 0xac  //
-#define SRSHARP0_DNLP_29                        (SRSHARP0_OFFSET + DNLP_29                            ) // 0xad  //
-#define SRSHARP0_DNLP_30                        (SRSHARP0_OFFSET + DNLP_30                            ) // 0xae  //
-#define SRSHARP0_DNLP_31                        (SRSHARP0_OFFSET + DNLP_31                            ) // 0xaf  //
-#define SRSHARP0_SHARP_SYNC_CTRL                (SRSHARP0_OFFSET + SHARP_SYNC_CTRL                    ) // 0xb0  //
-#define SRSHARP0_LC_INPUT_MUX                   (SRSHARP0_OFFSET + LC_INPUT_MUX                       ) // 0xb1  //
-#define SRSHARP0_NR_GAU_YH_COEF02               (SRSHARP0_OFFSET + NR_GAU_YH_COEF02                   ) // 0xb2  //
-#define SRSHARP0_NR_GAU_YH_COEF34               (SRSHARP0_OFFSET + NR_GAU_YH_COEF34                   ) // 0xb3  //
-#define SRSHARP0_NR_GAU_YV_COEF1                (SRSHARP0_OFFSET + NR_GAU_YV_COEF1                    ) // 0xb4  //
-#define SRSHARP0_NR_GAU_CH_COEF02               (SRSHARP0_OFFSET + NR_GAU_CH_COEF02                   ) // 0xb5  //
-#define SRSHARP0_NR_GAU_CH_COEF34               (SRSHARP0_OFFSET + NR_GAU_CH_COEF34                   ) // 0xb6  //
-#define SRSHARP0_NR_GAU_CV_COEF1                (SRSHARP0_OFFSET + NR_GAU_CV_COEF1                    ) // 0xb7  //
-#define SRSHARP0_LC_TOP_CTRL                    (SRSHARP0_OFFSET + LC_TOP_CTRL                        ) // 0xc0  //
-#define SRSHARP0_LC_HV_NUM                      (SRSHARP0_OFFSET + LC_HV_NUM                          ) // 0xc1
-#define SRSHARP0_LC_SAT_LUT_0_1                 (SRSHARP0_OFFSET + LC_SAT_LUT_0_1                     ) // 0xc2
-#define SRSHARP0_LC_SAT_LUT_2_3                 (SRSHARP0_OFFSET + LC_SAT_LUT_2_3                     ) // 0xc3
-#define SRSHARP0_LC_SAT_LUT_4_5                 (SRSHARP0_OFFSET + LC_SAT_LUT_4_5                     ) // 0xc4
-#define SRSHARP0_LC_SAT_LUT_6_7                 (SRSHARP0_OFFSET + LC_SAT_LUT_6_7                     ) // 0xc5
-#define SRSHARP0_LC_SAT_LUT_8_9                 (SRSHARP0_OFFSET + LC_SAT_LUT_8_9                     ) // 0xc6
-#define SRSHARP0_LC_SAT_LUT_10_11               (SRSHARP0_OFFSET + LC_SAT_LUT_10_11                   ) // 0xc7
-#define SRSHARP0_LC_SAT_LUT_12_13               (SRSHARP0_OFFSET + LC_SAT_LUT_12_13                   ) // 0xc8
-#define SRSHARP0_LC_SAT_LUT_14_15               (SRSHARP0_OFFSET + LC_SAT_LUT_14_15                   ) // 0xc9
-#define SRSHARP0_LC_SAT_LUT_16_17               (SRSHARP0_OFFSET + LC_SAT_LUT_16_17                   ) // 0xca
-#define SRSHARP0_LC_SAT_LUT_18_19               (SRSHARP0_OFFSET + LC_SAT_LUT_18_19                   ) // 0xcb
-#define SRSHARP0_LC_SAT_LUT_20_21               (SRSHARP0_OFFSET + LC_SAT_LUT_20_21                   ) // 0xcc
-#define SRSHARP0_LC_SAT_LUT_22_23               (SRSHARP0_OFFSET + LC_SAT_LUT_22_23                   ) // 0xcd
-#define SRSHARP0_LC_SAT_LUT_24_25               (SRSHARP0_OFFSET + LC_SAT_LUT_24_25                   ) // 0xce
-#define SRSHARP0_LC_SAT_LUT_26_27               (SRSHARP0_OFFSET + LC_SAT_LUT_26_27                   ) // 0xcf
-#define SRSHARP0_LC_SAT_LUT_28_29               (SRSHARP0_OFFSET + LC_SAT_LUT_28_29                   ) // 0xd0
-#define SRSHARP0_LC_SAT_LUT_30_31               (SRSHARP0_OFFSET + LC_SAT_LUT_30_31                   ) // 0xd1
-#define SRSHARP0_LC_SAT_LUT_32_33               (SRSHARP0_OFFSET + LC_SAT_LUT_32_33                   ) // 0xd2
-#define SRSHARP0_LC_SAT_LUT_34_35               (SRSHARP0_OFFSET + LC_SAT_LUT_34_35                   ) // 0xd3
-#define SRSHARP0_LC_SAT_LUT_36_37               (SRSHARP0_OFFSET + LC_SAT_LUT_36_37                   ) // 0xd4
-#define SRSHARP0_LC_SAT_LUT_38_39               (SRSHARP0_OFFSET + LC_SAT_LUT_38_39                   ) // 0xd5
-#define SRSHARP0_LC_SAT_LUT_40_41               (SRSHARP0_OFFSET + LC_SAT_LUT_40_41                   ) // 0xd6
-#define SRSHARP0_LC_SAT_LUT_42_43               (SRSHARP0_OFFSET + LC_SAT_LUT_42_43                   ) // 0xd7
-#define SRSHARP0_LC_SAT_LUT_44_45               (SRSHARP0_OFFSET + LC_SAT_LUT_44_45                   ) // 0xd8
-#define SRSHARP0_LC_SAT_LUT_46_47               (SRSHARP0_OFFSET + LC_SAT_LUT_46_47                   ) // 0xd9
-#define SRSHARP0_LC_SAT_LUT_48_49               (SRSHARP0_OFFSET + LC_SAT_LUT_48_49                   ) // 0xda
-#define SRSHARP0_LC_SAT_LUT_50_51               (SRSHARP0_OFFSET + LC_SAT_LUT_50_51                   ) // 0xdb
-#define SRSHARP0_LC_SAT_LUT_52_53               (SRSHARP0_OFFSET + LC_SAT_LUT_52_53                   ) // 0xdc
-#define SRSHARP0_LC_SAT_LUT_54_55               (SRSHARP0_OFFSET + LC_SAT_LUT_54_55                   ) // 0xdd
-#define SRSHARP0_LC_SAT_LUT_56_57               (SRSHARP0_OFFSET + LC_SAT_LUT_56_57                   ) // 0xde
-#define SRSHARP0_LC_SAT_LUT_58_59               (SRSHARP0_OFFSET + LC_SAT_LUT_58_59                   ) // 0xdf
-#define SRSHARP0_LC_SAT_LUT_60_61               (SRSHARP0_OFFSET + LC_SAT_LUT_60_61                   ) // 0xe0
-#define SRSHARP0_LC_SAT_LUT_62                  (SRSHARP0_OFFSET + LC_SAT_LUT_62                      ) // 0xe1
-#define SRSHARP0_LC_CURVE_BLK_HIDX_0_1          (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_0_1              ) // 0xe2
-#define SRSHARP0_LC_CURVE_BLK_HIDX_2_3          (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_2_3              ) // 0xe3
-#define SRSHARP0_LC_CURVE_BLK_HIDX_4_5          (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_4_5              ) // 0xe4
-#define SRSHARP0_LC_CURVE_BLK_HIDX_6_7          (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_6_7              ) // 0xe5
-#define SRSHARP0_LC_CURVE_BLK_HIDX_8_9          (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_8_9              ) // 0xe6
-#define SRSHARP0_LC_CURVE_BLK_HIDX_10_11        (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_10_11            ) // 0xe7
-#define SRSHARP0_LC_CURVE_BLK_HIDX_12           (SRSHARP0_OFFSET + LC_CURVE_BLK_HIDX_12               ) // 0xe8
-#define SRSHARP0_LC_CURVE_BLK_VIDX_0_1          (SRSHARP0_OFFSET + LC_CURVE_BLK_VIDX_0_1              ) // 0xe9
-#define SRSHARP0_LC_CURVE_BLK_VIDX_2_3          (SRSHARP0_OFFSET + LC_CURVE_BLK_VIDX_2_3              ) // 0xea
-#define SRSHARP0_LC_CURVE_BLK_VIDX_4_5          (SRSHARP0_OFFSET + LC_CURVE_BLK_VIDX_4_5              ) // 0xeb
-#define SRSHARP0_LC_CURVE_BLK_VIDX_6_7          (SRSHARP0_OFFSET + LC_CURVE_BLK_VIDX_6_7              ) // 0xec
-#define SRSHARP0_LC_CURVE_BLK_VIDX_8            (SRSHARP0_OFFSET + LC_CURVE_BLK_VIDX_8                ) // 0xed
-#define SRSHARP0_LC_YUV2RGB_MAT_0_1             (SRSHARP0_OFFSET + LC_YUV2RGB_MAT_0_1                 ) // 0xee
-#define SRSHARP0_LC_YUV2RGB_MAT_2_3             (SRSHARP0_OFFSET + LC_YUV2RGB_MAT_2_3                 ) // 0xef
-#define SRSHARP0_LC_YUV2RGB_MAT_4_5             (SRSHARP0_OFFSET + LC_YUV2RGB_MAT_4_5                 ) // 0xf0
-#define SRSHARP0_LC_YUV2RGB_MAT_6_7             (SRSHARP0_OFFSET + LC_YUV2RGB_MAT_6_7                 ) // 0xf1
-#define SRSHARP0_LC_YUV2RGB_MAT_8               (SRSHARP0_OFFSET + LC_YUV2RGB_MAT_8                   ) // 0xf2
-#define SRSHARP0_LC_RGB2YUV_MAT_0_1             (SRSHARP0_OFFSET + LC_RGB2YUV_MAT_0_1                 ) // 0xf3
-#define SRSHARP0_LC_RGB2YUV_MAT_2_3             (SRSHARP0_OFFSET + LC_RGB2YUV_MAT_2_3                 ) // 0xf4
-#define SRSHARP0_LC_RGB2YUV_MAT_4_5             (SRSHARP0_OFFSET + LC_RGB2YUV_MAT_4_5                 ) // 0xf5
-#define SRSHARP0_LC_RGB2YUV_MAT_6_7             (SRSHARP0_OFFSET + LC_RGB2YUV_MAT_6_7                 ) // 0xf6
-#define SRSHARP0_LC_RGB2YUV_MAT_8               (SRSHARP0_OFFSET + LC_RGB2YUV_MAT_8                   ) // 0xf7
-#define SRSHARP0_LC_YUV2RGB_OFST                (SRSHARP0_OFFSET + LC_YUV2RGB_OFST                    ) // 0xf8
-#define SRSHARP0_LC_YUV2RGB_CLIP                (SRSHARP0_OFFSET + LC_YUV2RGB_CLIP                    ) // 0xf9
-#define SRSHARP0_LC_RGB2YUV_OFST                (SRSHARP0_OFFSET + LC_RGB2YUV_OFST                    ) // 0xfa
-#define SRSHARP0_LC_RGB2YUV_CLIP                (SRSHARP0_OFFSET + LC_RGB2YUV_CLIP                    ) // 0xfb
-#define SRSHARP0_LC_MAP_RAM_CTRL                (SRSHARP0_OFFSET + LC_MAP_RAM_CTRL                    ) // 0xfc
-#define SRSHARP0_LC_MAP_RAM_ADDR                (SRSHARP0_OFFSET + LC_MAP_RAM_ADDR                    ) // 0xfd
-#define SRSHARP0_LC_MAP_RAM_DATA                (SRSHARP0_OFFSET + LC_MAP_RAM_DATA                    ) // 0xfe
-
-#define SRSHARP0_FMETER_CTRL                    (SRSHARP0_OFFSET +  SHARP_FMETER_CTRL                 ) // 0x89
-#define SRSHARP0_FMETER_WIN_HOR                 (SRSHARP0_OFFSET +  SHARP_FMETER_WIN_HOR              ) // 0x8a
-#define SRSHARP0_FMETER_WIN_VER                 (SRSHARP0_OFFSET +  SHARP_FMETER_WIN_VER              ) // 0x8b
-#define SRSHARP0_FMETER_CORING                  (SRSHARP0_OFFSET +  SHARP_FMETER_CORING               ) // 0x8c
-#define SRSHARP0_FMETER_RATIO_H                 (SRSHARP0_OFFSET +  SHARP_FMETER_RATIO_H              ) // 0x8d
-#define SRSHARP0_FMETER_RATIO_V                 (SRSHARP0_OFFSET +  SHARP_FMETER_RATIO_V              ) // 0x8e
-#define SRSHARP0_FMETER_RATIO_D                 (SRSHARP0_OFFSET +  SHARP_FMETER_RATIO_D              ) // 0x8f
-#define SRSHARP0_RO_FMETER_HCNT_TYPE0           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE0        ) // 0x46
-#define SRSHARP0_RO_FMETER_HCNT_TYPE1           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE1        ) // 0x47
-#define SRSHARP0_RO_FMETER_HCNT_TYPE2           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE2        ) // 0x48
-#define SRSHARP0_RO_FMETER_HCNT_TYPE3           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE3        ) // 0x49
-#define SRSHARP0_RO_FMETER_VCNT_TYPE0           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE0        ) // 0x4a
-#define SRSHARP0_RO_FMETER_VCNT_TYPE1           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE1        ) // 0x4b
-#define SRSHARP0_RO_FMETER_VCNT_TYPE2           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE2        ) // 0x4c
-#define SRSHARP0_RO_FMETER_VCNT_TYPE3           (SRSHARP0_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE3        ) // 0x4d
-#define SRSHARP0_RO_FMETER_PDCNT_TYPE0          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE0       ) // 0x4e
-#define SRSHARP0_RO_FMETER_PDCNT_TYPE1          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE1       ) // 0x4f
-#define SRSHARP0_RO_FMETER_PDCNT_TYPE2          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE2       ) // 0x50
-#define SRSHARP0_RO_FMETER_PDCNT_TYPE3          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE3       ) // 0x51
-#define SRSHARP0_RO_FMETER_NDCNT_TYPE0          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE0       ) // 0x52
-#define SRSHARP0_RO_FMETER_NDCNT_TYPE1          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE1       ) // 0x53
-#define SRSHARP0_RO_FMETER_NDCNT_TYPE2          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE2       ) // 0x54
-#define SRSHARP0_RO_FMETER_NDCNT_TYPE3          (SRSHARP0_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE3       ) // 0x55
-
-
-
-
-
-//// srsharp1 reg define
-
-#define SRSHARP1_SHARP_HVSIZE                      (SRSHARP1_OFFSET + SHARP_HVSIZE                 )  //0x00  //
-#define SRSHARP1_SHARP_HVBLANK_NUM                 (SRSHARP1_OFFSET + SHARP_HVBLANK_NUM            )  //0x01  //
-#define SRSHARP1_NR_GAUSSIAN_MODE                  (SRSHARP1_OFFSET + NR_GAUSSIAN_MODE             )  //0x02  //
-#define SRSHARP1_PK_CON_2CIRHPGAIN_TH_RATE         (SRSHARP1_OFFSET + PK_CON_2CIRHPGAIN_TH_RATE    )  //0x05  //
-#define SRSHARP1_PK_CON_2CIRHPGAIN_LIMIT           (SRSHARP1_OFFSET + PK_CON_2CIRHPGAIN_LIMIT      )  //0x06  //
-#define SRSHARP1_PK_CON_2CIRBPGAIN_TH_RATE         (SRSHARP1_OFFSET + PK_CON_2CIRBPGAIN_TH_RATE    )  //0x07  //
-#define SRSHARP1_PK_CON_2CIRBPGAIN_LIMIT           (SRSHARP1_OFFSET + PK_CON_2CIRBPGAIN_LIMIT      )  //0x08  //
-#define SRSHARP1_PK_CON_2DRTHPGAIN_TH_RATE         (SRSHARP1_OFFSET + PK_CON_2DRTHPGAIN_TH_RATE    )  //0x09  //
-#define SRSHARP1_PK_CON_2DRTHPGAIN_LIMIT           (SRSHARP1_OFFSET + PK_CON_2DRTHPGAIN_LIMIT      )  //0x0a  //
-#define SRSHARP1_PK_CON_2DRTBPGAIN_TH_RATE         (SRSHARP1_OFFSET + PK_CON_2DRTBPGAIN_TH_RATE    )  //0x0b  //
-#define SRSHARP1_PK_CON_2DRTBPGAIN_LIMIT           (SRSHARP1_OFFSET + PK_CON_2DRTBPGAIN_LIMIT      )  //0x0c  //
-#define SRSHARP1_PK_CIRFB_LPF_MODE                 (SRSHARP1_OFFSET + PK_CIRFB_LPF_MODE            )  //0x0d  //
-#define SRSHARP1_PK_DRTFB_LPF_MODE                 (SRSHARP1_OFFSET + PK_DRTFB_LPF_MODE            )  //0x0e  //
-#define SRSHARP1_PK_CIRFB_HP_CORING                (SRSHARP1_OFFSET + PK_CIRFB_HP_CORING           )  //0x0f  //
-#define SRSHARP1_PK_CIRFB_BP_CORING                (SRSHARP1_OFFSET + PK_CIRFB_BP_CORING           )  //0x10  //
-#define SRSHARP1_PK_DRTFB_HP_CORING                (SRSHARP1_OFFSET + PK_DRTFB_HP_CORING           )  //0x11  //
-#define SRSHARP1_PK_DRTFB_BP_CORING                (SRSHARP1_OFFSET + PK_DRTFB_BP_CORING           )  //0x12  //
-#define SRSHARP1_PK_CIRFB_BLEND_GAIN               (SRSHARP1_OFFSET + PK_CIRFB_BLEND_GAIN          )  //0x13  //
-#define SRSHARP1_NR_ALPY_SSD_GAIN_OFST             (SRSHARP1_OFFSET + NR_ALPY_SSD_GAIN_OFST        )  //0x14  //
-#define SRSHARP1_NR_ALP0Y_ERR2CURV_TH_RATE         (SRSHARP1_OFFSET + NR_ALP0Y_ERR2CURV_TH_RATE    )  //0x15  //
-#define SRSHARP1_NR_ALP0Y_ERR2CURV_LIMIT           (SRSHARP1_OFFSET + NR_ALP0Y_ERR2CURV_LIMIT      )  //0x16  //
-#define SRSHARP1_NR_ALP0C_ERR2CURV_TH_RATE         (SRSHARP1_OFFSET + NR_ALP0C_ERR2CURV_TH_RATE    )  //0x17  //
-#define SRSHARP1_NR_ALP0C_ERR2CURV_LIMIT           (SRSHARP1_OFFSET + NR_ALP0C_ERR2CURV_LIMIT      )  //0x18  //
-#define SRSHARP1_NR_ALP0_MIN_MAX                   (SRSHARP1_OFFSET + NR_ALP0_MIN_MAX              )  //0x19  //
-#define SRSHARP1_NR_ALP1_MIERR_CORING              (SRSHARP1_OFFSET + NR_ALP1_MIERR_CORING         )  //0x1a  //
-#define SRSHARP1_NR_ALP1_ERR2CURV_TH_RATE          (SRSHARP1_OFFSET + NR_ALP1_ERR2CURV_TH_RATE     )  //0x1b  //
-#define SRSHARP1_NR_ALP1_ERR2CURV_LIMIT            (SRSHARP1_OFFSET + NR_ALP1_ERR2CURV_LIMIT       )  //0x1c  //
-#define SRSHARP1_NR_ALP1_MIN_MAX                   (SRSHARP1_OFFSET + NR_ALP1_MIN_MAX              )  //0x1d  //
-#define SRSHARP1_PK_ALP2_MIERR_CORING              (SRSHARP1_OFFSET + PK_ALP2_MIERR_CORING         )  //0x1e  //
-#define SRSHARP1_PK_ALP2_ERR2CURV_TH_RATE          (SRSHARP1_OFFSET + PK_ALP2_ERR2CURV_TH_RATE     )  //0x1f  //
-#define SRSHARP1_PK_ALP2_ERR2CURV_LIMIT            (SRSHARP1_OFFSET + PK_ALP2_ERR2CURV_LIMIT       )  //0x20  //
-#define SRSHARP1_PK_ALP2_MIN_MAX                   (SRSHARP1_OFFSET + PK_ALP2_MIN_MAX              )  //0x21  //
-#define SRSHARP1_PK_FINALGAIN_HP_BP                (SRSHARP1_OFFSET + PK_FINALGAIN_HP_BP           )  //0x22  //
-#define SRSHARP1_PK_OS_HORZ_CORE_GAIN              (SRSHARP1_OFFSET + PK_OS_HORZ_CORE_GAIN         )  //0x23  //
-#define SRSHARP1_PK_OS_VERT_CORE_GAIN              (SRSHARP1_OFFSET + PK_OS_VERT_CORE_GAIN         )  //0x24  //
-#define SRSHARP1_PK_OS_ADPT_MISC                   (SRSHARP1_OFFSET + PK_OS_ADPT_MISC              )  //0x25  //
-#define SRSHARP1_PK_OS_STATIC                      (SRSHARP1_OFFSET + PK_OS_STATIC                 )  //0x26  //
-#define SRSHARP1_PK_NR_ENABLE                      (SRSHARP1_OFFSET + PK_NR_ENABLE                 )  //0x27  //
-#define SRSHARP1_PK_DRT_SAD_MISC                   (SRSHARP1_OFFSET + PK_DRT_SAD_MISC              )  //0x28  //
-#define SRSHARP1_NR_TI_DNLP_BLEND                  (SRSHARP1_OFFSET + NR_TI_DNLP_BLEND             )  //0x29  //
-#define SRSHARP1_LTI_DIR_CORE_ALPHA                (SRSHARP1_OFFSET + LTI_DIR_CORE_ALPHA           )  //0x2a  //
-#define SRSHARP1_CTI_DIR_ALPHA                     (SRSHARP1_OFFSET + CTI_DIR_ALPHA                )  //0x2b  //
-#define SRSHARP1_LTI_CTI_DF_GAIN                   (SRSHARP1_OFFSET + LTI_CTI_DF_GAIN              )  //0x2c  //
-#define SRSHARP1_LTI_CTI_DIR_AC_DBG                (SRSHARP1_OFFSET + LTI_CTI_DIR_AC_DBG           )  //0x2d  //
-#define SRSHARP1_HCTI_FLT_CLP_DC                   (SRSHARP1_OFFSET + HCTI_FLT_CLP_DC              )  //0x2e  //
-#define SRSHARP1_HCTI_BST_GAIN                     (SRSHARP1_OFFSET + HCTI_BST_GAIN                )  //0x2f  //
-#define SRSHARP1_HCTI_BST_CORE                     (SRSHARP1_OFFSET + HCTI_BST_CORE                )  //0x30  //
-#define SRSHARP1_HCTI_CON_2_GAIN_0                 (SRSHARP1_OFFSET + HCTI_CON_2_GAIN_0            )  //0x31  //
-#define SRSHARP1_HCTI_CON_2_GAIN_1                 (SRSHARP1_OFFSET + HCTI_CON_2_GAIN_1            )  //0x32  //
-#define SRSHARP1_HCTI_OS_MARGIN                    (SRSHARP1_OFFSET + HCTI_OS_MARGIN               )  //0x33  //
-#define SRSHARP1_HLTI_FLT_CLP_DC                   (SRSHARP1_OFFSET + HLTI_FLT_CLP_DC              )  //0x34  //
-#define SRSHARP1_HLTI_BST_GAIN                     (SRSHARP1_OFFSET + HLTI_BST_GAIN                )  //0x35  //
-#define SRSHARP1_HLTI_BST_CORE                     (SRSHARP1_OFFSET + HLTI_BST_CORE                )  //0x36  //
-#define SRSHARP1_HLTI_CON_2_GAIN_0                 (SRSHARP1_OFFSET + HLTI_CON_2_GAIN_0            )  //0x37  //
-#define SRSHARP1_HLTI_CON_2_GAIN_1                 (SRSHARP1_OFFSET + HLTI_CON_2_GAIN_1            )  //0x38  //
-#define SRSHARP1_HLTI_OS_MARGIN                    (SRSHARP1_OFFSET + HLTI_OS_MARGIN               )  //0x39  //
-#define SRSHARP1_VLTI_FLT_CON_CLP                  (SRSHARP1_OFFSET + VLTI_FLT_CON_CLP             )  //0x3a  //
-#define SRSHARP1_VLTI_BST_GAIN                     (SRSHARP1_OFFSET + VLTI_BST_GAIN                )  //0x3b  //
-#define SRSHARP1_VLTI_BST_CORE                     (SRSHARP1_OFFSET + VLTI_BST_CORE                )  //0x3c  //
-#define SRSHARP1_VLTI_CON_2_GAIN_0                 (SRSHARP1_OFFSET + VLTI_CON_2_GAIN_0            )  //0x3d  //
-#define SRSHARP1_VLTI_CON_2_GAIN_1                 (SRSHARP1_OFFSET + VLTI_CON_2_GAIN_1            )  //0x3e  //
-#define SRSHARP1_VCTI_FLT_CON_CLP                  (SRSHARP1_OFFSET + VCTI_FLT_CON_CLP             )  //0x3f  //
-#define SRSHARP1_VCTI_BST_GAIN                     (SRSHARP1_OFFSET + VCTI_BST_GAIN                )  //0x40  //
-#define SRSHARP1_VCTI_BST_CORE                     (SRSHARP1_OFFSET + VCTI_BST_CORE                )  //0x41  //
-#define SRSHARP1_VCTI_CON_2_GAIN_0                 (SRSHARP1_OFFSET + VCTI_CON_2_GAIN_0            )  //0x42  //
-#define SRSHARP1_VCTI_CON_2_GAIN_1                 (SRSHARP1_OFFSET + VCTI_CON_2_GAIN_1            )  //0x43  //
-#define SRSHARP1_SHARP_3DLIMIT                     (SRSHARP1_OFFSET + SHARP_3DLIMIT                )  //0x44  //
-#define SRSHARP1_DNLP_EN                           (SRSHARP1_OFFSET + DNLP_EN                      )  //0x45  //
-//`define SRSHARP1_DNLP_00                           (`SRSHARP1_OFFSET + `DNLP_00                      )  //8'h46  //
-//`define SRSHARP1_DNLP_01                           (`SRSHARP1_OFFSET + `DNLP_01                      )  //8'h47  //
-//`define SRSHARP1_DNLP_02                           (`SRSHARP1_OFFSET + `DNLP_02                      )  //8'h48  //
-//`define SRSHARP1_DNLP_03                           (`SRSHARP1_OFFSET + `DNLP_03                      )  //8'h49  //
-//`define SRSHARP1_DNLP_04                           (`SRSHARP1_OFFSET + `DNLP_04                      )  //8'h4a  //
-//`define SRSHARP1_DNLP_05                           (`SRSHARP1_OFFSET + `DNLP_05                      )  //8'h4b  //
-//`define SRSHARP1_DNLP_06                           (`SRSHARP1_OFFSET + `DNLP_06                      )  //8'h4c  //
-//`define SRSHARP1_DNLP_07                           (`SRSHARP1_OFFSET + `DNLP_07                      )  //8'h4d  //
-//`define SRSHARP1_DNLP_08                           (`SRSHARP1_OFFSET + `DNLP_08                      )  //8'h4e  //
-//`define SRSHARP1_DNLP_09                           (`SRSHARP1_OFFSET + `DNLP_09                      )  //8'h4f  //
-//`define SRSHARP1_DNLP_10                           (`SRSHARP1_OFFSET + `DNLP_10                      )  //8'h50  //
-//`define SRSHARP1_DNLP_11                           (`SRSHARP1_OFFSET + `DNLP_11                      )  //8'h51  //
-//`define SRSHARP1_DNLP_12                           (`SRSHARP1_OFFSET + `DNLP_12                      )  //8'h52  //
-//`define SRSHARP1_DNLP_13                           (`SRSHARP1_OFFSET + `DNLP_13                      )  //8'h53  //
-//`define SRSHARP1_DNLP_14                           (`SRSHARP1_OFFSET + `DNLP_14                      )  //8'h54  //
-//`define SRSHARP1_DNLP_15                           (`SRSHARP1_OFFSET + `DNLP_15                      )  //8'h55  //
-#define SRSHARP1_DEMO_CRTL                         (SRSHARP1_OFFSET + DEMO_CRTL                    )  //0x56  //
-#define SRSHARP1_SHARP_SR2_CTRL                    (SRSHARP1_OFFSET + SHARP_SR2_CTRL               )  //0x57  //
-#define SRSHARP1_SHARP_SR2_YBIC_HCOEF0             (SRSHARP1_OFFSET + SHARP_SR2_YBIC_HCOEF0        )  //0x58
-#define SRSHARP1_SHARP_SR2_YBIC_HCOEF1             (SRSHARP1_OFFSET + SHARP_SR2_YBIC_HCOEF1        )  //0x59  //
-#define SRSHARP1_SHARP_SR2_CBIC_HCOEF0             (SRSHARP1_OFFSET + SHARP_SR2_CBIC_HCOEF0        )  //0x5a  //
-#define SRSHARP1_SHARP_SR2_CBIC_HCOEF1             (SRSHARP1_OFFSET + SHARP_SR2_CBIC_HCOEF1        )  //0x5b  //
-#define SRSHARP1_SHARP_SR2_YBIC_VCOEF0             (SRSHARP1_OFFSET + SHARP_SR2_YBIC_VCOEF0        )  //0x5c  //
-#define SRSHARP1_SHARP_SR2_YBIC_VCOEF1             (SRSHARP1_OFFSET + SHARP_SR2_YBIC_VCOEF1        )  //0x5d  //
-#define SRSHARP1_SHARP_SR2_CBIC_VCOEF0             (SRSHARP1_OFFSET + SHARP_SR2_CBIC_VCOEF0        )  //0x5e  //
-#define SRSHARP1_SHARP_SR2_CBIC_VCOEF1             (SRSHARP1_OFFSET + SHARP_SR2_CBIC_VCOEF1        )  //0x5f  //
-#define SRSHARP1_SHARP_SR2_MISC                    (SRSHARP1_OFFSET + SHARP_SR2_MISC               )  //0x60  //
-#define SRSHARP1_SR3_SAD_CTRL                   (SRSHARP1_OFFSET + SHARP_SR3_SAD_CTRL                 ) // 0x61  //
-#define SRSHARP1_SR3_PK_CTRL0                   (SRSHARP1_OFFSET + SHARP_SR3_PK_CTRL0                 ) // 0x62
-#define SRSHARP1_SR3_PK_CTRL1                   (SRSHARP1_OFFSET + SHARP_SR3_PK_CTRL1                 ) // 0x63
-#define SRSHARP1_DEJ_CTRL                       (SRSHARP1_OFFSET + SHARP_DEJ_CTRL                     ) // 0x64
-#define SRSHARP1_DEJ_ALPHA                      (SRSHARP1_OFFSET + SHARP_DEJ_ALPHA                    ) // 0x65
-#define SRSHARP1_SR3_DRTLPF_EN                  (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_EN                ) // 0x66
-#define SRSHARP1_SR3_DRTLPF_ALPHA_0             (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_ALPHA_0           ) // 0x67
-#define SRSHARP1_SR3_DRTLPF_ALPHA_1             (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_ALPHA_1           ) // 0x68
-#define SRSHARP1_SR3_DRTLPF_ALPHA_2             (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_ALPHA_2           ) // 0x69
-#define SRSHARP1_SR3_DRTLPF_ALPHA_OFST          (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_ALPHA_OFST        ) // 0x6a
-#define SRSHARP1_SR3_DERING_CTRL                (SRSHARP1_OFFSET + SHARP_SR3_DERING_CTRL              ) // 0x6b
-#define SRSHARP1_SR3_DERING_LUMA2PKGAIN_0TO3    (SRSHARP1_OFFSET + SHARP_SR3_DERING_LUMA2PKGAIN_0TO3  ) // 0x6c
-#define SRSHARP1_SR3_DERING_LUMA2PKGAIN_4TO6    (SRSHARP1_OFFSET + SHARP_SR3_DERING_LUMA2PKGAIN_4TO6  ) // 0x6d
-#define SRSHARP1_SR3_DERING_LUMA2PKOS_0TO3      (SRSHARP1_OFFSET + SHARP_SR3_DERING_LUMA2PKOS_0TO3    ) // 0x6e
-#define SRSHARP1_SR3_DERING_LUMA2PKOS_4TO6      (SRSHARP1_OFFSET + SHARP_SR3_DERING_LUMA2PKOS_4TO6    ) // 0x6f
-#define SRSHARP1_SR3_DERING_GAINVS_MADSAD       (SRSHARP1_OFFSET + SHARP_SR3_DERING_GAINVS_MADSAD     ) // 0x70
-#define SRSHARP1_SR3_DERING_GAINVS_VR2MAX       (SRSHARP1_OFFSET + SHARP_SR3_DERING_GAINVS_VR2MAX     ) // 0x71
-#define SRSHARP1_SR3_DERING_PARAM0              (SRSHARP1_OFFSET + SHARP_SR3_DERING_PARAM0            ) // 0x72
-#define SRSHARP1_SR3_DRTLPF_THETA               (SRSHARP1_OFFSET + SHARP_SR3_DRTLPF_THETA             ) // 0x73
-#define SRSHARP1_SATPRT_CTRL                    (SRSHARP1_OFFSET + SHARP_SATPRT_CTRL                  ) // 0x74
-#define SRSHARP1_SATPRT_DIVM                    (SRSHARP1_OFFSET + SHARP_SATPRT_DIVM                  ) // 0x75
-#define SRSHARP1_DB_FLT_CTRL                    (SRSHARP1_OFFSET + SHARP_DB_FLT_CTRL                  ) // 0x77
-//`define SRSHARP1_DB_FLT_YC_THRD               (`SRSHARP1_OFFSET + `SHARP_DB_FLT_YC_THRD               ) // 8'h78
-#define SRSHARP1_DB_FLT_CTRL1                   (SRSHARP1_OFFSET + SHARP_DB_FLT_CTRL1                 ) // 0xb8
-#define SRSHARP1_DB_FLT_LUMA_THRD               (SRSHARP1_OFFSET + SHARP_DB_FLT_LUMA_THRD             ) // 0xb9
-#define SRSHARP1_DB_FLT_CHRM_THRD               (SRSHARP1_OFFSET + SHARP_DB_FLT_CHRM_THRD             ) // 0xba
-#define SRSHARP1_DB_FLT_RANDLUT                 (SRSHARP1_OFFSET + SHARP_DB_FLT_RANDLUT               ) // 0x79
-#define SRSHARP1_DB_FLT_PXI_THRD                (SRSHARP1_OFFSET + SHARP_DB_FLT_PXI_THRD              ) // 0x7a
-#define SRSHARP1_DB_FLT_SEED_Y                  (SRSHARP1_OFFSET + SHARP_DB_FLT_SEED_Y                ) // 0x7b
-#define SRSHARP1_DB_FLT_SEED_U                  (SRSHARP1_OFFSET + SHARP_DB_FLT_SEED_U                ) // 0x7c
-#define SRSHARP1_DB_FLT_SEED_V                  (SRSHARP1_OFFSET + SHARP_DB_FLT_SEED_V                ) // 0x7d
-#define SRSHARP1_PKGAIN_VSLUMA_LUT_L            (SRSHARP1_OFFSET + SHARP_PKGAIN_VSLUMA_LUT_L          ) // 0x7e
-#define SRSHARP1_PKGAIN_VSLUMA_LUT_H            (SRSHARP1_OFFSET + SHARP_PKGAIN_VSLUMA_LUT_H          ) // 0x7f
-#define SRSHARP1_PKOSHT_VSLUMA_LUT_L            (SRSHARP1_OFFSET + SHARP_PKOSHT_VSLUMA_LUT_L          ) // 0x80
-#define SRSHARP1_PKOSHT_VSLUMA_LUT_H            (SRSHARP1_OFFSET + SHARP_PKOSHT_VSLUMA_LUT_H          ) // 0x81
-#define SRSHARP1_SATPRT_LMT_RGB1                (SRSHARP1_OFFSET + SHARP_SATPRT_LMT_RGB1              ) // 0x82
-#define SRSHARP1_SATPRT_LMT_RGB2                (SRSHARP1_OFFSET + SHARP_SATPRT_LMT_RGB2              ) // 0x83
-#define SRSHARP1_SHARP_GATE_CLK_CTRL_0          (SRSHARP1_OFFSET + SHARP_GATE_CLK_CTRL_0              ) // 0x84
-#define SRSHARP1_SHARP_GATE_CLK_CTRL_1          (SRSHARP1_OFFSET + SHARP_GATE_CLK_CTRL_1              ) // 0x85
-#define SRSHARP1_SHARP_GATE_CLK_CTRL_2          (SRSHARP1_OFFSET + SHARP_GATE_CLK_CTRL_2              ) // 0x86
-#define SRSHARP1_SHARP_GATE_CLK_CTRL_3          (SRSHARP1_OFFSET + SHARP_GATE_CLK_CTRL_3              ) // 0x87
-#define SRSHARP1_SHARP_DPS_CTRL                 (SRSHARP1_OFFSET + SHARP_DPS_CTRL                     ) // 0x88
-#define SRSHARP1_DNLP_00                        (SRSHARP1_OFFSET + DNLP_00                            ) // 0x90  //
-#define SRSHARP1_DNLP_01                        (SRSHARP1_OFFSET + DNLP_01                            ) // 0x91  //
-#define SRSHARP1_DNLP_02                        (SRSHARP1_OFFSET + DNLP_02                            ) // 0x92  //
-#define SRSHARP1_DNLP_03                        (SRSHARP1_OFFSET + DNLP_03                            ) // 0x93  //
-#define SRSHARP1_DNLP_04                        (SRSHARP1_OFFSET + DNLP_04                            ) // 0x94  //
-#define SRSHARP1_DNLP_05                        (SRSHARP1_OFFSET + DNLP_05                            ) // 0x95  //
-#define SRSHARP1_DNLP_06                        (SRSHARP1_OFFSET + DNLP_06                            ) // 0x96  //
-#define SRSHARP1_DNLP_07                        (SRSHARP1_OFFSET + DNLP_07                            ) // 0x97  //
-#define SRSHARP1_DNLP_08                        (SRSHARP1_OFFSET + DNLP_08                            ) // 0x98  //
-#define SRSHARP1_DNLP_09                        (SRSHARP1_OFFSET + DNLP_09                            ) // 0x99  //
-#define SRSHARP1_DNLP_10                        (SRSHARP1_OFFSET + DNLP_10                            ) // 0x9a  //
-#define SRSHARP1_DNLP_11                        (SRSHARP1_OFFSET + DNLP_11                            ) // 0x9b  //
-#define SRSHARP1_DNLP_12                        (SRSHARP1_OFFSET + DNLP_12                            ) // 0x9c  //
-#define SRSHARP1_DNLP_13                        (SRSHARP1_OFFSET + DNLP_13                            ) // 0x9d  //
-#define SRSHARP1_DNLP_14                        (SRSHARP1_OFFSET + DNLP_14                            ) // 0x9e  //
-#define SRSHARP1_DNLP_15                        (SRSHARP1_OFFSET + DNLP_15                            ) // 0x9f  //
-#define SRSHARP1_DNLP_16                        (SRSHARP1_OFFSET + DNLP_16                            ) // 0xa0  //
-#define SRSHARP1_DNLP_17                        (SRSHARP1_OFFSET + DNLP_17                            ) // 0xa1  //
-#define SRSHARP1_DNLP_18                        (SRSHARP1_OFFSET + DNLP_18                            ) // 0xa2  //
-#define SRSHARP1_DNLP_19                        (SRSHARP1_OFFSET + DNLP_19                            ) // 0xa3  //
-#define SRSHARP1_DNLP_20                        (SRSHARP1_OFFSET + DNLP_20                            ) // 0xa4  //
-#define SRSHARP1_DNLP_21                        (SRSHARP1_OFFSET + DNLP_21                            ) // 0xa5  //
-#define SRSHARP1_DNLP_22                        (SRSHARP1_OFFSET + DNLP_22                            ) // 0xa6  //
-#define SRSHARP1_DNLP_23                        (SRSHARP1_OFFSET + DNLP_23                            ) // 0xa7  //
-#define SRSHARP1_DNLP_24                        (SRSHARP1_OFFSET + DNLP_24                            ) // 0xa8  //
-#define SRSHARP1_DNLP_25                        (SRSHARP1_OFFSET + DNLP_25                            ) // 0xa9  //
-#define SRSHARP1_DNLP_26                        (SRSHARP1_OFFSET + DNLP_26                            ) // 0xaa  //
-#define SRSHARP1_DNLP_27                        (SRSHARP1_OFFSET + DNLP_27                            ) // 0xab  //
-#define SRSHARP1_DNLP_28                        (SRSHARP1_OFFSET + DNLP_28                            ) // 0xac  //
-#define SRSHARP1_DNLP_29                        (SRSHARP1_OFFSET + DNLP_29                            ) // 0xad  //
-#define SRSHARP1_DNLP_30                        (SRSHARP1_OFFSET + DNLP_30                            ) // 0xae  //
-#define SRSHARP1_DNLP_31                        (SRSHARP1_OFFSET + DNLP_31                            ) // 0xaf  //
-#define SRSHARP1_SHARP_SYNC_CTRL                (SRSHARP1_OFFSET + SHARP_SYNC_CTRL                    ) // 0xb0  //
-#define SRSHARP1_LC_INPUT_MUX                   (SRSHARP1_OFFSET + LC_INPUT_MUX                       ) // 0xb1  //
-#define SRSHARP1_NR_GAU_YH_COEF02               (SRSHARP1_OFFSET + NR_GAU_YH_COEF02                   ) // 0xb2  //
-#define SRSHARP1_NR_GAU_YH_COEF34               (SRSHARP1_OFFSET + NR_GAU_YH_COEF34                   ) // 0xb3  //
-#define SRSHARP1_NR_GAU_YV_COEF1                (SRSHARP1_OFFSET + NR_GAU_YV_COEF1                    ) // 0xb4  //
-#define SRSHARP1_NR_GAU_CH_COEF02               (SRSHARP1_OFFSET + NR_GAU_CH_COEF02                   ) // 0xb5  //
-#define SRSHARP1_NR_GAU_CH_COEF34               (SRSHARP1_OFFSET + NR_GAU_CH_COEF34                   ) // 0xb6  //
-#define SRSHARP1_NR_GAU_CV_COEF1                (SRSHARP1_OFFSET + NR_GAU_CV_COEF1                    ) // 0xb7  //
-#define SRSHARP1_LC_TOP_CTRL                    (SRSHARP1_OFFSET + LC_TOP_CTRL                        ) // 0xc0  //
-#define SRSHARP1_LC_HV_NUM                      (SRSHARP1_OFFSET + LC_HV_NUM                          ) // 0xc1
-#define SRSHARP1_LC_SAT_LUT_0_1                 (SRSHARP1_OFFSET + LC_SAT_LUT_0_1                     ) // 0xc2
-#define SRSHARP1_LC_SAT_LUT_2_3                 (SRSHARP1_OFFSET + LC_SAT_LUT_2_3                     ) // 0xc3
-#define SRSHARP1_LC_SAT_LUT_4_5                 (SRSHARP1_OFFSET + LC_SAT_LUT_4_5                     ) // 0xc4
-#define SRSHARP1_LC_SAT_LUT_6_7                 (SRSHARP1_OFFSET + LC_SAT_LUT_6_7                     ) // 0xc5
-#define SRSHARP1_LC_SAT_LUT_8_9                 (SRSHARP1_OFFSET + LC_SAT_LUT_8_9                     ) // 0xc6
-#define SRSHARP1_LC_SAT_LUT_10_11               (SRSHARP1_OFFSET + LC_SAT_LUT_10_11                   ) // 0xc7
-#define SRSHARP1_LC_SAT_LUT_12_13               (SRSHARP1_OFFSET + LC_SAT_LUT_12_13                   ) // 0xc8
-#define SRSHARP1_LC_SAT_LUT_14_15               (SRSHARP1_OFFSET + LC_SAT_LUT_14_15                   ) // 0xc9
-#define SRSHARP1_LC_SAT_LUT_16_17               (SRSHARP1_OFFSET + LC_SAT_LUT_16_17                   ) // 0xca
-#define SRSHARP1_LC_SAT_LUT_18_19               (SRSHARP1_OFFSET + LC_SAT_LUT_18_19                   ) // 0xcb
-#define SRSHARP1_LC_SAT_LUT_20_21               (SRSHARP1_OFFSET + LC_SAT_LUT_20_21                   ) // 0xcc
-#define SRSHARP1_LC_SAT_LUT_22_23               (SRSHARP1_OFFSET + LC_SAT_LUT_22_23                   ) // 0xcd
-#define SRSHARP1_LC_SAT_LUT_24_25               (SRSHARP1_OFFSET + LC_SAT_LUT_24_25                   ) // 0xce
-#define SRSHARP1_LC_SAT_LUT_26_27               (SRSHARP1_OFFSET + LC_SAT_LUT_26_27                   ) // 0xcf
-#define SRSHARP1_LC_SAT_LUT_28_29               (SRSHARP1_OFFSET + LC_SAT_LUT_28_29                   ) // 0xd0
-#define SRSHARP1_LC_SAT_LUT_30_31               (SRSHARP1_OFFSET + LC_SAT_LUT_30_31                   ) // 0xd1
-#define SRSHARP1_LC_SAT_LUT_32_33               (SRSHARP1_OFFSET + LC_SAT_LUT_32_33                   ) // 0xd2
-#define SRSHARP1_LC_SAT_LUT_34_35               (SRSHARP1_OFFSET + LC_SAT_LUT_34_35                   ) // 0xd3
-#define SRSHARP1_LC_SAT_LUT_36_37               (SRSHARP1_OFFSET + LC_SAT_LUT_36_37                   ) // 0xd4
-#define SRSHARP1_LC_SAT_LUT_38_39               (SRSHARP1_OFFSET + LC_SAT_LUT_38_39                   ) // 0xd5
-#define SRSHARP1_LC_SAT_LUT_40_41               (SRSHARP1_OFFSET + LC_SAT_LUT_40_41                   ) // 0xd6
-#define SRSHARP1_LC_SAT_LUT_42_43               (SRSHARP1_OFFSET + LC_SAT_LUT_42_43                   ) // 0xd7
-#define SRSHARP1_LC_SAT_LUT_44_45               (SRSHARP1_OFFSET + LC_SAT_LUT_44_45                   ) // 0xd8
-#define SRSHARP1_LC_SAT_LUT_46_47               (SRSHARP1_OFFSET + LC_SAT_LUT_46_47                   ) // 0xd9
-#define SRSHARP1_LC_SAT_LUT_48_49               (SRSHARP1_OFFSET + LC_SAT_LUT_48_49                   ) // 0xda
-#define SRSHARP1_LC_SAT_LUT_50_51               (SRSHARP1_OFFSET + LC_SAT_LUT_50_51                   ) // 0xdb
-#define SRSHARP1_LC_SAT_LUT_52_53               (SRSHARP1_OFFSET + LC_SAT_LUT_52_53                   ) // 0xdc
-#define SRSHARP1_LC_SAT_LUT_54_55               (SRSHARP1_OFFSET + LC_SAT_LUT_54_55                   ) // 0xdd
-#define SRSHARP1_LC_SAT_LUT_56_57               (SRSHARP1_OFFSET + LC_SAT_LUT_56_57                   ) // 0xde
-#define SRSHARP1_LC_SAT_LUT_58_59               (SRSHARP1_OFFSET + LC_SAT_LUT_58_59                   ) // 0xdf
-#define SRSHARP1_LC_SAT_LUT_60_61               (SRSHARP1_OFFSET + LC_SAT_LUT_60_61                   ) // 0xe0
-#define SRSHARP1_LC_SAT_LUT_62                  (SRSHARP1_OFFSET + LC_SAT_LUT_62                      ) // 0xe1
-#define SRSHARP1_LC_CURVE_BLK_HIDX_0_1          (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_0_1              ) // 0xe2
-#define SRSHARP1_LC_CURVE_BLK_HIDX_2_3          (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_2_3              ) // 0xe3
-#define SRSHARP1_LC_CURVE_BLK_HIDX_4_5          (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_4_5              ) // 0xe4
-#define SRSHARP1_LC_CURVE_BLK_HIDX_6_7          (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_6_7              ) // 0xe5
-#define SRSHARP1_LC_CURVE_BLK_HIDX_8_9          (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_8_9              ) // 0xe6
-#define SRSHARP1_LC_CURVE_BLK_HIDX_10_11        (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_10_11            ) // 0xe7
-#define SRSHARP1_LC_CURVE_BLK_HIDX_12           (SRSHARP1_OFFSET + LC_CURVE_BLK_HIDX_12               ) // 0xe8
-#define SRSHARP1_LC_CURVE_BLK_VIDX_0_1          (SRSHARP1_OFFSET + LC_CURVE_BLK_VIDX_0_1              ) // 0xe9
-#define SRSHARP1_LC_CURVE_BLK_VIDX_2_3          (SRSHARP1_OFFSET + LC_CURVE_BLK_VIDX_2_3              ) // 0xea
-#define SRSHARP1_LC_CURVE_BLK_VIDX_4_5          (SRSHARP1_OFFSET + LC_CURVE_BLK_VIDX_4_5              ) // 0xeb
-#define SRSHARP1_LC_CURVE_BLK_VIDX_6_7          (SRSHARP1_OFFSET + LC_CURVE_BLK_VIDX_6_7              ) // 0xec
-#define SRSHARP1_LC_CURVE_BLK_VIDX_8            (SRSHARP1_OFFSET + LC_CURVE_BLK_VIDX_8                ) // 0xed
-#define SRSHARP1_LC_YUV2RGB_MAT_0_1             (SRSHARP1_OFFSET + LC_YUV2RGB_MAT_0_1                 ) // 0xee
-#define SRSHARP1_LC_YUV2RGB_MAT_2_3             (SRSHARP1_OFFSET + LC_YUV2RGB_MAT_2_3                 ) // 0xef
-#define SRSHARP1_LC_YUV2RGB_MAT_4_5             (SRSHARP1_OFFSET + LC_YUV2RGB_MAT_4_5                 ) // 0xf0
-#define SRSHARP1_LC_YUV2RGB_MAT_6_7             (SRSHARP1_OFFSET + LC_YUV2RGB_MAT_6_7                 ) // 0xf1
-#define SRSHARP1_LC_YUV2RGB_MAT_8               (SRSHARP1_OFFSET + LC_YUV2RGB_MAT_8                   ) // 0xf2
-#define SRSHARP1_LC_RGB2YUV_MAT_0_1             (SRSHARP1_OFFSET + LC_RGB2YUV_MAT_0_1                 ) // 0xf3
-#define SRSHARP1_LC_RGB2YUV_MAT_2_3             (SRSHARP1_OFFSET + LC_RGB2YUV_MAT_2_3                 ) // 0xf4
-#define SRSHARP1_LC_RGB2YUV_MAT_4_5             (SRSHARP1_OFFSET + LC_RGB2YUV_MAT_4_5                 ) // 0xf5
-#define SRSHARP1_LC_RGB2YUV_MAT_6_7             (SRSHARP1_OFFSET + LC_RGB2YUV_MAT_6_7                 ) // 0xf6
-#define SRSHARP1_LC_RGB2YUV_MAT_8               (SRSHARP1_OFFSET + LC_RGB2YUV_MAT_8                   ) // 0xf7
-#define SRSHARP1_LC_YUV2RGB_OFST                (SRSHARP1_OFFSET + LC_YUV2RGB_OFST                    ) // 0xf8
-#define SRSHARP1_LC_YUV2RGB_CLIP                (SRSHARP1_OFFSET + LC_YUV2RGB_CLIP                    ) // 0xf9
-#define SRSHARP1_LC_RGB2YUV_OFST                (SRSHARP1_OFFSET + LC_RGB2YUV_OFST                    ) // 0xfa
-#define SRSHARP1_LC_RGB2YUV_CLIP                (SRSHARP1_OFFSET + LC_RGB2YUV_CLIP                    ) // 0xfb
-#define SRSHARP1_LC_MAP_RAM_CTRL                (SRSHARP1_OFFSET + LC_MAP_RAM_CTRL                    ) // 0xfc
-#define SRSHARP1_LC_MAP_RAM_ADDR                (SRSHARP1_OFFSET + LC_MAP_RAM_ADDR                    ) // 0xfd
-#define SRSHARP1_LC_MAP_RAM_DATA                (SRSHARP1_OFFSET + LC_MAP_RAM_DATA                    ) // 0xfe
-
-#define SRSHARP1_FMETER_CTRL                    (SRSHARP1_OFFSET +  SHARP_FMETER_CTRL                 ) // 0x89
-#define SRSHARP1_FMETER_WIN_HOR                 (SRSHARP1_OFFSET +  SHARP_FMETER_WIN_HOR              ) // 0x8a
-#define SRSHARP1_FMETER_WIN_VER                 (SRSHARP1_OFFSET +  SHARP_FMETER_WIN_VER              ) // 0x8b
-#define SRSHARP1_FMETER_CORING                  (SRSHARP1_OFFSET +  SHARP_FMETER_CORING               ) // 0x8c
-#define SRSHARP1_FMETER_RATIO_H                 (SRSHARP1_OFFSET +  SHARP_FMETER_RATIO_H              ) // 0x8d
-#define SRSHARP1_FMETER_RATIO_V                 (SRSHARP1_OFFSET +  SHARP_FMETER_RATIO_V              ) // 0x8e
-#define SRSHARP1_FMETER_RATIO_D                 (SRSHARP1_OFFSET +  SHARP_FMETER_RATIO_D              ) // 0x8f
-#define SRSHARP1_RO_FMETER_HCNT_TYPE0           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE0        ) // 0x46
-#define SRSHARP1_RO_FMETER_HCNT_TYPE1           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE1        ) // 0x47
-#define SRSHARP1_RO_FMETER_HCNT_TYPE2           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE2        ) // 0x48
-#define SRSHARP1_RO_FMETER_HCNT_TYPE3           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_HCNT_TYPE3        ) // 0x49
-#define SRSHARP1_RO_FMETER_VCNT_TYPE0           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE0        ) // 0x4a
-#define SRSHARP1_RO_FMETER_VCNT_TYPE1           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE1        ) // 0x4b
-#define SRSHARP1_RO_FMETER_VCNT_TYPE2           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE2        ) // 0x4c
-#define SRSHARP1_RO_FMETER_VCNT_TYPE3           (SRSHARP1_OFFSET +  SHARP_RO_FMETER_VCNT_TYPE3        ) // 0x4d
-#define SRSHARP1_RO_FMETER_PDCNT_TYPE0          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE0       ) // 0x4e
-#define SRSHARP1_RO_FMETER_PDCNT_TYPE1          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE1       ) // 0x4f
-#define SRSHARP1_RO_FMETER_PDCNT_TYPE2          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE2       ) // 0x50
-#define SRSHARP1_RO_FMETER_PDCNT_TYPE3          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_PDCNT_TYPE3       ) // 0x51
-#define SRSHARP1_RO_FMETER_NDCNT_TYPE0          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE0       ) // 0x52
-#define SRSHARP1_RO_FMETER_NDCNT_TYPE1          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE1       ) // 0x53
-#define SRSHARP1_RO_FMETER_NDCNT_TYPE2          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE2       ) // 0x54
-#define SRSHARP1_RO_FMETER_NDCNT_TYPE3          (SRSHARP1_OFFSET +  SHARP_RO_FMETER_NDCNT_TYPE3       ) // 0x55
-
-
-
+//Bit 23: 0        reg_pps_dummy_data        // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DEBUG_MODE                       (volatile uint32_t *)0xff014028
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_vsr_debug_mode        // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DITHER_MODE                      (volatile uint32_t *)0xff01402c
+//Bit 31           reg_vsr_dither_frmcnt_ini // unsigned ,    RW, default = 0  write 1 to clear frmcnt to 0, read is always 0
+//Bit 30: 4        reserved
+//Bit  3            reserved
+//Bit  2           reg_vsr_dither_en         // unsigned ,    RW, default = 0
+//Bit  1: 0        reg_vsr_dither_mode       // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DITHER_LUT_0                     (volatile uint32_t *)0xff014030
+//Bit 31:30        reg_vsr_dither_lut_15     // unsigned ,    RW, default = 1
+//Bit 29:28        reg_vsr_dither_lut_14     // unsigned ,    RW, default = 2
+//Bit 27:26        reg_vsr_dither_lut_13     // unsigned ,    RW, default = 1
+//Bit 25:24        reg_vsr_dither_lut_12     // unsigned ,    RW, default = 2
+//Bit 23:22        reg_vsr_dither_lut_11     // unsigned ,    RW, default = 1
+//Bit 21:20        reg_vsr_dither_lut_10     // unsigned ,    RW, default = 2
+//Bit 19:18        reg_vsr_dither_lut_9      // unsigned ,    RW, default = 1
+//Bit 17:16        reg_vsr_dither_lut_8      // unsigned ,    RW, default = 2
+//Bit 15:14        reg_vsr_dither_lut_7      // unsigned ,    RW, default = 3
+//Bit 13:12        reg_vsr_dither_lut_6      // unsigned ,    RW, default = 0
+//Bit 11:10        reg_vsr_dither_lut_5      // unsigned ,    RW, default = 3
+//Bit  9: 8        reg_vsr_dither_lut_4      // unsigned ,    RW, default = 0
+//Bit  7: 6        reg_vsr_dither_lut_3      // unsigned ,    RW, default = 3
+//Bit  5: 4        reg_vsr_dither_lut_2      // unsigned ,    RW, default = 0
+//Bit  3: 2        reg_vsr_dither_lut_1      // unsigned ,    RW, default = 3
+//Bit  1: 0        reg_vsr_dither_lut_0      // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DITHER_LUT_1                     (volatile uint32_t *)0xff014034
+//Bit 31:30        reg_vsr_dither_lut_31     // unsigned ,    RW, default = 1
+//Bit 29:28        reg_vsr_dither_lut_30     // unsigned ,    RW, default = 2
+//Bit 27:26        reg_vsr_dither_lut_29     // unsigned ,    RW, default = 1
+//Bit 25:24        reg_vsr_dither_lut_28     // unsigned ,    RW, default = 2
+//Bit 23:22        reg_vsr_dither_lut_27     // unsigned ,    RW, default = 1
+//Bit 21:20        reg_vsr_dither_lut_26     // unsigned ,    RW, default = 2
+//Bit 19:18        reg_vsr_dither_lut_25     // unsigned ,    RW, default = 1
+//Bit 17:16        reg_vsr_dither_lut_24     // unsigned ,    RW, default = 2
+//Bit 15:14        reg_vsr_dither_lut_23     // unsigned ,    RW, default = 3
+//Bit 13:12        reg_vsr_dither_lut_22     // unsigned ,    RW, default = 0
+//Bit 11:10        reg_vsr_dither_lut_21     // unsigned ,    RW, default = 3
+//Bit  9: 8        reg_vsr_dither_lut_20     // unsigned ,    RW, default = 0
+//Bit  7: 6        reg_vsr_dither_lut_19     // unsigned ,    RW, default = 3
+//Bit  5: 4        reg_vsr_dither_lut_18     // unsigned ,    RW, default = 0
+//Bit  3: 2        reg_vsr_dither_lut_17     // unsigned ,    RW, default = 3
+//Bit  1: 0        reg_vsr_dither_lut_16     // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DITHER_LUT_2                     (volatile uint32_t *)0xff014038
+//Bit 31:30        reg_vsr_dither_lut_47     // unsigned ,    RW, default = 1
+//Bit 29:28        reg_vsr_dither_lut_46     // unsigned ,    RW, default = 2
+//Bit 27:26        reg_vsr_dither_lut_45     // unsigned ,    RW, default = 1
+//Bit 25:24        reg_vsr_dither_lut_44     // unsigned ,    RW, default = 2
+//Bit 23:22        reg_vsr_dither_lut_43     // unsigned ,    RW, default = 1
+//Bit 21:20        reg_vsr_dither_lut_42     // unsigned ,    RW, default = 2
+//Bit 19:18        reg_vsr_dither_lut_41     // unsigned ,    RW, default = 1
+//Bit 17:16        reg_vsr_dither_lut_40     // unsigned ,    RW, default = 2
+//Bit 15:14        reg_vsr_dither_lut_39     // unsigned ,    RW, default = 3
+//Bit 13:12        reg_vsr_dither_lut_38     // unsigned ,    RW, default = 0
+//Bit 11:10        reg_vsr_dither_lut_37     // unsigned ,    RW, default = 3
+//Bit  9: 8        reg_vsr_dither_lut_36     // unsigned ,    RW, default = 0
+//Bit  7: 6        reg_vsr_dither_lut_35     // unsigned ,    RW, default = 3
+//Bit  5: 4        reg_vsr_dither_lut_34     // unsigned ,    RW, default = 0
+//Bit  3: 2        reg_vsr_dither_lut_33     // unsigned ,    RW, default = 3
+//Bit  1: 0        reg_vsr_dither_lut_32     // unsigned ,    RW, default = 0
+#define P_VPP_VSR_DITHER_LUT_3                     (volatile uint32_t *)0xff01403c
+//Bit 31:30        reg_vsr_dither_lut_63     // unsigned ,    RW, default = 1
+//Bit 29:28        reg_vsr_dither_lut_62     // unsigned ,    RW, default = 2
+//Bit 27:26        reg_vsr_dither_lut_61     // unsigned ,    RW, default = 1
+//Bit 25:24        reg_vsr_dither_lut_60     // unsigned ,    RW, default = 2
+//Bit 23:22        reg_vsr_dither_lut_59     // unsigned ,    RW, default = 1
+//Bit 21:20        reg_vsr_dither_lut_58     // unsigned ,    RW, default = 2
+//Bit 19:18        reg_vsr_dither_lut_57     // unsigned ,    RW, default = 1
+//Bit 17:16        reg_vsr_dither_lut_56     // unsigned ,    RW, default = 2
+//Bit 15:14        reg_vsr_dither_lut_55     // unsigned ,    RW, default = 3
+//Bit 13:12        reg_vsr_dither_lut_54     // unsigned ,    RW, default = 0
+//Bit 11:10        reg_vsr_dither_lut_53     // unsigned ,    RW, default = 3
+//Bit  9: 8        reg_vsr_dither_lut_52     // unsigned ,    RW, default = 0
+//Bit  7: 6        reg_vsr_dither_lut_51     // unsigned ,    RW, default = 3
+//Bit  5: 4        reg_vsr_dither_lut_50     // unsigned ,    RW, default = 0
+//Bit  3: 2        reg_vsr_dither_lut_49     // unsigned ,    RW, default = 3
+//Bit  1: 0        reg_vsr_dither_lut_48     // unsigned ,    RW, default = 0
 // synopsys translate_off
 // synopsys translate_on
 //
-// Closing file:  srsharp_regs.h
+// Closing file:  vsr_top_regs.h
+//
+//
+// Reading file:  vid_pi_regs.h
+//
+// synopsys translate_off
+// synopsys translate_on
+#define P_VPP_PI_MISC                              (volatile uint32_t *)0xff014100
+//Bit 31:24        reg_sync_ctrl               // unsigned ,    RW, default = 0
+//Bit 23:16        reg_inp_hblank1             // unsigned ,    RW, default = 0
+//Bit 15:8         reg_inp_hblank0             // unsigned ,    RW, default = 0
+//Bit 7:2          reserved
+//Bit 1            reg_hf_pps_bypss_mode       // unsigned ,    RW, default = 1
+//Bit 0            reg_inp_hold_en             // unsigned ,    RW, default = 1
+#define P_VPP_PI_GCLK_CTRL                         (volatile uint32_t *)0xff014104
+//Bit 31:0         reg_gclk_ctrl              // unsigned ,    RW, default = 0
+#define P_VPP_PI_EN_MODE                           (volatile uint32_t *)0xff014120
+//Bit 31: 9        reserved
+//Bit  8           reg_input_422             // unsigned ,    RW, default = 0  sharpen input is 422 or not
+//Bit  7: 5        reserved
+//Bit  4           reg_pi_en                 // unsigned ,    RW, default = 0
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_pi_out_scl_mode       // unsigned ,    RW, default = 0
+#define P_VPP_PI_DICT_NUM                          (volatile uint32_t *)0xff014124
+//Bit 31: 7        reserved
+//Bit  6: 0        reg_pi_dict_num           // unsigned ,    RW, default = 32
+#define P_VPP_PI_HF_COEF                           (volatile uint32_t *)0xff014128
+//Bit 31:21        reserved
+//Bit 20:12        reg_pi_hpf_coef_2         // signed ,    RW, default = -3
+//Bit 11: 9        reserved
+//Bit  8: 0        reg_pi_hpf_coef_1         // signed ,    RW, default = -21
+#define P_VPP_PI_HF_COEF_F                         (volatile uint32_t *)0xff01412c
+//Bit 31: 9        reserved
+//Bit  8: 0        reg_pi_hpf_coef_0         // signed ,    RW, default = 96
+#define P_VPP_PI_HPF_NORM_CORING                   (volatile uint32_t *)0xff014130
+//Bit 31:10        reserved
+//Bit  9: 8        reg_pi_hpf_norm_rs        // unsigned ,    RW, default = 2
+//Bit  7: 0        reg_pi_hp_coring          // unsigned ,    RW, default = 0
+#define P_VPP_PI_WIN_OFST                          (volatile uint32_t *)0xff014134
+//Bit 31:12        reserved
+//Bit 11: 8        reg_pi_out_win            // unsigned ,    RW, default = 4
+//Bit  7: 4        reg_pi_out_ofst           // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_pi_in_win             // unsigned ,    RW, default = 3
+#define P_VPP_PI_HF_SCL_COEF_0                     (volatile uint32_t *)0xff014138
+//Bit 31:24        reg_pi_pps_coef_tap2_3_0  // unsigned ,    RW, default = 128
+//Bit 23:16        reg_pi_pps_coef_tap2_2_0  // unsigned ,    RW, default = 128
+//Bit 15: 8        reg_pi_pps_coef_tap2_1_0  // unsigned ,    RW, default = 128
+//Bit  7: 0        reg_pi_pps_coef_tap2_0_0  // unsigned ,    RW, default = 128
+#define P_VPP_PI_HF_SCL_COEF_1                     (volatile uint32_t *)0xff01413c
+//Bit 31:24        reg_pi_pps_coef_tap2_7_0  // unsigned ,    RW, default = 0
+//Bit 23:16        reg_pi_pps_coef_tap2_6_0  // unsigned ,    RW, default = 0
+//Bit 15: 8        reg_pi_pps_coef_tap2_5_0  // unsigned ,    RW, default = 0
+//Bit  7: 0        reg_pi_pps_coef_tap2_4_0  // unsigned ,    RW, default = 0
+#define P_VPP_PI_HF_SCL_COEF_2                     (volatile uint32_t *)0xff014140
+//Bit 31:24        reg_pi_pps_coef_tap2_11_0 // unsigned ,    RW, default = 127
+//Bit 23:16        reg_pi_pps_coef_tap2_10_0 // unsigned ,    RW, default = 127
+//Bit 15: 8        reg_pi_pps_coef_tap2_9_0  // unsigned ,    RW, default = 127
+//Bit  7: 0        reg_pi_pps_coef_tap2_8_0  // unsigned ,    RW, default = 127
+#define P_VPP_PI_HF_SCL_COEF_3                     (volatile uint32_t *)0xff014144
+//Bit 31:24        reg_pi_pps_coef_tap2_15_0 // unsigned ,    RW, default = 1
+//Bit 23:16        reg_pi_pps_coef_tap2_14_0 // unsigned ,    RW, default = 1
+//Bit 15: 8        reg_pi_pps_coef_tap2_13_0 // unsigned ,    RW, default = 1
+//Bit  7: 0        reg_pi_pps_coef_tap2_12_0 // unsigned ,    RW, default = 1
+#define P_VPP_PI_HF_SCL_COEF_4                     (volatile uint32_t *)0xff014148
+//Bit 31:24        reg_pi_pps_coef_tap2_19_0 // unsigned ,    RW, default = 126
+//Bit 23:16        reg_pi_pps_coef_tap2_18_0 // unsigned ,    RW, default = 126
+//Bit 15: 8        reg_pi_pps_coef_tap2_17_0 // unsigned ,    RW, default = 126
+//Bit  7: 0        reg_pi_pps_coef_tap2_16_0 // unsigned ,    RW, default = 126
+#define P_VPP_PI_HF_SCL_COEF_5                     (volatile uint32_t *)0xff01414c
+//Bit 31:24        reg_pi_pps_coef_tap2_23_0 // unsigned ,    RW, default = 2
+//Bit 23:16        reg_pi_pps_coef_tap2_22_0 // unsigned ,    RW, default = 2
+//Bit 15: 8        reg_pi_pps_coef_tap2_21_0 // unsigned ,    RW, default = 2
+//Bit  7: 0        reg_pi_pps_coef_tap2_20_0 // unsigned ,    RW, default = 2
+#define P_VPP_PI_HF_SCL_COEF_6                     (volatile uint32_t *)0xff014150
+//Bit 31:24        reg_pi_pps_coef_tap2_27_0 // unsigned ,    RW, default = 124
+//Bit 23:16        reg_pi_pps_coef_tap2_26_0 // unsigned ,    RW, default = 124
+//Bit 15: 8        reg_pi_pps_coef_tap2_25_0 // unsigned ,    RW, default = 124
+//Bit  7: 0        reg_pi_pps_coef_tap2_24_0 // unsigned ,    RW, default = 124
+#define P_VPP_PI_HF_SCL_COEF_7                     (volatile uint32_t *)0xff014154
+//Bit 31:24        reg_pi_pps_coef_tap2_31_0 // unsigned ,    RW, default = 4
+//Bit 23:16        reg_pi_pps_coef_tap2_30_0 // unsigned ,    RW, default = 4
+//Bit 15: 8        reg_pi_pps_coef_tap2_29_0 // unsigned ,    RW, default = 4
+//Bit  7: 0        reg_pi_pps_coef_tap2_28_0 // unsigned ,    RW, default = 4
+#define P_VPP_PI_HF_SCL_COEF_F                     (volatile uint32_t *)0xff014158
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_pi_pps_coef_tap2_32_0 // unsigned ,    RW, default = 99
+#define P_VPP_PI_HF_HSC_PART                       (volatile uint32_t *)0xff01415c
+//Bit 31:28        reserved
+//Bit 27: 4        reg_pi_hf_hsc_fraction_part // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_pi_hf_hsc_integer_part // unsigned ,    RW, default = 0
+#define P_VPP_PI_HF_HSC_INI                        (volatile uint32_t *)0xff014160
+//Bit 31:29        reserved
+//Bit 28:24        reg_pi_hf_hsc_ini_integer // signed ,    RW, default = -1
+//Bit 23:17        reserved
+//Bit 16: 0        reg_pi_hf_hsc_ini_phase   // unsigned ,    RW, default = 0
+#define P_VPP_PI_HF_VSC_PART                       (volatile uint32_t *)0xff014164
+//Bit 31:28        reserved
+//Bit 27: 4        reg_pi_hf_vsc_fraction_part // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_pi_hf_vsc_integer_part // unsigned ,    RW, default = 0
+#define P_VPP_PI_HF_VSC_INI                        (volatile uint32_t *)0xff014168
+//Bit 31:29        reserved
+//Bit 28:24        reg_pi_hf_vsc_ini_integer // signed ,    RW, default = -1
+//Bit 23:17        reserved
+//Bit 16: 0        reg_pi_hf_vsc_ini_phase   // unsigned ,    RW, default = 0
+#define P_VPP_PI_IN_HSC_PART                       (volatile uint32_t *)0xff01416c
+//Bit 31:28        reserved
+//Bit 27: 4        reg_pi_hsc_fraction_part  // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_pi_hsc_integer_part   // unsigned ,    RW, default = 0
+#define P_VPP_PI_IN_HSC_INI                        (volatile uint32_t *)0xff014170
+//Bit 31:21        reserved
+//Bit 20:16        reg_pi_hsc_ini_integer    // signed ,    RW, default = -1
+//Bit 15: 0        reg_pi_hsc_ini_phase      // unsigned ,    RW, default = 0
+#define P_VPP_PI_IN_VSC_PART                       (volatile uint32_t *)0xff014174
+//Bit 31:28        reserved
+//Bit 27: 4        reg_pi_vsc_fraction_part  // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_pi_vsc_integer_part   // unsigned ,    RW, default = 0
+#define P_VPP_PI_IN_VSC_INI                        (volatile uint32_t *)0xff014178
+//Bit 31:21        reserved
+//Bit 20:16        reg_pi_vsc_ini_integer    // signed ,    RW, default = -1
+//Bit 15: 0        reg_pi_vsc_ini_phase      // unsigned ,    RW, default = 0
+#define P_VPP_PI_PPS_NOR_RS_BITS                   (volatile uint32_t *)0xff01417c
+//Bit 31: 4        reserved
+//Bit  3: 0        reg_pi_pps_nor_rs_bits    // unsigned ,    RW, default = 7  default = 7, normalize right shift bits of hsc
+#define P_VPP_PI_MM_WIN_INTERP_EN                  (volatile uint32_t *)0xff014180
+//Bit 31: 9        reserved
+//Bit  8           reg_pi_mm_win_x           // unsigned ,    RW, default = 0  fix 0
+//Bit  7: 5        reserved
+//Bit  4           reg_pi_mm_win_y           // unsigned ,    RW, default = 0  fix 0
+//Bit  3: 1        reserved
+//Bit  0           reg_pi_mm_interp_en       // unsigned ,    RW, default = 1
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_0_0          (volatile uint32_t *)0xff014184
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_0_8 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_0_7 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_0_6 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_0_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_0_0          (volatile uint32_t *)0xff014188
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_0_4 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_0_3 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_0_2 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_0_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_0_0          (volatile uint32_t *)0xff01418c
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_0_0 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_1_0          (volatile uint32_t *)0xff014190
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_1_8 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_1_7 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_1_6 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_1_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_1_0          (volatile uint32_t *)0xff014194
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_1_4 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_1_3 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_1_2 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_1_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_1_0          (volatile uint32_t *)0xff014198
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_1_0 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_2_0          (volatile uint32_t *)0xff01419c
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_2_8 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_2_7 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_2_6 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_2_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_2_0          (volatile uint32_t *)0xff0141a0
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_2_4 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_2_3 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_2_2 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_2_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_2_0          (volatile uint32_t *)0xff0141a4
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_2_0 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_3_0          (volatile uint32_t *)0xff0141a8
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_3_8 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_3_7 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_3_6 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_3_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_3_0          (volatile uint32_t *)0xff0141ac
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_3_4 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_3_3 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_3_2 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_3_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_3_0          (volatile uint32_t *)0xff0141b0
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_3_0 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_4_0          (volatile uint32_t *)0xff0141b4
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_4_8 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_4_7 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_4_6 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_4_5 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_4_0          (volatile uint32_t *)0xff0141b8
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_4_4 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_4_3 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_4_2 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_4_1 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_4_0          (volatile uint32_t *)0xff0141bc
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_4_0 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_5_0          (volatile uint32_t *)0xff0141c0
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_5_8 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_5_7 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_5_6 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_5_5 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_5_0          (volatile uint32_t *)0xff0141c4
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_5_4 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_5_3 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_5_2 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_5_1 // unsigned ,    RW, default = 48
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_5_0          (volatile uint32_t *)0xff0141c8
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_5_0 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_6_0          (volatile uint32_t *)0xff0141cc
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_6_8 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_6_7 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_6_6 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_6_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_6_0          (volatile uint32_t *)0xff0141d0
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_6_4 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_6_3 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_6_2 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_6_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_6_0          (volatile uint32_t *)0xff0141d4
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_6_0 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_7_0          (volatile uint32_t *)0xff0141d8
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_7_8 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_7_7 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_7_6 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_7_5 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_7_0          (volatile uint32_t *)0xff0141dc
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_7_4 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_7_3 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_7_2 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_7_1 // unsigned ,    RW, default = 56
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_7_0          (volatile uint32_t *)0xff0141e0
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_7_0 // unsigned ,    RW, default = 63
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_0_8_0          (volatile uint32_t *)0xff0141e4
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_8_8 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_8_7 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_8_6 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_8_5 // unsigned ,    RW, default = 63
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_1_8_0          (volatile uint32_t *)0xff0141e8
+//Bit 31:30        reserved
+//Bit 29:24        reg_maxsad_gamma_lut2d_8_4 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_maxsad_gamma_lut2d_8_3 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_maxsad_gamma_lut2d_8_2 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_8_1 // unsigned ,    RW, default = 63
+#define P_VPP_PI_MAXSAD_GAMMA_LUT2D_2_8_0          (volatile uint32_t *)0xff0141ec
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_maxsad_gamma_lut2d_8_0 // unsigned ,    RW, default = 63
+#define P_VPP_PI_CLP_BLD_ALP_LUT_0                 (volatile uint32_t *)0xff0141f0
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_clp_bld_alp_lut_3  // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_clp_bld_alp_lut_2  // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_clp_bld_alp_lut_1  // unsigned ,    RW, default = 8
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_clp_bld_alp_lut_0  // unsigned ,    RW, default = 0
+#define P_VPP_PI_CLP_BLD_ALP_LUT_1                 (volatile uint32_t *)0xff0141f4
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_clp_bld_alp_lut_7  // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_clp_bld_alp_lut_6  // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_clp_bld_alp_lut_5  // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_clp_bld_alp_lut_4  // unsigned ,    RW, default = 63
+#define P_VPP_PI_CLP_BLD_ALP_LUT_F                 (volatile uint32_t *)0xff0141f8
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pi_clp_bld_alp_lut_8  // unsigned ,    RW, default = 63
+#define P_VPP_PI_LUMA_GAIN_0                       (volatile uint32_t *)0xff0141fc
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_luma_gain_3        // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_luma_gain_2        // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_luma_gain_1        // unsigned ,    RW, default = 32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_luma_gain_0        // unsigned ,    RW, default = 0
+#define P_VPP_PI_LUMA_GAIN_1                       (volatile uint32_t *)0xff014200
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_luma_gain_7        // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_luma_gain_6        // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_luma_gain_5        // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_luma_gain_4        // unsigned ,    RW, default = 63
+#define P_VPP_PI_LUMA_GAIN_F                       (volatile uint32_t *)0xff014204
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pi_luma_gain_8        // unsigned ,    RW, default = 0
+#define P_VPP_PI_HF_STR_GAIN_0                     (volatile uint32_t *)0xff014208
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_hf_str_gain_3      // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_hf_str_gain_2      // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_hf_str_gain_1      // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_hf_str_gain_0      // unsigned ,    RW, default = 63
+#define P_VPP_PI_HF_STR_GAIN_1                     (volatile uint32_t *)0xff01420c
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_hf_str_gain_7      // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_hf_str_gain_6      // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_hf_str_gain_5      // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_hf_str_gain_4      // unsigned ,    RW, default = 63
+#define P_VPP_PI_HF_STR_GAIN_F                     (volatile uint32_t *)0xff014210
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pi_hf_str_gain_8      // unsigned ,    RW, default = 63
+#define P_VPP_PI_OS_ADP_LUT_0                      (volatile uint32_t *)0xff014214
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_os_adp_lut_3       // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_os_adp_lut_2       // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_os_adp_lut_1       // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_os_adp_lut_0       // unsigned ,    RW, default = 0
+#define P_VPP_PI_OS_ADP_LUT_1                      (volatile uint32_t *)0xff014218
+//Bit 31:30        reserved
+//Bit 29:24        reg_pi_os_adp_lut_7       // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_pi_os_adp_lut_6       // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pi_os_adp_lut_5       // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_os_adp_lut_4       // unsigned ,    RW, default = 0
+#define P_VPP_PI_OS_ADP_LUT_F                      (volatile uint32_t *)0xff01421c
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pi_os_adp_lut_8       // unsigned ,    RW, default = 0
+#define P_VPP_PI_GLB_GAIN                          (volatile uint32_t *)0xff014220
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pi_glb_gain           // unsigned ,    RW, default = 63
+#define P_VPP_PI_OS_UP_DN_GAIN                     (volatile uint32_t *)0xff014224
+//Bit 31:14        reserved
+//Bit 13: 8        reg_pi_os_up_gain         // signed ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pi_os_dn_gain         // signed ,    RW, default = 0
+#define P_VPP_PI_DEBUG_DEMO_WND_EN                 (volatile uint32_t *)0xff014228
+//Bit 31: 8        reserved
+//Bit  7: 5        reserved
+//Bit  4           reg_pi_debug_demo_en      // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_pi_debug_demo_inverse // unsigned ,    RW, default = 0
+#define P_VPP_PI_DEBUG_DEMO_WND_COEF_1             (volatile uint32_t *)0xff01422c
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_3      // unsigned ,    RW, default = 1620  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_2      // unsigned ,    RW, default = 2880  ontrol debug window col size
+#define P_VPP_PI_DEBUG_DEMO_WND_COEF_0             (volatile uint32_t *)0xff014230
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_1      // unsigned ,    RW, default = 540  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_0      // unsigned ,    RW, default = 960  control debug window col size
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  vid_pi_regs.h
 //
 // -----------------------------------------------
 // REG_BASE:  VPPE_VCBUS_BASE = 0x51
 // -----------------------------------------------
-// 8'h50/51/52/53  have used  for srsharp_regs
 //
-// Reading file:  srsharp_regs2.h
-//
-// synopsys translate_off
-// synopsys translate_on
-//SRSHARP0        8'h00  - 8'hff
-//SRSHARP1        8'h100 - 8'1ff
-#define  SRSHARP0_OFFSET   (0x000<<2)
-#define  SRSHARP1_OFFSET   (0x200<<2)
-
-//
-// Reading file:  sharp_regs2.h
+// Reading file:  safa_pps_regs.h
 //
 // synopsys translate_off
 // synopsys translate_on
-#define P_SR7_DRTLPF_EN                            (volatile uint32_t *)0xff014400
-//Bit 31:11,        reserved
-//Bit 10,            reg_sr7_drtlpf_beta_en2                     : enable of direction ambiguity protection for drt_lpf, beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 0
-//Bit  9,            reg_sr7_drtlpf_beta_en1                     : enable of direction ambiguity protection for drt_lpf, beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 0
-//Bit  8,            reg_sr7_drtlpf_beta_en0                     : enable of direction ambiguity protection for drt_lpf, beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 0
-//Bit  7: 6,        reserved
-//Bit  5,            reg_sr7_drtlpf_edge_en2                     : enable of direction lpf based on edge strength. unsigned  , default = 0
-//Bit  4,            reg_sr7_drtlpf_edge_en1                     : enable of direction lpf based on edge strength. unsigned  , default = 0
-//Bit  3,            reg_sr7_drtlpf_edge_en0                     : enable of direction lpf based on edge strength. unsigned  , default = 0
-//Bit  2,            reg_sr7_drtlpf_sdfd_en2                     : sdfd gamma (HF burst compare to real edge protection) enable. 0: not enable, 1:enable protection. unsigned  , default = 1
-//Bit  1,            reg_sr7_drtlpf_sdfd_en1                     : sdfd gamma (HF burst compare to real edge protection) enable. 0: not enable, 1:enable protection. unsigned  , default = 1
-//Bit  0,            reg_sr7_drtlpf_sdfd_en0                     : sdfd gamma (HF burst compare to real edge protection) enable. 0: not enable, 1:enable protection. unsigned  , default = 1
-#define P_SR7_DRTLPF_BETA                          (volatile uint32_t *)0xff014404
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_drtlpf_beta3                        : beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo lpf. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_drtlpf_beta2                        : beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo lpf. unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_drtlpf_beta1                        : beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo lpf. unsigned  , default = 8
-//Bit  3: 0,        reg_sr7_drtlpf_beta0                        : beta for drt filter coef base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo lpf. unsigned  , default = 15
-#define P_SR7_PKBLD_BETA                           (volatile uint32_t *)0xff014408
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_pkdrtbld_beta3                      : beta for drt and cir blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use cir wo drt. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_pkdrtbld_beta2                      : beta for drt and cir blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use cir wo drt. unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_pkdrtbld_beta1                      : beta for drt and cir blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use cir wo drt. unsigned  , default = 8
-//Bit  3: 0,        reg_sr7_pkdrtbld_beta0                      : beta for drt and cir blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use cir wo drt. unsigned  , default = 15
-#define P_SR7_XLTIBLD_BETA                         (volatile uint32_t *)0xff01440c
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_xlti_dcbld_beta3                    : beta for denoise and org dc blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_xlti_dcbld_beta2                    : beta for denoise and org dc blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_xlti_dcbld_beta1                    : beta for denoise and org dc blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 8
-//Bit  3: 0,        reg_sr7_xlti_dcbld_beta0                    : beta for denoise and org dc blend base on the x=cal_drt_dif8(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 15
-#define P_SR7_DRTLPF_EDGE0                         (volatile uint32_t *)0xff014410
-//Bit 31:28,        reg_sr7_drtlpf_edge7                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drtlpf_edge6                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drtlpf_edge5                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drtlpf_edge4                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drtlpf_edge3                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drtlpf_edge2                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drtlpf_edge1                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drtlpf_edge0                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-#define P_SR7_DRTLPF_EDGE1                         (volatile uint32_t *)0xff014414
-//Bit 31:28,        reg_sr7_drtlpf_edge15                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drtlpf_edge14                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drtlpf_edge13                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drtlpf_edge12                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drtlpf_edge11                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drtlpf_edge10                       : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drtlpf_edge9                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drtlpf_edge8                        : edge lambda for drt lpf base on max_sad [0:16:128~255];. unsigned  , default = 15
-#define P_SR7_DRTLPF_SDCOR0                        (volatile uint32_t *)0xff014418
-//Bit 31:28,        reg_sr7_drtlpf_sdcor7                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drtlpf_sdcor6                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drtlpf_sdcor5                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drtlpf_sdcor4                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drtlpf_sdcor3                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drtlpf_sdcor2                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drtlpf_sdcor1                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drtlpf_sdcor0                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_DRTLPF_SDCOR1                        (volatile uint32_t *)0xff01441c
-//Bit 31:28,        reg_sr7_drtlpf_sdcor15                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drtlpf_sdcor14                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drtlpf_sdcor13                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drtlpf_sdcor12                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drtlpf_sdcor11                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drtlpf_sdcor10                      : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drtlpf_sdcor9                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drtlpf_sdcor8                       : gamma for drt lpf base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_CTIGAIN_SDCOR0                       (volatile uint32_t *)0xff014420
-//Bit 31:28,        reg_sr7_ctigain_sdcor7                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_ctigain_sdcor6                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_ctigain_sdcor5                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_ctigain_sdcor4                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_ctigain_sdcor3                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_ctigain_sdcor2                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_ctigain_sdcor1                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_ctigain_sdcor0                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_CTIGAIN_SDCOR1                       (volatile uint32_t *)0xff014424
-//Bit 31:28,        reg_sr7_ctigain_sdcor15                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_ctigain_sdcor14                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_ctigain_sdcor13                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_ctigain_sdcor12                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_ctigain_sdcor11                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_ctigain_sdcor10                     : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_ctigain_sdcor9                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_ctigain_sdcor8                      : adaptive gamma for cti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_LTIGAIN_SDCOR0                       (volatile uint32_t *)0xff014428
-//Bit 31:28,        reg_sr7_ltigain_sdcor7                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_ltigain_sdcor6                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_ltigain_sdcor5                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_ltigain_sdcor4                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_ltigain_sdcor3                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_ltigain_sdcor2                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_ltigain_sdcor1                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_ltigain_sdcor0                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_LTIGAIN_SDCOR1                       (volatile uint32_t *)0xff01442c
-//Bit 31:28,        reg_sr7_ltigain_sdcor15                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_ltigain_sdcor14                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_ltigain_sdcor13                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_ltigain_sdcor12                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_ltigain_sdcor11                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_ltigain_sdcor10                     : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_ltigain_sdcor9                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_ltigain_sdcor8                      : adaptive gamma for lti boost gain base on SD'[0:16:128~255];. unsigned  , default = 15
-#define P_SR7_HLTIBPF_TAP0                         (volatile uint32_t *)0xff014430
-//Bit 31:24,        reg_sr7_hlti_bpf_tap153                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit 23:16,        reg_sr7_hlti_bpf_tap152                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -34
-//Bit 15: 8,        reg_sr7_hlti_bpf_tap151                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -1
-//Bit  7: 0,        reg_sr7_hlti_bpf_tap150                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 120
-#define P_SR7_HLTIBPF_TAP1                         (volatile uint32_t *)0xff014434
-//Bit 31:24,        reg_sr7_hlti_bpf_tap157                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 2
-//Bit 23:16,        reg_sr7_hlti_bpf_tap156                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -7
-//Bit 15: 8,        reg_sr7_hlti_bpf_tap155                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 1
-//Bit  7: 0,        reg_sr7_hlti_bpf_tap154                     : tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -21
-#define P_SR7_HCTIBPF_TAP0                         (volatile uint32_t *)0xff014438
-//Bit 31:24,        reg_sr7_hcti_bpf_tap153                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit 23:16,        reg_sr7_hcti_bpf_tap152                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -34
-//Bit 15: 8,        reg_sr7_hcti_bpf_tap151                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -1
-//Bit  7: 0,        reg_sr7_hcti_bpf_tap150                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 120
-#define P_SR7_HCTIBPF_TAP1                         (volatile uint32_t *)0xff01443c
-//Bit 31:24,        reg_sr7_hcti_bpf_tap157                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 2
-//Bit 23:16,        reg_sr7_hcti_bpf_tap156                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -7
-//Bit 15: 8,        reg_sr7_hcti_bpf_tap155                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 1
-//Bit  7: 0,        reg_sr7_hcti_bpf_tap154                     : tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -21
-#define P_SR7_PKLONGBPF_HTAP0                      (volatile uint32_t *)0xff014440
-//Bit 31:24,        reg_sr7_pk_long_bpf_hztap153                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -24
-//Bit 23:16,        reg_sr7_pk_long_bpf_hztap152                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -19
-//Bit 15: 8,        reg_sr7_pk_long_bpf_hztap151                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 31
-//Bit  7: 0,        reg_sr7_pk_long_bpf_hztap150                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 66
-#define P_SR7_PKLONGBPF_HTAP1                      (volatile uint32_t *)0xff014444
-//Bit 31:24,        reg_sr7_pk_long_bpf_hztap157                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -6
-//Bit 23:16,        reg_sr7_pk_long_bpf_hztap156                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -10
-//Bit 15: 8,        reg_sr7_pk_long_bpf_hztap155                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -1
-//Bit  7: 0,        reg_sr7_pk_long_bpf_hztap154                : tap15 BPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -4
-#define P_SR7_PKLONGHPF_HTAP0                      (volatile uint32_t *)0xff014448
-//Bit 31:24,        reg_sr7_pk_long_hpf_hztap153                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 27
-//Bit 23:16,        reg_sr7_pk_long_hpf_hztap152                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -15
-//Bit 15: 8,        reg_sr7_pk_long_hpf_hztap151                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -32
-//Bit  7: 0,        reg_sr7_pk_long_hpf_hztap150                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 58
-#define P_SR7_PKLONGHPF_HTAP1                      (volatile uint32_t *)0xff01444c
-//Bit 31:24,        reg_sr7_pk_long_hpf_hztap157                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 8
-//Bit 23:16,        reg_sr7_pk_long_hpf_hztap156                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -6
-//Bit 15: 8,        reg_sr7_pk_long_hpf_hztap155                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -1
-//Bit  7: 0,        reg_sr7_pk_long_hpf_hztap154                : tap15 HPF for horizontal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -10
-#define P_SR7_VLTIBPF_TAP0                         (volatile uint32_t *)0xff014450
-//Bit 31:24,        reg_sr7_vlti_bpf_tap093                     : tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit 23:16,        reg_sr7_vlti_bpf_tap092                     : tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -41
-//Bit 15: 8,        reg_sr7_vlti_bpf_tap091                     : tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit  7: 0,        reg_sr7_vlti_bpf_tap090                     : tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 126
-#define P_SR7_VLTIBPF_TAP1                         (volatile uint32_t *)0xff014454
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_sr7_vlti_bpf_tap094                     : tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -22
-#define P_SR7_VCTIBPF_TAP0                         (volatile uint32_t *)0xff014458
-//Bit 31:24,        reg_sr7_vcti_bpf_tap093                     : tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit 23:16,        reg_sr7_vcti_bpf_tap092                     : tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -41
-//Bit 15: 8,        reg_sr7_vcti_bpf_tap091                     : tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 0
-//Bit  7: 0,        reg_sr7_vcti_bpf_tap090                     : tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = 126
-#define P_SR7_VCTIBPF_TAP1                         (volatile uint32_t *)0xff01445c
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_sr7_vcti_bpf_tap094                     : tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0. signed    , default = -22
-#define P_SR7_PKLONGBPF_VTAP0                      (volatile uint32_t *)0xff014460
-//Bit 31:24,        reg_sr7_pk_long_bpf_vdtap093                : tap09 BPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -32
-//Bit 23:16,        reg_sr7_pk_long_bpf_vdtap092                : tap09 BPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -28
-//Bit 15: 8,        reg_sr7_pk_long_bpf_vdtap091                : tap09 BPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 30
-//Bit  7: 0,        reg_sr7_pk_long_bpf_vdtap090                : tap09 BPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 68
-#define P_SR7_PKLONGBPF_VTAP1                      (volatile uint32_t *)0xff014464
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_sr7_pk_long_bpf_vdtap094                : tap09 BPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -4
-#define P_SR7_PKLONGHPF_VTAP0                      (volatile uint32_t *)0xff014468
-//Bit 31:24,        reg_sr7_pk_long_hpf_vdtap093                : tap09 HPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 30
-//Bit 23:16,        reg_sr7_pk_long_hpf_vdtap092                : tap09 HPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -28
-//Bit 15: 8,        reg_sr7_pk_long_hpf_vdtap091                : tap09 HPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -31
-//Bit  7: 0,        reg_sr7_pk_long_hpf_vdtap090                : tap09 HPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = 68
-#define P_SR7_PKLONGHPF_VTAP1                      (volatile uint32_t *)0xff01446c
-//Bit 31: 8,        reserved
-//Bit  7: 0,        reg_sr7_pk_long_hpf_vdtap094                : tap09 HPF for vertical and diagonal peaking filter, only store half of the filter normalized to 258 as 1.0. signed    , default = -5
-#define P_SR7_CIRBPLONG_ALP                        (volatile uint32_t *)0xff014470
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_cirbp_long_alpha3                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_cirbp_long_alpha2                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_cirbp_long_alpha1                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_cirbp_long_alpha0                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-#define P_SR7_CIRHPLONG_ALP                        (volatile uint32_t *)0xff014474
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_cirhp_long_alpha3                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_cirhp_long_alpha2                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_cirhp_long_alpha1                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_cirhp_long_alpha0                   : alpha to blend bp_long to the cirpk filter corresponding angle (0/45/90/135), norm to 16 as 1.0; default = 15, ==0 means same as s6-;. unsigned  , default = 15
-#define P_SR7_DRTBPLONG_ALP                        (volatile uint32_t *)0xff014478
-//Bit 31:28,        reg_sr7_drtbp_long_alpha7                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drtbp_long_alpha6                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drtbp_long_alpha5                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drtbp_long_alpha4                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drtbp_long_alpha3                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drtbp_long_alpha2                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drtbp_long_alpha1                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drtbp_long_alpha0                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-#define P_SR7_DRTHPLONG_ALP                        (volatile uint32_t *)0xff01447c
-//Bit 31:28,        reg_sr7_drthp_long_alpha7                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_drthp_long_alpha6                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_drthp_long_alpha5                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_drthp_long_alpha4                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 15:12,        reg_sr7_drthp_long_alpha3                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_drthp_long_alpha2                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_drthp_long_alpha1                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_drthp_long_alpha0                   : alpha to blend bp_long to the drtpk filter corresponding angle (8 angles), norm to 16 as 1.0; default = 0, ==0 means same as s6-;. unsigned  , default = 15
-#define P_SR7_PKMINMAXCIR_BLD_LUT2D0               (volatile uint32_t *)0xff014480
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_cirbld_lut2d7          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_cirbld_lut2d6          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_cirbld_lut2d5          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_cirbld_lut2d4          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_cirbld_lut2d3          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_cirbld_lut2d2          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_cirbld_lut2d1          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_cirbld_lut2d0          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-#define P_SR7_PKMINMAXCIR_BLD_LUT2D1               (volatile uint32_t *)0xff014484
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_cirbld_lut2d15          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_cirbld_lut2d14          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_cirbld_lut2d13          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_cirbld_lut2d12          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_cirbld_lut2d11          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_cirbld_lut2d10          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_cirbld_lut2d9           : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_cirbld_lut2d8           : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-#define P_SR7_PKMINMAXCIR_BLD_LUT2D2               (volatile uint32_t *)0xff014488
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_cirbld_lut2d23          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_cirbld_lut2d22          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 10
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_cirbld_lut2d21          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_cirbld_lut2d20          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_cirbld_lut2d19          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_cirbld_lut2d18          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_cirbld_lut2d17          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_cirbld_lut2d16          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-#define P_SR7_PKMINMAXCIR_BLD_LUT2D3               (volatile uint32_t *)0xff01448c
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_cirbld_lut2d31          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 14
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_cirbld_lut2d30          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_cirbld_lut2d29          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_cirbld_lut2d28          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 8
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_cirbld_lut2d27          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 10
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_cirbld_lut2d26          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_cirbld_lut2d25          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_cirbld_lut2d24          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-#define P_SR7_PKMINMAXCIR_BLD_LUT2D4               (volatile uint32_t *)0xff014490
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_cirbld_lut2d35          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_cirbld_lut2d34          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_cirbld_lut2d33          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_cirbld_lut2d32          : 2D-LUT for alpha2 for cir-PK blender,larger coef means less drt-pk, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation, mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-#define P_SR7_PKMINMAXLPF_BLD_LUT2D0               (volatile uint32_t *)0xff014494
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d7          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d6          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d5          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d4          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d3          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d2          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d1          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d0          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-#define P_SR7_PKMINMAXLPF_BLD_LUT2D1               (volatile uint32_t *)0xff014498
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d15          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d14          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 0
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d13          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d12          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d11          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d10          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d9           : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d8           : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-#define P_SR7_PKMINMAXLPF_BLD_LUT2D2               (volatile uint32_t *)0xff01449c
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d23          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d22          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 10
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d21          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d20          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d19          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d18          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d17          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 6
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d16          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-#define P_SR7_PKMINMAXLPF_BLD_LUT2D3               (volatile uint32_t *)0xff0144a0
-//Bit 31:28,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d31          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 14
-//Bit 27:24,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d30          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 23:20,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d29          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-//Bit 19:16,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d28          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 8
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d27          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 10
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d26          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d25          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 2
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d24          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 4
-#define P_SR7_PKMINMAXLPF_BLD_LUT2D4               (volatile uint32_t *)0xff0144a4
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d35          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit 11: 8,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d34          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d33          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_pk_mimaxerr2_lpfbld_lut2d32          : 2D-LUT for alpha2 for PK lpf along edge blender, larger coef means less lpf along edge, x-min_err, y-max_err, nodes as 0,8,16,32,64,128,192,256, use bilinear interpolation,  mi=0,ma=0.8..256; mi=8, ma=8..256, .... unsigned  , default = 12
-#define P_SR7_PKDRT_BLD_EN                         (volatile uint32_t *)0xff0144a8
-//Bit 31: 1,        reserved
-//Bit  0,            reg_sr7_pkdrtbld_beta_en                       : enable of direction ambiguity protection for drt and cir blend, beta for , 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 0
-#define P_SR7_DRTDIF_TH                            (volatile uint32_t *)0xff0144ac
-//Bit 31:16,        reserved
-//Bit 15: 8,        reg_sr7_drtdif_min2sad_th1                   : for min2_sad threshold for ambiguity ignoring, if (min_sad<min2_sad/2 && min2_sad>thrd) drt_dif=1;. unsigned  , default = 128
-//Bit  7: 0,        reg_sr7_drtdif_min2sad_th0                   : for min2_sad threshold for ambiguity ignoring, if (min_sad<min2_sad/2 && min2_sad>thrd) drt_dif=1;. unsigned  , default = 128
-#define P_SR7_TIBLD_PRT                            (volatile uint32_t *)0xff0144b0
-//Bit 31:14,        reserved
-//Bit 13,            reg_sr7_hlti_dcbld_beta_en                     : enable of denoise protection for dc org and denoise blend, beta for , 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 1
-//Bit 12,            reg_sr7_vlti_dcbld_beta_en                     : enable of denoise protection for dc org and denoise blend, beta for , 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 1
-//Bit 11: 8,        reg_sr7_xcti_dcbld_beta1                     : beta for denoise and org dc blend base on the x=cal_drt_dif4(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_xcti_dcbld_beta0                     : beta for denoise and org dc blend base on the x=cal_drt_dif4(min_idx,min2_idx), beta = lut[x-1], the larger of x, means the higher possibility for ambiguity, beta=0 use org wo denoise. unsigned  , default = 15
-//Bit  3,            reg_sr7_hcti_dcbld_beta_en                     : enable of denoise protection for dc org and denoise blend, beta for , 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 1
-//Bit  2,            reg_sr7_vcti_dcbld_beta_en                     : enable of denoise protection for dc org and denoise blend, beta for , 0, equivalent beta[i]=15, 1, enable. unsigned  , default = 1
-//Bit  1,            reg_sr7_hcti_dcbld_use_ybeta                   : enable to use beta from hlti, 0, use c-beta, 1, use y-beta. unsigned  , default = 0
-//Bit  0,            reg_sr7_vcti_dcbld_use_ybeta                   : enable to use beta from vlti, 0, use c-beta, 1, use y-beta. unsigned  , default = 0
-#define P_SR7_HTI_OPT_FORCE                        (volatile uint32_t *)0xff0144b4
-//Bit 31: 6,        reserved
-//Bit  5,            reg_sr7_diag_force_hti1                      :   force hti for diagonal edges luma/chroma, 0: diagonal use vti, 1: diagonal use hti, default=1. unsigned  , default = 1
-//Bit  4,            reg_sr7_diag_force_hti0                      :   force hti for diagonal edges luma/chroma, 0: diagonal use vti, 1: diagonal use hti, default=1. unsigned  , default = 1
-//Bit  3,            reg_sr7_horz_force_vti1                      :   force vti for horizontal edges luma/chroma, 0: bias hti, 1: horizontal edge force 100% vti,  default=1. unsigned  , default = 1
-//Bit  2,            reg_sr7_horz_force_vti0                      :   force vti for horizontal edges luma/chroma, 0: bias hti, 1: horizontal edge force 100% vti,  default=1. unsigned  , default = 1
-//Bit  1,            reg_sr7_alph_force_hvsad1                    :   alpha = minsad*64/maxsad, force minsad=sad_h, maxsad=sad_v for alpha calculation, [0]for luma, [1] for chroma. if sad_h>sad_v alpha will be large,  default=1. unsigned  , default = 1
-//Bit  0,            reg_sr7_alph_force_hvsad0                    :   alpha = minsad*64/maxsad, force minsad=sad_h, maxsad=sad_v for alpha calculation, [0]for luma, [1] for chroma. if sad_h>sad_v alpha will be large,  default=1. unsigned  , default = 1
-#define P_SR7_HVTI_FINALGAIN                       (volatile uint32_t *)0xff0144b8
-//Bit 31:28,        reserved
-//Bit 27:16,        reg_sr7_hvti_finalgain1                      :   final gain for HVTI boost, for easier level tuning for application, normalized to 256 as 1.0 default = 256. unsigned  , default = 256
-//Bit 15:12,        reserved
-//Bit 11: 0,        reg_sr7_hvti_finalgain0                      :   final gain for HVTI boost, for easier level tuning for application, normalized to 256 as 1.0 default = 256. unsigned  , default = 256
-#define P_SR7_TIOS_SDRATIO                         (volatile uint32_t *)0xff0144bc
-//Bit 31:30,        reserved
-//Bit 29:24,        reg_sr7_hti_osmargin_sdratio1                :  ratio for HTI OS margin adaptive to sd. osmargin= (sd*ratio)>>6; default=3. unsigned  , default = 3
-//Bit 23:22,        reserved
-//Bit 21:16,        reg_sr7_hti_osmargin_sdratio0                :  ratio for HTI OS margin adaptive to sd. osmargin= (sd*ratio)>>6; default=3. unsigned  , default = 3
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_sr7_vti_osmargin_sdratio1                :  ratio for VTI OS margin adaptive to sd. osmargin= (sd*ratio)>>6; default=3. unsigned  , default = 3
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_sr7_vti_osmargin_sdratio0                :  ratio for VTI OS margin adaptive to sd. osmargin= (sd*ratio)>>6; default=3. unsigned  , default = 3
-#define P_SR7_XTI_SDFDEN                           (volatile uint32_t *)0xff0144c0
-//Bit 31: 2,        reserved
-//Bit  1,            reg_sr7_xtigain_sdfd_en1                     :  adaptive gamma for cti boost gain enable.[0]for luma, [1] for chroma. 0: not enable, 1:enable, default = 1. unsigned  , default = 1
-//Bit  0,            reg_sr7_xtigain_sdfd_en0                     :  adaptive gamma for cti boost gain enable.[0]for luma, [1] for chroma. 0: not enable, 1:enable, default = 1. unsigned  , default = 1
-#define P_SR7_FDSD_PARAM                           (volatile uint32_t *)0xff0144c4
-//Bit 31:26,        reserved
-//Bit 25,            reg_fdsd_vlpf_en                               : use vertical [1 2 1] lpf filter for the fd and sd derivativecalculations. unsigned  , default = 1
-//Bit 24,            reg_fdsd_hlpf_en                               : use horizontal [1 2 1] lpf filter for the fd and sd derivativecalculations. unsigned  , default = 1
-//Bit 23:20,        reg_sd_coring_th1                            : coring to SD'= MAX(SD - FD*ratio - coring,0); default = 0. unsigned  , default = 0
-//Bit 19:16,        reg_sd_coring_th0                            : coring to SD'= MAX(SD - FD*ratio - coring,0); default = 0. unsigned  , default = 0
-//Bit 15:14,        reserved
-//Bit 13: 8,        reg_sd_coring_ratio2fd1                      : ratio to FD for adaptive coring to SD'= MAX(SD - FD*ratio - coring,0); normalized 64 as 1.0  default = 4. unsigned  , default = 4
-//Bit  7: 6,        reserved
-//Bit  5: 0,        reg_sd_coring_ratio2fd0                      : ratio to FD for adaptive coring to SD'= MAX(SD - FD*ratio - coring,0); normalized 64 as 1.0  default = 4. unsigned  , default = 4
-#define P_SR7_TI_BPF_EN                            (volatile uint32_t *)0xff0144c8
-//Bit 31: 4,        reserved
-//Bit  3,            reg_sr7_hlti_bpf_en                            :   enable of tap15 BPF for hlti (gain3), only store half of the filter normalized to 258 as 1.0. unsigned  , default = 1
-//Bit  2,            reg_sr7_hcti_bpf_en                            :   enable of tap15 BPF for hcti (gain3), only store half of the filter normalized to 258 as 1.0. unsigned  , default = 1
-//Bit  1,            reg_sr7_vlti_bpf_en                            :   enable of tap09 BPF for vlti (gain3), only store half of the filter normalized to 258 as 1.0, mainly for 2x2 UP case. unsigned  , default = 1
-//Bit  0,            reg_sr7_vcti_bpf_en                            :   enable of tap09 BPF for vcti (gain3), only store half of the filter normalized to 258 as 1.0, mainly for 2x2 UP case. unsigned  , default = 1
-#define P_SR7_PKLONG_PF_EN                         (volatile uint32_t *)0xff0144cc
-//Bit 31: 2,        reserved
-//Bit  1,            reg_sr7_pk_long_bpf_en                         :   enable of long BPF for peaking only store half of the filter normalized to 258 as 1.0. unsigned  , default = 1
-//Bit  0,            reg_sr7_pk_long_hpf_en                         :   enable of long HPF for peaking only store half of the filter normalized to 258 as 1.0. unsigned  , default = 1
-#define P_SR7_PKLONG_PF_GAIN                       (volatile uint32_t *)0xff0144d0
-//Bit 31:24,        reg_sr7_pk_long_bpf_hzgain                     :   gain to long horizontal BPF for peaking, normalized to 64 as 1.0. unsigned  , default = 64
-//Bit 23:16,        reg_sr7_pk_long_bpf_vdgain                     :   gain to long vertical and diagonal BPF for peaking, normalized to 64 as 1.0. unsigned  , default = 64
-//Bit 15: 8,        reg_sr7_pk_long_hpf_hzgain                     :   gain to long horizontal HPF for peaking, normalized to 64 as 1.0. unsigned  , default = 64
-//Bit  7: 0,        reg_sr7_pk_long_hpf_vdgain                     :   gain to long vertical and diagonal HPF for peaking, normalized to 64 as 1.0. unsigned  , default = 64
-#define P_SR7_PKMINMAX_BLD                         (volatile uint32_t *)0xff0144d4
-//Bit 31: 4,        reserved
-//Bit  3,            reg_sr7_pk_mimaxerr2_cirbld_on_bp              : enable to use adaptive blender of drtBP vs cirBP alpha2, the larger of cell, the more cirPK results, 0: alp2=lut2d(minerr, maxerr),1:alp2=min_err/maxerr,default = 1. unsigned  , default = 1
-//Bit  2,            reg_sr7_pk_mimaxerr2_cirbld_on_hp              : enable to use adaptive blender of drtHP vs cirHP alpha2, the larger of cell, the more cirPK results, 0: alp2=lut2d(minerr, maxerr),1:alp2=min_err/maxerr,default = 1. unsigned  , default = 1
-//Bit  1,            reg_sr7_pk_mimaxerr2_lpfbld_on_bp              : enable to use adaptive blender of BP result lpf along edge based on the mimaxsad relationship, default = 1. unsigned  , default = 1
-//Bit  0,            reg_sr7_pk_mimaxerr2_lpfbld_on_hp              : enable to use adaptive blender of HP result lpf along edge based on the mimaxsad relationship, default = 1. unsigned  , default = 1
-#define P_SR7_TI_CONMAXERR_GAIN                    (volatile uint32_t *)0xff0144d8
-//Bit 31:16,        reserved
-//Bit 15:12,        reg_sr7_hti_conmaxerr_gain1                  : con=max(con, maxerr) for the horizontal transition calculation, gain=0, same as s6 and prev, [0] for y and [1] for uv. unsigned  , default = 8
-//Bit 11: 8,        reg_sr7_hti_conmaxerr_gain0                  : con=max(con, maxerr) for the horizontal transition calculation, gain=0, same as s6 and prev, [0] for y and [1] for uv. unsigned  , default = 8
-//Bit  7: 4,        reg_sr7_vti_conmaxerr_gain1                  : con=max(con, maxerr) for the vertical transition calculation, gain=0, same as s6 and prev, [0] for y and [1] for uv. unsigned  , default = 8
-//Bit  3: 0,        reg_sr7_vti_conmaxerr_gain0                  : con=max(con, maxerr) for the vertical transition calculation, gain=0, same as s6 and prev, [0] for y and [1] for uv. unsigned  , default = 8
-#define P_SR7_CC_PK_ADJ                            (volatile uint32_t *)0xff0144dc
-//Bit 31:25,        reserved
-//Bit 24,            reg_sr7_cc_enable                              : color compensation enable, 0: no CC, 1: with CC, default = 1. unsigned  , default = 1
-//Bit 23:22,        reserved
-//Bit 21:20,        reg_sr7_cc_yinp_sel                            : color compensation input luma selection, 0: org_y; 1: gau_y ; 2:gauadp_y; 3:edgeadp_y (same as dnlp input sel), default= 0. unsigned  , default = 0
-//Bit 19:18,        reg_sr7_cc_ydlt_sel                            : color compensation output luma selection, 0: peaking+lti output; 1: dnlp output; 2/3: peaking+lti+dnlp, default = 2. unsigned  , default = 2
-//Bit 17:16,        reg_sr7_cc_sat_norm                            : normalization of lut cell to saturation. 0: norm to 8 as 1.0, sat[0:23/8]; 1: norm to 16 as 1.0, sat[1/16:31/16]; 2: norm to 32 as 1.0, sat[17/32:47/32]; 3:norm to 64 as 1.0, sat[49/64:79/64]. unsigned  , default = 1
-//Bit 15: 8,        reg_sr7_cc_ydlt_pscl                           : prescale to the y-delta (if >0) before feeding to y-lumadlt, normalized 64 as 1.0. default = 64.. unsigned  , default = 64
-//Bit  7: 0,        reg_sr7_cc_ydlt_nscl                           : prescale to the y-delta (if <0) before feeding to y-lumadlt, normalized 64 as 1.0. default = 64.. unsigned  , default = 64
-#define P_SR7_CC_LUT0                              (volatile uint32_t *)0xff0144e0
-//Bit 31:28,        reg_sr7_cc_lut003                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=0,    dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_cc_lut002                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=0,    dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_cc_lut001                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=0,    dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_cc_lut000                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=0,    dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_cc_lut103                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=1/8   dft={1, 2, 4, 8}. unsigned  , default = 8
-//Bit 11: 8,        reg_sr7_cc_lut102                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=1/8   dft={1, 2, 4, 8}. unsigned  , default = 4
-//Bit  7: 4,        reg_sr7_cc_lut101                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=1/8   dft={1, 2, 4, 8}. unsigned  , default = 2
-//Bit  3: 0,        reg_sr7_cc_lut100                           : valid for y-lumadlt=  1/4, 1/2, 3/4, 1.0; of x-lumainput=1/8   dft={1, 2, 4, 8}. unsigned  , default = 1
-#define P_SR7_CC_LUT1                              (volatile uint32_t *)0xff0144e4
-//Bit 31:28,        reserved
-//Bit 27:24,        reg_sr7_cc_lut202                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=2/8   dft={4, 8,12}. unsigned  , default = 12
-//Bit 23:20,        reg_sr7_cc_lut201                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=2/8   dft={4, 8,12}. unsigned  , default = 8
-//Bit 19:16,        reg_sr7_cc_lut200                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=2/8   dft={4, 8,12}. unsigned  , default = 4
-//Bit 15:12,        reserved
-//Bit 11: 8,        reg_sr7_cc_lut302                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=3/8   dft={5,10,15}. unsigned  , default = 15
-//Bit  7: 4,        reg_sr7_cc_lut301                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=3/8   dft={5,10,15}. unsigned  , default = 10
-//Bit  3: 0,        reg_sr7_cc_lut300                           : valid for y-lumadlt=  1/4, 1/2, 3/4     ; of x-lumainput=3/8   dft={5,10,15}. unsigned  , default = 5
-#define P_SR7_CC_LUT2                              (volatile uint32_t *)0xff0144e8
-//Bit 31:24,        reserved
-//Bit 23:20,        reg_sr7_cc_lut401                           : valid for y-lumadlt=  1/4, 1/2,         ; of x-lumainput=4/8   dft={8,15}. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_cc_lut400                           : valid for y-lumadlt=  1/4, 1/2,         ; of x-lumainput=4/8   dft={8,15}. unsigned  , default = 8
-//Bit 15:12,        reg_sr7_cc_lut501                           : valid for y-lumadlt=  1/4, 1/2,         ; of x-lumainput=5/8   dft={6,13}. unsigned  , default = 13
-//Bit 11: 8,        reg_sr7_cc_lut500                           : valid for y-lumadlt=  1/4, 1/2,         ; of x-lumainput=5/8   dft={6,13}. unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_cc_lut600                           : valid for y-lumadlt=  1/4,              ; of x-lumainput=6/8   dft={5}. unsigned  , default = 5
-//Bit  3: 0,        reg_sr7_cc_lut700                           : valid for y-lumadlt=  1/4,              ; of x-lumainput=7/8   dft={4}. unsigned  , default = 4
-#define P_SR7_CC_LUT3                              (volatile uint32_t *)0xff0144ec
-//Bit 31:24,        reserved
-//Bit 23:20,        reg_sr7_cc_lut710                           : valid for y-lumadlt= -1/4,              ; of x-lumainput=1/8   dft={4}. unsigned  , default = 4
-//Bit 19:16,        reg_sr7_cc_lut610                           : valid for y-lumadlt= -1/4,              ; of x-lumainput=2/8   dft={5}. unsigned  , default = 5
-//Bit 15:12,        reg_sr7_cc_lut511                           : valid for y-lumadlt= -1/4, -1/2,        ; of x-lumainput=3/8   dft={6,13}. unsigned  , default = 13
-//Bit 11: 8,        reg_sr7_cc_lut510                           : valid for y-lumadlt= -1/4, -1/2,        ; of x-lumainput=3/8   dft={6,13}. unsigned  , default = 6
-//Bit  7: 4,        reg_sr7_cc_lut411                           : valid for y-lumadlt= -1/4, -1/2,        ; of x-lumainput=4/8   dft={8,15}. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_cc_lut410                           : valid for y-lumadlt= -1/4, -1/2,        ; of x-lumainput=4/8   dft={8,15}. unsigned  , default = 8
-#define P_SR7_CC_LUT4                              (volatile uint32_t *)0xff0144f0
-//Bit 31:24,        reserved
-//Bit 23:20,        reg_sr7_cc_lut312                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=5/8   dft={5,10,15}. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_cc_lut311                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=5/8   dft={5,10,15}. unsigned  , default = 10
-//Bit 15:12,        reg_sr7_cc_lut310                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=5/8   dft={5,10,15}. unsigned  , default = 5
-//Bit 11: 8,        reg_sr7_cc_lut212                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=6/8   dft={4, 8,12}. unsigned  , default = 12
-//Bit  7: 4,        reg_sr7_cc_lut211                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=6/8   dft={4, 8,12}. unsigned  , default = 8
-//Bit  3: 0,        reg_sr7_cc_lut210                           : valid for y-lumadlt= -1/4, -1/2,-3/4,   ; of x-lumainput=6/8   dft={4, 8,12}. unsigned  , default = 4
-#define P_SR7_CC_LUT5                              (volatile uint32_t *)0xff0144f4
-//Bit 31:28,        reg_sr7_cc_lut113                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=7/8  dft={1, 2, 4, 8}. unsigned  , default = 8
-//Bit 27:24,        reg_sr7_cc_lut112                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=7/8  dft={1, 2, 4, 8}. unsigned  , default = 4
-//Bit 23:20,        reg_sr7_cc_lut111                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=7/8  dft={1, 2, 4, 8}. unsigned  , default = 2
-//Bit 19:16,        reg_sr7_cc_lut110                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=7/8  dft={1, 2, 4, 8}. unsigned  , default = 1
-//Bit 15:12,        reg_sr7_cc_lut013                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=8/8  dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_cc_lut012                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=8/8  dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_cc_lut011                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=8/8  dft={0, 0, 0, 0}. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_cc_lut010                           : valid for y-lumadlt= -1/4, -1/2,-3/4,-1.0; of x-lumainput=8/8  dft={0, 0, 0, 0}. unsigned  , default = 0
-#define P_SR7_GRAPHIC_CTRL                         (volatile uint32_t *)0xff0144f8
-//Bit 31:11,        reserved
-//Bit 10,            reg_sr7_grph_en                                : enable graphic statistic    . unsigned  , default = 1
-//Bit  9,            reg_sr7_grph_hflt                              : horizontal filter, 0: [0 1 -1], 1: [-1 2 -1]. unsigned  , default = 1
-//Bit  8,            reg_sr7_grph_vflt                              : vertical filter, 0: [0 1 -1], 1: [-1 2 -1]. unsigned  , default = 1
-//Bit  7: 0,        reg_sr7_grph_dif_cor                           : coring for dif while count for graphic. unsigned  , default = 0
-#define P_SR7_GRAPHIC_THD_GAIN                     (volatile uint32_t *)0xff0144fc
-//Bit 31:24,        reg_sr7_grph_flt_thd                           : flat threshold for dif while count for graphic. unsigned  , default = 2
-//Bit 23:16,        reg_sr7_grph_dtl_thd                           : detail threshold for dif while count for graphic. unsigned  , default = 40
-//Bit 15: 8,        reg_sr7_grph_hgain                             : horizontal gain for fast squart of hp. unsigned  , default = 32
-//Bit  7: 0,        reg_sr7_grph_vgain                             : vertical gain for fast squart of hp. unsigned  , default = 32
-#define P_SR7_RO_GRAPHIC_FLT_CNT                   (volatile uint32_t *)0xff014500
-//Bit 31: 0,        ro_sr7_grph_flt_cnt                            : flat count numbers for graphic. unsigned  , default = 0
-#define P_SR7_RO_GRAPHIC_DTL_CNT                   (volatile uint32_t *)0xff014504
-//Bit 31: 0,        ro_sr7_grph_dtl_cnt                            : detail count numbers for graphic. unsigned  , default = 0
-#define P_SR7_CLR_PRT_PARAM                        (volatile uint32_t *)0xff014508
-//Bit 31:18,        reserved
-//Bit 17:16,        reg_sr7_clr_prct_inpsel                        : input UV selection for color protection, 0: org; 1: NRout; 2: CTIout; 3: (NR+TIout)/2. unsigned  , default = 3
-//Bit 15: 8,        reg_sr7_clr_prct_dnlp_gain                     : gain to de-boost of dnlp_dlt base on color region, norm to 64 as 1.0. set to 0 as disable. unsigned  , default = 64
-//Bit  7: 0,        reg_sr7_clr_prct_peak_gain                     : gain to de-boost of peak_dlt base on color region, norm to 64 as 1.0, set to 0 as disable. unsigned  , default = 64
-#define P_SR7_CLR_PRT_LC_GAIN                      (volatile uint32_t *)0xff01450c
-//Bit 31:24,        reserved
-//Bit 23:16,        reg_sr7_clr_prct_lc_gain2                    : gain to de-boost of lc_dlt (y/u/v) base on color region, norm to 64 as 1.0, set to 0 as disable. unsigned  , default = 64
-//Bit 15: 8,        reg_sr7_clr_prct_lc_gain1                    : gain to de-boost of lc_dlt (y/u/v) base on color region, norm to 64 as 1.0, set to 0 as disable. unsigned  , default = 64
-//Bit  7: 0,        reg_sr7_clr_prct_lc_gain0                    : gain to de-boost of lc_dlt (y/u/v) base on color region, norm to 64 as 1.0, set to 0 as disable. unsigned  , default = 64
-#define P_SR7_CLR_PRT_LUT0                         (volatile uint32_t *)0xff014510
-//Bit 31:28,        reg_sr7_clr_prct_lut7                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut6                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut5                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut4                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut3                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut2                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut1                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut0                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT1                         (volatile uint32_t *)0xff014514
-//Bit 31:28,        reg_sr7_clr_prct_lut15                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut14                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut13                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut12                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut11                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut10                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut9                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut8                        : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT2                         (volatile uint32_t *)0xff014518
-//Bit 31:28,        reg_sr7_clr_prct_lut23                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut22                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut21                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut20                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut19                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut18                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut17                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut16                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT3                         (volatile uint32_t *)0xff01451c
-//Bit 31:28,        reg_sr7_clr_prct_lut31                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut30                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut29                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut28                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut27                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut26                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut25                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut24                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT4                         (volatile uint32_t *)0xff014520
-//Bit 31:28,        reg_sr7_clr_prct_lut39                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut38                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut37                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut36                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut35                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut34                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut33                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut32                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT5                         (volatile uint32_t *)0xff014524
-//Bit 31:28,        reg_sr7_clr_prct_lut47                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut46                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut45                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut44                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut43                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut42                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut41                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut40                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT6                         (volatile uint32_t *)0xff014528
-//Bit 31:28,        reg_sr7_clr_prct_lut55                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut54                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut53                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut52                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut51                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut50                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut49                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut48                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT7                         (volatile uint32_t *)0xff01452c
-//Bit 31:28,        reg_sr7_clr_prct_lut63                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut62                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut61                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut60                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut59                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut58                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut57                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut56                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT8                         (volatile uint32_t *)0xff014530
-//Bit 31:28,        reg_sr7_clr_prct_lut71                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut70                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut69                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut68                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut67                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut66                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut65                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut64                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT9                         (volatile uint32_t *)0xff014534
-//Bit 31:28,        reg_sr7_clr_prct_lut79                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut78                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut77                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut76                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut75                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut74                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut73                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut72                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT10                        (volatile uint32_t *)0xff014538
-//Bit 31:28,        reg_sr7_clr_prct_lut87                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut86                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut85                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut84                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut83                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut82                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut81                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut80                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT11                        (volatile uint32_t *)0xff01453c
-//Bit 31:28,        reg_sr7_clr_prct_lut95                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut94                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut93                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut92                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut91                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut90                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut89                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut88                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT12                        (volatile uint32_t *)0xff014540
-//Bit 31:28,        reg_sr7_clr_prct_lut103                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut102                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut101                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut100                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut99                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut98                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut97                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut96                       : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT13                        (volatile uint32_t *)0xff014544
-//Bit 31:28,        reg_sr7_clr_prct_lut111                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut110                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut109                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut108                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut107                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut106                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut105                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut104                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT14                        (volatile uint32_t *)0xff014548
-//Bit 31:28,        reg_sr7_clr_prct_lut119                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut118                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut117                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut116                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut115                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut114                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut113                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut112                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT15                        (volatile uint32_t *)0xff01454c
-//Bit 31:28,        reg_sr7_clr_prct_lut127                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut126                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut125                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut124                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut123                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut122                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut121                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut120                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT16                        (volatile uint32_t *)0xff014550
-//Bit 31:28,        reg_sr7_clr_prct_lut135                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut134                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut133                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut132                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut131                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut130                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut129                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut128                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT17                        (volatile uint32_t *)0xff014554
-//Bit 31:28,        reg_sr7_clr_prct_lut143                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut142                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut141                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut140                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut139                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut138                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut137                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut136                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT18                        (volatile uint32_t *)0xff014558
-//Bit 31:28,        reg_sr7_clr_prct_lut151                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut150                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut149                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut148                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut147                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut146                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut145                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut144                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT19                        (volatile uint32_t *)0xff01455c
-//Bit 31:28,        reg_sr7_clr_prct_lut159                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut158                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut157                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut156                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut155                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut154                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut153                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut152                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT20                        (volatile uint32_t *)0xff014560
-//Bit 31:28,        reg_sr7_clr_prct_lut167                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut166                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut165                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut164                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut163                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut162                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut161                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut160                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT21                        (volatile uint32_t *)0xff014564
-//Bit 31:28,        reg_sr7_clr_prct_lut175                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut174                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut173                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut172                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut171                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut170                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut169                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut168                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT22                        (volatile uint32_t *)0xff014568
-//Bit 31:28,        reg_sr7_clr_prct_lut183                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut182                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut181                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut180                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut179                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut178                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut177                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut176                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT23                        (volatile uint32_t *)0xff01456c
-//Bit 31:28,        reg_sr7_clr_prct_lut191                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut190                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut189                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut188                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut187                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut186                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut185                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut184                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT24                        (volatile uint32_t *)0xff014570
-//Bit 31:28,        reg_sr7_clr_prct_lut199                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut198                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut197                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut196                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut195                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut194                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut193                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut192                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT25                        (volatile uint32_t *)0xff014574
-//Bit 31:28,        reg_sr7_clr_prct_lut207                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut206                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut205                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut204                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut203                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut202                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut201                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut200                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT26                        (volatile uint32_t *)0xff014578
-//Bit 31:28,        reg_sr7_clr_prct_lut215                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut214                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut213                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut212                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut211                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut210                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut209                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut208                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT27                        (volatile uint32_t *)0xff01457c
-//Bit 31:28,        reg_sr7_clr_prct_lut223                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut222                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut221                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut220                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut219                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut218                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut217                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut216                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT28                        (volatile uint32_t *)0xff014580
-//Bit 31:28,        reg_sr7_clr_prct_lut231                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 27:24,        reg_sr7_clr_prct_lut230                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 23:20,        reg_sr7_clr_prct_lut229                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit 19:16,        reg_sr7_clr_prct_lut228                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut227                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut226                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut225                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut224                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT29                        (volatile uint32_t *)0xff014584
-//Bit 31:28,        reg_sr7_clr_prct_lut239                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut238                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut237                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut236                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut235                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut234                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut233                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-//Bit  3: 0,        reg_sr7_clr_prct_lut232                      : color protection lut, 16 is normalized to 1. unsigned  , default = 15
-#define P_SR7_CLR_PRT_LUT30                        (volatile uint32_t *)0xff014588
-//Bit 31:28,        reg_sr7_clr_prct_lut247                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut246                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut245                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut244                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut243                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut242                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut241                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut240                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-#define P_SR7_CLR_PRT_LUT31                        (volatile uint32_t *)0xff01458c
-//Bit 31:28,        reg_sr7_clr_prct_lut255                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 27:24,        reg_sr7_clr_prct_lut254                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 23:20,        reg_sr7_clr_prct_lut253                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 19:16,        reg_sr7_clr_prct_lut252                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 15:12,        reg_sr7_clr_prct_lut251                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit 11: 8,        reg_sr7_clr_prct_lut250                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  7: 4,        reg_sr7_clr_prct_lut249                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
-//Bit  3: 0,        reg_sr7_clr_prct_lut248                      : color protection lut, 16 is normalized to 1. unsigned  , default = 0
+#define P_SAFA_PPS_SR_422_EN                       (volatile uint32_t *)0xff014400
+//Bit 31: 5        reserved
+//Bit  4           reg_sr_en                 // unsigned ,    RW, default = 0  enable of sr
+//Bit  3: 1        reserved
+//Bit  0           reg_input_422             // unsigned ,    RW, default = 1  safa input is 422 or not
+#define P_SAFA_PPS_VSC_START_PHASE_STEP            (volatile uint32_t *)0xff014404
+//Bit 31:28        reserved
+//Bit 27:24        reg_vsc_integer_part      // unsigned ,    RW, default = 1  default	=	1,vertical	start	phase	step,	(source/dest)*(2^24),integer	part	of	step
+//Bit 23: 0        reg_vsc_fraction_part     // unsigned ,    RW, default = 0  default	=	0,vertical	start	phase	step,	(source/dest)*(2^24),fraction	part	of	step
+#define P_SAFA_PPS_HSC_START_PHASE_STEP            (volatile uint32_t *)0xff014408
+//Bit 31:28        reserved
+//Bit 27:24        reg_hsc_integer_part      // unsigned ,    RW, default = 1  default	=	1,integer	part	of	step
+//Bit 23: 0        reg_hsc_fraction_part     // unsigned ,    RW, default = 0  default	=	0,fraction	part	of	step
+#define P_SAFA_PPS_SC_MISC                         (volatile uint32_t *)0xff01440c
+//Bit 31:13        reserved
+//Bit 12           reg_repeat_last_line_en   // unsigned ,    RW, default = 0  repeat	last	line	0:disable	repeat	last	line
+//Bit 11: 9        reserved
+//Bit  8           reg_prehsc_en             // unsigned ,    RW, default = 0  default	=	0	,prehsc_en
+//Bit  7: 5        reserved
+//Bit  4           reg_prevsc_en             // unsigned ,    RW, default = 0  default	=	0	,prevsc_en
+//Bit  3: 0        reg_prehsc_mode           // unsigned ,    RW, default = 0  default	=	0,prehsc_mode,	bit	3:2,	prehsc	odd	line	interp	mode,	bit	1:0,	prehsc	even	line	interp	mode,	each	2bit,	0:00	pix0+pix1/2,	average,	1:00
+#define P_SAFA_PPS_HSC_INI_PAT_CTRL                (volatile uint32_t *)0xff014410
+//Bit 31:16        reserved
+//Bit 15: 8        reg_prehsc_pattern        // unsigned ,    RW, default = 0  default	=	0,	prehsc	pattern,	each	patten	1	bit,	from	lsb	->	msb
+//Bit  7            reserved
+//Bit  6: 4        reg_prehsc_pat_star       // unsigned ,    RW, default = 0  default	=	0,	prehsc	pattern	start
+//Bit  3            reserved
+//Bit  2: 0        reg_prehsc_pat_end        // unsigned ,    RW, default = 0  default	=	0,	prehsc	pattern	end
+#define P_SAFA_PPS_PRE_HSCALE_COEF_Y1              (volatile uint32_t *)0xff014414
+//Bit 31:26        reserved
+//Bit 25:16        reg_prehsc_coef_y_3       // signed ,    RW, default = 0  default	=	0x00	,	coefficient2	pre horizontal	filter
+//Bit 15:10        reserved
+//Bit  9: 0        reg_prehsc_coef_y_2       // signed ,    RW, default = 0  default	=	0x40	,	coefficient3	pre horizontal	filter
+#define P_SAFA_PPS_PRE_HSCALE_COEF_Y0              (volatile uint32_t *)0xff014418
+//Bit 31:26        reserved
+//Bit 25:16        reg_prehsc_coef_y_1       // signed ,    RW, default = 0  default	=	0x00	,	coefficient0	pre horizontal	filter
+//Bit 15:10        reserved
+//Bit  9: 0        reg_prehsc_coef_y_0       // signed ,    RW, default = 256  default	=	0x00	,	coefficient1	pre horizontal	filter
+#define P_SAFA_PPS_PRE_HSCALE_COEF_C1              (volatile uint32_t *)0xff01441c
+//Bit 31:26        reserved
+//Bit 25:16        reg_prehsc_coef_c_3       // signed ,    RW, default = 0  default	=	0x00	,	coefficient2	pre horizontal	filter
+//Bit 15:10        reserved
+//Bit  9: 0        reg_prehsc_coef_c_2       // signed ,    RW, default = 0  default	=	0x40	,	coefficient3	pre horizontal	filter
+#define P_SAFA_PPS_PRE_HSCALE_COEF_C0              (volatile uint32_t *)0xff014420
+//Bit 31:26        reserved
+//Bit 25:16        reg_prehsc_coef_c_1       // signed ,    RW, default = 0  default	=	0x00	,	coefficient0	pre horizontal	filter
+//Bit 15:10        reserved
+//Bit  9: 0        reg_prehsc_coef_c_0       // signed ,    RW, default = 256  default	=	0x00	,	coefficient1	pre horizontal	filter
+#define P_SAFA_PPS_PRE_SCALE                       (volatile uint32_t *)0xff014424
+//Bit 31:20        reserved
+//Bit 19:16        reg_prehsc_flt_num_y      // unsigned ,    RW, default = 2  default = 2, prehsc filter tap num
+//Bit 15:12        reg_prehsc_flt_num_c      // unsigned ,    RW, default = 2  default = 2, prehsc filter tap num
+//Bit 11: 8        reg_prevsc_flt_num        // unsigned ,    RW, default = 2  default = 2, prevsc filter tap num
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_prehsc_rate           // unsigned ,    RW, default = 1  default =   0,pre hscale down rate, 0:width,1:width/2,2:width/4,3:width/8
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_prevsc_rate           // unsigned ,    RW, default = 1  default =   0,pre vscale down rate, 0:height,1:height/2,2:height/4, 3:height/8
+#define P_SAFA_PPS_PRE_VSCALE_COEF                 (volatile uint32_t *)0xff014428
+//Bit 31:26        reserved
+//Bit 25:16        reg_prevsc_coef_1         // signed ,    RW, default = 0  default	=	0x00	,	coefficient2	pre vertical	filter
+//Bit 15:10        reserved
+//Bit  9: 0        reg_prevsc_coef_0         // signed ,    RW, default = 256  default	=	0x40	,	coefficient3	pre vertical	filter
+#define P_SAFA_PPS_VSC_INIT                        (volatile uint32_t *)0xff01442c
+//Bit 31:21        reserved
+//Bit 20:16        reg_vsc_ini_integer       // signed ,    RW, default = -1  = 0
+//Bit 15: 0        reg_vsc_ini_phase         // unsigned ,    RW, default = 0  = 0
+#define P_SAFA_PPS_HSC_INIT                        (volatile uint32_t *)0xff014430
+//Bit 31:21        reserved
+//Bit 20:16        reg_hsc_ini_integer       // signed ,    RW, default = -1  = 0
+//Bit 15: 0        reg_hsc_ini_phase         // unsigned ,    RW, default = 0  = 0
+#define P_SAFA_PPS_INTERP_EN_MODE                  (volatile uint32_t *)0xff014434
+//Bit 31:26        reserved
+//Bit 25           reg_dir_interp_en         // unsigned ,    RW, default = 1  the enable signal of directional interpolation
+//Bit 24           reg_dir_interp_chroma_en  // unsigned ,    RW, default = 1  the enable signal of chroma directional interpolation
+//Bit 23:21        reserved
+//Bit 20           reg_beta_hf_gain_en       // unsigned ,    RW, default = 1  enable of the hf-gain of beta
+//Bit 19:17        reserved
+//Bit 16           reg_out_alpha_adp_en      // unsigned ,    RW, default = 1  the enable of adp out alpha
+//Bit 15:14        reserved
+//Bit 13:12        reg_out_beta_mode         // unsigned ,    RW, default = 1  the out beta mode, 0: org, 1: avg with neighbor, 2:min with neighbor, 3: force mode
+//Bit 11:10        reserved
+//Bit  9: 8        reg_out_adp_tap_alp_mode  // unsigned ,    RW, default = 3  adp tap alpha mode, 0: org, 1: avg with neighbor, 2:max with neighbor, 3: force mode
+//Bit  7: 5        reserved
+//Bit  4           reg_adp_tap_chroma_en     // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_interp_nearest_en     // unsigned ,    RW, default = 0  the enable of interpolation nearest
+#define P_SAFA_PPS_DEBUG_DEMO_EN                   (volatile uint32_t *)0xff014438
+//Bit 31: 9        reserved
+//Bit  8           reg_debug_demo_dir_interp_en // unsigned ,    RW, default = 0  the demo dir lpf enable
+//Bit  7: 5        reserved
+//Bit  4           reg_debug_demo_adp_tap_en // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_debug_demo_inverse    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_INTERP_OUT_FORCE_VALUE          (volatile uint32_t *)0xff01443c
+//Bit 31:18        reserved
+//Bit 17:12        reg_out_adp_tap_alp       // unsigned ,    RW, default = 0  the force adp tap alp value
+//Bit 11: 8        reg_out_alpha             // unsigned ,    RW, default = 0  the force alpha value
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_out_beta              // unsigned ,    RW, default = 0  the force beta value
+#define P_SAFA_PPS_DIR_INTERP_THD                  (volatile uint32_t *)0xff014440
+//Bit 31:24        reg_vdir_interp_drt_grad_th // unsigned ,    RW, default = 20  the vertical directional interpolation drt grad threshold
+//Bit 23:16        reg_hdir_interp_drt_grad_th // unsigned ,    RW, default = 200  the horizontal directional interpolation drt grad threshold
+//Bit 15: 8        reserved
+//Bit  7: 4        reg_dir_cons_dif_th       // unsigned ,    RW, default = 15  the dir diff consistency threshold
+//Bit  3: 0        reg_pps_nor_rs_bits       // unsigned ,    RW, default = 9  default = 7, normalize right shift bits of hsc
+#define P_SAFA_PPS_BETA_HF_GAIN                    (volatile uint32_t *)0xff014444
+//Bit 31:20        reserved
+//Bit 19:16        reg_beta_hf_gain_4        // unsigned ,    RW, default = 0  the beta hf gain
+//Bit 15:12        reg_beta_hf_gain_3        // unsigned ,    RW, default = 0  the beta hf gain
+//Bit 11: 8        reg_beta_hf_gain_2        // unsigned ,    RW, default = 8  the beta hf gain
+//Bit  7: 4        reg_beta_hf_gain_1        // unsigned ,    RW, default = 14  the beta hf gain
+//Bit  3: 0        reg_beta_hf_gain_0        // unsigned ,    RW, default = 15  the beta hf gain
+#define P_SAFA_PPS_CHB_DET_DIFF_THD                (volatile uint32_t *)0xff014448
+//Bit 31:16        reserved
+//Bit 15: 8        reg_chb_det_diff_th1      // unsigned ,    RW, default = 5
+//Bit  7: 0        reg_chb_det_diff_th0      // unsigned ,    RW, default = 150
+#define P_SAFA_PPS_CHB_DET_CNT_THD                 (volatile uint32_t *)0xff01444c
+//Bit 31:24        reserved
+//Bit 23:20        reg_chb_det_hcnt_th1      // unsigned ,    RW, default = 1
+//Bit 19:16        reg_chb_det_hcnt_th0      // unsigned ,    RW, default = 4
+//Bit 15:12        reg_chb_det_vcnt_th1      // unsigned ,    RW, default = 1
+//Bit 11: 8        reg_chb_det_vcnt_th0      // unsigned ,    RW, default = 2
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_chb_force_alpha       // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_DEBUG_DEMO_WND_COEF_1           (volatile uint32_t *)0xff014450
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_3      // unsigned ,    RW, default = 1620  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_2      // unsigned ,    RW, default = 2880  ontrol debug window col size
+#define P_SAFA_PPS_DEBUG_DEMO_WND_COEF_0           (volatile uint32_t *)0xff014454
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_1      // unsigned ,    RW, default = 540  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_0      // unsigned ,    RW, default = 960  control debug window col size
+#define P_SAFA_PPS_YUV_SHARPEN_EN                  (volatile uint32_t *)0xff014458
+//Bit 31: 5        reserved
+//Bit  4           reg_yuv_sharpen_en        // unsigned ,    RW, default = 0  0: disable, 1: enable, when >1920 in disbale this feature.
+//Bit  3: 1        reserved
+//Bit  0           reg_yuv_sharpen_win_mode  // unsigned ,    RW, default = 0  0: 3x3, 1: 5x5
+#define P_SAFA_PPS_YUV_SHARPEN_GAIN_LUT_0          (volatile uint32_t *)0xff01445c
+//Bit 31:24        reg_yuv_sharpen_gain_lut_3 // unsigned ,    RW, default = 64  64 normalize as "1"
+//Bit 23:16        reg_yuv_sharpen_gain_lut_2 // unsigned ,    RW, default = 64  64 normalize as "1"
+//Bit 15: 8        reg_yuv_sharpen_gain_lut_1 // unsigned ,    RW, default = 32  64 normalize as "1"
+//Bit  7: 0        reg_yuv_sharpen_gain_lut_0 // unsigned ,    RW, default = 0  64 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_GAIN_LUT_1          (volatile uint32_t *)0xff014460
+//Bit 31:24        reg_yuv_sharpen_gain_lut_7 // unsigned ,    RW, default = 8  64 normalize as "1"
+//Bit 23:16        reg_yuv_sharpen_gain_lut_6 // unsigned ,    RW, default = 16  64 normalize as "1"
+//Bit 15: 8        reg_yuv_sharpen_gain_lut_5 // unsigned ,    RW, default = 64  64 normalize as "1"
+//Bit  7: 0        reg_yuv_sharpen_gain_lut_4 // unsigned ,    RW, default = 72  64 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_GAIN_LUT_F          (volatile uint32_t *)0xff014464
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_yuv_sharpen_gain_lut_8 // unsigned ,    RW, default = 0  64 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_OS_ADP_LUT          (volatile uint32_t *)0xff014468
+//Bit 31:28        reg_yuv_sharpen_os_adp_lut_7 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit 27:24        reg_yuv_sharpen_os_adp_lut_6 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit 23:20        reg_yuv_sharpen_os_adp_lut_5 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit 19:16        reg_yuv_sharpen_os_adp_lut_4 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit 15:12        reg_yuv_sharpen_os_adp_lut_3 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit 11: 8        reg_yuv_sharpen_os_adp_lut_2 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit  7: 4        reg_yuv_sharpen_os_adp_lut_1 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit  3: 0        reg_yuv_sharpen_os_adp_lut_0 // unsigned ,    RW, default = 0  8 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_OS_ADP_LUT_F        (volatile uint32_t *)0xff01446c
+//Bit 31: 4        reserved
+//Bit  3: 0        reg_yuv_sharpen_os_adp_lut_8 // unsigned ,    RW, default = 0  8 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_FINAL_GAIN          (volatile uint32_t *)0xff014470
+//Bit 31: 8        reserved
+//Bit  7: 4        reg_yuv_sharpen_final_gain_1 // unsigned ,    RW, default = 0  8 normalize as "1"
+//Bit  3: 0        reg_yuv_sharpen_final_gain_0 // unsigned ,    RW, default = 0  8 normalize as "1"
+#define P_SAFA_PPS_YUV_SHARPEN_OS_ADP_UP_DN_GAIN   (volatile uint32_t *)0xff014474
+//Bit 31:16        reserved
+//Bit 15:12        reg_yuv_sharpen_os_adp_up_gain_1 // unsigned ,    RW, default = 8  8 normalize as "1"
+//Bit 11: 8        reg_yuv_sharpen_os_adp_up_gain_0 // unsigned ,    RW, default = 8  8 normalize as "1"
+//Bit  7: 4        reg_yuv_sharpen_os_adp_dn_gain_1 // unsigned ,    RW, default = 8  8 normalize as "1"
+//Bit  3: 0        reg_yuv_sharpen_os_adp_dn_gain_0 // unsigned ,    RW, default = 8  8 normalize as "1"
+#define P_SAFA_PPS_DIR_EN_MODE                     (volatile uint32_t *)0xff014478
+//Bit 31:25        reserved
+//Bit 24           reg_dir_x_ds_en           // unsigned ,    RW, default = 1
+//Bit 23:21        reserved
+//Bit 20           reg_dir_y_ds_en           // unsigned ,    RW, default = 0
+//Bit 19:17        reserved
+//Bit 16           reg_dir_xerr_mode         // unsigned ,    RW, default = 1
+//Bit 15:13        reserved
+//Bit 12           reg_dir_sad_flt_en        // unsigned ,    RW, default = 1
+//Bit 11: 9        reserved
+//Bit  8           reg_dir_sad_flt_mode      // unsigned ,    RW, default = 0  0: 3-tap, 1: 5-tap
+//Bit  7: 4        reserved
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_dir_blend_range_en    // unsigned ,    RW, default = 1
+#define P_SAFA_PPS_DIR_MIN_IDX_VALID               (volatile uint32_t *)0xff01447c
+//Bit 31:13        reserved
+//Bit 12           reg_delta_chk_min_idx_valid // unsigned ,    RW, default = 0
+//Bit 11: 9        reserved
+//Bit  8           reg_dir_hist_chk_min_idx_valid // unsigned ,    RW, default = 1
+//Bit  7: 5        reserved
+//Bit  4           reg_dir_dif_chk_min_idx_valid // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_beta_chk_min_idx_valid // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_DIR_UP_EN                       (volatile uint32_t *)0xff014480
+//Bit 31: 9        reserved
+//Bit  8           reg_dir_up_cons_not_avg_en // unsigned ,    RW, default = 1
+//Bit  7: 5        reserved
+//Bit  4           reg_dir_up_alp_max_en     // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_dir_up_force_max_sad_en // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_DIR_XERR_GAIN                   (volatile uint32_t *)0xff014484
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_dir_xerr_gain         // unsigned ,    RW, default = 8  interleave detection for sad gain applied, normalized to 8 as 1
+#define P_SAFA_PPS_DIR_SAD_GAIN                    (volatile uint32_t *)0xff014488
+//Bit 31:12        reserved
+//Bit 11: 8        reg_dir_sad_hor_gain      // unsigned ,    RW, default = 4  gain to sad[0], 4 normalized to "1";
+//Bit  7: 4        reg_dir_sad_ver_gain      // unsigned ,    RW, default = 4  gain to sad[4], 4 normalized to "1";
+//Bit  3: 0        reg_dir_sad_diag_gain     // unsigned ,    RW, default = 4  gain to sad[2] and sad[6], 4 normalized to "1";
+#define P_SAFA_PPS_DIR_RATE                        (volatile uint32_t *)0xff01448c
+//Bit 31:22        reserved
+//Bit 21:16        reg_dir_sad_core_rate     // unsigned ,    RW, default = 0  rate of coring for sad(theta) - sad(theta+pi/2)*rate/64
+//Bit 15:14        reserved
+//Bit 13: 8        reg_low_dir_err_dis_rate  // unsigned ,    RW, default = 24  low angle and high angle error should not be no less than nearby_error*rate/64; default = 24; 0 same as before changes
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_grad_core_rate    // unsigned ,    RW, default = 12
+#define P_SAFA_PPS_DIR_SAD_PENALTY                 (volatile uint32_t *)0xff014490
+//Bit 31:30        reserved
+//Bit 29:28        reg_dir_sad_penalty_7     // unsigned ,    RW, default = 0
+//Bit 27:26        reserved
+//Bit 25:24        reg_dir_sad_penalty_6     // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:20        reg_dir_sad_penalty_5     // unsigned ,    RW, default = 0
+//Bit 19:18        reserved
+//Bit 17:16        reg_dir_sad_penalty_4     // unsigned ,    RW, default = 1
+//Bit 15:14        reserved
+//Bit 13:12        reg_dir_sad_penalty_3     // unsigned ,    RW, default = 0
+//Bit 11:10        reserved
+//Bit  9: 8        reg_dir_sad_penalty_2     // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_dir_sad_penalty_1     // unsigned ,    RW, default = 0
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_dir_sad_penalty_0     // unsigned ,    RW, default = 1
+#define P_SAFA_PPS_DIR_XERR_THD                    (volatile uint32_t *)0xff014494
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_xerr_rate_thd_1   // unsigned ,    RW, default = 24
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_xerr_rate_thd_0   // unsigned ,    RW, default = 20
+//Bit 15: 8        reg_dir_xerr_thd          // unsigned ,    RW, default = 40
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_xmin_rate_thd     // unsigned ,    RW, default = 24
+#define P_SAFA_PPS_MIN2IDX_DIF_GAIN                (volatile uint32_t *)0xff014498
+//Bit 31:16        reserved
+//Bit 15:12        reg_min2idx_dif_gain_3    // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_min2idx_dif_gain_2    // unsigned ,    RW, default = 8
+//Bit  7: 4        reg_min2idx_dif_gain_1    // unsigned ,    RW, default = 15
+//Bit  3: 0        reg_min2idx_dif_gain_0    // unsigned ,    RW, default = 15
+#define P_SAFA_PPS_MIN2SAD_DIF_THD                 (volatile uint32_t *)0xff01449c
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_min2sad_dif_thd       // unsigned ,    RW, default = 24
+#define P_SAFA_PPS_MIMAXERR_LUT2D_0_0              (volatile uint32_t *)0xff0144a0
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_0_3    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_0_2    // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_0_1    // unsigned ,    RW, default = 32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_0_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_0_1              (volatile uint32_t *)0xff0144a4
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_0_7    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_0_6    // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_0_5    // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_0_4    // unsigned ,    RW, default = 63
+#define P_SAFA_PPS_MIMAXERR_LUT2D_1_0              (volatile uint32_t *)0xff0144a8
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_1_3    // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_1_2    // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_1_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_1_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_1_1              (volatile uint32_t *)0xff0144ac
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_1_7    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_1_6    // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_1_5    // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_1_4    // unsigned ,    RW, default = 63
+#define P_SAFA_PPS_MIMAXERR_LUT2D_2_0              (volatile uint32_t *)0xff0144b0
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_2_3    // unsigned ,    RW, default = 16
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_2_2    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_2_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_2_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_2_1              (volatile uint32_t *)0xff0144b4
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_2_7    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_2_6    // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_2_5    // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_2_4    // unsigned ,    RW, default = 56
+#define P_SAFA_PPS_MIMAXERR_LUT2D_3_0              (volatile uint32_t *)0xff0144b8
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_3_3    // unsigned ,    RW, default = 8
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_3_2    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_3_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_3_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_3_1              (volatile uint32_t *)0xff0144bc
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_3_7    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_3_6    // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_3_5    // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_3_4    // unsigned ,    RW, default = 32
+#define P_SAFA_PPS_MIMAXERR_LUT2D_4_0              (volatile uint32_t *)0xff0144c0
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_4_3    // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_4_2    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_4_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_4_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_4_1              (volatile uint32_t *)0xff0144c4
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_4_7    // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_4_6    // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_4_5    // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_4_4    // unsigned ,    RW, default = 16
+#define P_SAFA_PPS_MIMAXERR_LUT2D_5_0              (volatile uint32_t *)0xff0144c8
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_5_3    // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_5_2    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_5_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_5_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_5_1              (volatile uint32_t *)0xff0144cc
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_5_7    // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_5_6    // unsigned ,    RW, default = 24
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_5_5    // unsigned ,    RW, default = 12
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_5_4    // unsigned ,    RW, default = 4
+#define P_SAFA_PPS_MIMAXERR_LUT2D_6_0              (volatile uint32_t *)0xff0144d0
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_6_3    // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_6_2    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_6_1    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_6_0    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_MIMAXERR_LUT2D_6_1              (volatile uint32_t *)0xff0144d4
+//Bit 31:30        reserved
+//Bit 29:24        reg_mimaxerr_lut2d_6_7    // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_mimaxerr_lut2d_6_6    // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_mimaxerr_lut2d_6_5    // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_mimaxerr_lut2d_6_4    // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_THETA_GLB_GAIN                  (volatile uint32_t *)0xff0144d8
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_theta_glb_gain        // unsigned ,    RW, default = 20
+#define P_SAFA_PPS_DIR_UP_SCL_THD                  (volatile uint32_t *)0xff0144dc
+//Bit 31:16        reserved
+//Bit 15: 8        reg_dir_up_scl_max_sad_th // unsigned ,    RW, default = 50
+//Bit  7: 0        reg_dir_up_scl_theta_th   // unsigned ,    RW, default = 10
+#define P_SAFA_PPS_DIR_HIST_WIN                    (volatile uint32_t *)0xff0144e0
+//Bit 31: 5        reserved
+//Bit  4           reg_dir_hist_win_v        // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_dir_hist_win_h        // unsigned ,    RW, default = 1
+#define P_SAFA_PPS_SAD_FLAT_THD                    (volatile uint32_t *)0xff0144e4
+//Bit 31:24        reserved
+//Bit 23:16        reg_sad_flat_th2          // unsigned ,    RW, default = 10
+//Bit 15: 8        reg_sad_flat_th1          // unsigned ,    RW, default = 10
+//Bit  7: 0        reg_sad_flat_th0          // unsigned ,    RW, default = 10
+#define P_SAFA_PPS_DIR_HIST_DIF_THD                (volatile uint32_t *)0xff0144e8
+//Bit 31:16        reserved
+//Bit 15: 8        reg_dir_sum_hist_th       // unsigned ,    RW, default = 4
+//Bit  7: 0        reg_dir_sad_dif_th        // unsigned ,    RW, default = 3
+#define P_SAFA_PPS_DIR0_SWAP_RATE_THD              (volatile uint32_t *)0xff0144ec
+//Bit 31:21        reserved
+//Bit 20:16        reg_dir0_swap_maxhist_rate // unsigned ,    RW, default = 12
+//Bit 15:13        reserved
+//Bit 12: 8        reg_dir0_swap_max2hist_rate // unsigned ,    RW, default = 2
+//Bit  7: 0        reg_dir0_swap_sad_dif_th  // unsigned ,    RW, default = 3
+#define P_SAFA_PPS_DIR1_SWAP_RATE_THD              (volatile uint32_t *)0xff0144f0
+//Bit 31:21        reserved
+//Bit 20:16        reg_dir1_swap_maxhist_rate // unsigned ,    RW, default = 12
+//Bit 15:13        reserved
+//Bit 12: 8        reg_dir1_swap_max2hist_rate // unsigned ,    RW, default = 2
+//Bit  7: 0        reg_dir1_swap_sad_dif_th  // unsigned ,    RW, default = 3
+#define P_SAFA_PPS_DIR_SWAP_THD_H                  (volatile uint32_t *)0xff0144f4
+//Bit 31:24        reserved
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_h_swap_cnt_thd1   // unsigned ,    RW, default = 10
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_h_swap_cnt_thd0   // unsigned ,    RW, default = 15
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_h_swap_sad_dif_thd // unsigned ,    RW, default = 17
+#define P_SAFA_PPS_DIR_SWAP_THD_V                  (volatile uint32_t *)0xff0144f8
+//Bit 31:24        reserved
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_v_swap_cnt_thd1   // unsigned ,    RW, default = 10
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_v_swap_cnt_thd0   // unsigned ,    RW, default = 15
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_v_swap_sad_dif_thd // unsigned ,    RW, default = 17
+#define P_SAFA_PPS_DIR_SWAP_SAD_RATIO_THD          (volatile uint32_t *)0xff0144fc
+//Bit 31:13        reserved
+//Bit 12: 8        reg_dir_swap_sad_ratio    // unsigned ,    RW, default = 16
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_swap_sad_th       // unsigned ,    RW, default = 12
+#define P_SAFA_PPS_DIR_BLEND_ALPHA_DIS_HV          (volatile uint32_t *)0xff014500
+//Bit 31: 1        reserved
+//Bit  0           reg_dir_blend_alpha_dis_hv // unsigned ,    RW, default = 1
+#define P_SAFA_PPS_EDGE_STR_MODE_GAIN              (volatile uint32_t *)0xff014504
+//Bit 31: 6        reserved
+//Bit  5: 4        reg_edge_str_gain_win_mode // unsigned ,    RW, default = 1
+//Bit  3: 0        reg_edge_str_std_gain     // unsigned ,    RW, default = 8  normalize as "1"
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_0_0           (volatile uint32_t *)0xff014508
+//Bit 31:30        reserved
+//Bit 29:24        reg_edge_avgstd_lut2d_0_6 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_0_5 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_0_4 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_0_3 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_F_0_0         (volatile uint32_t *)0xff01450c
+//Bit 31:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_0_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_0_1 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_0_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_1_0           (volatile uint32_t *)0xff014510
+//Bit 31:30        reserved
+//Bit 29:24        reg_edge_avgstd_lut2d_1_6 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_1_5 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_1_4 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_1_3 // unsigned ,    RW, default = 8
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_F_1_0         (volatile uint32_t *)0xff014514
+//Bit 31:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_1_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_1_1 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_1_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_2_0           (volatile uint32_t *)0xff014518
+//Bit 31:30        reserved
+//Bit 29:24        reg_edge_avgstd_lut2d_2_6 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_2_5 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_2_4 // unsigned ,    RW, default = 8
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_2_3 // unsigned ,    RW, default = 16
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_F_2_0         (volatile uint32_t *)0xff01451c
+//Bit 31:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_2_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_2_1 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_2_0 // unsigned ,    RW, default = 8
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_3_0           (volatile uint32_t *)0xff014520
+//Bit 31:30        reserved
+//Bit 29:24        reg_edge_avgstd_lut2d_3_6 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_3_5 // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_3_4 // unsigned ,    RW, default = 32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_3_3 // unsigned ,    RW, default = 48
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_F_3_0         (volatile uint32_t *)0xff014524
+//Bit 31:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_3_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_3_1 // unsigned ,    RW, default = 16
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_3_0 // unsigned ,    RW, default = 32
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_4_0           (volatile uint32_t *)0xff014528
+//Bit 31:30        reserved
+//Bit 29:24        reg_edge_avgstd_lut2d_4_6 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_4_5 // unsigned ,    RW, default = 32
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_4_4 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_4_3 // unsigned ,    RW, default = 56
+#define P_SAFA_PPS_EDGE_AVGSTD_LUT2D_F_4_0         (volatile uint32_t *)0xff01452c
+//Bit 31:22        reserved
+//Bit 21:16        reg_edge_avgstd_lut2d_4_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_edge_avgstd_lut2d_4_1 // unsigned ,    RW, default = 32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_edge_avgstd_lut2d_4_0 // unsigned ,    RW, default = 48
+#define P_SAFA_PPS_DIR_DIF_WIN                     (volatile uint32_t *)0xff014530
+//Bit 31: 6        reserved
+//Bit  5: 4        reg_dir_dif_win_x         // unsigned ,    RW, default = 1
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_dir_dif_win_y         // unsigned ,    RW, default = 2
+#define P_SAFA_PPS_DIR_DIF_GAIN                    (volatile uint32_t *)0xff014534
+//Bit 31:16        reserved
+//Bit 15:12        reg_dir_dif_gain_3        // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_dir_dif_gain_2        // unsigned ,    RW, default = 4
+//Bit  7: 4        reg_dir_dif_gain_1        // unsigned ,    RW, default = 8
+//Bit  3: 0        reg_dir_dif_gain_0        // unsigned ,    RW, default = 15
+#define P_SAFA_PPS_DIR_BLEND_ALPHA_LUT             (volatile uint32_t *)0xff014538
+//Bit 31:28        reg_dir_blend_alpha_lut_7 // unsigned ,    RW, default = 8
+//Bit 27:24        reg_dir_blend_alpha_lut_6 // unsigned ,    RW, default = 8
+//Bit 23:20        reg_dir_blend_alpha_lut_5 // unsigned ,    RW, default = 8
+//Bit 19:16        reg_dir_blend_alpha_lut_4 // unsigned ,    RW, default = 7
+//Bit 15:12        reg_dir_blend_alpha_lut_3 // unsigned ,    RW, default = 7
+//Bit 11: 8        reg_dir_blend_alpha_lut_2 // unsigned ,    RW, default = 5
+//Bit  7: 4        reg_dir_blend_alpha_lut_1 // unsigned ,    RW, default = 3
+//Bit  3: 0        reg_dir_blend_alpha_lut_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_HV_ADP_TAP_WIND                 (volatile uint32_t *)0xff01453c
+//Bit 31: 6        reserved
+//Bit  5: 4        reg_hor_adp_tap_wind      // unsigned ,    RW, default = 0
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_ver_adp_tap_wind      // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_0_0           (volatile uint32_t *)0xff014540
+//Bit 31:28        reg_adp_tap_alp_lut2d_0_7 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_adp_tap_alp_lut2d_0_6 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_adp_tap_alp_lut2d_0_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_adp_tap_alp_lut2d_0_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_0_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_0_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_0_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_0_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_1_0           (volatile uint32_t *)0xff014544
+//Bit 31:28        reg_adp_tap_alp_lut2d_1_7 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_adp_tap_alp_lut2d_1_6 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_adp_tap_alp_lut2d_1_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_adp_tap_alp_lut2d_1_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_1_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_1_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_1_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_1_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_2_0           (volatile uint32_t *)0xff014548
+//Bit 31:28        reg_adp_tap_alp_lut2d_2_7 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_adp_tap_alp_lut2d_2_6 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_adp_tap_alp_lut2d_2_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_adp_tap_alp_lut2d_2_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_2_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_2_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_2_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_2_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_3_0           (volatile uint32_t *)0xff01454c
+//Bit 31:28        reg_adp_tap_alp_lut2d_3_7 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_adp_tap_alp_lut2d_3_6 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_adp_tap_alp_lut2d_3_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_adp_tap_alp_lut2d_3_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_3_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_3_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_3_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_3_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_4_0           (volatile uint32_t *)0xff014550
+//Bit 31:28        reg_adp_tap_alp_lut2d_4_7 // unsigned ,    RW, default = 2
+//Bit 27:24        reg_adp_tap_alp_lut2d_4_6 // unsigned ,    RW, default = 4
+//Bit 23:20        reg_adp_tap_alp_lut2d_4_5 // unsigned ,    RW, default = 6
+//Bit 19:16        reg_adp_tap_alp_lut2d_4_4 // unsigned ,    RW, default = 2
+//Bit 15:12        reg_adp_tap_alp_lut2d_4_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_4_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_4_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_4_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_5_0           (volatile uint32_t *)0xff014554
+//Bit 31:28        reg_adp_tap_alp_lut2d_5_7 // unsigned ,    RW, default = 15
+//Bit 27:24        reg_adp_tap_alp_lut2d_5_6 // unsigned ,    RW, default = 15
+//Bit 23:20        reg_adp_tap_alp_lut2d_5_5 // unsigned ,    RW, default = 12
+//Bit 19:16        reg_adp_tap_alp_lut2d_5_4 // unsigned ,    RW, default = 8
+//Bit 15:12        reg_adp_tap_alp_lut2d_5_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_5_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_5_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_5_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_6_0           (volatile uint32_t *)0xff014558
+//Bit 31:28        reg_adp_tap_alp_lut2d_6_7 // unsigned ,    RW, default = 15
+//Bit 27:24        reg_adp_tap_alp_lut2d_6_6 // unsigned ,    RW, default = 15
+//Bit 23:20        reg_adp_tap_alp_lut2d_6_5 // unsigned ,    RW, default = 15
+//Bit 19:16        reg_adp_tap_alp_lut2d_6_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_6_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_6_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_6_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_6_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_ALP_LUT2D_7_0           (volatile uint32_t *)0xff01455c
+//Bit 31:28        reg_adp_tap_alp_lut2d_7_7 // unsigned ,    RW, default = 15
+//Bit 27:24        reg_adp_tap_alp_lut2d_7_6 // unsigned ,    RW, default = 15
+//Bit 23:20        reg_adp_tap_alp_lut2d_7_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_adp_tap_alp_lut2d_7_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_adp_tap_alp_lut2d_7_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_adp_tap_alp_lut2d_7_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_adp_tap_alp_lut2d_7_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_adp_tap_alp_lut2d_7_0 // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_ADP_TAP_SAD_THD                 (volatile uint32_t *)0xff014560
+//Bit 31:24        reg_adp_tap_sad_dif_thd1  // unsigned ,    RW, default = 20
+//Bit 23:16        reg_adp_tap_sad_dif_thd0  // unsigned ,    RW, default = 2
+//Bit 15: 8        reg_adp_tap_sad_thd       // unsigned ,    RW, default = 40
+//Bit  7: 0        reg_adp_tap_max_sad_thd   // unsigned ,    RW, default = 64
+#define P_SAFA_PPS_ADP_TAP_EDGE_STR_THD            (volatile uint32_t *)0xff014564
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_adp_tap_edge_str_thd  // unsigned ,    RW, default = 150
+#define P_SAFA_PPS_ADP_TAP_ALP_THD                 (volatile uint32_t *)0xff014568
+//Bit 31:30        reserved
+//Bit 29:24        reg_adp_tap_alp_thd       // unsigned ,    RW, default = 63  the adp tap alp threshold to judge if use nearest function
+//Bit 23:22        reserved
+//Bit 21:16        reg_adp_tap_alp_dif_thd   // unsigned ,    RW, default = 3
+//Bit 15:14        reserved
+//Bit 13: 8        reg_adp_tap_alp_ofst      // unsigned ,    RW, default = 20
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_adp_tap_alp_max_dif_thd // unsigned ,    RW, default = 32
+#define P_SAFA_PPS_SR_ALP_INFO                     (volatile uint32_t *)0xff01456c
+//Bit 31:26        reserved
+//Bit 25:24        reg_sr_delta_alp_mode     // unsigned ,    RW, default = 1
+//Bit 23:22        reserved
+//Bit 21:16        reg_sr_delta_value        // unsigned ,    RW, default = 0
+//Bit 15:10        reserved
+//Bit  9: 8        reg_sr_gamma_alp_mode     // unsigned ,    RW, default = 1
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_sr_gamma_value        // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_PI_INFO                         (volatile uint32_t *)0xff014570
+//Bit 31:22        reserved
+//Bit 21:20        reg_pi_gamma_mode         // unsigned ,    RW, default = 1
+//Bit 19:18        reserved
+//Bit 17:12        reg_pi_gamma_value        // unsigned ,    RW, default = 0
+//Bit 11:10        reserved
+//Bit  9: 8        reg_pi_max_sad_mode       // unsigned ,    RW, default = 1
+//Bit  7: 0        reg_pi_max_sad_value      // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_RMETER_MODE                     (volatile uint32_t *)0xff014574
+//Bit 31:21        reserved
+//Bit 20           reg_sr_grph_en            // unsigned ,    RW, default = 1  enable graphic statistic
+//Bit 19:17        reserved
+//Bit 16           reg_sr_grph_hflt          // unsigned ,    RW, default = 1  horizontal filter, 0: [0 1 -1], 1: [-1 2 -1]
+//Bit 15:13        reserved
+//Bit 12           reg_sr_grph_vflt          // unsigned ,    RW, default = 1  vertical filter, 0: [0 1 -1], 1: [-1 2 -1]
+//Bit 11:10        reserved
+//Bit  9: 8        reg_rmeter_hwin_mm        // unsigned ,    RW, default = 2  horizontal window size, 0:1x7, 1:1x9, 2or3: 1x11
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_rmeter_vwin_mm        // unsigned ,    RW, default = 2  vertical window size, 0: =1, 1: =3, 2or3: =5
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_rmeter_nor_rs_mode    // unsigned ,    RW, default = 0  right shift bit model 0: =5, 1: =6, 2: =7 else =8;
+#define P_SAFA_PPS_SR_GRPH_COR_THD                 (volatile uint32_t *)0xff014578
+//Bit 31:24        reserved
+//Bit 23:16        reg_sr_grph_dif_cor       // unsigned ,    RW, default = 0  coring for dif while count for graphic
+//Bit 15: 8        reg_sr_grph_flt_thd       // unsigned ,    RW, default = 2  flat threshold for dif while count for graphic
+//Bit  7: 0        reg_sr_grph_dtl_thd       // unsigned ,    RW, default = 40  detail threshold for dif while count for graphic
+#define P_SAFA_PPS_SR_GRPH_GAIN                    (volatile uint32_t *)0xff01457c
+//Bit 31:16        reserved
+//Bit 15: 8        reg_sr_grph_hgain         // unsigned ,    RW, default = 32  horizontal gain for fast squart of hp
+//Bit  7: 0        reg_sr_grph_vgain         // unsigned ,    RW, default = 32  vertical gain for fast squart of hp
+#define P_SAFA_PPS_RO_SR_GRPH_FLT_CNT              (volatile uint32_t *)0xff014580
+//Bit 31: 0        ro_sr_grph_flt_cnt        // unsigned ,    RO, default = 0  flat count numbers for graphic
+#define P_SAFA_PPS_RO_SR_GRPH_DTL_CNT              (volatile uint32_t *)0xff014584
+//Bit 31: 0        ro_sr_grph_dtl_cnt        // unsigned ,    RO, default = 0  detail count numbers for graphic
+#define P_SAFA_PPS_RMETER_WINDOW1                  (volatile uint32_t *)0xff014588
+//Bit 31:30        reserved
+//Bit 29:16        reg_rmeter_window_3       // unsigned ,    RW, default = 2160  window location: vend
+//Bit 15:14        reserved
+//Bit 13: 0        reg_rmeter_window_2       // unsigned ,    RW, default = 0  window location: vstart
+#define P_SAFA_PPS_RMETER_WINDOW0                  (volatile uint32_t *)0xff01458c
+//Bit 31:30        reserved
+//Bit 29:16        reg_rmeter_window_1       // unsigned ,    RW, default = 3840  window location: hend
+//Bit 15:14        reserved
+//Bit 13: 0        reg_rmeter_window_0       // unsigned ,    RW, default = 0  window location: hstart
+#define P_SAFA_PPS_RMETER_CORING                   (volatile uint32_t *)0xff014590
+//Bit 31: 8        reserved
+//Bit  7: 4        reg_rmeter_coring_h       // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_rmeter_coring_v       // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_RMETER_H_LOW_THD                (volatile uint32_t *)0xff014594
+//Bit 31:24        reg_rmeter_h_low_thd_3    // unsigned ,    RW, default = 6
+//Bit 23:16        reg_rmeter_h_low_thd_2    // unsigned ,    RW, default = 8
+//Bit 15: 8        reg_rmeter_h_low_thd_1    // unsigned ,    RW, default = 10
+//Bit  7: 0        reg_rmeter_h_low_thd_0    // unsigned ,    RW, default = 15
+#define P_SAFA_PPS_RMETER_H_HIG_THD                (volatile uint32_t *)0xff014598
+//Bit 31:24        reg_rmeter_h_hign_thd_3   // unsigned ,    RW, default = 255
+//Bit 23:16        reg_rmeter_h_hign_thd_2   // unsigned ,    RW, default = 255
+//Bit 15: 8        reg_rmeter_h_hign_thd_1   // unsigned ,    RW, default = 255
+//Bit  7: 0        reg_rmeter_h_hign_thd_0   // unsigned ,    RW, default = 255
+#define P_SAFA_PPS_RMETER_H_RATIO                  (volatile uint32_t *)0xff01459c
+//Bit 31:16        reserved
+//Bit 15:12        reg_rmeter_h_ratio_3      // unsigned ,    RW, default = 12
+//Bit 11: 8        reg_rmeter_h_ratio_2      // unsigned ,    RW, default = 9
+//Bit  7: 4        reg_rmeter_h_ratio_1      // unsigned ,    RW, default = 7
+//Bit  3: 0        reg_rmeter_h_ratio_0      // unsigned ,    RW, default = 4
+#define P_SAFA_PPS_RMETER_V_LOW_THD                (volatile uint32_t *)0xff0145a0
+//Bit 31:24        reg_rmeter_v_low_thd_3    // unsigned ,    RW, default = 6
+//Bit 23:16        reg_rmeter_v_low_thd_2    // unsigned ,    RW, default = 8
+//Bit 15: 8        reg_rmeter_v_low_thd_1    // unsigned ,    RW, default = 10
+//Bit  7: 0        reg_rmeter_v_low_thd_0    // unsigned ,    RW, default = 12
+#define P_SAFA_PPS_RMETER_V_HIG_THD                (volatile uint32_t *)0xff0145a4
+//Bit 31:24        reg_rmeter_v_hign_thd_3   // unsigned ,    RW, default = 255
+//Bit 23:16        reg_rmeter_v_hign_thd_2   // unsigned ,    RW, default = 255
+//Bit 15: 8        reg_rmeter_v_hign_thd_1   // unsigned ,    RW, default = 255
+//Bit  7: 0        reg_rmeter_v_hign_thd_0   // unsigned ,    RW, default = 255
+#define P_SAFA_PPS_RMETER_V_RATIO                  (volatile uint32_t *)0xff0145a8
+//Bit 31:16        reserved
+//Bit 15:12        reg_rmeter_v_ratio_3      // unsigned ,    RW, default = 13
+//Bit 11: 8        reg_rmeter_v_ratio_2      // unsigned ,    RW, default = 10
+//Bit  7: 4        reg_rmeter_v_ratio_1      // unsigned ,    RW, default = 8
+//Bit  3: 0        reg_rmeter_v_ratio_0      // unsigned ,    RW, default = 3
+#define P_SAFA_PPS_RMETER_D_LOW_THD                (volatile uint32_t *)0xff0145ac
+//Bit 31:24        reg_rmeter_d_low_thd_3    // unsigned ,    RW, default = 6
+//Bit 23:16        reg_rmeter_d_low_thd_2    // unsigned ,    RW, default = 8
+//Bit 15: 8        reg_rmeter_d_low_thd_1    // unsigned ,    RW, default = 10
+//Bit  7: 0        reg_rmeter_d_low_thd_0    // unsigned ,    RW, default = 12
+#define P_SAFA_PPS_RMETER_D_HIG_THD                (volatile uint32_t *)0xff0145b0
+//Bit 31:24        reg_rmeter_d_hign_thd_3   // unsigned ,    RW, default = 255
+//Bit 23:16        reg_rmeter_d_hign_thd_2   // unsigned ,    RW, default = 255
+//Bit 15: 8        reg_rmeter_d_hign_thd_1   // unsigned ,    RW, default = 255
+//Bit  7: 0        reg_rmeter_d_hign_thd_0   // unsigned ,    RW, default = 255
+#define P_SAFA_PPS_RMETER_D_RATIO                  (volatile uint32_t *)0xff0145b4
+//Bit 31:16        reserved
+//Bit 15:12        reg_rmeter_d_ratio_3      // unsigned ,    RW, default = 11
+//Bit 11: 8        reg_rmeter_d_ratio_2      // unsigned ,    RW, default = 9
+//Bit  7: 4        reg_rmeter_d_ratio_1      // unsigned ,    RW, default = 8
+//Bit  3: 0        reg_rmeter_d_ratio_0      // unsigned ,    RW, default = 3
+#define P_SAFA_PPS_RO_RMETER_HCNT_0                (volatile uint32_t *)0xff0145b8
+//Bit 31: 0        ro_rmeter_hcnt_0          // unsigned ,    RO, default = 0  count for horizontal resolution meters
+#define P_SAFA_PPS_RO_RMETER_HCNT_1                (volatile uint32_t *)0xff0145bc
+//Bit 31: 0        ro_rmeter_hcnt_1          // unsigned ,    RO, default = 0  count for horizontal resolution meters
+#define P_SAFA_PPS_RO_RMETER_HCNT_2                (volatile uint32_t *)0xff0145c0
+//Bit 31: 0        ro_rmeter_hcnt_2          // unsigned ,    RO, default = 0  count for horizontal resolution meters
+#define P_SAFA_PPS_RO_RMETER_HCNT_3                (volatile uint32_t *)0xff0145c4
+//Bit 31: 0        ro_rmeter_hcnt_3          // unsigned ,    RO, default = 0  count for horizontal resolution meters
+#define P_SAFA_PPS_RO_RMETER_HCNT_4                (volatile uint32_t *)0xff0145c8
+//Bit 31: 0        ro_rmeter_hcnt_4          // unsigned ,    RO, default = 0  count for horizontal resolution meters
+#define P_SAFA_PPS_RO_RMETER_VCNT_0                (volatile uint32_t *)0xff0145cc
+//Bit 31: 0        ro_rmeter_vcnt_0          // unsigned ,    RO, default = 0  count for vertical resolution meters
+#define P_SAFA_PPS_RO_RMETER_VCNT_1                (volatile uint32_t *)0xff0145d0
+//Bit 31: 0        ro_rmeter_vcnt_1          // unsigned ,    RO, default = 0  count for vertical resolution meters
+#define P_SAFA_PPS_RO_RMETER_VCNT_2                (volatile uint32_t *)0xff0145d4
+//Bit 31: 0        ro_rmeter_vcnt_2          // unsigned ,    RO, default = 0  count for vertical resolution meters
+#define P_SAFA_PPS_RO_RMETER_VCNT_3                (volatile uint32_t *)0xff0145d8
+//Bit 31: 0        ro_rmeter_vcnt_3          // unsigned ,    RO, default = 0  count for vertical resolution meters
+#define P_SAFA_PPS_RO_RMETER_VCNT_4                (volatile uint32_t *)0xff0145dc
+//Bit 31: 0        ro_rmeter_vcnt_4          // unsigned ,    RO, default = 0  count for vertical resolution meters
+#define P_SAFA_PPS_RO_RMETER_PDCNT_0               (volatile uint32_t *)0xff0145e0
+//Bit 31: 0        ro_rmeter_pdcnt_0         // unsigned ,    RO, default = 0  count for diag0 resolution meters
+#define P_SAFA_PPS_RO_RMETER_PDCNT_1               (volatile uint32_t *)0xff0145e4
+//Bit 31: 0        ro_rmeter_pdcnt_1         // unsigned ,    RO, default = 0  count for diag0 resolution meters
+#define P_SAFA_PPS_RO_RMETER_PDCNT_2               (volatile uint32_t *)0xff0145e8
+//Bit 31: 0        ro_rmeter_pdcnt_2         // unsigned ,    RO, default = 0  count for diag0 resolution meters
+#define P_SAFA_PPS_RO_RMETER_PDCNT_3               (volatile uint32_t *)0xff0145ec
+//Bit 31: 0        ro_rmeter_pdcnt_3         // unsigned ,    RO, default = 0  count for diag0 resolution meters
+#define P_SAFA_PPS_RO_RMETER_PDCNT_4               (volatile uint32_t *)0xff0145f0
+//Bit 31: 0        ro_rmeter_pdcnt_4         // unsigned ,    RO, default = 0  count for diag0 resolution meters
+#define P_SAFA_PPS_RO_RMETER_NDCNT_0               (volatile uint32_t *)0xff0145f4
+//Bit 31: 0        ro_rmeter_ndcnt_0         // unsigned ,    RO, default = 0  count for diag1 resolution meters
+#define P_SAFA_PPS_RO_RMETER_NDCNT_1               (volatile uint32_t *)0xff0145f8
+//Bit 31: 0        ro_rmeter_ndcnt_1         // unsigned ,    RO, default = 0  count for diag1 resolution meters
+#define P_SAFA_PPS_RO_RMETER_NDCNT_2               (volatile uint32_t *)0xff0145fc
+//Bit 31: 0        ro_rmeter_ndcnt_2         // unsigned ,    RO, default = 0  count for diag1 resolution meters
+#define P_SAFA_PPS_RO_RMETER_NDCNT_3               (volatile uint32_t *)0xff014600
+//Bit 31: 0        ro_rmeter_ndcnt_3         // unsigned ,    RO, default = 0  count for diag1 resolution meters
+#define P_SAFA_PPS_RO_RMETER_NDCNT_4               (volatile uint32_t *)0xff014604
+//Bit 31: 0        ro_rmeter_ndcnt_4         // unsigned ,    RO, default = 0  count for diag1 resolution meters
+#define P_SAFA_PPS_HW_CTRL                         (volatile uint32_t *)0xff014640
+//Bit 31:29        reserved
+//Bit 28           reg_field                 // unsigned ,    RW, default = 0
+//Bit 27:26        reg_frm2fld_en            // unsigned ,    RW, default = 0  ,0bit: 0:p 1:i 1bit: 0:field 1:reg_field
+//Bit 25:21        reg_vsc_bot_ini_integer   //   signed ,    RW, default = -1
+//Bit 20           reg_postvsc_rpt_en        // unsigned ,    RW, default = 1
+//Bit 19           reg_hvalp_rptbuf_en       // unsigned ,    RW, default = 1
+//Bit 18:11        reserved
+//Bit 10: 9        reg_pi_out_vofs           // unsigned ,    RW, default = 0
+//Bit  8           reg_safa_pps_top_en       // unsigned ,    RW, default = 0  ,reg_safa_pps_top_en
+//Bit  7: 6        reg_444to422_mode         // unsigned ,    RW, default = 0
+//Bit  5           reg_padding_mode          // unsigned ,    RW, default = 0
+//Bit  4           reg_analy_en              // unsigned ,    RW, default = 1  ,reg_postsc_en
+//Bit  3           reg_rdout_mode            // unsigned ,    RW, default = 0  ,post_vscaler_rd_mode
+//Bit  2           reg_postsc_en             // unsigned ,    RW, default = 1  ,reg_postsc_en
+//Bit  1           reg_size_mux              // unsigned ,    RW, default = 0  ,hsize sel
+//Bit  0           reg_prevsc_outside_en     // unsigned ,    RW, default = 1  ,video1 scale out enable
+#define P_SAFA_PPS_GATE_CTRL                       (volatile uint32_t *)0xff014644
+//Bit 31:28        reserved
+//Bit 27:26        reg_upsap_gclk_ctrl       // unsigned ,    RW, default = 0
+//Bit 25:24        reg_analy_gclk_ctrl       // unsigned ,    RW, default = 0
+//Bit 23:22        reg_analy_post_gclk_ctrl  // unsigned ,    RW, default = 0
+//Bit 21:20        reg_drt_interp_gclk_ctrl  // unsigned ,    RW, default = 0
+//Bit 19:18        reg_drt_interp1_gclk_ctrl // unsigned ,    RW, default = 0
+//Bit 17:16        reg_drt_coef_gclk_ctrl    // unsigned ,    RW, default = 0
+//Bit 15:14        reg_drt_coef1_gclk_ctrl   // unsigned ,    RW, default = 0
+//Bit 13:12        reg_sharp_chrm_gclk_ctrl  // unsigned ,    RW, default = 0
+//Bit 11:10        reg_prevsc_gclk_ctrl      // unsigned ,    RW, default = 0
+//Bit  9: 8        reg_prehsc_gclk_ctrl      // unsigned ,    RW, default = 0
+//Bit  7: 6        reg_analy_pre_gclk_ctrl   // unsigned ,    RW, default = 0
+//Bit  5: 4        reg_dir_gclk_ctrl         // unsigned ,    RW, default = 0
+//Bit  3: 2        reg_hvalp_gclk_ctrl       // unsigned ,    RW, default = 0
+//Bit  1: 0        reg_postsc_gclk_ctrl      // unsigned ,    RW, default = 0
+#define P_SAFA_PPS_UPSAP_BLANK_NUM                 (volatile uint32_t *)0xff014648
+//Bit 31:16        reg_vsc_bot_ini_phase     // unsigned ,    RW, default = 0
+//Bit 15: 8        reg_upsap_hblank_num      // unsigned ,    RW, default = 3
+//Bit  7: 0        reg_upsap_vblank_num      // unsigned ,    RW, default = 5
+#define P_SAFA_PPS_BLANK_NUM                       (volatile uint32_t *)0xff01464c
+//Bit 31:24        reg_luma_hsc_hblank_num   // unsigned ,    RW, default = 12
+//Bit 23:16        reg_luma_hsc_vblank_num   // unsigned ,    RW, default = 21
+//Bit 15: 8        reg_chrm_hsc_hblank_num   // unsigned ,    RW, default = 12
+//Bit  7: 0        reg_chrm_hsc_vblank_num   // unsigned ,    RW, default = 21
+#define P_SAFA_PPS_ANALY_PRE_BLANK_NUM             (volatile uint32_t *)0xff014650
+//Bit 31:24        reg_aly_pre_hblank_num    // unsigned ,    RW, default = 6
+//Bit 23:16        reg_aly_pre_vblank_num    // unsigned ,    RW, default = 34
+//Bit 15: 8        reg_hvp_pre_hblank_num    // unsigned ,    RW, default = 4
+//Bit  7: 0        reg_hvp_pre_vblank_num    // unsigned ,    RW, default = 14
+#define P_SAFA_PPS_ANALY_POST_BLANK_NUM            (volatile uint32_t *)0xff014654
+//Bit 31:24        reg_aly_po0_hblank_num    // unsigned ,    RW, default = 4
+//Bit 23:16        reg_aly_po0_vblank_num    // unsigned ,    RW, default = 28
+//Bit 15: 8        reg_aly_po1_hblank_num    // unsigned ,    RW, default = 3
+//Bit  7: 0        reg_aly_po1_vblank_num    // unsigned ,    RW, default = 7
+#define P_SAFA_PPS_HVALP_POST_BLANK_NUM            (volatile uint32_t *)0xff014658
+//Bit 31:24        reg_hvp_v_hblank_num      // unsigned ,    RW, default = 3
+//Bit 23:16        reg_hvp_v_vblank_num      // unsigned ,    RW, default = 4
+//Bit 15: 8        reg_hvp_h_hblank_num      // unsigned ,    RW, default = 3
+//Bit  7: 0        reg_hvp_h_vblank_num      // unsigned ,    RW, default = 2
+#define P_SAFA_PPS_CNTL_SCALE_COEF_IDX_LUMA        (volatile uint32_t *)0xff01465c
+//Bit 31:15        reserved
+//Bit 14           reg_index_inc_luma        // unsigned ,    RW, default = 0  ,index increment, if bit9 == 1  then (0: index increase 1, 1: index increase 2) else (index increase 2)
+//Bit 13           reg_rd_cbus_coef_en_luma  // unsigned ,    RW, default = 0  ,1: read coef through cbus enable, just for debug purpose in case when we wanna check the coef in ram in correct or not
+//Bit 12:10        reserved
+//Bit  9: 7        reg_type_index_luma       // unsigned ,    RW, default = 0  ,type of index, 00: vertical coef, 01: vertical chroma coef: 10: horizontal coef, 11: resevered
+//Bit  6: 0        reg_coef_index_luma       // unsigned ,    RW, default = 0  ,coef	index
+#define P_SAFA_PPS_CNTL_SCALE_COEF_LUMA            (volatile uint32_t *)0xff014660
+//Bit 31:24        reg_coef0_luma            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit 23:16        reg_coef1_luma            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit 15: 8        reg_coef2_luma            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit  7: 0        reg_coef3_luma            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+#define P_SAFA_PPS_CNTL_SCALE_COEF_IDX_CHRO        (volatile uint32_t *)0xff014664
+//Bit 31:15        reserved
+//Bit 14           reg_index_inc_chro        // unsigned ,    RW, default = 0  ,index increment, if bit9 == 1  then (0: index increase 1, 1: index increase 2) else (index increase 2)
+//Bit 13           reg_rd_cbus_coef_en_chro  // unsigned ,    RW, default = 0  ,1: read coef through cbus enable, just for debug purpose in case when we wanna check the coef in ram in correct or not
+//Bit 12:10        reserved
+//Bit  9: 7        reg_type_index_chro       // unsigned ,    RW, default = 0  ,type of index, 00: vertical coef, 01: vertical chroma coef: 10: horizontal coef, 11: resevered
+//Bit  6: 0        reg_coef_index_chro       // unsigned ,    RW, default = 0  ,coef	index
+#define P_SAFA_PPS_CNTL_SCALE_COEF_CHRO            (volatile uint32_t *)0xff014668
+//Bit 31:24        reg_coef0_chro            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit 23:16        reg_coef1_chro            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit 15: 8        reg_coef2_chro            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
+//Bit  7: 0        reg_coef3_chro            // signed ,      RW, default = 0  ,	coefficients for vertical filter and horizontal	filter
 // synopsys translate_off
 // synopsys translate_on
 //
-// Closing file:  sharp_regs2.h
-//
-
-#define SRSHARP0_SR7_DRTLPF_EN                     (SRSHARP0_OFFSET + SR7_DRTLPF_EN             )//
-#define SRSHARP0_SR7_DRTLPF_BETA                   (SRSHARP0_OFFSET + SR7_DRTLPF_BETA           )//
-#define SRSHARP0_SR7_PKBLD_BETA                    (SRSHARP0_OFFSET + SR7_PKBLD_BETA            )//
-#define SRSHARP0_SR7_XLTIBLD_BETA                  (SRSHARP0_OFFSET + SR7_XLTIBLD_BETA          )//
-#define SRSHARP0_SR7_DRTLPF_EDGE0                  (SRSHARP0_OFFSET + SR7_DRTLPF_EDGE0          )//
-#define SRSHARP0_SR7_DRTLPF_EDGE1                  (SRSHARP0_OFFSET + SR7_DRTLPF_EDGE1          )//
-#define SRSHARP0_SR7_DRTLPF_SDCOR0                 (SRSHARP0_OFFSET + SR7_DRTLPF_SDCOR0         )//
-#define SRSHARP0_SR7_DRTLPF_SDCOR1                 (SRSHARP0_OFFSET + SR7_DRTLPF_SDCOR1         )//
-#define SRSHARP0_SR7_CTIGAIN_SDCOR0                (SRSHARP0_OFFSET + SR7_CTIGAIN_SDCOR0        )//
-#define SRSHARP0_SR7_CTIGAIN_SDCOR1                (SRSHARP0_OFFSET + SR7_CTIGAIN_SDCOR1        )//
-#define SRSHARP0_SR7_LTIGAIN_SDCOR0                (SRSHARP0_OFFSET + SR7_LTIGAIN_SDCOR0        )//
-#define SRSHARP0_SR7_LTIGAIN_SDCOR1                (SRSHARP0_OFFSET + SR7_LTIGAIN_SDCOR1        )//
-#define SRSHARP0_SR7_HLTIBPF_TAP0                  (SRSHARP0_OFFSET + SR7_HLTIBPF_TAP0          )//
-#define SRSHARP0_SR7_HLTIBPF_TAP1                  (SRSHARP0_OFFSET + SR7_HLTIBPF_TAP1          )//
-#define SRSHARP0_SR7_HCTIBPF_TAP0                  (SRSHARP0_OFFSET + SR7_HCTIBPF_TAP0          )//
-#define SRSHARP0_SR7_HCTIBPF_TAP1                  (SRSHARP0_OFFSET + SR7_HCTIBPF_TAP1          )//
-#define SRSHARP0_SR7_PKLONGBPF_HTAP0               (SRSHARP0_OFFSET + SR7_PKLONGBPF_HTAP0       ) //
-#define SRSHARP0_SR7_PKLONGBPF_HTAP1               (SRSHARP0_OFFSET + SR7_PKLONGBPF_HTAP1       ) //
-#define SRSHARP0_SR7_PKLONGHPF_HTAP0               (SRSHARP0_OFFSET + SR7_PKLONGHPF_HTAP0       ) //
-#define SRSHARP0_SR7_PKLONGHPF_HTAP1               (SRSHARP0_OFFSET + SR7_PKLONGHPF_HTAP1       ) //
-#define SRSHARP0_SR7_VLTIBPF_TAP0                  (SRSHARP0_OFFSET + SR7_VLTIBPF_TAP0          ) //
-#define SRSHARP0_SR7_VLTIBPF_TAP1                  (SRSHARP0_OFFSET + SR7_VLTIBPF_TAP1          ) //
-#define SRSHARP0_SR7_VCTIBPF_TAP0                  (SRSHARP0_OFFSET + SR7_VCTIBPF_TAP0          ) //
-#define SRSHARP0_SR7_VCTIBPF_TAP1                  (SRSHARP0_OFFSET + SR7_VCTIBPF_TAP1          ) //
-#define SRSHARP0_SR7_PKLONGBPF_VTAP0               (SRSHARP0_OFFSET + SR7_PKLONGBPF_VTAP0       ) //
-#define SRSHARP0_SR7_PKLONGBPF_VTAP1               (SRSHARP0_OFFSET + SR7_PKLONGBPF_VTAP1       ) //
-#define SRSHARP0_SR7_PKLONGHPF_VTAP0               (SRSHARP0_OFFSET + SR7_PKLONGHPF_VTAP0       ) //
-#define SRSHARP0_SR7_PKLONGHPF_VTAP1               (SRSHARP0_OFFSET + SR7_PKLONGHPF_VTAP1       ) //
-#define SRSHARP0_SR7_CIRBPLONG_ALP                 (SRSHARP0_OFFSET + SR7_CIRBPLONG_ALP         ) //
-#define SRSHARP0_SR7_CIRHPLONG_ALP                 (SRSHARP0_OFFSET + SR7_CIRHPLONG_ALP         ) //
-#define SRSHARP0_SR7_DRTBPLONG_ALP                 (SRSHARP0_OFFSET + SR7_DRTBPLONG_ALP         ) //
-#define SRSHARP0_SR7_DRTHPLONG_ALP                 (SRSHARP0_OFFSET + SR7_DRTHPLONG_ALP         ) //
-#define SRSHARP0_SR7_PKMINMAXCIR_BLD_LUT2D0        (SRSHARP0_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D0) //
-#define SRSHARP0_SR7_PKMINMAXCIR_BLD_LUT2D1        (SRSHARP0_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D1) //
-#define SRSHARP0_SR7_PKMINMAXCIR_BLD_LUT2D2        (SRSHARP0_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D2) //
-#define SRSHARP0_SR7_PKMINMAXCIR_BLD_LUT2D3        (SRSHARP0_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D3) //
-#define SRSHARP0_SR7_PKMINMAXCIR_BLD_LUT2D4        (SRSHARP0_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D4) //
-#define SRSHARP0_SR7_PKMINMAXLPF_BLD_LUT2D0        (SRSHARP0_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D0) //
-#define SRSHARP0_SR7_PKMINMAXLPF_BLD_LUT2D1        (SRSHARP0_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D1) //
-#define SRSHARP0_SR7_PKMINMAXLPF_BLD_LUT2D2        (SRSHARP0_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D2) //
-#define SRSHARP0_SR7_PKMINMAXLPF_BLD_LUT2D3        (SRSHARP0_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D3) //
-#define SRSHARP0_SR7_PKMINMAXLPF_BLD_LUT2D4        (SRSHARP0_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D4) //
-#define SRSHARP0_SR7_PKDRT_BLD_EN                  (SRSHARP0_OFFSET + SR7_PKDRT_BLD_EN          ) //
-#define SRSHARP0_SR7_DRTDIF_TH                     (SRSHARP0_OFFSET + SR7_DRTDIF_TH             ) //
-#define SRSHARP0_SR7_TIBLD_PRT                     (SRSHARP0_OFFSET + SR7_TIBLD_PRT             ) //
-#define SRSHARP0_SR7_HTI_OPT_FORCE                 (SRSHARP0_OFFSET + SR7_HTI_OPT_FORCE         ) //
-#define SRSHARP0_SR7_HVTI_FINALGAIN                (SRSHARP0_OFFSET + SR7_HVTI_FINALGAIN        ) //
-#define SRSHARP0_SR7_TIOS_SDRATIO                  (SRSHARP0_OFFSET + SR7_TIOS_SDRATIO          ) //
-#define SRSHARP0_SR7_XTI_SDFDEN                    (SRSHARP0_OFFSET + SR7_XTI_SDFDEN            ) //
-#define SRSHARP0_SR7_FDSD_PARAM                    (SRSHARP0_OFFSET + SR7_FDSD_PARAM            ) //
-#define SRSHARP0_SR7_TI_BPF_EN                     (SRSHARP0_OFFSET + SR7_TI_BPF_EN             ) //
-#define SRSHARP0_SR7_PKLONG_PF_EN                  (SRSHARP0_OFFSET + SR7_PKLONG_PF_EN          ) //
-#define SRSHARP0_SR7_PKLONG_PF_GAIN                (SRSHARP0_OFFSET + SR7_PKLONG_PF_GAIN        ) //
-#define SRSHARP0_SR7_PKMINMAX_BLD                  (SRSHARP0_OFFSET + SR7_PKMINMAX_BLD          ) //
-#define SRSHARP0_SR7_TI_CONMAXERR_GAIN             (SRSHARP0_OFFSET + SR7_TI_CONMAXERR_GAIN     ) //
-#define SRSHARP0_SR7_CC_PK_ADJ                     (SRSHARP0_OFFSET + SR7_CC_PK_ADJ             ) //
-#define SRSHARP0_SR7_CC_LUT0                       (SRSHARP0_OFFSET + SR7_CC_LUT0               ) //
-#define SRSHARP0_SR7_CC_LUT1                       (SRSHARP0_OFFSET + SR7_CC_LUT1               ) //
-#define SRSHARP0_SR7_CC_LUT2                       (SRSHARP0_OFFSET + SR7_CC_LUT2               ) //
-#define SRSHARP0_SR7_CC_LUT3                       (SRSHARP0_OFFSET + SR7_CC_LUT3               ) //
-#define SRSHARP0_SR7_CC_LUT4                       (SRSHARP0_OFFSET + SR7_CC_LUT4               ) //
-#define SRSHARP0_SR7_CC_LUT5                       (SRSHARP0_OFFSET + SR7_CC_LUT5               ) //
-#define SRSHARP0_SR7_GRAPHIC_CTRL                  (SRSHARP0_OFFSET + SR7_GRAPHIC_CTRL          ) //
-#define SRSHARP0_SR7_GRAPHIC_THD_GAIN              (SRSHARP0_OFFSET + SR7_GRAPHIC_THD_GAIN      ) //
-#define SRSHARP0_SR7_RO_GRAPHIC_FLT_CNT            (SRSHARP0_OFFSET + SR7_RO_GRAPHIC_FLT_CNT    ) //
-#define SRSHARP0_SR7_RO_GRAPHIC_DTL_CNT            (SRSHARP0_OFFSET + SR7_RO_GRAPHIC_DTL_CNT    ) //
-#define SRSHARP0_SR7_CLR_PRT_PARAM                 (SRSHARP0_OFFSET + SR7_CLR_PRT_PARAM         ) //
-#define SRSHARP0_SR7_CLR_PRT_LC_GAIN               (SRSHARP0_OFFSET + SR7_CLR_PRT_LC_GAIN       ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT0                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT0          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT1                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT1          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT2                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT2          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT3                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT3          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT4                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT4          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT5                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT5          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT6                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT6          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT7                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT7          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT8                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT8          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT9                  (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT9          ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT10                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT10         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT11                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT11         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT12                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT12         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT13                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT13         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT14                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT14         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT15                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT15         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT16                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT16         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT17                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT17         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT18                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT18         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT19                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT19         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT20                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT20         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT21                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT21         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT22                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT22         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT23                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT23         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT24                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT24         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT25                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT25         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT26                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT26         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT27                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT27         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT28                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT28         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT29                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT29         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT30                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT30         ) //
-#define SRSHARP0_SR7_CLR_PRT_LUT31                 (SRSHARP0_OFFSET + SR7_CLR_PRT_LUT31         ) //
-
-
-//// srsharp1 reg define
-#define SRSHARP1_SR7_DRTLPF_EN                     (SRSHARP1_OFFSET + SR7_DRTLPF_EN             )//
-#define SRSHARP1_SR7_DRTLPF_BETA                   (SRSHARP1_OFFSET + SR7_DRTLPF_BETA           )//
-#define SRSHARP1_SR7_PKBLD_BETA                    (SRSHARP1_OFFSET + SR7_PKBLD_BETA            )//
-#define SRSHARP1_SR7_XLTIBLD_BETA                  (SRSHARP1_OFFSET + SR7_XLTIBLD_BETA          )//
-#define SRSHARP1_SR7_DRTLPF_EDGE0                  (SRSHARP1_OFFSET + SR7_DRTLPF_EDGE0          )//
-#define SRSHARP1_SR7_DRTLPF_EDGE1                  (SRSHARP1_OFFSET + SR7_DRTLPF_EDGE1          )//
-#define SRSHARP1_SR7_DRTLPF_SDCOR0                 (SRSHARP1_OFFSET + SR7_DRTLPF_SDCOR0         )//
-#define SRSHARP1_SR7_DRTLPF_SDCOR1                 (SRSHARP1_OFFSET + SR7_DRTLPF_SDCOR1         )//
-#define SRSHARP1_SR7_CTIGAIN_SDCOR0                (SRSHARP1_OFFSET + SR7_CTIGAIN_SDCOR0        )//
-#define SRSHARP1_SR7_CTIGAIN_SDCOR1                (SRSHARP1_OFFSET + SR7_CTIGAIN_SDCOR1        )//
-#define SRSHARP1_SR7_LTIGAIN_SDCOR0                (SRSHARP1_OFFSET + SR7_LTIGAIN_SDCOR0        )//
-#define SRSHARP1_SR7_LTIGAIN_SDCOR1                (SRSHARP1_OFFSET + SR7_LTIGAIN_SDCOR1        )//
-#define SRSHARP1_SR7_HLTIBPF_TAP0                  (SRSHARP1_OFFSET + SR7_HLTIBPF_TAP0          )//
-#define SRSHARP1_SR7_HLTIBPF_TAP1                  (SRSHARP1_OFFSET + SR7_HLTIBPF_TAP1          )//
-#define SRSHARP1_SR7_HCTIBPF_TAP0                  (SRSHARP1_OFFSET + SR7_HCTIBPF_TAP0          )//
-#define SRSHARP1_SR7_HCTIBPF_TAP1                  (SRSHARP1_OFFSET + SR7_HCTIBPF_TAP1          )//
-#define SRSHARP1_SR7_PKLONGBPF_HTAP0               (SRSHARP1_OFFSET + SR7_PKLONGBPF_HTAP0       ) //
-#define SRSHARP1_SR7_PKLONGBPF_HTAP1               (SRSHARP1_OFFSET + SR7_PKLONGBPF_HTAP1       ) //
-#define SRSHARP1_SR7_PKLONGHPF_HTAP0               (SRSHARP1_OFFSET + SR7_PKLONGHPF_HTAP0       ) //
-#define SRSHARP1_SR7_PKLONGHPF_HTAP1               (SRSHARP1_OFFSET + SR7_PKLONGHPF_HTAP1       ) //
-#define SRSHARP1_SR7_VLTIBPF_TAP0                  (SRSHARP1_OFFSET + SR7_VLTIBPF_TAP0          ) //
-#define SRSHARP1_SR7_VLTIBPF_TAP1                  (SRSHARP1_OFFSET + SR7_VLTIBPF_TAP1          ) //
-#define SRSHARP1_SR7_VCTIBPF_TAP0                  (SRSHARP1_OFFSET + SR7_VCTIBPF_TAP0          ) //
-#define SRSHARP1_SR7_VCTIBPF_TAP1                  (SRSHARP1_OFFSET + SR7_VCTIBPF_TAP1          ) //
-#define SRSHARP1_SR7_PKLONGBPF_VTAP0               (SRSHARP1_OFFSET + SR7_PKLONGBPF_VTAP0       ) //
-#define SRSHARP1_SR7_PKLONGBPF_VTAP1               (SRSHARP1_OFFSET + SR7_PKLONGBPF_VTAP1       ) //
-#define SRSHARP1_SR7_PKLONGHPF_VTAP0               (SRSHARP1_OFFSET + SR7_PKLONGHPF_VTAP0       ) //
-#define SRSHARP1_SR7_PKLONGHPF_VTAP1               (SRSHARP1_OFFSET + SR7_PKLONGHPF_VTAP1       ) //
-#define SRSHARP1_SR7_CIRBPLONG_ALP                 (SRSHARP1_OFFSET + SR7_CIRBPLONG_ALP         ) //
-#define SRSHARP1_SR7_CIRHPLONG_ALP                 (SRSHARP1_OFFSET + SR7_CIRHPLONG_ALP         ) //
-#define SRSHARP1_SR7_DRTBPLONG_ALP                 (SRSHARP1_OFFSET + SR7_DRTBPLONG_ALP         ) //
-#define SRSHARP1_SR7_DRTHPLONG_ALP                 (SRSHARP1_OFFSET + SR7_DRTHPLONG_ALP         ) //
-#define SRSHARP1_SR7_PKMINMAXCIR_BLD_LUT2D0        (SRSHARP1_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D0) //
-#define SRSHARP1_SR7_PKMINMAXCIR_BLD_LUT2D1        (SRSHARP1_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D1) //
-#define SRSHARP1_SR7_PKMINMAXCIR_BLD_LUT2D2        (SRSHARP1_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D2) //
-#define SRSHARP1_SR7_PKMINMAXCIR_BLD_LUT2D3        (SRSHARP1_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D3) //
-#define SRSHARP1_SR7_PKMINMAXCIR_BLD_LUT2D4        (SRSHARP1_OFFSET + SR7_PKMINMAXCIR_BLD_LUT2D4) //
-#define SRSHARP1_SR7_PKMINMAXLPF_BLD_LUT2D0        (SRSHARP1_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D0) //
-#define SRSHARP1_SR7_PKMINMAXLPF_BLD_LUT2D1        (SRSHARP1_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D1) //
-#define SRSHARP1_SR7_PKMINMAXLPF_BLD_LUT2D2        (SRSHARP1_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D2) //
-#define SRSHARP1_SR7_PKMINMAXLPF_BLD_LUT2D3        (SRSHARP1_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D3) //
-#define SRSHARP1_SR7_PKMINMAXLPF_BLD_LUT2D4        (SRSHARP1_OFFSET + SR7_PKMINMAXLPF_BLD_LUT2D4) //
-#define SRSHARP1_SR7_PKDRT_BLD_EN                  (SRSHARP1_OFFSET + SR7_PKDRT_BLD_EN          ) //
-#define SRSHARP1_SR7_DRTDIF_TH                     (SRSHARP1_OFFSET + SR7_DRTDIF_TH             ) //
-#define SRSHARP1_SR7_TIBLD_PRT                     (SRSHARP1_OFFSET + SR7_TIBLD_PRT             ) //
-#define SRSHARP1_SR7_HTI_OPT_FORCE                 (SRSHARP1_OFFSET + SR7_HTI_OPT_FORCE         ) //
-#define SRSHARP1_SR7_HVTI_FINALGAIN                (SRSHARP1_OFFSET + SR7_HVTI_FINALGAIN        ) //
-#define SRSHARP1_SR7_TIOS_SDRATIO                  (SRSHARP1_OFFSET + SR7_TIOS_SDRATIO          ) //
-#define SRSHARP1_SR7_XTI_SDFDEN                    (SRSHARP1_OFFSET + SR7_XTI_SDFDEN            ) //
-#define SRSHARP1_SR7_FDSD_PARAM                    (SRSHARP1_OFFSET + SR7_FDSD_PARAM            ) //
-#define SRSHARP1_SR7_TI_BPF_EN                     (SRSHARP1_OFFSET + SR7_TI_BPF_EN             ) //
-#define SRSHARP1_SR7_PKLONG_PF_EN                  (SRSHARP1_OFFSET + SR7_PKLONG_PF_EN          ) //
-#define SRSHARP1_SR7_PKLONG_PF_GAIN                (SRSHARP1_OFFSET + SR7_PKLONG_PF_GAIN        ) //
-#define SRSHARP1_SR7_PKMINMAX_BLD                  (SRSHARP1_OFFSET + SR7_PKMINMAX_BLD          ) //
-#define SRSHARP1_SR7_TI_CONMAXERR_GAIN             (SRSHARP1_OFFSET + SR7_TI_CONMAXERR_GAIN     ) //
-#define SRSHARP1_SR7_CC_PK_ADJ                     (SRSHARP1_OFFSET + SR7_CC_PK_ADJ             ) //
-#define SRSHARP1_SR7_CC_LUT0                       (SRSHARP1_OFFSET + SR7_CC_LUT0               ) //
-#define SRSHARP1_SR7_CC_LUT1                       (SRSHARP1_OFFSET + SR7_CC_LUT1               ) //
-#define SRSHARP1_SR7_CC_LUT2                       (SRSHARP1_OFFSET + SR7_CC_LUT2               ) //
-#define SRSHARP1_SR7_CC_LUT3                       (SRSHARP1_OFFSET + SR7_CC_LUT3               ) //
-#define SRSHARP1_SR7_CC_LUT4                       (SRSHARP1_OFFSET + SR7_CC_LUT4               ) //
-#define SRSHARP1_SR7_CC_LUT5                       (SRSHARP1_OFFSET + SR7_CC_LUT5               ) //
-#define SRSHARP1_SR7_GRAPHIC_CTRL                  (SRSHARP1_OFFSET + SR7_GRAPHIC_CTRL          ) //
-#define SRSHARP1_SR7_GRAPHIC_THD_GAIN              (SRSHARP1_OFFSET + SR7_GRAPHIC_THD_GAIN      ) //
-#define SRSHARP1_SR7_RO_GRAPHIC_FLT_CNT            (SRSHARP1_OFFSET + SR7_RO_GRAPHIC_FLT_CNT    ) //
-#define SRSHARP1_SR7_RO_GRAPHIC_DTL_CNT            (SRSHARP1_OFFSET + SR7_RO_GRAPHIC_DTL_CNT    ) //
-#define SRSHARP1_SR7_CLR_PRT_PARAM                 (SRSHARP1_OFFSET + SR7_CLR_PRT_PARAM         ) //
-#define SRSHARP1_SR7_CLR_PRT_LC_GAIN               (SRSHARP1_OFFSET + SR7_CLR_PRT_LC_GAIN       ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT0                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT0          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT1                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT1          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT2                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT2          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT3                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT3          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT4                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT4          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT5                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT5          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT6                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT6          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT7                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT7          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT8                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT8          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT9                  (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT9          ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT10                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT10         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT11                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT11         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT12                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT12         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT13                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT13         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT14                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT14         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT15                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT15         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT16                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT16         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT17                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT17         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT18                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT18         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT19                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT19         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT20                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT20         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT21                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT21         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT22                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT22         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT23                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT23         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT24                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT24         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT25                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT25         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT26                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT26         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT27                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT27         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT28                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT28         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT29                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT29         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT30                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT30         ) //
-#define SRSHARP1_SR7_CLR_PRT_LUT31                 (SRSHARP1_OFFSET + SR7_CLR_PRT_LUT31         ) //
-
-// synopsys translate_off
-// synopsys translate_on
-//
-// Closing file:  srsharp_regs2.h
+// Closing file:  safa_pps_regs.h
 //
 // -----------------------------------------------
 // REG_BASE:  VPPG_VCBUS_BASE = 0x52
 // -----------------------------------------------
-// 8'h50/51/52/53  have used  for srsharp_regs
+//
+// Reading file:  vid_sharp_regs.h
+//
+// synopsys translate_off
+// synopsys translate_on
+#define P_VPP_SR_MISC                              (volatile uint32_t *)0xff014800
+//Bit 31:16        reg_sync_ctrl               // unsigned ,    RW, default = 0
+//Bit 15:8         reg_inp_hblank              // unsigned ,    RW, default = 0
+//Bit 7:1          reserved
+//Bit 0            reg_inp_hold_en             // unsigned ,    RW, default = 1
+#define P_VPP_SR_GCLK_CTRL0                        (volatile uint32_t *)0xff014804
+//Bit 31:0         reg_gclk_ctrl0              // unsigned ,    RW, default = 0
+#define P_VPP_SR_GCLK_CTRL1                        (volatile uint32_t *)0xff014808
+//Bit 31:0         reg_gclk_ctrl1              // unsigned ,    RW, default = 0
+#define P_VPP_SR_GCLK_CTRL2                        (volatile uint32_t *)0xff01480c
+//Bit 31:0         reg_gclk_ctrl2              // unsigned ,    RW, default = 0
+#define P_VPP_SR_EN                                (volatile uint32_t *)0xff014810
+//Bit 31: 1        reserved
+//Bit 0            reg_sr_en                  // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_EN                            (volatile uint32_t *)0xff014820
+//Bit 31:30        reg_dir_sad_lpf_mode_7    // unsigned ,    RW, default = 2
+//Bit 29:28        reg_dir_sad_lpf_mode_6    // unsigned ,    RW, default = 2
+//Bit 27:26        reg_dir_sad_lpf_mode_5    // unsigned ,    RW, default = 2
+//Bit 25:24        reg_dir_sad_lpf_mode_4    // unsigned ,    RW, default = 2
+//Bit 23:22        reg_dir_sad_lpf_mode_3    // unsigned ,    RW, default = 2
+//Bit 21:20        reg_dir_sad_lpf_mode_2    // unsigned ,    RW, default = 2
+//Bit 19:18        reg_dir_sad_lpf_mode_1    // unsigned ,    RW, default = 2
+//Bit 17:16        reg_dir_sad_lpf_mode_0    // unsigned ,    RW, default = 2
+//Bit 15:14        reserved
+//Bit 13:12        reg_dir_blend_range_en    // unsigned ,    RW, default = 1
+//Bit 11: 9        reserved
+//Bit  8           reg_sr_sad_intlev_mode    // unsigned ,    RW, default = 1  interleave detection xerr mode: 0 max; 1:sum default=1
+//Bit  7: 5        reserved
+//Bit  4           reg_sr_sad_intlev_mode1   // unsigned ,    RW, default = 0  mode 1 of using diagonal protection: 0: no diagonal protection; 1: with diagonal protection
+//Bit  3: 1        reserved
+//Bit  0           reg_dir_swap_sad_en       // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_LPF_ALPHA_EN                  (volatile uint32_t *)0xff014824
+//Bit 31:13        reserved
+//Bit 12           reg_dir_lpf_min_idx_replace // unsigned ,    RW, default = 0
+//Bit 11: 9        reserved
+//Bit  8           reg_dir_lpf_theta_en      // unsigned ,    RW, default = 1
+//Bit  7: 5        reserved
+//Bit  4           reg_dir_lpf_beta_en       // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_dir_lpf_edge_en       // unsigned ,    RW, default = 1
+#define P_VPP_SR_DIR_SAD_GAIN                      (volatile uint32_t *)0xff014828
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_sad_intlev_gain   // unsigned ,    RW, default = 10  interleave detection for sad gain applied, normalized to 8 as 1
+//Bit 23:16        reg_dir_sad_hor_gain      // unsigned ,    RW, default = 16  gain to sad[0], 16 normalized to "1";
+//Bit 15: 8        reg_dir_sad_ver_gain      // unsigned ,    RW, default = 16  gain to sad[4], 16 normalized to "1";
+//Bit  7: 0        reg_dir_sad_diag_gain     // unsigned ,    RW, default = 16  gain to sad[2] and sad[6], 16 normalized to "1";
+#define P_VPP_SR_DIR_SAD_CORE_RATE                 (volatile uint32_t *)0xff01482c
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_dir_sad_core_rate     // unsigned ,    RW, default = 6  rate of coring for sad(theta) - sad(theta+pi/2)*rate/64
+#define P_VPP_SR_DIR_BLEND_ALPHA_LUT               (volatile uint32_t *)0xff014830
+//Bit 31:28        reg_dir_blend_alpha_lut_7 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_dir_blend_alpha_lut_6 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_dir_blend_alpha_lut_5 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_dir_blend_alpha_lut_4 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_dir_blend_alpha_lut_3 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_dir_blend_alpha_lut_2 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_dir_blend_alpha_lut_1 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_dir_blend_alpha_lut_0 // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_SAD_THD                       (volatile uint32_t *)0xff014834
+//Bit 31:24        reserved
+//Bit 23:16        reg_dir_swap_sad_dif_thd  // unsigned ,    RW, default = 30
+//Bit 15: 8        reg_dir_diff_min2sad_th   // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_dir_diff_sad_diff_th  // unsigned ,    RW, default = 18
+#define P_VPP_SR_DIR_LPF_BETA                      (volatile uint32_t *)0xff014838
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_beta_3        // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_beta_2        // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_beta_1        // unsigned ,    RW, default = 32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_beta_0        // unsigned ,    RW, default = 60
+#define P_VPP_SR_DIR_LPF_THETA_0                   (volatile uint32_t *)0xff01483c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_theta_3       // unsigned ,    RW, default = 24
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_theta_2       // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_theta_1       // unsigned ,    RW, default = 8
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_theta_0       // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_LPF_THETA_1                   (volatile uint32_t *)0xff014840
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_theta_7       // unsigned ,    RW, default = 60
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_theta_6       // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_theta_5       // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_theta_4       // unsigned ,    RW, default = 36
+#define P_VPP_SR_DIR_LPF_ALPHA_OFST_0              (volatile uint32_t *)0xff014844
+//Bit 31            reserved
+//Bit 30:24        reg_dir_lpf_alpha_ofst_3  // signed ,    RW, default = 0
+//Bit 23            reserved
+//Bit 22:16        reg_dir_lpf_alpha_ofst_2  // signed ,    RW, default = 0
+//Bit 15            reserved
+//Bit 14: 8        reg_dir_lpf_alpha_ofst_1  // signed ,    RW, default = 0
+//Bit  7            reserved
+//Bit  6: 0        reg_dir_lpf_alpha_ofst_0  // signed ,    RW, default = 0
+#define P_VPP_SR_DIR_LPF_ALPHA_OFST_1              (volatile uint32_t *)0xff014848
+//Bit 31            reserved
+//Bit 30:24        reg_dir_lpf_alpha_ofst_7  // signed ,    RW, default = 0
+//Bit 23            reserved
+//Bit 22:16        reg_dir_lpf_alpha_ofst_6  // signed ,    RW, default = 0
+//Bit 15            reserved
+//Bit 14: 8        reg_dir_lpf_alpha_ofst_5  // signed ,    RW, default = 0
+//Bit  7            reserved
+//Bit  6: 0        reg_dir_lpf_alpha_ofst_4  // signed ,    RW, default = 0
+#define P_VPP_SR_DIR_LPF_ALPHA_0                   (volatile uint32_t *)0xff01484c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_alpha_3       // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_alpha_2       // unsigned ,    RW, default = 52
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_alpha_1       // unsigned ,    RW, default = 52
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_alpha_0       // unsigned ,    RW, default = 56
+#define P_VPP_SR_DIR_LPF_ALPHA_1                   (volatile uint32_t *)0xff014850
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_alpha_7       // unsigned ,    RW, default = 4
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_alpha_6       // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_alpha_5       // unsigned ,    RW, default = 24
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_alpha_4       // unsigned ,    RW, default = 36
+#define P_VPP_SR_DIR_LPF_ALPHA_2                   (volatile uint32_t *)0xff014854
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_alpha_11      // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_alpha_10      // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_alpha_9       // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_alpha_8       // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_LPF_EDGE_0                    (volatile uint32_t *)0xff014858
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_edge_3        // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_edge_2        // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_edge_1        // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_edge_0        // unsigned ,    RW, default = 63
+#define P_VPP_SR_DIR_LPF_EDGE_1                    (volatile uint32_t *)0xff01485c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_lpf_edge_7        // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_lpf_edge_6        // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_lpf_edge_5        // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_edge_4        // unsigned ,    RW, default = 63
+#define P_VPP_SR_DIR_LPF_EDGE_F                    (volatile uint32_t *)0xff014860
+//Bit 31: 8        reserved
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_edge_8        // unsigned ,    RW, default = 63
+#define P_VPP_SR_DIR_PK_GAMMA                      (volatile uint32_t *)0xff014864
+//Bit 31:14        reserved
+//Bit 13: 8        reg_dir_beta_max          // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_beta_min          // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_DIF_PK_GAIN                   (volatile uint32_t *)0xff014868
+//Bit 31:16        reserved
+//Bit 15:12        reg_dir_dif_gain_3        // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_dir_dif_gain_2        // unsigned ,    RW, default = 4
+//Bit  7: 4        reg_dir_dif_gain_1        // unsigned ,    RW, default = 8
+//Bit  3: 0        reg_dir_dif_gain_0        // unsigned ,    RW, default = 15
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_0_0             (volatile uint32_t *)0xff01486c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_0_3 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_0_2 // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_0_1 // unsigned ,    RW, default = 8
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_0_0 // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_0_1             (volatile uint32_t *)0xff014870
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_0_7 // unsigned ,    RW, default = 60
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_0_6 // unsigned ,    RW, default = 60
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_0_5 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_0_4 // unsigned ,    RW, default = 56
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_1_0             (volatile uint32_t *)0xff014874
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_1_3 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_1_2 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_1_1 // unsigned ,    RW, default = 16
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_1_0 // unsigned ,    RW, default = 8
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_1_1             (volatile uint32_t *)0xff014878
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_1_7 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_1_6 // unsigned ,    RW, default = 60
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_1_5 // unsigned ,    RW, default = 60
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_1_4 // unsigned ,    RW, default = 56
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_2_0             (volatile uint32_t *)0xff01487c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_2_3 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_2_2 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_2_1 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_2_0 // unsigned ,    RW, default = 16
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_2_1             (volatile uint32_t *)0xff014880
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_2_7 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_2_6 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_2_5 // unsigned ,    RW, default = 60
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_2_4 // unsigned ,    RW, default = 60
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_3_0             (volatile uint32_t *)0xff014884
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_3_3 // unsigned ,    RW, default = 60
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_3_2 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_3_1 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_3_0 // unsigned ,    RW, default = 48
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_3_1             (volatile uint32_t *)0xff014888
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_3_7 // unsigned ,    RW, default = 16
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_3_6 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_3_5 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_3_4 // unsigned ,    RW, default = 60
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_4_0             (volatile uint32_t *)0xff01488c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_4_3 // unsigned ,    RW, default = 60
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_4_2 // unsigned ,    RW, default = 60
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_4_1 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_4_0 // unsigned ,    RW, default = 56
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_4_1             (volatile uint32_t *)0xff014890
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_4_7 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_4_6 // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_4_5 // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_4_4 // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_5_0             (volatile uint32_t *)0xff014894
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_5_3 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_5_2 // unsigned ,    RW, default = 60
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_5_1 // unsigned ,    RW, default = 60
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_5_0 // unsigned ,    RW, default = 56
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_5_1             (volatile uint32_t *)0xff014898
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_5_7 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_5_6 // unsigned ,    RW, default = 48
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_5_5 // unsigned ,    RW, default = 16
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_5_4 // unsigned ,    RW, default = 0
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_6_0             (volatile uint32_t *)0xff01489c
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_6_3 // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_6_2 // unsigned ,    RW, default = 0
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_6_1 // unsigned ,    RW, default = 60
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_6_0 // unsigned ,    RW, default = 60
+#define P_VPP_SR_DIR_MIMAXERR2_LUT_6_1             (volatile uint32_t *)0xff0148a0
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_mimaxerr2_lut2d_6_7 // unsigned ,    RW, default = 60
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_mimaxerr2_lut2d_6_6 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_mimaxerr2_lut2d_6_5 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_mimaxerr2_lut2d_6_4 // unsigned ,    RW, default = 16
+#define P_VPP_SR_DIR_MIN2SAD_GAMMA_THD             (volatile uint32_t *)0xff0148a4
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_min2sad_dif_thd       // unsigned ,    RW, default = 24
+#define P_VPP_SR_DIR_PK_LA_ERR_DIS_RATE            (volatile uint32_t *)0xff0148a8
+//Bit 31:22        reserved
+//Bit 21:16        reg_dir_max_sad_gain      // unsigned ,    RW, default = 32
+//Bit 15:14        reserved
+//Bit 13:12        reg_dir_lpf_alp_sel       // unsigned ,    RW, default = 1  0: from talpha, 1: from tbeta, 2: from safa-delta, 3: from safa-gamma
+//Bit 11:10        reg_pk_dir_alp_sel        // unsigned ,    RW, default = 3  0: from talpha, 1: from tbeta, 2: from safa-delta, 3: from safa-gamma
+//Bit  9: 8        reg_ti_dir_alp_sel        // unsigned ,    RW, default = 2  0: from talpha, 1: from tbeta, 2: from safa-delta, 3: from safa-gamma
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_pk_la_err_dis_rate // unsigned ,    RW, default = 24  low angle and high angle error should not be no less than nearby_error*rate/64; default = 24; 0 same as before changes
+#define P_VPP_SR_DIR_SAD_PENALTY                   (volatile uint32_t *)0xff0148ac
+//Bit 31:30        reserved
+//Bit 29:28        reg_dir_sad_penalty_7     // unsigned ,    RW, default = 0
+//Bit 27:26        reserved
+//Bit 25:24        reg_dir_sad_penalty_6     // unsigned ,    RW, default = 0
+//Bit 23:22        reserved
+//Bit 21:20        reg_dir_sad_penalty_5     // unsigned ,    RW, default = 0
+//Bit 19:18        reserved
+//Bit 17:16        reg_dir_sad_penalty_4     // unsigned ,    RW, default = 2
+//Bit 15:14        reserved
+//Bit 13:12        reg_dir_sad_penalty_3     // unsigned ,    RW, default = 0
+//Bit 11:10        reserved
+//Bit  9: 8        reg_dir_sad_penalty_2     // unsigned ,    RW, default = 0
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_dir_sad_penalty_1     // unsigned ,    RW, default = 0
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_dir_sad_penalty_0     // unsigned ,    RW, default = 2
+#define P_VPP_SR_DIR_HF_GAIN_ADJ                   (volatile uint32_t *)0xff0148b0
+//Bit 31:28        reg_dir_sad_h_win_x       // unsigned ,    RW, default = 5
+//Bit 27:26        reserved
+//Bit 25:20        reg_dir_hf_gain1          // unsigned ,    RW, default = 0
+//Bit 19:18        reserved
+//Bit 17:12        reg_dir_hf_gain0          // unsigned ,    RW, default = 63
+//Bit 11: 8        reg_dir_sad_h_thn         // unsigned ,    RW, default = 5
+//Bit  7: 0        reg_dir_sad_h_th0         // unsigned ,    RW, default = 80
+#define P_VPP_DERING_EN                            (volatile uint32_t *)0xff0148b4
+//Bit 31: 2        reserved
+//Bit  1           reg_input_422             // unsigned ,    RW, default = 0  sharpen input is 422 or not
+//Bit  0           reg_dering_en             // unsigned ,    RW, default = 1
+#define P_VPP_DERING_MED_LUT_0                     (volatile uint32_t *)0xff0148b8
+//Bit 31:24        reg_dering_med_lut_3      // unsigned ,    RW, default = 40
+//Bit 23:16        reg_dering_med_lut_2      // unsigned ,    RW, default = 36
+//Bit 15: 8        reg_dering_med_lut_1      // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_dering_med_lut_0      // unsigned ,    RW, default = 20
+#define P_VPP_DERING_MED_LUT_1                     (volatile uint32_t *)0xff0148bc
+//Bit 31:24        reg_dering_med_lut_7      // unsigned ,    RW, default = 80
+//Bit 23:16        reg_dering_med_lut_6      // unsigned ,    RW, default = 80
+//Bit 15: 8        reg_dering_med_lut_5      // unsigned ,    RW, default = 72
+//Bit  7: 0        reg_dering_med_lut_4      // unsigned ,    RW, default = 56
+#define P_VPP_DERING_MED_LUT_F                     (volatile uint32_t *)0xff0148c0
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_dering_med_lut_8      // unsigned ,    RW, default = 80
+#define P_VPP_DERING_EDGE_CONF_GAIN                (volatile uint32_t *)0xff0148c4
+//Bit 31: 8        reserved
+//Bit  7: 4        reg_dering_sad_h_wind     // unsigned ,    RW, default = 4
+//Bit  3: 0        reg_dering_edge_conf_gain // unsigned ,    RW, default = 12  8 normalize as "1"
+#define P_VPP_DERING_RAMP_CNT_THD                  (volatile uint32_t *)0xff0148c8
+//Bit 31:26        reserved
+//Bit 25:16        reg_sr_dering_ramp_v_diff_th // unsigned ,    RW, default = 15
+//Bit 15:14        reserved
+//Bit 13: 4        reg_sr_dering_ramp_h_diff_th // unsigned ,    RW, default = 15
+//Bit  3: 0        reg_sr_dering_cnt_num_th  // unsigned ,    RW, default = 3
+#define P_VPP_NR_LPF_EN                            (volatile uint32_t *)0xff0148cc
+//Bit 31:25        reserved
+//Bit 24           reg_dir_lpf_y_en          // unsigned ,    RW, default = 1
+//Bit 23:21        reserved
+//Bit 20           reg_dir_lpf_bld_en        // unsigned ,    RW, default = 1
+//Bit 19:17        reserved
+//Bit 16           reg_dir_lpf_c_en          // unsigned ,    RW, default = 1
+//Bit 15:13        reserved
+//Bit 12           reg_dir_lpf_hv_en         // unsigned ,    RW, default = 1
+//Bit 11: 9        reserved
+//Bit  8           reg_nr_gau_y_en           // unsigned ,    RW, default = 1
+//Bit  7: 5        reserved
+//Bit  4           reg_nr_gau_c_en           // unsigned ,    RW, default = 1
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_nr_dir_gau_sel        // unsigned ,    RW, default = 0
+#define P_VPP_NR_DIR_LPF_GAIN                      (volatile uint32_t *)0xff0148d0
+//Bit 31:16        reserved
+//Bit 15:12        reg_dir_lpf_yc_gain_1     // unsigned ,    RW, default = 15
+//Bit 11: 8        reg_dir_lpf_yc_gain_0     // unsigned ,    RW, default = 15
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_lpf_final_gain    // unsigned ,    RW, default = 16
+#define P_VPP_NR_DIR_DIFF_THD_MIN                  (volatile uint32_t *)0xff0148d4
+//Bit 31:24        reserved
+//Bit 23:12        reg_dir_diff_thd_min_1    // unsigned ,    RW, default = 0
+//Bit 11: 0        reg_dir_diff_thd_min_0    // unsigned ,    RW, default = 0
+#define P_VPP_NR_DIR_DIFF_THD_MAX                  (volatile uint32_t *)0xff0148d8
+//Bit 31:24        reserved
+//Bit 23:12        reg_dir_diff_thd_max_1    // unsigned ,    RW, default = 1023
+//Bit 11: 0        reg_dir_diff_thd_max_0    // unsigned ,    RW, default = 1023
+#define P_VPP_NR_DIR_DIFF_THD_RATIO_0_0            (volatile uint32_t *)0xff0148dc
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_diff_thd_ratio_0_3 // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_diff_thd_ratio_0_2 // unsigned ,    RW, default = 28
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_diff_thd_ratio_0_1 // unsigned ,    RW, default = 24
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_diff_thd_ratio_0_0 // unsigned ,    RW, default = 16
+#define P_VPP_NR_DIR_DIFF_THD_RATIO_0_1            (volatile uint32_t *)0xff0148e0
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_diff_thd_ratio_0_7 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_diff_thd_ratio_0_6 // unsigned ,    RW, default = 44
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_diff_thd_ratio_0_5 // unsigned ,    RW, default = 36
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_diff_thd_ratio_0_4 // unsigned ,    RW, default = 34
+#define P_VPP_NR_DIR_DIFF_THD_RATIO_1_0            (volatile uint32_t *)0xff0148e4
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_diff_thd_ratio_1_3 // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_diff_thd_ratio_1_2 // unsigned ,    RW, default = 24
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_diff_thd_ratio_1_1 // unsigned ,    RW, default = 16
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_diff_thd_ratio_1_0 // unsigned ,    RW, default = 8
+#define P_VPP_NR_DIR_DIFF_THD_RATIO_1_1            (volatile uint32_t *)0xff0148e8
+//Bit 31:30        reserved
+//Bit 29:24        reg_dir_diff_thd_ratio_1_7 // unsigned ,    RW, default = 48
+//Bit 23:22        reserved
+//Bit 21:16        reg_dir_diff_thd_ratio_1_6 // unsigned ,    RW, default = 44
+//Bit 15:14        reserved
+//Bit 13: 8        reg_dir_diff_thd_ratio_1_5 // unsigned ,    RW, default = 36
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_diff_thd_ratio_1_4 // unsigned ,    RW, default = 36
+#define P_VPP_NR_DIR_DIFF_THD_RATIO_F_0            (volatile uint32_t *)0xff0148ec
+//Bit 31:14        reserved
+//Bit 13: 8        reg_dir_diff_thd_ratio_1_8 // unsigned ,    RW, default = 56
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_dir_diff_thd_ratio_0_8 // unsigned ,    RW, default = 56
+#define P_VPP_GAU_LPF_ALP_VSSAD_LUT_0              (volatile uint32_t *)0xff0148f0
+//Bit 31:30        reserved
+//Bit 29:24        reg_gau_lpf_alp_vssad_lut_3 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_gau_lpf_alp_vssad_lut_2 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_gau_lpf_alp_vssad_lut_1 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_gau_lpf_alp_vssad_lut_0 // unsigned ,    RW, default = 63
+#define P_VPP_GAU_LPF_ALP_VSSAD_LUT_1              (volatile uint32_t *)0xff0148f4
+//Bit 31:30        reserved
+//Bit 29:24        reg_gau_lpf_alp_vssad_lut_7 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_gau_lpf_alp_vssad_lut_6 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_gau_lpf_alp_vssad_lut_5 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_gau_lpf_alp_vssad_lut_4 // unsigned ,    RW, default = 63
+#define P_VPP_GAU_LPF_ALP_VSSAD_LUT_F              (volatile uint32_t *)0xff0148f8
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_gau_lpf_alp_vssad_lut_8 // unsigned ,    RW, default = 63
+#define P_VPP_NR_DIR_GAU_BLD_GAIN                  (volatile uint32_t *)0xff0148fc
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_nr_dir_gau_bld_gain   // unsigned ,    RW, default = 0  the horizontal lpf tap mode, 0: with coef [1 2 1], 1: with coef [1, 2, 2, 2, 1]
+#define P_VPP_HTI_EN_MODE                          (volatile uint32_t *)0xff014900
+//Bit 31:29        reserved
+//Bit 28           reg_hti_os_adp_lpf_en     // unsigned ,    RW, default = 1
+//Bit 27:25        reserved
+//Bit 24           reg_hti_bst_gain_lpf_en   // unsigned ,    RW, default = 0
+//Bit 23:21        reserved
+//Bit 20           reg_hti_min_max_lpf_en    // unsigned ,    RW, default = 1
+//Bit 19:17        reserved
+//Bit 16           reg_hti_os_adp_src_sel    // unsigned ,    RW, default = 0
+//Bit 15:13        reserved
+//Bit 12           reg_hlti_en               // unsigned ,    RW, default = 1
+//Bit 11: 9        reserved
+//Bit  8           reg_hlti_clp_mode         // unsigned ,    RW, default = 1  0: hard clip, 1: adaptive clip
+//Bit  7: 5        reserved
+//Bit  4           reg_hcti_en               // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_hcti_clp_mode         // unsigned ,    RW, default = 1  0: hard clip, 1: adaptive clip
+#define P_VPP_HTI_INVT_EN                          (volatile uint32_t *)0xff014904
+//Bit 31:24        reserved
+//Bit 23:21        reserved
+//Bit 20           reg_hlti_invt_en          // unsigned ,    RW, default = 0
+//Bit 19:18        reg_hlti_invt_mode        // unsigned ,    RW, default = 0
+//Bit 17:16        reg_hlti_invt_white_mode  // unsigned ,    RW, default = 0
+//Bit 15:13        reserved
+//Bit 12           reg_hcti_invt_en          // unsigned ,    RW, default = 0
+//Bit 11:10        reg_hcti_invt_mode        // unsigned ,    RW, default = 0
+//Bit  9: 8        reg_hcti_invt_white_mode  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_hti_invt_zeros_th     // unsigned ,    RW, default = 2
+//Bit  3: 1        reserved
+//Bit  0           reg_hti_invt_edge_flag_up_en // unsigned ,    RW, default = 1
+#define P_VPP_HLTI_BP0_COEF                        (volatile uint32_t *)0xff014908
+//Bit 31:24        reg_hlti_bp0_7t_coef_3    // signed ,    RW, default = -1  symmetric coef,
+//Bit 23:16        reg_hlti_bp0_7t_coef_2    // signed ,    RW, default = -63  symmetric coef,
+//Bit 15: 8        reg_hlti_bp0_7t_coef_1    // signed ,    RW, default = 9  symmetric coef,
+//Bit  7: 0        reg_hlti_bp0_7t_coef_0    // signed ,    RW, default = 110  symmetric coef,
+#define P_VPP_HLTI_BP1_COEF                        (volatile uint32_t *)0xff01490c
+//Bit 31:24        reg_hlti_bp1_11t_coef_5   // signed ,    RW, default = -3  symmetric coef,
+//Bit 23:16        reg_hlti_bp1_11t_coef_4   // signed ,    RW, default = -17  symmetric coef,
+//Bit 15: 8        reg_hlti_bp1_11t_coef_3   // signed ,    RW, default = 1  symmetric coef,
+//Bit  7: 0        reg_hlti_bp1_11t_coef_2   // signed ,    RW, default = -44  symmetric coef,
+#define P_VPP_HLTI_BP1_COEF_F                      (volatile uint32_t *)0xff014910
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hlti_bp1_11t_coef_1   // signed ,    RW, default = 7  symmetric coef,
+//Bit  7: 0        reg_hlti_bp1_11t_coef_0   // signed ,    RW, default = 112  symmetric coef,
+#define P_VPP_HLTI_BP2_COEF_0                      (volatile uint32_t *)0xff014914
+//Bit 31:24        reg_hlti_bp2_15t_coef_3   // signed ,    RW, default = 3  symmetric coef,
+//Bit 23:16        reg_hlti_bp2_15t_coef_2   // signed ,    RW, default = -33  symmetric coef,
+//Bit 15: 8        reg_hlti_bp2_15t_coef_1   // signed ,    RW, default = 10  symmetric coef,
+//Bit  7: 0        reg_hlti_bp2_15t_coef_0   // signed ,    RW, default = 102  symmetric coef,
+#define P_VPP_HLTI_BP2_COEF_1                      (volatile uint32_t *)0xff014918
+//Bit 31:24        reg_hlti_bp2_15t_coef_7   // signed ,    RW, default = -6  symmetric coef,
+//Bit 23:16        reg_hlti_bp2_15t_coef_6   // signed ,    RW, default = -3  symmetric coef,
+//Bit 15: 8        reg_hlti_bp2_15t_coef_5   // signed ,    RW, default = -5  symmetric coef,
+//Bit  7: 0        reg_hlti_bp2_15t_coef_4   // signed ,    RW, default = -17  symmetric coef,
+#define P_VPP_HLTI_BP3_COEF_0                      (volatile uint32_t *)0xff01491c
+//Bit 31:24        reg_hlti_bp3_19t_coef_3   // signed ,    RW, default = 5  symmetric coef,
+//Bit 23:16        reg_hlti_bp3_19t_coef_2   // signed ,    RW, default = -26  symmetric coef,
+//Bit 15: 8        reg_hlti_bp3_19t_coef_1   // signed ,    RW, default = 10  symmetric coef,
+//Bit  7: 0        reg_hlti_bp3_19t_coef_0   // signed ,    RW, default = 98  symmetric coef,
+#define P_VPP_HLTI_BP3_COEF_1                      (volatile uint32_t *)0xff014920
+//Bit 31:24        reg_hlti_bp3_19t_coef_7   // signed ,    RW, default = -7  symmetric coef,
+//Bit 23:16        reg_hlti_bp3_19t_coef_6   // signed ,    RW, default = -6  symmetric coef,
+//Bit 15: 8        reg_hlti_bp3_19t_coef_5   // signed ,    RW, default = -2  symmetric coef,
+//Bit  7: 0        reg_hlti_bp3_19t_coef_4   // signed ,    RW, default = -16  symmetric coef,
+#define P_VPP_HLTI_BP3_COEF_F                      (volatile uint32_t *)0xff014924
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hlti_bp3_19t_coef_9   // signed ,    RW, default = -7  symmetric coef,
+//Bit  7: 0        reg_hlti_bp3_19t_coef_8   // signed ,    RW, default = 0  symmetric coef,
+#define P_VPP_HLTI_BST_GAIN                        (volatile uint32_t *)0xff014928
+//Bit 31:24        reg_hlti_bst_gain_3       // unsigned ,    RW, default = 32
+//Bit 23:16        reg_hlti_bst_gain_2       // unsigned ,    RW, default = 32
+//Bit 15: 8        reg_hlti_bst_gain_1       // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_hlti_bst_gain_0       // unsigned ,    RW, default = 32
+#define P_VPP_HLTI_BST_CORE                        (volatile uint32_t *)0xff01492c
+//Bit 31:16        reserved
+//Bit 15:12        reg_hlti_bst_core_3       // unsigned ,    RW, default = 4
+//Bit 11: 8        reg_hlti_bst_core_2       // unsigned ,    RW, default = 4
+//Bit  7: 4        reg_hlti_bst_core_1       // unsigned ,    RW, default = 4
+//Bit  3: 0        reg_hlti_bst_core_0       // unsigned ,    RW, default = 4
+#define P_VPP_HLTI_WIN                             (volatile uint32_t *)0xff014930
+//Bit 31:12        reserved
+//Bit 11: 8        reg_hlti_hard_clp_win     // unsigned ,    RW, default = 6  window size, 0);
+//Bit  7: 4        reg_hlti_adp_clp_win      // unsigned ,    RW, default = 15
+//Bit  3: 0        reg_hlti_adp_win_min      // unsigned ,    RW, default = 8  min window size, 0);
+#define P_VPP_HLTI_ADP_THD                         (volatile uint32_t *)0xff014934
+//Bit 31:22        reserved
+//Bit 21:12        reg_hlti_adp_trans_thd    // unsigned ,    RW, default = 40
+//Bit 11:10        reserved
+//Bit  9: 0        reg_hlti_adp_xerr_thd     // unsigned ,    RW, default = 90
+#define P_VPP_HLTI_INVT_THD                        (volatile uint32_t *)0xff014938
+//Bit 31:16        reserved
+//Bit 15:12        reg_hlti_invt_idx_ofst    // unsigned ,    RW, default = 0
+//Bit 11:10        reserved
+//Bit  9: 0        reg_hlti_invt_flag_th     // unsigned ,    RW, default = 15
+#define P_VPP_HLTI_BST_GAIN_LUT_0                  (volatile uint32_t *)0xff01493c
+//Bit 31:24        reg_hlti_bst_gain_lut_3   // unsigned ,    RW, default = 56  normalize as "1"
+//Bit 23:16        reg_hlti_bst_gain_lut_2   // unsigned ,    RW, default = 32  normalize as "1"
+//Bit 15: 8        reg_hlti_bst_gain_lut_1   // unsigned ,    RW, default = 24  normalize as "1"
+//Bit  7: 0        reg_hlti_bst_gain_lut_0   // unsigned ,    RW, default = 16  normalize as "1"
+#define P_VPP_HLTI_BST_GAIN_LUT_1                  (volatile uint32_t *)0xff014940
+//Bit 31:24        reg_hlti_bst_gain_lut_7   // unsigned ,    RW, default = 32  normalize as "1"
+//Bit 23:16        reg_hlti_bst_gain_lut_6   // unsigned ,    RW, default = 64  normalize as "1"
+//Bit 15: 8        reg_hlti_bst_gain_lut_5   // unsigned ,    RW, default = 80  normalize as "1"
+//Bit  7: 0        reg_hlti_bst_gain_lut_4   // unsigned ,    RW, default = 64  normalize as "1"
+#define P_VPP_HLTI_BST_GAIN_LUT_F                  (volatile uint32_t *)0xff014944
+//Bit 31:22        reserved
+//Bit 21:16        reg_hti_max_sad_gain      // unsigned ,    RW, default = 16  8 normalize as "1"
+//Bit 15: 8        reserved
+//Bit  7: 0        reg_hlti_bst_gain_lut_8   // unsigned ,    RW, default = 4  normalize as "1"
+#define P_VPP_HLTI_OS_ADP_LUT_0                    (volatile uint32_t *)0xff014948
+//Bit 31:24        reg_hlti_os_adp_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_hlti_os_adp_lut_2     // unsigned ,    RW, default = 24
+//Bit 15: 8        reg_hlti_os_adp_lut_1     // unsigned ,    RW, default = 16
+//Bit  7: 0        reg_hlti_os_adp_lut_0     // unsigned ,    RW, default = 8
+#define P_VPP_HLTI_OS_ADP_LUT_1                    (volatile uint32_t *)0xff01494c
+//Bit 31:24        reg_hlti_os_adp_lut_7     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_hlti_os_adp_lut_6     // unsigned ,    RW, default = 80
+//Bit 15: 8        reg_hlti_os_adp_lut_5     // unsigned ,    RW, default = 96
+//Bit  7: 0        reg_hlti_os_adp_lut_4     // unsigned ,    RW, default = 80
+#define P_VPP_HLTI_OS_ADP_LUT_F                    (volatile uint32_t *)0xff014950
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_hlti_os_adp_lut_8     // unsigned ,    RW, default = 16
+#define P_VPP_HTI_OS_UP_DN_GAIN                    (volatile uint32_t *)0xff014954
+//Bit 31:16        reserved
+//Bit 15:12        reg_hlti_os_up_gain       // unsigned ,    RW, default = 8  gain of os up, 8 normalize as "1"
+//Bit 11: 8        reg_hlti_os_dn_gain       // unsigned ,    RW, default = 8  gain of os dn, 8 normalize as "1
+//Bit  7: 4        reg_hcti_os_up_gain       // unsigned ,    RW, default = 8  gain of os up, 8 normalize as "1"
+//Bit  3: 0        reg_hcti_os_dn_gain       // unsigned ,    RW, default = 8  gain of os dn, 8 normalize as "1
+#define P_VPP_HCTI_BP_3TAP_COEF                    (volatile uint32_t *)0xff014958
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hcti_bp_3t_coef_1     // signed ,    RW, default = -64  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_3t_coef_0     // signed ,    RW, default = 128  symmetric coef,
+#define P_VPP_HCTI_BP_5TAP_COEF                    (volatile uint32_t *)0xff01495c
+//Bit 31:24        reserved
+//Bit 23:16        reg_hcti_bp_5t_coef_2     // signed ,    RW, default = -64  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_5t_coef_1     // signed ,    RW, default = 11  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_5t_coef_0     // signed ,    RW, default = 106  symmetric coef,
+#define P_VPP_HCTI_BP_7TAP_COEF                    (volatile uint32_t *)0xff014960
+//Bit 31:24        reg_hcti_bp_7t_coef_3     // signed ,    RW, default = -1  symmetric coef,
+//Bit 23:16        reg_hcti_bp_7t_coef_2     // signed ,    RW, default = -63  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_7t_coef_1     // signed ,    RW, default = 9  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_7t_coef_0     // signed ,    RW, default = 110  symmetric coef,
+#define P_VPP_HCTI_BP_9TAP_COEF                    (volatile uint32_t *)0xff014964
+//Bit 31:24        reg_hcti_bp_9t_coef_4     // signed ,    RW, default = -15  symmetric coef,
+//Bit 23:16        reg_hcti_bp_9t_coef_3     // signed ,    RW, default = 3  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_9t_coef_2     // signed ,    RW, default = -49  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_9t_coef_1     // signed ,    RW, default = 3  symmetric coef,
+#define P_VPP_HCTI_BP_9TAP_COEF_F                  (volatile uint32_t *)0xff014968
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_hcti_bp_9t_coef_0     // signed ,    RW, default = 116  symmetric coef,
+#define P_VPP_HCTI_BP_11TAP_COEF                   (volatile uint32_t *)0xff01496c
+//Bit 31:24        reg_hcti_bp_11t_coef_5    // signed ,    RW, default = -3  symmetric coef,
+//Bit 23:16        reg_hcti_bp_11t_coef_4    // signed ,    RW, default = -17  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_11t_coef_3    // signed ,    RW, default = 1  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_11t_coef_2    // signed ,    RW, default = -44  symmetric coef,
+#define P_VPP_HCTI_BP_11TAP_COEF_F                 (volatile uint32_t *)0xff014970
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hcti_bp_11t_coef_1    // signed ,    RW, default = 7  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_11t_coef_0    // signed ,    RW, default = 112  symmetric coef,
+#define P_VPP_HCTI_BP_15TAP_COEF_0                 (volatile uint32_t *)0xff014974
+//Bit 31:24        reg_hcti_bp_15t_coef_3    // signed ,    RW, default = 3  symmetric coef,
+//Bit 23:16        reg_hcti_bp_15t_coef_2    // signed ,    RW, default = -33  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_15t_coef_1    // signed ,    RW, default = 10  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_15t_coef_0    // signed ,    RW, default = 102  symmetric coef,
+#define P_VPP_HCTI_BP_15TAP_COEF_1                 (volatile uint32_t *)0xff014978
+//Bit 31:24        reg_hcti_bp_15t_coef_7    // signed ,    RW, default = -6  symmetric coef,
+//Bit 23:16        reg_hcti_bp_15t_coef_6    // signed ,    RW, default = -3  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_15t_coef_5    // signed ,    RW, default = -5  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_15t_coef_4    // signed ,    RW, default = -17  symmetric coef,
+#define P_VPP_HCTI_BP_19TAP_COEF_0                 (volatile uint32_t *)0xff01497c
+//Bit 31:24        reg_hcti_bp_19t_coef_3    // signed ,    RW, default = 5  symmetric coef,
+//Bit 23:16        reg_hcti_bp_19t_coef_2    // signed ,    RW, default = -26  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_19t_coef_1    // signed ,    RW, default = 10  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_19t_coef_0    // signed ,    RW, default = 98  symmetric coef,
+#define P_VPP_HCTI_BP_19TAP_COEF_1                 (volatile uint32_t *)0xff014980
+//Bit 31:24        reg_hcti_bp_19t_coef_7    // signed ,    RW, default = -7  symmetric coef,
+//Bit 23:16        reg_hcti_bp_19t_coef_6    // signed ,    RW, default = -6  symmetric coef,
+//Bit 15: 8        reg_hcti_bp_19t_coef_5    // signed ,    RW, default = -2  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_19t_coef_4    // signed ,    RW, default = -16  symmetric coef,
+#define P_VPP_HCTI_BP_19TAP_COEF_F                 (volatile uint32_t *)0xff014984
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hcti_bp_19t_coef_9    // signed ,    RW, default = -7  symmetric coef,
+//Bit  7: 0        reg_hcti_bp_19t_coef_8    // signed ,    RW, default = 0  symmetric coef,
+#define P_VPP_HCTI_BST_GAIN                        (volatile uint32_t *)0xff014988
+//Bit 31:24        reg_hcti_bst_gain_3       // unsigned ,    RW, default = 32
+//Bit 23:16        reg_hcti_bst_gain_2       // unsigned ,    RW, default = 32
+//Bit 15: 8        reg_hcti_bst_gain_1       // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_hcti_bst_gain_0       // unsigned ,    RW, default = 32
+#define P_VPP_HCTI_BST_CORE                        (volatile uint32_t *)0xff01498c
+//Bit 31:16        reserved
+//Bit 15:12        reg_hcti_bst_core_3       // unsigned ,    RW, default = 4
+//Bit 11: 8        reg_hcti_bst_core_2       // unsigned ,    RW, default = 4
+//Bit  7: 4        reg_hcti_bst_core_1       // unsigned ,    RW, default = 4
+//Bit  3: 0        reg_hcti_bst_core_0       // unsigned ,    RW, default = 4
+#define P_VPP_HCTI_WIN                             (volatile uint32_t *)0xff014990
+//Bit 31:12        reserved
+//Bit 11: 8        reg_hcti_hard_clp_win     // unsigned ,    RW, default = 6  window size, 0);
+//Bit  7: 4        reg_hcti_adp_clp_win      // unsigned ,    RW, default = 7
+//Bit  3: 0        reg_hcti_adp_win_min      // unsigned ,    RW, default = 6  min window size, 0);
+#define P_VPP_HCTI_ADP_THD                         (volatile uint32_t *)0xff014994
+//Bit 31:22        reserved
+//Bit 21:12        reg_hcti_adp_trans_thd    // unsigned ,    RW, default = 40
+//Bit 11:10        reserved
+//Bit  9: 0        reg_hcti_adp_xerr_thd     // unsigned ,    RW, default = 90
+#define P_VPP_HCTI_INVT_THD                        (volatile uint32_t *)0xff014998
+//Bit 31:16        reserved
+//Bit 15:12        reg_hcti_invt_idx_ofst    // unsigned ,    RW, default = 0
+//Bit 11:10        reserved
+//Bit  9: 0        reg_hcti_invt_flag_th     // unsigned ,    RW, default = 15
+#define P_VPP_HCTI_BST_GAIN_LUT_0                  (volatile uint32_t *)0xff01499c
+//Bit 31:24        reg_hcti_bst_gain_lut_3   // unsigned ,    RW, default = 56
+//Bit 23:16        reg_hcti_bst_gain_lut_2   // unsigned ,    RW, default = 32
+//Bit 15: 8        reg_hcti_bst_gain_lut_1   // unsigned ,    RW, default = 24
+//Bit  7: 0        reg_hcti_bst_gain_lut_0   // unsigned ,    RW, default = 16
+#define P_VPP_HCTI_BST_GAIN_LUT_1                  (volatile uint32_t *)0xff0149a0
+//Bit 31:24        reg_hcti_bst_gain_lut_7   // unsigned ,    RW, default = 32
+//Bit 23:16        reg_hcti_bst_gain_lut_6   // unsigned ,    RW, default = 64
+//Bit 15: 8        reg_hcti_bst_gain_lut_5   // unsigned ,    RW, default = 80
+//Bit  7: 0        reg_hcti_bst_gain_lut_4   // unsigned ,    RW, default = 64
+#define P_VPP_HCTI_BST_GAIN_LUT_F                  (volatile uint32_t *)0xff0149a4
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_hcti_bst_gain_lut_8   // unsigned ,    RW, default = 4
+#define P_VPP_HCTI_OS_ADP_LUT_0                    (volatile uint32_t *)0xff0149a8
+//Bit 31:24        reg_hcti_os_adp_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_hcti_os_adp_lut_2     // unsigned ,    RW, default = 24
+//Bit 15: 8        reg_hcti_os_adp_lut_1     // unsigned ,    RW, default = 16
+//Bit  7: 0        reg_hcti_os_adp_lut_0     // unsigned ,    RW, default = 8
+#define P_VPP_HCTI_OS_ADP_LUT_1                    (volatile uint32_t *)0xff0149ac
+//Bit 31:24        reg_hcti_os_adp_lut_7     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_hcti_os_adp_lut_6     // unsigned ,    RW, default = 80
+//Bit 15: 8        reg_hcti_os_adp_lut_5     // unsigned ,    RW, default = 96
+//Bit  7: 0        reg_hcti_os_adp_lut_4     // unsigned ,    RW, default = 80
+#define P_VPP_HCTI_OS_ADP_LUT_F                    (volatile uint32_t *)0xff0149b0
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_hcti_os_adp_lut_8     // unsigned ,    RW, default = 16
+#define P_VPP_HTI_FINAL_GAIN                       (volatile uint32_t *)0xff0149b4
+//Bit 31:16        reserved
+//Bit 15: 8        reg_hti_final_pgain       // unsigned ,    RW, default = 64  hti final positive gain, 64 normalize as "1"
+//Bit  7: 0        reg_hti_final_ngain       // unsigned ,    RW, default = 64  hti final negative gain, 64 normalize as "1"
+#define P_VPP_VTI_EN                               (volatile uint32_t *)0xff0149b8
+//Bit 31:13        reserved
+//Bit 12           reg_vti_os_adp_lpf_en     // unsigned ,    RW, default = 1
+//Bit 11: 9        reserved
+//Bit  8           reg_vlti_en               // unsigned ,    RW, default = 1
+//Bit  7: 5        reserved
+//Bit  4           reg_vcti_en               // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_hvti_blend_use_max_delta // unsigned ,    RW, default = 0
+#define P_VPP_VTI_MAX_SAD_GAIN                     (volatile uint32_t *)0xff0149bc
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_vti_max_sad_gain      // unsigned ,    RW, default = 16  8 normalize as "1"
+#define P_VPP_VLTI_BP0_COEF                        (volatile uint32_t *)0xff0149c0
+//Bit 31:24        reserved
+//Bit 23:16        reg_vlti_bp0_5t_coef_2    // signed ,    RW, default = -64  symmetric coef,
+//Bit 15: 8        reg_vlti_bp0_5t_coef_1    // signed ,    RW, default = 11  symmetric coef,
+//Bit  7: 0        reg_vlti_bp0_5t_coef_0    // signed ,    RW, default = 106  symmetric coef,
+#define P_VPP_VLTI_BP1_COEF                        (volatile uint32_t *)0xff0149c4
+//Bit 31:24        reg_vlti_bp1_7t_coef_3    // signed ,    RW, default = -1  symmetric coef,
+//Bit 23:16        reg_vlti_bp1_7t_coef_2    // signed ,    RW, default = -63  symmetric coef,
+//Bit 15: 8        reg_vlti_bp1_7t_coef_1    // signed ,    RW, default = 9  symmetric coef,
+//Bit  7: 0        reg_vlti_bp1_7t_coef_0    // signed ,    RW, default = 110  symmetric coef,
+#define P_VPP_VLTI_BST_GAIN_LUT_0                  (volatile uint32_t *)0xff0149c8
+//Bit 31:24        reg_vlti_bst_gain_lut_3   // unsigned ,    RW, default = 28  normalize as "1"
+//Bit 23:16        reg_vlti_bst_gain_lut_2   // unsigned ,    RW, default = 16  normalize as "1"
+//Bit 15: 8        reg_vlti_bst_gain_lut_1   // unsigned ,    RW, default = 12  normalize as "1"
+//Bit  7: 0        reg_vlti_bst_gain_lut_0   // unsigned ,    RW, default = 8  normalize as "1"
+#define P_VPP_VLTI_BST_GAIN_LUT_1                  (volatile uint32_t *)0xff0149cc
+//Bit 31:24        reg_vlti_bst_gain_lut_7   // unsigned ,    RW, default = 16  normalize as "1"
+//Bit 23:16        reg_vlti_bst_gain_lut_6   // unsigned ,    RW, default = 32  normalize as "1"
+//Bit 15: 8        reg_vlti_bst_gain_lut_5   // unsigned ,    RW, default = 40  normalize as "1"
+//Bit  7: 0        reg_vlti_bst_gain_lut_4   // unsigned ,    RW, default = 32  normalize as "1"
+#define P_VPP_VLTI_BST_GAIN_LUT_F                  (volatile uint32_t *)0xff0149d0
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_vlti_bst_gain_lut_8   // unsigned ,    RW, default = 2  normalize as "1"
+#define P_VPP_VLTI_OS_ADP_LUT_0                    (volatile uint32_t *)0xff0149d4
+//Bit 31:24        reg_vlti_os_adp_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_vlti_os_adp_lut_2     // unsigned ,    RW, default = 24
+//Bit 15: 8        reg_vlti_os_adp_lut_1     // unsigned ,    RW, default = 16
+//Bit  7: 0        reg_vlti_os_adp_lut_0     // unsigned ,    RW, default = 8
+#define P_VPP_VLTI_OS_ADP_LUT_1                    (volatile uint32_t *)0xff0149d8
+//Bit 31:24        reg_vlti_os_adp_lut_7     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_vlti_os_adp_lut_6     // unsigned ,    RW, default = 80
+//Bit 15: 8        reg_vlti_os_adp_lut_5     // unsigned ,    RW, default = 96
+//Bit  7: 0        reg_vlti_os_adp_lut_4     // unsigned ,    RW, default = 80
+#define P_VPP_VLTI_OS_ADP_LUT_F                    (volatile uint32_t *)0xff0149dc
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_vlti_os_adp_lut_8     // unsigned ,    RW, default = 16
+#define P_VPP_VTI_OS_UP_DN_GAIN                    (volatile uint32_t *)0xff0149e0
+//Bit 31:16        reserved
+//Bit 15:12        reg_vlti_os_up_gain       // unsigned ,    RW, default = 8  gain of os up, 8 normalize as "1"
+//Bit 11: 8        reg_vlti_os_dn_gain       // unsigned ,    RW, default = 8  gain of os dn, 8 normalize as "1
+//Bit  7: 4        reg_vcti_os_up_gain       // unsigned ,    RW, default = 8  gain of os up, 8 normalize as "1"
+//Bit  3: 0        reg_vcti_os_dn_gain       // unsigned ,    RW, default = 8  gain of os dn, 8 normalize as "1
+#define P_VPP_VLTI_BST_GAIN_CORE                   (volatile uint32_t *)0xff0149e4
+//Bit 31:24        reserved
+//Bit 23:16        reg_vlti_bst_gain_1       // unsigned ,    RW, default = 48
+//Bit 15: 8        reg_vlti_bst_gain_0       // unsigned ,    RW, default = 48
+//Bit  7: 4        reg_vlti_bst_core_1       // unsigned ,    RW, default = 4
+//Bit  3: 0        reg_vlti_bst_core_0       // unsigned ,    RW, default = 4
+#define P_VPP_VCTI_BP0_COEF                        (volatile uint32_t *)0xff0149e8
+//Bit 31:24        reserved
+//Bit 23:16        reg_vcti_bp0_5t_coef_2    // signed ,    RW, default = -64  symmetric coef,u8,
+//Bit 15: 8        reg_vcti_bp0_5t_coef_1    // signed ,    RW, default = 11  symmetric coef,u8,
+//Bit  7: 0        reg_vcti_bp0_5t_coef_0    // signed ,    RW, default = 106  symmetric coef,u8,
+#define P_VPP_VCTI_BP1_COEF                        (volatile uint32_t *)0xff0149ec
+//Bit 31:24        reg_vcti_bp1_7t_coef_3    // signed ,    RW, default = -1  symmetric coef,u8,
+//Bit 23:16        reg_vcti_bp1_7t_coef_2    // signed ,    RW, default = -63  symmetric coef,u8,
+//Bit 15: 8        reg_vcti_bp1_7t_coef_1    // signed ,    RW, default = 9  symmetric coef,u8,
+//Bit  7: 0        reg_vcti_bp1_7t_coef_0    // signed ,    RW, default = 110  symmetric coef,u8,
+#define P_VPP_VCTI_BST_GAIN_LUT_0                  (volatile uint32_t *)0xff0149f0
+//Bit 31:24        reg_vcti_bst_gain_lut_3   // unsigned ,    RW, default = 56  normalize as "1"
+//Bit 23:16        reg_vcti_bst_gain_lut_2   // unsigned ,    RW, default = 32  normalize as "1"
+//Bit 15: 8        reg_vcti_bst_gain_lut_1   // unsigned ,    RW, default = 24  normalize as "1"
+//Bit  7: 0        reg_vcti_bst_gain_lut_0   // unsigned ,    RW, default = 16  normalize as "1"
+#define P_VPP_VCTI_BST_GAIN_LUT_1                  (volatile uint32_t *)0xff0149f4
+//Bit 31:24        reg_vcti_bst_gain_lut_7   // unsigned ,    RW, default = 32  normalize as "1"
+//Bit 23:16        reg_vcti_bst_gain_lut_6   // unsigned ,    RW, default = 64  normalize as "1"
+//Bit 15: 8        reg_vcti_bst_gain_lut_5   // unsigned ,    RW, default = 80  normalize as "1"
+//Bit  7: 0        reg_vcti_bst_gain_lut_4   // unsigned ,    RW, default = 64  normalize as "1"
+#define P_VPP_VCTI_BST_GAIN_LUT_F                  (volatile uint32_t *)0xff0149f8
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_vcti_bst_gain_lut_8   // unsigned ,    RW, default = 4  normalize as "1"
+#define P_VPP_VCTI_OS_ADP_LUT_0                    (volatile uint32_t *)0xff0149fc
+//Bit 31:24        reg_vcti_os_adp_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_vcti_os_adp_lut_2     // unsigned ,    RW, default = 24
+//Bit 15: 8        reg_vcti_os_adp_lut_1     // unsigned ,    RW, default = 16
+//Bit  7: 0        reg_vcti_os_adp_lut_0     // unsigned ,    RW, default = 8
+#define P_VPP_VCTI_OS_ADP_LUT_1                    (volatile uint32_t *)0xff014a00
+//Bit 31:24        reg_vcti_os_adp_lut_7     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_vcti_os_adp_lut_6     // unsigned ,    RW, default = 80
+//Bit 15: 8        reg_vcti_os_adp_lut_5     // unsigned ,    RW, default = 96
+//Bit  7: 0        reg_vcti_os_adp_lut_4     // unsigned ,    RW, default = 80
+#define P_VPP_VCTI_OS_ADP_LUT_F                    (volatile uint32_t *)0xff014a04
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_vcti_os_adp_lut_8     // unsigned ,    RW, default = 16
+#define P_VPP_VCTI_BST_GAIN_CORE                   (volatile uint32_t *)0xff014a08
+//Bit 31:24        reserved
+//Bit 23:16        reg_vcti_bst_gain_1       // unsigned ,    RW, default = 48
+//Bit 15: 8        reg_vcti_bst_gain_0       // unsigned ,    RW, default = 48
+//Bit  7: 4        reg_vcti_bst_core_1       // unsigned ,    RW, default = 4
+//Bit  3: 0        reg_vcti_bst_core_0       // unsigned ,    RW, default = 4
+#define P_VPP_HVTI_BLEND_ALPHA_0                   (volatile uint32_t *)0xff014a0c
+//Bit 31:16        reserved
+//Bit 15:12        reg_hvti_blend_alpha_3    // unsigned ,    RW, default = 14  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit 11: 8        reg_hvti_blend_alpha_2    // unsigned ,    RW, default = 12  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit  7: 4        reg_hvti_blend_alpha_1    // unsigned ,    RW, default = 10  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit  3: 0        reg_hvti_blend_alpha_0    // unsigned ,    RW, default = 0  //0, 8, 10, 12, 15, 12, 10, 8,
+#define P_VPP_HVTI_BLEND_ALPHA_1                   (volatile uint32_t *)0xff014a10
+//Bit 31:16        reserved
+//Bit 15:12        reg_hvti_blend_alpha_7    // unsigned ,    RW, default = 10  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit 11: 8        reg_hvti_blend_alpha_6    // unsigned ,    RW, default = 12  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit  7: 4        reg_hvti_blend_alpha_5    // unsigned ,    RW, default = 14  //0, 8, 10, 12, 15, 12, 10, 8,
+//Bit  3: 0        reg_hvti_blend_alpha_4    // unsigned ,    RW, default = 15  //0, 8, 10, 12, 15, 12, 10, 8,
+#define P_VPP_VTI_FINAL_GAIN                       (volatile uint32_t *)0xff014a14
+//Bit 31:16        reserved
+//Bit 15: 8        reg_vti_final_pgain       // unsigned ,    RW, default = 64  vti final positive gain, 64 normalize as "1"
+//Bit  7: 0        reg_vti_final_ngain       // unsigned ,    RW, default = 64  vti final negative gain, 64 normalize as "1"
+#define P_VPP_PK_EN                                (volatile uint32_t *)0xff014a18
+//Bit 31: 1        reserved
+//Bit  0           reg_pk_en                 // unsigned ,    RW, default = 1
+#define P_VPP_PK_DIR0_HP_COEF                      (volatile uint32_t *)0xff014a1c
+//Bit 31:24        reg_pk_dir0_hp_7t_coef_3  // signed ,    RW, default = -3  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir0_hp_7t_coef_2  // signed ,    RW, default = -10  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir0_hp_7t_coef_1  // signed ,    RW, default = -18  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir0_hp_7t_coef_0  // signed ,    RW, default = 64  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR1_HP_COEF                      (volatile uint32_t *)0xff014a20
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir1_hp_3t_coef_1  // signed ,    RW, default = -32  5tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir1_hp_3t_coef_0  // signed ,    RW, default = 64  5tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR2_HP_COEF                      (volatile uint32_t *)0xff014a24
+//Bit 31:24        reg_pk_dir2_hp_7t_coef_3  // signed ,    RW, default = -3  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir2_hp_7t_coef_2  // signed ,    RW, default = -10  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir2_hp_7t_coef_1  // signed ,    RW, default = -18  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir2_hp_7t_coef_0  // signed ,    RW, default = 64  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR3_HP_COEF                      (volatile uint32_t *)0xff014a28
+//Bit 31:24        reg_pk_dir3_hp_7t_coef_3  // signed ,    RW, default = -3  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir3_hp_7t_coef_2  // signed ,    RW, default = -10  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir3_hp_7t_coef_1  // signed ,    RW, default = -18  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir3_hp_7t_coef_0  // signed ,    RW, default = 64  7tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR4_HP_COEF                      (volatile uint32_t *)0xff014a2c
+//Bit 31:24        reg_pk_dir4_hp_11t_coef_5 // signed ,    RW, default = -1  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir4_hp_11t_coef_4 // signed ,    RW, default = -2  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir4_hp_11t_coef_3 // signed ,    RW, default = -5  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir4_hp_11t_coef_2 // signed ,    RW, default = -10  15tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR4_HP_COEF_F                    (volatile uint32_t *)0xff014a30
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir4_hp_11t_coef_1 // signed ,    RW, default = -14  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir4_hp_11t_coef_0 // signed ,    RW, default = 64  15tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR5_HP_COEF                      (volatile uint32_t *)0xff014a34
+//Bit 31:24        reg_pk_dir5_hp_7t_coef_3  // signed ,    RW, default = -3  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir5_hp_7t_coef_2  // signed ,    RW, default = -10  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir5_hp_7t_coef_1  // signed ,    RW, default = -18  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir5_hp_7t_coef_0  // signed ,    RW, default = 64  7tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR6_HP_COEF                      (volatile uint32_t *)0xff014a38
+//Bit 31:24        reg_pk_dir6_hp_7t_coef_3  // signed ,    RW, default = -3  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir6_hp_7t_coef_2  // signed ,    RW, default = -10  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir6_hp_7t_coef_1  // signed ,    RW, default = -18  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir6_hp_7t_coef_0  // signed ,    RW, default = 64  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR7_HP_COEF                      (volatile uint32_t *)0xff014a3c
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir7_hp_3t_coef_1  // signed ,    RW, default = -32  5tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir7_hp_3t_coef_0  // signed ,    RW, default = 64  5tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR0_BP_COEF                      (volatile uint32_t *)0xff014a40
+//Bit 31:24        reg_pk_dir0_bp_7t_coef_3  // signed ,    RW, default = -1  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir0_bp_7t_coef_2  // signed ,    RW, default = -31  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir0_bp_7t_coef_1  // signed ,    RW, default = 4  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir0_bp_7t_coef_0  // signed ,    RW, default = 55  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR1_BP_COEF                      (volatile uint32_t *)0xff014a44
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir1_bp_3t_coef_1  // signed ,    RW, default = -32  5tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir1_bp_3t_coef_0  // signed ,    RW, default = 64  5tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR2_BP_COEF                      (volatile uint32_t *)0xff014a48
+//Bit 31:24        reg_pk_dir2_bp_7t_coef_3  // signed ,    RW, default = -1   9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir2_bp_7t_coef_2  // signed ,    RW, default = -31  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir2_bp_7t_coef_1  // signed ,    RW, default = 4   9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir2_bp_7t_coef_0  // signed ,    RW, default = 55  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR3_BP_COEF                      (volatile uint32_t *)0xff014a4c
+//Bit 31:24        reg_pk_dir3_bp_7t_coef_3  // signed ,    RW, default = -1  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir3_bp_7t_coef_2  // signed ,    RW, default = -31  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir3_bp_7t_coef_1  // signed ,    RW, default = 4  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir3_bp_7t_coef_0  // signed ,    RW, default = 55  7tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR4_BP_COEF                      (volatile uint32_t *)0xff014a50
+//Bit 31:24        reg_pk_dir4_bp_11t_coef_5 // signed ,    RW, default = -1  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir4_bp_11t_coef_4 // signed ,    RW, default = -8  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir4_bp_11t_coef_3 // signed ,    RW, default = 1  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir4_bp_11t_coef_2 // signed ,    RW, default = -22  15tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR4_BP_COEF_F                    (volatile uint32_t *)0xff014a54
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir4_bp_11t_coef_1 // signed ,    RW, default = 3  15tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir4_bp_11t_coef_0 // signed ,    RW, default = 56  15tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR5_BP_COEF                      (volatile uint32_t *)0xff014a58
+//Bit 31:24        reg_pk_dir5_bp_7t_coef_3  // signed ,    RW, default = -1  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir5_bp_7t_coef_2  // signed ,    RW, default = -31  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir5_bp_7t_coef_1  // signed ,    RW, default = 4  7tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir5_bp_7t_coef_0  // signed ,    RW, default = 55  7tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR6_BP_COEF                      (volatile uint32_t *)0xff014a5c
+//Bit 31:24        reg_pk_dir6_bp_7t_coef_3  // signed ,    RW, default = -1  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 23:16        reg_pk_dir6_bp_7t_coef_2  // signed ,    RW, default = -31  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit 15: 8        reg_pk_dir6_bp_7t_coef_1  // signed ,    RW, default = 4  9tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir6_bp_7t_coef_0  // signed ,    RW, default = 55  9tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR7_BP_COEF                      (volatile uint32_t *)0xff014a60
+//Bit 31:16        reserved
+//Bit 15: 8        reg_pk_dir7_bp_3t_coef_1  // signed ,    RW, default = -32  5tap, only store half of the filter normalized to 256 as 1.0
+//Bit  7: 0        reg_pk_dir7_bp_3t_coef_0  // signed ,    RW, default = 64  5tap, only store half of the filter normalized to 256 as 1.0
+#define P_VPP_PK_DIR_HP_GAIN                       (volatile uint32_t *)0xff014a64
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_hp_gain_3      // unsigned ,    RW, default = 16  the gain of dir_hp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_hp_gain_2      // unsigned ,    RW, default = 16  the gain of dir_hp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_hp_gain_1      // unsigned ,    RW, default = 16  the gain of dir_hp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_hp_gain_0      // unsigned ,    RW, default = 16  the gain of dir_hp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+#define P_VPP_PK_DIR_HP_CORE                       (volatile uint32_t *)0xff014a68
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_hp_core_3      // unsigned ,    RW, default = 2  0); coring of HP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_hp_core_2      // unsigned ,    RW, default = 2  0); coring of HP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_hp_core_1      // unsigned ,    RW, default = 2  0); coring of HP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_hp_core_0      // unsigned ,    RW, default = 2  0); coring of HP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+#define P_VPP_PK_DIR_BP_GAIN                       (volatile uint32_t *)0xff014a6c
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_bp_gain_3      // unsigned ,    RW, default = 16  the gain of dir_bp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_bp_gain_2      // unsigned ,    RW, default = 16  the gain of dir_bp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_bp_gain_1      // unsigned ,    RW, default = 16  the gain of dir_bp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_bp_gain_0      // unsigned ,    RW, default = 16  the gain of dir_bp, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7, 16 normalize as "1"
+#define P_VPP_PK_DIR_BP_CORE                       (volatile uint32_t *)0xff014a70
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_bp_core_3      // unsigned ,    RW, default = 2  0); coring of BP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_bp_core_2      // unsigned ,    RW, default = 2  0); coring of BP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_bp_core_1      // unsigned ,    RW, default = 2  0); coring of BP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_bp_core_0      // unsigned ,    RW, default = 2  0); coring of BP for dir, 0: dir0, 1: dir4, 2: dir 2/6, 3: dir1/3/5/7
+#define P_VPP_PK_MODE                              (volatile uint32_t *)0xff014a74
+//Bit 31:30        reserved
+//Bit 29:28        reg_pk_nor_rsft_mode      // unsigned ,    RW, default = 3  the mode of normalize pk dir-out right shift bitwidth, 0: 5bits (32), 1: 6bits(64), 2:7bits(128), 3:8bits(256)
+//Bit 27:21        reserved
+//Bit 20           reg_pk_dir_lh_angle_hbp_mode_0 // unsigned ,    RW, default = 1  the mode of dir1/3/5/7 src, 0: use org dir1/3/5/7, 1: avg with 0/2/4/6
+//Bit 19:17        reserved
+//Bit 16           reg_pk_dir_lh_angle_hbp_mode_1 // unsigned ,    RW, default = 0  the mode of dir1/3/5/7 src, 0: use org dir1/3/5/7, 1: avg with 0/2/4/6
+//Bit 15:13        reserved
+//Bit 12           reg_pk_dir_lh_angle_hbp_mode_2 // unsigned ,    RW, default = 0  the mode of dir1/3/5/7 src, 0: use org dir1/3/5/7, 1: avg with 0/2/4/6
+//Bit 11: 9        reserved
+//Bit  8           reg_pk_dir_lh_angle_hbp_mode_3 // unsigned ,    RW, default = 1  the mode of dir1/3/5/7 src, 0: use org dir1/3/5/7, 1: avg with 0/2/4/6
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_pk_dir2_hp_bld_mode   // unsigned ,    RW, default = 0  0: use dir0, 1: blend dir0/dir1 with consideration of the same sign, 2: use max delta, 3: use min delta
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_pk_dir2_bp_bld_mode   // unsigned ,    RW, default = 0  0: use dir0, 1: blend dir0/dir1 with consideration of the same sign, 2: use max delta, 3: use min delta
+#define P_VPP_PK_CIR_HP_GAIN                       (volatile uint32_t *)0xff014a78
+//Bit 31:16        reserved
+//Bit 15:12        reg_pk_cir_hp_hgain       // unsigned ,    RW, default = 12  normalized 8 as '1'
+//Bit 11: 8        reg_pk_cir_hp_d0gain      // unsigned ,    RW, default = 12  normalized 8 as '1'
+//Bit  7: 4        reg_pk_cir_hp_d1gain      // unsigned ,    RW, default = 8  normalized 8 as '1'
+//Bit  3: 0        reg_pk_cir_hp_vgain       // unsigned ,    RW, default = 12  normalized 8 as '1'
+#define P_VPP_PK_CIR_BP_GAIN                       (volatile uint32_t *)0xff014a7c
+//Bit 31:16        reserved
+//Bit 15:12        reg_pk_cir_bp_hgain       // unsigned ,    RW, default = 12  normalized 8 as '1'
+//Bit 11: 8        reg_pk_cir_bp_d0gain      // unsigned ,    RW, default = 12  normalized 8 as '1'
+//Bit  7: 4        reg_pk_cir_bp_d1gain      // unsigned ,    RW, default = 8  normalized 8 as '1'
+//Bit  3: 0        reg_pk_cir_bp_vgain       // unsigned ,    RW, default = 12  normalized 8 as '1'
+#define P_VPP_PK_DIR_HBP_BLD_ALP_LUT_0             (volatile uint32_t *)0xff014a80
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_hbp_bld_alp_lut_3 // unsigned ,    RW, default = 56
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_hbp_bld_alp_lut_2 // unsigned ,    RW, default = 60
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_hbp_bld_alp_lut_1 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_hbp_bld_alp_lut_0 // unsigned ,    RW, default = 63
+#define P_VPP_PK_DIR_HBP_BLD_ALP_LUT_1             (volatile uint32_t *)0xff014a84
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_dir_hbp_bld_alp_lut_7 // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_dir_hbp_bld_alp_lut_6 // unsigned ,    RW, default = 40
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_dir_hbp_bld_alp_lut_5 // unsigned ,    RW, default = 48
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_dir_hbp_bld_alp_lut_4 // unsigned ,    RW, default = 52
+#define P_VPP_PK_DIR_HBP_BLD_ALP_LUT_F             (volatile uint32_t *)0xff014a88
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_dir_hbp_bld_alp_lut_8 // unsigned ,    RW, default = 24
+#define P_VPP_PK_CIR_HBP_BLD_ALP_LUT_0             (volatile uint32_t *)0xff014a8c
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_cir_hbp_bld_alp_lut_3 // unsigned ,    RW, default = 52
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_cir_hbp_bld_alp_lut_2 // unsigned ,    RW, default = 56
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_cir_hbp_bld_alp_lut_1 // unsigned ,    RW, default = 60
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_cir_hbp_bld_alp_lut_0 // unsigned ,    RW, default = 63
+#define P_VPP_PK_CIR_HBP_BLD_ALP_LUT_1             (volatile uint32_t *)0xff014a90
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_cir_hbp_bld_alp_lut_7 // unsigned ,    RW, default = 32
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_cir_hbp_bld_alp_lut_6 // unsigned ,    RW, default = 40
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_cir_hbp_bld_alp_lut_5 // unsigned ,    RW, default = 46
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_cir_hbp_bld_alp_lut_4 // unsigned ,    RW, default = 48
+#define P_VPP_PK_CIR_HBP_BLD_ALP_LUT_F             (volatile uint32_t *)0xff014a94
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_cir_hbp_bld_alp_lut_8 // unsigned ,    RW, default = 24
+#define P_VPP_PK_DIR_GAIN_LUT_0                    (volatile uint32_t *)0xff014a98
+//Bit 31:24        reg_pk_dir_gain_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_pk_dir_gain_lut_2     // unsigned ,    RW, default = 64
+//Bit 15: 8        reg_pk_dir_gain_lut_1     // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_pk_dir_gain_lut_0     // unsigned ,    RW, default = 16
+#define P_VPP_PK_DIR_GAIN_LUT_1                    (volatile uint32_t *)0xff014a9c
+//Bit 31:24        reg_pk_dir_gain_lut_7     // unsigned ,    RW, default = 32
+//Bit 23:16        reg_pk_dir_gain_lut_6     // unsigned ,    RW, default = 48
+//Bit 15: 8        reg_pk_dir_gain_lut_5     // unsigned ,    RW, default = 60
+//Bit  7: 0        reg_pk_dir_gain_lut_4     // unsigned ,    RW, default = 64
+#define P_VPP_PK_DIR_GAIN_LUT_F                    (volatile uint32_t *)0xff014aa0
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_pk_dir_gain_lut_8     // unsigned ,    RW, default = 16
+#define P_VPP_PK_CIR_GAIN_LUT_0                    (volatile uint32_t *)0xff014aa4
+//Bit 31:24        reg_pk_cir_gain_lut_3     // unsigned ,    RW, default = 64
+//Bit 23:16        reg_pk_cir_gain_lut_2     // unsigned ,    RW, default = 64
+//Bit 15: 8        reg_pk_cir_gain_lut_1     // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_pk_cir_gain_lut_0     // unsigned ,    RW, default = 16
+#define P_VPP_PK_CIR_GAIN_LUT_1                    (volatile uint32_t *)0xff014aa8
+//Bit 31:24        reg_pk_cir_gain_lut_7     // unsigned ,    RW, default = 8
+//Bit 23:16        reg_pk_cir_gain_lut_6     // unsigned ,    RW, default = 16
+//Bit 15: 8        reg_pk_cir_gain_lut_5     // unsigned ,    RW, default = 32
+//Bit  7: 0        reg_pk_cir_gain_lut_4     // unsigned ,    RW, default = 56
+#define P_VPP_PK_CIR_GAIN_LUT_F                    (volatile uint32_t *)0xff014aac
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_pk_cir_gain_lut_8     // unsigned ,    RW, default = 4
+#define P_VPP_PK_FINAL_GAIN                        (volatile uint32_t *)0xff014ab0
+//Bit 31:24        reg_pk_dir_final_gain     // unsigned ,    RW, default = 64  64 normalize as "1"
+//Bit 23:16        reg_pk_cir_final_gain     // unsigned ,    RW, default = 64  64 normalize as "1"
+//Bit 15: 8        reg_pk_final_pgain        // unsigned ,    RW, default = 64  pk final positive gain, 64 normalize as "1"
+//Bit  7: 0        reg_pk_final_ngain        // unsigned ,    RW, default = 64  pk final negative gain, 64 normalize as "1"
+#define P_VPP_PK_DIR_CIR_BLD_ALP_GAIN              (volatile uint32_t *)0xff014ab4
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_dir_cir_bld_alp_gain // unsigned ,    RW, default = 48  the gain of the alpha blend with pk_dir and pk_cir, 32 normalize as "1"
+#define P_VPP_PK_GAIN_VSLUMA_LUT_0                 (volatile uint32_t *)0xff014ab8
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_gain_vsluma_lut_3  // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_gain_vsluma_lut_2  // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_gain_vsluma_lut_1  // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_gain_vsluma_lut_0  // unsigned ,    RW, default = 63
+#define P_VPP_PK_GAIN_VSLUMA_LUT_1                 (volatile uint32_t *)0xff014abc
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_gain_vsluma_lut_7  // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_gain_vsluma_lut_6  // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_gain_vsluma_lut_5  // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_gain_vsluma_lut_4  // unsigned ,    RW, default = 63
+#define P_VPP_PK_GAIN_VSLUMA_LUT_2                 (volatile uint32_t *)0xff014ac0
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_gain_vsluma_lut_11 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_gain_vsluma_lut_10 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_gain_vsluma_lut_9  // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_gain_vsluma_lut_8  // unsigned ,    RW, default = 63
+#define P_VPP_PK_GAIN_VSLUMA_LUT_3                 (volatile uint32_t *)0xff014ac4
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_gain_vsluma_lut_15 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_gain_vsluma_lut_14 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_gain_vsluma_lut_13 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_gain_vsluma_lut_12 // unsigned ,    RW, default = 63
+#define P_VPP_PK_GAIN_VSLUMA_LUT_F                 (volatile uint32_t *)0xff014ac8
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_gain_vsluma_lut_16 // unsigned ,    RW, default = 63
+#define P_VPP_PK_COLOR_PRCT_LUT_0                  (volatile uint32_t *)0xff014acc
+//Bit 31:28        reg_pk_color_prct_lut_7   // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_6   // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_5   // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_4   // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_3   // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_2   // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_1   // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_0   // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_1                  (volatile uint32_t *)0xff014ad0
+//Bit 31:28        reg_pk_color_prct_lut_15  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_14  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_13  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_12  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_11  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_10  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_9   // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_8   // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_2                  (volatile uint32_t *)0xff014ad4
+//Bit 31:28        reg_pk_color_prct_lut_23  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_22  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_21  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_20  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_19  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_18  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_17  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_16  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_3                  (volatile uint32_t *)0xff014ad8
+//Bit 31:28        reg_pk_color_prct_lut_31  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_30  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_29  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_28  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_27  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_26  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_25  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_24  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_4                  (volatile uint32_t *)0xff014adc
+//Bit 31:28        reg_pk_color_prct_lut_39  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_38  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_37  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_36  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_35  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_34  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_33  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_32  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_5                  (volatile uint32_t *)0xff014ae0
+//Bit 31:28        reg_pk_color_prct_lut_47  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_46  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_45  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_44  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_43  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_42  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_41  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_40  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_6                  (volatile uint32_t *)0xff014ae4
+//Bit 31:28        reg_pk_color_prct_lut_55  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_54  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_53  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_52  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_51  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_50  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_49  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_48  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_7                  (volatile uint32_t *)0xff014ae8
+//Bit 31:28        reg_pk_color_prct_lut_63  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_62  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_61  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_60  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_59  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_58  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_57  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_56  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_8                  (volatile uint32_t *)0xff014aec
+//Bit 31:28        reg_pk_color_prct_lut_71  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_70  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_69  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_68  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_67  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_66  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_65  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_64  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_9                  (volatile uint32_t *)0xff014af0
+//Bit 31:28        reg_pk_color_prct_lut_79  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_78  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_77  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_76  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_75  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_74  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_73  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_72  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_10                 (volatile uint32_t *)0xff014af4
+//Bit 31:28        reg_pk_color_prct_lut_87  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_86  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_85  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_84  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_83  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_82  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_81  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_80  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_11                 (volatile uint32_t *)0xff014af8
+//Bit 31:28        reg_pk_color_prct_lut_95  // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_94  // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_93  // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_92  // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_91  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_90  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_89  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_88  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_12                 (volatile uint32_t *)0xff014afc
+//Bit 31:28        reg_pk_color_prct_lut_103 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_102 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_101 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_100 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_99  // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_98  // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_97  // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_96  // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_13                 (volatile uint32_t *)0xff014b00
+//Bit 31:28        reg_pk_color_prct_lut_111 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_110 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_109 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_108 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_107 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_106 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_105 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_104 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_14                 (volatile uint32_t *)0xff014b04
+//Bit 31:28        reg_pk_color_prct_lut_119 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_118 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_117 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_116 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_115 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_114 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_113 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_112 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_15                 (volatile uint32_t *)0xff014b08
+//Bit 31:28        reg_pk_color_prct_lut_127 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_126 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_125 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_124 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_123 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_122 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_121 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_120 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_16                 (volatile uint32_t *)0xff014b0c
+//Bit 31:28        reg_pk_color_prct_lut_135 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_134 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_133 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_132 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_131 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_130 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_129 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_128 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_17                 (volatile uint32_t *)0xff014b10
+//Bit 31:28        reg_pk_color_prct_lut_143 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_142 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_141 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_140 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_139 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_138 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_137 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_136 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_18                 (volatile uint32_t *)0xff014b14
+//Bit 31:28        reg_pk_color_prct_lut_151 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_150 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_149 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_148 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_147 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_146 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_145 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_144 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_19                 (volatile uint32_t *)0xff014b18
+//Bit 31:28        reg_pk_color_prct_lut_159 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_158 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_157 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_156 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_155 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_154 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_153 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_152 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_20                 (volatile uint32_t *)0xff014b1c
+//Bit 31:28        reg_pk_color_prct_lut_167 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_166 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_165 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_164 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_163 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_162 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_161 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_160 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_21                 (volatile uint32_t *)0xff014b20
+//Bit 31:28        reg_pk_color_prct_lut_175 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_174 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_173 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_172 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_171 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_170 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_169 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_168 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_22                 (volatile uint32_t *)0xff014b24
+//Bit 31:28        reg_pk_color_prct_lut_183 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_182 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_181 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_180 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_179 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_178 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_177 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_176 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_23                 (volatile uint32_t *)0xff014b28
+//Bit 31:28        reg_pk_color_prct_lut_191 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_190 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_189 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_188 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_187 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_186 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_185 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_184 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_24                 (volatile uint32_t *)0xff014b2c
+//Bit 31:28        reg_pk_color_prct_lut_199 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_198 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_197 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_196 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_195 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_194 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_193 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_192 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_25                 (volatile uint32_t *)0xff014b30
+//Bit 31:28        reg_pk_color_prct_lut_207 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_206 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_205 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_204 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_203 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_202 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_201 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_200 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_26                 (volatile uint32_t *)0xff014b34
+//Bit 31:28        reg_pk_color_prct_lut_215 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_214 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_213 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_212 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_211 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_210 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_209 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_208 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_27                 (volatile uint32_t *)0xff014b38
+//Bit 31:28        reg_pk_color_prct_lut_223 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_222 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_221 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_220 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_219 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_218 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_217 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_216 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_28                 (volatile uint32_t *)0xff014b3c
+//Bit 31:28        reg_pk_color_prct_lut_231 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_230 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_229 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_228 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_227 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_226 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_225 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_224 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_29                 (volatile uint32_t *)0xff014b40
+//Bit 31:28        reg_pk_color_prct_lut_239 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_238 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_237 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_236 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_235 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_234 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_233 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_232 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_30                 (volatile uint32_t *)0xff014b44
+//Bit 31:28        reg_pk_color_prct_lut_247 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_246 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_245 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_244 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_243 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_242 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_241 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_240 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_LUT_31                 (volatile uint32_t *)0xff014b48
+//Bit 31:28        reg_pk_color_prct_lut_255 // unsigned ,    RW, default = 0
+//Bit 27:24        reg_pk_color_prct_lut_254 // unsigned ,    RW, default = 0
+//Bit 23:20        reg_pk_color_prct_lut_253 // unsigned ,    RW, default = 0
+//Bit 19:16        reg_pk_color_prct_lut_252 // unsigned ,    RW, default = 0
+//Bit 15:12        reg_pk_color_prct_lut_251 // unsigned ,    RW, default = 0
+//Bit 11: 8        reg_pk_color_prct_lut_250 // unsigned ,    RW, default = 0
+//Bit  7: 4        reg_pk_color_prct_lut_249 // unsigned ,    RW, default = 0
+//Bit  3: 0        reg_pk_color_prct_lut_248 // unsigned ,    RW, default = 0
+#define P_VPP_PK_COLOR_PRCT_GAIN                   (volatile uint32_t *)0xff014b4c
+//Bit 31:30        reg_pk_color_prct_in_sel  // unsigned ,    RW, default = 1
+//Bit 29: 8        reserved
+//Bit  7: 0        reg_pk_color_prct_gain    // unsigned ,    RW, default = 0  gain to de-boost of peak_dlt base on color region, norm to 64 as 1.0, set to 0 as disable
+#define P_VPP_PK_OS_EN_SEL_MODE                    (volatile uint32_t *)0xff014b50
+//Bit 31:13        reserved
+//Bit 12           reg_pk_os_en              // unsigned ,    RW, default = 1
+//Bit 11: 8        reserved
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_pk_os_win_h_mode      // unsigned ,    RW, default = 1  the mode of overshoot window h, 0: 5, 1: 7, 2: 9, 3:11
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_pk_os_win_v_mode      // unsigned ,    RW, default = 1  the mode of overshoot window h, 0: 3, 1: 5, 2: 7, 3:9
+#define P_VPP_PK_OS_ADP_LUT_0                      (volatile uint32_t *)0xff014b54
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_adp_lut_3       // unsigned ,    RW, default = 20
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_adp_lut_2       // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_adp_lut_1       // unsigned ,    RW, default = 12
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_adp_lut_0       // unsigned ,    RW, default = 8
+#define P_VPP_PK_OS_ADP_LUT_1                      (volatile uint32_t *)0xff014b58
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_adp_lut_7       // unsigned ,    RW, default = 12
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_adp_lut_6       // unsigned ,    RW, default = 16
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_adp_lut_5       // unsigned ,    RW, default = 20
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_adp_lut_4       // unsigned ,    RW, default = 24
+#define P_VPP_PK_OS_ADP_LUT_F                      (volatile uint32_t *)0xff014b5c
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_os_adp_lut_8       // unsigned ,    RW, default = 8
+#define P_VPP_PK_OS_EDGE_GAIN_THD                  (volatile uint32_t *)0xff014b60
+//Bit 31:28        reserved
+//Bit 27:24        reg_pk_os_edge_gain_thn   // unsigned ,    RW, default = 5
+//Bit 23:16        reg_pk_os_edge_gain_th0   // unsigned ,    RW, default = 8
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_edge_gain1      // unsigned ,    RW, default = 32  32
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_edge_gain0      // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_GAIN_VSLUMA_LUT_0              (volatile uint32_t *)0xff014b64
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_gain_vsluma_lut_3 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_gain_vsluma_lut_2 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_gain_vsluma_lut_1 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_gain_vsluma_lut_0 // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_GAIN_VSLUMA_LUT_1              (volatile uint32_t *)0xff014b68
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_gain_vsluma_lut_7 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_gain_vsluma_lut_6 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_gain_vsluma_lut_5 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_gain_vsluma_lut_4 // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_GAIN_VSLUMA_LUT_2              (volatile uint32_t *)0xff014b6c
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_gain_vsluma_lut_11 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_gain_vsluma_lut_10 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_gain_vsluma_lut_9 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_gain_vsluma_lut_8 // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_GAIN_VSLUMA_LUT_3              (volatile uint32_t *)0xff014b70
+//Bit 31:30        reserved
+//Bit 29:24        reg_pk_os_gain_vsluma_lut_15 // unsigned ,    RW, default = 63
+//Bit 23:22        reserved
+//Bit 21:16        reg_pk_os_gain_vsluma_lut_14 // unsigned ,    RW, default = 63
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_gain_vsluma_lut_13 // unsigned ,    RW, default = 63
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_gain_vsluma_lut_12 // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_GAIN_VSLUMA_LUT_F              (volatile uint32_t *)0xff014b74
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pk_os_gain_vsluma_lut_16 // unsigned ,    RW, default = 63
+#define P_VPP_PK_OS_UP_DN                          (volatile uint32_t *)0xff014b78
+//Bit 31:24        reserved
+//Bit 23:20        reg_pk_os_up_gain         // unsigned ,    RW, default = 8  0); gain of os up, 8 normalize as "1"
+//Bit 19:16        reg_pk_os_dn_gain         // unsigned ,    RW, default = 8  0); gain of os dn, 8 normalize as "1"
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pk_os_min             // unsigned ,    RW, default = 0  <<2
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pk_os_max             // unsigned ,    RW, default = 32  <<2
+#define P_VPP_PKTI_EDGE_STR_GAIN_0                 (volatile uint32_t *)0xff014b7c
+//Bit 31:30        reserved
+//Bit 29:24        reg_pkti_edge_str_gain_3  // unsigned ,    RW, default = 20  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit 23:22        reserved
+//Bit 21:16        reg_pkti_edge_str_gain_2  // unsigned ,    RW, default = 16  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pkti_edge_str_gain_1  // unsigned ,    RW, default = 16  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pkti_edge_str_gain_0  // unsigned ,    RW, default = 16  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+#define P_VPP_PKTI_EDGE_STR_GAIN_1                 (volatile uint32_t *)0xff014b80
+//Bit 31:30        reserved
+//Bit 29:24        reg_pkti_edge_str_gain_7  // unsigned ,    RW, default = 28  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit 23:22        reserved
+//Bit 21:16        reg_pkti_edge_str_gain_6  // unsigned ,    RW, default = 24  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit 15:14        reserved
+//Bit 13: 8        reg_pkti_edge_str_gain_5  // unsigned ,    RW, default = 24  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+//Bit  7: 6        reserved
+//Bit  5: 0        reg_pkti_edge_str_gain_4  // unsigned ,    RW, default = 20  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+#define P_VPP_PKTI_EDGE_STR_GAIN_F                 (volatile uint32_t *)0xff014b84
+//Bit 31: 6        reserved
+//Bit  5: 0        reg_pkti_edge_str_gain_8  // unsigned ,    RW, default = 28  the gain of the alpha blend with pk and ti, 16 normalize as "1"
+#define P_VPP_SR_CC_EN                             (volatile uint32_t *)0xff014b88
+//Bit 31: 1        reserved
+//Bit  0           reg_sr_cc_en              // unsigned ,    RW, default = 1  sr color compensation enable
+#define P_VPP_SR_CC_YUV2RGB_OFSET                  (volatile uint32_t *)0xff014b8c
+//Bit 31:24        reserved
+//Bit 23:12        reg_sr_cc_yuv2rgb_ofset_0 // unsigned ,    RW, default = 0  yuv2rgb pre-offset to yuv,
+//Bit 11: 0        reg_sr_cc_yuv2rgb_ofset_1 // unsigned ,    RW, default = 512  yuv2rgb pre-offset to yuv,
+#define P_VPP_SR_CC_YUV2RGB_MAT_0                  (volatile uint32_t *)0xff014b90
+//Bit 31:28        reserved
+//Bit 27:16        reg_sr_cc_yuv2rgb_mat3x3_1 // signed ,    RW, default = 0  yuv2rgb 3x3 matrix
+//Bit 15:12        reserved
+//Bit 11: 0        reg_sr_cc_yuv2rgb_mat3x3_0 // signed ,    RW, default = 1192  yuv2rgb 3x3 matrix
+#define P_VPP_SR_CC_YUV2RGB_MAT_1                  (volatile uint32_t *)0xff014b94
+//Bit 31:28        reserved
+//Bit 27:16        reg_sr_cc_yuv2rgb_mat3x3_3 // signed ,    RW, default = 1192  yuv2rgb 3x3 matrix
+//Bit 15:12        reserved
+//Bit 11: 0        reg_sr_cc_yuv2rgb_mat3x3_2 // signed ,    RW, default = 1836  yuv2rgb 3x3 matrix
+#define P_VPP_SR_CC_YUV2RGB_MAT_2                  (volatile uint32_t *)0xff014b98
+//Bit 31:28        reserved
+//Bit 27:16        reg_sr_cc_yuv2rgb_mat3x3_5 // signed ,    RW, default = -547  yuv2rgb 3x3 matrix
+//Bit 15:12        reserved
+//Bit 11: 0        reg_sr_cc_yuv2rgb_mat3x3_4 // signed ,    RW, default = -218  yuv2rgb 3x3 matrix
+#define P_VPP_SR_CC_YUV2RGB_MAT_3                  (volatile uint32_t *)0xff014b9c
+//Bit 31:28        reserved
+//Bit 27:16        reg_sr_cc_yuv2rgb_mat3x3_7 // signed ,    RW, default = 2166  yuv2rgb 3x3 matrix
+//Bit 15:12        reserved
+//Bit 11: 0        reg_sr_cc_yuv2rgb_mat3x3_6 // signed ,    RW, default = 1192  yuv2rgb 3x3 matrix
+#define P_VPP_SR_CC_YUV2RGB_MAT_F                  (volatile uint32_t *)0xff014ba0
+//Bit 31:12        reserved
+//Bit 11: 0        reg_sr_cc_yuv2rgb_mat3x3_8 // signed ,    RW, default = 0  yuv2rgb 3x3 matrix
+#define P_VPP_SR_CC_YUV2RGB_CLIP_RS                (volatile uint32_t *)0xff014ba4
+//Bit 31:28        reserved
+//Bit 27:16        reg_sr_cc_yuv2rgb_clip_0  // unsigned ,    RW, default = 0  yuv2rgb converted RGB clipping range
+//Bit 15: 4        reg_sr_cc_yuv2rgb_clip_1  // unsigned ,    RW, default = 1023  yuv2rgb converted RGB clipping range
+//Bit  3: 2        reserved
+//Bit  1: 0        reg_sr_cc_yuv2rgb_rs      // unsigned ,    RW, default = 0  matrix normalization right shift extra bits, norm= (1<<(10+rs))
+#define P_VPP_SR_CC_C_GAIN                         (volatile uint32_t *)0xff014ba8
+//Bit 31:16        reserved
+//Bit 15: 8        reg_sr_cc_low_c_gain      // unsigned ,    RW, default = 0  64 normalize as "1", dft=0
+//Bit  7: 0        reg_sr_cc_high_c_gain     // unsigned ,    RW, default = 32  64 normalize as "1", dft=32
+#define P_VPP_SR_CC_ADP_YWT_THD_GAIN               (volatile uint32_t *)0xff014bac
+//Bit 31:24        reg_sr_cc_adp_ywt_th1     // unsigned ,    RW, default = 220  th1 of adaptive luma weighting, dft = 220
+//Bit 23:16        reg_sr_cc_adp_ywt_th0     // unsigned ,    RW, default = 32  th0 of adaptive luma weighting, dft = 32
+//Bit 15: 8        reg_sr_cc_adp_ywt_gain1   // unsigned ,    RW, default = 64  gain1 of adaptive luma weighting, 16 normalize as "1", dft = 64
+//Bit  7: 0        reg_sr_cc_adp_ywt_gain0   // unsigned ,    RW, default = 32  gain0 of adaptive luma weighting, 16 normalize as "1", dft = 32
+#define P_VPP_SR_CC_ADP_CWT_THD_GAIN               (volatile uint32_t *)0xff014bb0
+//Bit 31:24        reg_sr_cc_adp_cwt_th1     // unsigned ,    RW, default = 220  th1 of adaptive chroma weighting, dft = 220
+//Bit 23:16        reg_sr_cc_adp_cwt_th0     // unsigned ,    RW, default = 32  th0 of adaptive chroma weighting, dft = 32
+//Bit 15: 8        reg_sr_cc_adp_cwt_gain1   // unsigned ,    RW, default = 64  gain1 of adaptive chroma weighting, 16 normalize as "1", dft = 64
+//Bit  7: 0        reg_sr_cc_adp_cwt_gain0   // unsigned ,    RW, default = 32  gain0 of adaptive chroma weighting, 16 normalize as "1", dft = 32
+#define P_VPP_SR_DEBUG_DEMO_WND_EN                 (volatile uint32_t *)0xff014bb4
+//Bit 31: 8        reserved
+//Bit  7: 5        reserved
+//Bit  4           reg_sr_debug_demo_en      // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_sr_debug_demo_inverse // unsigned ,    RW, default = 0
+#define P_VPP_SR_DEBUG_DEMO_WND_COEF_1             (volatile uint32_t *)0xff014bb8
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_3      // unsigned ,    RW, default = 1620  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_2      // unsigned ,    RW, default = 2880  ontrol debug window col size
+#define P_VPP_SR_DEBUG_DEMO_WND_COEF_0             (volatile uint32_t *)0xff014bbc
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_1      // unsigned ,    RW, default = 540  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_0      // unsigned ,    RW, default = 960  control debug window col size
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  vid_sharp_regs.h
+//
 // -----------------------------------------------
 // REG_BASE:  VPPH_VCBUS_BASE = 0x53
 // -----------------------------------------------
-// 8'h50/51/52/53  have used  for srsharp_regs
+//
+// Reading file:  vid_contrst_regs.h
+//
+// synopsys translate_off
+// synopsys translate_on
+#define P_VPP_CONTRST_DEBUG_DEMO_WND_EN            (volatile uint32_t *)0xff014c00
+//Bit 31: 8        reserved
+//Bit  7: 5        reserved
+//Bit  4           reg_contrst_debug_demo_en // unsigned ,    RW, default = 0
+//Bit  3: 1        reserved
+//Bit  0           reg_contrst_debug_demo_inverse // unsigned ,    RW, default = 0
+#define P_VPP_CONTRST_DEBUG_DEMO_WND_COEF_1        (volatile uint32_t *)0xff014c04
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_3      // unsigned ,    RW, default = 1620  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_2      // unsigned ,    RW, default = 2880  ontrol debug window col size
+#define P_VPP_CONTRST_DEBUG_DEMO_WND_COEF_0        (volatile uint32_t *)0xff014c08
+//Bit 31:28        reserved
+//Bit 27:16        reg_debug_demo_wnd_1      // unsigned ,    RW, default = 540  control debug window row size
+//Bit 15:12        reserved
+//Bit 11: 0        reg_debug_demo_wnd_0      // unsigned ,    RW, default = 960  control debug window col size
+#define P_VPP_DNLP_EN_MODE                         (volatile uint32_t *)0xff014c0c
+//Bit 31:13        reserved
+//Bit 12           reg_input_422             // unsigned ,    RW, default = 0
+//Bit 11: 9        reserved
+//Bit  8           reg_dnlp_sr_in            // unsigned ,    RW, default = 0
+//Bit  7: 5        reserved
+//Bit  4           reg_dnlp_en               // unsigned ,    RW, default = 0
+//Bit  3            reserved
+//Bit  2: 0        reg_dnlp_input_sel        // unsigned ,    RW, default = 0
+#define P_VPP_DNLP_YGRID_0                         (volatile uint32_t *)0xff014c10
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_1          // unsigned ,    RW, default = 16
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_0          // unsigned ,    RW, default = 8
+#define P_VPP_DNLP_YGRID_1                         (volatile uint32_t *)0xff014c14
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_3          // unsigned ,    RW, default = 32
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_2          // unsigned ,    RW, default = 24
+#define P_VPP_DNLP_YGRID_2                         (volatile uint32_t *)0xff014c18
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_5          // unsigned ,    RW, default = 48
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_4          // unsigned ,    RW, default = 40
+#define P_VPP_DNLP_YGRID_3                         (volatile uint32_t *)0xff014c1c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_7          // unsigned ,    RW, default = 64
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_6          // unsigned ,    RW, default = 56
+#define P_VPP_DNLP_YGRID_4                         (volatile uint32_t *)0xff014c20
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_9          // unsigned ,    RW, default = 80
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_8          // unsigned ,    RW, default = 72
+#define P_VPP_DNLP_YGRID_5                         (volatile uint32_t *)0xff014c24
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_11         // unsigned ,    RW, default = 104
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_10         // unsigned ,    RW, default = 92
+#define P_VPP_DNLP_YGRID_6                         (volatile uint32_t *)0xff014c28
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_13         // unsigned ,    RW, default = 128
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_12         // unsigned ,    RW, default = 116
+#define P_VPP_DNLP_YGRID_7                         (volatile uint32_t *)0xff014c2c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_15         // unsigned ,    RW, default = 160
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_14         // unsigned ,    RW, default = 144
+#define P_VPP_DNLP_YGRID_8                         (volatile uint32_t *)0xff014c30
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_17         // unsigned ,    RW, default = 192
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_16         // unsigned ,    RW, default = 176
+#define P_VPP_DNLP_YGRID_9                         (volatile uint32_t *)0xff014c34
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_19         // unsigned ,    RW, default = 224
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_18         // unsigned ,    RW, default = 208
+#define P_VPP_DNLP_YGRID_10                        (volatile uint32_t *)0xff014c38
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_21         // unsigned ,    RW, default = 256
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_20         // unsigned ,    RW, default = 240
+#define P_VPP_DNLP_YGRID_11                        (volatile uint32_t *)0xff014c3c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_23         // unsigned ,    RW, default = 300
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_22         // unsigned ,    RW, default = 276
+#define P_VPP_DNLP_YGRID_12                        (volatile uint32_t *)0xff014c40
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_25         // unsigned ,    RW, default = 340
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_24         // unsigned ,    RW, default = 320
+#define P_VPP_DNLP_YGRID_13                        (volatile uint32_t *)0xff014c44
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_27         // unsigned ,    RW, default = 384
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_26         // unsigned ,    RW, default = 364
+#define P_VPP_DNLP_YGRID_14                        (volatile uint32_t *)0xff014c48
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_29         // unsigned ,    RW, default = 448
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_28         // unsigned ,    RW, default = 416
+#define P_VPP_DNLP_YGRID_15                        (volatile uint32_t *)0xff014c4c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_31         // unsigned ,    RW, default = 512
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_30         // unsigned ,    RW, default = 480
+#define P_VPP_DNLP_YGRID_16                        (volatile uint32_t *)0xff014c50
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_33         // unsigned ,    RW, default = 576
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_32         // unsigned ,    RW, default = 544
+#define P_VPP_DNLP_YGRID_17                        (volatile uint32_t *)0xff014c54
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_35         // unsigned ,    RW, default = 640
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_34         // unsigned ,    RW, default = 608
+#define P_VPP_DNLP_YGRID_18                        (volatile uint32_t *)0xff014c58
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_37         // unsigned ,    RW, default = 688
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_36         // unsigned ,    RW, default = 664
+#define P_VPP_DNLP_YGRID_19                        (volatile uint32_t *)0xff014c5c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_39         // unsigned ,    RW, default = 736
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_38         // unsigned ,    RW, default = 712
+#define P_VPP_DNLP_YGRID_20                        (volatile uint32_t *)0xff014c60
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_41         // unsigned ,    RW, default = 768
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_40         // unsigned ,    RW, default = 752
+#define P_VPP_DNLP_YGRID_21                        (volatile uint32_t *)0xff014c64
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_43         // unsigned ,    RW, default = 800
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_42         // unsigned ,    RW, default = 784
+#define P_VPP_DNLP_YGRID_22                        (volatile uint32_t *)0xff014c68
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_45         // unsigned ,    RW, default = 824
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_44         // unsigned ,    RW, default = 812
+#define P_VPP_DNLP_YGRID_23                        (volatile uint32_t *)0xff014c6c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_47         // unsigned ,    RW, default = 848
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_46         // unsigned ,    RW, default = 840
+#define P_VPP_DNLP_YGRID_24                        (volatile uint32_t *)0xff014c70
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_49         // unsigned ,    RW, default = 860
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_48         // unsigned ,    RW, default = 856
+#define P_VPP_DNLP_YGRID_25                        (volatile uint32_t *)0xff014c74
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_51         // unsigned ,    RW, default = 872
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_50         // unsigned ,    RW, default = 864
+#define P_VPP_DNLP_YGRID_26                        (volatile uint32_t *)0xff014c78
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_53         // unsigned ,    RW, default = 888
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_52         // unsigned ,    RW, default = 880
+#define P_VPP_DNLP_YGRID_27                        (volatile uint32_t *)0xff014c7c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_55         // unsigned ,    RW, default = 904
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_54         // unsigned ,    RW, default = 896
+#define P_VPP_DNLP_YGRID_28                        (volatile uint32_t *)0xff014c80
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_57         // unsigned ,    RW, default = 928
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_56         // unsigned ,    RW, default = 912
+#define P_VPP_DNLP_YGRID_29                        (volatile uint32_t *)0xff014c84
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_59         // unsigned ,    RW, default = 960
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_58         // unsigned ,    RW, default = 944
+#define P_VPP_DNLP_YGRID_30                        (volatile uint32_t *)0xff014c88
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_61         // unsigned ,    RW, default = 992
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_60         // unsigned ,    RW, default = 976
+#define P_VPP_DNLP_YGRID_31                        (volatile uint32_t *)0xff014c8c
+//Bit 31:22        reserved
+//Bit 21:12        reg_dnlp_ygrid_63         // unsigned ,    RW, default = 1020
+//Bit 11:10        reserved
+//Bit  9: 0        reg_dnlp_ygrid_62         // unsigned ,    RW, default = 1008
+#define P_VPP_DNLP_SATPRT_DIV_M                    (volatile uint32_t *)0xff014c90
+//Bit 31:24        reserved
+//Bit 23:16        reg_dnlp_satprt_div_m_2   // unsigned ,    RW, default = 128  1/m, normalized to 128 as 1, default=1
+//Bit 15: 8        reg_dnlp_satprt_div_m_1   // unsigned ,    RW, default = 128  1/m, normalized to 128 as 1, default=1
+//Bit  7: 0        reg_dnlp_satprt_div_m_0   // unsigned ,    RW, default = 128  1/m, normalized to 128 as 1, default=1
+#define P_VPP_DNLP_SATPRT_LMT_RGB                  (volatile uint32_t *)0xff014c94
+//Bit 31:24        reserved
+//Bit 23:12        reg_dnlp_satprt_lmt_rgb_2 // unsigned ,    RW, default = 1023  limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023;
+//Bit 11: 0        reg_dnlp_satprt_lmt_rgb_1 // unsigned ,    RW, default = 1023  limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023;
+#define P_VPP_DNLP_SATPRT_LMT_RGB_F                (volatile uint32_t *)0xff014c98
+//Bit 31:12        reserved
+//Bit 11: 0        reg_dnlp_satprt_lmt_rgb_0 // unsigned ,    RW, default = 1023  limit of the rgb channel, for limited range RGB, set to 960, otherwise set to 1023;
+#define P_VPP_DNLP_SATPRT_MODE                     (volatile uint32_t *)0xff014c9c
+//Bit 31: 9        reserved
+//Bit  8           reg_dnlp_satprt_is_lmt    // unsigned ,    RW, default = 1
+//Bit  7: 6        reserved
+//Bit  5: 4        reg_dnlp_satprt_csc_mode  // unsigned ,    RW, default = 1
+//Bit  3: 1        reserved
+//Bit  0           reg_dnlp_satprt_enable    // unsigned ,    RW, default = 1
+#define P_VPP_DNLP_SATPRT_SAT_RATE_CORE            (volatile uint32_t *)0xff014ca0
+//Bit 31:16        reserved
+//Bit 15: 8        reg_dnlp_satprt_sat_rate  // unsigned ,    RW, default = 64
+//Bit  7: 0        reg_dnlp_satprt_sat_core  // unsigned ,    RW, default = 80
+#define P_VPP_DNLP_COLOR_PRT_GAIN                  (volatile uint32_t *)0xff014ca4
+//Bit 31: 8        reserved
+//Bit  7: 0        reg_dnlp_color_prt_gain   // unsigned ,    RW, default = 64  gain to de-boost of dnlp_dlt base on color region, norm to 64 as 1.0. set to 0 as disable
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  vid_contrst_regs.h
+//
 //afbcd_multx6 use 3 reg_pages
 // -----------------------------------------------
 // REG_BASE:  MADE_VCBUS_BASE = 0x54
@@ -29032,8 +27542,8 @@
 //Bit 15:13     reserved
 //Bit 12:0      cntl_f1_stride_cr                   //unsigned, RW, default = 256
 #define P_AFBCDM_ENABLE                            (volatile uint32_t *)0xff015100
-//Bit   31:29,    reserved
-//Bit   28:23,    reg_gclk_ctrl_core     unsigned, default = 0
+//Bit   31        reserved
+//Bit   30:23,    reg_gclk_ctrl_core     unsigned, default = 0
 //Bit   22,       reg_fmt_size_sw_mode   unsigned, default = 0, 0:hw mode 1:sw mode for format size
 //Bit   21,       reg_addr_link_en  unsigned, default = 1, 1:enable
 //Bit   20,       reg_fmt444_comb   unsigned, default = 0, 0: 444 8bit uncomb
@@ -29698,6 +28208,319 @@
 //
 // Closing file:  pip_alph_gen_regs.h
 //
+// -----------------------------------------------
+// REG_BASE:  VPP_GFCD_VCBUS_BASE = 0x59
+// -----------------------------------------------
+//
+// Reading file:  gfcd_top_reg.h
+//
+// synopsys translate_off
+// synopsys translate_on
+//
+#define P_GFCD_FRM_BGN                             (volatile uint32_t *)0xff016540
+//Bit 31:29 reserved
+//Bit 28:16 reg_frm_bgn_v                    //unsigned, RW, default=0
+//Bit 15:13 reserved
+//Bit 12:0  reg_frm_bgn_h                    //unsigned, RW, default=0
+#define P_GFCD_FRM_END                             (volatile uint32_t *)0xff016544
+//Bit 31:29 reserved
+//Bit 28:16 reg_frm_end_v                    //unsigned, RW, default=0
+//Bit 15:13 reserved
+//Bit 12:0  reg_frm_end_h                    //unsigned, RW, default=0
+#define P_GFCD_CLK_CTRL                            (volatile uint32_t *)0xff016548
+//Bit 31:22  reserved
+//Bit 21:20 reg_actm_gclk_ctrl                   //unsigned, RW, default=0
+//Bit 19:18  reserved
+//Bit 17:16 reg_cut_gclk_ctrl                    //unsigned, RW, default=0
+//Bit 15:14 reserved
+//Bit 13:12 reg_comb_gclk_ctrl                   //unsigned, RW, default=0
+//Bit 11:6  reserved
+//Bit 5:4   reg_mif_gclk_ctrl                    //unsigned, RW, default=0
+//Bit 3:2   reserved
+//Bit 1:0   reg_reg_gclk_ctrl                    //unsigned, RW, default=0
+#define P_GFCD_SW_RESET                            (volatile uint32_t *)0xff01654c
+//Bit 31:0  reg_sw_reset                      //unsigned, RW, default=0
+#define P_GFCD_DBG_CTRL                            (volatile uint32_t *)0xff016550
+//Bit 31:0  reg_dbg_ctrl                      //unsigned, RW, default=0
+//
+#define P_GFCD_TOP_CTRL                            (volatile uint32_t *)0xff016554
+//Bit 31    reg_alpha_repeat                  //unsigned, RW, default=1
+//Bit 30    reg_replaced_en                   //unsigned, RW, default=0
+//Bit 29:20 reg_replaced_alpha                //unsigned, RW, default=0
+//Bit 19:18 reserved
+//Bit 17:16 reg_vskip                         //unsigned, RW, default=0
+//Bit 15:8  reg_pixel_order                   //unsigned, RW, default=8'he4
+//Bit 7:5   reserved
+//Bit   4   reg_mif_enable                    //unsigned, RW, default=0
+//Bit  3:1  reserved
+//Bit   0   reg_dec_mode                      //unsigned, RW, default=0
+#define P_GFCD_AFRC_CTRL                           (volatile uint32_t *)0xff016558
+//Bit 31:30 reserved
+//Bit 29:28 reg_afrc_partial_decode           //unsigned, RW, default=3
+//Bit 27:25 reserved
+//Bit 24:20 reg_afrc_pix_bits                 //unsigned, RW, default=0
+//Bit 19:16 reg_afrc_pix_type                 //unsigned, RW, default=1
+//Bit 15:10 reserved
+//Bit 9:8   reg_afrc_cu_bits                  //unsigned, RW, default=0
+//Bit 7:1   reserved
+//Bit   0   reg_afrc_mode                     //unsigned, RW, default=0
+#define P_GFCD_AFRC_PARAM                          (volatile uint32_t *)0xff01655c
+//Bit 31:8  reserved
+//Bit 7:0   reg_afrc_codec_params             //unsigned, RW, default=0
+#define P_GFCD_AFBC_CTRL                           (volatile uint32_t *)0xff016560
+//Bit 31:24 reserved
+//Bit 23:20 reg_afbc_align                    //unsigned, RW, default=0
+//Bit 19:18 reserved
+//Bit 17:12 reg_afbc_in_reruns                //unsigned, RW, default=7
+//Bit 11:9  reserved
+//Bit 8     reg_afbc_in_err                   //unsigned, RW, default=0
+//Bit 7:5   reserved
+//Bit 4     reg_afbc_yuv_trans                //unsigned, RW, default=0
+//Bit 3:0   reg_afbc_fmt                      //unsigned, RW, default=0
+#define P_GFCD_FRM_SIZE                            (volatile uint32_t *)0xff016564
+//Bit 31:29 reserved
+//Bit 28:16 reg_frm_hsize                    //unsigned, RW, default=0
+//Bit 15:13 reserved
+//Bit 12:0  reg_frm_vsize                    //unsigned, RW, default=0
+#define P_GFCD_RO_AM_G0                            (volatile uint32_t *)0xff016568
+//Bit 31:0  ro_am_g0                    //unsigned, RO, default=0
+#define P_GFCD_RO_AM_G1                            (volatile uint32_t *)0xff01656c
+//Bit 31:0  ro_am_g1                    //unsigned, RO, default=0
+#define P_GFCD_RO_SOLID_G0                         (volatile uint32_t *)0xff016570
+//Bit 31:0  ro_solid_g0                 //unsigned, RO, default=0
+#define P_GFCD_RO_SOLID_G1                         (volatile uint32_t *)0xff016574
+//Bit 31:0  ro_solid_g1                 //unsigned, RO, default=0
+#define P_GFCD_RO_SOLID_G2                         (volatile uint32_t *)0xff016578
+//Bit 31:0  ro_solid_g2                 //unsigned, RO, default=0
+#define P_GFCD_RO_COMB_G0                          (volatile uint32_t *)0xff01657c
+//Bit 31:0  ro_comb_g0                 //unsigned, RO, default=0
+#define P_GFCD_RO_CUT_G0                           (volatile uint32_t *)0xff016580
+//Bit 31:0  ro_cut_g0                 //unsigned, RO, default=0
+#define P_GFCD_RO_CUT_G1                           (volatile uint32_t *)0xff016584
+//Bit 31:0  ro_cut_g1                 //unsigned, RO, default=0
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  gfcd_top_reg.h
+//
+//
+// Reading file:  gfcd_glb_reg.h
+//
+// synopsys translate_off
+// synopsys translate_on
+//
+#define P_GFCD_GLB_CLK_CTRL                        (volatile uint32_t *)0xff0167c0
+//Bit 31    reg_gclk_en                       //unsigned, RW, default=1
+//Bit 30:26 reserved
+//Bit 25:24 reg_core_gclk_ctrl                //unsigned, RW, default=0
+//Bit 23:22 reserved
+//Bit 21:20 reg_solid_gclk_ctrl               //unsigned, RW, default=0
+//Bit 19:18 reserved
+//Bit 17:16 reg_glb_reg_gclk_ctrl             //unsigned, RW, default=0
+//Bit 15:14 reserved
+//Bit 13:12 reg_cbuf1_gclk_ctrl               //unsigned, RW, default=0
+//Bit 11:10 reserved
+//Bit 9:8   reg_cbuf0_gclk_ctrl               //unsigned, RW, default=0
+//Bit 7:6   reserved
+//Bit 5:4   reg_top1_gclk_ctrl                //unsigned, RW, default=0
+//Bit 3:2   reserved
+//Bit 1:0   reg_top0_gclk_ctrl                //unsigned, RW, default=0
+#define P_GFCD_GLB_SW_RST                          (volatile uint32_t *)0xff0167c4
+//Bit 31    reg_axi_arb_sw_rst                 //unsigned, RW, default=0
+//Bit 30:17 reserved
+//Bit 16    reg_abort_sw_rst_n                 //unsigned, RW, default=0
+//Bit 15:13 reserved
+//Bit 12    reg_core_sw_rst_n                  //unsigned, RW, default=0
+//Bit 11:9  reserved
+//Bit 8     reg_glb_reg_sw_rst_n               //unsigned, RW, default=0
+//Bit 7:5   reserved
+//Bit 4     reg_glb_sw_rst_n                   //unsigned, RW, default=0
+//Bit 3:1   reserved
+//Bit 0     reg_glb_frm_rst                    //unsigned, RW, default=0
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  gfcd_glb_reg.h
+//
+//
+// Reading file:  gfcd_mif_reg.h
+//
+// synopsys translate_off
+// synopsys translate_on
+//
+#define P_GFCD_MIF_CLK_CTRL                        (volatile uint32_t *)0xff016400
+//Bit 31:10 reserved
+//Bit 9:8   reg_mif_reg_gclk_ctrl        //unsigned, RW, default=0
+//Bit 7:6   reserved
+//Bit 5:4   reg_body_gclk_ctrl           //unsigned, RW, default=0
+//Bit 3:2   reserved
+//Bit 1:0   reg_head_gclk_ctrl           //unsigned, RW, default=0
+#define P_GFCD_MIF_SW_RST                          (volatile uint32_t *)0xff016404
+//Bit 31:1  reserved
+//Bit 0     reg_arb_sw_rst               //unsigned, RW, default=0
+#define P_GFCD_MIF_MODE_SEL                        (volatile uint32_t *)0xff016408
+//Bit 31:14 reserved
+//Bit 13:8  reg_solid_thr                //unsigned, RW, default=4
+//Bit 7:6   reserved
+//Bit 5:4   reg_rev_mode                 //unsigned, RW, default=0
+//Bit 3:1   reserved
+//Bit 0     reg_mode                     //unsigned, RW, default=0
+#define P_GFCD_MIF_HEAD_CTRL0                      (volatile uint32_t *)0xff01640c
+//Bit 31:30 reserved
+//Bit 29    reg_head_stride_en           //unsigned, RW, default=0
+//Bit 28:16 reg_head_stride              //unsigned, RW, default=0
+//Bit 15:12 reg_head_swap64              //unsigned, RW, default=0
+//Bit 11:9  reserved
+//Bit 8     reg_head_big_endain          //unsigned, RW, default=0
+//Bit 7:6   reserved
+//Bit 5:4   reg_head_bstep               //unsigned, RW, default=0
+//Bit 3:1   reserved
+//Bit 0     reg_head_vstep               //unsigned, RW, default=1
+#define P_GFCD_MIF_HEAD_BADDR                      (volatile uint32_t *)0xff016410
+//Bit 31:0  reg_head_baddr               //unsigned, RW, default=0
+#define P_GFCD_MIF_HEAD_URGENT                     (volatile uint32_t *)0xff016414
+//Bit 31:17 reserved
+//Bit 16:0  reg_head_urgent              //unsigned, RW, default=0
+#define P_GFCD_MIF_HEAD_DIMENSION                  (volatile uint32_t *)0xff016418
+//Bit 31:23 reserved
+//Bit 22:20 reg_head_cmd_size            //unsigned, RW, default=0
+//Bit 19:18 reserved
+//Bit 17:16 reg_head_ddr_size            //unsigned, RW, default=0
+//Bit 15:14 reserved
+//Bit 13:12 reg_head_burst_len           //unsigned, RW, default=2
+//Bit 11:0  reg_head_fifo_size           //unsigned, RW, default=12'h100
+#define P_GFCD_MIF_BODY_CTRL                       (volatile uint32_t *)0xff01641c
+//Bit 31:30 reserved
+//Bit 29    reg_body_stride_en           //unsigned, RW, default=0
+//Bit 28:16 reg_body_stride              //unsigned, RW, default=0
+//Bit 15:12 reg_body_swap64              //unsigned, RW, default=0
+//Bit 11:9  reserved
+//Bit 8     reg_body_big_endain          //unsigned, RW, default=0
+//Bit 7:2   reserved
+//Bit 1:0   reg_body_bstep               //unsigned, RW, default=0
+#define P_GFCD_MIF_BODY_BADDR                      (volatile uint32_t *)0xff016420
+//Bit 31:0  reg_body_baddr               //unsigned, RW, default=0
+#define P_GFCD_MIF_BODY_URGENT                     (volatile uint32_t *)0xff016424
+//Bit 31:17 reserved
+//Bit 16:0  reg_body_urgent              //unsigned, RW, default=0
+#define P_GFCD_MIF_BODY_DIMENSION                  (volatile uint32_t *)0xff016428
+//Bit 31:23 reserved
+//Bit 22:20 reg_body_cmd_size            //unsigned, RW, default=0
+//Bit 19:18 reserved
+//Bit 17:16 reg_body_ddr_size            //unsigned, RW, default=0
+//Bit 15:14 reserved
+//Bit 13:12 reg_body_burst_len           //unsigned, RW, default=2
+//Bit 11:0  reg_body_fifo_size           //unsigned, RW, default=12'h100
+#define P_GFCD_BCH_CFG                             (volatile uint32_t *)0xff01642c
+//Bit 31    reg_bch_en                   //unsigned, RW, default=0
+//Bit 30    reserved
+//Bit 29:20 reg_bch_r                    //unsigned, RW, default=0
+//Bit 19:10 reg_bch_g                    //unsigned, RW, default=0
+//Bit 9:0   reg_bch_b                    //unsigned, RW, default=0
+#define P_GFCD_RO_HEAD_G0                          (volatile uint32_t *)0xff016430
+//Bit 31:0  ro_head_g0                    //unsigned, RO, default=0
+#define P_GFCD_RO_HEAD_G1                          (volatile uint32_t *)0xff016434
+//Bit 31:0  ro_head_g1                    //unsigned, RO, default=0
+#define P_GFCD_RO_HEAD_G2                          (volatile uint32_t *)0xff016438
+//Bit 31:0  ro_head_g2                    //unsigned, RO, default=0
+#define P_GFCD_RO_HEAD_G3                          (volatile uint32_t *)0xff01643c
+//Bit 31:0  ro_head_g3                    //unsigned, RO, default=0
+#define P_GFCD_RO_BODY_G0                          (volatile uint32_t *)0xff016440
+//Bit 31:0  ro_body_g0                    //unsigned, RO, default=0
+#define P_GFCD_RO_BODY_G1                          (volatile uint32_t *)0xff016444
+//Bit 31:0  ro_body_g1                    //unsigned, RO, default=0
+#define P_GFCD_RO_BODY_G2                          (volatile uint32_t *)0xff016448
+//Bit 31:0  ro_body_g2                    //unsigned, RO, default=0
+//
+#define P_GFCD_RO_MIF_G0                           (volatile uint32_t *)0xff01644c
+//Bit 31:0  ro_mif_g0                    //unsigned, RO, default=0
+#define P_GFCD_RO_MIF_G1                           (volatile uint32_t *)0xff016450
+//Bit 31:0  ro_mif_g1                    //unsigned, RO, default=0
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  gfcd_mif_reg.h
+//
+// -----------------------------------------------
+// REG_BASE:  OSD_HDR2_VCBUS_BASE = 0x60
+// -----------------------------------------------
+//
+// Reading file:  osd_hdr2_regs.h
+//
+// synopsys translate_off
+// synopsys translate_on
+#define OSD2_HDR2_OFFSET           0x00
+//`include "hdr2_top_reg.h"
+//osd2 0x00 - -x35
+#define P_OSD2_HDR2_CTRL                           (volatile uint32_t *)0xff018000
+#define P_OSD2_HDR2_CLK_GATE                       (volatile uint32_t *)0xff018004
+#define P_OSD2_HDR2_MATRIXI_COEF00_01              (volatile uint32_t *)0xff018008
+#define P_OSD2_HDR2_MATRIXI_COEF02_10              (volatile uint32_t *)0xff01800c
+#define P_OSD2_HDR2_MATRIXI_COEF11_12              (volatile uint32_t *)0xff018010
+#define P_OSD2_HDR2_MATRIXI_COEF20_21              (volatile uint32_t *)0xff018014
+#define P_OSD2_HDR2_MATRIXI_COEF22                 (volatile uint32_t *)0xff018018
+#define P_OSD2_HDR2_MATRIXI_COEF30_31              (volatile uint32_t *)0xff01801c
+#define P_OSD2_HDR2_MATRIXI_COEF32_40              (volatile uint32_t *)0xff018020
+#define P_OSD2_HDR2_MATRIXI_COEF41_42              (volatile uint32_t *)0xff018024
+#define P_OSD2_HDR2_MATRIXI_OFFSET0_1              (volatile uint32_t *)0xff018028
+#define P_OSD2_HDR2_MATRIXI_OFFSET2                (volatile uint32_t *)0xff01802c
+#define P_OSD2_HDR2_MATRIXI_PRE_OFFSET0_1          (volatile uint32_t *)0xff018030
+#define P_OSD2_HDR2_MATRIXI_PRE_OFFSET2            (volatile uint32_t *)0xff018034
+#define P_OSD2_HDR2_MATRIXO_COEF00_01              (volatile uint32_t *)0xff018038
+#define P_OSD2_HDR2_MATRIXO_COEF02_10              (volatile uint32_t *)0xff01803c
+#define P_OSD2_HDR2_MATRIXO_COEF11_12              (volatile uint32_t *)0xff018040
+#define P_OSD2_HDR2_MATRIXO_COEF20_21              (volatile uint32_t *)0xff018044
+#define P_OSD2_HDR2_MATRIXO_COEF22                 (volatile uint32_t *)0xff018048
+#define P_OSD2_HDR2_MATRIXO_COEF30_31              (volatile uint32_t *)0xff01804c
+#define P_OSD2_HDR2_MATRIXO_COEF32_40              (volatile uint32_t *)0xff018050
+#define P_OSD2_HDR2_MATRIXO_COEF41_42              (volatile uint32_t *)0xff018054
+#define P_OSD2_HDR2_MATRIXO_OFFSET0_1              (volatile uint32_t *)0xff018058
+#define P_OSD2_HDR2_MATRIXO_OFFSET2                (volatile uint32_t *)0xff01805c
+#define P_OSD2_HDR2_MATRIXO_PRE_OFFSET0_1          (volatile uint32_t *)0xff018060
+#define P_OSD2_HDR2_MATRIXO_PRE_OFFSET2            (volatile uint32_t *)0xff018064
+#define P_OSD2_HDR2_MATRIXI_CLIP                   (volatile uint32_t *)0xff018068
+#define P_OSD2_HDR2_MATRIXO_CLIP                   (volatile uint32_t *)0xff01806c
+#define P_OSD2_HDR2_CGAIN_OFFT                     (volatile uint32_t *)0xff018070
+#define P_OSD2_EOTF_LUT_ADDR_PORT                  (volatile uint32_t *)0xff018078
+#define P_OSD2_EOTF_LUT_DATA_PORT                  (volatile uint32_t *)0xff01807c
+#define P_OSD2_OETF_LUT_ADDR_PORT                  (volatile uint32_t *)0xff018080
+#define P_OSD2_OETF_LUT_DATA_PORT                  (volatile uint32_t *)0xff018084
+#define P_OSD2_CGAIN_LUT_ADDR_PORT                 (volatile uint32_t *)0xff018088
+#define P_OSD2_CGAIN_LUT_DATA_PORT                 (volatile uint32_t *)0xff01808c
+#define P_OSD2_HDR2_CGAIN_COEF0                    (volatile uint32_t *)0xff018090
+#define P_OSD2_HDR2_CGAIN_COEF1                    (volatile uint32_t *)0xff018094
+#define P_OSD2_OGAIN_LUT_ADDR_PORT                 (volatile uint32_t *)0xff018098
+#define P_OSD2_OGAIN_LUT_DATA_PORT                 (volatile uint32_t *)0xff01809c
+#define P_OSD2_HDR2_ADPS_CTRL                      (volatile uint32_t *)0xff0180a0
+#define P_OSD2_HDR2_ADPS_ALPHA0                    (volatile uint32_t *)0xff0180a4
+#define P_OSD2_HDR2_ADPS_ALPHA1                    (volatile uint32_t *)0xff0180a8
+#define P_OSD2_HDR2_ADPS_BETA0                     (volatile uint32_t *)0xff0180ac
+#define P_OSD2_HDR2_ADPS_BETA1                     (volatile uint32_t *)0xff0180b0
+#define P_OSD2_HDR2_ADPS_BETA2                     (volatile uint32_t *)0xff0180b4
+#define P_OSD2_HDR2_ADPS_COEF0                     (volatile uint32_t *)0xff0180b8
+#define P_OSD2_HDR2_ADPS_COEF1                     (volatile uint32_t *)0xff0180bc
+#define P_OSD2_HDR2_GMUT_CTRL                      (volatile uint32_t *)0xff0180c0
+#define P_OSD2_HDR2_GMUT_COEF0                     (volatile uint32_t *)0xff0180c4
+#define P_OSD2_HDR2_GMUT_COEF1                     (volatile uint32_t *)0xff0180c8
+#define P_OSD2_HDR2_GMUT_COEF2                     (volatile uint32_t *)0xff0180cc
+#define P_OSD2_HDR2_GMUT_COEF3                     (volatile uint32_t *)0xff0180d0
+#define P_OSD2_HDR2_GMUT_COEF4                     (volatile uint32_t *)0xff0180d4
+#define P_OSD2_HDR2_PIPE_CTRL1                     (volatile uint32_t *)0xff0180d8
+#define P_OSD2_HDR2_PIPE_CTRL2                     (volatile uint32_t *)0xff0180dc
+#define P_OSD2_HDR2_PIPE_CTRL3                     (volatile uint32_t *)0xff0180e0
+#define P_OSD2_HDR2_PROC_WIN1                      (volatile uint32_t *)0xff0180e4
+#define P_OSD2_HDR2_PROC_WIN2                      (volatile uint32_t *)0xff0180e8
+#define P_OSD2_HDR2_MATRIXI_EN_CTRL                (volatile uint32_t *)0xff0180ec
+#define P_OSD2_HDR2_MATRIXO_EN_CTRL                (volatile uint32_t *)0xff0180f0
+#define P_OSD2_HDR2_HIST_CTRL                      (volatile uint32_t *)0xff0180f4
+#define P_OSD2_HDR2_HIST_H_START_END               (volatile uint32_t *)0xff0180f8
+#define P_OSD2_HDR2_HIST_V_START_END               (volatile uint32_t *)0xff0180fc
+#define P_OSD2_HDR2_HIST_RD                        (volatile uint32_t *)0xff018074
+// synopsys translate_off
+// synopsys translate_on
+//
+// Closing file:  osd_hdr2_regs.h
+//
 // synopsys translate_off
 // synopsys translate_on
 //
@@ -30360,6 +29183,8 @@
 #define P_GE2D_SRC2_BADDR_CTRL                     (volatile uint32_t *)0xff0403f0
 //Bit 31:0, src2 base address in 64bits
 #define P_GE2D_SRC2_STRIDE_CTRL                    (volatile uint32_t *)0xff0403f4
+//Bit 19:0, src2 stride size in 64bits
+#define P_GE2D_SEC_CTRL                            (volatile uint32_t *)0xff0403f8
 //Bit 19:0, src2 stride size in 64bits
 //
 //

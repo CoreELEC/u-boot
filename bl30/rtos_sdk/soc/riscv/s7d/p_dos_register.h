@@ -3799,7 +3799,19 @@
 // -----------------------------------------------
 #define P_HEVC_ASSIST_AFIFO_CTRL                   (volatile uint32_t *)0xfe32c004
 #define P_HEVC_ASSIST_AFIFO_CTRL1                  (volatile uint32_t *)0xfe32c008
-#define P_HEVC_ASSIST_GCLK_EN                      (volatile uint32_t *)0xfe32c00c
+//bit[11]     - back path
+//bit[10]     - front path
+//bit[ 9]     - ow
+//bit[ 8]     - mcr
+//bit[ 7]     - mpred
+//bit[ 6]     - dblk
+//bit[ 5]     - ipp
+//bit[ 4]     - iqit
+//bit[ 3]     - parser
+//bit[ 2]     - vcpu
+//bit[ 1]     - ddr
+//bit[ 0]     - assist
+#define P_HEVC_ASSIST_AUTO_CG_DISABLE              (volatile uint32_t *)0xfe32c00c
 #define P_HEVC_ASSIST_SW_RESET                     (volatile uint32_t *)0xfe32c010
 #define P_HEVC_ASSIST_AFIFO_CTRL2                  (volatile uint32_t *)0xfe32c014
 // bit[31:28] - hed_wr_id (Write Only)
@@ -4723,7 +4735,6 @@
 // bit[31:0] - HEVC input stream CRC result
 #define P_HEVC_STREAM_CRC                          (volatile uint32_t *)0xfe32c5cc
 #define P_VP9_ACP_CTRL                             (volatile uint32_t *)0xfe32c5d0
-#define P_HEVC_SLICE_DATA_CTL                      (volatile uint32_t *)0xfe32c5d4
 // bit[31:7] reserved
 // bit[6]    acp status byte: 0-idel  1-done
 // bit[5]    select prob_ram ofset
@@ -4731,6 +4742,16 @@
 // bit[2]    prev_kf:whether last frame is key frame
 // bit[1]    cur_kf: whether cur is key or intra frame
 // bit[0]    acp start crtl bit:set 1 to start process
+#define P_HEVC_SLICE_DATA_CTL                      (volatile uint32_t *)0xfe32c5d4
+#define P_PARSER_TOP_CLK_GATING_CTL                (volatile uint32_t *)0xfe32c5e0
+// bit[31:24] top_clk_gating_interface_delay_count
+// bit[23:16] top_clk_gating_decode_delay_count
+// bit[15:8]  top_clk_gating_stream_delay_count
+// bit[7:4]   top_clk_gating_cbus_delay_count
+// bit[3]     top_clk_gating_interface_no_delay
+// bit[2]     top_clk_gating_decode_no_delay
+// bit[1]     top_clk_gating_stream_no_delay
+// bit[0]     top_clk_gating_cbus_no_delay
 //
 // Closing file:  hevc_parser_regs.h
 //
@@ -5053,7 +5074,8 @@
 // [3]      -- mpp_4x4mcr_clkgate_disbl
 // [4]      -- mpp_ref_pack_clkgate_disbl
 // [5]      -- mpp_mdec_if_clkgate_disbl
-// [7:6]    -- reserved
+// [6]      -- mpp_av1_compound
+// [7]      -- mpp_av1_interintra_buff
 // [8]      -- ipp_res_fetch_clkgate_disbl
 // [9]      -- ipp_iqitIf_clkgate_disbl
 // [10]     -- ipp_dblkCmdIf_clkgate_disbl
@@ -5084,7 +5106,8 @@
 // [3]      -- mpp_4x4mcr_clkgate
 // [4]      -- mpp_ref_pack_clkgate
 // [5]      -- mpp_mdec_if_clkgate
-// [7:6]    -- reserved
+// [6]      -- mpp_av1_compound
+// [7]      -- mpp_av1_interintra_buff
 // [8]      -- ipp_res_fetch_clkgate
 // [9]      -- ipp_iqitIf_clkgate
 // [10]     -- ipp_dblkCmdIf_clkgate
@@ -5106,6 +5129,15 @@
 // [27]     -- reserved
 // [30:28]  -- reserved
 // [31]     -- mcrcc_axi_clkgate
+#define P_HEVCD_MPP_SUB_DYNCLKGATE_CONFIG          (volatile uint32_t *)0xfe32d088
+// [2:0]    -- av1_compound_sub
+// [3]      -- av1_interintra_buff_sub
+// [5:4]    -- hinterpol_sub
+// [7:6]    -- vinterpol_sub
+// [14:8]   -- ref_fetch_sub
+// [15]     -- imp_cmd_if
+// [30]     -- 4x4mcr_cpop
+// [31]     -- 4x4mcr_ypop
 #define P_HEVCD_IPP_DBG_SEL                        (volatile uint32_t *)0xfe32d0c0
 // [3:0]    -- module_level_sel
 // [7:4]    -- mpp_ipp_top_level
@@ -6001,6 +6033,8 @@
 //                 };
 #define P_HEVC_PATH_MONITOR_DATA                   (volatile uint32_t *)0xfe32dc4c
 #define P_HEVC_IQIT_STAT_GEN3                      (volatile uint32_t *)0xfe32dc80
+#define P_HEVC_IQIT_RES_CNT                        (volatile uint32_t *)0xfe32dc8c
+#define P_HEVC_IQIT_ERR_STATUS                     (volatile uint32_t *)0xfe32dcfc
 //
 // Closing file:  hevc_iqit_regs.h
 //

@@ -99,19 +99,32 @@ err=$?
 [ "$err" -eq 3 ] && echo "Invalid BOARD: $BOARD!" && return $err
 [ "$err" -eq 4 ] && echo "Invalid PRODUCT: $PRODUCT!" && return $err
 
+# Set compiler-related information according to chip architecture.
 case $ARCH in
-	arm) COMPILER=gcc; TOOLCHAIN_KEYWORD="arm-none-eabi" ;;
-	arm64)  if [ "$COMPILER" == "clang+llvm" ]; then
+	arm)
+		COMPILER=gcc
+		TOOLCHAIN_KEYWORD="arm-none-eabi"
+		;;
+	arm64)
+		if [ "$COMPILER" == "clang+llvm" ]; then
 			TOOLCHAIN_KEYWORD="arm"
-			TOOLCHAIN_PATH=$PWD/output/toolchains/clang+llvm-arm
 		else
 			COMPILER="gcc"
 			TOOLCHAIN_KEYWORD="aarch64-none-elf"
 		fi
-	      ;;
-	riscv) COMPILER="gcc"; TOOLCHAIN_KEYWORD="riscv-none" ;;
-	xtensa) COMPILER="xcc"; TOOLCHAIN_KEYWORD="xt" ;;
-	*) echo "Failed to identify ARCH $ARCH";return 1;;
+		;;
+	riscv)
+		COMPILER="gcc"
+		TOOLCHAIN_KEYWORD="riscv-none"
+		;;
+	xtensa)
+		COMPILER="xcc"
+		TOOLCHAIN_KEYWORD="xt"
+		;;
+	*)
+		echo "Failed to identify ARCH $ARCH"
+		return 1
+		;;
 esac
 
 unset SPLIT_ARCH_DIR
@@ -130,4 +143,4 @@ fi
 
 KERNEL=freertos
 
-export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD TOOLCHAIN_PATH BACKTRACE_ENABLE SPLIT_ARCH_DIR
+export ARCH BOARD COMPILER KERNEL PRODUCT SOC TOOLCHAIN_KEYWORD BACKTRACE_ENABLE SPLIT_ARCH_DIR

@@ -41,7 +41,7 @@ while IFS= read -r LINE; do
 	source scripts/pkg_env.sh $index gen_all >> $BUILD_LOG 2>&1
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination!" && continue
 	echo -n "$index. Building ... "
-	make package >> $BUILD_LOG 2>&1
+	scripts/gen_package.sh >> $BUILD_LOG 2>&1
 	get_new_package_dir
 	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && echo -e "\nAborted with errors!\n" && exit 3
 	compile_warning_check $BUILD_LOG

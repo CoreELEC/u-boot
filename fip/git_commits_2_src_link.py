@@ -51,6 +51,7 @@ blSrcGits = [
     {"blType" : "bl2_s5",                   "gitBranch" : "projects/s5",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
     {"blType" : "bl2_t7",                   "gitBranch" : "projects/t7",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
     {"blType" : "bl2_s7",                   "gitBranch" : "projects/s7",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_s7d",                  "gitBranch" : "projects/s7d",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
     {"blType" : "ddr_s7",                   "gitBranch" : "amlogic-ddr-core",         "gitRemote" : "firmware",         "upStream" : "bl2/src/ddr/+/"},
     {"blType" : "bl2_ree",                  "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/ree/+/"},
     {"blType" : "bl2_tee",                  "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/tee/+/"},

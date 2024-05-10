@@ -52,19 +52,21 @@ BL2_S4_BRANCH="projects/openlinux/bl-s4-${STABLE_MAJOR_VERSION}"
 BL2_S5_BRANCH="projects/openlinux/bl-s5-${STABLE_MAJOR_VERSION}"
 BL2_T7_BRANCH="projects/openlinux/bl-t7-${STABLE_MAJOR_VERSION}"
 BL2_S7_BRANCH="projects/openlinux/bl-s7-${STABLE_MAJOR_VERSION}"
+BL2_S7D_BRANCH="projects/openlinux/bl-s7d-${STABLE_MAJOR_VERSION}"
 
 # push uboot.bin to android dir
-declare -a OPENLINUX_BOARD_TYPE=("ohm" "oppen" "tyson" "t7_an400" "qurra")
-declare -a OPENLINUX_BOARD_BRANCH=("${BL2_SC2_BRANCH}" "${BL2_S4_BRANCH}" "${BL2_S5_BRANCH}" "${BL2_T7_BRANCH}" "${BL2_S7_BRANCH}")
-declare -a OPENLINUX_BOARD_CONFIG=("sc2_ah212" "s4_ap222" "s5_ax201" "t7_an400_lpddr4x" "s7_bh201")
+declare -a OPENLINUX_BOARD_TYPE=("ohm" "oppen" "tyson" "t7_an400" "qurra" "ross")
+declare -a OPENLINUX_BOARD_BRANCH=("${BL2_SC2_BRANCH}" "${BL2_S4_BRANCH}" "${BL2_S5_BRANCH}" "${BL2_T7_BRANCH}" "${BL2_S7_BRANCH}" "${BL2_S7D_BRANCH}")
+declare -a OPENLINUX_BOARD_CONFIG=("sc2_ah212" "s4_ap222" "s5_ax201" "t7_an400_lpddr4x" "s7_bh201" "s7d_bm201")
 ANDROID_DEV_DIR="device/amlogic"
 ANDROID_DIR_OHM="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[0]}"
 ANDROID_DIR_OPPEN="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[1]}"
 ANDROID_DIR_TYSON="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[2]}"
 ANDROID_DIR_T7="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[3]}"
 ANDROID_DIR_QURRA="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[4]}"
+ANDROID_DIR_ROSS="${ANDROID_ROOT_DIR}/${ANDROID_DEV_DIR}/${OPENLINUX_BOARD_TYPE[5]}"
 
-declare -a ANDROID_DIR_LIST=("${ANDROID_DIR_OHM}" "${ANDROID_DIR_OPPEN}" "${ANDROID_DIR_TYSON}" "${ANDROID_DIR_T7}" "${ANDROID_DIR_QURRA}")
+declare -a ANDROID_DIR_LIST=("${ANDROID_DIR_OHM}" "${ANDROID_DIR_OPPEN}" "${ANDROID_DIR_TYSON}" "${ANDROID_DIR_T7}" "${ANDROID_DIR_QURRA}" "${ANDROID_DIR_ROSS}")
 
 #
 # Array
@@ -394,6 +396,13 @@ function show_stable_branch_version() {
 				STABLE_VER_EXT="bl-${VER_MAJOR}.${VER_MINOR}.${VER_PATCH}"
 				echo "# bl2-s7     : 	${STABLE_VER_EXT}"
 
+				git checkout ${BL2_S7D_BRANCH} > /dev/null 2>&1
+				VER_MAJOR=`grep 'MAJOR_VERSION ' ./${STABLE_VER_FILE[0]} |grep '=' |awk '{print $3}'`
+				VER_MINOR=`grep 'MINOR_VERSION ' ./${STABLE_VER_FILE[0]} |grep '=' |awk '{print $3}'`
+				VER_PATCH=`grep 'PATCH_VERSION ' ./${STABLE_VER_FILE[0]} |grep '=' |awk '{print $3}'`
+				STABLE_VER_EXT="bl-${VER_MAJOR}.${VER_MINOR}.${VER_PATCH}"
+				echo "# bl2-s7d     : 	${STABLE_VER_EXT}"
+
 				git checkout ${BLX_STABLE_BRANCH[0]} > /dev/null 2>&1
 			fi
 		fi
@@ -446,7 +455,7 @@ Solution:
 add version to build message: bl-${MODIFY_VER_MAJOR}.${MODIFY_VER_MINOR}.${MODIFY_VER_PATCH}
 
 Verify:
-ohm/oppen/tyson/t7c/s7"
+ohm/oppen/tyson/t7c/s7/s7d"
 		fi
 	fi
 }
@@ -462,7 +471,7 @@ function modify_stable_branch_version() {
 			else
 				cd $rootdir/${BLX_PATH[$i]}
 			fi
-
+			
 			modify_stable_branch_version_info $i
 		fi
 	done
@@ -532,6 +541,15 @@ function push_stable_branch_version() {
 					git push review HEAD:refs/for/${BL2_S7_BRANCH}%topic=${PUSH_TOPIC_COMMON}-bl2-s7
 					git checkout ${BLX_STABLE_BRANCH[$i]} > /dev/null
 					echo ""
+
+					echo ""
+					echo "PUSH bl2-s7d ==>>"
+					BL2_SC2_LAST_COMMIT=`git log --pretty=format:"%h" | head -1  | awk '{print $1}'`
+					git checkout ${BL2_S7D_BRANCH} > /dev/null
+					git cherry-pick ${BL2_SC2_LAST_COMMIT}
+					git push review HEAD:refs/for/${BL2_S7D_BRANCH}%topic=${PUSH_TOPIC_COMMON}-bl2-s7d
+					git checkout ${BLX_STABLE_BRANCH[$i]} > /dev/null
+					echo ""
 				fi
 			fi
 		fi
@@ -576,6 +594,9 @@ function show_current_branch_info() {
 					echo "[--] ${BLX_NAME[$i]}: [`git branch --show-current`]  `git log --abbrev=8 --oneline -1 `"
 
 					git checkout ${BL2_S7_BRANCH} > /dev/null 2>&1
+					echo "[--] ${BLX_NAME[$i]}: [`git branch --show-current`]  `git log --abbrev=8 --oneline -1 `"
+
+					git checkout ${BL2_S7D_BRANCH} > /dev/null 2>&1
 					echo "[--] ${BLX_NAME[$i]}: [`git branch --show-current`]  `git log --abbrev=8 --oneline -1 `"
 
 					git checkout ${BLX_STABLE_BRANCH[0]} > /dev/null 2>&1

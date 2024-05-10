@@ -4,4 +4,4 @@
 
 #add compiler options at here which is associated with soc.
 
-set(ENV{TOOLCHAIN_PATH} /opt/riscv-none-gcc/7.2.0-4-20180606-1631)
+set(ENV{TOOLCHAIN_PATH} /opt/riscv-none-gcc/8.2.0-2.2-20190521-0004)

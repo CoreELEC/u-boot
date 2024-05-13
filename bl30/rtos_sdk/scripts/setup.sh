@@ -20,9 +20,7 @@ DEFAULT_RTOS_SDK_MANIFEST="$PWD/products/$PRODUCT/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest.xml"
 RTOS_SDK_MANIFEST_OLD_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest_old.xml"
 STAMP="$kernel_BUILD_DIR/.stamp"
-
-[ -n "$1" ] && BUILD_DIR=$1;
-RTOS_SDK_VERSION_FILE="$BUILD_DIR/sdk_ver.h"
+RTOS_SDK_VERSION_FILE="$kernel_BUILD_DIR/sdk_ver.h"
 
 # Check whether the project is a valid repo
 repo manifest 2>&1 | grep -q $build_dir

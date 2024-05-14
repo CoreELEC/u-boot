@@ -616,6 +616,15 @@ function bin_path_parser() {
 				fi
 				update_bin_path 6 "${argv[@]:$((i))}"
 				continue ;;
+			--bl2f)
+				if [ "${argv[@]:$((i))}"x == ""x ] || [ ! -f "${argv[@]:$((i))}" ]; then
+					echo "PATH: ${argv[@]:$((i))} is not exit !!!"
+					exit 1
+				fi
+
+				BL2F_BIN_FIXED_PATH=${argv[@]:$((i))}
+				export BL2F_BIN_FIXED_PATH
+				continue ;;
 			--bl30)
 				if [ "${argv[@]:$((i))}"x == ""x ] || [ ! -f "${argv[@]:$((i))}" ]; then
 					echo "PATH: ${argv[@]:$((i))} is not exit !!!"
@@ -801,11 +810,18 @@ function combine_bl2f_with_bl33() {
 	if [ "1" == "${CONFIG_NASC_NAGRA_TIER_1}" ]; then
 		# place bl2f at end of u-boot.bin, _end align(4096)
 		if [ "y" == "${BL2F_UPDATE_TYPE}" ]; then
+			echo "use source code build, bl2f bin: bl2/ree/bl2f/bl2f.bin"
 			BL2F_BIN=bl2/ree/bl2f/bl2f.bin
 		else
-			echo CUR_SOC is $CUR_SOC
-			echo CONFIG_CHIPSET_NAME is $CONFIG_CHIPSET_NAME
-			BL2F_BIN=bl2/bin/$CUR_SOC/$CONFIG_CHIPSET_NAME/bl2f.bin
+			if [ "" != "${BL2F_BIN_FIXED_PATH}" ]; then
+				BL2F_BIN=${BL2F_BIN_FIXED_PATH}
+				echo "use fixed bl2f bin: ${BL2F_BIN}"
+			else
+				echo CUR_SOC is $CUR_SOC
+				echo CONFIG_CHIPSET_NAME is $CONFIG_CHIPSET_NAME
+				BL2F_BIN=bl2/bin/$CUR_SOC/$CONFIG_CHIPSET_NAME/bl2f.bin
+				echo "use default bl2f bin: bl2/bin/$CUR_SOC/$CONFIG_CHIPSET_NAME/bl2f.bin"
+			fi
 		fi
 
 		if [ ! -f ${BL2F_BIN} ]; then

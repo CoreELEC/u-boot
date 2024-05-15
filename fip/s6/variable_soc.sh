@@ -65,11 +65,11 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
 fi
 
 
-declare -a BLX_BIN_SIZE=("206848"	\
-			 "206848"	\
-			 "74864"	\
-			 "74864"	\
-			 "66672"	\
+declare -a BLX_BIN_SIZE=("224192"	\
+			 "224192"	\
+			 "107632"	\
+			 "107632"	\
+			 "99440"	\
 			 "266240"	\
 			 "528384"	\
 			 "102400"	\
@@ -77,7 +77,7 @@ declare -a BLX_BIN_SIZE=("206848"	\
 
 declare BL30_BIN_SIZE="65536"
 declare BL33_BIN_SIZE="1572864"
-declare DEV_ACS_BIN_SIZE="8192"
+declare DEV_ACS_BIN_SIZE="7168"
 declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\
 			    "bl2.bin.usb"	\
 			    "bl2e.bin.sto"	\

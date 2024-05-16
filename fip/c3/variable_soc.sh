@@ -69,7 +69,7 @@ if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIPSE
 				 "74864"	\
 				 "74864"	\
 				 "66672"	\
-				 "266240"	\
+				 "98304"	\
 				 "528384"	\
 				 "8192")
 	declare BL30_BIN_SIZE="65536"

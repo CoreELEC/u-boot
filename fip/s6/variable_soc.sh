@@ -53,23 +53,22 @@ declare -a BLX_BIN_NAME=("bl2.bin.sto"	\
 			    "NULL")
 
 else
-declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"     \
-			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed" \
-			 "blob-bl2x.bin.signed"                              \
-			 "blob-bl31.bin.signed"                              \
-			 "blob-bl32.bin.signed"                              \
-			 "blob-bl40.bin.signed"                              \
+declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"     \
+			 "bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"     \
+			 "blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}" \
+			 "blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}" \
+			 "blob-bl2x.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"                              \
+			 "blob-bl31.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"                              \
+			 "blob-bl32.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"                              \
+			 "blob-bl40.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"                              \
 			 "bl30.bin")
 fi
 
-
-declare -a BLX_BIN_SIZE=("224192"	\
-			 "224192"	\
-			 "107632"	\
-			 "107632"	\
-			 "99440"	\
+declare -a BLX_BIN_SIZE=("272384"	\
+			 "272384"	\
+			 "116912"	\
+			 "116912"	\
+			 "108720"	\
 			 "266240"	\
 			 "528384"	\
 			 "102400"	\

@@ -15,11 +15,11 @@ trace ()
 }
 
 check_file() {
-    if [ ! -f "$1" ]; then echo "Error: file \""$1"\" does NOT exist"; usage ; fi
+	if [ ! -f "$1" ]; then echo "Error: file \""$1"\" does NOT exist"; usage ; fi
 }
 
 check_dir() {
-    if [ ! -d "$1" ]; then echo "Error: directory \""$1"\" does NOT exist"; usage ; fi
+	if [ ! -d "$1" ]; then echo "Error: directory \""$1"\" does NOT exist"; usage ; fi
 }
 
 check_value() {
@@ -34,18 +34,18 @@ check_value() {
 }
 
 usage() {
-    cat << EOF
+	cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Export Amlogic SC2 Device Vendor Secure Chipset Startup (SCS) key release for image signing
+		Export Amlogic SC2 Device Vendor Secure Chipset Startup (SCS) key release for image signing
 
-       $(basename $0)
+		$(basename $0)
 		--key-dir <key-dir> \\
 		--out-dir <key-dir> \\
 		--rootkey-index [0 | 1 | 2 | 3] \\
 		{--project <project-name>}
 EOF
-    exit 1
+	exit 1
 }
 
 key_dir=""
@@ -54,47 +54,53 @@ rootkey_index=0
 output_dir=""
 
 parse_main() {
-    local i=0
-    local argv=()
-    for arg in "$@" ; do
-        argv[$i]="$arg"
-        i=$((i + 1))
-    done
+	local i=0
+	local argv=()
+	for arg in "$@" ; do
+		argv[$i]="$arg"
+		i=$((i + 1))
+	done
 
-    i=0
-    while [ $i -lt $# ]; do
-        arg="${argv[$i]}"
-        i=$((i + 1))
-        case "$arg" in
-            -h|--help)
-                usage
-                break
-		;;
-            -v|--version)
-                echo "Version $version";
-		exit 0
-		;;
-            --key-dir)
-                key_dir="${argv[$i]}"
-		check_dir "${key_dir}"
-		;;
-            --out-dir)
-                output_dir="${argv[$i]}"
-		;;
-            --rootkey-index)
-                rootkey_index="${argv[$i]}"
-		check_value $rootkey_index 0 3
-		;;
-            --project)
-                project="${argv[$i]}"
-		;;
-            *)
-                echo "Unknown option $arg";
-		usage
-                ;;
-        esac
-        i=$((i + 1))
-    done
+	i=0
+	while [ $i -lt $# ]; do
+		arg="${argv[$i]}"
+		i=$((i + 1))
+		case "$arg" in
+			-h|--help)
+				usage
+				break
+				;;
+			-v|--version)
+				echo "Version $version";
+				exit 0
+				;;
+			--key-dir)
+				key_dir="${argv[$i]}"
+				check_dir "${key_dir}"
+				;;
+			--out-dir)
+				output_dir="${argv[$i]}"
+				;;
+			--rootkey-index)
+				rootkey_index="${argv[$i]}"
+				check_value $rootkey_index 0 3
+				;;
+			--project)
+				project="${argv[$i]}"
+				;;
+			--sig-scheme)
+				sig_scheme="${argv[$i]}"
+				;;
+			--template-layout)
+				template_layout="${argv[$i]}"
+				;;
+			*)
+				echo "Unknown option $arg";
+				usage
+				;;
+		esac
+		i=$((i + 1))
+	done
 }
 
 parse_main "$@"
@@ -112,43 +118,50 @@ if [ -z "$output_dir" ]; then
 	usage
 fi
 
+sig_scheme_full=$sig_scheme
+rootchain_name=$sig_scheme
+if [ "$sig_scheme" == "rsa-mldsa" ] || [ "$sig_scheme" == "mldsa" ]; then
+	sig_scheme_full+="-draft1"
+	rootchain_name="key"
+fi
+
 BASEDIR_ROOT=$key_dir
 BASEDIR_OUT_ROOT=$output_dir
 DEVICE_ROOTRSA_INDEX=$rootkey_index
 
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme_full/"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
 
 	BASEDIR_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/rsa/"
-	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme_full/"
+	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/aes/protkey"
 
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
 else
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${project}/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/${project}"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme_full/${project}"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/${project}/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
 
 	BASEDIR_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/aes/${project}/rootkey"
-	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/rsa/${project}"
-	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme_full/${project}"
+	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/aes/${project}/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
 fi
 
 ### Input: Root Cert ###
@@ -161,7 +174,7 @@ fi
 #EXPORT_FILES+="${BASEDIR_RSAKEY_ROOT}/key/rootrsa-3-pub.pem "
 #EXPORT_FILES+="${BASEDIR_RSAKEY_ROOT}/epk/rootcert-epks.bin "
 #EXPORT_FILES+="${BASEDIR_RSAKEY_ROOT}/nonce/rootrsa-${DEVICE_ROOTRSA_INDEX}-nonce.bin "
-EXPORT_FILES+="${BASEDIR_RSAKEY_ROOT}/roothash/hash-device-rootcert.bin "
+EXPORT_FILES+="${BASEDIR_RSAKEY_ROOT}/roothash/hash-device-rootcert-$sig_scheme.bin "
 
 ### Input: Selected Root RSA index (0 - 3)
 ### Required to generate Device Vendor Lvl-1 Cert ###

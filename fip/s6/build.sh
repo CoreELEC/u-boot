@@ -594,6 +594,21 @@ function process_blx() {
 					./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
 						--input1 ${BUILD_PATH}/ddrfw_data.bin --size1 ${DDRFW_SIZE} --output ${BUILD_PATH}/chip_acs.bin
 					fi
+
+					if [ ${BLX_NAME[$loop]} == "bl32" ]; then
+						echo "compress bl32.bin"
+						local bl32=${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]}
+						mv -f "$bl32" "$bl32.org"
+
+						encrypt_step --bl3sig  --input "$bl32.org" --output "$bl32.org.lz4" --compress lz4 --level v3 --type bl32
+						dd if="$bl32.org.lz4" of="$bl32" bs=1 skip=1824 >& /dev/null
+						blx_size=`stat -c %s $bl32`
+						if [ $blx_size -gt 524288 ]; then
+							echo "Error: bl32 size exceed limit 524288"
+							exit -1
+						fi
+					fi
+
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
 						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}

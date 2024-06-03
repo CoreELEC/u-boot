@@ -11,6 +11,8 @@ version=1.0
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 
+BL2_MAX_SIZE=272384
+
 trace ()
 {
 	echo ">>> $@" > /dev/null
@@ -32,14 +34,20 @@ check_value() {
 	fi
 }
 
-function add_blob_hdr () {
-	local bootloader_folder=$1
-	if [ -f "${EXEC_BASEDIR}/hdr" ]; then
-		echo "$bootloader_folder add_blob_hdr"
-		BLOB_HDR_FOLDER="${EXEC_BASEDIR}/hdr"
-		cat $BLOB_HDR_FOLDER  ${bootloader_folder} > ${bootloader_folder}.hdr
-		mv ${bootloader_folder}.hdr ${bootloader_folder}
-	fi
+function attach_blob_hdr () {
+    local bb1st_folder=${BASEDIR_TOP}/../../$1
+    local bl2_size=`stat -c "%s" $bb1st_folder`
+
+    if [ "${bl2_size}" -le "${BL2_MAX_SIZE}" ]; then
+        dd if=/dev/zero of=${bb1st_folder}.max bs=1024 count=266 status=none
+        dd if=${bb1st_folder} of=${bb1st_folder}.max  bs=1 count=${bl2_size} conv=notrunc
+        bb1st_folder=${bb1st_folder}.max
+    fi
+
+    ${EXEC_BASEDIR}/attach_sbh.sh $bb1st_folder $bb1st_folder.hdr
+    bb1st_folder=$bb1st_folder.hdr
+
+    bb1st=${bb1st_folder}
 }
 
 function mk_uboot() {
@@ -66,6 +74,8 @@ function mk_uboot() {
 		ls -la ${input_payloads}/
 		exit -1
 	fi
+
+	attach_blob_hdr ${bb1st}
 
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
@@ -141,9 +151,8 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=438 conv=notrunc status=none
-
-	add_blob_hdr ${bootloader}
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=540 conv=notrunc status=none
+	dd if=${EXEC_BASEDIR}/hdr_revA of=${bootloader} bs=512 seek=543 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		total_size=$[total_size+512]

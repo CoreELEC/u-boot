@@ -10,6 +10,8 @@ elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
 else
 	declare CHIPSET_VARIANT_SUFFIX=""
 fi
+declare BL2_MAX_SIZE=272384
+
 declare -a BLX_NAME=("bl2"	\
 		     "bl2"	\
 		     "bl2e"	\

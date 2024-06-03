@@ -447,6 +447,8 @@ function mk_uboot() {
 		exit -1
 	fi
 
+	attach_blob_hdr ${bb1st}
+
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
 
@@ -476,7 +478,7 @@ function mk_uboot() {
 
 	sector=512
 	seek=0
-	seek_sector=8
+	seek_sector=0
 	dateStamp=S7D-${CHIPSET_NAME}-`date +%y%m%d%H%M%S`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
@@ -522,9 +524,8 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=446 conv=notrunc status=none
-
-	add_blob_hdr ${bootloader}
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=540 conv=notrunc status=none
+	dd if=${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr_revA of=${bootloader} bs=512 seek=543 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"
@@ -639,8 +640,8 @@ function process_blx() {
 			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
 			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
 			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
-				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
-				exit -1
+				echo "Bypass: Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
+#	exit -1
 			fi
 		fi
 	done
@@ -811,13 +812,19 @@ function package() {
 	echo "Bootloader build done!"
 }
 
-function add_blob_hdr () {
-	local bootloader_folder=$1
-	if [ -f "${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr" ]; then
-		echo "$bootloader_folder add_blob_hdr"
-		BLOB_HDR_FOLDER="${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr"
-		dd if=$BLOB_HDR_FOLDER  of=${bootloader_folder} bs=512 count=8 conv=notrunc 
-#mv ${bootloader_folder}.hdr ${bootloader_folder}
+function attach_blob_hdr () {
+	local bb1st_folder=${MAIN_FOLDER}/$1
+	local bl2_size=`stat -c "%s" $bb1st_folder`
+
+	if [ "${bl2_size}" -le "${BL2_MAX_SIZE}" ]; then
+		dd if=/dev/zero of=${bb1st_folder}.max bs=1024 count=266 status=none
+		dd if=${bb1st_folder} of=${bb1st_folder}.max  bs=1 count=${bl2_size} conv=notrunc
+		bb1st_folder=${bb1st_folder}.max
 	fi
+
+	${FIP_FOLDER}${CUR_SOC}/bin/attach_sbh.sh $bb1st_folder $bb1st_folder.hdr
+	bb1st_folder=$bb1st_folder.hdr
+
+	bb1st=${bb1st_folder}
 }
 

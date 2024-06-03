@@ -23,7 +23,6 @@ riscv s1a bg209_s805c1 aocpu
 riscv s5 ax201_s928x aocpu
 riscv s5 ax208_s928x aocpu
 riscv s5 ax209_s928x aocpu
-riscv s6 s6_skt aocpu
 riscv s7 s7_skt aocpu
 riscv s7 bh201_s905y5 aocpu
 riscv s7 bh202_s905y5 aocpu
@@ -35,3 +34,10 @@ riscv s7d s7d_skt aocpu
 riscv s7d bm201_s905x5m aocpu
 riscv s7d bm202_s905x5m aocpu
 riscv s7d bm209_s905x5m aocpu
+riscv s6 s6_skt aocpu
+riscv s6 bl201_s905x5 aocpu
+riscv s6 bl208_s905x5 aocpu
+riscv s6 bl209_s905x5 aocpu
+riscv s6 bq201_s905d5 aocpu
+riscv s6 bq208_s905d5 aocpu
+riscv s6 bq209_s905d5 aocpu

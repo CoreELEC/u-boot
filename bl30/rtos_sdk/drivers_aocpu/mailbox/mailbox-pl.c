@@ -53,7 +53,7 @@ static void vExitCritical(void)
 /*ARM 2 AOCPU mailbox*/
 static void vAoRevTeeMbHandler(uint32_t inmbox)
 {
-	//BaseType_t xYieldRequired = pdFALSE;
+	BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = inmbox;
 	struct mbPackInfo mbInfo;
 	struct MbStat st;
@@ -97,8 +97,8 @@ static void vAoRevTeeMbHandler(uint32_t inmbox)
 		mbInfo.ulChan = xGetChan(mbox);
 		mbmemcpy(&syncTeeMbInfo, &mbInfo, sizeof(syncTeeMbInfo));
 		;
-		vTaskNotifyGiveFromISR(mbTeeHandler, NULL);
-		//portYIELD_FROM_ISR(xYieldRequired);
+		vTaskNotifyGiveFromISR(mbTeeHandler, &xYieldRequired);
+		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC
@@ -162,7 +162,7 @@ static void vTeeSyncTask(void *pvParameters)
 
 static void vAoRevReeMbHandler(uint32_t inmbox)
 {
-	//BaseType_t xYieldRequired = pdFALSE;
+	BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = inmbox;
 	struct mbPackInfo mbInfo;
 	struct MbStat st;
@@ -206,8 +206,8 @@ static void vAoRevReeMbHandler(uint32_t inmbox)
 		mbInfo.ulChan = xGetChan(mbox);
 		mbmemcpy(&syncReeMbInfo, &mbInfo, sizeof(syncReeMbInfo));
 		;
-		vTaskNotifyGiveFromISR(mbReeHandler, NULL);
-		//portYIELD_FROM_ISR(xYieldRequired);
+		vTaskNotifyGiveFromISR(mbReeHandler, &xYieldRequired);
+		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC

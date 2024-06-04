@@ -25,5 +25,6 @@ config BOARD_BC302_T968D4
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
+	select HDMIRX
 	help
 	  Enable Amlogic BC302 Board.

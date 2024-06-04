@@ -22,11 +22,20 @@
 #include "power.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
+#include "hdmirx_wake.h"
+
+/* hdmirx tmds wakeup function,disable for default */
+//#define CONFIG_HDMIRX_TMDS_WAKEUP
+
 static TaskHandle_t cecTask;
+#ifdef CONFIG_HDMIRX_TMDS_WAKEUP
+static TaskHandle_t hdmirxTask;
+#endif
 
 static int vdd_ee;
 static int vdd_cpu;
 static TaskHandle_t vadTask;
+
 
 static struct IRPowerKey prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
@@ -93,8 +102,10 @@ void str_hw_init(void)
 
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
 		    NULL, CEC_TASK_PRI, &cecTask);
-
-
+	#ifdef CONFIG_HDMIRX_TMDS_WAKEUP
+	xTaskCreate(vHDMIRX_task, "HDMIRXtask", configMINIMAL_STACK_SIZE,
+		    NULL, 2, &hdmirxTask);
+	#endif
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
 	vKeyPadInit();
@@ -114,6 +125,10 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
+	#ifdef CONFIG_HDMIRX_TMDS_WAKEUP
+	if (hdmirxTask)
+		vTaskDelete(hdmirxTask);
+	#endif
 	Bt_GpioIRQFree();
 }
 

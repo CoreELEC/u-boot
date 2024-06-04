@@ -23,6 +23,7 @@ try:
     from git.repo import Repo
     from openpyxl.styles import Font, Alignment
     from collections import OrderedDict
+    import ast
 except Exception as e:
     print(e)
     exit('Please install modules, eg: pip3 install os')
@@ -46,39 +47,40 @@ except Exception as e:
 pdPrefix  = "https://jira.amlogic.com/browse/"
 scgitPrefix = "https://scgit.amlogic.com/plugins/gitiles/"
 blSrcGits = [
-    {"blType" : "bl2_sc2",                  "gitBranch" : "projects/sc2",             "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "bl2_s4",                   "gitBranch" : "projects/s4",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "bl2_s5",                   "gitBranch" : "projects/s5",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "bl2_t7",                   "gitBranch" : "projects/t7",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "bl2_s7",                   "gitBranch" : "projects/s7",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "bl2_s7d",                  "gitBranch" : "projects/s7d",              "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
-    {"blType" : "ddr_s7",                   "gitBranch" : "amlogic-ddr-core",         "gitRemote" : "firmware",         "upStream" : "bl2/src/ddr/+/"},
-    {"blType" : "bl2_ree",                  "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/ree/+/"},
-    {"blType" : "bl2_tee",                  "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/tee/+/"},
-    {"blType" : "bl30_aocpu",               "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "firmware",         "upStream" : "firmware/aocpu/+/"},
-    {"blType" : "rtos_arch",                "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/arch/riscv/+/"},
-    {"blType" : "rtosboards",               "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/boards/riscv/+/"},
-    {"blType" : "rtos_build",               "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/build/+/"},
-    {"blType" : "rtos_driver_aocpu",        "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/drivers_aocpu/+/"},
-    {"blType" : "rtos_freertos",            "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/freertos/+/"},
-    {"blType" : "rtos_libc",                "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/libc/+/"},
-    {"blType" : "rtos_products_aocpu",      "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/product/aocpu/+/"},
-    {"blType" : "rtos_scripts",             "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/scripts/+/"},
-    {"blType" : "rtos_soc",                 "gitBranch" : "projects/amlogic-dev",     "gitRemote" : "origin",           "upStream" : "rtos_sdk/soc/riscv/+/"},
-    {"blType" : "bl31_1.3",                 "gitBranch" : "amlogic-dev-1.3",          "gitRemote" : "firmware",         "upStream" : "ARM-software/arm-trusted-firmware/+/"},
-    {"blType" : "bl31_2.7",                 "gitBranch" : "amlogic-dev-2.7",          "gitRemote" : "firmware",         "upStream" : "ARM-software/arm-trusted-firmware/+/"},
-    {"blType" : "bl32_3.8",                 "gitBranch" : "amlogic-dev-3.8.0",        "gitRemote" : "firmware",         "upStream" : "OP-TEE/optee_os/+/"},
-    {"blType" : "bl32_3.18",                "gitBranch" : "amlogic-dev-3.18.0",        "gitRemote" : "firmware",        "upStream" : "OP-TEE/optee_os/+/"},
-    {"blType" : "bl33_v2019",               "gitBranch" : "amlogic-dev-2019",         "gitRemote" : "uboot",            "upStream" : "uboot/+/"},
-    {"blType" : "bl33_v2023",               "gitBranch" : "amlogic-dev-2023",         "gitRemote" : "uboot",            "upStream" : "uboot/+/"},
-    {"blType" : "fip",                      "gitBranch" : "amlogic-dev",              "gitRemote" : "fip",              "upStream" : "amlogic/tools/fip/+/"}
-]
+   {"blType" : "bl2_sc2",                  "gitBranch" : "projects/sc2",                "stbBranch" : "projects/openlinux/bl-sc2-3.5.0",        "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_s4",                   "gitBranch" : "projects/s4",                "stbBranch" : "projects/openlinux/bl-s4-3.5.0",         "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_s5",                   "gitBranch" : "projects/s5",                "stbBranch" : "projects/openlinux/bl-s5-3.5.0",         "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_t7",                   "gitBranch" : "projects/t7",                "stbBranch" : "projects/openlinux/bl-s7-3.5.0",         "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_s7",                   "gitBranch" : "projects/s7",                "stbBranch" : "projects/openlinux/bl-s7d-3.5.0",        "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "bl2_s7d",                  "gitBranch" : "projects/s7d",               "stbBranch" : "projects/openlinux/bl-t7-3.5.0",         "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/core/+/"},
+    {"blType" : "ddr",                      "gitBranch" : "amlogic-ddr-core",           "stbBranch" : "projects/openlinux/bl-3.5.0",           "gitRemote" : "firmware",         "upStream" : "bl2/src/ddr/+/"},
+    {"blType" : "bl2_ree",                  "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/ree/+/"},
+    {"blType" : "bl2_tee",                  "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "firmware",         "upStream" : "bootloader/amlogic-advanced-bootloader/tee/+/"},
+    {"blType" : "bl30_aocpu",               "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "firmware",         "upStream" : "firmware/aocpu/+/"},
+    {"blType" : "rtos_arch",                "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/arch/riscv/+/"},
+    {"blType" : "rtosboards",               "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/boards/riscv/+/"},
+    {"blType" : "rtos_build",               "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/build/+/"},
+    {"blType" : "rtos_driver_aocpu",        "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/drivers_aocpu/+/"},
+    {"blType" : "rtos_freertos",            "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/freertos/+/"},
+    {"blType" : "rtos_libc",                "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/libc/+/"},
+    {"blType" : "rtos_products_aocpu",      "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/product/aocpu/+/"},
+    {"blType" : "rtos_scripts",             "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/scripts/+/"},
+    {"blType" : "rtos_soc",                 "gitBranch" : "projects/amlogic-dev",       "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "origin",           "upStream" : "rtos_sdk/soc/riscv/+/"},
+    {"blType" : "bl31_1.3",                 "gitBranch" : "amlogic-dev-1.3",            "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "firmware",         "upStream" : "ARM-software/arm-trusted-firmware/+/"},
+    {"blType" : "bl31_2.7",                 "gitBranch" : "amlogic-dev-2.7",            "stbBranch" : "projects/openlinux/bl-3.5.0-2.7",        "gitRemote" : "firmware",         "upStream" : "ARM-software/arm-trusted-firmware/+/"},
+    {"blType" : "bl32_3.8",                 "gitBranch" : "amlogic-dev-3.8.0",          "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "firmware",         "upStream" : "OP-TEE/optee_os/+/"},
+    {"blType" : "bl32_3.18",                "gitBranch" : "amlogic-dev-3.18.0",         "stbBranch" : "projects/openlinux/bl-3.5.0-3.18",       "gitRemote" : "firmware",        "upStream" : "OP-TEE/optee_os/+/"},
+    {"blType" : "bl33_v2019",               "gitBranch" : "amlogic-dev-2019",           "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "uboot",            "upStream" : "uboot/+/"},
+    {"blType" : "bl33_v2023",               "gitBranch" : "amlogic-dev-2023",           "stbBranch" : "projects/openlinux/bl-3.5.0-2023",       "gitRemote" : "uboot",            "upStream" : "uboot/+/"},
+    {"blType" : "fip",                      "gitBranch" : "amlogic-dev",                "stbBranch" : "projects/openlinux/bl-3.5.0",            "gitRemote" : "fip",              "upStream" : "amlogic/tools/fip/+/"}
+   ]
 
 # the local csv file columns
 csv_file_column = [
     {"ID" : "A",       "WIDTH" : 12,         "NAME" : "Index"},
     {"ID" : "B",       "WIDTH" : 45,         "NAME" : "Trunk Commit"},
     {"ID" : "C",       "WIDTH" : 30,         "NAME" : "Trunk Cl Link"},
+    {"ID" : "D",       "WIDTH" : 20,         "NAME" : "Stb Merged?"},
     {"ID" : "D",       "WIDTH" : 20,         "NAME" : "Is Force Patch?"},
     {"ID" : "E",       "WIDTH" : 20,         "NAME" : "Is Secure Patch?"},
     {"ID" : "F",       "WIDTH" : 20,         "NAME" : "Reviewer"},
@@ -178,11 +180,14 @@ def git_commits_to_src_link():
         if index < 0:
             exit("Error: NO found match blType:", trunk_list[i]['blType'])
 
+        # update stable branch
+        git_src_update(os.getcwd(), blSrcGits[index]['gitRemote'], blSrcGits[index]['stbBranch'])
+        changedId_list = get_stb_changeId(os.getcwd(), 200)
+        
         # update target branch
         git_src_update(os.getcwd(), blSrcGits[index]['gitRemote'], blSrcGits[index]['gitBranch'])
-
         # run git log format and produce commit list
-        commit_list = git_cmt_parse(os.getcwd(), trunk_list[i]['lastCommit'], 'HEAD', 'TRUE')
+        commit_list = git_cmt_parse(os.getcwd(), trunk_list[i]['lastCommit'], 'HEAD', changedId_list)
 
         git_cmt_2_csv(csvfile, trunk_list[i]['blType'], commit_list, blSrcGits[index], i)
 
@@ -230,16 +235,47 @@ def bash_command(cmd):
 
     return process.stdout.read()
 
+# get stable branch changed-id list
+def get_stb_changeId(gitPath, clNum):
+    local_path = os.path.join(gitPath)
+    
+    repo = Repo(local_path)
+    commit_log = repo.git.log('--pretty={"commit":"%h"}', max_count=clNum)
+    try:
+        log_list = commit_log.split("\n")
+        #if debug_enable:
+        #    print(' >    %s'%(log_list))
+    except:
+        pass
+    
+    real_log_list = [eval(str(item)) for item in log_list]
+    changedId_list = [None] * clNum
+
+    for i in range(len(real_log_list)):
+        try:
+            cmd = 'git log ' +  real_log_list[i]['commit'] + ' -1 | grep Change-Id: | head -n 1'
+            res = to_str(bash_command(cmd)).replace('\n', '')
+            if res:
+                changedId_list[i] = res.split("Change-Id:")[1]
+
+            else:
+                changedId_list[i] = 'NULL'
+            if debug_enable:
+                print(' >    [%d] overwrite Change-Id: = %s'%(i,changedId_list[i] ))
+        except:
+            pass
+    #print("changedId_list: ",changedId_list[0])
+    return changedId_list
+
 # get commit list info
-def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
+def git_cmt_parse(gitPath, lastCommit, headCommit, changedId_list):
     local_path = os.path.join(gitPath)
 
     repo = Repo(local_path)
 
     # run git log --format
-    commit_log = repo.git.log('--pretty={"summary":"%s","commit":"%h","hash":"%H","author":"%ae","date":"%cd","pd":""}',
+    commit_log = repo.git.log('--pretty={"summary":"%s","commit":"%h","hash":"%H","author":"%ae","date":"%cd","Change-Id":"null","meged":"null"}',
                             '--reverse', lastCommit + '...' + headCommit)
-
     try:
         log_list = commit_log.split("\n")
         #if debug_enable:
@@ -268,41 +304,43 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, isSrc):
             log_list[i] = str(re.sub(r'loc\'', r'loc', str(log_list[i])))
             log_list[i] = str(re.sub(r'">"', r'>"', str(log_list[i])))
             log_list[i] = str(re.sub(r'">', r' >', str(log_list[i])))
+            log_list[i] = str(re.sub(r'("colorattribute")', r"'colorattribute'", str(log_list[i])))
 
-            print(' >    [%d] %s'%(i,log_list[i]))
         except:
             pass
+        #print(' >    [%d] %s'%(i,log_list[i]))
     # eval special special characters
-    try:
-        real_log_list = [eval(str(item)) for item in log_list]
-    except:
-        real_log_list = []
-        if debug_enable:
+    real_log_list=[]
+    for index, item in enumerate(log_list):
+        try:
+            real_log_list.append(eval(str(item)))
+        except(ValueError, SyntaxError) as e:
+            real_log_list = []
             print(' >    eval(str(item)) ERROR!')
-            print(' >    %s'%(log_list))
-        pass
-    # update real_log_list[i]['pd'] with JiraNo
+            print(' >    %s'%(item))
+            #print(f" >    Error details: {e}")
+            pass
+    # update real_log_list[i]['Change-Id'] with JiraNo
+    
     for j in range(len(real_log_list)):
         try:
-            cmd = 'git log ' +  real_log_list[j]['commit'] + ' -1 | grep PD# | head -n 1'
+            cmd = 'git log ' +  real_log_list[j]['commit'] + ' -1 | grep Change-Id: | head -n 1' 
             res = to_str(bash_command(cmd)).replace('\n', '')
-
             if res:
-                real_log_list[j]['pd'] = res.split("PD#")[1]
-
+                real_log_list[j]['Change-Id'] = res.split("Change-Id:")[1]
+                if real_log_list[j]['Change-Id'] in changedId_list :
+                    real_log_list[j]['meged'] = '1'
             else:
-                real_log_list[j]['pd'] = 'NULL'
-
+                real_log_list[j]['Change-Id'] = 'NULL'
             if debug_enable:
-                print(' >    [%d] overwrite PD# = %s'%(j,real_log_list[j]['pd']))
+                print(' >    [%d] overwrite Change-Id: = %s'%(j,real_log_list[j]['Change-Id']))
         except:
+            print("Change-Id get bypass")
             pass
-
     try:
         print(' >     Commit list max number of rows = ', len(real_log_list))
     except:
         pass
-
     return real_log_list
 
 # save commit info to csv
@@ -351,16 +389,10 @@ def git_cmt_2_csv(csvfile, blType, commit_list, stream_dic, sheet_index):
             # column 1: ID index
             sheet.cell(row = i + 2, column = 1).value = i + 1
 
-            # column 2: Trunk Commit
-            if commit_list[i]['pd'] == 'NULL':
-                jira_pd = '\n'
-
-            else:
-                jira_pd = pdPrefix + commit_list[i]['pd'] + '\n'
-
             sheet.cell(row = i + 2, column = 2).value =     \
-                                    jira_pd    + commit_list[i]['summary'] + '\n'\
+                                    commit_list[i]['summary'] + '\n'\
                                     'Commit: ' + commit_list[i]['commit'] + '\n'\
+                                    'Change-Id: ' + commit_list[i]['Change-Id'] + '\n'\
                                     'Author: ' + commit_list[i]['author'] + '\n'\
                                     'Date:   ' + commit_list[i]['date']
 
@@ -368,6 +400,8 @@ def git_cmt_2_csv(csvfile, blType, commit_list, stream_dic, sheet_index):
             sheet.cell(row = i + 2, column = 3).value = scgitPrefix + \
                                                         stream_dic['upStream'] + \
                                                         commit_list[i]['hash']
+            
+            sheet.cell(row = i + 2, column = 4).value = commit_list[i]['meged']
         except:
             pass
 

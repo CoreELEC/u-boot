@@ -4,13 +4,17 @@
 declare BLX_BIN_SUB_CHIP="${CONFIG_CHIPSET_NAME}"
 
 if [ -n "${CONFIG_CHIPSET_VARIANT_MIN}" ]; then
+	## trunk bl32 bin in 429 409_emmc
 	declare CHIPSET_VARIANT_MIN_SUFFIX=".${CONFIG_CHIPSET_VARIANT_MIN}"
 fi
 
 if [ -n "${SCRIPT_ARG_CHIPSET_VARIANT}" ]; then
 	declare CHIPSET_VARIANT_SUFFIX=".${SCRIPT_ARG_CHIPSET_VARIANT}"
+## not trunk, use fastboot/ipc branch
 elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
+	## bl2e bl32 bl40 bin name with fastboot or null
 	declare CHIPSET_VARIANT_SUFFIX=".${CONFIG_CHIPSET_VARIANT}"
+	## choose bb1st bin  name is fastboot or ipc
 	if [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
 		declare CHIPSET_VARIANT_SUFFIX_IPC=".ipc"
 	elif [ "${CONFIG_IPC_TYPE}" == "fastboot" ]; then
@@ -20,10 +24,13 @@ elif [ -n "${CONFIG_CHIPSET_VARIANT}" ]; then
 		declare CHIPSET_VARIANT_SUFFIX_IPC=".${CONFIG_CHIPSET_VARIANT}"
 	fi
 	if [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ]; then
+		## choose bl2x bl31 bin name witch fastboot_256, otherwise it is fastboot)
 		declare CHIPSET_VARIANT_SUFFIX_DDR=".${CONFIG_CHIPSET_VARIANT}_256"
 		if [ "${CONFIG_TEE_TYPE}" == "8m" ]; then
+			## fastboot/ipc use bl32 bin in 402 409
 			CHIPSET_VARIANT_MIN_SUFFIX=".8m"
 		elif [ "${CONFIG_TEE_TYPE}" == "1m" ]; then
+			## Will not enter here
 			CHIPSET_VARIANT_MIN_SUFFIX=".1m"
 		fi
 	else
@@ -81,7 +88,8 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX_IPC}.bin.signed"    
 			 "blob-bl40${CHIPSET_VARIANT_SUFFIX}.bin.signed")
 fi
 
-if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+## c3 old aw402s
+if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "${CONFIG_TEE_TYPE}" == "" ] && [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
 	declare -a BLX_BIN_SIZE=("169984"	\
 				 "169984"	\
 				 "74864"	\
@@ -92,8 +100,21 @@ if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIPSE
 				 "8192")
 	declare BL30_BIN_SIZE="65536"
 	declare BL33_BIN_SIZE="524288"
-elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
-	declare -a BLX_BIN_SIZE=("169984"	\
+## fastboot/ipc branch (402 409)
+elif [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
+	## c3 support bl32 in 256m
+	if [ "${CONFIG_IPC_DDR_SIZE}" == "256m" ] && [ "${CONFIG_TEE_TYPE}" == "8m" ] ; then
+		declare -a BLX_BIN_SIZE=("169984"	\
+				"169984"	\
+				"74864"	\
+				"74864"	\
+				"66672"	\
+				"98304"	\
+				"528384"	\
+				"8192")
+	## c3 not support bl32
+	else
+		declare -a BLX_BIN_SIZE=("169984"	\
 				"169984"	\
 				"74864"	\
 				"74864"	\
@@ -101,9 +122,12 @@ elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "fastboot" == "${CONFIG_CHIP
 				"98304"	\
 				"8192"	\
 				"8192")
+
+	fi
 	declare BL30_BIN_SIZE="4096"
 	declare BL33_BIN_SIZE="323584"
 else
+## c3 trunk 419 429 409_emmc
 	declare -a BLX_BIN_SIZE=("169984"	\
 				"169984"	\
 				"74864"	\

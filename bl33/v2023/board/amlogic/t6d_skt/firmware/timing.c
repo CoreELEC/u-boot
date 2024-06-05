@@ -173,18 +173,17 @@ __attribute__ ((section(".misc_param"))) = {
 	{ PWM_PWM_H,		   VDDEE_VAL_REG, 0xffffffff, 0, 0, 0},
 #endif
 	//{ PWM_PWM_J,		   VCCK_VAL_REG,  0xffffffff, 0, 0, 0 },
-	{ PWM_MISC_REG_H,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
-	//{ PWM_MISC_REG_J,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
-	/* set pwm j and pwm h clock rate to 24M, enable them */
-	{ CLKCTRL_PWM_CLK_GH_CTRL, (0x1 << 24), 0xffffffff, 0, 0, 0 },
-	//{ CLKCTRL_PWM_CLK_IJ_CTRL, (0x1 << 24), 0xffffffff, 0, 0, 0 },
+	{ PWM_MISC_REG_A,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
+	{ PWM_MISC_REG_B,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
+	/* set pwm a and pwm b clock rate to 24M, enable them */
+	{ CLKCTRL_PWM_CLK_AB_CTRL, (0x1 << 24), 0xffffffff, 0, 0, 0 },
 	/* set GPIOE_0 GPIOE_1 drive strength to 2 ,already set by gpio owner on bl2*/
 	// { PADCTRL_GPIOE_DS,	   0xa,		  0xf,	      0, 0, 0 },
-	/* set GPIOE_0 GPIOE_1 mux to pwmh pwmj */
-	{ PADCTRL_PIN_MUX_REGI,	   (0x3 << 0),	  (0xf << 0), 0, 0, 0 },
-	{ PADCTRL_PIN_MUX_REGI,	   (0x3 << 4),	  (0xf << 4), 0, 0, 0 },
+	/* set GPIOE_0 GPIOE_1 mux to pwma pwmb */
+	{ PADCTRL_PIN_MUX_REGD,	   (0x11 << 0),	  (0xff << 0), 0, 0, 0 },
+	//{ PWM_TEE_ONLY_A,          (0x1 << 0),	  (0xffffffff << 0), 0, 0, 0 },
+	//{ PWM_TEE_ONLY_B,          (0x1 << 0),	  (0xffffffff << 0), 0, 0, 0 },
 	{ PADCTRL_GPIOD_PULL_UP,   (0x1 << 2),	  (0x1 << 2), 0, 0, 0 },
-	//{ PWM_TEE_ONLY_J,          (0x1 << 0),	  (0xffffffff << 0), 0, 0, 0 },
 	/* GPIOH_3 has an external pull-up, so disable the default internal pull-up */
 	{ PADCTRL_GPIOH_PULL_EN,   (0x0 << 3),	  (0x1 << 3), 0, 0, 0 },
 };

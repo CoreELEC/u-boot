@@ -19,6 +19,8 @@ types = ["ta", "vmxta", "irdetota", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40
 casProviders = ["", "VMX", "nagra", "nagra-dev", "vo-dev", "vo", "gs-dev", "gs", "irdeto"]
 ddrTypes = ["ddr4", "lpddr4", "ddr3", "lpddr3", "lpddr4_lpddr5"]
 chipVariants = ["general", "nocs-jts-ap", "nocs-prod"]
+csSigSchemes = ["", "rsa", "rsa-mldsa"]
+dvSigSchemes = ["", "rsa", "rsa-mldsa"]
 
 user = ""
 password = ""
@@ -83,6 +85,8 @@ def get_args():
     parser.add_argument("--chipVariant", choices=chipVariants, default=chipVariants[0])
     parser.add_argument("--keyType", type=str, dest="keyType", default="dev-keys")
     parser.add_argument("--extraArgs", type=str, default="")
+    parser.add_argument("--csSigScheme", choices=csSigSchemes, default=csSigSchemes[0])
+    parser.add_argument("--dvSigScheme", choices=dvSigSchemes, default=dvSigSchemes[0])
     parser.add_argument("--testService", type=int, default=0)
 
     return parser.parse_args()
@@ -157,6 +161,8 @@ def submitSignJob(
     ddrType="",
     keyType="dev-keys",
     extraArgs="",
+    csSigScheme="",
+    dvSigScheme="",
     testService=0,
 ):
 
@@ -171,6 +177,8 @@ def submitSignJob(
             "chip_part_number": chipType,
             "ta_version": taVersion,
             "market_id": marketId,
+            "csSigScheme": csSigScheme,
+            "dvSigScheme": dvSigScheme,
             "testService": testService,
         }
     elif type == "bl32":
@@ -179,6 +187,8 @@ def submitSignJob(
             "chipPartNumber": chipType,
             "casProvider": casProvider,
             "keyType": keyType,
+            "csSigScheme": csSigScheme,
+            "dvSigScheme": dvSigScheme,
             "testService": testService,
         }
 
@@ -193,6 +203,8 @@ def submitSignJob(
             "chipVariant": chipVariant,
             "ddrType": ddrType,
             "keyType": keyType,
+            "csSigScheme": csSigScheme,
+            "dvSigScheme": dvSigScheme,
             "testService": testService,
         }
     else:  # bl2e, bl2x, bl31, bl40, aucpufw, vdecfw
@@ -200,6 +212,8 @@ def submitSignJob(
             "chipPartNumber": chipType,
             "keyType": keyType,
             "extraArgs": extraArgs,
+            "csSigScheme": csSigScheme,
+            "dvSigScheme": dvSigScheme,
             "testService": testService,
         }
 
@@ -341,6 +355,8 @@ def main():
         ddrType=args.ddrType,
         keyType=args.keyType,
         extraArgs=args.extraArgs,
+        csSigScheme=args.csSigScheme,
+        dvSigScheme=args.dvSigScheme,
         testService=args.testService,
     )
 

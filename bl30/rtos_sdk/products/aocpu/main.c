@@ -30,7 +30,14 @@ int main(void)
 	printf("Starting task scheduler ...\n");
 	aocpu_bringup_finished();
 	vTaskStartScheduler();
-	for (;;)
+    /*
+     * The Coverity tool think that the for loop is a structurally dead code, so it's
+     * flagged as such. But the for loop is necessary for ordering the
+     * FreeRTOS's format rules.
+     */
+    /* coverity[340441:SUPPRESS] */
+	for ( ; ; )
+		;
 
 	return 0;
 }

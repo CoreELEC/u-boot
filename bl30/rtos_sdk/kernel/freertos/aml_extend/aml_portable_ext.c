@@ -150,7 +150,14 @@ void vPortHaltSystem(Halt_Action_e act)
 
 	for (irq = 0; irq < portMAX_IRQ_NUM; irq += 8) {
 		for (i = 0; i < 8; i++) {
-			if (irq_mask[irq / 8] & (1 << i))
+			/*
+			 * The coverity tool detects a defect if the range of (irq+i) isn't checked,
+			 * it may lead to Out-of-bounds access.
+			 * However, the function plat_gic_irq_unregister will check it use assert,
+			 * so this defect can be ignored.
+			 */
+			/* coverity[338974:SUPPRESS] */
+			if ((irq_mask[irq / 8] & (1 << i)))
 				plat_gic_irq_unregister(irq + i);
 		}
 	}

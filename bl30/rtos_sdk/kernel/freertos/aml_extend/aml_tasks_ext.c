@@ -41,7 +41,7 @@ uint8_t xTaskSetName(void *pvTaskHandle, const char *pcName)
 {
 	TCB_t *pxTCB;
 	UBaseType_t x;
-	BaseType_t xReturn;
+	BaseType_t xReturn = pdTRUE;
 
 	/* If null is passed in here then the name of the calling task is being
 	queried. */

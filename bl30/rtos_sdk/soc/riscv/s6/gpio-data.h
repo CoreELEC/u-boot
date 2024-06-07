@@ -19,6 +19,8 @@ extern "C" {
 #define IRQ_REG_NUM 8 /* numbers of irq relative reg*/
 
 #define GPIO_INVALID 0xffff
+#define GPIOD_8		GPIO_INVALID
+#define GPIOD_10	GPIO_INVALID
 
 /*0-31*/
 #define	GPIOE_0		0

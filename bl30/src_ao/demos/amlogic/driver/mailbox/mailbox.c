@@ -100,7 +100,7 @@ static void vAoRevMbHandler(void *vArg)
 	mbPackInfo mbInfo;
 	MbStat_t st;
 	uint32_t addr, ulMbCmd, ulSize, ulSync;
-	//BaseType_t xYieldRequired = pdFALSE;
+	BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = (uint32_t)vArg;
 
 	memset(&mbInfo.mbdata, 0, sizeof(mboxData));
@@ -150,19 +150,19 @@ static void vAoRevMbHandler(void *vArg)
 		if (MAILBOX_ARMREE2AO == xGetChan(mbox)) {
 			syncReeMbInfo = mbInfo;
 			ulReeSyncTaskWake = 1;
-			vTaskNotifyGiveFromISR(ReembHandler, NULL);
+			vTaskNotifyGiveFromISR(ReembHandler, &xYieldRequired);
 		}
 		if (MAILBOX_ARMTEE2AO == xGetChan(mbox)) {
 			syncTeeMbInfo = mbInfo;
 			ulTeeSyncTaskWake = 1;
-			vTaskNotifyGiveFromISR(TeembHandler, NULL);
+			vTaskNotifyGiveFromISR(TeembHandler, &xYieldRequired);
 		}
 		if (MAILBOX_DSPA2AO == xGetChan(mbox)) {
 			syncDspMbInfo = mbInfo;
 			ulDspSyncTaskWake = 1;
-			vTaskNotifyGiveFromISR(DspmbHandler, NULL);
+			vTaskNotifyGiveFromISR(DspmbHandler, &xYieldRequired);
 		}
-		//portYIELD_FROM_ISR(xYieldRequired);
+		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC

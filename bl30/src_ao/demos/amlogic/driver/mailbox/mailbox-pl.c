@@ -62,7 +62,7 @@ static void vAoRevTeeMbHandler(uint32_t mailbox)
 	MbStat_t st;
 	uint32_t *addr = NULL;
 	uint32_t ulMbCmd, ulSize, ulSync;
-	//BaseType_t xYieldRequired = pdFALSE;
+	BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = mailbox;
 
 	memset(&mbInfo.mbdata, 0, sizeof(mboxData));
@@ -103,8 +103,8 @@ static void vAoRevTeeMbHandler(uint32_t mailbox)
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
 		mbmemcpy(&syncTeeMbInfo, &mbInfo, sizeof(syncTeeMbInfo));
-		vTaskNotifyGiveFromISR(mbTeeHandler, NULL);
-		//portYIELD_FROM_ISR(xYieldRequired);
+		vTaskNotifyGiveFromISR(mbTeeHandler, &xYieldRequired);
+		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC
@@ -170,7 +170,7 @@ static void vAoRevReeMbHandler(uint32_t mailbox)
 	MbStat_t st;
 	uint32_t *addr = NULL;
 	uint32_t ulMbCmd, ulSize, ulSync;
-	//BaseType_t xYieldRequired = pdFALSE;
+	BaseType_t xYieldRequired = pdFALSE;
 	uint32_t mbox = mailbox;
 
 	memset(&mbInfo.mbdata, 0, sizeof(mboxData));
@@ -211,8 +211,8 @@ static void vAoRevReeMbHandler(uint32_t mailbox)
 		mbInfo.ulSize = ulSize;
 		mbInfo.ulChan = xGetChan(mbox);
 		mbmemcpy(&syncReeMbInfo, &mbInfo, sizeof(syncReeMbInfo));
-		vTaskNotifyGiveFromISR(mbReeHandler, NULL);
-		//portYIELD_FROM_ISR(xYieldRequired);
+		vTaskNotifyGiveFromISR(mbReeHandler, &xYieldRequired);
+		portYIELD_FROM_ISR(xYieldRequired);
 		break;
 	case MB_ASYNC:
 #ifdef AO_MBOX_ONLY_SYNC

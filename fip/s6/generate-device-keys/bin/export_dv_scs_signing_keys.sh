@@ -118,12 +118,7 @@ if [ -z "$output_dir" ]; then
 	usage
 fi
 
-sig_scheme_full=$sig_scheme
-rootchain_name=$sig_scheme
-if [ "$sig_scheme" == "rsa-mldsa" ] || [ "$sig_scheme" == "mldsa" ]; then
-	sig_scheme_full+="-draft1"
-	rootchain_name="key"
-fi
+trustchain_name="trustchain"
 
 BASEDIR_ROOT=$key_dir
 BASEDIR_OUT_ROOT=$output_dir
@@ -131,37 +126,37 @@ DEVICE_ROOTRSA_INDEX=$rootkey_index
 
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme_full/"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme/"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/${sig_scheme}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/${sig_scheme}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 
 	BASEDIR_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme_full/"
-	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme_full/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme/"
+	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/aes/protkey"
 
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 else
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${project}/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme_full/${project}"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/$sig_scheme/${project}"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$sig_scheme/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/$sig_scheme/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/${project}/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 
 	BASEDIR_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/aes/${project}/rootkey"
-	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme_full/${project}"
-	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme_full/${project}/root${rootchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/root/$sig_scheme/${project}"
+	BASEDIR_BOOTBLOBS_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/$sig_scheme/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_RSAKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/$sig_scheme/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/aes/${project}/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/${project}/root${sig_scheme_full}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/boot-blobs/template/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUT_ROOT="${BASEDIR_OUT_ROOT}/fip/template/${project}/${trustchain_name}-${DEVICE_ROOTRSA_INDEX}"
 fi
 
 ### Input: Root Cert ###

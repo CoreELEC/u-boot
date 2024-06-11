@@ -79,11 +79,13 @@ function get_mldsa_authen_algo {
 	    return -1
 	fi
 
-        local tmp2=${ml_dsa_version_list[$version]}
-	if [ "${tmp2}" == "" ]; then
-            echo "Error: Invalid ML-DSA version $version"
-            return -1
-	fi
+	# FIXME: Hardcoded to "draft1"
+        local tmp2="draft1"
+        #local tmp2=${ml_dsa_version_list[$version]}
+	#if [ "${tmp2}" == "" ]; then
+        #    echo "Error: Invalid ML-DSA version $version"
+        #    return -1
+	#fi
 
         eval $__resultvar="mldsa-${tmp2}"
 	return 0
@@ -270,9 +272,8 @@ DEVICE_TEE_VERS=0x0
 DEVICE_REE_VERS=0x0
 DEVICE_SCS_VERS=0x0
 
-# Default to original root trust chain name (rootrsa) before
-# hybrid PQC introduction
-rootchain_name="rsa"
+# Change root trust chain name from "rootrsa" to "trustchain"
+trustchain_name="trustchain"
 
 is_rsa=1
 is_ml_dsa=0
@@ -391,7 +392,6 @@ if [ ${sig_scheme} == "rsa" ]; then
 	is_rsa=1
 	is_ml_dsa=0
 	is_hybrid=0
-	rootchain_name="rsa"
 	if [ ${trust_chain^^} == "CHIPSET" ]; then
 		COMMON_CREATE_BOOT_BLOBS_ARGS="--chipset-authen-algorithm=${rsa_algo_name},none"
 		COMMON_CREATE_DEVICE_FIP_ARGS="--chipset-authen-algorithm=${rsa_algo_name},none"
@@ -404,7 +404,6 @@ if [ ${sig_scheme} == "mldsa" ]; then
 	is_rsa=0
 	is_ml_dsa=1
 	is_hybrid=0
-	rootchain_name="key"
 	if [ "${ml_dsa_version}" != "final" ]; then
 		sig_scheme_version=${sig_scheme}-${ml_dsa_version}
 		ml_dsa_algo_name=${ml_dsa_algo_name}-${ml_dsa_version}
@@ -421,7 +420,6 @@ if [ ${sig_scheme} == "rsa-mldsa" ]; then
 	is_rsa=1
 	is_ml_dsa=1
 	is_hybrid=1
-	rootchain_name="key"
 	if [ "${ml_dsa_version}" != "final" ]; then
 		sig_scheme_version=${sig_scheme}-${ml_dsa_version}
 		ml_dsa_algo_name=${ml_dsa_algo_name}-${ml_dsa_version}
@@ -458,19 +456,21 @@ if [ ! -z "${template_layout}" ]; then
 else
     if [ ${trust_chain^^} == "CHIPSET" ]; then
         COMMON_CREATE_BOOT_BLOBS_ARGS+=" --device-authen-algorithm=${rsa_algo_name},none"
-        COMMON_CREATE_DEVICE_FIP_ARGS+=" --device-authen-algorithm=${rsa_algo_name},none}"
+        COMMON_CREATE_DEVICE_FIP_ARGS+=" --device-authen-algorithm=${rsa_algo_name},none"
     fi
 fi
 
+# FIXME: Hard code to "draft1"
+# TODO: Is SOC die passed down during template and signing operation?
 if [ ${trust_chain^^} == "DEVICE-VENDOR" ]; then
 	if [ "$device_soc" == "s6" ]; then
+		#FIXME cs_sig_scheme should be based on template-layout which would indicate CS scheme
 		cs_sig_scheme="${template_layout:-rsa-mldsa}"
 		template_ext=".$sig_scheme.$cs_sig_scheme"
 	else
 		template_ext=""
 	fi
 fi
-
 
 #trace " --> $COMMON_CREATE_BOOT_BLOBS_ARGS"
 trace "       sig-scheme $sig_scheme"
@@ -502,30 +502,28 @@ ROOTRSA_INDEX=${rootkey_index}
 
 if [ -z "$project" ]; then
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/${sig_scheme_version}/"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/${sig_scheme_version}/root${rootchain_name}-${ROOTRSA_INDEX}"
-	#BASEDIR_BOOTBLOBS_AESKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/aes/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/${sig_scheme_version}/root${rootchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/${sig_scheme}/"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/${sig_scheme}/${trustchain_name}-${ROOTRSA_INDEX}"
+	#BASEDIR_BOOTBLOBS_AESKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/aes/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/${sig_scheme}/${trustchain_name}-${ROOTRSA_INDEX}"
 
 	BASEDIR_ROOTHASH_OUTPUT="${BASEDIR_RSAKEY_ROOT}/roothash"
-	# Use ${sig_scheme_version} for aes and template instead of ${rootchain_name} as they are at same level as ${sig_scheme_version}
-	BASEDIR_BOOTBLOBS_PROTKEY_OUTPUT="${BASEDIR_ROOT}/boot-blobs/aes/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/root${sig_scheme_version}-${ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/root${sig_scheme_version}-${ROOTRSA_INDEX}"
-	BASEDIR_FIP_PROTKEY_OUTPUT="${BASEDIR_ROOT}/fip/aes/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_BOOTBLOBS_PROTKEY_OUTPUT="${BASEDIR_ROOT}/boot-blobs/aes/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/${trustchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/${trustchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_FIP_PROTKEY_OUTPUT="${BASEDIR_ROOT}/fip/aes/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
 else
 	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${project}/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/${sig_scheme_version}/${project}"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/${sig_scheme_version}/${project}/root${rootchain_name}-${ROOTRSA_INDEX}"
-	#BASEDIR_BOOTBLOBS_AESKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/aes/${project}/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/${sig_scheme_version}/${project}/root${rootchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/${sig_scheme}/${project}"
+	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/${sig_scheme}/${project}/${trustchain_name}-${ROOTRSA_INDEX}"
+	#BASEDIR_BOOTBLOBS_AESKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/aes/${project}/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/${sig_scheme}/${project}/${trustchain_name}-${ROOTRSA_INDEX}"
 
 	BASEDIR_ROOTHASH_OUTPUT="${BASEDIR_RSAKEY_ROOT}/roothash"
-	BASEDIR_BOOTBLOBS_PROTKEY_OUTPUT="${BASEDIR_ROOT}/boot-blobs/aes/${project}/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
-	# Use ${sig_scheme_version} for template instead of ${rootchain_name} as template is at same level as ${sig_scheme_version} for FIP and BOOT-BLOBS
-	BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/${project}/root${sig_scheme_version}-${ROOTRSA_INDEX}"
-	BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/${project}/root${sig_scheme_version}-${ROOTRSA_INDEX}"
-	BASEDIR_FIP_PROTKEY_OUTPUT="${BASEDIR_ROOT}/fip/aes/${project}/root${sig_scheme_version}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_BOOTBLOBS_PROTKEY_OUTPUT="${BASEDIR_ROOT}/boot-blobs/aes/${project}/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
+	BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/${project}/${trustchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/${project}/${trustchain_name}-${ROOTRSA_INDEX}"
+	BASEDIR_FIP_PROTKEY_OUTPUT="${BASEDIR_ROOT}/fip/aes/${project}/${trustchain_name}-${ROOTRSA_INDEX}/protkey"
 fi
 
 if [ -z "$output_dir" ]; then
@@ -593,9 +591,9 @@ PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/key/${PREFIX}root
 PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/key/${PREFIX}root${ml_dsa_algo_name}-3-pub.pem"
 
 COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/epk/${PREFIX}rootcert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}root${sig_scheme_version}-${ROOTRSA_INDEX}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}rootkey-${ROOTRSA_INDEX}-nonce.bin"
 #check_file "${BASEDIR_RSAKEY_ROOT}/epk/${PREFIX}rootcert-epks.bin"
-#check_file "${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}root${sig_scheme_version}-${ROOTRSA_INDEX}-nonce.bin"
+#check_file "${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}rootkey-${ROOTRSA_INDEX}-nonce.bin"
 
 RSA_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/key/${PREFIX}root${rsa_algo_name}-${ROOTRSA_INDEX}-priv.pem"
 RSA_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${rsa_algo_name}-pub.pem"
@@ -606,9 +604,9 @@ PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_RSAKEY_ROOT}/key/${PREFIX}root
 PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${ml_dsa_algo_name}-pub.pem"
 
 COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl1cert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1${sig_scheme_version}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1key-nonce.bin"
 #check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl1cert-epks.bin"
-#check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1${sig_scheme_version}-nonce.bin"
+#check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1key-nonce.bin"
 
 RSA_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${rsa_algo_name}-priv.pem"
 RSA_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-pub.pem"
@@ -619,9 +617,9 @@ PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${P
 PQC_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${ml_dsa_algo_name}-pub.pem"
 
 COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl2cert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2${sig_scheme_version}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2key-nonce.bin"
 #check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl2cert-epks.bin"
-#check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2${sig_scheme_version}-nonce.bin"
+#check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2key-nonce.bin"
 
 RSA_CREATE_DEVICE_FIP_FILE_CHECKLIST+=" ${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
 #check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
@@ -699,9 +697,9 @@ PQC_CREATE_BOOT_BLOBS_ARGS+=" --infile-pubkey-${PREFIX_ARG}-root-3-pqc=${BASEDIR
 # EK is common for all root RSA
 # NONCE is per root RSA
 COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-epks-${PREFIX_ARG}-rootcert=${BASEDIR_RSAKEY_ROOT}/epk/${PREFIX}rootcert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}root${sig_scheme_version}-${ROOTRSA_INDEX}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}rootkey-${ROOTRSA_INDEX}-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-${PREFIX_ARG}-rootcert=${BASEDIR_RSAKEY_ROOT}/epk/${PREFIX}rootcert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}root${sig_scheme_version}-${ROOTRSA_INDEX}-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/${PREFIX}rootkey-${ROOTRSA_INDEX}-nonce.bin"
 
 # Select root RSA to use
 COMMON_CREATE_BOOT_BLOBS_ARGS+=" --${PREFIX_ARG}-rootrsa-index=${ROOTRSA_INDEX}"
@@ -717,9 +715,9 @@ RSA_CREATE_BOOT_BLOBS_ARGS+=" --infile-pubkey-${PREFIX_ARG}-lvl1cert=${BASEDIR_B
 PQC_CREATE_BOOT_BLOBS_ARGS+=" --infile-pubkey-${PREFIX_ARG}-lvl1cert-pqc=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${ml_dsa_algo_name}-pub.pem"
 
 COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-epks-${PREFIX_ARG}-lvl1cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl1cert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1${sig_scheme_version}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1key-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-${PREFIX_ARG}-lvl1cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl1cert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1${sig_scheme_version}-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl1key-nonce.bin"
 
 RSA_CREATE_BOOT_BLOBS_ARGS+=" --infile-signkey-${PREFIX_ARG}-lvl1=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${rsa_algo_name}-priv.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-${PREFIX_ARG}-lvl1=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-1-${rsa_algo_name}-priv.pem"
@@ -731,9 +729,9 @@ RSA_CREATE_BOOT_BLOBS_ARGS+=" --infile-pubkey-${PREFIX_ARG}-lvl2cert=${BASEDIR_B
 PQC_CREATE_BOOT_BLOBS_ARGS+=" --infile-pubkey-${PREFIX_ARG}-lvl2cert-pqc=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${ml_dsa_algo_name}-pub.pem"
 
 COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-epks-${PREFIX_ARG}-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl2cert-epks.bin"
-COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2${sig_scheme_version}-nonce.bin"
+COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2key-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-${PREFIX_ARG}-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/${PREFIX}lvl2cert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2${sig_scheme_version}-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-${PREFIX_ARG}-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/${PREFIX}lvl2key-nonce.bin"
 
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-signkey-${PREFIX_ARG}-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-${PREFIX_ARG}-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
@@ -742,27 +740,27 @@ PQC_CREATE_DEVICE_FIP_ARGS+=" --infile-signkey-${PREFIX_ARG}-lvl2-pqc=${BASEDIR_
 ### Input: Chipset Level-3 Certs  ###
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-pubkey-bl40-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/${PREFIX}bl40-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-epks-bl40-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/${PREFIX}bl40-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl40-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl40-lvl3cert-nonce.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl40-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl40-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl40-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl40-lvl3key-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl40-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl40-lvl3key-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-bl40-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/cs-bl40-level-3-${rsa_algo_name}-pub.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-bl40-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/cs-bl40-lvl3cert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl40-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl40-lvl3cert-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl40-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl40-lvl3key-nonce.bin"
 
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-pubkey-bl31-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/${PREFIX}bl31-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-epks-bl31-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/${PREFIX}bl31-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl31-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl31-lvl3cert-nonce.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl31-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl31-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl31-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl31-lvl3key-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl31-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl31-lvl3key-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-bl31-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/cs-bl31-level-3-${rsa_algo_name}-pub.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-bl31-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/cs-bl31-lvl3cert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl31-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl31-lvl3cert-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl31-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl31-lvl3key-nonce.bin"
 
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-pubkey-bl32-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/${PREFIX}bl32-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-epks-bl32-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/${PREFIX}bl32-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl32-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl32-lvl3cert-nonce.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl32-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl32-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_CS_ARGS+=" --infile-nonce-bl32-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl32-lvl3key-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl32-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/${PREFIX}bl32-lvl3key-nonce.bin"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-bl32-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/cs-bl32-level-3-${rsa_algo_name}-pub.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-bl32-chipset-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/cs-bl32-lvl3cert-epks.bin"
-#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl32-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl32-lvl3cert-nonce.bin"
+#BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-bl32-cslvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/cs-bl32-lvl3key-nonce.bin"
 
 ### Input: Chipset Level-3 privae RSA Keys ###
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-bl40-chipset-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/cs-bl40-level-3-rsa-priv.pem"
@@ -771,13 +769,13 @@ RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl32-dvlvl3cert=${BASEDIR_FIP_RS
 
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-pubkey-bl30-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-epks-bl30-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/bl30-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl30-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/bl30-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl30-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/bl30-lvl3key-nonce.bin"
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-pubkey-bl33-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl33-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-epks-bl33-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/bl33-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl33-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/bl33-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-bl33-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/bl33-lvl3key-nonce.bin"
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-pubkey-krnl-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/krnl-level-3-${rsa_algo_name}-pub.pem"
 RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-epks-krnl-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/epk/krnl-lvl3cert-epks.bin"
-RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-krnl-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/krnl-lvl3cert-nonce.bin"
+RSA_CREATE_DEVICE_FIP_DV_ARGS+=" --infile-nonce-krnl-dvlvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/nonce/krnl-lvl3key-nonce.bin"
 
 if [ ${with_encryption} -eq 1 ]; then
 	### Input: Protection RootKey ###
@@ -845,7 +843,7 @@ fi
 ### Output: hash of root cert ###
 if [ ${write_root_hash} -eq 1 ]; then
 	COMMON_CREATE_BOOT_BLOBS_ARGS+=" --outfile-hash-${PREFIX_ARG}-rootcert=${BASEDIR_OUTPUT_BLOB}/hash-${PREFIX_BS}rootcert-${sig_scheme}.bin"
-	#BB1ST_ARGS="${BB1ST_ARGS} --outfile-hash-${PREFIX_ARG}-rootcert=${BASEDIR_OUTPUT_BLOB}/hash-${PREFIX}rootcert.bin.${sig_scheme}"
+	#BB1ST_ARGS="${BB1ST_ARGS} --outfile-hash-${PREFIX_ARG}-rootcert=${BASEDIR_OUTPUT_BLOB}/hash-${PREFIX}rootcert-${sig_scheme}.bin"
 fi
 
 ### Output: generated protection keys ###

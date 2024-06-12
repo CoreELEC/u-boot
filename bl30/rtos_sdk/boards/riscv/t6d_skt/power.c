@@ -27,7 +27,7 @@
 #if BL30_SUSPEND_DEBUG_EN
 #include "suspend_debug_t6d.h"
 #endif
-#define CONFIG_HDMIRX_PLUGIN_WAKEUP
+// #define CONFIG_HDMIRX_PLUGIN_WAKEUP
 
 static TaskHandle_t cecTask;
 #if BL30_SUSPEND_DEBUG_EN
@@ -107,8 +107,8 @@ void str_hw_init(void)
 
 	vETHInit(0);
 
-	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-		    NULL, CEC_TASK_PRI, &cecTask);
+	// xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+	//	    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
 #if BL30_SUSPEND_DEBUG_EN

@@ -56,6 +56,13 @@ function init_variable_early() {
 		BLX_NEEDFUL[3]="true"
 	fi
 
+	if [ -n "${CONFIG_AML_CS_SIGNING_SCHEME}" ]; then
+		export CS_SIGNING_SCHEME=${CONFIG_AML_CS_SIGNING_SCHEME}
+	fi
+	if [ -n "${CONFIG_AML_DV_SIGNING_SCHEME}" ]; then
+		export DV_SIGNING_SCHEME=${CONFIG_AML_DV_SIGNING_SCHEME}
+	fi
+
 	# export variables
 	#export FIP_BUILD_FOLDER
 	#export CUR_SOC

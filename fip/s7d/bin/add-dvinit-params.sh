@@ -27,6 +27,22 @@ SOC_FAMILY=$4
 
 BB1ST_ARGS="${BB1ST_ARGS}"
 
+
+if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=rsa,none"
+elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$CS_SIGNING_SCHEME" == "mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=none,mldsa-draft1"
+fi
+if [ "$DV_SIGNING_SCHEME" == "rsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=rsa,none"
+elif [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=none,mldsa-draft1"
+fi
+
 ### Input: template ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}"
 

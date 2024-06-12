@@ -290,7 +290,7 @@ sign_kernel() {
         echo Error: Missing output file option --output; exit 1;
     fi
 
-    rsakey=$(readlink -f ${key_dir})/fip/rsa/${part}/rootrsa-${rootkey_index}/key/krnl-level-3-rsa-priv.pem
+    rsakey=$(readlink -f ${key_dir})/fip/rsa/${part}/trustchain-${rootkey_index}/key/krnl-level-3-rsa-priv.pem
     check_file "RSA key" "${rsakey}"
     aeskey=$(readlink -f ${key_dir})/fip/aes/${part}/protkey/genkey-prot-krnl.bin
     check_file "AES key" "${aeskey}"

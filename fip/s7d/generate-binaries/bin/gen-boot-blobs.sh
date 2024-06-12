@@ -33,21 +33,11 @@ echo "============       KEY_DIR ${BASEDIR_ROOT}"
 echo "============       PROJECT ${PROJECT}"
 
 if [ -z "$PROJECT" ]; then
-	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/protkey"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_SIGKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$DV_SIGNING_SCHEME/trustchain-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/trustchain-${DEVICE_ROOTRSA_INDEX}"
 else
-	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${PROJECT}/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/${PROJECT}"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/${PROJECT}/protkey"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_SIGKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/$DV_SIGNING_SCHEME/${PROJECT}/trustchain-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${PROJECT}/trustchain-${DEVICE_ROOTRSA_INDEX}"
 fi
 
 BASEDIR_DEVICE_TEMPLATE="${BASEDIR_BOOTBLOBS_TEMPLATE_ROOT}"
@@ -71,12 +61,32 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-blob-bl2e=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl
 BB1ST_ARGS="${BB1ST_ARGS} --infile-blob-bl2x=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl2x.bin${input_postfix}"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-blob-bb1st-ref=${BASEDIR_CHIPSET_TEMPLATE}/bb1st${DEVICE_STORAGE_SUFFIX}${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
 
-### Input: Device Level-1/2 Private RSA keys 
-BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl1=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-1-rsa-priv.pem"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-priv.pem"
+### Input: Device Level-1/2 Private signing keys
+BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl1=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-1-rsa-priv.pem"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl2=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-2-rsa-priv.pem"
+if [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ] || [ "$DV_SIGNING_SCHEME" == "mldsa" ] ; then
+  BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl1-pqc=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-1-mldsa-draft1-priv.pem"
+  BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl2-pqc=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-2-mldsa-draft1-priv.pem"
+  BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert-pqc=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-2-mldsa-draft1-pub.pem"
+fi
 
 ### Input: Device Level-2 Public RSA key
-BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-pub.pem"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_SIGKEY_ROOT}/key/level-2-rsa-pub.pem"
+
+if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=rsa,none"
+elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$CS_SIGNING_SCHEME" == "mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --chipset-authen-algorithm=none,mldsa-draft1"
+fi
+if [ "$DV_SIGNING_SCHEME" == "rsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=rsa,none"
+elif [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  BB1ST_ARGS="${BB1ST_ARGS} --device-authen-algorithm=none,mldsa-draft1"
+fi
 
 ### Features, flags and switches ###
 BB1ST_ARGS="${BB1ST_ARGS} --switch-keep-device-lvl2-pubrsa=1"

@@ -64,6 +64,10 @@ function sign_blx() {
                 soc="${argv[$i]}" ;;
             --build_type)
                 build_type="${argv[$i]}" ;;
+            --dv-sig-scheme)
+                dv_sig_scheme="${argv[$i]}" ;;
+            --cs-sig-scheme)
+                cs_sig_scheme="${argv[$i]}" ;;
             *)
                 echo "Unknown option $arg"; exit 1
                 ;;
@@ -125,6 +129,12 @@ function sign_blx() {
         build_type=normal
     fi
 
+	# Allow sig scheme to be passed from argument or env
+	dv_sig_scheme=${dv_sig_scheme:-${DV_SIGNING_SCHEME}}
+	cs_sig_scheme=${cs_sig_scheme:-${CS_SIGNING_SCHEME}}
+	dv_sig_scheme=${dv_sig_scheme:-rsa}
+	cs_sig_scheme=${cs_sig_scheme:-rsa}
+
 	mkdir ${BASEDIR_BUILD}
 
 	if [ ${blxname} == "bl2" ] || [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then
@@ -155,10 +165,10 @@ function sign_blx() {
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
 
-		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
+		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${dv_sig_scheme} ${cs_sig_scheme} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2" ] && [ ${build_type} == "bl2-only" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
-		${EXEC_BASEDIR}/gen-boot-blob-bl2-only.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
+		${EXEC_BASEDIR}/gen-boot-blob-bl2-only.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${dv_sig_scheme} ${cs_sig_scheme} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2" ] && [ ${build_type} == "bl2-final" ]; then
 		if [ -z ${chip_acs} ] || [ ! -f ${chip_acs} ]; then
 			echo "chip_acs ${chip_acs} invalid"
@@ -167,16 +177,16 @@ function sign_blx() {
 		dd if=${chip_acs} of=${BASEDIR_BUILD}/csinit-params.bin conv=notrunc  &> /dev/null
 
 		dd if=${input} of=${BASEDIR_BUILD}/bb1st${FEAT_BL2_TEMPLATE_TYPE}${chipset_variant_suffix}.bin.bl2-only conv=notrunc  &> /dev/null
-		${EXEC_BASEDIR}/gen-boot-blob-bl2-final.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
+		${EXEC_BASEDIR}/gen-boot-blob-bl2-final.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${dv_sig_scheme} ${cs_sig_scheme} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl2e" ] || [ ${blxname} == "bl2x" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
-		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${chipset_variant_suffix}
+		${EXEC_BASEDIR}/gen-boot-blobs.sh ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${dv_sig_scheme} ${cs_sig_scheme} ${chipset_variant_suffix}
 	elif [ ${blxname} == "bl31" ] || [ ${blxname} == "bl32" ] || [ ${blxname} == "bl40" ]; then
 		dd if=${input} of=${BASEDIR_BUILD}/${blxname}-payload.bin conv=notrunc  &> /dev/null
 		if [ ${blxname} == "bl31" ]; then
 			${EXEC_BASEDIR}/pack_aucpu_key.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc}
 		fi
-		${EXEC_BASEDIR}/gen-bl3x-blobs.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc}
+		${EXEC_BASEDIR}/gen-bl3x-blobs.sh ${blxname:2:2} ${BASEDIR_BUILD} ${BASEDIR_BUILD} ${chipset_name} ${key_type} ${soc} ${dv_sig_scheme} ${cs_sig_scheme}
 	fi
 
 	if [ ${blxname} == "bl2" ]; then

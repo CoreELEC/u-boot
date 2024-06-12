@@ -63,7 +63,7 @@ function init_vari() {
 	fi
 
 	echo "------------------------------------------------------"
-	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE}"
+	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} SIGNING_SCHEME=$DV_SIGNING_SCHEME.$CS_SIGNING_SCHEME"
 	echo "------------------------------------------------------"
 }
 
@@ -132,6 +132,8 @@ function mk_bl2ex() {
 	fi
 
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--chipset-authen-algorithm=rsa,none \
+			--device-authen-algorithm=rsa,none \
 			--infile-bl2-payload=${payload}/bl2.bin.sto \
 			--infile-bl2e-payload=${payload}/bl2e.bin.sto \
 			--infile-bl2x-payload=${payload}/bl2x.bin \
@@ -143,6 +145,8 @@ function mk_bl2ex() {
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin
 
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--chipset-authen-algorithm=rsa,none \
+			--device-authen-algorithm=rsa,none \
 			--infile-bl2-payload=${payload}/bl2.bin.usb \
 			--infile-bl2e-payload=${payload}/bl2e.bin.usb \
 			--infile-bl2x-payload=${payload}/bl2x.bin \
@@ -279,11 +283,13 @@ function mk_devfip() {
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-device-fip \
 			--infile-bl30-payload=${payload}/bl30.bin \
 			--infile-bl40-payload=${payload}/bl40.bin \
-			--header-layout=full					  \
 			--infile-bl31-payload=${payload}/bl31.bin \
 			--infile-bl32-payload=${payload}/bl32.bin \
 			--infile-bl33-payload=${payload}/bl33.bin \
-			--outfile-device-fip=${output}/device-fip.bin
+			--outfile-device-fip=${output}/device-fip.bin \
+			--header-layout=mini \
+			--chipset-authen-algorithm=rsa,none \
+			--device-authen-algorithm=rsa,none
 
 	if [ ! -f ${output}/device-fip.bin ]; then
 		echo "Error: ${output}/device-fip.bin does not exist... abort"
@@ -596,10 +602,20 @@ function build_fip() {
 	return
 }
 
+function rename_blx_remove_sig_scheme() {
+	# Remove dv/cs sig scheme extension because some places don't use BLX_BIN_NAME
+	for loop in ${!BLX_NAME[@]}; do
+		f="${BUILD_PATH}/${BLX_BIN_NAME[$loop]}"
+		cleaned="${f%.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}}"
+		if [ -f "$f" ] && [ "$f" != "$cleaned" ]; then
+			mv "$f" "$cleaned" -f
+		fi
+	done
+}
+
 declare CHIPACS_SIZE="8192"
 declare DDRFW_SIZE="212992"
 function process_blx() {
-
 
 	# process loop
 	for loop in ${!BLX_NAME[@]}; do
@@ -626,7 +642,8 @@ function process_blx() {
 					fi
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
-						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE}
+						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE} \
+						--dv-sig-scheme $DV_SIGNING_SCHEME --cs-sig-scheme $CS_SIGNING_SCHEME
 			else
 					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
 						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
@@ -635,7 +652,8 @@ function process_blx() {
 						fi
 						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
-							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
+							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} \
+							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME
 					else
 						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
 						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
@@ -643,21 +661,16 @@ function process_blx() {
 						fi
 						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
-							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
+							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} \
+							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME
 					fi
 			fi
 		fi
-		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
-		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
-			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
-			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
-			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
-			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
-				echo "Bypass: Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
-#	exit -1
-			fi
-		fi
 	done
+
+	# Remove sig scheme because some parts of the script doesn't use BLX_BIN_NAME
+	rename_blx_remove_sig_scheme
+
 
 	if [ ! -f ${BUILD_PATH}/device_acs.bin ]; then
 		echo "dev acs params not exist !"
@@ -718,9 +731,10 @@ function process_blx() {
 		echo "Warning: local bl40"
 		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
 	fi
-	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
+	template_ext=".${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"
+	if [ ! -f ${BUILD_PATH}/device-fip-header.bin${template_ext} ]; then
 		echo "Warning: local device fip header templates"
-		cp ${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/device-fip-header.bin ${BUILD_PATH}
+		cp ${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/device-fip-header.bin${template_ext} ${BUILD_PATH}/
 	fi
 
 	#./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH}
@@ -802,6 +816,9 @@ function copy_other_soc() {
 
 	# device acs params parse for ddr timing
 	#./${FIP_FOLDER}parse ${BUILD_PATH}/device_acs.bin
+
+	# Remove sig scheme because some parts of the script does not use BLX_BIN_NAME
+	rename_blx_remove_sig_scheme
 }
 
 function package() {

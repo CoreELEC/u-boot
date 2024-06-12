@@ -25,18 +25,20 @@ BASEDIR_NONCE="./nonce"
 CHIPSET_NAME=$4
 KEY_TYPE=$5
 SOC=$6
+DV_SIGNING_SCHEME=$7
+CS_SIGNING_SCHEME=$8
 
 BASEDIR_AESKEY_PROT_BL2="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl2/aes/${CHIPSET_NAME}"
-BASEDIR_RSAKEY_LVLX_BL2="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl2/rsa/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL2="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl2/$CS_SIGNING_SCHEME/${CHIPSET_NAME}"
 
 BASEDIR_AESKEY_PROT_BL31="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl31/aes/${CHIPSET_NAME}"
-BASEDIR_RSAKEY_LVLX_BL31="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl31/rsa/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL31="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl31/$CS_SIGNING_SCHEME/${CHIPSET_NAME}"
 
 BASEDIR_AESKEY_PROT_BL32="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl32/aes/${CHIPSET_NAME}"
-BASEDIR_RSAKEY_LVLX_BL32="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl32/rsa/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL32="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl32/$CS_SIGNING_SCHEME/${CHIPSET_NAME}"
 
 BASEDIR_AESKEY_PROT_BL40="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl40/aes/${CHIPSET_NAME}"
-BASEDIR_RSAKEY_LVLX_BL40="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl40/rsa/${CHIPSET_NAME}"
+BASEDIR_RSAKEY_LVLX_BL40="${BASEDIR_TOP}/keys/${KEY_TYPE}/${SOC}/chipset/bl40/$CS_SIGNING_SCHEME/${CHIPSET_NAME}"
 
 BASEDIR_OUTPUT_BLOB=$3
 postfix=.signed
@@ -58,6 +60,24 @@ EXEC_ARGS="${EXEC_ARGS} --infile-bl${BLOB_NAME}-payload=${BASEDIR_PAYLOAD}/bl${B
 ### Input: Chipset Level-1/2 Private RSA keys
 
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl${BLOB_NAME}-chipset-lvl3=${BASEDIR_RSAKEY_LVLX_DIR}/bl${BLOB_NAME}-level-3-rsa-priv.pem"
+if [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl${BLOB_NAME}-chipset-lvl3-pqc=${BASEDIR_RSAKEY_LVLX_DIR}/bl${BLOB_NAME}-level-3-mldsa-draft1-priv.pem"
+fi
+
+if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,none"
+elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$CS_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=none,mldsa-draft1"
+fi
+if [ "$DV_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,none"
+elif [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=none,mldsa-draft1"
+fi
 
 ### Input: nonce for binary protection ###
 #EXEC_ARGS="${EXEC_ARGS} --infile-nonce-blob-bl${BLOB_NAME}=${BASEDIR_NONCE}/chipset/blob/blob-bl${BLOB_NAME}-nonce.bin"
@@ -71,7 +91,7 @@ EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl${BLOB_NAME}-payload=${BASEDIR_AESKEY_
 EXEC_ARGS="${EXEC_ARGS} --outfile-blob-bl${BLOB_NAME}=${BASEDIR_OUTPUT_BLOB}/blob-bl${BLOB_NAME}.bin${postfix}"
 
 ### full Device FIP Header
-EXEC_ARGS="${EXEC_ARGS} --header-layout=full"
+EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
 
 #echo ${EXEC_ARGS}
 

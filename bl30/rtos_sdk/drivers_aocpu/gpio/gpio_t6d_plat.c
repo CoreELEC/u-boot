@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ * Copyright (c) 2021-2024 Amlogic, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: MIT
  */
@@ -17,26 +17,23 @@
 #include "portmacro.h"
 
 /* gpio irq controller */
-#define IRQ_GPIO0_NUM 10
-#define IRQ_GPIO1_NUM 11
-#define IRQ_GPIO2_NUM 12
-#define IRQ_GPIO3_NUM 13
-#define IRQ_GPIO4_NUM 14
-#define IRQ_GPIO5_NUM 15
-#define IRQ_GPIO6_NUM 16
-#define IRQ_GPIO7_NUM 17
+#define IRQ_GPIO0_NUM			10
+#define IRQ_GPIO1_NUM			11
+#define IRQ_GPIO2_NUM			12
+#define IRQ_GPIO3_NUM			13
+#define IRQ_GPIO4_NUM			14
+#define IRQ_GPIO5_NUM			15
+#define IRQ_GPIO6_NUM			16
+#define IRQ_GPIO7_NUM			17
 
-#define REG_PIN_SC2_SEL 0x04
-#define REG_EDGE_POL_EXTR 0x1c
-#define REG_EDGE_POL_MASK_SC2(x)                                                                   \
-	({                                                                                         \
-		typeof(x) _x = (x);                                                                \
-		BIT(_x) | BIT(12 + (_x));                                                          \
-	})
-#define GPIO_IRQ_FILTER_SHIFT(x) (((x) % 2 == 0) ? 8 : 24)
-#define GPIO_IRQ_POL_SHIFT(x) (BIT(0 + (x)))
-#define GPIO_IRQ_EDGE_SHIFT(x) (BIT(12 + (x)))
-#define GPIO_IRQ_BOTH_SHIFT(x) (BIT(0 + (x)))
+#define REG_PIN_SC2_SEL			0x04
+#define REG_EDGE_POL_EXTR		0x1c
+#define REG_EDGE_POL_MASK_SC2(x)			\
+	({typeof(x) _x = (x); BIT(_x) | BIT(12 + (_x)); })
+#define GPIO_IRQ_FILTER_SHIFT(x)	(((x) % 2 == 0) ? 8 : 24)
+#define GPIO_IRQ_POL_SHIFT(x)		(BIT(0 + (x)))
+#define GPIO_IRQ_EDGE_SHIFT(x)		(BIT(12 + (x)))
+#define GPIO_IRQ_BOTH_SHIFT(x)		(BIT(0 + (x)))
 
 static const struct GpioDomain eeDomain = {
 	.name = "EE",
@@ -48,33 +45,31 @@ static const struct GpioDomain eeDomain = {
 };
 
 static const struct GpioBank gpioBanks[BANK_NUM_MAX] = {
-	/* name   pin_num   domain   pullen   pull   dir   out   in   mux   drv  */
-	BANK_V2("D",  15, &eeDomain, 0x03, 0,  0x04, 0,  0x02, 0,  0x01, 0,  0x00, 0,
-		0xb,  0,  0x07, 0),
-	BANK_V2("E",   2, &eeDomain, 0x0b, 0,  0x0c, 0,  0x0a, 0,  0x09, 0,  0x08, 0,
-		0xd,  0,  0x0f, 0),
-	BANK_V2("Z",  16, &eeDomain, 0x13, 0,  0x14, 0,  0x12, 0,  0x11, 0,  0x10, 0,
-		0x4,  0,  0x17, 0),
-	BANK_V2("Z1",  4, &eeDomain, 0x13, 16, 0x14, 16, 0x12, 16, 0x11, 16, 0x10, 16,
-		0x6,  0,  0xc0, 0),
-	BANK_V2("H",  16, &eeDomain, 0x1b, 0,  0x1c, 0,  0x1a, 0,  0x19, 0,  0x18, 0,
-		0x7,  0,  0x1f, 0),
-	BANK_V2("H1", 14, &eeDomain, 0x1b, 16, 0x1c, 16, 0x1a, 16, 0x19, 16, 0x18, 16,
-		0x9,  0,  0xc1, 0),
-	BANK_V2("B",  14, &eeDomain, 0x2b, 0,  0x2c, 0,  0x2a, 0,  0x29, 0,  0x28, 0,
-		0x00, 0,  0x2f, 0),
-	BANK_V2("C",  11, &eeDomain, 0x33, 0,  0x34, 0,  0x32, 0,  0x31, 0,  0x30, 0,
-		0x2,  0,  0x37, 0),
-	BANK_V2("P",  10, &eeDomain, 0x3b, 0,  0x3c, 0,  0x3a, 0,  0x39, 0,  0x38, 0,
-		0x14, 0,  0x3f, 0),
-	BANK_V2("W",  16, &eeDomain, 0x63, 0,  0x64, 0,  0x62, 0,  0x61, 0,  0x60, 0,
-		0x12, 0,  0x67, 0),
-	BANK_V2("W1",  1, &eeDomain, 0x63, 16, 0x64, 16, 0x62, 16, 0x61, 16, 0x60, 16,
-		0x11, 28, 0x67, 16),
-	BANK_V2("M",  30, &eeDomain, 0x73, 0,  0x74, 0,  0x72, 0,  0x71, 0,  0x70, 0,
-		0xe,  0,  0x77, 0),
-	BANK_V2("TEST_N", 1, &eeDomain, 0x83, 0, 0x84, 0, 0x82, 0, 0x81, 0,  0x80, 0,
-		0x15, 16, 0x87, 0),
+	/*   name   domain   pullen   pull   dir   out   in   mux   ds  */
+	BANK("W",  &eeDomain, 0x063,  0, 0x064,  0, 0x062,  0, 0x061,  0, 0x060,  0,
+	     0x012,  0,  0x067,  0),
+	BANK("D",  &eeDomain, 0x003,  0, 0x004,  0, 0x002,  0, 0x001,  0, 0x000,  0,
+	     0x00b,  0,  0x007,  0),
+	BANK("E",  &eeDomain, 0x00b,  0, 0x00c,  0, 0x00a,  0, 0x009,  0, 0x008,  0,
+	     0x00d,  0,  0x00f,  0),
+	BANK("B",  &eeDomain, 0x02b,  0, 0x02c,  0, 0x02a,  0, 0x029,  0, 0x028,  0,
+	     0x000,  0,  0x02f,  0),
+	BANK("C",  &eeDomain, 0x033,  0, 0x034,  0, 0x032,  0, 0x031,  0, 0x030,  0,
+	     0x002,  0,  0x037,  0),
+	BANK("Z",  &eeDomain, 0x013,  0, 0x014,  0, 0x012,  0, 0x011,  0, 0x010,  0,
+	     0x004,  0,  0x017,  0),
+	BANK("Z1", &eeDomain, 0x013, 16, 0x014, 16, 0x012, 16, 0x011, 16, 0x010, 16,
+	     0x006,  0,  0x0c0,  0),
+	BANK("H",  &eeDomain, 0x01b,  0, 0x01c,  0, 0x01a,  0, 0x019,  0, 0x018,  0,
+	     0x007,  0,  0x01f,  0),
+	BANK("H1", &eeDomain, 0x01b, 16, 0x01c, 16, 0x01a, 16, 0x019, 16, 0x018, 16,
+	     0x009,  0,  0x0c1,  0),
+	BANK("M",  &eeDomain, 0x073,  0, 0x074,  0, 0x072,  0, 0x071,  0, 0x070,  0,
+	     0x00e,  0,  0x077,  0),
+	BANK("M1", &eeDomain, 0x073, 16, 0x074, 16, 0x072, 16, 0x071, 16, 0x070, 16,
+	     0x010,  0,  0x0c2,  0),
+	BANK("TEST_N", &eeDomain, 0x083, 0, 0x084, 0, 0x082, 0, 0x081, 0, 0x080,  0,
+	     0x014,  0,  0x087,  0),
 };
 
 static struct ParentIRQDesc eeIRQs[] = {
@@ -89,19 +84,18 @@ static struct ParentIRQDesc eeIRQs[] = {
 };
 
 static const struct GpioIRQBank irqBanks[BANK_NUM_MAX] = {
-	GPIO_IRQ_BK("D",  42, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("E",  57, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z",  59, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("Z1", 59, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("H",  109, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("H1", 109, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("B",  0,  eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("C",  14, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("P",  143, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("W",  25, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("W1", 41, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("M",  79, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("TEST_N", 139, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("W",       25, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("D",       38, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("E",       53, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("B",        0, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("C",       14, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z",       56, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("Z1",      72, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("H",      106, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("H1",     122, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("M",       76, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("M1",      92, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("TEST_N", 128, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };
 
 const struct GpioBank *pGetGpioBank(void)
@@ -124,20 +118,23 @@ void prvGpioPlatIrqSetup(uint16_t irqNum, uint8_t line, uint32_t flags)
 	reg_offset = REG_PIN_SC2_SEL + ((line / 2) << 2);
 
 	/* clear both edge */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR, GPIO_IRQ_BOTH_SHIFT(line), 0);
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
+			  GPIO_IRQ_BOTH_SHIFT(line), 0);
 
 	/* set filter */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset, 0x7 << GPIO_IRQ_FILTER_SHIFT(line),
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0x7 << GPIO_IRQ_FILTER_SHIFT(line),
 			  0x7 << GPIO_IRQ_FILTER_SHIFT(line));
 
 	/* select trigger pin */
-	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset, 0x7f << bit_offset, irqNum << bit_offset);
+	REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + reg_offset,
+			  0x7f << bit_offset, irqNum << bit_offset);
 
 	/* set trigger both type */
 	if (flags & IRQF_TRIGGER_BOTH) {
 		val |= GPIO_IRQ_BOTH_SHIFT(line);
-		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR, GPIO_IRQ_BOTH_SHIFT(line),
-				  val);
+		REG32_UPDATE_BITS(GPIO_EE_IRQ_BASE + REG_EDGE_POL_EXTR,
+				  GPIO_IRQ_BOTH_SHIFT(line), val);
 		return;
 	}
 

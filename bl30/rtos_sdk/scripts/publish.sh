@@ -30,7 +30,7 @@ FIRMWARE_ACCOUNT=autobuild
 FIRMWARE_SERVER=firmware.amlogic.com
 
 make_image() {
-	mkimage -A $ARCH -O u-boot -T standalone -C none -a 0x1000 -e 0x1000 -n rtos -d $LOCAL_IMAGE_PATH/images/freertos-signed.bin $LOCAL_IMAGE_PATH/images/rtos-uImage
+	mkimage -A $ARCH -O u-boot -T standalone -C none -a 0x10000 -e 0x10000 -n rtos -d $LOCAL_IMAGE_PATH/images/freertos-signed.bin $LOCAL_IMAGE_PATH/images/rtos-uImage
 }
 
 publish_images() {

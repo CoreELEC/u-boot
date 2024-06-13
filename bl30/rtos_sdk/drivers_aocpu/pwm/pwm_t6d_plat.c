@@ -9,10 +9,14 @@
 #include <pwm.h>
 
 struct xPwmMesonChip meson_pwm_chip[] = {
-	{ PWM_AB, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL },
-	{ PWM_CD, PWM_PWM_C, 0, CLKCTRL_PWM_CLK_CD_CTRL },
-	{ PWM_EF, PWM_PWM_E, 0, CLKCTRL_PWM_CLK_EF_CTRL },
-	{ PWM_GH, PWM_PWM_G, 0, CLKCTRL_PWM_CLK_GH_CTRL },
+	{ PWM_A, PWM_PWM_A, 0, CLKCTRL_PWM_CLK_AB_CTRL, pdTRUE, pdTRUE},
+	{ PWM_B, PWM_PWM_B, 0, CLKCTRL_PWM_CLK_AB_CTRL, pdTRUE },
+	{ PWM_C, PWM_PWM_C, 0, CLKCTRL_PWM_CLK_CD_CTRL, pdTRUE, pdTRUE},
+	{ PWM_D, PWM_PWM_D, 0, CLKCTRL_PWM_CLK_CD_CTRL, pdTRUE },
+	{ PWM_E, PWM_PWM_E, 0, CLKCTRL_PWM_CLK_EF_CTRL, pdTRUE, pdTRUE},
+	{ PWM_F, PWM_PWM_F, 0, CLKCTRL_PWM_CLK_EF_CTRL, pdTRUE },
+	{ PWM_G, PWM_PWM_G, 0, CLKCTRL_PWM_CLK_GH_CTRL, pdTRUE, pdTRUE},
+	{ PWM_H, PWM_PWM_H, 0, CLKCTRL_PWM_CLK_GH_CTRL, pdTRUE },
 };
 
 /* VDDEE voltage table  volt must ascending */
@@ -47,10 +51,10 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 {
 	switch (voltage_id) {
 	case VDDEE_VOLT:
-		return PWM_AB;
+		return PWM_D;
 
 	case VDDCPU_VOLT:
-		return PWM_AB;
+		return PWM_F;
 
 	default:
 		break;

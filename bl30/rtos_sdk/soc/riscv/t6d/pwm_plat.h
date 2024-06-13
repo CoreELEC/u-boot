@@ -32,10 +32,14 @@ enum meson_pwm_id {
 
 /* There are 4 pwm controllers in T6D */
 enum pwm_chip_id {
-	PWM_AB = 0,
-	PWM_CD,
-	PWM_EF,
-	PWM_GH,
+	PWM_A = 0,
+	PWM_B,
+	PWM_C,
+	PWM_D,
+	PWM_E,
+	PWM_F,
+	PWM_G,
+	PWM_H,
 	PWM_MUX,
 };
 

@@ -25,5 +25,7 @@ config BOARD_BP202_S805X3
 	select VRTC
 	select VERSION_FULL_INFO
 	select AOCPU_ALIVE_DETECTION
+	select WIFI_BT_WAKE
+
 	help
 	  Enable Amlogic BP202_S805X3 Board.

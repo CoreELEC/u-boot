@@ -72,7 +72,7 @@ void str_hw_init(void)
 {
 	int ret;
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
+	vIRInit(MODE_HARD_NEC, GPIOF_3, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
 		vIRHandler);
 	vETHInit(0);
 

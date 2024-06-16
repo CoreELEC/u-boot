@@ -155,7 +155,7 @@ static int aml_nand_add_partition(struct aml_nand_chip *aml_chip)
 				GFP_KERNEL);
 		if (!parts)
 			return -ENOMEM;
-		parts->name = NAND_BOOT_NAME;
+		parts->name = "bl2";
 		parts->offset = 0;
 		parts->size = (mtd->writesize * 1024);
 		nr = 1;

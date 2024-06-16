@@ -193,7 +193,7 @@ static int storage_boot_layout_rebuild(struct boot_layout *boot_layout)
 			return -1;
 		STORAGE_ROUND_UP_IF_UNALIGN(boot_entry[BOOT_AREA_BB1ST].size,
 			((BOOT_TOTAL_PAGES / bl2_copy) * ssp->sip.nsp.page_size));
-		boot_entry[BOOT_AREA_BL2E].offset = MTD_RSV_START_BLOCK * ssp->sip.nsp.page_size
+		boot_entry[BOOT_AREA_BL2E].offset = MTD_RSV_START_BLOCK * ssp->sip.nsp.block_size
 						    + ssp->sip.nsp.layout_reserve_size;
 
 		if (store_boot_layout_is_discrete_all()) {
@@ -218,6 +218,7 @@ static int storage_boot_layout_rebuild(struct boot_layout *boot_layout)
 
 	ssp->boot_entry[BOOT_AREA_BB1ST].size = boot_entry[BOOT_AREA_BB1ST].size;
 	ssp->boot_entry[BOOT_AREA_BL2E].size = boot_entry[BOOT_AREA_BL2E].size;
+	ssp->boot_entry[BOOT_AREA_BL2E].offset =  boot_entry[BOOT_AREA_BL2E].offset;
 
 	for (;i <= BOOT_AREA_DEVFIP; i++) {
 		STORAGE_ROUND_UP_IF_UNALIGN(boot_entry[i].size, align_size);
@@ -373,7 +374,10 @@ static int storage_get_and_parse_ssp(int *need_build) // boot_device:
 			break;
 		case BOOT_SNAND:
 		case BOOT_NAND_MTD:
-			ssp->boot_backups = CONFIG_NAND_TPL_COPY_NUM;
+			if (ssp->boot_device == BOOT_NAND_MTD)
+				ssp->boot_backups = CONFIG_BL2_COPY_NUM;
+			else
+				ssp->boot_backups = CONFIG_NAND_TPL_COPY_NUM;
 			#ifdef BOARD_BOOT_LAYOUT_DISCRETE_BL2
 			ssp->boot_layout = BOOT_DISCRETE_BL2;
 			#else

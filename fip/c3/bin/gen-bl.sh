@@ -34,12 +34,28 @@ fi
 
 if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${CHIPSET_VARIANT_SUFFIX}" ]; then
 	if [ "${CONFIG_TEE_TYPE}" == "8m" ]; then
-		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-ext
+		if [ "${CONFIG_BL33_SIZE}" = "s" ]; then
+			## +64k
+			ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-ext-1
+		elif [ "${CONFIG_BL33_SIZE}" = "m" ]; then
+			## +128k
+			ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-ext-2
+		else
+			ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-ext
+		fi
 	else
 		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-oversea
 	fi
 elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${CHIPSET_VARIANT_SUFFIX}" ]; then
-	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+	if [ "${CONFIG_BL33_SIZE}" = "s" ]; then
+		## +64k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-1
+	elif [ "${CONFIG_BL33_SIZE}" = "m" ]; then
+		## +128k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot-2
+	else
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-fastboot
+	fi
 else
 	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool
 fi
@@ -86,7 +102,6 @@ fi
 #
 
 set -x
-
 ${ACPU_IMAGETOOL} \
         create-device-fip \
         ${EXEC_ARGS}

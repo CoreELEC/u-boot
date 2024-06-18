@@ -75,6 +75,22 @@ if [ -z $RTOS_TARGET_ADDRESS ]; then
 	esac
 fi
 
+#Retrieve the size of the DDRFIP space
+case $BOARD_TYPE_MAPPING in
+'c3_aw409')
+	UBOOT_DDR_FIP_SIZE=128m
+	;;
+'c3_aw402')
+	UBOOT_DDR_FIP_SIZE=128m
+	;;
+'c3_aw402s')
+	UBOOT_DDR_FIP_SIZE=256m
+	;;
+*)
+	UBOOT_DDR_FIP_SIZE=256m
+	;;
+esac
+
 #Get the loading address of rtos2
 let "RTOS2_TARGET_ADDRESS=$RTOS_TARGET_ADDRESS+0x100000"
 RTOS2_TARGET_ADDRESS=$(printf '0x%x\n' $RTOS2_TARGET_ADDRESS)
@@ -145,7 +161,8 @@ function package_fastboot() {
 	#./mk c3_aw419 --update-bl2 --bl31 ./blob-bl31.bin.signed
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./blob-bl31.bin.signed
 	#./mk c3_aw419 --update-bl2 --update-bl2e --bl31 ./fip/blob-bl31.bin.signed
-	./mk $BOARD_TYPE_MAPPING
+	echo "./mk $BOARD_TYPE_MAPPING --build-nogit --ipc-ddr-size $UBOOT_DDR_FIP_SIZE"
+	./mk $BOARD_TYPE_MAPPING --build-nogit --ipc-ddr-size $UBOOT_DDR_FIP_SIZE
 	if [ "$?" -ne 0 ]; then
 		if [ -d ./fastboot ]; then
 			rm -rf ./fastboot

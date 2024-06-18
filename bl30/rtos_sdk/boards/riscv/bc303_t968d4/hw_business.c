@@ -60,6 +60,9 @@ void hw_business_process(void)
 	uint8_t i = 0;
 
 	config_eclic_irqs();
+#ifdef CONFIG_AOCPU_BUSRESPERR_DETECTION
+	config_eclic_busresperr_irq();
+#endif
 	config_pmp();
 	stick_mem_init();
 	//write watchdog flag

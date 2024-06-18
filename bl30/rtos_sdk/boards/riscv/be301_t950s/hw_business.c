@@ -69,6 +69,9 @@ void hw_business_process(void)
 	// Initialize GPIOs, PIC and timer
 	//vGPIOInit();
 	config_eclic_irqs();
+#ifdef CONFIG_AOCPU_BUSRESPERR_DETECTION
+	config_eclic_busresperr_irq();
+#endif
 	for (i = 0; i < 8; ++i)
 		printf("AOCPU_IRQ_SEL=0x%x\n", REG32(AOCPU_IRQ_SEL0 + i * 4));
 

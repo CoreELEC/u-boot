@@ -25,5 +25,6 @@ config BOARD_BL201_S905X5
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
+	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic BL201_S905X5 Board.

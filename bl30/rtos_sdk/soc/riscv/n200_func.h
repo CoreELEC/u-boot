@@ -39,6 +39,7 @@ __BEGIN_DECLS
 #define SIZE_8K		0x2000
 #define SIZE_16K	0x4000
 #define SIZE_32K	0x8000
+#define SIZE_64K        0x10000
 #define PMP_SHIFT	2
 
 extern uint32_t _text;

@@ -86,7 +86,9 @@ uint32_t config_pmp(void)
 			start_text_addr, end_text_addr);
 
 	while (text_len_left > 0) {
-		if ((text_len_left >= SIZE_32K) && ((pmp_region_base & (SIZE_32K - 1)) == 0))
+		if ((text_len_left >= SIZE_64K) && ((pmp_region_base & (SIZE_64K - 1)) == 0))
+			next_seg_len = SIZE_64K;
+		else if ((text_len_left >= SIZE_32K) && ((pmp_region_base & (SIZE_32K - 1)) == 0))
 			next_seg_len = SIZE_32K;
 		else if ((text_len_left >= SIZE_16K) && ((pmp_region_base & (SIZE_16K - 1)) == 0))
 			next_seg_len = SIZE_16K;

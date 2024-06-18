@@ -5,6 +5,7 @@
 config SOC_S1A
 	bool "S1A"
 	select RISCV
+	select AOCPU_BUSRESPERR_DETECTION
 	help
 	  Enable S1A SOC of RISCV.
 

@@ -157,6 +157,21 @@ uint32_t config_pmp(void)
 
 	return 0;
 }
+
+#ifdef CONFIG_AOCPU_BUSRESPERR_DETECTION
+void config_eclic_busresperr_irq(void)
+{
+	/* enable bus response error interrupt for no access permission */
+	uint8_t bus_err_intattr;
+
+	bus_err_intattr = eclic_get_intattr(ECLIC_INT_BUS_RESP_ERR);
+	bus_err_intattr |= ECLIC_INT_ATTR_SHV | ECLIC_INT_ATTR_TRIG_EDGE;
+	eclic_set_intattr(ECLIC_INT_BUS_RESP_ERR, bus_err_intattr);
+	eclic_set_intctrl(ECLIC_INT_BUS_RESP_ERR, 15 << 4);
+	eclic_enable_interrupt(ECLIC_INT_BUS_RESP_ERR);
+
+}
+#endif
 #endif
 
 void switch_m2u_mode(void)

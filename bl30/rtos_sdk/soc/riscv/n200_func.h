@@ -46,7 +46,9 @@ extern uint32_t _text;
 extern uint32_t _etext;
 
 uint32_t config_pmp(void);
-
+#ifdef CONFIG_AOCPU_BUSRESPERR_DETECTION
+void config_eclic_busresperr_irq(void);
+#endif
 void pmp_open_all_space(void);
 
 void switch_m2u_mode(void);

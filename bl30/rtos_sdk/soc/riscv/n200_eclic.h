@@ -55,7 +55,9 @@
 #define ECLIC_INT_MSIP 3
 #define ECLIC_INT_MTIP 7
 #define ECLIC_INT_MEIP 11
+#define ECLIC_INT_BUS_RESP_ERR 17
 
+#define BUS_RESP_ERR_HANDLER eclic_inner_irq17_handler
 #define BUTTON_1_HANDLER eclic_irq49_handler
 
 #define MTIME_HANDLER eclic_mtip_handler

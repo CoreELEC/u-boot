@@ -23,6 +23,10 @@ else
 	BOARD_TYPE=$3
 	if [ $4 ] && [[ "$4" =~ ^0x.* ]]; then
 		RTOS_TARGET_ADDRESS=$4
+
+	fi
+	if [ $5 ] && [[ "$5" =~ ^SENSOR=.* ]]; then
+		SENSOR_TYPE=${5#SENSOR=}
 	fi
 fi
 
@@ -55,6 +59,17 @@ if [ -d $RTOS_BASE_DIR/binary_release ] && [ -d $RTOS_BASE_DIR/bl22_bin ] &&\
 	./mk $BOARD_TYPE_MAPPING
 	popd
 	exit 0
+fi
+
+if [ -z $SENSOR_TYPE ]; then
+        case $BOARD_TYPE_MAPPING in
+        'c3_aw402')
+		SENSOR_TYPE=SC301IOT
+		;;
+        *)
+                SENSOR_TYPE=IMX290
+                ;;
+        esac
 fi
 
 #Get the rtos target address (The configuration needs to be consistent with the lscript.h file)
@@ -122,6 +137,13 @@ function rtos_config_prepare() {
 	CONFIG_FILE=$RTOS_BASE_DIR/boards/$ARCH/$BOARD/lscript.h
 	sed -i '/.*#define configTEXT_BASE*/c\#define configTEXT_BASE '${RTOS_TARGET_ADDRESS}'' $CONFIG_FILE
 	sed -i '/.*#define CONFIG_SCATTER_LOAD_ADDRESS*/c\#define CONFIG_SCATTER_LOAD_ADDRESS '${RTOS2_TARGET_ADDRESS}'' $CONFIG_FILE
+}
+
+function sensor_config_choose() {
+	sed -i '/CONFIG_SENSOR_SC401AI/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	if [ "${SENSOR_TYPE}" == "SC401AI" ]; then
+		sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	fi
 }
 
 function lz4_rtos() {
@@ -193,6 +215,8 @@ function debug_info() {
 if [ $4 ] && [[ "$4" =~ ^0x.* ]]; then
 	rtos_config_prepare
 fi
+#choose sensor
+sensor_config_choose
 #Compile toolchain preparation
 toolchain_prepare
 #compile the rtos image

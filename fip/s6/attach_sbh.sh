@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EXEC_BASEDIR=$(dirname $(readlink -f $0))
+
 Usage() {
   echo "Usage: $0 img_file img_file_with_header"
 }
@@ -15,7 +17,7 @@ main() {
     return
   fi
 
-  ./${FIP_FOLDER}${CUR_SOC}/bb1_extract_meta.sh $1 | ./${FIP_FOLDER}${CUR_SOC}/sbh_gen.sh > $2
+  ${EXEC_BASEDIR}/bb1_extract_meta.sh $1 | ${EXEC_BASEDIR}/sbh_gen.sh > $2
   cat $1 >> $2
 }
 

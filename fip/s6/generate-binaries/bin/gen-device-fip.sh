@@ -109,6 +109,7 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32
 
 ### Features, flags and switches ###
 EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
+EXEC_ARGS="${EXEC_ARGS} --size-payload-bl30=90112"
 
 # arb info
 EXEC_ARGS="${EXEC_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"

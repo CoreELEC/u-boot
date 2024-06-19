@@ -5,7 +5,7 @@
 
 DEVICE_SCS_KEY_TOP ?= $(CURDIR)/keys/dev-keys/s6/device/
 DEVICE_ROOTRSA_INDEX ?= 0
-PROJECT ?= s905x5meng
+PROJECT ?= s905x5
 SOC_FAMILY ?= s7d
 CS_SIGNING_SCHEME ?= rsa-mldsa
 DV_SIGNING_SCHEME ?= rsa-mldsa

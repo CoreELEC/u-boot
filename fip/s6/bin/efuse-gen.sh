@@ -105,7 +105,6 @@ function generate_efuse_device_pattern() {
     # Verify args
     if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
 
-    check_opt_file input 1024 "$input"
     check_opt_file dvgk 16 "$dvgk"
     check_opt_file dvuk 16 "$dvuk"
     check_opt_file device_roothash 32 "$device_roothash"
@@ -131,6 +130,8 @@ function generate_efuse_device_pattern() {
 		keyinfo="$(xxd -p -c 32 $device_roothash)"
         echo "efuse_obj set HASH_NORMAL_DEVICE_ROOTCERT $keyinfo" >> $patt_text
 		echo "efuse_obj lock HASH_NORMAL_DEVICE_ROOTCERT" >> $patt_text
+		echo "efuse_obj set HASH_DFU_DEVICE_ROOTCERT $keyinfo" >> $patt_text
+		echo "efuse_obj lock HASH_DFU_DEVICE_ROOTCERT" >> $patt_text
     fi
 
     if [ "$enable_device_vendor_scs" == "true" ]; then

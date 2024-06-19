@@ -69,6 +69,12 @@ function mk_uboot() {
 		#dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	#fi
 
+	#align bb1st 266k and append header
+	dd if=/dev/zero of=${bb1st}.payload bs=1024 count=266 &> /dev/null
+	dd if=${bb1st} of=${bb1st}.payload conv=notrunc &> /dev/null
+	${BASEDIR_TOP}/attach_sbh.sh ${bb1st}.payload ${bb1st}.hdr
+	bb1st=${bb1st}.hdr
+
 	#cat those together with 4K upper aligned for sdcard
 	align_base=4096
 	total_size=0
@@ -86,7 +92,7 @@ function mk_uboot() {
 	sector=512
 	seek=0
 	seek_sector=0
-	dateStamp=A4-${part}-`date +%y%m%d%H%M%S`
+	dateStamp=S6-${part}-`date +%y%m%d%H%M%S`
 
 	echo @AMLBOOT > ${file_info_cfg_temp}
 	dd if=${file_info_cfg_temp} of=${file_info_cfg} bs=1 count=8 conv=notrunc &> /dev/null

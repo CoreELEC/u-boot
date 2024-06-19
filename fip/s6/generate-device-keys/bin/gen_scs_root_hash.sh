@@ -539,7 +539,9 @@ if [ -z "$output_dir" ]; then
 	fi
 
 	# Protkey output
-	mkdir -p ${BASEDIR_OUTPUT_PROTKEY}
+	if [ ${trust_chain^^} == "CHIPSET" ]; then
+		mkdir -p ${BASEDIR_OUTPUT_PROTKEY}
+	fi
 
 	# FIP output
 	mkdir -p ${BASEDIR_FIP_OUTPUT_BLOB}
@@ -650,6 +652,7 @@ if [ "${scs_family}" != "" ]; then
 fi
 
 COMMON_CREATE_DEVICE_FIP_ARGS+=" --header-layout=${FIP_HEADER_LAYOUT}"
+COMMON_CREATE_DEVICE_FIP_ARGS+=" --size-payload-bl30=90112"
 
 ### Input: payloads ###
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-bl2-payload=${BASEDIR_PAYLOAD}/bl2-payload.bin"

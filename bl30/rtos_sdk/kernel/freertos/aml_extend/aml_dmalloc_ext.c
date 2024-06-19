@@ -61,7 +61,7 @@ void vdRecordFree(size_t xFreeSize)
 	}
 }
 
-int vPrintDmallocInfo(size_t tid)
+int vPrintDmallocInfo(int tid)
 {
 	int ret = 1;
 

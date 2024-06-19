@@ -340,7 +340,10 @@ int xCheckMallocNodeIsOver(void *node)
 		}
 
 		/* Output out-of-bounds site */
-		xPrintOutOfBoundSite(pos);
+		if (pos < CONFIG_MEMORY_ERROR_DETECTION_SIZE)
+			xPrintOutOfBoundSite(pos);
+		else
+			printk("Out-of-bounds access\n");
 		ret = 1;
 	}
 
@@ -416,7 +419,7 @@ int xPortMemoryScan(void)
 /************************* MED Benchmarks **************************/
 #ifdef CONFIG_MEMORY_ERROR_DETECTION_BENCHMARKS
 
-char *tempPool[2000];
+char *tempPool[CONFIG_MEMORY_ERROR_DETECTION_SIZE];
 // med_benchmarks
 void med_benchmarks(uint32_t nodeNums)
 {

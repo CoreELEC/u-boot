@@ -11,7 +11,7 @@
 
 void vdRecordMalloc(size_t xWantedSize);
 void vdRecordFree(size_t xFreeSize);
-int vPrintDmallocInfo(size_t tid);
+int vPrintDmallocInfo(int tid);
 void xClearSpecDmallocNode(size_t tid);
 
 #endif

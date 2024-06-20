@@ -11,7 +11,7 @@ EXEC_BASEDIR=$(dirname $(readlink -f $0))
 ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool
 if [ "onboot" == "$6" ]; then
     ACPU_IMAGETOOL=${EXEC_BASEDIR}/../binary-tool/acpu-imagetool-onboot
-    TEMPLATE_SUFFIX=".bl1ext"
+    EXT_SUFFIX=".bl1ext"
 fi
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 

@@ -18,7 +18,7 @@ homeConfigFilePath = "~/.sign.cfg"
 types = ["ta", "vmxta", "irdetota", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "aucpufw", "vdecfw"]
 casProviders = ["", "VMX", "nagra", "nagra-dev", "vo-dev", "vo", "gs-dev", "gs", "irdeto"]
 ddrTypes = ["ddr4", "lpddr4", "ddr3", "lpddr3", "lpddr4_lpddr5"]
-chipVariants = ["general", "nocs-jts-ap", "nocs-prod"]
+chipVariants = ["", "general", "nocs-jts-ap", "nocs-prod", "onboot"]
 csSigSchemes = ["", "rsa", "rsa-mldsa"]
 dvSigSchemes = ["", "rsa", "rsa-mldsa"]
 
@@ -185,6 +185,7 @@ def submitSignJob(
 
         data = {
             "chipPartNumber": chipType,
+            "chipVariant": chipVariant,
             "casProvider": casProvider,
             "keyType": keyType,
             "csSigScheme": csSigScheme,
@@ -210,6 +211,7 @@ def submitSignJob(
     else:  # bl2e, bl2x, bl31, bl40, aucpufw, vdecfw
         data = {
             "chipPartNumber": chipType,
+            "chipVariant": chipVariant,
             "keyType": keyType,
             "extraArgs": extraArgs,
             "csSigScheme": csSigScheme,

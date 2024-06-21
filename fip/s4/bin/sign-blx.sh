@@ -121,7 +121,7 @@ function sign_blx() {
 	# select bl2/bl2e sign template
 	FEAT_BL2_TEMPLATE_TYPE=
 	FEAT_BL2E_SIGPROT_MODE=0
-	if [ -z ${chipset_variant} ] || [ ${chipset_variant} == "no_variant" ]; then
+	if [ -z ${chipset_variant} ] || [ ${chipset_variant} == "no_variant" ] || [ ${chipset_variant} == "general" ]; then
 		chipset_variant_suffix=""
 	else
 		chipset_variant_suffix=".${chipset_variant}"

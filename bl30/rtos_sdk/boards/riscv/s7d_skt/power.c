@@ -212,7 +212,7 @@ void str_power_off(int shutdown_flag)
 		return;
 	}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 710);
 	if (ret < 0) {
 		printf("vdd_EE pwm set fail\n");
 		return;

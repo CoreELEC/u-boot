@@ -114,6 +114,9 @@ void hardware_init(void);
 void hardware_init()
 {
 	config_eclic_irqs();
+#ifdef configAOCPU_BUSRESPERR_DETECTION
+	config_eclic_busresperr_irq();
+#endif
 	config_pmp();
 }
 

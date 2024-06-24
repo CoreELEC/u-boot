@@ -74,6 +74,9 @@ uint32_t vSoftIRQHandler(uint32_t int_num);
 #else
 void vPortSysTickHandler(void);
 void vSoftIRQHandler(void);
+#ifdef configAOCPU_BUSRESPERR_DETECTION
+void vBusRespERRHandler(void);
+#endif
 #endif
 void vPortSetupTimer(void);
 void vPortSetup(void);
@@ -393,6 +396,16 @@ void vPortSetupTimer(void) {
 #endif
 }
 /*-----------------------------------------------------------*/
+
+#if !defined(N200_REVA) && defined(configAOCPU_BUSRESPERR_DETECTION)
+void vBusRespERRHandler(void)
+{
+	printf("bl30 bus response error: no access permission, stop here!\n");
+	printf("The instruction addr is 0x%lx\n", read_csr(mepc));
+	printf("The accessd     addr is 0x%lx\n", read_csr(mbadaddr));
+	do {} while (1);
+}
+#endif
 
 /* Replace yield with generating soft interrupt pending instead
  * of ECALL, which causing IRQ interrupted by task switch.

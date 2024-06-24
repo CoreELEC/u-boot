@@ -12,6 +12,8 @@
 
 	.weak  eclic_meip_handler
 
+	.weak  eclic_inner_irq17_handler
+
 	.weak  eclic_irq19_handler
 
 	.weak  eclic_irq20_handler
@@ -76,7 +78,7 @@ vector_base:
 	.word  0
 
 	.word  0
-	.word  0
+	.word  eclic_inner_irq17_handler
 	.word  0
 	.word  eclic_irq19_handler
 

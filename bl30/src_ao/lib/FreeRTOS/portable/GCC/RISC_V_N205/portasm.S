@@ -542,6 +542,16 @@ MSIP_HANDLER:
 	mret
 #endif
 
+#ifndef N200_REVA
+.align 4
+.globl BUS_RESP_ERR_HANDLER
+BUS_RESP_ERR_HANDLER:
+	jal		vBusRespERRHandler
+	//never return
+
+	mret
+#endif
+
 xPortStartScheduler:
 	jal		vPortSetup
 	portRESTORE_CONTEXT_EXCP_2

@@ -93,6 +93,9 @@ your application. */
 #define configDEFAULT_HEAP_SIZE (32 * 1024 - configSTICK_MEM_SIZE)
 #define configSTICK_MEM_ADDR (configDEFAULT_HEAP_ADDR + configDEFAULT_HEAP_SIZE)
 
+/* enable bus response error interrupt for no access permission */
+#define configAOCPU_BUSRESPERR_DETECTION
+
 #define portCRITICAL_NESTING_IN_TCB				1
 //#include "uart.h"
 #include "myprintf.h"

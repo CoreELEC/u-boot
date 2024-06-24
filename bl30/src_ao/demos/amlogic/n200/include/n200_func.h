@@ -42,7 +42,9 @@ extern uint32_t _etext;
 void pmp_open_all_space(void);
 
 uint32_t config_pmp(void);
-
+#if !defined(N200_REVA) && defined(configAOCPU_BUSRESPERR_DETECTION)
+void config_eclic_busresperr_irq(void);
+#endif
 void switch_m2u_mode(void);
 
 uint32_t get_mtime_freq(void);

@@ -71,8 +71,12 @@ function init_vari() {
 		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
 	fi
 
+	if [ -n "${CONFIG_SYS_BOARD}" ]; then
+		SYS_BOARD="${CONFIG_SYS_BOARD}"
+	fi
+
 	echo "------------------------------------------------------"
-	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} CONFIG_IPC_TYPE: ${CONFIG_IPC_TYPE} CONFIG_IPC_DDR_SIZE: ${CONFIG_IPC_DDR_SIZE}"
+	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} CONFIG_IPC_TYPE: ${CONFIG_IPC_TYPE} CONFIG_IPC_DDR_SIZE: ${CONFIG_IPC_DDR_SIZE}" ${SYS_BOARD}
 	echo "------------------------------------------------------"
 }
 
@@ -476,6 +480,11 @@ function mk_uboot() {
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
 	if [ "${CONFIG_IPC_TYPE}" == "normal" ]; then
+		echo "==== not use ddr-fip for ipc  ===="
+		dd if=/dev/zero of=${ddr_fip} bs=1024 count=0 status=none
+	fi
+	if [ "${SYS_BOARD}" == "c3_aw402_nor" ]; then
+		echo "==== not package ddr-fip for ${SYS_BOARD}  ===="
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=0 status=none
 	fi
 	if [ ! -f ${ddr_fip} ] ; then

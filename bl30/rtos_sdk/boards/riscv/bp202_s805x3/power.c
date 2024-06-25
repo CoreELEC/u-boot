@@ -30,7 +30,6 @@ static TaskHandle_t cecTask;
 
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
 
-static int vdd_ee;
 static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
 
@@ -125,14 +124,6 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-	if (ret < 0) {
-		printf("VDD_EE pwm set fail\n");
-		return;
-	}
-
 	/*Wait POWERON_VDDCPU_DELAY for VDDCPU statable*/
 	vTaskDelay(POWERON_VDDCPU_DELAY);
 
@@ -144,19 +135,6 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
-
-	/***set vdd_ee val***/
-	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-	if (vdd_ee < 0) {
-		printf("vdd_EE pwm get fail\n");
-		return;
-	}
-
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
-	}
 
 	/***power off A55 vdd_cpu***/
 	ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);

@@ -36,7 +36,6 @@ static TaskHandle_t printTask;
 #define VCC5V_GPIO	GPIOC_7
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
 
-static int vdd_ee;
 static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
 
@@ -164,14 +163,6 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 
-
-		/***set vdd_ee val***/
-		ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-		if (ret < 0) {
-			printf("VDD_EE pwm set fail\n");
-			return;
-		}
-
 		/***power on vcc_5v***/
 		ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_IN);
 		if (ret < 0) {
@@ -214,19 +205,6 @@ void str_power_off(int shutdown_flag)
 		ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
 		if (ret < 0) {
 			printf("vcc_5v gpio val fail\n");
-			return;
-		}
-
-		/***set vdd_ee val***/
-		vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-		if (vdd_ee < 0) {
-			printf("vdd_EE pwm get fail\n");
-			return;
-		}
-
-		ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
-		if (ret < 0) {
-			printf("vdd_EE pwm set fail\n");
 			return;
 		}
 

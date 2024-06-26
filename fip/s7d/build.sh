@@ -668,6 +668,12 @@ function process_blx() {
 		fi
 	done
 
+	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
+		echo "Warning: local bl40"
+		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed.${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME} ${BUILD_PATH}
+	fi
+
+
 	# Remove sig scheme because some parts of the script doesn't use BLX_BIN_NAME
 	rename_blx_remove_sig_scheme
 
@@ -727,10 +733,6 @@ function process_blx() {
 	dd if=/dev/zero of=${BUILD_PATH}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1 &> /dev/null
 	dd if=${BUILD_PATH}/bl33.bin of=${BUILD_PATH}/bl33-payload.bin conv=notrunc &> /dev/null
 
-	if [ ! -f ${BUILD_PATH}/blob-bl40.bin.signed ]; then
-		echo "Warning: local bl40"
-		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
-	fi
 	template_ext=".${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"
 	if [ ! -f ${BUILD_PATH}/device-fip-header.bin${template_ext} ]; then
 		echo "Warning: local device fip header templates"

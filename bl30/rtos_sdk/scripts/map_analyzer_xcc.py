@@ -83,21 +83,6 @@ class SectionSize:
         self.rom_usage = (self.text + self.data)
         self.ram_usage = (self.data + self.bss - self.rodata)
 
-    def add_gcc_section(self, section, size):
-        if current_section is None:
-            return;
-        if section.startswith('.comment'):
-            return
-        if section.startswith('.debug'):
-            return
-        if section.startswith('.ARM.attributes'):
-            return
-
-        if os.getenv('ARCH') == "riscv":
-            self.add_text_with_rodata(section, size)
-        else:
-            self.add_data_with_rodata(section, size)
-
     def add_xcc_section(self, section, size):
         if current_section is None:
             return;
@@ -209,14 +194,8 @@ def print_codesize_summary_data_with_rodata():
 
 size_by_source = {}
 with open(args.map_file) as f:
-    if os.getenv('COMPILER') == "xcc":
-        arch_toolchain = "XCC"
-        toolchain_keyword = "xtensa-elf"
-        is_xtensa = 1
-    else:
-        arch_toolchain = "GCC"
-        toolchain_keyword = "toolchains"
-        is_xtensa = 0
+    arch_toolchain = "XCC"
+    toolchain_keyword = "xtensa-elf"
     print("%s toolchain map analyzer" % arch_toolchain)
 
     lines = iter(f)
@@ -289,22 +268,11 @@ with open(args.map_file) as f:
 
                 if source not in size_by_source:
                     size_by_source[source] = SectionSize()
-                if is_xtensa == 1:
-                    size_by_source[source].add_xcc_section(current_section, size)
-                else:
-                    size_by_source[source].add_gcc_section(current_section, size)
+                size_by_source[source].add_xcc_section(current_section, size)
 
 sources = list(size_by_source.keys())
 sources.sort(key = lambda x: size_by_source[x].total())
 sumrom = sumram = sumcode = sumdata = sumbss = sumcustomize = sumrodata = 0
 sys_mem_usage = SectionSize.system_stack  + SectionSize.system_heap
-if os.getenv('COMPILER') == "xcc":
-    print_codesize_module_text_with_rodata()
-    print_codesize_summary_text_with_rodata()
-else:
-    if os.getenv('ARCH') == "riscv":
-        print_codesize_module_text_with_rodata()
-        print_codesize_summary_text_with_rodata()
-    else:
-        print_codesize_module_data_with_rodata()
-        print_codesize_summary_data_with_rodata()
+print_codesize_module_text_with_rodata()
+print_codesize_summary_text_with_rodata()

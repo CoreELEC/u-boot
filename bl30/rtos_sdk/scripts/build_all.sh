@@ -9,6 +9,7 @@
 [ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
 
 [ -z "$BUILD_LOG" ] && BUILD_LOG="$OUTPUT_DIR/build.log"
+[ -z "$LAST_BUILD_FAILURE" ] && LAST_BUILD_FAILURE="$OUTPUT_DIR/.last_build_failure"
 
 # Clear build.log
 cat <<EOF > $BUILD_LOG

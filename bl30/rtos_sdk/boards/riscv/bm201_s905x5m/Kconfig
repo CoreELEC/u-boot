@@ -8,7 +8,6 @@ config BOARD_BM201_S905X5M
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION
-	select STICK_MEM
 	select UART
 	select CEC
 	select MAILBOX
@@ -25,6 +24,5 @@ config BOARD_BM201_S905X5M
 	select VRTC
 	select VERSION_FULL_INFO
 	select WIFI_BT_WAKE
-	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic BM201_S905X5M Board.

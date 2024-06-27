@@ -5,11 +5,9 @@
 config BOARD_BQ208_S905D5
 	bool "Amlogic BQ208_S905D5 Board"
 	select SOC_S6
-	select BRINGUP
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION
-	select STICK_MEM
 	select UART
 	select CEC
 	select MAILBOX
@@ -25,6 +23,5 @@ config BOARD_BQ208_S905D5
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
-	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic BQ208_S905D5 Board.

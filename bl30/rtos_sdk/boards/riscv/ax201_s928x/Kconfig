@@ -9,7 +9,6 @@ config BOARD_AX201_S928X
 	select COMMON
 	select GET_VERSION
 	select BL30_VERSION_SAVE
-	select STICK_MEM
 	select UART
 	select CEC
 	select MAILBOX

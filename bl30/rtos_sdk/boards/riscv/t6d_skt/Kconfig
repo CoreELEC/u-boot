@@ -10,7 +10,6 @@ config BOARD_T6D_SKT
 	select COMMON
 	select GET_VERSION
 #	select BL30_VERSION_SAVE
-	select STICK_MEM
 	select UART
 #	select CEC
 	select MAILBOX
@@ -28,6 +27,5 @@ config BOARD_T6D_SKT
 	select VERSION_FULL_INFO
 #	select HDMIRX
 	select PM
-#	select AOCPU_ALIVE_DETECTION
 	help
 	  Enable Amlogic T6D_SKT Board.

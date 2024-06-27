@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "soc_business.h"
 #include "hw_business.h"
 #include "sw_business.h"
 #include "gcc_compiler_attributes.h"
@@ -20,6 +21,7 @@ int main(void)
 	printf("Starting AOCPU FreeRTOS\n");
 	output_aocpu_info();
 
+	soc_business_process();
 	hw_business_process();
 	sw_business_process();
 

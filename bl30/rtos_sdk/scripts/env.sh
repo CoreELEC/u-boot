@@ -90,7 +90,7 @@ ARCH=`echo "$PROJECT"|awk '{print $1}'`
 SOC=`echo "$PROJECT"|awk '{print $2}'`
 BOARD=`echo "$PROJECT"|awk '{print $3}'`
 PRODUCT=`echo "$PROJECT"|awk '{print $4}'`
-COMPILER=`echo "$PROJECT"|awk '{print $5}'`
+
 # Check current project
 check_build_combination $ARCH $SOC $BOARD $PRODUCT
 err=$?
@@ -106,12 +106,8 @@ case $ARCH in
 		TOOLCHAIN_KEYWORD="arm-none-eabi"
 		;;
 	arm64)
-		if [ "$COMPILER" == "clang+llvm" ]; then
-			TOOLCHAIN_KEYWORD="arm"
-		else
-			COMPILER="gcc"
-			TOOLCHAIN_KEYWORD="aarch64-none-elf"
-		fi
+		COMPILER="gcc"
+		TOOLCHAIN_KEYWORD="aarch64-none-elf"
 		;;
 	riscv)
 		COMPILER="gcc"

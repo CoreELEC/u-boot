@@ -27,3 +27,11 @@ SOC=t5d
 ARCH_CPU=RISC_V_N205
 #ARCH_CPU=RISCV_N200
 BOARD=t5d_am301_v1
+
+#config bt wakeup interrupt sampling
+#BT_WAKE_CFG: 1 power and netflix key low level sampling
+CFLAGS += -DBT_WAKE_CFG=1 -DBT_WAKE_HOST=GPIOB_13 -DBT_EN=GPIOD_2
+
+#config wifi wakeup interrupt sampling
+#WIFI_WAKE_CFG: 1
+CFLAGS += -DWIFI_WAKE_CFG=1 -DWIFI_WAKE_HOST=GPIOD_3 -DWIFI_PWREN=GPIOD_2

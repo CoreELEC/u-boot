@@ -33,9 +33,8 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
-#include "btwake.h"
 #include "stick_mem.h"
-
+#include "wifi_bt_wake.h"
 #include "hdmi_cec.h"
 #include "hdmirx_wake.h"
 
@@ -89,7 +88,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
 	vKeyPadInit();
-	bt_task_init();
+	wifi_bt_wakeup_init();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
 		hdmirx_GpioIRQRegister();
@@ -106,8 +105,7 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	bt_task_deinit();
-	printf("bt task disable\n");
+	wifi_bt_wakeup_deinit();
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP

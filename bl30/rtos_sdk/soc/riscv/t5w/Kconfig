@@ -6,6 +6,7 @@ config SOC_T5W
 	bool "T5W"
 	select RISCV
 	select SOC_OLD_ARCH
+	select STICK_MEM
 	help
 	  Enable T5W SOC of RISCV.
 

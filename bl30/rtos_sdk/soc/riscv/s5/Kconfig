@@ -5,6 +5,7 @@
 config SOC_S5
 	bool "S5"
 	select RISCV
+	select STICK_MEM
 	select AOCPU_BUSRESPERR_DETECTION
 	help
 	  Enable S5 SOC of RISCV.

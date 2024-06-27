@@ -12,11 +12,13 @@ if (CONFIG_SOC_T5W OR CONFIG_SOC_T5D)
 aml_library_sources(
 	n200_func.c
 	interrupt_control_pic.c
+	${SOC}/soc_business.c
 )
 else()
 aml_library_sources(
 	n200_func.c
 	interrupt_control_eclic.c
+	${SOC}/soc_business.c
 )
 endif()
 

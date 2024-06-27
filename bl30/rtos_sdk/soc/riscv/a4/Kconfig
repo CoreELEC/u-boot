@@ -5,6 +5,7 @@
 config SOC_A4
 	bool "A4"
 	select RISCV
+	select STICK_MEM
 	select AOCPU_BUSRESPERR_DETECTION
 	help
 	  Enable A4 SOC of RISCV.

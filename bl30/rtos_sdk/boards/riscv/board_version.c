@@ -62,7 +62,7 @@ static void *xMboxBL30VersionSave(void *msg)
 		/* transfer version info: version items */
 		memset((void *)tmp_buf, 0, BL30_VERSION_LEN_ONCE_MAX);
 		for (int i = 0; i < ver_items_trans_once; i++, ver_get_cur_items++) {
-			if (ver_get_cur_items > ver_items_num)
+			if (ver_get_cur_items >= ver_items_num)
 				break;
 
 			memcpy((void *)tmp_buf, (void *)"\t", 1);

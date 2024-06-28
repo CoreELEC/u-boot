@@ -569,6 +569,8 @@ function mk_uboot() {
 		dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
 
 		mv ${bootloader} ${output_images}/u-boot.bin${postfix}
+		head -c $[(${BLX_BIN_SIZE[0]}+align_base-1)/align_base*align_base] ${output_images}/u-boot.bin${postfix} > ${output_images}/u-boot.bin${postfix}.bl2
+		tail -c +$(($[(${BLX_BIN_SIZE[0]}+align_base-1)/align_base*align_base]+1)) ${output_images}/u-boot.bin${postfix} > ${output_images}/u-boot.bin${postfix}.tpl
 	fi
 
 	rm -f ${file_info_cfg}

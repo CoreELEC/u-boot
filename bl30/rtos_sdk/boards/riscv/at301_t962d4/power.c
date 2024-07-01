@@ -15,6 +15,9 @@
 #include "pwm.h"
 #include "pwm_plat.h"
 #include "keypad.h"
+#if CONFIG_WIFI_BT_WAKE
+#include "wifi_bt_wake.h"
+#endif
 #include "power.h"
 
 #define CONFIG_CEC_TASK
@@ -63,7 +66,9 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
 	vKeyPadInit();
-	Bt_GpioIRQRegister();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_init();
+#endif
 }
 
 void str_hw_disable(void)
@@ -77,7 +82,9 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 #endif
-	Bt_GpioIRQFree();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_deinit();
+#endif
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 }

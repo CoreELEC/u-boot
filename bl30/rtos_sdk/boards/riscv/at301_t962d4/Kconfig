@@ -24,5 +24,6 @@ config BOARD_AT301_T962D4
 	select IR
 	select ETHERNET
 	select VERSION_FULL_INFO
+	select WIFI_BT_WAKE
 	help
 	  Enable Amlogic AT301 Board.

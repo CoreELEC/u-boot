@@ -44,6 +44,9 @@
 #ifdef CONFIG_AMLOGIC_AMFC
 #include <amlogic/amfc.h>
 #endif
+#ifdef CONFIG_CMD_SND
+#include "amlogic/auge_sound.h"
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 extern int cc_statue, bc_status;
@@ -189,6 +192,11 @@ int board_init(void)
 #ifdef CONFIG_AML_HDMITX20
 	hdmitx_set_hdmi_5v();
 	hdmitx_init();
+#endif
+#ifdef CONFIG_CMD_SND
+	/* pinmux HDMITX_HPD_IN: GPIOH_2,  */
+	update_bits(PADCTRL_PIN_MUX_REGB, 0xf << 8, 0x1 << 8);
+	earcrx_init(EARC_RX_ANA_V3);
 #endif
 #endif // #if !defined(CONFIG_PXP_DDR) //bypass below operations for pxp
 	pinctrl_devices_active(PIN_CONTROLLER_NUM);

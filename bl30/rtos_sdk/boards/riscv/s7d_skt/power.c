@@ -31,7 +31,6 @@ static TaskHandle_t cecTask;
 #define VDDCPU_A55_GPIO	GPIOD_3
 #define VDDCPU_A76_GPIO	GPIO_TEST_N
 
-static int vdd_ee;
 static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
 
@@ -132,13 +131,6 @@ void str_power_on(int shutdown_flag)
 		return;
 	}
 
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-	if (ret < 0) {
-		printf("VDD_EE pwm set fail\n");
-		return;
-	}
-
 	if (shutdown_flag) {
 		/***power on vcc_3.3v***/
 		/*
@@ -203,19 +195,6 @@ void str_power_off(int shutdown_flag)
 			return;
 		}
 		*/
-	}
-
-	/***set vdd_ee val***/
-	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-	if (vdd_ee < 0) {
-		printf("vdd_EE pwm get fail\n");
-		return;
-	}
-
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 710);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
 	}
 
 	/***power off A55 vdd_cpu***/

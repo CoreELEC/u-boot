@@ -38,12 +38,11 @@ int _write(int, const void *, size_t);
 _off_t _lseek(int, _off_t, int);
 int _read(int, void *, size_t);
 
-extern void __sinit(struct _reent *);
-#define CHECK_INIT(ptr)                          \
-	do {                                     \
-		if ((ptr) && !(ptr)->__sdidinit) \
-			__sinit(ptr);            \
-	} while (0)
+#ifdef _REENT_SMALL_CHECK_INIT
+	#define CHECK_INIT(ptr) _REENT_SMALL_CHECK_INIT(ptr)
+#else
+	#define CHECK_INIT(ptr)	((void)(ptr))
+#endif
 
 #define FILE_TYPE_MASK 0xFF
 #define FILE_TYPE_STDIO 0x00

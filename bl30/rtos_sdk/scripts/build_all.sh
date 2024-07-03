@@ -57,7 +57,7 @@ while IFS= read -r LINE; do
 	[ "$?" -eq 0 ] && echo "with warnings!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && return 1
 	echo "OK"
 	rm -f $LAST_BUILD_FAILURE
-	if [[ "$SUBMIT_TYPE" == "daily" ]]; then
+	if [[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "patch" ]]; then
 		if [[ "$ARCH" == "arm64" ]] && [[ "$PRODUCT" == "speaker" ]]; then
 			make_image >> $BUILD_LOG 2>&1
 		fi

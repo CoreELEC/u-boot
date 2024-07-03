@@ -19,7 +19,11 @@ if [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ];
 	exit 1
 fi
 
-if [ "$SUBMIT_TYPE" = "daily" -o "$SUBMIT_TYPE" = "release" ];then
+if [ "$SUBMIT_TYPE" = "daily" ];then
+	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild
+elif [ "$SUBMIT_TYPE" = "release" ];then
+	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild_release
+elif [ "$SUBMIT_TYPE" = "patch" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
 elif [ "$SUBMIT_TYPE" = "every" ];then
 	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
@@ -115,7 +119,7 @@ gerrit_review_for_gerrit_topic Start
 
 # Generate Jenkins trigger
 JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
-[ "$SUBMIT_TYPE" = "daily" ] && source scripts/gen_jenkins_trigger.sh
+[[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "patch" ]] && source scripts/gen_jenkins_trigger.sh
 
 if [[ "$MANIFEST_BRANCH" == "$BRANCH_NAME" ]]; then
 	source scripts/build_all_pkg.sh

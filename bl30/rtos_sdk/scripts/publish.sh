@@ -22,7 +22,7 @@ LOCAL_OUTPUT_PATH=$OUTPUT_DIR
 
 BUILD_DATE=$(date +%F)
 LATEST_REMOTE_PATH=/data/shanghai/image/RTOS/latest
-REMOTE_PATH=/data/shanghai/image/RTOS/$BUILD_DATE
+REMOTE_PATH="$([ "$SUBMIT_TYPE" == "patch" ] && echo "/data/shanghai/image/RTOS/patchbuild" || echo "/data/shanghai/image/RTOS/$BUILD_DATE")"
 REMOTE_IMAGES_PATH=$REMOTE_PATH/images
 REMOTE_PACKAGES_PATH=$REMOTE_PATH/packages
 
@@ -36,9 +36,10 @@ make_image() {
 publish_images() {
 	LOCAL_IMAGE_PATH=$LOCAL_OUTPUT_PATH/$ARCH-$BOARD-$PRODUCT
 	REMOTE_IMAGE_PATH=$REMOTE_IMAGES_PATH/$ARCH-$BOARD-$PRODUCT
-
+	echo "publish to $REMOTE_IMAGE_PATH"
 	if [ -d $LOCAL_IMAGE_PATH ]; then
 		ssh -n $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER "mkdir -p $REMOTE_IMAGE_PATH"
+
 		if [ $? -ne 0 ]; then
 			echo "Failed to create remote image path! $REMOTE_IMAGE_PATH"
 			exit 1
@@ -90,6 +91,7 @@ publish_packages() {
 			echo "Remote package path: $REMOTE_PACKAGE_PATH"
 		fi
 		pushd $LOCAL_PACKAGE_PATH >/dev/null
+
 		scp -r . $FIRMWARE_ACCOUNT@$FIRMWARE_SERVER:$REMOTE_PACKAGE_PATH
 		popd >/dev/null
 		echo "Packages publish done."

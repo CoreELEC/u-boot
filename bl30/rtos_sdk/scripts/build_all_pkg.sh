@@ -48,7 +48,7 @@ while IFS= read -r LINE; do
 	grep -qr "warning: " $TEMP_LOG
 	[ "$?" -eq 0 ] && cat $BUILD_LOG && echo -e "\nAborted with warnings!\n" && rm $TEMP_LOG && exit 1
 	echo "OK."
-	if [[ "$SUBMIT_TYPE" == "release" ]]; then
+	if [[ "$SUBMIT_TYPE" == "release" || "$SUBMIT_TYPE" == "patch" ]]; then
 		publish_packages >> $BUILD_LOG 2>&1
 		[ "$?" -ne 0 ] && echo "Failed to publish packages!" && exit 4
 	fi

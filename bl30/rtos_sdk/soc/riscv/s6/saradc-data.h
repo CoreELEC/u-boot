@@ -12,6 +12,9 @@
 #define SAR_CLK_BASE CLKCTRL_SAR_CLK_CTRL0
 #define SARADC_BASE SAR_ADC_REG0
 
+#define SAR_SYS_CLK_EN_BASE CLKCTRL_SYS_CLK_EN0_REG2
+#define SAR_SYS_CLK_EN_BIT 28
+
 #define SARADC_REG7_INIT 0x00000c11
 #define SARADC_REG8_INIT 0x0280614d
 #define SARADC_REG3_INIT 0x10a02403
@@ -25,6 +28,6 @@
 /* s7d saradc interrupt num */
 #define SARADC_INTERRUPT_NUM 181
 
-#define SARADC_REG_NUM ((0x3c >> 2) + 1)
+#define SARADC_REG_NUM ((0x3c >> 2) + 2)
 
 #endif

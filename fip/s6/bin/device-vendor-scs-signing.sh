@@ -10,6 +10,7 @@ version=1.0
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
+BASEDIR_TOP_TOP=$(readlink -f ${EXEC_BASEDIR}/../..)
 
 trace ()
 {
@@ -153,6 +154,27 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 }
 
+function amfc_compress() {
+	local path=$1
+	local comp_lv=$2
+	amfc_zstd_hdr=$1/amfc_zstd_hdr.bin
+	${BASEDIR_TOP_TOP}/tools/zstd $1/bl33.bin.temp -$comp_lv -o $1/bl33.bin.zstd
+	bin_org_size=`stat -c %s $1/bl33.bin.temp`
+	bin_zstd_size=`stat -c %s $1/bl33.bin.zstd`
+	printf "%s" "@ZSTD" >  $amfc_zstd_hdr
+
+	printf "%02x%02x%02x%02x" $[(bin_org_size) & 0xff] \
+	$[((bin_org_size) >> 8) & 0xff] $[((bin_org_size) >> 16) & 0xff] \
+	$[((bin_org_size) >> 24) & 0xff] | xxd -r -ps >>  $amfc_zstd_hdr
+
+	printf "%02x%02x%02x%02x" $[(bin_zstd_size) & 0xff] \
+	$[((bin_zstd_size) >> 8) & 0xff] $[((bin_zstd_size) >> 16) & 0xff] \
+	$[((bin_zstd_size) >> 24) & 0xff] | xxd -r -ps >>  $amfc_zstd_hdr
+
+	cat $amfc_zstd_hdr $1/bl33.bin.zstd > $1/bl33.bin
+	rm $amfc_zstd_hdr -f
+}
+
 usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
@@ -162,6 +184,7 @@ Usage: $(basename $0) --help | --version
        $(basename $0)
 		--key-dir <key-dir> \\
 		--project <project-name> \\
+		{--sig-scheme [rsa-only | rsa-mldsa-hybrid | mldsa-only]} \\
 		--input-dir  <input-dir> \\
 		{--input-package  <input-package>} \\
 		{--rootkey-index [0 | 1 | 2 | 3]} \\
@@ -180,6 +203,8 @@ rootkey_index=0
 chipset_variant=""
 arb_config=""
 output_dir=""
+sig_scheme="rsa-mldsa"
+BL33_BIN_SIZE="1572864"
 
 parse_main() {
     local i=0
@@ -208,6 +233,9 @@ parse_main() {
 		;;
             --project)
                 part="${argv[$i]}"
+		;;
+            --sig-scheme)
+                sig_scheme="${argv[$i]}"
 		;;
             --input-dir)
                 input_dir="${argv[$i]}"
@@ -281,7 +309,7 @@ if [ -z "${rootkey_index}" ]; then
 	rootkey_index=0
 fi
 
-if [ -z "${chipset_variant}" ] || [ "${chipset_variant}" == "no_variant" ]; then
+if [ -z "${chipset_variant}" ] || [ "${chipset_variant}" == "no_variant" ] || [ "${chipset_variant}" == "general" ]; then
 	chipset_variant_suffix=""
 else
 	chipset_variant_suffix=".${chipset_variant}"
@@ -289,6 +317,30 @@ fi
 
 if [ -z "${output_dir}" ]; then
 	usage
+fi
+
+case "$sig_scheme" in
+	rsa|rsa-only)
+		sig_scheme=rsa
+		;;
+	rsa-mldsa|rsa-mldsa-hybrid)
+		sig_scheme=rsa-mldsa
+		;;
+	mldsa|mldsa-only)
+		sig_scheme=mldsa
+		;;
+	*) usage ;;
+esac
+
+if [ -f "${input_dir}/bl33.bin.org" ]; then
+	${EXEC_BASEDIR}/add-device-keys-bl33.sh --add-device-keys --key-dir ${key_dir} --project ${part} --sig-scheme ${sig_scheme} \
+		--input ${input_dir}/bl33.bin.org --output ${input_dir}/bl33.bin.temp
+	amfc_compress ${input_dir} 9
+	dd if=/dev/zero of=${input_dir}/bl33-payload.bin bs=${BL33_BIN_SIZE} count=1 &> /dev/null
+	dd if=${input_dir}/bl33.bin of=${input_dir}/bl33-payload.bin conv=notrunc &> /dev/null
+else
+	${EXEC_BASEDIR}/add-device-keys-bl33.sh --add-device-keys --key-dir ${key_dir} --project ${part} --sig-scheme ${sig_scheme} \
+		--input ${input_dir}/bl33-payload.bin --output ${input_dir}/bl33-payload.bin
 fi
 
 fw_arb_cfg=${arb_config}
@@ -309,7 +361,7 @@ export DEVICE_INPUT_PATH=$(readlink -f ${input_dir})
 export DEVICE_OUTPUT_PATH=$(readlink -f ${input_dir})
 export PROJECT=${part}
 export DEVICE_ROOTRSA_INDEX=${rootkey_index}
-
+export DV_SIGNING_SCHEME=${sig_scheme}
 export DEVICE_VARIANT_SUFFIX=${chipset_variant_suffix}
 
 export DEVICE_STORAGE_SUFFIX=.sto

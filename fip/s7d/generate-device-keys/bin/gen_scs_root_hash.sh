@@ -226,6 +226,9 @@ parse_main() {
 	--device-scs-vers)
 		DEVICE_SCS_VERS="${argv[$i]}"
 		;;
+	--device-lvl1cert-vers-submask)
+		DEVICE_SCS_LVL1CERT_VERS_SUBMASK="${argv[$i]}"
+		;;
 	*)
 		echo "Unknown option $arg";
 		usage
@@ -492,6 +495,7 @@ trace "DEVICE_VENDOR_SEGID ${DEVICE_VENDOR_SEGID}"
 trace "DEVICE_TEE_VERS   ${DEVICE_TEE_VERS}"
 trace "DEVICE_REE_VERS   ${DEVICE_REE_VERS}"
 trace "DEVICE_SCS_VERS   ${DEVICE_SCS_VERS}"
+trace "DEVICE_SCS_LVL1CERT_VERS_SUBMASK ${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}"
 fi
 
 #
@@ -542,7 +546,9 @@ if [ -z "$output_dir" ]; then
 	fi
 
 	# Protkey output
-	mkdir -p ${BASEDIR_OUTPUT_PROTKEY}
+	if [ ${trust_chain^^} == "CHIPSET" ]; then
+		mkdir -p ${BASEDIR_OUTPUT_PROTKEY}
+	fi
 
 	# FIP output
 	mkdir -p ${BASEDIR_FIP_OUTPUT_BLOB}
@@ -824,6 +830,9 @@ COMMON_CREATE_BOOT_BLOBS_DV_ARGS+=" --val-device-scs-segid=${DEVICE_SCS_SEGID}"
 COMMON_CREATE_BOOT_BLOBS_DV_ARGS+=" --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
 COMMON_CREATE_BOOT_BLOBS_DV_ARGS+=" --val-device-scs-vers=${DEVICE_SCS_VERS}"
 COMMON_CREATE_BOOT_BLOBS_DV_ARGS+=" --val-device-tee-vers=${DEVICE_TEE_VERS}"
+if  [ "1" == "${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}" ]; then
+COMMON_CREATE_BOOT_BLOBS_DV_ARGS+=" --switch-device-lvl1cert-vers-submask=1"
+fi
 
 COMMON_CREATE_DEVICE_FIP_DV_ARGS+=" --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
 COMMON_CREATE_DEVICE_FIP_DV_ARGS+=" --val-device-tee-vers=${DEVICE_TEE_VERS}"

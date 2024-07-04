@@ -204,13 +204,11 @@ ${EXEC_BASEDIR}/bin/dvuk_gen.sh "$key_dir"/root/dvuk/"$part"/dvuk
 ${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin "$key_dir"/root/dvgk/"$part"/dvgk.bin --mrk-name DVGK --project "$part"
 
 
-for i in {0..3}; do
-	${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $i --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-boot-blobs
-	${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $i --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-device-fip
-done
+${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-boot-blobs
+${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-device-fip
 
 # Link to be compatible with old script
-ln -r -s -v "$key_dir/fip/aes/${part}/trustchain-${rootkey_index}/protkey" \
-	"$key_dir/fip/aes/${part}/protkey"
+cp "$key_dir/fip/aes/${part}/trustchain-${rootkey_index}/protkey" \
+	"$key_dir/fip/aes/${part}/protkey" -r
 
-${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part" --sig-scheme $sig_scheme --template-layout $template_layout
+${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part" --sig-scheme $sig_scheme  --ml-dsa-version draft1 --template-layout $template_layout

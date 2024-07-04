@@ -152,10 +152,14 @@ if [ -s "${arb_config}" ]; then
     device_fip_arb_args="--device-vendor-segid ${DEVICE_VENDOR_SEGID} --device-tee-vers ${DEVICE_TEE_VERS} --device-ree-vers ${DEVICE_REE_VERS}"
 fi
 
-for i in {0..3}; do
-	${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini ${boot_blobs_arb_args} --ops create-boot-blobs
-	${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini ${device_fip_arb_args} --ops create-device-fip
-done
+${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini ${boot_blobs_arb_args} --ops create-boot-blobs
+${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini ${device_fip_arb_args} --ops create-device-fip
 
-${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part" --sig-scheme $sig_scheme --template-layout $template_layout
+# Link to be compatible with old script
+rm -rf $key_dir/fip/aes/${part}/protkey
+cp "$key_dir/fip/aes/${part}/trustchain-${rootkey_index}/protkey" \
+	"$key_dir/fip/aes/${part}/protkey" -r
+
+${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part" --sig-scheme $sig_scheme --ml-dsa-version draft1 --template-layout $template_layout
+
 

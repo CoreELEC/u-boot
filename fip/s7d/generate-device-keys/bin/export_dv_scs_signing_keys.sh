@@ -52,6 +52,8 @@ key_dir=""
 project=""
 rootkey_index=0
 output_dir=""
+ml_dsa_algo_name="mldsa"
+ml_dsa_version=""
 
 parse_main() {
 	local i=0
@@ -90,6 +92,9 @@ parse_main() {
 				;;
 			--sig-scheme)
 				sig_scheme="${argv[$i]}"
+				;;
+			--ml-dsa-version)
+				ml_dsa_version="${argv[$i]}"
 				;;
 			--template-layout)
 				template_layout="${argv[$i]}"
@@ -236,6 +241,23 @@ EXPORT_FILES+="${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-krnl.bin "
 
 EXPORT_FILES+="${BASEDIR_BOOTBLOBS_TEMPLATE_ROOT}/bb1st.bin "
 EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin "
+
+if [[ "${sig_scheme}" =~ "mldsa" ]]; then
+
+	if [ "${ml_dsa_version}" != "final" ]; then
+		ml_dsa_algo_name=${ml_dsa_algo_name}-${ml_dsa_version}
+	fi
+EXPORT_FILES+="${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-${ml_dsa_algo_name}-pub.pem "
+
+EXPORT_FILES+="${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-1-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl31-level-3-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl32-level-3-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl33-level-3-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/bl40-level-3-${ml_dsa_algo_name}-priv.pem "
+EXPORT_FILES+="${BASEDIR_FIP_RSAKEY_ROOT}/key/krnl-level-3-${ml_dsa_algo_name}-priv.pem "
+fi
 
 for f in $EXPORT_FILES
 do

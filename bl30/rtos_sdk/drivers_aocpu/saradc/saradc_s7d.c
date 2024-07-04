@@ -110,8 +110,13 @@ static void vBackupSaradcReg(void)
 {
 	uint8_t ucIndex;
 
-	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++) {
-		SaradcRegBackup[ucIndex] =
+	/* SARADC clock (digital) */
+	SaradcRegBackup[0] = REG32(SAR_SYS_CLK_EN_BASE) & BIT(SAR_SYS_CLK_EN_BIT);
+	/* Registers can only be operated after the clock is enabled */
+	REG32(SAR_SYS_CLK_EN_BASE) |= BIT(SAR_SYS_CLK_EN_BIT);
+
+	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 2); ucIndex++) {
+		SaradcRegBackup[ucIndex + 1] =
 			REG32((unsigned long)P_SARADC(SARADC_REG0) + 0x04 * ucIndex);
 	}
 
@@ -123,13 +128,17 @@ static void vRestoreSaradcReg(void)
 {
 	uint8_t ucIndex;
 
-	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 1); ucIndex++) {
+	for (ucIndex = 0; ucIndex < (SARADC_REG_NUM - 2); ucIndex++) {
 		REG32((unsigned long)(P_SARADC(SARADC_REG0) + 0x04 * ucIndex)) =
-			SaradcRegBackup[ucIndex];
+			SaradcRegBackup[ucIndex + 1];
 	}
 
 	/* saradc clock reg */
 	REG32((unsigned long)SAR_CLK_BASE) = SaradcRegBackup[SARADC_REG_NUM - 1];
+
+	REG32(SAR_SYS_CLK_EN_BASE) &= ~BIT(SAR_SYS_CLK_EN_BIT);
+	/* SARADC clock (digital) */
+	REG32(SAR_SYS_CLK_EN_BASE) |= SaradcRegBackup[0];
 }
 
 void vAdcInit(void)

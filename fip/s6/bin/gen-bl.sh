@@ -34,7 +34,8 @@ CHIPSET_VARIANT_SUFFIX=$5
 EXEC_ARGS="${EXEC_ARGS}"
 
 ### Input: template ###
-EXEC_ARGS="${EXEC_ARGS} --infile-template-chipset-fip-header=${BASEDIR_TEMPLATE}/device-fip-header.bin"
+template_ext=".${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"
+EXEC_ARGS="${EXEC_ARGS} --infile-template-chipset-fip-header=${BASEDIR_TEMPLATE}/device-fip-header.bin${template_ext}"
 
 ### Input: payload ###
 EXEC_ARGS="${EXEC_ARGS} --infile-bl30-payload=${BASEDIR_PAYLOAD}/bl30-payload.bin"
@@ -47,12 +48,24 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl31=${BASEDIR_INPUT_BLOB}/blob-bl31.bin.s
 EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_INPUT_BLOB}/blob-bl32.bin.signed"
 
 ### Features, flags and switches ###
+EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
+if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,none"
+elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$CS_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=none,mldsa-draft1"
+fi
+if [ "$DV_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,none"
+elif [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=none,mldsa-draft1"
+fi
 
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin.signed"
-
-### full Device FIP Header
-EXEC_ARGS="${EXEC_ARGS} --header-layout=full"
 
 #echo ${EXEC_ARGS}
 

@@ -37,22 +37,23 @@ echo "============ ROOTRSA_INDEX ${DEVICE_ROOTRSA_INDEX}"
 echo "============       KEY_DIR ${BASEDIR_ROOT}"
 echo "============       PROJECT ${PROJECT}"
 
+SIGNING_SCHEME_FULL=${DV_SIGNING_SCHEME}
+if [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  SIGNING_SCHEME_FULL+=-draft1
+fi
+SIGNING_KEY_DIR_PREFIX=rootrsa
+if [ "$DV_SIGNING_SCHEME" != "rsa" ]; then
+  SIGNING_KEY_DIR_PREFIX=rootkey
+fi
+
 if [ -z "$PROJECT" ]; then
-	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_SIGKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/$SIGNING_KEY_DIR_PREFIX-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/protkey"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/root$SIGNING_SCHEME_FULL-${DEVICE_ROOTRSA_INDEX}"
 else
-	BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${PROJECT}/rootkey"
-	BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/${PROJECT}"
-	BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_BOOTBLOBS_TEMPLATE_ROOT="${BASEDIR_ROOT}/boot-blobs/template/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-	BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_SIGKEY_ROOT="${BASEDIR_ROOT}/fip/$SIGNING_SCHEME_FULL/${PROJECT}/$SIGNING_KEY_DIR_PREFIX-${DEVICE_ROOTRSA_INDEX}"
 	BASEDIR_FIP_AESKEY_ROOT="${BASEDIR_ROOT}/fip/aes/${PROJECT}/protkey"
-	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${PROJECT}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+	BASEDIR_FIP_TEMPLATE_ROOT="${BASEDIR_ROOT}/fip/template/${PROJECT}/root$SIGNING_SCHEME_FULL-${DEVICE_ROOTRSA_INDEX}"
 fi
 
 BASEDIR_DEVICE_TEMPLATE="${BASEDIR_FIP_TEMPLATE_ROOT}"
@@ -72,19 +73,43 @@ EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEM
 EXEC_ARGS="${EXEC_ARGS} --infile-bl30-payload=${BASEDIR_PAYLOAD}/bl30-payload.bin"
 EXEC_ARGS="${EXEC_ARGS} --infile-bl33-payload=${BASEDIR_PAYLOAD}/bl33-payload.bin"
 
-### Input: Device Level-3 private RSA keys and EPKs ###
+### Input: Device Level-3 private signing keys and EPKs ###
 
 # Device Vendor binaries
-EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl30-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-rsa-priv.pem"
+EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl30-device-lvl3=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl30-level-3-rsa-priv.pem"
 EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl30-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl30.bin"
 
-EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl33-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl33-level-3-rsa-priv.pem"
+EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl33-device-lvl3=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl33-level-3-rsa-priv.pem"
 EXEC_ARGS="${EXEC_ARGS} --infile-aes256-bl33-payload=${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-bl33.bin"
 
+EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl40-device-lvl3=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl40-level-3-rsa-priv.pem"
+EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl31-device-lvl3=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl31-level-3-rsa-priv.pem"
+EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl32-device-lvl3=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl32-level-3-rsa-priv.pem"
+
+if [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ] || [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl30-device-lvl3-pqc=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl30-level-3-mldsa-draft1-priv.pem"
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl33-device-lvl3-pqc=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl33-level-3-mldsa-draft1-priv.pem"
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl40-device-lvl3-pqc=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl40-level-3-mldsa-draft1-priv.pem"
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl31-device-lvl3-pqc=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl31-level-3-mldsa-draft1-priv.pem"
+  EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl32-device-lvl3-pqc=${BASEDIR_FIP_SIGKEY_ROOT}/key/bl32-level-3-mldsa-draft1-priv.pem"
+fi
+
+if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,none"
+elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$CS_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=none,mldsa-draft1"
+fi
+if [ "$DV_SIGNING_SCHEME" == "rsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,none"
+elif [ "$DV_SIGNING_SCHEME" == "rsa-mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=rsa,mldsa-draft1"
+elif [ "$DV_SIGNING_SCHEME" == "mldsa" ]; then
+  EXEC_ARGS="${EXEC_ARGS} --device-authen-algorithm=none,mldsa-draft1"
+fi
+
 # Chipset Manufacturer binaries
-EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl40-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl40-level-3-rsa-priv.pem"
-EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl31-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl31-level-3-rsa-priv.pem"
-EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl32-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl32-level-3-rsa-priv.pem"
 
 ### Input: chipset blobs ###
 EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl40=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl40.bin${input_postfix}"
@@ -92,6 +117,7 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl31=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl31
 EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32.bin${input_postfix}"
 
 ### Features, flags and switches ###
+EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
 
 # arb info
 EXEC_ARGS="${EXEC_ARGS} --val-device-vendor-segid=${DEVICE_VENDOR_SEGID}"
@@ -100,9 +126,6 @@ EXEC_ARGS="${EXEC_ARGS} --val-device-ree-vers=${DEVICE_REE_VERS}"
 
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin${output_postfix}"
-
-### full Device FIP Header
-EXEC_ARGS="${EXEC_ARGS} --header-layout=full"
 
 #echo ${EXEC_ARGS}
 

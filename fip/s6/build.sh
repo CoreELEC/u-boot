@@ -133,6 +133,8 @@ function mk_bl2ex() {
 	fi
 
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--chipset-authen-algorithm=rsa,mldsa-draft1 \
+			--device-authen-algorithm=rsa,mldsa-draft1 \
 			--infile-bl2-payload=${payload}/bl2.bin.sto \
 			--infile-bl2e-payload=${payload}/bl2e.bin.sto \
 			--infile-bl2x-payload=${payload}/bl2x.bin \
@@ -144,6 +146,8 @@ function mk_bl2ex() {
 			--outfile-blob-bl2x=${output}/blob-bl2x.bin
 
 	./${FIP_FOLDER}${CUR_SOC}/binary-tool/acpu-imagetool create-boot-blobs \
+			--chipset-authen-algorithm=rsa,mldsa-draft1 \
+			--device-authen-algorithm=rsa,mldsa-draft1 \
 			--infile-bl2-payload=${payload}/bl2.bin.usb \
 			--infile-bl2e-payload=${payload}/bl2e.bin.usb \
 			--infile-bl2x-payload=${payload}/bl2x.bin \
@@ -263,7 +267,9 @@ function mk_devfip() {
 			--infile-bl32-payload=${payload}/bl32.bin \
 			--infile-bl33-payload=${payload}/bl33.bin \
 			--outfile-device-fip=${output}/device-fip.bin \
-			--header-layout=full
+			--header-layout=mini \
+			--chipset-authen-algorithm=rsa,mldsa-draft1 \
+			--device-authen-algorithm=rsa,mldsa-draft1
 
 	if [ ! -f ${output}/device-fip.bin ]; then
 		echo "Error: ${output}/device-fip.bin does not exist... abort"
@@ -709,9 +715,9 @@ function process_blx() {
 		echo "Warning: local bl40"
 		cp bl40/bin/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/blob-bl40.bin.signed ${BUILD_PATH}
 	fi
-	if [ ! -f ${BUILD_PATH}/device-fip-header.bin ]; then
+	template_ext=".${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"
+	if [ ! -f ${BUILD_PATH}/device-fip-header.bin${template_ext} ]; then
 		echo "Warning: local device fip header templates"
-		template_ext=".${DV_SIGNING_SCHEME}.${CS_SIGNING_SCHEME}"
 		cp ${CHIPSET_TEMPLATES_PATH}/${CUR_SOC}/${BLX_BIN_SUB_CHIP}/device-fip-header.bin${template_ext} ${BUILD_PATH}/
 	fi
 

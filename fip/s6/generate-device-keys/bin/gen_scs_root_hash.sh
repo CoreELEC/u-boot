@@ -737,6 +737,7 @@ COMMON_CREATE_BOOT_BLOBS_ARGS+=" --infile-nonce-${PREFIX_ARG}-lvl2rsa=${BASEDIR_
 
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-signkey-${PREFIX_ARG}-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
 #BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-${PREFIX_ARG}-lvl2=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${rsa_algo_name}-priv.pem"
+PQC_CREATE_DEVICE_FIP_ARGS+=" --infile-signkey-${PREFIX_ARG}-lvl2-pqc=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/${PREFIX}level-2-${ml_dsa_algo_name}-priv.pem"
 
 ### Input: Chipset Level-3 Certs  ###
 RSA_CREATE_DEVICE_FIP_ARGS+=" --infile-pubkey-bl40-${PREFIX_ARG}-lvl3cert=${BASEDIR_FIP_RSAKEY_ROOT}/key/${PREFIX}bl40-level-3-${rsa_algo_name}-pub.pem"

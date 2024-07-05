@@ -172,10 +172,18 @@ ADVANCED_BOOTLOADER=1
 declare CONFIG_RTOS_SDK_ENABLE=1
 declare CONFIG_SOC_NAME="s6"
 
-if [ "${BL30_SELECT}" == "s6_pxp" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="s6_skt"
-#elif [ "${BL30_SELECT}" == "a4_ba409" ]; then
-#	declare CONFIG_BOARD_PACKAGE_NAME="ba409_a113l2"
+if [ "${BL30_SELECT}" == "s6_bl201" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bl201_s905x5"
+elif [ "${BL30_SELECT}" == "s6_bl208" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bl208_s905x5"
+elif [ "${BL30_SELECT}" == "s6_bl209" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bl209_s905x5"
+elif [ "${BL30_SELECT}" == "s6_bq201" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bq201_s905d5"
+elif [ "${BL30_SELECT}" == "s6_bq208" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bq208_s905d5"
+elif [ "${BL30_SELECT}" == "s6_bq209" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bq209_s905d5"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s6_skt"
 fi

@@ -210,7 +210,7 @@ for i in {0..3}; do
 done
 
 # Link to be compatible with old script
-ln -r -s -v "$key_dir/fip/aes/${part}/root${sig_scheme_full}-${rootkey_index}/protkey" \
+ln -r -s -v "$key_dir/fip/aes/${part}/trustchain-${rootkey_index}/protkey" \
 	"$key_dir/fip/aes/${part}/protkey"
 
 ${EXEC_BASEDIR}/bin/export_dv_scs_signing_keys.sh --key-dir "$key_dir" --out-dir "$output_dir" --rootkey-index "$rootkey_index" --project "$part" --sig-scheme $sig_scheme --template-layout $template_layout

@@ -55,7 +55,7 @@ size=""
 template_dir=""
 rootkey_index=0
 output_dir=""
-device_soc="s5"
+device_soc="s7d"
 
 parse_main() {
     local i=0

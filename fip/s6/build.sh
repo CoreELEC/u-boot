@@ -426,9 +426,6 @@ function mk_uboot() {
 		exit -1
 	fi
 
-	mv ${bb1st} ${input_payloads}/bb1st${storage_type_suffix}.payload
-	source ${FIP_FOLDER}${CUR_SOC}/attach_sbh.sh ${input_payloads}/bb1st${storage_type_suffix}.payload ${bb1st}
-
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
 
@@ -441,6 +438,12 @@ function mk_uboot() {
 		echo "==== use empty ddr-fip ===="
 		dd if=/dev/zero of=${ddr_fip} bs=1024 count=256 status=none
 	fi
+
+	#align bb1st 266k and append header
+	dd if=/dev/zero of=${bb1st}.payload bs=1024 count=266 &> /dev/null
+	dd if=${bb1st} of=${bb1st}.payload conv=notrunc &> /dev/null
+	${FIP_FOLDER}${CUR_SOC}/attach_sbh.sh ${bb1st}.payload ${bb1st}.hdr
+	bb1st=${bb1st}.hdr
 
 	#cat those together with 4K upper aligned for sdcard
 	align_base=4096
@@ -504,7 +507,7 @@ function mk_uboot() {
 	rm -f ${file_info_cfg}
 	mv -f ${file_info_cfg}.sha256 ${file_info_cfg}
 
-	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=446 conv=notrunc status=none
+	dd if=${file_info_cfg} of=${bootloader} bs=512 seek=540 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
 		echo "Image SDCARD"
@@ -612,16 +615,6 @@ function process_blx() {
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
 							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE}
 					fi
-			fi
-		fi
-		if [ "NULL" != "${BLX_BIN_SIZE[$loop]}" ] && \
-		    [ "NULL" != "${BLX_BIN_NAME[$loop]}" ] && \
-			[ -n "${BLX_BIN_NAME[$loop]}" ] && \
-			[ -f ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} ]; then
-			blx_size=`stat -c %s ${BUILD_PATH}/${BLX_BIN_NAME[$loop]}`
-			if [ $blx_size -ne ${BLX_BIN_SIZE[$loop]} ]; then
-				echo "Error: ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} size not match"
-				exit -1
 			fi
 		fi
 	done

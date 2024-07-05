@@ -170,12 +170,12 @@ CONFIG_NEED_BL32=y
 ADVANCED_BOOTLOADER=1
 
 declare CONFIG_RTOS_SDK_ENABLE=1
-declare CONFIG_SOC_NAME="s7d"
+declare CONFIG_SOC_NAME="s6"
 
-if [ "${BL30_SELECT}" == "s7d_pxp" ]; then
-	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
+if [ "${BL30_SELECT}" == "s6_pxp" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="s6_skt"
 #elif [ "${BL30_SELECT}" == "a4_ba409" ]; then
 #	declare CONFIG_BOARD_PACKAGE_NAME="ba409_a113l2"
 else
-	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
+	declare CONFIG_BOARD_PACKAGE_NAME="s6_skt"
 fi

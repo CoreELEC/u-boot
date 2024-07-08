@@ -626,8 +626,14 @@ function process_blx() {
 	# process loop
 	for loop in ${!BLX_NAME[@]}; do
 		if [ "${CONFIG_CHIPSET_VARIANT}" == "fastboot" ]; then
-			extra_args="--extra_args  ${CONFIG_CHIPSET_VARIANT}"
-			extraArgs="--extraArgs  ${CONFIG_CHIPSET_VARIANT}"
+			## bl32 not transfer fastboot
+			if [ "${BLX_NAME[$loop]}" != "bl32" ]; then
+				extra_args="--extra_args  ${CONFIG_CHIPSET_VARIANT}"
+				extraArgs="--extraArgs  ${CONFIG_CHIPSET_VARIANT}"
+			else
+				extra_args=""
+				extraArgs=""
+			fi
 		fi
 		if [ "NULL" != "${BLX_RAWBIN_NAME[$loop]}" ] && \
 			[ -n "${BLX_RAWBIN_NAME[$loop]}" ] && \

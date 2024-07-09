@@ -146,7 +146,7 @@ function build_fip() {
 		bl30
 
 	# acs_tool process ddr timing and configurable parameters
-	python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
+	python2 ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
 
 	# fix bl2/bl21
 	fix_blx \

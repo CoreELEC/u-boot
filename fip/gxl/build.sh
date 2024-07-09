@@ -146,7 +146,7 @@ function build_fip() {
 		bl30
 
 	# acs_tool process ddr timing and configurable parameters
-	python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
+	python2 ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/${AML_BL2_NAME} ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
 
 	# fix bl2/bl21
 	fix_blx \
@@ -200,10 +200,10 @@ function package() {
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
 		if [ -e "${BUILD_PATH}/bl2.v3.bin" ]; then
 			# acs_tool process ddr timing and configurable parameters
-			python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/bl2.v3.bin ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
+			python2 ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/bl2.v3.bin ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
 		else
 			# acs_tool process ddr timing and configurable parameters
-			python ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/bl2.bin ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
+			python2 ${FIP_FOLDER}/acs_tool.pyc ${BUILD_PATH}/bl2.bin ${BUILD_PATH}/bl2_acs.bin ${BUILD_PATH}/acs.bin 0
 		fi
 			# fix bl2/bl21
 			fix_blx \

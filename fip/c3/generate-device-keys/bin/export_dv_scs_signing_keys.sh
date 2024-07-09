@@ -228,6 +228,12 @@ EXPORT_FILES+="${BASEDIR_FIP_AESKEY_ROOT}/genkey-prot-krnl.bin "
 
 EXPORT_FILES+="${BASEDIR_BOOTBLOBS_TEMPLATE_ROOT}/bb1st.bin "
 EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot-1 "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot-2 "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot-ext "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot-ext-1 "
+EXPORT_FILES+="${BASEDIR_FIP_TEMPLATE_ROOT}/device-fip-header.bin.fastboot-ext-2 "
 
 for f in $EXPORT_FILES
 do

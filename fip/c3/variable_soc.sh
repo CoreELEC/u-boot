@@ -88,6 +88,15 @@ declare -a BLX_BIN_NAME=("bb1st.sto${CHIPSET_VARIANT_SUFFIX_IPC}.bin.signed"    
 			 "blob-bl40${CHIPSET_VARIANT_SUFFIX}.bin.signed")
 fi
 
+declare -a BLX_BIN_CLEAR_NAME=("bb1st.sto.bin.signed"     \
+			 "bb1st.usb.bin.signed"     \
+			 "blob-bl2e.sto.bin.signed" \
+			 "blob-bl2e.usb.bin.signed" \
+			 "blob-bl2x.bin.signed"     \
+			 "blob-bl31.bin.signed"     \
+			 "blob-bl32.bin.signed" \
+			 "blob-bl40.bin.signed")
+
 ## c3 old aw402s
 if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ "${CONFIG_TEE_TYPE}" == "" ] && [ "fastboot" == "${CONFIG_CHIPSET_VARIANT}" ]; then
 	declare -a BLX_BIN_SIZE=("169984"	\

@@ -269,12 +269,54 @@ BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-bl30=${BASEDIR_OUTPUT_PROTKEY}/genke
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-bl33=${BASEDIR_OUTPUT_PROTKEY}/genkey-prot-bl33.bin"
 BB1ST_ARGS="${BB1ST_ARGS} --outfile-protkey-krnl=${BASEDIR_OUTPUT_PROTKEY}/genkey-prot-krnl.bin"
 
+### compact Device FIP Header
+BB1ST_ARGS="${BB1ST_ARGS} --header-layout=compact"
+
 echo ${TOOLS_ARGS}
 
 #
 # Main
 #
 
+
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-1
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot-1
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-2
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot-2
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot-ext
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext-1
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot-ext-1
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext-2
+${ACPU_IMAGETOOL} \
+        create-device-fip \
+        ${BB1ST_ARGS}
+mv ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin ${BASEDIR_OUTPUT_BLOB}/device-fip-header.bin.fastboot-ext-2
+
+ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
 ${ACPU_IMAGETOOL} \
         create-device-fip \
         ${BB1ST_ARGS}

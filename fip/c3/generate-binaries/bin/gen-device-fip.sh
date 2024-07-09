@@ -8,15 +8,6 @@ set -e
 #
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
-
-if [ "" != "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${DEVICE_VARIANT_SUFFIX}" ]; then
-	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-oversea
-elif [ "" == "${CHIPSET_VARIANT_MIN_SUFFIX}" ] && [ ".fastboot" == "${DEVICE_VARIANT_SUFFIX}" ]; then
-	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot
-else
-	ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
-fi
-
 BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 
 #
@@ -73,13 +64,14 @@ BLOB_NAME=$1
 EXEC_ARGS="${EXEC_ARGS}"
 
 ### Input: template ###
-EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin"
+#EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin"
 
 ### Input: payload ###
 EXEC_ARGS="${EXEC_ARGS} --infile-bl30-payload=${BASEDIR_PAYLOAD}/bl30-payload.bin"
 EXEC_ARGS="${EXEC_ARGS} --infile-bl33-payload=${BASEDIR_PAYLOAD}/bl33-payload.bin"
 
 ### Input: Device Level-3 private RSA keys and EPKs ###
+
 
 # Device Vendor binaries
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl30-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl30-level-3-rsa-priv.pem"
@@ -94,9 +86,9 @@ EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl31-device-lvl3=${BASEDIR_FIP_RSAKEY_R
 EXEC_ARGS="${EXEC_ARGS} --infile-signkey-bl32-device-lvl3=${BASEDIR_FIP_RSAKEY_ROOT}/key/bl32-level-3-rsa-priv.pem"
 
 ### Input: chipset blobs ###
-EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl40=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl40${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
-EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl31=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl31${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
-EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32${DEVICE_VARIANT_MIN_SUFFIX}${DEVICE_VARIANT_SUFFIX}.bin${input_postfix}"
+EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl40=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl40.bin${input_postfix}"
+EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl31=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl31.bin${input_postfix}"
+EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32.bin${input_postfix}"
 
 ### Features, flags and switches ###
 
@@ -108,7 +100,44 @@ EXEC_ARGS="${EXEC_ARGS} --val-device-ree-vers=${DEVICE_REE_VERS}"
 ### Output: Device FIP ###
 EXEC_ARGS="${EXEC_ARGS} --outfile-device-fip=${BASEDIR_OUTPUT}/device-fip.bin${output_postfix}"
 
+### compact Device FIP Header
+EXEC_ARGS="${EXEC_ARGS} --header-layout=compact"
+
 #echo ${EXEC_ARGS}
+
+BL32_SIZE=`stat -c %s ${BASEDIR_CHIPSET_TEMPLATE}/blob-bl32.bin${input_postfix}`
+BL33_SIZE=`stat -c %s ${BASEDIR_PAYLOAD}/bl33-payload.bin`
+
+if [ "${BL32_SIZE}" == "528384" ]; then
+	if [ "${BL33_SIZE}" = "389120" ]; then
+		## +64k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext-1
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot-ext-1"
+	elif [ "${BL33_SIZE}" = "454656" ]; then
+			## +128k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext-2
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot-ext-2"
+	elif [ "${BL33_SIZE}" = "323584" ]; then
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-ext
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot-ext"
+	else
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin"
+	fi
+else
+	if [ "${BL33_SIZE}" = "389120" ]; then
+		## +64k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-1
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot-1"
+	elif [ "${BL33_SIZE}" = "454656" ]; then
+		## +128k
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot-2
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot-2"
+	else
+		ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../binary-tool/acpu-imagetool-fastboot
+		EXEC_ARGS="${EXEC_ARGS} --infile-template-device-fip-header=${BASEDIR_DEVICE_TEMPLATE}/device-fip-header.bin.fastboot"
+	fi
+fi
 
 #
 # Main

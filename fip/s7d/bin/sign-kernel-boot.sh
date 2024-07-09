@@ -235,6 +235,7 @@ sign_kernel() {
     local part=""
     local rootkey_index=0
     local output=""
+    local sig_scheme="rsa"
     local rsakey=""
     local aeskey=""
     local aesiv=$TMP/aesiv.bin
@@ -253,6 +254,9 @@ sign_kernel() {
 		;;
             --project)
                 part="${argv[$i]}"
+		;;
+            --sig-scheme)
+                sig_scheme="${argv[$i]}"
 		;;
             --input)
                 input="${argv[$i]}"
@@ -290,7 +294,20 @@ sign_kernel() {
         echo Error: Missing output file option --output; exit 1;
     fi
 
-    rsakey=$(readlink -f ${key_dir})/fip/rsa/${part}/trustchain-${rootkey_index}/key/krnl-level-3-rsa-priv.pem
+case "$sig_scheme" in
+	rsa|rsa-only)
+		sig_scheme=rsa
+		;;
+	rsa-mldsa|rsa-mldsa-hybrid)
+		sig_scheme=rsa-mldsa
+		;;
+	mldsa|mldsa-only)
+		sig_scheme=mldsa
+		;;
+	*) usage ;;
+esac
+
+    rsakey=$(readlink -f ${key_dir})/fip/${sig_scheme}/${part}/trustchain-${rootkey_index}/key/krnl-level-3-rsa-priv.pem
     check_file "RSA key" "${rsakey}"
     aeskey=$(readlink -f ${key_dir})/fip/aes/${part}/protkey/genkey-prot-krnl.bin
     check_file "AES key" "${aeskey}"

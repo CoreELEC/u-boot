@@ -761,7 +761,7 @@ function build_signed() {
 	list_pack="${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2x.bin.signed ${BUILD_PATH}/blob-bl31.bin.signed ${BUILD_PATH}/blob-bl32.bin.signed ${BUILD_PATH}/blob-bl40.bin.signed"
-	list_pack="$list_pack ${BUILD_PATH}/bl30-payload.bin ${BUILD_PATH}/bl33-payload.bin ${BUILD_PATH}/dvinit-params.bin"
+	list_pack="$list_pack ${BUILD_PATH}/bl30-payload.bin ${BUILD_PATH}/bl33-payload.bin ${BUILD_PATH}/bl33.bin.org ${BUILD_PATH}/dvinit-params.bin"
 	if [ -f ${BUILD_PATH}/ddr-fip.bin ]; then
 		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"
 	fi
@@ -773,37 +773,17 @@ function build_signed() {
 			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
 		fi
 
-		fw_arb_cfg=${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg
-		if [ -s "${fw_arb_cfg}" ]; then
-			source ${fw_arb_cfg}
-			export DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
-			export DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
-			export DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
-			export DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
-			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
-			export DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}
-		fi
-		export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
-		export DEVICE_INPUT_PATH=$(pwd)/${BUILD_PATH}
-		export DEVICE_OUTPUT_PATH=$(pwd)/${BUILD_PATH}
-		export PROJECT=${CHIPSET_NAME}
 		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
-			export DEVICE_ROOTRSA_INDEX=1
+			DEVICE_ROOTRSA_INDEX=1
 		elif [ -n "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
-			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
+			DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
+		else
+			DEVICE_ROOTRSA_INDEX=0
 		fi
-		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
 
-		export DEVICE_STORAGE_SUFFIX=.sto
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
-		export DEVICE_STORAGE_SUFFIX=.usb
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
-
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-device-fip
-		# build final bootloader
-		postfix=.device.signed
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
+		./${FIP_FOLDER}${CUR_SOC}/bin/device-vendor-scs-signing.sh --key-dir ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/ --project ${CHIPSET_NAME} \
+			--sig-scheme ${DV_SIGNING_SCHEME} --input-dir ${BUILD_PATH} --rootkey-index ${DEVICE_ROOTRSA_INDEX} --chipset-variant ${CHIPSET_VARIANT} \
+			--arb-config ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg --out-dir ${BUILD_PATH}
 	fi
 
 	return

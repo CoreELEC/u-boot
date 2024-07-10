@@ -22,7 +22,9 @@
 #include "../../drivers/amlogic/media/vout/hdmitx/hdmitx_common/hdmitx_policy_setting.h"
 
 static unsigned char edid_raw_buf[512] = {0};
-/* there may be outputmode/2/3 when in multi-display case,
+
+/*
+ * there may be outputmode/2/3 when in multi-display case,
  * sel_hdmimode is used to save the selected hdmi mode
  */
 static char sel_hdmimode[MESON_MODE_LEN] = {0};
@@ -58,15 +60,17 @@ static int do_rx_det(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 
 	memset(edid_raw_buf, 0, ARRAY_SIZE(edid_raw_buf));
 
-	// read edid raw data
-	// current only support read 1 byte edid data
+	/*
+	 * read edid raw data
+	 * current only support read 1 byte edid data
+	 */
 	st = hdev->hwop.read_edid(edid_raw_buf);
 
 	if (st) {
 		if (edid_raw_buf[250] == 0xfb && edid_raw_buf[251] == 0x0c) {
 			printf("RX is FBC\n");
 
-			// set outputmode ENV
+			/* set outputmode ENV */
 			switch (edid_raw_buf[252] & 0x0f) {
 			case 0x0:
 				run_command("setenv outputmode 1080p50hz", 0);
@@ -91,7 +95,7 @@ static int do_rx_det(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 				break;
 			}
 
-			/*et RX 3D Info*/
+			/* et RX 3D Info */
 			switch ((edid_raw_buf[252] >> 4) & 0x0f) {
 			case 0x00:
 				run_command("setenv rx_3d_info 0", 0);
@@ -130,15 +134,37 @@ static int do_rx_det(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 	return st;
 }
 
+int is_valid_hdmi(const char *input)
+{
+	static const char * const valid_hdmi_modes[] = {
+			"HDMI-A-A", /* venc0 */
+			"HDMI-A-B", /* venc1 */
+			"HDMI-A-C"  /* venc2 */
+	};
+
+	int num_modes = ARRAY_SIZE(valid_hdmi_modes);
+	int i;
+
+	for (i = 0; i < num_modes; i++) {
+		if (strcmp(input, valid_hdmi_modes[i]) == 0)
+			return 1;
+	}
+	return 0;
+}
+
 static void save_default_720p(void)
 {
 	memcpy(sel_hdmimode, DEFAULT_HDMI_MODE, sizeof(DEFAULT_HDMI_MODE));
-	if (is_hdmi_mode(env_get("outputmode")))
-		env_set("outputmode", DEFAULT_HDMI_MODE);
-	else if (is_hdmi_mode(env_get("outputmode2")))
+	if (is_valid_hdmi(env_get("connector0_type"))) {
+		env_set("outputmode",	DEFAULT_HDMI_MODE);
+	} else if (is_valid_hdmi(env_get("connector1_type"))) {
 		env_set("outputmode2",	DEFAULT_HDMI_MODE);
-	else if (is_hdmi_mode(env_get("outputmode3")))
-		env_set("outputmode3", DEFAULT_HDMI_MODE);
+	} else if (is_valid_hdmi(env_get("connector2_type"))) {
+		env_set("outputmode3",	DEFAULT_HDMI_MODE);
+	} else {
+		pr_info("no config connectorX_type, save default 720p outputmode\n");
+		env_set("outputmode",	DEFAULT_HDMI_MODE);
+	}
 	env_set("colorattribute", DEFAULT_COLOR_FORMAT);
 }
 
@@ -150,13 +176,16 @@ static void hdmitx_mask_rx_info(struct hdmitx_dev *hdev)
 	if (env_get("colorattribute"))
 		hdmitx21_get_fmtpara(sel_hdmimode, env_get("colorattribute"));
 
-	/* when current output color depth is 8bit, mask hdr capability */
-	/* refer to SWPL-44445 for more detail */
+	/*
+	 * when current output color depth is 8bit, mask hdr capability
+	 * refer to SWPL-44445 for more detail
+	 */
 	if (hdev->para->cd == COLORDEPTH_24B)
 		memset(&hdev->RXCap.hdr_info, 0, sizeof(struct hdr_info));
 }
 
-/* If environment qms_en is true, and RX supports QMS, and the
+/*
+ * If environment qms_en is true, and RX supports QMS, and the
  * output mode is BRR then enable TX QMS
  */
 static void qms_scene_pre_process(struct hdmitx_dev *hdev)
@@ -172,7 +201,8 @@ static void qms_scene_pre_process(struct hdmitx_dev *hdev)
 	char *mode;
 	int i;
 
-	hdev->qms_en = 0; /* default as 0 */
+	/* default as 0 */
+	hdev->qms_en = 0;
 	/* if current mode is interlaced mode, then skip QMS */
 	mode = env_get("hdmimode");
 	if (!mode)
@@ -213,7 +243,7 @@ static void qms_scene_post_process(struct hdmitx_dev *hdev)
 {
 	const struct hdmi_timing *t = NULL;
 
-	// Init QMS parameter
+	/* Init QMS parameter */
 	vrr_init_qms_para(hdev);
 
 	/* set the BRR name as hdmimode and outputmode */
@@ -221,7 +251,8 @@ static void qms_scene_post_process(struct hdmitx_dev *hdev)
 		t = hdmitx21_gettiming_from_vic(hdev->brr_vic);
 		if (t) {
 			env_set("hdmimode", t->sname ? t->sname : t->name);
-			env_set("outputmode", env_get("hdmimode")); /* reassing to outputmode */
+			/* reassing to outputmode */
+			env_set("outputmode", env_get("hdmimode"));
 			pr_info("set outputmode as %s %d\n", env_get("outputmode"), hdev->brr_vic);
 		}
 	}
@@ -271,7 +302,8 @@ static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 	} else { /* "output" */
 		if (!hdev->pxp_mode) {
 			if (!hdmitx_edid_check_data_valid(0, hdev->rawedid)) {
-				/* in SWPL-34712: if EDID parsing error in kernel,
+				/*
+				 * in SWPL-34712: if EDID parsing error in kernel,
 				 * only forcely output default mode(480p,RGB,8bit)
 				 * in sysctl, not save the default mode to env.
 				 * if uboot follow this rule, will cause issue OTT-19333:
@@ -328,7 +360,8 @@ static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 			}
 			break;
 		default:
-			/* In Spec2.1 Table 7-34, v_active greater than or equal to 2160 and refresh
+			/*
+			 * In Spec2.1 Table 7-34, v_active greater than or equal to 2160 and refresh
 			 * rate greater than 30 will support y420
 			 * Only the S5 will run this case, because 4k 50/60hz has already been
 			 * filtered and only S5 support over 6G (4k 100/120hz)
@@ -350,7 +383,8 @@ static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 		}
 		printf("set hdmitx VIC = %d CS = %d CD = %d\n",
 			hdev->vic, hdev->para->cs, hdev->para->cd);
-		/* currently, hdmi mode is always set, if
+		/*
+		 * currently, hdmi mode is always set, if
 		 * mode set abort/exit, need to add return
 		 * result of mode setting, so that vout
 		 * driver will pass it to kernel, and do
@@ -549,7 +583,8 @@ static int do_debug(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 	return 1;
 }
 
-/* step1, only select VIC which is supported in EDID
+/*
+ * step1, only select VIC which is supported in EDID
  * step2, check if VIC is supported by SOC hdmitx
  * step3, build format with basic mode/attr and check
  * if it's supported by EDID/hdmitx_cap
@@ -569,8 +604,10 @@ static void disp_cap_show(struct hdmitx_dev *hdev)
 
 	memset(edid_vics, 0, vic_len * sizeof(int));
 
-	/* step1: only select VIC which is supported in EDID */
-	/*copy edid vic list*/
+	/*
+	 * step1: only select VIC which is supported in EDID
+	 * copy edid vic list
+	 */
 	if (prxcap->VIC_count > 0)
 		memcpy(edid_vics, prxcap->VIC, sizeof(int) * prxcap->VIC_count);
 	for (i = 0; i < VESA_MAX_TIMING && prxcap->vesa_timing[i]; i++)
@@ -591,21 +628,22 @@ static void disp_cap_show(struct hdmitx_dev *hdev)
 
 		timing = hdmitx_mode_vic_to_hdmi_timing(vic);
 		if (!timing) {
-			// HDMITX_ERROR("%s: unsupport vic [%d]\n", __func__, vic);
+			/* HDMITX_ERROR("%s: unsupport vic [%d]\n", __func__, vic); */
 			continue;
 		}
 
 		/* step2, check if VIC is supported by SOC hdmitx */
 		if (hdmitx_common_validate_vic(&hdev->tx_common, vic) != 0) {
-			// HDMITX_ERROR("%s: vic[%d] over range.\n", __func__, vic);
+			/* HDMITX_ERROR("%s: vic[%d] over range.\n", __func__, vic); */
 			continue;
 		}
 
-		/* step3, build format with basic mode/attr and check
+		/*
+		 * step3, build format with basic mode/attr and check
 		 * if it's supported by EDID/hdmitx_cap
 		 */
 		if (hdmitx_common_check_valid_para_of_vic(&hdev->tx_common, vic) != 0) {
-			//HDMITX_ERROR("%s: vic[%d] check fmt attr failed.\n", __func__, vic);
+			/* HDMITX_ERROR("%s: vic[%d] check fmt attr failed.\n", __func__, vic); */
 			continue;
 		}
 
@@ -807,7 +845,8 @@ static void edid_cap_show(struct hdmitx_dev *hdev)
 	printf("EDID Version: %d.%d\n",
 		prxcap->edid_version, prxcap->edid_revision);
 
-/*	printf(
+/*
+ *	printf(
  *		"EDID block number: 0x%x\n", tx_comm->EDID_buf[0x7e]);
  *
  *
@@ -819,7 +858,7 @@ static void edid_cap_show(struct hdmitx_dev *hdev)
  *		hdmitx_device->hdmi_info.vsdb_phy_addr.d);
  */
 
-	// TODO native_vic2
+	/* TODO native_vic2 */
 	printf("native Mode %x, VIC (native %d):\n",
 		prxcap->native_Mode, prxcap->native_vic);
 
@@ -930,7 +969,8 @@ static void edid_cap_show(struct hdmitx_dev *hdev)
 	printf("\n");
 	printf("additional_vsif_num: %d\n", prxcap->additional_vsif_num);
 	printf("ifdb_present: %d\n", prxcap->ifdb_present);
-	/* for checkvalue which maybe used by application to adjust
+	/*
+	 * for checkvalue which maybe used by application to adjust
 	 * whether edid is changed
 	 */
 	printf("checkvalue: %s\n", prxcap->hdmichecksum);
@@ -988,7 +1028,8 @@ static int xtochar(int num, char *checksum)
 	return 0;
 }
 
-/* hdr_priority definition:
+/*
+ * hdr_priority definition:
  *   strategy1: bit[3:0]
  *       0: original cap
  *       1: disable dolby vision cap
@@ -1002,7 +1043,8 @@ static int xtochar(int num, char *checksum)
  *       1: strategy2
  */
 
-/* for uboot, there is no need to dynamically change the hdr_priority as
+/*
+ * for uboot, there is no need to dynamically change the hdr_priority as
  * kernel. So below functions only implement the disable_xxx_info() function,
  * and leave the enable_xxx_info as blank
  */
@@ -1236,7 +1278,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 	struct meson_policy_out output;
 	struct hdmi_format_para *para = NULL;
 	bool mode_support = false;
-	/* hdmi_mode / colorattribute may be null or "none".
+	/*
+	 * hdmi_mode / colorattribute may be null or "none".
 	 * if either is null or "none", it means user not
 	 * selected manually, and need to select the best
 	 * mode or colorattribute by policy
@@ -1315,7 +1358,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 			mode_support = false;
 		}
 
-		/* if user selected mode/color/dv type which saved in ubootenv of
+		/*
+		 * if user selected mode/color/dv type which saved in ubootenv of
 		 * hdmimode/user_colorattribute/user_prefer_dv_type are different
 		 * with last actual output mode/color/dv type which saved in
 		 * ubootenv of outputmode/colorattribute/dolby_status, then it means
@@ -1331,7 +1375,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 		 * there will be always a mode change during bootup
 		 */
 		if (mode_support) {
-			/* note that for T7 multi-display, it may store panel in
+			/*
+			 * note that for T7 multi-display, it may store panel in
 			 * "outputmode" env, and will always run uboot policy
 			 */
 			if (!last_output_mode || strcmp(hdmimode, last_output_mode))
@@ -1351,7 +1396,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 				last_dv_status);
 		}
 	}
-	/* When outputting frl mode, if frl training fails under uboot,
+	/*
+	 * When outputting frl mode, if frl training fails under uboot,
 	 * in order to ensure that it is displayed under uboot, change
 	 * to the default TMDS mode for output display. systemctrl
 	 * maintains the original 8k policy. After the subsequent systermctrl
@@ -1361,7 +1407,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 	if (hdev->frl_train_fail_flag) {
 		save_default_720p();
 	} else if (hdev->RXCap.edid_changed || no_manual_output || !mode_support || over_write) {
-	/* 4 cases need to decide output by uboot mode select policy:
+	/*
+	 * 4 cases need to decide output by uboot mode select policy:
 	 * 1.TV changed
 	 * 2.either hdmimode or colorattribute is NULL or "none",
 	 * which means that user have not selected mode or colorattribute,
@@ -1376,26 +1423,33 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 		scene_process(hdev, &output);
 		env_set("hdmichecksum", hdev->RXCap.hdmichecksum);
 		if (hdmitx_edid_check_data_valid(0, hdev->rawedid)) {
-			/* SWPL-34712: if EDID parsing error case, not save env,
+			/*
+			 * SWPL-34712: if EDID parsing error case, not save env,
 			 * only output default mode(480p,RGB,8bit). after
 			 * EDID read OK, systemcontrol will recover the hdmi
 			 * mode from env, to avoid keep the default hdmi output
 			 */
 			memcpy(sel_hdmimode, output.displaymode,
 				sizeof(output.displaymode));
-			if (is_hdmi_mode(env_get("outputmode"))) {
-				env_set("outputmode",
+			/* The outputmode must be saved based on the value of connectorX_type. */
+			if (env_get("connector0_type") &&
+			    is_valid_hdmi(env_get("connector0_type"))) {
+				env_set("outputmode", output.displaymode);
+			} else if (env_get("connector1_type") &&
+			is_valid_hdmi(env_get("connector1_type"))) {
+				env_set("outputmode2", output.displaymode);
+			} else if (env_get("connector2_type") &&
+			is_valid_hdmi(env_get("connector2_type"))) {
+				env_set("outputmode3", output.displaymode);
+			} else {
+				pr_info("no config connectorX_type, save default %s outputmode\n",
 					output.displaymode);
-			} else if (is_hdmi_mode(env_get("outputmode2"))) {
-				env_set("outputmode2",
-					output.displaymode);
-			} else if (is_hdmi_mode(env_get("outputmode3"))) {
-				env_set("outputmode3",
-					output.displaymode);
+				env_set("outputmode", output.displaymode);
 			}
 			env_set("colorattribute",
 			       output.deepcolor);
-			/* if change from DV TV to HDR/SDR TV, don't change
+			/*
+			 * if change from DV TV to HDR/SDR TV, don't change
 			 * DV status to disabled, as DV core need to be enabled.
 			 * that's to say connect DV TV & output DV-> power down box ->
 			 * connect HDR/SDR TV -> power on box, the dolby_status
@@ -1405,7 +1459,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 			    output.amdv_type != DOLBY_VISION_DISABLE) {
 				sprintf(dv_type, "%d", output.amdv_type);
 				env_set("dolby_status", dv_type);
-				/* according to the policy of systemcontrol,
+				/*
+				 * according to the policy of systemcontrol,
 				 * if current DV mode is not supported by TV
 				 * EDID, DV type maybe changed to one witch
 				 * TV support, and need VPP/DV module to

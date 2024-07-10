@@ -73,8 +73,11 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"uart_base=0xfe07a000\0"\
 	"usb_burning=" CONFIG_USB_TOOL_ENTRY "\0"\
-	"panel_type=dsi_0\0"\
+	"panel_type=mipi_0\0"\
+	"connector0_type=HDMI-A-A\0" \
+	"connector1_type=NULL\0" \
 	"outputmode=1080p60hz\0"\
+	"outputmode2=10080p60hz\0"\
 	"hdmimode=none\0"\
 	"qms_en=1\0"\
 	"colorattribute=444,8bit\0"\

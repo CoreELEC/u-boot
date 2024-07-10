@@ -49,6 +49,7 @@ EXEC_ARGS="${EXEC_ARGS} --infile-blob-bl32=${BASEDIR_INPUT_BLOB}/blob-bl32.bin.s
 
 ### Features, flags and switches ###
 EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
+EXEC_ARGS="${EXEC_ARGS} --size-payload-bl30=90112"
 if [ "$CS_SIGNING_SCHEME" == "rsa" ]; then
   EXEC_ARGS="${EXEC_ARGS} --chipset-authen-algorithm=rsa,none"
 elif [ "$CS_SIGNING_SCHEME" == "rsa-mldsa" ]; then

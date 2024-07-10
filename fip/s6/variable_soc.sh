@@ -74,7 +74,7 @@ declare -a BLX_BIN_SIZE=("272384"	\
 			 "102400"	\
 			 "NULL")
 
-declare BL30_BIN_SIZE="65536"
+declare BL30_BIN_SIZE="90112"
 declare BL33_BIN_SIZE="1572864"
 declare DEV_ACS_BIN_SIZE="7168"
 declare -a BLX_RAWBIN_NAME=("bl2.bin.sto"	\

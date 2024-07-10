@@ -290,6 +290,7 @@ function mk_devfip() {
 			--infile-bl33-payload=${payload}/bl33.bin \
 			--outfile-device-fip=${output}/device-fip.bin \
 			--header-layout=mini \
+			--size-payload-bl30=90112	\
 			--chipset-authen-algorithm=rsa,mldsa-draft1 \
 			--device-authen-algorithm=rsa,mldsa-draft1
 

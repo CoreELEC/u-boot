@@ -92,6 +92,7 @@ EXEC_ARGS="${EXEC_ARGS} --outfile-blob-bl${BLOB_NAME}=${BASEDIR_OUTPUT_BLOB}/blo
 
 ### full Device FIP Header
 EXEC_ARGS="${EXEC_ARGS} --header-layout=mini"
+EXEC_ARGS="${EXEC_ARGS} --size-payload-bl30=90112"
 
 #echo ${EXEC_ARGS}
 

@@ -18,7 +18,8 @@
 /* 20240620: optimize tcon multi data set */
 /* 20240704: lcd tcon support user info */
 /* 20240710: add support for S6 */
-#define LCD_DRV_VERSION    "20240710"
+/* 20240712: lcd tcon lut dma flow optimize */
+#define LCD_DRV_VERSION    "20240712"
 
 extern unsigned long clk_util_clk_msr(unsigned long clk_mux);
 

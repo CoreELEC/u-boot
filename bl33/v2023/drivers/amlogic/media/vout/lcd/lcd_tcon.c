@@ -897,6 +897,8 @@ static int lcd_tcon_reserved_mem_data_load(struct aml_lcd_drv_s *pdrv)
 							tcon_mm_table.data_mem_vaddr[i], size);
 						free(tcon_mm_table.data_mem_vaddr[i]);
 						tcon_mm_table.data_mem_vaddr[i] = vaddr;
+
+						flush_cache((unsigned long)vaddr, size);
 					} else {
 						free(tcon_mm_table.data_mem_vaddr[i]);
 						tcon_mm_table.data_mem_vaddr[i] = NULL;
@@ -1735,6 +1737,30 @@ static struct lcd_tcon_axi_mem_cfg_s axi_mem_cfg_tbl_txhd2[] = {
 	{ TCON_AXI_MEM_TYPE_DEMURA, 0x00100000, 0x19b, 0 },  /* 1M */
 };
 
+static struct lcd_tcon_dma_ops_s lcd_tcon_dma_ops_t5m = {
+	.status = 0,
+	.addr_list = NULL,
+	.get_frame_cnt = tcon_lut_dma_get_frame_cnt,
+	.start = tcon_lut_dma_start,
+	.stop = tcon_lut_dma_stop,
+	.mif_set = tcon_lut_dma_mif_set,
+	.init = tcon_lut_dma_init_t5m,
+	.deinit = tcon_lut_dma_deinit,
+	.init_trans = lcd_tcon_dma_data_init_trans,
+};
+
+static struct lcd_tcon_dma_ops_s lcd_tcon_dma_ops_t3x = {
+	.status = 0,
+	.addr_list = NULL,
+	.get_frame_cnt = tcon_lut_dma_get_frame_cnt,
+	.start = tcon_lut_dma_start,
+	.stop = tcon_lut_dma_stop,
+	.mif_set = tcon_lut_dma_mif_set,
+	.init = tcon_lut_dma_init_t3x,
+	.deinit = tcon_lut_dma_deinit,
+	.init_trans = lcd_tcon_dma_data_init_trans,
+};
+
 static struct lcd_tcon_config_s tcon_data_tl1 = {
 	.tcon_valid = 0,
 
@@ -1773,7 +1799,7 @@ static struct lcd_tcon_config_s tcon_data_tl1 = {
 	.tcon_disable = lcd_tcon_disable_tl1,
 	.tcon_forbidden_check = NULL,
 	.tcon_check = NULL,
-	.lut_dma_data_init_trans = NULL,
+	.lut_dma_ops = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_t5 = {
@@ -1816,7 +1842,7 @@ static struct lcd_tcon_config_s tcon_data_t5 = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5,
 	.tcon_check = lcd_tcon_setting_check_t5,
-	.lut_dma_data_init_trans = NULL,
+	.lut_dma_ops = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_t5d = {
@@ -1859,7 +1885,7 @@ static struct lcd_tcon_config_s tcon_data_t5d = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5d,
 	.tcon_check = lcd_tcon_setting_check_t5d,
-	.lut_dma_data_init_trans = NULL,
+	.lut_dma_ops = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_t3 = {
@@ -1902,7 +1928,7 @@ static struct lcd_tcon_config_s tcon_data_t3 = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5,
 	.tcon_check = lcd_tcon_setting_check_t5,
-	.lut_dma_data_init_trans = NULL,
+	.lut_dma_ops = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_t5m = {
@@ -1937,6 +1963,7 @@ static struct lcd_tcon_config_s tcon_data_t5m = {
 
 	.axi_tbl_len = ARRAY_SIZE(axi_mem_cfg_tbl_t5),
 	.axi_mem_cfg_tbl = axi_mem_cfg_tbl_t5,
+	.lut_dma_ops = &lcd_tcon_dma_ops_t5m,
 
 	.tcon_init_table_pre_proc = lcd_tcon_init_table_pre_proc,
 	.tcon_global_reset = lcd_tcon_global_reset_t3,
@@ -1945,10 +1972,6 @@ static struct lcd_tcon_config_s tcon_data_t5m = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5,
 	.tcon_check = lcd_tcon_setting_check_t5,
-	.lut_dma_data_init_trans = lcd_tcon_dma_data_init_trans,
-	.lut_dma_mif_set = lcd_tcon_lut_dma_mif_set_t5m,
-	.lut_dma_enable = lcd_tcon_lut_dma_enable_t5m,
-	.lut_dma_disable = lcd_tcon_lut_dma_disable_t5m,
 };
 
 static struct lcd_tcon_config_s tcon_data_t5w = {
@@ -1983,6 +2006,7 @@ static struct lcd_tcon_config_s tcon_data_t5w = {
 
 	.axi_tbl_len = ARRAY_SIZE(axi_mem_cfg_tbl_t5),
 	.axi_mem_cfg_tbl = axi_mem_cfg_tbl_t5,
+	.lut_dma_ops = NULL,
 
 	.tcon_init_table_pre_proc = lcd_tcon_init_table_pre_proc,
 	.tcon_global_reset = lcd_tcon_global_reset_t3,
@@ -1991,7 +2015,6 @@ static struct lcd_tcon_config_s tcon_data_t5w = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5,
 	.tcon_check = lcd_tcon_setting_check_t5,
-	.lut_dma_data_init_trans = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_t3x = {
@@ -2026,6 +2049,7 @@ static struct lcd_tcon_config_s tcon_data_t3x = {
 
 	.axi_tbl_len = ARRAY_SIZE(axi_mem_cfg_tbl_t3x),
 	.axi_mem_cfg_tbl = (axi_mem_cfg_tbl_t3x),
+	.lut_dma_ops = &lcd_tcon_dma_ops_t3x,
 
 	.tcon_init_table_pre_proc = lcd_tcon_init_table_pre_proc,
 	.tcon_global_reset = lcd_tcon_global_reset_t3x,
@@ -2034,7 +2058,6 @@ static struct lcd_tcon_config_s tcon_data_t3x = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5,
 	.tcon_check = lcd_tcon_setting_check_t5,
-	.lut_dma_data_init_trans = NULL,
 };
 
 static struct lcd_tcon_config_s tcon_data_txhd2 = {
@@ -2069,6 +2092,7 @@ static struct lcd_tcon_config_s tcon_data_txhd2 = {
 
 	.axi_tbl_len = ARRAY_SIZE(axi_mem_cfg_tbl_txhd2),
 	.axi_mem_cfg_tbl = axi_mem_cfg_tbl_txhd2,
+	.lut_dma_ops = NULL,
 
 	.tcon_init_table_pre_proc = lcd_tcon_init_table_pre_proc,
 	.tcon_global_reset = lcd_tcon_global_reset_t5,
@@ -2077,7 +2101,6 @@ static struct lcd_tcon_config_s tcon_data_txhd2 = {
 	.tcon_disable = lcd_tcon_disable_t5,
 	.tcon_forbidden_check = lcd_tcon_forbidden_check_t5d,
 	.tcon_check = lcd_tcon_setting_check_t5d,
-	.lut_dma_data_init_trans = NULL,
 };
 
 int lcd_tcon_probe(char *dt_addr, struct aml_lcd_drv_s *pdrv, int load_id)

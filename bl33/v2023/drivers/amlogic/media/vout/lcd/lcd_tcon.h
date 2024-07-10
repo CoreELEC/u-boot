@@ -16,6 +16,18 @@ struct lcd_tcon_axi_mem_cfg_s {
 	unsigned int mem_valid;
 };
 
+struct lcd_tcon_dma_ops_s {
+	int status;
+	struct  list_head *addr_list;
+	int (*get_frame_cnt)(struct aml_lcd_drv_s *pdrv);
+	void (*start)(struct aml_lcd_drv_s *pdrv);
+	void (*stop)(struct aml_lcd_drv_s *pdrv);
+	void (*mif_set)(struct aml_lcd_drv_s *pdrv, phys_addr_t paddr, unsigned int size);
+	void (*init)(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+	void (*deinit)(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+	void (*init_trans)(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+};
+
 struct lcd_tcon_config_s {
 	unsigned char tcon_valid;
 
@@ -48,6 +60,7 @@ struct lcd_tcon_config_s {
 
 	unsigned int axi_tbl_len;
 	struct lcd_tcon_axi_mem_cfg_s *axi_mem_cfg_tbl;
+	struct lcd_tcon_dma_ops_s *lut_dma_ops;
 
 	void (*tcon_axi_mem_config)(void);
 	void (*tcon_init_table_pre_proc)(unsigned char *table);
@@ -59,9 +72,7 @@ struct lcd_tcon_config_s {
 	int (*tcon_check)(struct aml_lcd_drv_s *pdrv, struct lcd_detail_timing_s *ptiming,
 			unsigned char *core_reg_table, char *ferr_str, char *warn_str);
 	void (*lut_dma_data_init_trans)(struct aml_lcd_drv_s *pdrv);
-	void (*lut_dma_mif_set)(phys_addr_t paddr, unsigned int size);
-	void (*lut_dma_enable)(struct aml_lcd_drv_s *pdrv);
-	void (*lut_dma_disable)(struct aml_lcd_drv_s *pdrv);
+
 };
 
 struct tcon_rmem_config_s {
@@ -207,10 +218,15 @@ int handle_tcon_data_load(unsigned char **buf, unsigned int index);
 #define TCON_VAC_SET_PARAM_NUM    3
 #define TCON_VAC_LUT_PARAM_NUM    256
 
-void lcd_tcon_dma_data_init_trans(struct aml_lcd_drv_s *pdrv);
-void lcd_tcon_lut_dma_mif_set_t5m(phys_addr_t paddr, unsigned int size);
-void lcd_tcon_lut_dma_enable_t5m(struct aml_lcd_drv_s *pdrv);
-void lcd_tcon_lut_dma_disable_t5m(struct aml_lcd_drv_s *pdrv);
+int tcon_lut_dma_get_frame_cnt(struct aml_lcd_drv_s *pdrv);
+void tcon_lut_dma_start(struct aml_lcd_drv_s *pdrv);
+void tcon_lut_dma_stop(struct aml_lcd_drv_s *pdrv);
+void tcon_lut_dma_mif_set(struct aml_lcd_drv_s *pdrv, phys_addr_t paddr, unsigned int size);
+void tcon_lut_dma_init_t5m(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+void tcon_lut_dma_init_t3x(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+void tcon_lut_dma_deinit(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+void lcd_tcon_lut_dma_update(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
+void lcd_tcon_dma_data_init_trans(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops);
 
 void lcd_tcon_init_data_version_update(char *data_buf);
 int lcd_tcon_data_multi_init_check(struct aml_lcd_drv_s *pdrv,

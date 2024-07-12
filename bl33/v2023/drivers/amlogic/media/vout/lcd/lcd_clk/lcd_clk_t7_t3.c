@@ -1495,6 +1495,7 @@ static struct lcd_clk_data_s lcd_clk_data_t7_0 = {
 
 	.vclk_sel = 0,
 	.enc_clk_msr_id = 222,
+	.fifo_clk_msr_id = -1,
 
 	.div_sel_max = CLK_DIV_SEL_MAX,
 	.xd_max = 256,
@@ -1550,6 +1551,7 @@ static struct lcd_clk_data_s lcd_clk_data_t7_1 = {
 
 	.vclk_sel = 0,
 	.enc_clk_msr_id = 221,
+	.fifo_clk_msr_id = -1,
 
 	.div_sel_max = CLK_DIV_SEL_MAX,
 	.xd_max = 128,
@@ -1605,6 +1607,7 @@ static struct lcd_clk_data_s lcd_clk_data_t7_2 = {
 
 	.vclk_sel = 0,
 	.enc_clk_msr_id = 220,
+	.fifo_clk_msr_id = -1,
 
 	.div_sel_max = CLK_DIV_SEL_MAX,
 	.xd_max = 128,
@@ -1660,6 +1663,7 @@ static struct lcd_clk_data_s lcd_clk_data_t3_0 = {
 
 	.vclk_sel = 0,
 	.enc_clk_msr_id = 222,
+	.fifo_clk_msr_id = -1,
 
 	.div_sel_max = CLK_DIV_SEL_MAX,
 	.xd_max = 128,
@@ -1715,6 +1719,7 @@ static struct lcd_clk_data_s lcd_clk_data_t3_1 = {
 
 	.vclk_sel = 0,
 	.enc_clk_msr_id = 221,
+	.fifo_clk_msr_id = -1,
 
 	.div_sel_max = CLK_DIV_SEL_MAX,
 	.xd_max = 128,

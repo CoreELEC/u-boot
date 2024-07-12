@@ -166,8 +166,8 @@ struct ext_lcd_config_s ext_lcd0_config[LCD_NUM_MAX] = {
 		"dsi_0", LCD_MIPI, 8,
 		/* basic timing */
 		1200, 1920, 1366, 1951, 1, 32, 0, 1, 14, 0,
-		0, 0, 1, 164000000, Rsv_val, Rsv_val, Rsv_val, Rsv_val, Rsv_val, Rsv_val,
-		4, 1001, 0, 1, 0, 2, 1, 0, Rsv_val, Rsv_val,
+		0, 0, 1, 162569000, Rsv_val, Rsv_val, Rsv_val, Rsv_val, Rsv_val, Rsv_val,
+		4, 995, 0, 1, 0, 2, 1, 0, Rsv_val, Rsv_val,
 		/* cmd init */
 		dsi0_init_on_tb, NULL,
 		/* power step */

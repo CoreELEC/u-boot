@@ -57,7 +57,7 @@ template_dir=""
 rootkey_index=0
 output_dir=""
 arb_config=""
-device_soc=""
+device_soc="s7"
 
 parse_main() {
     local i=0
@@ -89,6 +89,11 @@ parse_main() {
             --device-soc)
                 device_soc="${argv[$i]}"
 		;;
+			--signpipe)
+				CONFIG_SIGNPIPE=1
+                echo "Enable SignPipe"
+                export CONFIG_SIGNPIPE
+        continue;;
             --rsa-size)
                 size="${argv[$i]}"
 		;;
@@ -164,6 +169,18 @@ ${BASEDIR_TOP}/gen_all_device_key.sh \
     --out-dir "${stbm_key_dir}/outdir" \
     --key-dir "${stbm_key_dir}/keydir"
 
+if [ "x1" == "x${CONFIG_SIGNPIPE}" ]; then
+${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
+    --template-dir "$template_dir" \
+    --project "$part" \
+	--signpipe		\
+	--device-soc "$device_soc" \
+    --arb-config "$arb_config" \
+    --out-dir "${stbm_key_dir}/outdir" \
+    --key-dir "${stbm_key_dir}/keydir"
+
+else
+
 ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
     --template-dir "$template_dir" \
     --project "$part" \
@@ -171,5 +188,7 @@ ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
     --arb-config "$arb_config" \
     --out-dir "${stbm_key_dir}/outdir" \
     --key-dir "${stbm_key_dir}/keydir"
+
+fi
 
 ${EXEC_BASEDIR}/bin/stbm-prepare-sign-request.sh "${stbm_key_dir}" "${out_vmx_dir}" "$part"

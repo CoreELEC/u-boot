@@ -117,6 +117,7 @@ parse_main() {
 
 EXEC_BASEDIR=$(dirname $(readlink -f $0))
 ACPU_IMAGETOOL=${EXEC_BASEDIR}/../../../binary-tool/acpu-imagetool
+SIGNPIPE_TOOL=${EXEC_BASEDIR}/../../../binary-tool/demo-sign.py
 key_dir=""
 vmx_cert_path=""
 rootkey_index=0
@@ -219,7 +220,9 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-rootrsa=${BASEDIR_RSAKEY_ROOT}/n
 ### Input: Device Level-1 Cert ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/device-lvl1rsa-nonce.bin"
 
+if [ "x1" != "x${CONFIG_SIGNPIPE}" ]; then
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl1=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-1-rsa-priv.pem"
+fi
 
 ### Input: Device Level-2 Cert ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-pub.pem"
@@ -249,9 +252,16 @@ echo ${TOOLS_ARGS}
 #
 # Main
 #
-
+if [ "x1" != "x${CONFIG_SIGNPIPE}" ]; then
 ${ACPU_IMAGETOOL} \
         create-boot-blobs \
         ${BB1ST_ARGS}
+
+else
+${ACPU_IMAGETOOL} \
+		create-boot-blobs \
+		--cmd-signpipe-device-lvl1="${SIGNPIPE_TOOL} ${EXEC_BASEDIR}/../../../../../dv_scs_keys/boot-blobs/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}/key/level-1-rsa-priv.pem"	\
+		${BB1ST_ARGS}
+fi
 
 # vim: set tabstop=4 expandtab shiftwidth=4:

@@ -106,6 +106,11 @@ parse_main() {
             --device-soc)
                 device_soc="${argv[$i]}"
 		;;
+			--signpipe)
+				CONFIG_SIGNPIPE=1
+                echo "Enable SignPipe"
+                export CONFIG_SIGNPIPE
+		continue;;
             --storage-type)
                 storage_type="${argv[$i]}"
 	        ;;
@@ -195,15 +200,17 @@ fi
 
 # Copy other files
 #LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/template/${part}/rootrsa-${rootkey_index}/device-fip-header.bin"
+if [ "x1" != "x${CONFIG_SIGNPIPE}" ]; then
 LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-2-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-1-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-2-rsa-pub.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl30-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl40-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl31-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl32-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl33-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/krnl-level-3-rsa-priv.pem"
+fi
+LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-2-rsa-pub.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl30.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-krnl.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl33.bin"

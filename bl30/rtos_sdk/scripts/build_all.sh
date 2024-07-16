@@ -5,11 +5,27 @@
 # SPDX-License-Identifier: MIT
 #
 
+#Used filter mode and set the repository list with manual mode,plese use '#' to split
+#For example:source scripts/build_all.sh rtos_sdk/arch/arm64#rtos_sdk/libc#
 [ -z "$OUTPUT_DIR" ] && OUTPUT_DIR=$PWD/output
 [ ! -d $OUTPUT_DIR ] && mkdir -p $OUTPUT_DIR
 
 [ -z "$BUILD_LOG" ] && BUILD_LOG="$OUTPUT_DIR/build.log"
 [ -z "$LAST_BUILD_FAILURE" ] && LAST_BUILD_FAILURE="$OUTPUT_DIR/.last_build_failure"
+
+if [ "$1" == "auto" ]; then
+	CHG_REPO=$(python3 scripts/repositories_changed_filter.py)
+else
+	CHG_REPO="$1"
+fi
+if [ "$CHG_REPO" == "" ]; then
+	use_filter=0
+else
+	echo "Changed repositories:$CHG_REPO"
+	use_filter=1
+fi
+
+failed_numer=0
 
 # Clear build.log
 cat <<EOF > $BUILD_LOG
@@ -50,8 +66,22 @@ while IFS= read -r LINE; do
 	[ "$?" -ne 0 ] && echo "Ignore unsupported combination! $LINE" && continue
 	make distclean
 	[ "$?" -ne 0 ] && echo "Failed to make distclean! $LINE" && return 2
-	echo -n -e "$nr. Building $LINE ...\t"
-	make >> $BUILD_LOG 2>&1
+	if [ "$use_filter" -eq 1 ]; then
+		make config  >> $BUILD_LOG 2>&1
+		array=($LINE)
+		python3 scripts/projects_changed_filter.py "$OUTPUT_DIR" "$LINE" "$CHG_REPO"
+		is_need_compile=$?
+		if [ "$is_need_compile" -eq 1 ]; then
+			echo -n -e "$nr. Building $LINE ...\t"
+			make >> $BUILD_LOG 2>&1
+		else
+			echo -n -e "$nr. $LINE is not changed, building none...\t"
+			:
+		fi
+	else
+		echo -n -e "$nr. Building $LINE ...\t"
+		make >> $BUILD_LOG 2>&1
+	fi
 	[ "$?" -ne 0 ] && echo "failed!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with errors!\n" && return 3
 	grep -qr "warning: " $BUILD_LOG
 	[ "$?" -eq 0 ] && echo "with warnings!" && cat $BUILD_LOG && touch $LAST_BUILD_FAILURE && echo -e "\nAborted with warnings!\n" && return 1

@@ -30,6 +30,7 @@ static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO	GPIOC_7
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
+#define HDMI_PW	GPIOH_6
 
 #define PWR_STATE_WAIT_ON	16
 
@@ -183,6 +184,21 @@ void str_power_off(int shutdown_flag)
 
 	(void)shutdown_flag;
 
+	/***power off hdmi_pw when shutdown***/
+	if (shutdown_flag == 1) {
+		ret = xGpioSetDir(HDMI_PW, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("hdmi_pw set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(HDMI_PW, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("hdmi_pw set gpio val fail\n");
+			return;
+		}
+	}
+
 	/***power off vcc_5v***/
 	ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
 	if (ret < 0) {
@@ -194,23 +210,6 @@ void str_power_off(int shutdown_flag)
 	if (ret < 0) {
 		printf("vcc_5v gpio val fail\n");
 		return;
-	}
-
-	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		/*
-		ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_LOW);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
-		*/
 	}
 
 	/***power off A55 vdd_cpu***/

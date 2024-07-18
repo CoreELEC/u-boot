@@ -37,6 +37,7 @@ static TaskHandle_t printTask;
 
 #define VCC5V_GPIO	GPIOC_7
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
+#define HDMI_PW	GPIOH_6
 
 static int vdddos_npu_vpu;
 static TaskHandle_t vadTask;
@@ -204,6 +205,20 @@ void str_power_off(int shutdown_flag)
 	start_debug_task();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
+		/***power off hdmi_pw when shutdown***/
+		if (shutdown_flag == 1) {
+			ret = xGpioSetDir(HDMI_PW, GPIO_DIR_OUT);
+			if (ret < 0) {
+				printf("hdmi_pw set gpio dir fail\n");
+				return;
+			}
+
+			ret = xGpioSetValue(HDMI_PW, GPIO_LEVEL_LOW);
+			if (ret < 0) {
+				printf("hdmi_pw set gpio val fail\n");
+				return;
+			}
+		}
 
 		/***power off vcc_5v***/
 		ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);

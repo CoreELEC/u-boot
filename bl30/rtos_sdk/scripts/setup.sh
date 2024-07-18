@@ -22,8 +22,21 @@ RTOS_SDK_MANIFEST_OLD_FILE="$kernel_BUILD_DIR/rtos_sdk_manifest_old.xml"
 STAMP="$kernel_BUILD_DIR/.stamp"
 RTOS_SDK_VERSION_FILE="$kernel_BUILD_DIR/sdk_ver.h"
 
-# Use repo in .repo/repo dir,otherwise use in system dir
-export PATH=$PWD/.repo/repo:$PATH
+# Use repo in .repo/repo dir,otherwise use in system default location
+repo_root_dir=$PWD
+while [ "$repo_root_dir" != "/" ]; do
+	if [ -d "$repo_root_dir/.repo" ]; then
+		break
+	fi
+	repo_root_dir=$(dirname "$repo_root_dir")
+done
+if [ "$repo_root_dir" == "/" ] && [ ! -d "/.repo" ]; then
+	echo ".repo not found,use system default location."
+else
+	echo ".repo at: $repo_root_dir/.repo"
+	export PATH=$repo_root_dir/.repo/repo:$PATH
+fi
+
 # Check whether the project is a valid repo
 repo manifest 2>&1 | grep -q $build_dir
 if [ "$?" -ne 0 ]; then

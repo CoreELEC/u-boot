@@ -1281,7 +1281,8 @@ void osd_setting_default_hwc(u32 index, struct pandata_s *disp_data)
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T7 ||
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T3 ||
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5W ||
-	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5M)
+	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5M ||
+	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T6D)
 		postbld_src3_sel = 4;
 
 	/* for s5_display, OSDx to din(x+1) */
@@ -4931,7 +4932,8 @@ void osd_init_hw(void)
 #endif
 	if (osd_get_chip_type() == MESON_CPU_MAJOR_ID_T3 ||
 		osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5W ||
-		osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5M)
+		osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5M ||
+		osd_get_chip_type() == MESON_CPU_MAJOR_ID_T6D)
 		osd_hw.path_ctrl_independ = 1;
 
 #ifdef AML_S5_DISPLAY
@@ -5188,7 +5190,8 @@ void osd_init_hw(void)
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T5M ||
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_S7 ||
 	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_S7D ||
-	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_S6)
+	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_S6 ||
+	    osd_get_chip_type() == MESON_CPU_MAJOR_ID_T6D)
 		osd_hw.mif_linear = 1;
 
 	return;

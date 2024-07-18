@@ -1248,19 +1248,19 @@ const char *part_name[] = {
 static int spinand_add_boot_partitions(struct mtd_info *mtd,
 				       uint64_t *normal_part_offset)
 {
-	struct mtd_partition boot_parts[MAX_BOOT_AREA_ENTRIES];
+	struct mtd_partition boot_parts[MAX_BOOT_AREA_ENTRIES] = {0};
 	uint64_t tpl_start, tpl_size;
 	int i, parts_num = 2;
 
 	SET_PART(boot_parts[0], BOOT_BL2, 0, BOOT_TOTAL_PAGES * mtd->writesize);
-	tpl_start = (MTD_RSV_START_BLOCK + MTD_RSV_BLOCK_CNT) * mtd->erasesize;
+	tpl_start = (uint64_t)(MTD_RSV_START_BLOCK + MTD_RSV_BLOCK_CNT) * mtd->erasesize;
 
 	if (!BOOTLOADER_MODE_ADVANCE_INIT) {
 		tpl_size = CONFIG_TPL_SIZE_PER_COPY * CONFIG_NAND_TPL_COPY_NUM;
 		SET_PART(boot_parts[1], BOOT_TPL, tpl_start, tpl_size);
 	} else if (store_boot_layout_is_discrete_bl2()) {
 		/* if BOOT_DISCRETE_BL2, the devfip size includes all (BL2E,BL2X,....) */
-		tpl_size = g_ssp.boot_entry[BOOT_AREA_DEVFIP].size * g_ssp.boot_backups;
+		tpl_size = (uint64_t)g_ssp.boot_entry[BOOT_AREA_DEVFIP].size * g_ssp.boot_backups;
 		SET_PART(boot_parts[1], BOOT_TPL, tpl_start, tpl_size);
 		spinand_get_logic_part_info(mtd, &boot_parts[1]);
 	} else {
@@ -1319,7 +1319,7 @@ int spinand_add_normal_partitions(struct mtd_info *mtd,
 
 	ret = add_mtd_partitions(mtd, new_part, nbparts - normal_part_num);
 _out:
-	free(new_part);
+	kfree(new_part);
 	return ret;
 }
 

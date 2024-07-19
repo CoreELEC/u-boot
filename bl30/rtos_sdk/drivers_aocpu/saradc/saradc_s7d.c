@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include "n200_func.h"
 #include "common.h"
+#include "timer_source.h"
 
 #define SARADC_DRV_NAME				"saradc"
 
@@ -200,9 +201,6 @@ void vAdcHwEnable(void)
 
 	REG32_UPDATE_BITS(SAR_CLK_BASE, SAR_CLK_GATE, SAR_CLK_GATE);
 
-	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_ADC_EN,
-			  SARADC_REG0_ADC_EN);
-
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_SAMPLING_ENABLE,
 			  SARADC_REG0_SAMPLING_ENABLE);
 
@@ -214,8 +212,6 @@ void vAdcHwDisable(void)
 	xSemaphoreTake(adcSemaphoreMutex, portMAX_DELAY);
 
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_SAMPLING_ENABLE, 0);
-
-	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_ADC_EN, 0);
 
 	REG32_UPDATE_BITS(SAR_CLK_BASE, SAR_CLK_GATE, 0);
 
@@ -242,6 +238,10 @@ static inline void prvAdcEnableChannel(enum AdcChannelType ch, uint8_t idx)
 
 static inline void prvAdcStartSample(void)
 {
+	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_ADC_EN,
+			  SARADC_REG0_ADC_EN);
+	udelay(20);
+
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0),
 			  SARADC_REG0_FIFO_IRQ_EN | SARADC_REG0_SAMPLING_STOP,
 			  SARADC_REG0_FIFO_IRQ_EN);
@@ -257,6 +257,8 @@ static inline void prvAdcStopSample(void)
 	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0),
 			  SARADC_REG0_SAMPLING_STOP | SARADC_REG0_FIFO_IRQ_EN,
 			  SARADC_REG0_SAMPLING_STOP);
+
+	REG32_UPDATE_BITS(P_SARADC(SARADC_REG0), SARADC_REG0_ADC_EN, 0);
 }
 
 static inline void prvAdcSetAvgMode(enum AdcChannelType ch, enum AdcAvgMode mode)
@@ -321,7 +323,6 @@ static int32_t prvAdcReadRawSample(uint16_t *data, uint16_t datNum, struct AdcIn
 			count++;
 		}
 	} else {
-		prvAdcStopSample();
 		return -pdFREERTOS_ERRNO_ETIMEDOUT;
 	}
 
@@ -331,9 +332,6 @@ static int32_t prvAdcReadRawSample(uint16_t *data, uint16_t datNum, struct AdcIn
 static void vAdcHandlerISR(void)
 {
 	BaseType_t reschedule = pdFALSE;
-
-	/* stop sampling before reading the data */
-	prvAdcStopSample();
 
 	xSemaphoreGiveFromISR(adcSemaphoreBinary, &reschedule);
 
@@ -357,6 +355,8 @@ int32_t xAdcGetSample(uint16_t *data, uint16_t datNum, struct AdcInstanceConfig 
 	prvAdcStartSample();
 
 	ret = prvAdcReadRawSample(data, datNum, conf);
+
+	prvAdcStopSample();
 
 	xSemaphoreGive(adcSemaphoreMutex);
 

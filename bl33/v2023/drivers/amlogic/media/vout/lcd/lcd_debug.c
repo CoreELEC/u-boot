@@ -1533,6 +1533,7 @@ void lcd_debug_probe(struct aml_lcd_drv_s *pdrv)
 		break;
 	case LCD_CHIP_T5M:
 	case LCD_CHIP_T3:
+	case LCD_CHIP_T6D:
 		switch (pdrv->index) {
 		case 1:
 			lcd_debug_info_reg = &lcd_debug_info_reg_t3_1;

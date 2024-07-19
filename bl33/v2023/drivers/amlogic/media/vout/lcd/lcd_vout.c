@@ -211,6 +211,17 @@ static struct aml_lcd_data_s lcd_data_s6 = {
 	.dft_conf = {NULL, NULL, NULL},
 };
 
+__maybe_unused static struct aml_lcd_data_s lcd_data_t6d = {
+	.chip_type = LCD_CHIP_T6D,
+	.chip_name = "t6d",
+	.rev_type = 0,
+	.drv_max = 1,
+	.offset_venc = {0x0},
+	.offset_venc_if = {0x0},
+	.offset_venc_data = {0x0},
+	.dft_conf = {NULL, NULL, NULL},
+};
+
 static void lcd_chip_detect(void)
 {
 #if 1
@@ -271,6 +282,9 @@ static void lcd_chip_detect(void)
 	*/
 	case MESON_CPU_MAJOR_ID_S6:
 		lcd_data = &lcd_data_s6;
+		break;
+	case MESON_CPU_MAJOR_ID_T6D:
+		lcd_data = &lcd_data_t6d;
 		break;
 	default:
 		lcd_data = NULL;
@@ -1253,10 +1267,10 @@ void aml_lcd_driver_test(int index, int num)
 	if (!pdrv)
 		return;
 
-	if (num == 10) {
+	if (num == 20) {
 		lcd_display_init_test(pdrv);
 		return;
-	} else if (num == 20) {
+	} else if (num == 21) {
 		lcd_display_init_reg_dump(pdrv);
 		return;
 	}

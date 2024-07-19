@@ -104,7 +104,7 @@ function sign_blx() {
 	#special case for onboot
 	if [ -n ${chipset_variant} ] && [[ ${chipset_variant} == "onboot" ]]; then
 		BLX_BIN_SIZE[0]="134048" #bl2 size
-		BLX_BIN_SIZE[6]="4190208" #bl32 size
+		BLX_BIN_SIZE[6]="4182016" #bl32 size
 		BLX_BIN_SIZE[7]="4096" #bl40 size
 	fi
 

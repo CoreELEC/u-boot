@@ -26,17 +26,6 @@ static TaskHandle_t prvFindTasksWithinSingleList(List_t *pxList, UBaseType_t tas
 }
 #endif
 
-void vTaskRename(void *pvTaskHandle, const char *pcName)
-{
-	TCB_t *pxTCB;
-
-	pxTCB = prvGetTCBFromHandle((TaskHandle_t)pvTaskHandle);
-	configASSERT(pxTCB);
-
-	memcpy(pxTCB->pcTaskName, pcName, configMAX_TASK_NAME_LEN);
-	pxTCB->pcTaskName[configMAX_TASK_NAME_LEN - 1] = '\0';
-}
-
 uint8_t xTaskSetName(void *pvTaskHandle, const char *pcName)
 {
 	TCB_t *pxTCB;
@@ -74,6 +63,11 @@ uint8_t xTaskSetName(void *pvTaskHandle, const char *pcName)
 		xReturn = pdFALSE;
 
 	return xReturn;
+}
+
+void vTaskRename(void *pvTaskHandle, const char *pcName)
+{
+	xTaskSetName(pvTaskHandle, pcName);
 }
 
 void vTaskDumpStack(void *pvTaskHandle)

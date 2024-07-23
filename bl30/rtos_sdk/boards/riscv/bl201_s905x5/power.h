@@ -15,4 +15,6 @@ void str_power_on(int shutdown_flag);
 
 void str_power_off(int shutdown_flag);
 
+extern uint32_t exeth_wol_n_flag;
+
 #endif

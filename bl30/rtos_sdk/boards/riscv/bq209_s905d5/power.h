@@ -19,6 +19,7 @@ void Bt_GpioIRQRegister(void);
 
 void Bt_GpioIRQFree(void);
 
+extern uint32_t exeth_wol_n_flag;
 
 #endif
 

@@ -34,6 +34,7 @@ GE_GPIO_CTRL(VCC3V3, GPIOD_6, NOINVERT)
 GE_GPIO_CTRL(VCC3V3_LCD, GPIOA_4, NOINVERT)
 GE_GPIO_CTRL(VCC3V3_CARD, GPIOD_5, NOINVERT)
 GE_GPIO_CTRL(VCC3V3_CM, GPIOA_13, NOINVERT)
+GE_GPIO_CTRL(ETH_RESET, GPIOZ_15, NOINVERT)
 
 static int vdd_ee;
 static int vdddos_npu_vpu;
@@ -124,6 +125,10 @@ void str_power_on(int shutdown_flag)
 	VCC3V3_CARD_on();
 	VCC_5V_on();
 	VCC_5V_USB_on();
+	if (exeth_wol_n_flag) {
+		printf("exeth power on\n");
+		ETH_RESET_on();
+	}
 
 	printf("vdd_cpu on\n");
 }
@@ -134,6 +139,10 @@ void str_power_off(int shutdown_flag)
 
 	(void)shutdown_flag;
 
+	if (exeth_wol_n_flag) {
+		printf("exeth wol set\n");
+		ETH_RESET_off();
+	}
 	VCC_5V_USB_off();
 	VCC_5V_off();
 	VCC3V3_CARD_off();

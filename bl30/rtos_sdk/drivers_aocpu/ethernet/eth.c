@@ -18,6 +18,7 @@ uint32_t ethIrq = IRQ_ETH_PMT_NUM;
 uint32_t Serial_T5;
 int eth_deinit;
 uint32_t eth_wol_flag;
+uint32_t exeth_wol_n_flag;
 void eth_handler(void)
 {
 	uint32_t buf[4] = { 0 };
@@ -85,7 +86,19 @@ int get_ETHWol_flag(void)
 
 static void *prvETHSetWol(void *msg)
 {
-	eth_wol_flag = *(uint32_t *)msg;
+	uint32_t val;
+//	eth_wol_flag = *(uint32_t *)msg;
+	val = *(uint32_t *)msg;
+	if (val == 1) {
+		eth_wol_flag = 1;
+		exeth_wol_n_flag = 0;
+	} else if (val == 2) {
+		eth_wol_flag = 0;
+		exeth_wol_n_flag = 1;
+	} else {
+		eth_wol_flag = 0;
+		exeth_wol_n_flag = 0;
+	}
 	printf("vETH wol flag = %d\n", eth_wol_flag);
 	return NULL;
 }

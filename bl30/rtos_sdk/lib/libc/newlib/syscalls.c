@@ -343,6 +343,7 @@ int _close(int file)
 	return 0;
 }
 
+#ifdef _COMPILING_NEWLIB
 int _gettimeofday(struct timeval *tv, struct timezone *tz)
 {
 	TickType_t tick_count;
@@ -364,6 +365,41 @@ int _gettimeofday(struct timeval *tv, struct timezone *tz)
 	}
 
 	return 0;
+}
+#endif
+
+#ifdef _LIBC
+int _gettimeofday(struct timeval *tv, void *tz)
+{
+	TickType_t tick_count;
+	struct timezone *ptz = (struct timezone *)tz;
+
+	if (0 == configTICK_RATE_HZ)
+		return -1;
+	if ((NULL == tv) && (NULL == ptz))
+		return -1;
+
+	if (NULL != tv) {
+		tick_count = xTaskGetTickCount();
+		tv->tv_sec = tick_count / configTICK_RATE_HZ;
+		tv->tv_usec = (tick_count  % 1000) * configTICK_RATE_HZ;
+	}
+
+	if (NULL != ptz) {
+		ptz->tz_dsttime = DST_NONE;
+		ptz->tz_minuteswest = 0;
+	}
+
+	return 0;
+}
+#endif
+
+int _kill(pid_t pid, int sig)
+{
+	UNUSED(pid);
+	UNUSED(sig);
+	errno = ENOTSUP;
+	return -1;
 }
 
 int __wrap__kill_r(int pid, int sig)

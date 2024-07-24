@@ -204,6 +204,7 @@ def submitSignJob(
             "chipVariant": chipVariant,
             "ddrType": ddrType,
             "keyType": keyType,
+            "extraArgs": extraArgs,
             "csSigScheme": csSigScheme,
             "dvSigScheme": dvSigScheme,
             "testService": testService,

@@ -62,8 +62,14 @@ function init_vari() {
 		AMLOGIC_KEY_TYPE="${CONFIG_AMLOGIC_KEY_TYPE}"
 	fi
 
+	if [ ! -n "${BL2E_PAYLOAD_SIZE}" ]; then
+		BL2E_PAYLOAD_SIZE=${CONFIG_BL2E_PAYLOAD_SIZE}
+		export BL2E_PAYLOAD_SIZE
+	fi
+
 	echo "------------------------------------------------------"
 	echo "DDRFW_TYPE: ${DDRFW_TYPE} CHIPSET_NAME: ${CHIPSET_NAME} CHIPSET_VARIANT: ${CHIPSET_VARIANT} AMLOGIC_KEY_TYPE: ${AMLOGIC_KEY_TYPE} SIGNING_SCHEME=$DV_SIGNING_SCHEME.$CS_SIGNING_SCHEME"
+	echo "BL2E_PAYLOAD_SIZE: ${BL2E_PAYLOAD_SIZE}"
 	echo "------------------------------------------------------"
 }
 
@@ -455,6 +461,32 @@ function mk_uboot() {
 
 	attach_blob_hdr ${bb1st}
 
+	local bl2e_sz=`stat -c "%s" ${bl2e}`
+	local bl2x_sz=`stat -c "%s" ${bl2x}`
+	if [ "$CONFIG_BL2E_96K" == "y" ] && [ "$bl2e_sz" -lt "116912" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=116912 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		mv ${bl2e}.max ${bl2e}
+	elif [ "$CONFIG_BL2E_128K" == "y" ] && [ "$bl2e_sz" -lt "149680" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=149680 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		mv ${bl2e}.max ${bl2e}
+	elif [ "$CONFIG_BL2E_256K" == "y" ] && [ "$bl2e_sz" -lt "280752" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=280752 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		mv ${bl2e}.max ${bl2e}
+	elif [ "$CONFIG_BL2E_1024K" == "y" ] && [ "$bl2e_sz" -lt "1067184" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=1067184 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		mv ${bl2e}.max ${bl2e}
+	fi
+
+	if [ "$bl2x_sz" -lt "108720" ]; then
+		dd if=/dev/zero of=${bl2x}.max bs=1 count=108720 &> /dev/null
+		dd if=${bl2x} of=${bl2x}.max conv=notrunc &> /dev/null
+		mv ${bl2x}.max ${bl2x}
+	fi
+
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
 
@@ -643,7 +675,7 @@ function process_blx() {
 					./${FIP_FOLDER}${CUR_SOC}/bin/sign-blx.sh --blxname ${BLX_NAME[$loop]} --input ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 						--output ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chipset_name ${CHIPSET_NAME} --chipset_variant ${CHIPSET_VARIANT} \
 						--key_type ${AMLOGIC_KEY_TYPE} --soc ${CUR_SOC} --chip_acs ${BUILD_PATH}/chip_acs.bin --ddr_type ${DDRFW_TYPE} \
-						--dv-sig-scheme $DV_SIGNING_SCHEME --cs-sig-scheme $CS_SIGNING_SCHEME
+						--dv-sig-scheme $DV_SIGNING_SCHEME --cs-sig-scheme $CS_SIGNING_SCHEME --extra_args "bl2e_size=${BL2E_PAYLOAD_SIZE}"
 			else
 					if [ -n "${CONFIG_JENKINS_SIGN}" ]; then
 						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
@@ -653,7 +685,7 @@ function process_blx() {
 						/usr/bin/python3 ./sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME}  --chipVariant ${CHIPSET_VARIANT} \
 							--keyType ${AMLOGIC_KEY_TYPE}  --chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} \
-							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME
+							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME --extraArgs "bl2e_size=${BL2E_PAYLOAD_SIZE}"
 					else
 						if [ ${BLX_NAME[$loop]} == "bl2" ]; then
 						./${FIP_FOLDER}${CUR_SOC}/bin/gen-merge-bin.sh --input0 ${BUILD_PATH}/chip_acs.bin --size0 ${CHIPACS_SIZE} \
@@ -662,7 +694,7 @@ function process_blx() {
 						/usr/bin/python3 ./${FIP_FOLDER}/jenkins_sign.py --type ${BLX_NAME[$loop]} --in ${BUILD_PATH}/${BLX_RAWBIN_NAME[$loop]} \
 							--out ${BUILD_PATH}/${BLX_BIN_NAME[$loop]} --chip ${CHIPSET_NAME} --chipVariant ${CHIPSET_VARIANT} --keyType ${AMLOGIC_KEY_TYPE} \
 							--chipAcsFile ${BUILD_PATH}/chip_acs.bin --ddrType ${DDRFW_TYPE} \
-							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME
+							--dvSigScheme $DV_SIGNING_SCHEME --csSigScheme $CS_SIGNING_SCHEME --extraArgs "bl2e_size=${BL2E_PAYLOAD_SIZE}"
 					fi
 			fi
 		fi

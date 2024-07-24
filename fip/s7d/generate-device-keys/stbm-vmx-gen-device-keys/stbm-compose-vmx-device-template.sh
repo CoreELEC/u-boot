@@ -174,7 +174,7 @@ fi
 # Create output directories
 OUTPUT_BASEDIR="${output_dir}"
 
-OUTDIR_TEMPLATE_BB1ST="${OUTPUT_BASEDIR}/boot-blobs/template/${part}/rootrsa-${rootkey_index}"
+OUTDIR_TEMPLATE_BB1ST="${OUTPUT_BASEDIR}/boot-blobs/template/${part}/trustchain-${rootkey_index}"
 mkdir -p "${OUTDIR_TEMPLATE_BB1ST}"
 
 # Generate templates
@@ -183,27 +183,31 @@ ${EXEC_BASEDIR}/bin/update-vmx-device-template-bb1st.sh --rootkey-index "$rootke
 mv "${OUTDIR_TEMPLATE_BB1ST}/bb1st${storage_type}.bin.device" \
    "${OUTDIR_TEMPLATE_BB1ST}/bb1st.bin" \
 
-OUTDIR_TEMPLATE_DEVICE_FIP_HEADER="${OUTPUT_BASEDIR}/fip/template/${part}/rootrsa-${rootkey_index}"
+OUTDIR_TEMPLATE_DEVICE_FIP_HEADER="${OUTPUT_BASEDIR}/fip/template/${part}/trustchain-${rootkey_index}"
 mkdir -p "${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}"
 if [ -z "$template_dir" ]; then
 	cp ${vmx_cert_path}/${part}/device-fip-header*.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
 else
-	${EXEC_BASEDIR}/../bin/gen_device_aes_protkey.sh --rootkey-index "$rootkey_index" --key-dir "$key_dir" --project "$part" --template-dir "$template_dir" ${device_fip_arb_args}
-	cp ${key_dir}/fip/template/${part}/rootrsa-$rootkey_index/device-fip-header.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
+	${EXEC_BASEDIR}/../bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor \
+        --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme rsa \
+        --ml-dsa-version draft1 --scs-family s7d --template-layout rsa --fip-header-layout mini --ops create-device-fip \
+        ${device_fip_arb_args}
+
+	cp ${key_dir}/fip/template/${part}/trustchain-$rootkey_index/device-fip-header.bin ${OUTDIR_TEMPLATE_DEVICE_FIP_HEADER}/device-fip-header.bin
 fi
 
 
 # Copy other files
-#LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/template/${part}/rootrsa-${rootkey_index}/device-fip-header.bin"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-2-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-1-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/rootrsa-${rootkey_index}/key/level-2-rsa-pub.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl30-level-3-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl40-level-3-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl31-level-3-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl32-level-3-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/bl33-level-3-rsa-priv.pem"
-LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/rootrsa-${rootkey_index}/key/krnl-level-3-rsa-priv.pem"
+#LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/template/${part}/trustchain-${rootkey_index}/device-fip-header.bin"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/trustchain-${rootkey_index}/key/level-2-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/trustchain-${rootkey_index}/key/level-1-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} boot-blobs/rsa/${part}/trustchain-${rootkey_index}/key/level-2-rsa-pub.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/bl30-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/bl40-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/bl31-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/bl32-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/bl33-level-3-rsa-priv.pem"
+LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/rsa/${part}/trustchain-${rootkey_index}/key/krnl-level-3-rsa-priv.pem"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl30.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-krnl.bin"
 LIST_OTHER_FILES="${LIST_OTHER_FILES} fip/aes/${part}/protkey/genkey-prot-bl33.bin"

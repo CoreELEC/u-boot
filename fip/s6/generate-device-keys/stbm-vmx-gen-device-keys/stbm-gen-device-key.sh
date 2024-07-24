@@ -36,7 +36,7 @@ usage() {
     cat << EOF
 Usage: $(basename $0) --help | --version
 
-       Generate all Amlogic SC2 chipset Device Vendor Secure Chipset Startup (SCS) keys
+       Generate all Amlogic S6 chipset Device Vendor Secure Chipset Startup (SCS) keys
 
        $(basename $0)
 		--stbm-key-dir stbm-key-dir> \\
@@ -162,7 +162,9 @@ ${BASEDIR_TOP}/gen_all_device_key.sh \
 	--device-soc "$device_soc" \
     --rsa-size "$size" \
     --out-dir "${stbm_key_dir}/outdir" \
-    --key-dir "${stbm_key_dir}/keydir"
+    --key-dir "${stbm_key_dir}/keydir" \
+    --sig-scheme rsa \
+    --device-lvl1cert-vers-submask 1
 
 ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
     --template-dir "$template_dir" \
@@ -170,6 +172,7 @@ ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
 	--device-soc "$device_soc" \
     --arb-config "$arb_config" \
     --out-dir "${stbm_key_dir}/outdir" \
-    --key-dir "${stbm_key_dir}/keydir"
+    --key-dir "${stbm_key_dir}/keydir" \
+    --sig-scheme rsa
 
 ${EXEC_BASEDIR}/bin/stbm-prepare-sign-request.sh "${stbm_key_dir}" "${out_vmx_dir}" "$part"

@@ -145,6 +145,7 @@ ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
 	--device-soc "$device_soc" \
     --arb-config "$arb_config" \
     --out-dir "${stbm_key_dir}/outdir" \
-    --key-dir "${stbm_key_dir}/keydir"
+    --key-dir "${stbm_key_dir}/keydir" \
+    --sig-scheme rsa
 
 ${EXEC_BASEDIR}/bin/stbm-prepare-sign-request.sh "${stbm_key_dir}" "${out_vmx_dir}" "$part"

@@ -167,12 +167,12 @@ echo DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
 
 BASEDIR_AESKEY_ROOT="${BASEDIR_ROOT}/root/aes/${project}/rootkey"
 BASEDIR_RSAKEY_ROOT="${BASEDIR_ROOT}/root/rsa/${project}"
-BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+BASEDIR_BOOTBLOBS_RSAKEY_ROOT="${BASEDIR_ROOT}/boot-blobs/rsa/${project}/trustchain-${DEVICE_ROOTRSA_INDEX}"
+BASEDIR_FIP_RSAKEY_ROOT="${BASEDIR_ROOT}/fip/rsa/${project}/trustchain-${DEVICE_ROOTRSA_INDEX}"
 
 BASEDIR_ROOTHASH_OUTPUT="${BASEDIR_RSAKEY_ROOT}/roothash"
-BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
-#BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/${project}/rootrsa-${DEVICE_ROOTRSA_INDEX}"
+BASEDIR_BOOTBLOBS_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/boot-blobs/template/${project}/trustchain-${DEVICE_ROOTRSA_INDEX}"
+#BASEDIR_FIP_TEMPLATE_OUTPUT="${BASEDIR_ROOT}/fip/template/${project}/trustchain-${DEVICE_ROOTRSA_INDEX}"
 
 check_dir "${output_dir}"
 BASEDIR_OUTPUT_HASH="${output_dir}"
@@ -194,11 +194,11 @@ check_dir "${BASEDIR_FIP_RSAKEY_ROOT}"
 check_dir "${BASEDIR_TEMPLATE}"
 
 check_file "${BASEDIR_TEMPLATE}/${project}/bb1st${storage_type}.bin.device.cert.segid.${DEVICE_SCS_SEGID}"
-check_file "${BASEDIR_RSAKEY_ROOT}/nonce/rootrsa-${DEVICE_ROOTRSA_INDEX}-nonce.bin"
-check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/device-lvl1rsa-nonce.bin"
+check_file "${BASEDIR_RSAKEY_ROOT}/nonce/rootkey-${DEVICE_ROOTRSA_INDEX}-nonce.bin"
+check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/lvl1key-nonce.bin"
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-pub.pem"
 check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/lvl2cert-epks.bin"
-check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/device-lvl2rsa-nonce.bin"
+check_file "${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/lvl2key-nonce.bin"
 check_file "${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-2.bin"
 check_file "${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-3.bin"
 
@@ -214,17 +214,17 @@ BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}/${project}
 ### RootCert EK and NONCE
 # EK is common for all root RSA
 # NONCE is per root RSA
-BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/rootrsa-${DEVICE_ROOTRSA_INDEX}-nonce.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-rootrsa=${BASEDIR_RSAKEY_ROOT}/nonce/rootkey-${DEVICE_ROOTRSA_INDEX}-nonce.bin"
 
 ### Input: Device Level-1 Cert ###
-BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/device-lvl1rsa-nonce.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-lvl1rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/lvl1key-nonce.bin"
 
 BB1ST_ARGS="${BB1ST_ARGS} --infile-signkey-device-lvl1=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-1-rsa-priv.pem"
 
 ### Input: Device Level-2 Cert ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-pubkey-device-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/key/level-2-rsa-pub.pem"
 BB1ST_ARGS="${BB1ST_ARGS} --infile-epks-device-lvl2cert=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/epk/lvl2cert-epks.bin"
-BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/device-lvl2rsa-nonce.bin"
+BB1ST_ARGS="${BB1ST_ARGS} --infile-nonce-device-lvl2rsa=${BASEDIR_BOOTBLOBS_RSAKEY_ROOT}/nonce/lvl2key-nonce.bin"
 
 ### Input: Device RootKey (generated from DVGK) ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-aes256-device-rootkey-2=${BASEDIR_AESKEY_ROOT}/aes256-device-rootkey-bootstage-2.bin"

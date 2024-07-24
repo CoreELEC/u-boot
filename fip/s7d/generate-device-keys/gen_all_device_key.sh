@@ -65,7 +65,7 @@ sig_scheme="rsa"
 sig_scheme_full="rsa"
 template_layout="rsa"
 prefix="none"
-
+create_boot_blobs_args=""
 
 parse_main() {
 	local i=0
@@ -119,6 +119,9 @@ parse_main() {
 			--rootkey-index)
 				rootkey_index="${argv[$i]}"
 				check_value "$rootkey_index" 0 3
+				;;
+			--device-lvl1cert-vers-submask)
+				create_boot_blobs_args+="--device-lvl1cert-vers-submask ${argv[$i]}"
 				;;
 			--out-dir)
 				output_dir="${argv[$i]}"
@@ -204,7 +207,7 @@ ${EXEC_BASEDIR}/bin/dvuk_gen.sh "$key_dir"/root/dvuk/"$part"/dvuk
 ${EXEC_BASEDIR}/bin/derive_device_aes_rootkey.sh --key-dir "$key_dir" --mrk-bin "$key_dir"/root/dvgk/"$part"/dvgk.bin --mrk-name DVGK --project "$part"
 
 
-${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-boot-blobs
+${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini $create_boot_blobs_args --ops create-boot-blobs
 ${EXEC_BASEDIR}/bin/gen_scs_root_hash.sh --rootkey-index $rootkey_index --key-dir "$key_dir" --trust-chain device-vendor --project "$part" --device-soc "$device_soc" --template-dir "$template_dir" --sig-scheme $sig_scheme --ml-dsa-version draft1 --scs-family $scs_family --template-layout $template_layout --fip-header-layout mini --ops create-device-fip
 
 # Link to be compatible with old script

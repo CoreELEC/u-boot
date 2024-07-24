@@ -480,7 +480,7 @@ function modify_stable_branch_version() {
 			else
 				cd $rootdir/${BLX_PATH[$i]}
 			fi
-			
+
 			modify_stable_branch_version_info $i
 		fi
 	done
@@ -663,7 +663,7 @@ function switch_to_target_branch() {
 
 function modify_stable_sub_version() {
 	echo "###modify_stable_sub_version"
-	
+
 	# 1. switch to target branch
 	if [ $SWITCH_TARGET_BRANCH -ne 0 ]; then
 		switch_to_target_branch
@@ -685,7 +685,7 @@ function modify_stable_sub_version() {
 		modify_stable_branch_version
 		show_stable_branch_version
 	fi
-	
+
 	# 5. push stable branch last version
 	if [ "$PUSH_TOPIC_COMMON" != "0" ]; then
 		push_stable_branch_version
@@ -695,13 +695,13 @@ function modify_stable_sub_version() {
 
 function compile_stable_uboot_bin() {
 	echo "# push_uboot_img_to_android_repo"
-	
+
 	for((i=0;i<${#OPENLINUX_BOARD_TYPE[@]};i++)); do
 		echo
 		echo "<$i.${OPENLINUX_BOARD_TYPE[$i]}>############################### push_uboot_img_to_android_repo."
 
 		echo
-		echo "#1. check android dev path"	
+		echo "#1. check android dev path"
 		if [ -d ${ANDROID_DIR_LIST[$i]} ];then
 			cd ${ANDROID_DIR_LIST[$i]}
 			git reset --hard HEAD^

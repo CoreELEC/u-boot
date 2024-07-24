@@ -151,7 +151,6 @@ def get_bltype_branch_id(bltype, list):
     for i in range(len(list)):
         stream_dic = {"blType":None, "gitBranch":None, "gitRemote":None, "upStream":None}
         stream_dic = list[i]
-
         if str(bltype) == str(stream_dic['blType']):
             print(' >     Match the local bltype ID = ', i+1)
             return i
@@ -184,11 +183,11 @@ def git_commits_to_src_link():
         # update stable branch
         git_src_update(os.getcwd(), blSrcGits[index]['gitRemote'], blSrcGits[index]['stbBranch'])
         changedId_list = get_stb_changeId(os.getcwd(), 200)
-        
+
         # update target branch
         git_src_update(os.getcwd(), blSrcGits[index]['gitRemote'], blSrcGits[index]['gitBranch'])
         # run git log format and produce commit list
-        commit_list = git_cmt_parse(os.getcwd(), trunk_list[i]['lastCommit'], 'HEAD', changedId_list)
+        commit_list = git_cmt_parse(os.getcwd(), trunk_list[i]['lastCommit'], 'HEAD', changedId_list, i)
 
         git_cmt_2_csv(csvfile, trunk_list[i]['blType'], commit_list, blSrcGits[index], i)
 
@@ -239,7 +238,7 @@ def bash_command(cmd):
 # get stable branch changed-id list
 def get_stb_changeId(gitPath, clNum):
     local_path = os.path.join(gitPath)
-    
+
     repo = Repo(local_path)
     commit_log = repo.git.log('--pretty={"commit":"%h"}', max_count=clNum)
     try:
@@ -248,7 +247,7 @@ def get_stb_changeId(gitPath, clNum):
         #    print(' >    %s'%(log_list))
     except:
         pass
-    
+
     real_log_list = [eval(str(item)) for item in log_list]
     changedId_list = [None] * clNum
 
@@ -269,10 +268,12 @@ def get_stb_changeId(gitPath, clNum):
     return changedId_list
 
 # get commit list info
-def git_cmt_parse(gitPath, lastCommit, headCommit, changedId_list):
+def git_cmt_parse(gitPath, lastCommit, headCommit, changedId_list, index):
     local_path = os.path.join(gitPath)
 
     repo = Repo(local_path)
+    latest_commit = repo.head.commit.hexsha
+    trunk_list[index]['lastCommit'] = latest_commit
 
     # run git log --format
     commit_log = repo.git.log('--pretty={"summary":"%s","commit":"%h","hash":"%H","author":"%ae","date":"%cd","Change-Id":"null","meged":"null"}',
@@ -322,10 +323,10 @@ def git_cmt_parse(gitPath, lastCommit, headCommit, changedId_list):
             #print(f" >    Error details: {e}")
             pass
     # update real_log_list[i]['Change-Id'] with JiraNo
-    
+
     for j in range(len(real_log_list)):
         try:
-            cmd = 'git log ' +  real_log_list[j]['commit'] + ' -1 | grep Change-Id: | head -n 1' 
+            cmd = 'git log ' +  real_log_list[j]['commit'] + ' -1 | grep Change-Id: | head -n 1'
             res = to_str(bash_command(cmd)).replace('\n', '')
             if res:
                 real_log_list[j]['Change-Id'] = res.split("Change-Id:")[1]
@@ -401,7 +402,7 @@ def git_cmt_2_csv(csvfile, blType, commit_list, stream_dic, sheet_index):
             sheet.cell(row = i + 2, column = 3).value = scgitPrefix + \
                                                         stream_dic['upStream'] + \
                                                         commit_list[i]['hash']
-            
+
             sheet.cell(row = i + 2, column = 4).value = commit_list[i]['meged']
         except:
             pass
@@ -567,6 +568,16 @@ def summary_for_scv_sheets():
     wb.save(csvfile)
     return
 
+def update_stable_json():
+    latest_list={
+        "source_gits":trunk_list
+    }
+    try:
+        with open(jsonfile, 'w') as json_file:
+           json.dump(latest_list, json_file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print("write json failed!!: ", e)
+
 # Main func
 if __name__ == "__main__":
     # Set stderr with color
@@ -590,6 +601,8 @@ if __name__ == "__main__":
 
     # Record in summary sheet
     record_in_summary_sheet()
+
+    update_stable_json()
 
     print('OUTPUT csv: ', os.path.basename(csvfile))
     exit('RUN OK !')

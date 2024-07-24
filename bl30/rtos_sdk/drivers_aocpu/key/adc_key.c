@@ -81,7 +81,7 @@ static void prAdcKeyProcess(TimerHandle_t xTimer)
 			 * Short press and then release, we will report
 			 * the short press event after the jitter time has elapsed.
 			 */
-			if (usAdcData <= min || usAdcData >= max) {
+			if (usAdcData < min || usAdcData > max) {
 				if (xPassBtn->jitterCount < KEY_JITTER_COUNT) {
 					xPassBtn->jitterCount++;
 					return;

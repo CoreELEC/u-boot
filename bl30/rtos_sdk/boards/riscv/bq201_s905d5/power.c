@@ -36,9 +36,6 @@ GE_GPIO_CTRL(VCC3V3_LCD, GPIOA_4, NOINVERT)
 GE_GPIO_CTRL(VCC3V3_CM, GPIOA_13, NOINVERT)
 GE_GPIO_CTRL(ETH_RESET, GPIOZ_15, NOINVERT)
 
-static int vdd_ee;
-static int vdddos_npu_vpu;
-static TaskHandle_t vadTask;
 
 static struct IRPowerKey prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
@@ -105,6 +102,77 @@ void str_hw_disable(void)
 	vRestoreGpioIrqReg();
 }
 
+#define STEP_VOL	30  // 30mV steps
+
+static int __vddee_and_vddddr_ctrl(int *cur_vol, int target)
+{
+	int ret;
+	int ee_vol, ddr_vol;
+	int step, remain, loop;
+
+	/* 1. If VDD_DDR does not exist, only set the vol of vddee */
+	ee_vol = vPwmMesongetvoltage(VDDEE_VOLT);
+	if (ee_vol < 0) {
+		printf("vdd_EE pwm get fail\n");
+		*cur_vol = 0;
+		return -1;
+	}
+	*cur_vol = ee_vol;
+
+	ddr_vol = vPwmMesongetvoltage(VDDDDR_VOLT);
+	if (ddr_vol < 0) {
+		printf("VDD DDR pwm get fail\n");
+		printf("Only set the vddee.\n");
+		ret = vPwmMesonsetvoltage(VDDEE_VOLT, target);
+		if (ret < 0) {
+			printf("vdd_EE pwm set fail\n");
+			return -1;
+		}
+		goto DONE;
+	}
+
+	/* 2. Adjust target voltage, step by step.
+	 * NOTE: Assumes VDDEE and VDDDDR voltages are the same.
+	 */
+	step = (ee_vol > target) ? 0 - STEP_VOL : STEP_VOL;
+
+	while (ee_vol != target) {
+		ee_vol += step;
+		if (step < 0)
+			ee_vol = ee_vol < target ? target : ee_vol;
+		else
+			ee_vol = ee_vol > target ? target : ee_vol;
+
+		ret = vPwmMesonsetvoltage(VDDEE_VOLT, ee_vol);
+		if (ret < 0) {
+			printf("vdd_EE pwm set fail\n");
+			return -1;
+		}
+
+		ret = vPwmMesonsetvoltage(VDDDDR_VOLT, ee_vol);
+		if (ret < 0) {
+			printf("vdd_DDR pwm set fail\n");
+			return -1;
+		}
+//		printf("ee&ddr cur vol [%d], target vol [%d]\n", ee_vol, target);
+//		vTaskDelay(pdMS_TO_TICKS(3000));
+	}
+
+DONE:
+	return 0;
+}
+
+static int vdd_ee;
+#define VDDEE_STR_VOLT	710 // 710mv for tsmc 6nm
+
+static int vddee_and_vddddr_ctrl(int is_suspend)
+{
+	if (is_suspend)
+		return __vddee_and_vddddr_ctrl(&vdd_ee, VDDEE_STR_VOLT);
+	else
+		return __vddee_and_vddddr_ctrl(&vdd_ee, vdd_ee);
+}
+
 void str_power_on(int shutdown_flag)
 {
 	int ret;
@@ -113,12 +181,7 @@ void str_power_on(int shutdown_flag)
 
 	VDDCPU_on();
 
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-	if (ret < 0) {
-		printf("VDD_EE pwm set fail\n");
-		return;
-	}
+	vddee_and_vddddr_ctrl(0);
 
 	VCC3V3_CARD_on();
 	VCC3V3_on();
@@ -126,6 +189,7 @@ void str_power_on(int shutdown_flag)
 	VCC3V3_CM_on();
 	VCC_5V_on();
 	VCC_5V_USB_on();
+
 	if (exeth_wol_n_flag) {
 		printf("exeth power on\n");
 		ETH_RESET_on();
@@ -142,10 +206,12 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
+
 	if (exeth_wol_n_flag) {
 		printf("exeth wol set\n");
 		ETH_RESET_off();
 	}
+
 	VCC_5V_USB_off();
 	VCC_5V_off();
 	VCC3V3_CM_off();
@@ -156,19 +222,10 @@ void str_power_off(int shutdown_flag)
 	if (shutdown_flag)
 		VCC_5V_HDMI_off();
 
-	/***set vdd_ee val***/
-	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-	if (vdd_ee < 0) {
-		printf("vdd_EE pwm get fail\n");
-		return;
-	}
+	vddee_and_vddddr_ctrl(1);
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 710);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
-	}
+	/***power off A510 vdd_cpu***/
+	VDDCPU_off();
 
-	VDDCPU_on();
 	printf("Power down done.\n");
 }

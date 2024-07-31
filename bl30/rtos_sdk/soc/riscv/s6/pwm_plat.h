@@ -43,6 +43,7 @@ enum pwm_chip_id {
 enum pwm_voltage_id {
 	VDDEE_VOLT = 0,
 	VDDCPU_VOLT,
+	VDDDDR_VOLT,
 };
 
 struct xPwmMesonVoltage {

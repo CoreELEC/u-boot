@@ -34,8 +34,10 @@ static void vMTEFix(void *pvParameters)
 	uint32_t val;
 
 	while (1) {
-		if ((REG32(SYSCTRL_DEBUG_REG4) & MTE_FIX_STOP_BIT) == 1) //Stop MTE feature
+		if ((REG32(SYSCTRL_DEBUG_REG4) & MTE_FIX_STOP_BIT) == 1) { //Stop MTE feature
+			vTaskDelay(pdMS_TO_TICKS(20));
 			continue;
+		}
 		else {
 			val = REG32(DMC_MON_CTRL0);
 			val |= (1 << 30);

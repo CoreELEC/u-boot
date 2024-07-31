@@ -12,6 +12,8 @@
 #define VOUT_VIU2_SEL    2
 #define VOUT_VIU3_SEL    3
 
+#define VOUT_MAX_CNT     3
+
 enum viu_mux_e {
 	VIU_MUX_ENCL = 0,
 	VIU_MUX_ENCI,
@@ -38,10 +40,10 @@ enum viu_mux_e {
 #define CONNECTOR_SUB_DEV_CVBS       0x0000
 
 unsigned short vout_connector_check(unsigned char vout_index);
+void vout_pr_connector_and_vmode(void);
 
 void vout_init(void);
 void vout_vinfo_dump(void);
-int vout_get_current_vmode(void);
 int vout_get_current_axis(int *axis);
 void vout_set_current_vmode(int mode);
 struct vinfo_s *vout_get_current_vinfo(void);

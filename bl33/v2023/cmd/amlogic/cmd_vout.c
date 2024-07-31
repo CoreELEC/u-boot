@@ -34,26 +34,6 @@ __weak void vpp_viu3_matrix_update(int cfmt) {}
 #include <amlogic/media/vout/lcd/aml_lcd.h>
 #endif
 
-static void pr_connector_and_vmode(void)
-{
-	char *cntor, *opt_vmode;
-	char cnt_name[20] = "connectorX_type";
-	char opt_mode_name[20] = "outputmode\0\0";
-	unsigned char idx;
-
-	printf("VOUT: connector & outputmode info:\n");
-	for (idx = 0; idx < 3; idx++) {
-		cnt_name[9] = '0' + idx;
-		if (idx)
-			opt_mode_name[10] = '1' + idx;
-
-		cntor = env_get(cnt_name);
-		opt_vmode = env_get(opt_mode_name);
-		printf("  VOUT%c: %s: %-9s | outputmode%c: %s\n", idx ? '1' + idx : ' ',
-			cnt_name, cntor, idx ? '1' + idx : ' ', opt_vmode);
-	}
-}
-
 #ifdef CONFIG_AML_HDMITX
 static int vout_hdmi_hpd(struct hdmitx_dev *hdev, int hpd_st)
 {
@@ -216,7 +196,7 @@ int do_hpd_detect(cmd_tbl_t *cmdtp, int flag, int argc,
 
 static int do_vout_list(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])
 {
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 
 #ifdef CONFIG_AML_HDMITX
 #ifdef CONFIG_AML_HDMITX20
@@ -311,7 +291,7 @@ static int do_vout_prepare(cmd_tbl_t *cmdtp, int flag, int argc, char *const arg
 		break;
 	}
 	printf("VOUT: output prepare fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 }
 
@@ -388,13 +368,13 @@ static int do_vout_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv
 	}
 
 	printf("VOUT: output fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 }
 
 static int do_vout2_list(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])
 {
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 
 #ifdef CONFIG_AML_HDMITX
 #ifdef CONFIG_AML_HDMITX20
@@ -485,7 +465,7 @@ static int do_vout2_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const arg
 		break;
 	}
 	printf("VOUT2: output fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 
 }
@@ -546,13 +526,13 @@ static int do_vout2_prepare(cmd_tbl_t *cmdtp, int flag, int argc, char *const ar
 		break;
 	}
 	printf("VOUT2: output prepare fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 }
 
 static int do_vout3_list(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 
 #ifdef CONFIG_AML_HDMITX
 #ifdef CONFIG_AML_HDMITX20
@@ -643,7 +623,7 @@ static int do_vout3_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const arg
 		break;
 	}
 	printf("VOUT3: output fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 }
 
@@ -703,7 +683,7 @@ static int do_vout3_prepare(cmd_tbl_t *cmdtp, int flag, int argc, char *const ar
 		break;
 	}
 	printf("VOUT3: output prepare fail(0x%04x)\n", on_connector_dev);
-	pr_connector_and_vmode();
+	vout_pr_connector_and_vmode();
 	return CMD_RET_FAILURE;
 }
 

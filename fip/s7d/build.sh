@@ -460,33 +460,33 @@ function mk_uboot() {
 	fi
 
 	attach_blob_hdr ${bb1st}
+	if [ "$CONFIG_DYNAMIC_SZ" == "y"] ; then
+		local bl2e_sz=`stat -c "%s" ${bl2e}`
+		local bl2x_sz=`stat -c "%s" ${bl2x}`
+		if [ "$CONFIG_BL2E_96K" == "y" ] && [ "$bl2e_sz" -lt "116912" ]; then
+			dd if=/dev/zero of=${bl2e}.max bs=1 count=116912 &> /dev/null
+			dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+			mv ${bl2e}.max ${bl2e}
+		elif [ "$CONFIG_BL2E_128K" == "y" ] && [ "$bl2e_sz" -lt "149680" ]; then
+			dd if=/dev/zero of=${bl2e}.max bs=1 count=149680 &> /dev/null
+			dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+			mv ${bl2e}.max ${bl2e}
+		elif [ "$CONFIG_BL2E_256K" == "y" ] && [ "$bl2e_sz" -lt "280752" ]; then
+			dd if=/dev/zero of=${bl2e}.max bs=1 count=280752 &> /dev/null
+			dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+			mv ${bl2e}.max ${bl2e}
+		elif [ "$CONFIG_BL2E_1024K" == "y" ] && [ "$bl2e_sz" -lt "1067184" ]; then
+			dd if=/dev/zero of=${bl2e}.max bs=1 count=1067184 &> /dev/null
+			dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+			mv ${bl2e}.max ${bl2e}
+		fi
 
-	local bl2e_sz=`stat -c "%s" ${bl2e}`
-	local bl2x_sz=`stat -c "%s" ${bl2x}`
-	if [ "$CONFIG_BL2E_96K" == "y" ] && [ "$bl2e_sz" -lt "116912" ]; then
-		dd if=/dev/zero of=${bl2e}.max bs=1 count=116912 &> /dev/null
-		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
-		mv ${bl2e}.max ${bl2e}
-	elif [ "$CONFIG_BL2E_128K" == "y" ] && [ "$bl2e_sz" -lt "149680" ]; then
-		dd if=/dev/zero of=${bl2e}.max bs=1 count=149680 &> /dev/null
-		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
-		mv ${bl2e}.max ${bl2e}
-	elif [ "$CONFIG_BL2E_256K" == "y" ] && [ "$bl2e_sz" -lt "280752" ]; then
-		dd if=/dev/zero of=${bl2e}.max bs=1 count=280752 &> /dev/null
-		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
-		mv ${bl2e}.max ${bl2e}
-	elif [ "$CONFIG_BL2E_1024K" == "y" ] && [ "$bl2e_sz" -lt "1067184" ]; then
-		dd if=/dev/zero of=${bl2e}.max bs=1 count=1067184 &> /dev/null
-		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
-		mv ${bl2e}.max ${bl2e}
+		if [ "$bl2x_sz" -lt "108720" ]; then
+			dd if=/dev/zero of=${bl2x}.max bs=1 count=108720 &> /dev/null
+			dd if=${bl2x} of=${bl2x}.max conv=notrunc &> /dev/null
+			mv ${bl2x}.max ${bl2x}
+		fi
 	fi
-
-	if [ "$bl2x_sz" -lt "108720" ]; then
-		dd if=/dev/zero of=${bl2x}.max bs=1 count=108720 &> /dev/null
-		dd if=${bl2x} of=${bl2x}.max conv=notrunc &> /dev/null
-		mv ${bl2x}.max ${bl2x}
-	fi
-
 	file_info_cfg="${output_images}/aml-payload.cfg"
 	file_info_cfg_temp=${temp_cfg}.temp
 

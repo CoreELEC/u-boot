@@ -373,10 +373,8 @@ int checkhw(char *name)
 	char dtb_name[64] = { 0 };
 	cpu_id_t cpu_id = get_cpu_id();
 
-	if (cpu_id.family_id == 0x3A)
-		strcpy(dtb_name, "s4d_s905y4_ap222\0");
-	else if (cpu_id.family_id == 0x37)
-		strcpy(dtb_name, "s4_s905y4_ap222\0");
+	if (cpu_id.family_id == 0x49)
+		strcpy(dtb_name, "t6d_t950d5_br309\0");
 
 	strcpy(name, dtb_name);
 	env_set("aml_dt", dtb_name);

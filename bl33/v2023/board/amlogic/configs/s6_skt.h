@@ -14,9 +14,9 @@
 
 #define AML_VCCK_INIT_VOLTAGE	  950	    //VCCK power up voltage
 #define AML_VDDEE_INIT_VOLTAGE    800       // VDDEE power up voltage
-#define AML_VDDDDR_INIT_VOLTAGE    780       // VDDDDR power up voltage
+#define AML_VDDDDR_INIT_VOLTAGE    800       // VDDDDR power up voltage
 /*Distinguish whether to use efuse to adjust vddee*/
-#define CONFIG_PDVFS_ENABLE
+//#define CONFIG_PDVFS_ENABLE
 
 /* SMP definitions */
 #define CPU_RELEASE_ADDR		secondary_boot_func

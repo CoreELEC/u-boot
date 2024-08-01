@@ -29,6 +29,14 @@ struct xPwmMesonVoltage vddee_table[] = {
 	{ 800, 0x2000b },  { 810, 0x1000c },  { 820, 0x0000d },  { 830, 0x0000f },
 };
 
+/* VDDEE voltage table  volt must ascending */
+struct xPwmMesonVoltage vdd_ddr_table[] = {
+	{ 680, 0xf0000 },  { 690, 0xd0000 },  { 700, 0xc0001 },  { 710, 0xb0002 },
+	{ 720, 0xa0003 },  { 730, 0x90004 },  { 740, 0x80005 },  { 750, 0x70006 },
+	{ 760, 0x60007 },  { 770, 0x50008 },  { 780, 0x40009 },  { 790, 0x3000a },
+	{ 800, 0x2000b },  { 810, 0x1000c },  { 820, 0x0000d },  { 830, 0x0000f },
+};
+
 /* VDDCPU voltage table  volt must ascending */
 struct xPwmMesonVoltage vddcpu_table[] = {
 	{ 690, 0x00240000 },  { 700, 0x00220000 },  { 710, 0x00210001 },  { 720, 0x00200002 },
@@ -55,7 +63,8 @@ uint32_t prvMesonVoltToPwmchip(enum pwm_voltage_id voltage_id)
 
 	case VDDCPU_VOLT:
 		return PWM_F;
-
+	case VDDDDR_VOLT:
+		return PWM_A;
 	default:
 		break;
 	}
@@ -79,6 +88,8 @@ struct xPwmMesonVoltage *vPwmMesonGetVoltTable(uint32_t voltage_id)
 
 	case VDDCPU_VOLT:
 		return vddcpu_table;
+	case VDDDDR_VOLT:
+		return vdd_ddr_table;
 
 	default:
 		break;
@@ -94,6 +105,9 @@ uint32_t vPwmMesonGetVoltTableSize(uint32_t voltage_id)
 
 	case VDDCPU_VOLT:
 		return sizeof(vddcpu_table) / sizeof(struct xPwmMesonVoltage);
+
+	case VDDDDR_VOLT:
+		return sizeof(vdd_ddr_table) / sizeof(struct xPwmMesonVoltage);
 
 	default:
 		break;

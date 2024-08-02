@@ -371,10 +371,19 @@ const struct mtd_partition *get_spinand_partition_table(int *partitions)
 int checkhw(char *name)
 {
 	char dtb_name[64] = { 0 };
-	cpu_id_t cpu_id = get_cpu_id();
+	ulong ddr_size = (readl(SYSCTRL_SEC_STATUS_REG4) & ~0xfffffUL) << 4;
 
-	if (cpu_id.family_id == 0x49)
-		strcpy(dtb_name, "t6d_t950d5_br301\0");
+	switch (ddr_size) {
+		case 0x40000000UL:
+			strcpy(dtb_name, "t6d_t950d5_br301-1g\0");
+			break;
+		case 0x60000000UL:
+			strcpy(dtb_name, "t6d_t950d5_br301-1.5g\0");
+			break;
+		default:
+			strcpy(dtb_name, "t6d_t950d5_br301\0");
+			break;
+	}
 
 	strcpy(name, dtb_name);
 	env_set("aml_dt", dtb_name);

@@ -65,7 +65,10 @@
 	"uart_base=0xfe07a000\0"\
 	"usb_burning=" CONFIG_USB_TOOL_ENTRY "\0"\
 	"panel_type=lvds_0\0"\
+	"lcd_ctrl=0x00000000\0" \
+	"lcd_debug=0x00000000\0" \
 	"outputmode=1080p60hz\0"\
+	"connector0_type=LVDS-A\0" \
 	"hdmimode=1080p60hz\0"\
 	"colorattribute=444,8bit\0"\
 	"cvbsmode=576cvbs\0"\
@@ -220,7 +223,6 @@ defined(CONFIG_STORE_COMPATIBLE)
 #define AML_VPU_CLK_LEVEL_DFT 5
 
 /* LCD */
-#define CONFIG_AML_LCD_PXP 1
 
 /* osd */
 #define OSD_SCALE_ENABLE

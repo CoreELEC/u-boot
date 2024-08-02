@@ -332,23 +332,6 @@ static int lcd_clk_config_chip_init(struct aml_lcd_drv_s *pdrv, struct lcd_clk_c
 		lcd_clk_config_chip_init_t5m(pdrv, cconf);
 		break;
 #endif
-	case LCD_CHIP_TM2:
-		lcd_clk_config_chip_init_tm2(pdrv, cconf);
-		break;
-	case LCD_CHIP_T5:
-		lcd_clk_config_chip_init_t5(pdrv, cconf);
-		break;
-	case LCD_CHIP_T5D:
-		lcd_clk_config_chip_init_t5d(pdrv, cconf);
-		break;
-	case LCD_CHIP_T7:
-		lcd_clk_config_chip_init_t7(pdrv, cconf);
-		break;
-	case LCD_CHIP_T5M: //the same as t3, but only support 1 driver
-	case LCD_CHIP_T3: /* only one pll */
-	case LCD_CHIP_T6D:
-		lcd_clk_config_chip_init_t3(pdrv, cconf);
-		break;
 #ifdef CONFIG_MESON_T3X
 	case LCD_CHIP_T3X:
 		lcd_clk_config_chip_init_t3x(pdrv, cconf);
@@ -367,6 +350,11 @@ static int lcd_clk_config_chip_init(struct aml_lcd_drv_s *pdrv, struct lcd_clk_c
 #ifdef CONFIG_MESON_S6
 	case LCD_CHIP_S6:
 		lcd_clk_config_chip_init_s6(pdrv, cconf);
+		break;
+#endif
+#if (IS_ENABLED(CONFIG_MESON_T6D))
+	case LCD_CHIP_T6D:
+		lcd_clk_config_chip_init_t6d(pdrv, cconf);
 		break;
 #endif
 	default:

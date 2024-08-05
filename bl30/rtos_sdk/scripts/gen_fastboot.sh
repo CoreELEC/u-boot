@@ -8,7 +8,7 @@
 #RTOS root directory
 RTOS_BASE_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
-PARSED=$(getopt --options o:a:b:s:h --long address:,board:,bl22:,sensor:,out:,help --name "$0" -- "$@")
+PARSED=$(getopt --options o:a:b:s:h --long address:,board:,bl22:,sensor:,out:,uboot:,ipc-ddr-size:,ubootcfg:,help --name "$0" -- "$@")
 
 if [[ $? -ne 0 ]]; then
     exit 1
@@ -27,6 +27,7 @@ while true; do
         shift 2
         ;;
     -s | --sensor)
+        SENSOR_TYPE=$2
         if [[ "$2" =~ ^SENSOR=.* ]]; then
             SENSOR_TYPE=${2#SENSOR=}
         fi
@@ -34,6 +35,18 @@ while true; do
         ;;
     --bl22)
         BL22_DIR=$2
+        shift 2
+        ;;
+    --uboot)
+        UBOOT_DIR=$2
+        shift 2
+        ;;
+    --ipc-ddr-size)
+        DDR_SIZE=$2
+        shift 2
+        ;;
+    --ubootcfg)
+        UBOOT_CFG=$2
         shift 2
         ;;
     -o | --out)
@@ -73,20 +86,7 @@ fi
 
 #Retrieve the RTOS loading address; if none exists, set it to the default address.
 if [ -z $RTOS_TARGET_ADDRESS ]; then
-    case $BOARD_TYPE in
-    'aw409_c302x')
-        RTOS_TARGET_ADDRESS=0x5400000
-        ;;
-    'aw402_c302x')
-        RTOS_TARGET_ADDRESS=0x7600000
-        ;;
-    'aw402s_c302x')
-        RTOS_TARGET_ADDRESS=0x7600000
-        ;;
-    *)
-        RTOS_TARGET_ADDRESS=0x9000000
-        ;;
-    esac
+    RTOS_TARGET_ADDRESS=0x02200000
 fi
 
 #Calculate the RTOS2 loading address
@@ -138,13 +138,39 @@ function rtos_config_prepare() {
     CONFIG_FILE=$RTOS_BASE_DIR/boards/$ARCH/$BOARD/lscript.h
     sed -i '/.*#define configTEXT_BASE*/c\#define configTEXT_BASE '${RTOS_TARGET_ADDRESS}'' $CONFIG_FILE
     sed -i '/.*#define CONFIG_SCATTER_LOAD_ADDRESS*/c\#define CONFIG_SCATTER_LOAD_ADDRESS '${RTOS2_TARGET_ADDRESS}'' $CONFIG_FILE
+    case $DDR_SIZE in
+    '128m')
+        sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x3000000'' $CONFIG_FILE
+        sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x1700000'' $CONFIG_FILE
+        sed -i '/.*#define configVENC_BASE*/c\#define configVENC_BASE '0x04700000'' $CONFIG_FILE
+        sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x0B00000'' $CONFIG_FILE
+        sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x6000000'' $CONFIG_FILE
+        ;;
+    '256m')
+        sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x9B00000'' $CONFIG_FILE
+        sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x3200000'' $CONFIG_FILE
+        sed -i '/.*#define configVENC_BASE*/c\#define configVENC_BASE '0xCD00000'' $CONFIG_FILE
+        sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x2A00000'' $CONFIG_FILE
+        sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x3700000'' $CONFIG_FILE
+        ;;
+    *)
+        sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x3000000'' $CONFIG_FILE
+        sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x1700000'' $CONFIG_FILE
+        sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x04700000'' $CONFIG_FILE
+        sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x6000000'' $CONFIG_FILE
+        ;;
+    esac
 }
 
 function sensor_config_choose() {
-    sed -i '/CONFIG_SENSOR_SC401AI/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-    if [ "${SENSOR_TYPE}" == "SC401AI" ]; then
-        sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-    fi
+	sed -i '/CONFIG_SENSOR_SC401AI/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	sed -i '/CONFIG_SENSOR_SC5336P/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	if [ "${SENSOR_TYPE}" == "SC401AI" ]; then
+		sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	fi
+	if [ "${SENSOR_TYPE}" == "SC5336P" ]; then
+		sed -i '$ a CONFIG_SENSOR_SC5336P=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	fi
 }
 
 function lz4_rtos() {
@@ -160,7 +186,8 @@ function lz4_rtos() {
 function bl22_compile() {
     pushd $BL22_DIR
     if [ -f ./mk ]; then
-        ./mk c3 $BOARD_TYPE
+        echo "./mk c3 $BOARD_TYPE $SENSOR_TYPE"
+        ./mk c3 $BOARD_TYPE $SENSOR_TYPE
         if [ "$?" -ne 0 ]; then
             echo "RTOS-SDK: BL22 compilation failed !!!"
             exit 1
@@ -243,6 +270,30 @@ function package_binary() {
 }
 
 function package_fastboot() {
+if [ -n $UBOOT_DIR ]; then
+	pushd $UBOOT_DIR
+	if [ -d ./fastboot ]; then
+		rm -rf ./fastboot
+	fi
+	mkdir -p ./fastboot
+	cp $RTOS_IMAGE_1 ./fastboot
+	cp $RTOS_IMAGE_2 ./fastboot
+	cp $BL22_IMAGE ./fastboot
+	echo "./mk $UBOOT_CFG --build-nogit --ipc-ddr-size $DDR_SIZE"
+	./mk $UBOOT_CFG --build-nogit --ipc-ddr-size $DDR_SIZE
+	if [ "$?" -ne 0 ]; then
+		if [ -d ./fastboot ]; then
+			rm -rf ./fastboot
+		fi
+		echo "RTOS-SDK: Uboot compilation failed !!!"
+		exit 1
+	fi
+
+	if [ -d ./fastboot ]; then
+		rm -rf ./fastboot
+	fi
+	popd
+fi
     build_header $BL22_IMAGE $RTOS_IMAGE_1 $RTOS_IMAGE_2
     package_binary ${RTOS_BUILD_DIR}/_tmp_hdr.bin ${RTOS_BUILD_DIR}/bl22.bin bl22.bin
     package_binary ${RTOS_BUILD_DIR}/bl22.bin ${RTOS_BUILD_DIR}/rtos_1.bin bl22.bin

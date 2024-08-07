@@ -169,10 +169,11 @@
 	 clocks = <&clkc CLKID_SD_EMMC_C_MUX>,
 			<&clkc CLKID_SD_EMMC_C_DIV>,
 			<&clkc CLKID_SD_EMMC_C>,
-			//<&clkc CLKID_GP0_PLL>,
-			<&clkc CLKID_FCLK_DIV2>,
+			<&clkc CLKID_GP0_PLL>,
+			//<&clkc CLKID_FCLK_DIV2>,
 			<&clkc CLKID_XTAL>;
 			clock-names = "mux", "div", "gate", "clkin", "xtal";
+			source-clock = <1536000000>;
 };
 
 &nand {

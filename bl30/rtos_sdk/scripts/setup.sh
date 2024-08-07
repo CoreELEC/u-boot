@@ -60,6 +60,9 @@ else
 		echo "Faild to save $RTOS_SDK_MANIFEST_FILE"
 		exit 1
 	fi
+	# If the name and path is same in mainfext.xml,cmd repo manifest will ignore path section
+	# and only generate name section cause they are same,so we need add path section with sed
+	sed -i -r '/name=/ { /path=/! s/(name=("[^"]+"))/& path=\2/ }' $RTOS_SDK_MANIFEST_FILE
 fi
 
 # Get SDK_VERSION

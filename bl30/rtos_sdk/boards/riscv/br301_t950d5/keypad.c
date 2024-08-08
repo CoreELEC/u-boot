@@ -15,7 +15,6 @@
 #include "suspend.h"
 
 /*KEY ID*/
-#define GPIO_KEY_ID_POWER GPIOD_3
 #define GPIO_KEY_ID_WIFI_WAKE GPIOD_12
 
 #define ADC_KEY_ID_MENU 520
@@ -32,11 +31,6 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 		wakeup_dsp();
 		break;
 #endif
-	case GPIO_KEY_ID_POWER:
-		buf[1] = POWER_KEY_WAKEUP;
-		STR_Wakeup_src_Queue_Send_FromISR(buf);
-		wakeup_dsp();
-		break;
 	default:
 		break;
 	}

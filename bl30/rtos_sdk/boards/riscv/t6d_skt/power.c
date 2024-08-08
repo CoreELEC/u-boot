@@ -148,7 +148,6 @@ void str_hw_disable(void)
 	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
 #endif
 		vKeyPadDeinit();
-	vRestoreGpioIrqReg();
 
 	if (cecTask) {
 		vTaskDelete(cecTask);
@@ -160,6 +159,9 @@ void str_hw_disable(void)
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
 		hdmirx_GpioIRQFree();
 #endif
+
+	vRestoreGpioIrqReg();
+
 #if BL30_SUSPEND_DEBUG_EN
 	exit_func_print();
 #endif

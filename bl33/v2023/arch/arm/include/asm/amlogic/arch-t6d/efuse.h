@@ -19,24 +19,43 @@ struct efuse_hal_api_arg {
 };
 
 typedef struct efuse_cali {
-	unsigned int revision:4;
-	unsigned int reserve1:4;
-	unsigned int tsensor_data:15;
-	unsigned int tsensor_flag:1;
-	unsigned int cvbs_data:7;
-	unsigned int cvbs_flag:1;
-	unsigned int ethernet_data:5;
-	unsigned int ethernet_flag:1;
-	unsigned int reserve2:2;
-	unsigned int saradc_data:6;
-	unsigned int saradc_flag:1;
-	unsigned int reserve3:1;
-	unsigned int usbphy_data:4;
-	unsigned int usbphy_flag:1;
-	unsigned int reserve4:11;
+	unsigned long long who_burn:4;
+	unsigned long long cali_version:4;
+	unsigned long long tsensor0_data:15;
+	unsigned long long tsensor0_flag:1;
+	unsigned long long tsensor1_data:15;
+	unsigned long long tsensor1_flag:1;
+	unsigned long long hdmirx20_data:4;
+	unsigned long long hdmirx20_flag:1;
+	unsigned long long reserved0:1;
+	unsigned long long usbphy_data:6;
+	unsigned long long usbphy_flag:1;
+	unsigned long long odio33_data:2;
+	unsigned long long odio33_flag:1;
+	unsigned long long cvbs_data:7;
+	unsigned long long cvbs_flag:1;
+	//Cali info2
+	unsigned long long saradc_vref_data:6;
+	unsigned long long saradc_vref_flag:1;
+	unsigned long long reserved1:1;
+	unsigned long long saradc_min_data:11;
+	unsigned long long saradc_min_flag:1;
+	unsigned long long saradc_max_data:11;
+	unsigned long long saradc_max_flag:1;
+	unsigned long long eth_txamp_data:5;
+	unsigned long long eth_txamp_flag:1;
+	unsigned long long eth_resctl_data:8;
+	unsigned long long eth_resctl_flag:1;
+	unsigned long long miscpzq_data:8;
+	unsigned long long miscpzq_flag:1;
+	unsigned long long p2p_vinlp_data:5;
+	unsigned long long p2p_vinlp_flag:1;
+	unsigned long long p2p_common_data:5;
+	unsigned long long p2p_common_flag:1;
+	unsigned long long reserved2:4;
 } efuse_cali_t;
 
-#define EFUSE_CALI_SIZE			8
+#define EFUSE_CALI_SIZE			17
 #define EFUSE_CALI_CVBS
 
 #define EFUSE_BYTES				512   /* (EFUSE_BITS/8) */
@@ -46,6 +65,7 @@ typedef struct efuse_cali {
 #define EFUSE_HAL_API_WRITE_PATTERN 2
 #define EFUSE_HAL_API_USER_MAX 3
 #define EFUSE_HAL_API_READ_CALI 4
+#define EFUSE_HAL_API_READ_CALI_ITEM 5
 #define EFUSE_HAL_API_CHECKPATTERN_ITEM  6
 #define CONFIG_EFUSE_OBJ_API 1
 

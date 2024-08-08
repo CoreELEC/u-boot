@@ -6,7 +6,7 @@ aml_library_sources_ifdef(
 	CONFIG_SARADC
 	saradc_c2.c
 )
-elseif(CONFIG_SOC_S7)
+elseif(CONFIG_SOC_S7 OR CONFIG_SOC_T6D)
 aml_library_sources_ifdef(
 	CONFIG_SARADC
 	saradc_s7.c

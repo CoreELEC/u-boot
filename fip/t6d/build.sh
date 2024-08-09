@@ -749,59 +749,22 @@ function build_signed() {
 	zip -j $u_pack ${list_pack} >& /dev/null
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
-		if [ "${CONFIG_S7_T223}" == "y" ]; then
-			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys" ]; then
-				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys projects/s7/bayside/normal
-			fi
-			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys" ]; then
-				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys projects/s7/bayside/dfu
-			fi
-		else
-			if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
-				./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
-			fi
+		if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then
+			./${FIP_FOLDER}${CUR_SOC}/bin/download-keys.sh ${AMLOGIC_KEY_TYPE} ${CUR_SOC} device ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/
 		fi
 
-		fw_arb_cfg=${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg
-		if [ -s "${fw_arb_cfg}" ]; then
-			source ${fw_arb_cfg}
-			export DEVICE_SCS_SEGID=${DEVICE_SCS_SEGID}
-			export DEVICE_VENDOR_SEGID=${DEVICE_VENDOR_SEGID}
-			export DEVICE_SCS_VERS=${DEVICE_SCS_VERS}
-			export DEVICE_TEE_VERS=${DEVICE_TEE_VERS}
-			export DEVICE_REE_VERS=${DEVICE_REE_VERS}
-			export DEVICE_SCS_LVL1CERT_VERS_SUBMASK=${DEVICE_SCS_LVL1CERT_VERS_SUBMASK}
-		fi
-		if [ "${CONFIG_S7_T223}" == "y" ]; then
-			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/normal-device-keys
-		else
-			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
-		fi
-		export DEVICE_INPUT_PATH=$(pwd)/${BUILD_PATH}
-		export DEVICE_OUTPUT_PATH=$(pwd)/${BUILD_PATH}
-		export PROJECT=${CHIPSET_NAME}
 		if [ "y" == "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
-			export DEVICE_ROOTRSA_INDEX=1
+			DEVICE_ROOTRSA_INDEX=1
 		elif [ -n "${CONFIG_DEVICE_ROOTRSA_INDEX}" ]; then
-			export DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
-		fi
-		export DEVICE_VARIANT_SUFFIX=${CHIPSET_VARIANT_SUFFIX}
-
-		export DEVICE_STORAGE_SUFFIX=.sto
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
-		export DEVICE_STORAGE_SUFFIX=.usb
-		if [ "${CONFIG_S7_T223}" == "y" ]; then
-			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/dfu-device-keys
+			DEVICE_ROOTRSA_INDEX=${CONFIG_DEVICE_ROOTRSA_INDEX}
 		else
-			export DEVICE_SCS_KEY_TOP=$(pwd)/${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys
+			DEVICE_ROOTRSA_INDEX=0
 		fi
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-boot-blobs
 
-		make -C ./${FIP_FOLDER}${CUR_SOC} dv-device-fip
-		# build final bootloader
-		postfix=.device.signed
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
-		mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
+		./${FIP_FOLDER}${CUR_SOC}/bin/device-vendor-scs-signing.sh --key-dir ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys/ --project ${CHIPSET_NAME} \
+			--input-dir ${BUILD_PATH} --rootkey-index ${DEVICE_ROOTRSA_INDEX} --chipset-variant ${CHIPSET_VARIANT} \
+			--arb-config ${UBOOT_SRC_FOLDER}/${BOARD_DIR}/fw_arb.cfg --out-dir ${BUILD_PATH}
+
 	fi
 
 	return

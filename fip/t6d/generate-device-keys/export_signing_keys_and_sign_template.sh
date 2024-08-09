@@ -57,7 +57,7 @@ rootkey_index=0
 output_dir=""
 boot_blobs_arb_args=
 device_fip_arb_args=
-device_soc="t6d"
+device_soc="s7"
 
 parse_main() {
     local i=0

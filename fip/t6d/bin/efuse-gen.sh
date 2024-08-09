@@ -105,7 +105,6 @@ function generate_efuse_device_pattern() {
     # Verify args
     if [ -z "$output" ]; then echo Error: Missing output file option -o; exit 1; fi
 
-    check_opt_file input 1024 "$input"
     check_opt_file dvgk 16 "$dvgk"
     check_opt_file dvuk 16 "$dvuk"
     check_opt_file device_roothash 32 "$device_roothash"

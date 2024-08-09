@@ -275,7 +275,7 @@ if [ -z "${rootkey_index}" ]; then
 	rootkey_index=0
 fi
 
-if [ -z "${chipset_variant}" ] || [ "${chipset_variant}" == "no_variant" ]; then
+if [ -z "${chipset_variant}" ] || [ "${chipset_variant}" == "no_variant" ] || [ "${chipset_variant}" == "general" ]; then
 	chipset_variant_suffix=""
 else
 	chipset_variant_suffix=".${chipset_variant}"

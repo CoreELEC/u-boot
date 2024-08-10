@@ -182,6 +182,7 @@ int board_late_init(void)
 #ifdef CONFIG_AML_CVBS
 	cvbs_init();
 #endif
+	run_command("ini_model", 0);
 #ifdef CONFIG_AML_LCD
 	lcd_probe();
 #endif

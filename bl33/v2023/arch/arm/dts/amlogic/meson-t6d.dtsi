@@ -52,6 +52,22 @@
 		};
 	};
 
+	pinctrl_analog: pinctrl@fe0043cc {
+		compatible = "amlogic,meson-t6d-analog-pinctrl";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		gpio_analog: analog-bank@fe0043cc {
+			reg = <0x0 0xfe0043d4 0x0 0x0004>,
+			      <0x0 0xfe0043cc 0x0 0x0008>;
+			reg-names = "mux", "gpio";
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio-ranges = <&pinctrl_analog 0 0 2>;
+		};
+	};
+
 	i2c_gpio_0: i2c-gpio-0 {
 		#address-cells = <1>;
 		#size-cells = <0>;

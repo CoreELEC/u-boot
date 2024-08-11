@@ -6,6 +6,10 @@
 #ifndef _DT_BINDINGS_MESON_T6D_GPIO_H
 #define _DT_BINDINGS_MESON_T6D_GPIO_H
 
+/* Analog */
+#define CDAC_IOUT			0
+#define CVBS0				1
+
 /* GPIOW */
 #define GPIOW_0				0
 #define GPIOW_1				1

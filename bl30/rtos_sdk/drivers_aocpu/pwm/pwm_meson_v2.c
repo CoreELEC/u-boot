@@ -194,7 +194,12 @@ static void prvPwmMesonClockSet(struct xPwmMesondevice *pwm)
 	switch (pwm->hwpwm) {
 	case MESON_PWM_0:
 	case MESON_PWM_2:
-		prvPwmRegWrite(pwm->chip->clk_addr, ((0x3 << 9) | (0x1 << 8)), (0x1 << 8));
+		if (pwm->chip->clk_addr) {
+			if (pwm->chip->channel_separated && !pwm->chip->even_channel)
+				prvPwmRegWrite(pwm->chip->clk_addr,
+					((0x3 << 25) | (0x1 << 24)), (0x1 << 24));
+		} else
+			prvPwmRegWrite(pwm->chip->clk_addr, ((0x3 << 9) | (0x1 << 8)), (0x1 << 8));
 		break;
 
 	case MESON_PWM_1:

@@ -28,7 +28,7 @@ void soc_business_process(void)
 #ifdef CONFIG_AOCPU_BUSRESPERR_DETECTION
 	config_eclic_busresperr_irq();
 #endif
-	//config_pmp();
+	config_pmp();
 	stick_mem_init();
 	stick_mem_write(STICK_REBOOT_FLAG, WATCHDOG_REBOOT);
 }

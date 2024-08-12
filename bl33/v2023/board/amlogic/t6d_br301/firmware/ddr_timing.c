@@ -124,7 +124,7 @@ uint32_t __ddr_parameter_reg_index[] __attribute__ ((section(".ddr_2acs_index"))
 };
 #endif
 
-#define LPDDR4_SKT 1
+#define LPDDR4_SKT 0
 #define DDR4_SKT 1
 #define DDR3_SKT 1
 #define CONFIG_BOARD_TIMMING
@@ -453,11 +453,10 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 
 		},
 		.cfg_board_common_setting.ddr_dq_remap = {
-			0, 0, 0,
-			//7,	6,	4,	3,	5,	0,	1,	2,	32,
-			//9,	14,	15,	11,	33,	12,	13,	8,	10,
-			//29,	25,	30,	27,	35,	26,	24,	31,	28,
-			//22,	34,	16,	18,	21,	20,	23,	19,	17,
+			7,	6,	4,	3,	5,	0,	1,	2,	32,
+			9,	14,	15,	11,	33,	12,	13,	8,	10,
+			29,	25,	30,	27,	35,	26,	24,	31,	28,
+			22,	34,	16,	18,	21,	20,	23,	19,	17,
 		},
 
 #endif
@@ -1221,8 +1220,10 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_board_common_setting.fast_boot = {
 			0, 0, 0, 0
 		},
-		.cfg_board_common_setting.ddr_func = DDR_FUNC_CONFIG_DFE_FUNCTION |
-		DDR_FUNC_CONFIG_ENABLE_PZQ_DET_DRAM_TYPE_RETURN,
+		.cfg_board_common_setting.ddr_func =
+		DDR_FUNC_CONFIG_AUTO_DET_DQ_PINMUX_FUNCTION,
+		//DDR_FUNC_CONFIG_DFE_FUNCTION |
+		//DDR_FUNC_CONFIG_ENABLE_PZQ_DET_DRAM_TYPE_RETURN,
 		.cfg_board_common_setting.board_id = CONFIG_BOARD_ID_MASK,
 		.cfg_board_common_setting.DramType = CONFIG_DDR_TYPE_DDR4,
 		.cfg_board_common_setting.enable_lpddr4x_mode = 0,
@@ -1310,7 +1311,7 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 
 #ifdef CONFIG_PXP_TIMMING
 //pxp
-#define TDQS2DQ  (0 + ((0 * 128 * CACLU_CLK_D4 * 2) / 1000000))    //
+#define TDQS2DQ_D4  (0 + ((0 * 128 * CACLU_CLK_D4 * 2) / 1000000))    //
 //#define TDQSCK   64
 #define CLK_DELAY_D4 0                                             // (64)
 //#define BOARD_DQS_DELAY   64
@@ -1320,6 +1321,7 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 #define WL0  0
 //((480 * 128 * CACLU_CLK_D4 * 2) / 1000000)
 #endif
+
 #ifdef CONFIG_RTL_TIMMING
 //rtl
 #define TDQS2DQ_D4  ((0 * 128 * CACLU_CLK_D4) / 1000000)  //
@@ -1330,6 +1332,7 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 #define PHY_TDQS2DQ_D4  ((200 * 128 * CACLU_CLK_D4) / 1000000)
 #define WL0  0 //((480 * 128 * CACLU_CLK_D4 * 2) / 1000000)
 #endif
+
 #ifdef CONFIG_BOARD_TIMMING     //skt lp4 board
 #define TDQS2DQ_D4  ((0 * 128 * CACLU_CLK_D4) / 1000000)
 //#define BOARD_DQS_DELAY   64+32
@@ -1416,48 +1419,49 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		},
 #if PXP_USE_REAL_PINMUX
 		//S7 realpinmux
+		//T6D pinmux
 		.cfg_board_common_setting.ac_pinmux = {
-		11,	6,	4,	3,	5,	7,	0,	22,	19,	26,
-		23,	27,	18,	14,	17,	13,	16,	1,	10,	8,	21,
-		2,	9,	12,	20,	15,	24,	25,	28,	29,
+		4,	6,	5,	0,	1,	8,	9,	7,	13,	2,
+		11,	10,	3,	15,	14,	26,	27,	22,	23,	20,	21,
+		19,	16,	18,	12,	17,	24,	25,	28,	29,
 		},
 		.cfg_board_common_setting.ddr_dq_remap = {
-			8,
-			14,
-			12,
-			13,
-			9,
-			10,
-			15,
-			33,
-			11,
-			6,
-			4,
-			0,
-			2,
-			32,
-			1,
-			3,
-			5,
-			7,
-			25,
-			29,
-			26,
-			27,
-			35,
-			31,
-			30,
-			28,
-			24,
-			22,
 			34,
-			18,
-			19,
+			16,
 			17,
+			19,
+			18,
 			21,
 			20,
+			22,
 			23,
-			16,
+			32,
+			0,
+			1,
+			3,
+			2,
+			5,
+			4,
+			7,
+			6,
+			9,
+			8,
+			11,
+			10,
+			13,
+			12,
+			15,
+			14,
+			33,
+			24,
+			25,
+			26,
+			27,
+			28,
+			30,
+			29,
+			31,
+			35,
 		},
 #endif
 #else
@@ -1562,105 +1566,20 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 			35,
 	},
 
-	//S7 realpinmux
 		.cfg_board_common_setting.ac_pinmux = {
-		11,	6,	4,	3,	5,	7,	0,	22,	19,	26,
-		23,	27,	18,	14,	17,	13,	16,	1,	10,	8,	21,
-		2,	9,	12,	20,	15,	24,	25,	28,	29,
+		4,	6,	5,	0,	1,	8,	9,	7,	13,	2,
+		11,	10,	3,	15,	14,	26,	27,	22,	23,	20,	21,
+		19,	16,	18,	12,	17,	24,	25,	28,	29,
 		},
-		.cfg_board_common_setting.ddr_dq_remap = {
-#if 0
-			8	,
-			10	,
-			15	,
-			13	,
-			9	,
-			12	,
-			11	,
-			14	,
-			33	,
-			6,
-			4,
-			0,
-			2,
-			32,
-			1,
-			3,
-			5,
-			7,
-			25,
-			29,
-			26,
-			27,
-			35,
-			31,
-			30,
-			28,
-			24,
-			22,
-			34,
-			18,
-			19,
-			17,
-			21,
-			20,
-			23,
-			16,
-#endif
-			0, 0, 0,
-			//12,	10,	15,	13,	9,	8,	11,	14,	33,
-			//6,	4,	0,	2,	32,	1,	3,	5,	7,
-			//25,	29,	26,	27,	35,	24,	28,	30,	31,
-			//22,	34,	18,	19,	17,	21,	20,	23,	16,
 
-		},
-#if ENABLE_RTL_DDR3_PINMUX
-//rtl debug
-		.cfg_board_common_setting.ac_pinmux = {
-		0x1b,	0xb,	0x1a,	2,	0x17,	0,	9,	0x10,	0x12,	0x7,
-		5,	14,	22,	17,	12,	0x13,	8,	1,	10,	13,
-		4,	21,	20,	3,	15,	6,	24,	25,	29,	28,
-
-		},
 		.cfg_board_common_setting.ddr_dq_remap = {
-			0,
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			32,
-			8,
-			9,
-			10,
-			11,
-			12,
-			13,
-			14,
-			15,
-			33,
-			16,
-			17,
-			18,
-			19,
-			20,
-			21,
-			22,
-			23,
-			34,
-			24,
-			25,
-			26,
-			27,
-			28,
-			29,
-			30,
-			31,
-			35,
+			0 , 0 , 0,
+		//	12,	10,	15,	13,	9,	8,	11,	14,	33,
+		//	6,	4,	0,	2,	32,	1,	3,	5,	7,
+		//	25,	29,	26,	27,	35,	24,	28,	30,	31,
+		//	22,	34,	18,	19,	17,	21,	20,	23,	16,
 		},
-#endif
+
 #endif
 		//.cfg_board_common_setting.ddr_dq_remap= {
 		// 3, 0, 2, 1, 4, 6, 5, 7,  14, 12, 13, 15,
@@ -1686,7 +1605,7 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_ddr_training_delay_ps.reserve_para[8 + 7] = (1 << 7) | 0x10,//read dqs
 #endif
 		//#define  AC_OFFSET  (-128) //> 1650 M use -128  or use 0
-		#define  AC_OFFSET  (0)
+		#define  AC_OFFSET  (128)
 		.cfg_ddr_training_delay_ps.ac_trace_delay[0] = 256 + AC_OFFSET,
 		.cfg_ddr_training_delay_ps.ac_trace_delay[1] = 256 + AC_OFFSET,
 		.cfg_ddr_training_delay_ps.ac_trace_delay[2] = 256 + AC_OFFSET,
@@ -1729,33 +1648,25 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_ddr_training_delay_ps.ac_trace_delay[0] = 128 + AC_OFFSET,     //odt0
 		.cfg_ddr_training_delay_ps.ac_trace_delay[2] = 128 + AC_OFFSET,         //odt1
 #else
-		.cfg_ddr_training_delay_ps.ac_trace_delay[7] = 128 + AC_OFFSET,       // cs
-		.cfg_ddr_training_delay_ps.ac_trace_delay[10] = 128 + AC_OFFSET,      // cs
+		.cfg_ddr_training_delay_ps.ac_trace_delay[17] = 128 + AC_OFFSET,       // cs
+		.cfg_ddr_training_delay_ps.ac_trace_delay[18] = 128 + AC_OFFSET,      // cs
 		.cfg_ddr_training_delay_ps.ac_trace_delay[28] = 128 + AC_OFFSET,    //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[29] = 128 + AC_OFFSET,    //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[27] = 128 + AC_OFFSET,     //cke
 		.cfg_ddr_training_delay_ps.ac_trace_delay[26] = 128 + AC_OFFSET,     //cke
-		.cfg_ddr_training_delay_ps.ac_trace_delay[9] = 128 + AC_OFFSET,        //odt0
-		.cfg_ddr_training_delay_ps.ac_trace_delay[11] = 128 + AC_OFFSET,       //odt1
+		.cfg_ddr_training_delay_ps.ac_trace_delay[15] = 128 + AC_OFFSET,        //odt0
+		.cfg_ddr_training_delay_ps.ac_trace_delay[16] = 128 + AC_OFFSET,       //odt1
 #endif
 #else
-		.cfg_ddr_training_delay_ps.ac_trace_delay[10] = 128 + AC_OFFSET,     // cs
-		.cfg_ddr_training_delay_ps.ac_trace_delay[11] = 168 + AC_OFFSET,    // cs + 40
-		.cfg_ddr_training_delay_ps.ac_trace_delay[28] = 128 + AC_OFFSET,  //ck
-		.cfg_ddr_training_delay_ps.ac_trace_delay[29] = 128 + AC_OFFSET,  //ck
-		.cfg_ddr_training_delay_ps.ac_trace_delay[27] = 128 + AC_OFFSET,    //cke
-		.cfg_ddr_training_delay_ps.ac_trace_delay[26] = 128 + AC_OFFSET,    //cke
-		.cfg_ddr_training_delay_ps.ac_trace_delay[12] = 128 + AC_OFFSET,      //odt0
-		.cfg_ddr_training_delay_ps.ac_trace_delay[19] = 128 + AC_OFFSET,      //odt1
-
-		.cfg_ddr_training_delay_ps.ac_trace_delay[7] = 128 - 35 + AC_OFFSET, // cs
-		.cfg_ddr_training_delay_ps.ac_trace_delay[10] = 128 + AC_OFFSET,      // cs
+		.cfg_ddr_training_delay_ps.ac_trace_delay[17] = 128 + AC_OFFSET,       // cs
+		.cfg_ddr_training_delay_ps.ac_trace_delay[18] = 128 + AC_OFFSET,      // cs
 		.cfg_ddr_training_delay_ps.ac_trace_delay[28] = 128 + AC_OFFSET,    //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[29] = 128 + AC_OFFSET,    //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[27] = 128 + AC_OFFSET,     //cke
 		.cfg_ddr_training_delay_ps.ac_trace_delay[26] = 128 + AC_OFFSET,     //cke
-		.cfg_ddr_training_delay_ps.ac_trace_delay[9] = 128 + AC_OFFSET,        //odt0
-		.cfg_ddr_training_delay_ps.ac_trace_delay[11] = 128 + AC_OFFSET,       //odt1
+		.cfg_ddr_training_delay_ps.ac_trace_delay[15] = 128 + AC_OFFSET,        //odt0
+		.cfg_ddr_training_delay_ps.ac_trace_delay[16] = 128 + AC_OFFSET,       //odt1
+       //odt1
 #endif
 		.cfg_ddr_training_delay_ps.read_dq_delay_t[0] = 64 + 16,
 		.cfg_ddr_training_delay_ps.read_dq_delay_t[1] = 64 + 16,
@@ -1913,14 +1824,14 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_ddr_training_delay_ps.write_dqs_delay[6] = AC_OFFSET + WL0 + 0,
 		.cfg_ddr_training_delay_ps.write_dqs_delay[7] = AC_OFFSET + WL0 + 0,
 #else
-		.cfg_ddr_training_delay_ps.write_dqs_delay[0] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[1] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[2] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[3] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[4] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[5] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[6] = 128 + AC_OFFSET + WL0,
-		.cfg_ddr_training_delay_ps.write_dqs_delay[7] = 128 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[0] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[1] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[2] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[3] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[4] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[5] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[6] = 0 + AC_OFFSET + WL0,
+		.cfg_ddr_training_delay_ps.write_dqs_delay[7] = 0 + AC_OFFSET + WL0,
 
 		//.cfg_ddr_training_delay_ps.write_dqs_delay[0] = 225,
 		//.cfg_ddr_training_delay_ps.write_dqs_delay[1] = 225,
@@ -2579,8 +2490,8 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_board_common_setting.fast_boot = {
 			0, 0, 0, 0
 		},
-		.cfg_board_common_setting.ddr_func =
-		DDR_FUNC_CONFIG_ENABLE_PZQ_DET_DRAM_TYPE_RETURN,
+		.cfg_board_common_setting.ddr_func = DDR_FUNC_CONFIG_AUTO_DET_DQ_PINMUX_FUNCTION,
+		//DDR_FUNC_CONFIG_ENABLE_PZQ_DET_DRAM_TYPE_RETURN,
 		.cfg_board_common_setting.board_id = CONFIG_BOARD_ID_MASK,
 		.cfg_board_common_setting.DramType = CONFIG_DDR_TYPE_DDR3,
 		.cfg_board_common_setting.enable_lpddr4x_mode = 0,
@@ -2722,47 +2633,47 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 
 #ifdef CONFIG_PXP_TIMMING
 		.cfg_board_common_setting.ac_pinmux = {
-		19,	14,	18,	26,	3,	0,	5,	9,	2,	13,
-		7,	23,	22,	27,	11,	1,	4,	17,	15,	8,	12,
-		10,	20,	6,	16,	21,	24,	25,	28,	29,
-		},
+			27,	11,	26,	2,	23,	0,	9,	16,	18,	7,
+			5,	19,	22,	17,	12,	11,	8,	1,	10,	13,	4,
+			19,	20,	3,	21,	6,	24,	25,	28,	29,
+			},
 		.cfg_board_common_setting.ddr_dq_remap = {
-		3,
-		32,
-		7,
-		5,
-		1,
-		6,
-		4,
-		2,
-		0,
-		8,
-		10,
-		33,
-		14,
-		11,
-		15,
-		12,
-		9,
-		13,
-		22,
-		20,
-		34,
-		16,
-		21,
-		19,
-		18,
-		23,
-		17,
-		28,
-		35,
-		27,
-		26,
-		29,
-		25,
-		30,
-		31,
-		24,
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			32,
+			8,
+			9,
+			10,
+			11,
+			12,
+			13,
+			14,
+			15,
+			33,
+			16,
+			17,
+			18,
+			19,
+			20,
+			21,
+			22,
+			23,
+			34,
+			24,
+			25,
+			26,
+			27,
+			28,
+			29,
+			30,
+			31,
+			35,
 		},
 
 #else
@@ -2924,13 +2835,13 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 		.cfg_ddr_training_delay_ps.ac_trace_delay[29] = 256 + AC_OFF_D3,
 #ifdef CONFIG_PXP_TIMMING                                           //t3x pxp
 		.cfg_ddr_training_delay_ps.ac_trace_delay[12] = 128 + AC_OFF_D3,//pxp cs
-		//.cfg_ddr_training_delay_ps.ac_trace_delay[11] = 128 + AC_OFF_D3,  //pxp cs
+		.cfg_ddr_training_delay_ps.ac_trace_delay[4] = 128 + AC_OFF_D3,  //pxp cs
 		.cfg_ddr_training_delay_ps.ac_trace_delay[29] = 128 + AC_OFF_D3,      //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[28] = 128 + AC_OFF_D3,      //ck
 		.cfg_ddr_training_delay_ps.ac_trace_delay[26] = 128 + AC_OFF_D3,     //cke
 		.cfg_ddr_training_delay_ps.ac_trace_delay[27] = 128 + AC_OFF_D3,     //cke
-		.cfg_ddr_training_delay_ps.ac_trace_delay[3] = 128 + AC_OFF_D3,      //odt0
-		//.cfg_ddr_training_delay_ps.ac_trace_delay[13] = 128 + AC_OFF_D3,      //odt1
+		.cfg_ddr_training_delay_ps.ac_trace_delay[2] = 128 + AC_OFF_D3,      //odt0
+		//.cfg_ddr_training_delay_ps.ac_trace_delay[0] = 128 + AC_OFF_D3,      //odt1
 #else
 #ifdef ENABLE_CP_DDR3_TIMMING
 		.cfg_ddr_training_delay_ps.ac_trace_delay[10] = 128 + AC_OFF_D3,     // cs0

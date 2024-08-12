@@ -319,31 +319,39 @@
 		};
 	};
 
-	jtag_a_pins:jtag_a_pin {
+	jtag_a_pins: jtag_a_pin {
 		mux {
-			groups = "jtag_1_clk",
-			"jtag_1_tms",
-			"jtag_1_tdi",
-			"jtag_1_tdo";
-			function = "jtag_1";
+			groups = "jtag_a_clk_d6",
+				 "jtag_a_tms_d7",
+				 "jtag_a_tdi_d8",
+				 "jtag_a_tdo_d9";
+			function = "jtag_a";
+		};
+
+		mux-unused {
+			groups = "GPIOW_2",
+				 "GPIOW_3",
+				 "GPIOW_6",
+				 "GPIOW_7";
+			function = "gpio_periphs";
 		};
 	};
 
-	jtag_b_pins:jtag_b_pin {
+	jtag_b_pins: jtag_b_pin {
 		mux {
-			groups = "jtag_2_clk",
-			"jtag_2_tms",
-			"jtag_2_tdi",
-			"jtag_2_tdo";
-			function = "jtag_2";
+			groups = "jtag_a_clk_w2",
+				 "jtag_a_tms_w3",
+				 "jtag_a_tdi_w6",
+				 "jtag_a_tdo_w7";
+			function = "jtag_a";
 		};
-	};
 
-	swd_a_pins:swd_a_pin {
-		mux {
-			groups = "swclk",
-			"swdio";
-			function = "sw";
+		mux-unused {
+			groups = "GPIOD_6",
+				 "GPIOD_7",
+				 "GPIOD_8",
+				 "GPIOD_9";
+			function = "gpio_periphs";
 		};
 	};
 

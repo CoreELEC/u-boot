@@ -18,7 +18,7 @@
 void hw_business_process(void)
 {
 	vMbInit();
-	//vCecCallbackInit(CEC_CHIP_T6D);
+	vCecMBoxCallbackInit();
 	vRtcInit();
 	//rtc_init();
 	vETHMailboxCallback();

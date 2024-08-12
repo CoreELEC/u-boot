@@ -107,8 +107,8 @@ void str_hw_init(void)
 
 	vETHInit(0);
 
-	// xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
-	//	    NULL, CEC_TASK_PRI, &cecTask);
+	 xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
 
 	vBackupAndClearGpioIrqReg();
 #if BL30_SUSPEND_DEBUG_EN

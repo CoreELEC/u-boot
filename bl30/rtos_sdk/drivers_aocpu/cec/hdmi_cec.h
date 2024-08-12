@@ -7,7 +7,7 @@
 #ifndef __HDMI_CEC__
 #define __HDMI_CEC__
 
-#define CEC_VERSION "2023/08/05 s1a bringup"
+#define CEC_VERSION "2024/08/12 t6d bringup"
 
 u32 cec_init_config(void);
 u32 cec_suspend_handle(void);
@@ -29,6 +29,7 @@ enum cec_chip_ver {
 	CEC_CHIP_S7,
 	CEC_CHIP_S7D,
 	CEC_CHIP_S6,
+	CEC_CHIP_T6D,
 };
 
 #define CEC_A 0
@@ -62,4 +63,6 @@ void cec_update_phyaddress(unsigned int phyaddr);
 void cec_update_func_cfg(unsigned int cfg);
 
 void vCecCallbackInit(enum cec_chip_ver chip_mode);
+void vCecMBoxCallbackInit(void);
+
 #endif

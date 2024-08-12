@@ -69,7 +69,6 @@ static unsigned char hdmi_cec_func_config;
 static struct cec_msg cec_msg;
 static u32 cec_wakup_flag;
 struct st_cec_mailbox_data cec_mailbox;
-static enum cec_chip_ver cec_chip = CEC_CHIP_SC2;
 static u32 cec_ip;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 /* [0] for msg len */
@@ -96,6 +95,7 @@ struct cec_tx_msg cec_tx_msgs = {};
 static void cec_reset_addr(void);
 
 #ifdef CEC_CHIP_SEL_T7
+static enum cec_chip_ver cec_chip = CEC_CHIP_T7;
 /*T7 same with SC2 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -126,9 +126,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_S4
+#elif defined CEC_CHIP_SEL_S4
+static enum cec_chip_ver cec_chip = CEC_CHIP_S4;
 /*s4 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -159,9 +158,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_S1A
+#elif defined CEC_CHIP_SEL_S1A
+static enum cec_chip_ver cec_chip = CEC_CHIP_S1A;
 /*s1a register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	0xffff,/*CLKCTRL_CECA_CTRL0,*/
@@ -192,9 +190,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_SC2
+#elif defined CEC_CHIP_SEL_SC2
+static enum cec_chip_ver cec_chip = CEC_CHIP_SC2;
 /*SC2 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -225,9 +222,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_T5
+#elif defined CEC_CHIP_SEL_T5
+static enum cec_chip_ver cec_chip = CEC_CHIP_T5;
 /*T5 register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*AO_CEC_CLK_CNTL_REG0*/
@@ -258,9 +254,8 @@ unsigned int cec_reg_tab[] = {
 	AO_CEC_STICKY_DATA6, /*not use*/
 	AO_CEC_STICKY_DATA7, /*not use*/
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_T3
+#elif defined CEC_CHIP_SEL_T3
+static enum cec_chip_ver cec_chip = CEC_CHIP_T3;
 /*T3 register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*CLKCTRL_CECA_CTRL0*/
@@ -291,10 +286,8 @@ unsigned int cec_reg_tab[] = {
 	SYSCTRL_CEC_STICKY_REG6, /*not use*/
 	SYSCTRL_CEC_STICKY_REG7, /*not use*/
 };
-
-#endif
-
-#ifdef CEC_CHIP_SEL_S5
+#elif defined CEC_CHIP_SEL_S5
+static enum cec_chip_ver cec_chip = CEC_CHIP_S5;
 /*s5 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	0xffff,/*CLKCTRL_CECA_CTRL0,*/
@@ -325,9 +318,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff,//AO_CEC_STICKY_DATA6,
 	0xffff,//AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_T5M
+#elif defined CEC_CHIP_SEL_T5M
+static enum cec_chip_ver cec_chip = CEC_CHIP_T5M;
 /*T5M register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*CLKCTRL_CECA_CTRL0*/
@@ -358,9 +350,8 @@ unsigned int cec_reg_tab[] = {
 	SYSCTRL_CEC_STICKY_REG6, /*not use*/
 	SYSCTRL_CEC_STICKY_REG7, /*not use*/
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_T6D
+#elif defined CEC_CHIP_SEL_T6D
+static enum cec_chip_ver cec_chip = CEC_CHIP_T6D;
 /*t6d register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*CLKCTRL_CECA_CTRL0*/
@@ -391,9 +382,8 @@ unsigned int cec_reg_tab[] = {
 	SYSCTRL_CEC_STICKY_REG6, /*not use*/
 	SYSCTRL_CEC_STICKY_REG7, /*not use*/
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_S7
+#elif defined CEC_CHIP_SEL_S7
+static enum cec_chip_ver cec_chip = CEC_CHIP_S7;
 /*s7 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -424,9 +414,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_S7D
+#elif defined CEC_CHIP_SEL_S7D
+static enum cec_chip_ver cec_chip = CEC_CHIP_S7D;
 /*s7 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -457,9 +446,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_S6
+#elif defined CEC_CHIP_SEL_S6
+static enum cec_chip_ver cec_chip = CEC_CHIP_S6;
 /*s6 register enum cec_reg_idx */
 unsigned int cec_reg_tab[] = {
 	CLKCTRL_CECA_CTRL0,
@@ -490,9 +478,8 @@ unsigned int cec_reg_tab[] = {
 	0xffff, //AO_CEC_STICKY_DATA6,
 	0xffff, //AO_CEC_STICKY_DATA7,
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_TXHD2
+#elif defined CEC_CHIP_SEL_TXHD2
+static enum cec_chip_ver cec_chip = CEC_CHIP_TXHD2;
 /* based on T5M, register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*AO_CEC_CLK_CNTL_REG0*/
@@ -523,9 +510,8 @@ unsigned int cec_reg_tab[] = {
 	AO_CEC_STICKY_DATA6, /*not use*/
 	AO_CEC_STICKY_DATA7, /*not use*/
 };
-#endif
-
-#ifdef CEC_CHIP_SEL_T3X
+#elif defined CEC_CHIP_SEL_T3X
+static enum cec_chip_ver cec_chip = CEC_CHIP_T3X;
 /*T3X register table enum cec_reg_idx*/
 unsigned int cec_reg_tab[] = {
 	0xffff, /*CLKCTRL_CECA_CTRL0*/
@@ -2326,7 +2312,7 @@ idle:
 #if (CEC_TASK_DEBUG)
 static TaskHandle_t cecTask_temp;
 #endif
-void vCecCallbackInit(enum cec_chip_ver chip_mode)
+void vCecCallbackInit(enum __unused cec_chip_ver chip_mode)
 {
 	int ret;
 
@@ -2342,7 +2328,6 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	cec_mailbox.osd_name[2] = 'l';
 	cec_mailbox.osd_name[14] = 3;
 
-	cec_chip = chip_mode;
 	/* for shutdown/resume case */
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO1,
 						    cec_get_wakeup_info1, 1);
@@ -2379,6 +2364,11 @@ void vCecCallbackInit(enum cec_chip_ver chip_mode)
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE, NULL, CEC_TASK_PRI,
 		    &cecTask_temp);
 #endif
+}
+
+void vCecMBoxCallbackInit(void)
+{
+	vCecCallbackInit(cec_chip);
 }
 
 void cec_req_irq(u32 __unused onoff)

@@ -192,8 +192,6 @@ void str_power_on(int shutdown_flag)
 	(void)shutdown_flag;
 #if BL30_SUSPEND_DEBUG_EN
 	enter_func_print();
-	/* open PWM clk */
-//	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 		/***restore vdd_ee val***/
@@ -206,7 +204,10 @@ void str_power_on(int shutdown_flag)
 		xPinmuxSet(GPIOE_1, PIN_FUNC1);
 
 		/* enable vddcpu PWM channel */
-		REG32(PWM_MISC_REG_A) |= (1 << 1);
+		REG32(PWM_MISC_REG_B) |= (1 << 0);
+
+		/* open PWM clk */
+		REG32(CLKCTRL_PWM_CLK_AB_CTRL) |= (1 << 24);
 
 		/***set vdd_cpu val***/
 		ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
@@ -339,7 +340,7 @@ void str_power_off(int shutdown_flag)
 
 		/***set vdd_cpu val***/
 		vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
-		if (vdd_ee < 0) {
+		if (vdd_cpu < 0) {
 			printf("VDD_CPU pwm get fail\n");
 			return;
 		}
@@ -368,10 +369,10 @@ void str_power_off(int shutdown_flag)
 		}
 
 		/*disable PWM CLK*/
-//		REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24)
+		REG32(CLKCTRL_PWM_CLK_AB_CTRL) &= ~(1 << 24);
 
 		/* disable PWM channel */
-		REG32(PWM_MISC_REG_A) &= ~(1 << 1);
+		REG32(PWM_MISC_REG_B) &= ~(1 << 0);
 
 		/***set vdd_ee val***/
 		vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);

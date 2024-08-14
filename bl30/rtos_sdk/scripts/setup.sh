@@ -66,8 +66,12 @@ else
 fi
 
 # Get SDK_VERSION
-source scripts/gen_version.sh $RTOS_SDK_VERSION_FILE \
-	$RTOS_SDK_MANIFEST_FILE $RTOS_SDK_MANIFEST_OLD_FILE
+if [ -s $DEFAULT_RTOS_SDK_MANIFEST ]; then
+	source scripts/gen_version.sh $RTOS_SDK_VERSION_FILE \
+	$RTOS_SDK_MANIFEST_FILE $DEFAULT_RTOS_SDK_MANIFEST
+else
+	source scripts/gen_version.sh $RTOS_SDK_VERSION_FILE $RTOS_SDK_MANIFEST_FILE
+fi
 
 if [ -s $RTOS_SDK_MANIFEST_OLD_FILE ] && [ -s $kconfig_file ] && [ $kconfig_file -ot $STAMP ]; then
 	is_update=`comm -3 <(sort $RTOS_SDK_MANIFEST_FILE) <(sort $RTOS_SDK_MANIFEST_OLD_FILE)`

@@ -7,7 +7,7 @@
 
 RTOS_SDK_VERSION_FILE=$1
 RTOS_SDK_MANIFEST_FILE=$2
-RTOS_SDK_MANIFEST_OLD_FILE=$3
+RTOS_SDK_MANIFEST_REF_FILE=$3
 
 echo "#ifndef __SDK_VER_H__" > $RTOS_SDK_VERSION_FILE
 echo "#define __SDK_VER_H__" >> $RTOS_SDK_VERSION_FILE
@@ -32,6 +32,14 @@ done
 echo "#define CONFIG_VERSION_STRING \"$SDK_VERSION\"" >> $RTOS_SDK_VERSION_FILE
 echo "" >> $RTOS_SDK_VERSION_FILE
 
+if [ -n "$RTOS_SDK_MANIFEST_REF_FILE" ] && [ -f "$RTOS_SDK_MANIFEST_REF_FILE" ]; then
+	is_need_filter=1
+	ref_list=`awk '/path=/ && /name=/ {for (i=1; i<=NF; i++) if ($i ~ /^name=/) \
+		{split($i, a, "="); print a[2]}}' $RTOS_SDK_MANIFEST_REF_FILE`
+else
+	is_need_filter=0
+fi
+
 echo "const char* version_map[] = {" >> $RTOS_SDK_VERSION_FILE
 printf "	\"[%-7s %-12s %-12s]\",\n" "cm_hash" "remote_name" "branch" \
 	>> $RTOS_SDK_VERSION_FILE
@@ -43,6 +51,11 @@ do
 		GIT_REMOTE_NAME="$(cd $PRODUCT_PATH && git remote -v 2>/dev/null \
 			| head -n 1 | cut -d " " -f 1)"
 		GIT_NAME=${GIT_REMOTE_NAME##*rtos_sdk/}
+		if [ $is_need_filter -eq 1 ]; then
+			if ! echo "$ref_list" | grep -q "\"rtos_sdk/$GIT_NAME\""; then
+				continue;
+			fi
+		fi
 		GIT_1ST_NAME="$(echo ${GIT_NAME} | cut -d / -f 1)"
 		GIT_2ND_NAME=${GIT_REMOTE_NAME##*/}
 		COMMIT_HASH="$(cd $PRODUCT_PATH && git log --oneline -1 2>/dev/null \

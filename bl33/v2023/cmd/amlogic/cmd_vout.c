@@ -53,7 +53,13 @@ static int vout_hdmi_hpd(struct hdmitx_dev *hdev, int hpd_st)
 		printf("%s: colorattribute=%s\n", __func__, colorattribute);
 
 	connector0_type = env_get("connector0_type");
-	printf("%s: connector0_type: %s\n", __func__, connector0_type);
+	if (!connector0_type || !strcmp(connector0_type, "none")) {
+		env_set("connector0_type", "HDMI-A-A");
+		connector0_type = env_get("connector0_type");
+		printf("add default connector for HDMI-A-A\n");
+	} else {
+		printf("%s: connector0_type: %s\n", __func__, connector0_type);
+	}
 
 	/* check whether the current connector is HDMI */
 	hdmi_enc_idx = is_valid_hdmi(connector0_type);
@@ -109,7 +115,13 @@ static int vout2_hdmi_hpd(struct hdmitx_dev *hdev, int hpd_st)
 		printf("%s: colorattribute=%s\n", __func__, colorattribute);
 
 	connector1_type = env_get("connector1_type");
-	printf("%s: connector1_type: %s\n", __func__, connector1_type);
+	if (!connector1_type || !strcmp(connector1_type, "none")) {
+		env_set("connector1_type", "HDMI-A-A");
+		connector1_type = env_get("connector1_type");
+		printf("add default connector for HDMI-A-A\n");
+	} else {
+		printf("%s: connector1_type: %s\n", __func__, connector1_type);
+	}
 
 	/* check whether the current connector is HDMI */
 	hdmi_enc_idx = is_valid_hdmi(connector1_type);

@@ -10,7 +10,7 @@ config BOARD_BR309_T950D5
 	select COMMON
 	select GET_VERSION
 	select UART
-#	select CEC
+	select CEC
 	select MAILBOX
 	select STR
 	select GPIO

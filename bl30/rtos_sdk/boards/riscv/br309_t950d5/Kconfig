@@ -5,7 +5,6 @@
 config BOARD_BR309_T950D5
 	bool "Amlogic BR309_T950D5 Board"
 	select SOC_T6D
-	select BRINGUP
 	select LIBC_AML
 	select COMMON
 	select GET_VERSION

@@ -20,6 +20,7 @@ void Bt_GpioIRQRegister(void);
 void Bt_GpioIRQFree(void);
 extern void alarm_clr(void);
 
+void check_poweroff_status(void);
 
 #endif
 

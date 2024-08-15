@@ -6,6 +6,7 @@ config SOC_T6D
 	bool "T6D"
 	select RISCV
 	select STICK_MEM
+	select AOCPU_ALIVE_DETECTION
 	select AOCPU_BUSRESPERR_DETECTION
 	help
 	  Enable T6D SOC of RISCV.

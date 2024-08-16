@@ -76,6 +76,32 @@ function mk_uboot() {
 	${BASEDIR_TOP}/attach_sbh.sh ${bb1st}.payload ${bb1st}.hdr
 	bb1st=${bb1st}.hdr
 
+	local bl2e_sz=`stat -c "%s" ${bl2e}`
+	local bl2x_sz=`stat -c "%s" ${bl2x}`
+	if  [ "$bl2e_sz" -le "116912" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=116912 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		bl2e=${bl2e}.max
+	elif [ "$bl2e_sz" -le "149680" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=149680 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		bl2e=${bl2e}.max
+	elif [ "$bl2e_sz" -le "280752" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=280752 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		bl2e=${bl2e}.max
+	elif [ "$bl2e_sz" -le "1067184" ]; then
+		dd if=/dev/zero of=${bl2e}.max bs=1 count=1067184 &> /dev/null
+		dd if=${bl2e} of=${bl2e}.max conv=notrunc &> /dev/null
+		bl2e=${bl2e}.max
+	fi
+
+	if [ "$bl2x_sz" -le "108720" ]; then
+		dd if=/dev/zero of=${bl2x}.max bs=1 count=108720 &> /dev/null
+		dd if=${bl2x} of=${bl2x}.max conv=notrunc &> /dev/null
+		bl2x=${bl2x}.max
+	fi
+
 	#cat those together with 4K upper aligned for sdcard
 	align_base=4096
 	total_size=0

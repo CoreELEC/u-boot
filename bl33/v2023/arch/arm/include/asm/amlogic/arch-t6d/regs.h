@@ -35,9 +35,9 @@
  * REG_MDUMP_TIMEBASE_CNTL   use P_AO_TIMEBASE_CNTL1(CLKTREE_TIMEBASE_CTRL1)
  * REG_MDUMP_UART_WFIFO      use UART_A_WFIFO(0xfe078000)  or  UART_B_WFIFO(0xfe07a000)
  */
-#define REG_MDUMP_SERIAL_PINMUX     ((0x0000  << 2) + 0xfe000400)
+#define REG_MDUMP_SERIAL_PINMUX     ((0x0000  << 2) + 0xfe004000)
 #define REG_MDUMP_TIMEBASE_CNTL     ((0x0016  << 2) + 0xfe000800)
-#define REG_MDUMP_UART_WFIFO        ((0x0000  << 2) + 0xfe07a000)
+#define REG_MDUMP_UART_WFIFO        ((0x0000  << 2) + 0xfe078400)
 
 /*
  * proting from cmd/amlogic/cmd_rsvmem.c, do_rsvmem_dump.

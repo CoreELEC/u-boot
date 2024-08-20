@@ -20,18 +20,18 @@ if [ -z "$MANIFEST_BRANCH" ] || [ -z "$PROJECT_NAME" ] || [ -z "$BRANCH_NAME" ];
 fi
 
 if [ "$SUBMIT_TYPE" = "daily" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild
+	BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild
 elif [ "$SUBMIT_TYPE" = "release" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild_release
+	BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/dailybuild_release
 elif [ "$SUBMIT_TYPE" = "patch" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
+	BASE_PATH=/mnt/fileroot/autobuild/workdir/workspace/RTOS/RTOS_SDK/patchbuild
 elif [ "$SUBMIT_TYPE" = "every" ];then
-	BUILDCHECK_BASE_PATH=/mnt/fileroot/jenkins/build-check
+	BASE_PATH=/mnt/fileroot/jenkins/build-check
 fi
 
 MATCH_PATTERN="projects/"
 BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
-WORK_DIR=$BUILDCHECK_BASE_PATH/$PROJECT_NAME/$BRANCH
+WORK_DIR=$BASE_PATH/$PROJECT_NAME/$BRANCH
 OUTPUT_DIR=$WORK_DIR/output
 
 MANIFEST="$OUTPUT_DIR/manifest.xml"
@@ -108,6 +108,7 @@ if [ -f $LAST_MANIFEST ] && [ -f $MANIFEST ]; then
 		echo -e "================\n"
 	else
 		echo -e "======== Nothing changed since last build ========\n"
+		[[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "release" ]] && exit 0
 	fi
 fi
 

@@ -27,6 +27,10 @@
 #include <uart.h>
 #endif
 
+#if !defined(_COMPILING_NEWLIB) && !defined(_LIBC)
+#define _COMPILING_NEWLIB
+#endif
+
 #define UNUSED(x) ((void)(x))
 
 int _isatty(int);

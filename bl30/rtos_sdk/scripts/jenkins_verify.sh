@@ -34,6 +34,7 @@ BRANCH=${MANIFEST_BRANCH#*${MATCH_PATTERN}}
 WORK_DIR=$BASE_PATH/$PROJECT_NAME/$BRANCH
 OUTPUT_DIR=$WORK_DIR/output
 
+REPO_PY=$WORK_DIR/.repo/repo/repo
 MANIFEST="$OUTPUT_DIR/manifest.xml"
 LAST_MANIFEST="$OUTPUT_DIR/last_manifest.xml"
 DIFF_MANIFEST="$OUTPUT_DIR/diff_manifest.xml"
@@ -65,21 +66,21 @@ else
 	echo -e "\n======== Syncing source code ========"
 	cd $WORK_DIR
 	if [ -n "$REPO_SYNC_IPATTERN" ]; then
-		repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+		$REPO_PY forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
 	else
-		repo forall -c git reset -q --hard origin/$BRANCH_NAME
+		$REPO_PY forall -c git reset -q --hard origin/$BRANCH_NAME
 	fi
-	repo manifest -r -o $LAST_MANIFEST
+	$REPO_PY manifest -r -o $LAST_MANIFEST
 fi
 
-repo sync -cq -j8 --prune
+$REPO_PY sync -cq -j8 --prune
 [ "$?" -ne 0 ] && cd - && echo "Sync error! will do fresh download next time" && exit 1
 if [ -n "$REPO_SYNC_IPATTERN" ]; then
-	repo forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
+	$REPO_PY forall -i "$REPO_SYNC_IPATTERN" -c git reset -q --hard origin/$BRANCH_NAME
 else
-	repo forall -c git reset -q --hard origin/$BRANCH_NAME
+	$REPO_PY forall -c git reset -q --hard origin/$BRANCH_NAME
 fi
-repo manifest -r -o $MANIFEST
+$REPO_PY manifest -r -o $MANIFEST
 echo -e "======== Done ========\n"
 
 if [ -f $LAST_MANIFEST ] && [ -f $MANIFEST ]; then
@@ -108,7 +109,7 @@ if [ -f $LAST_MANIFEST ] && [ -f $MANIFEST ]; then
 		echo -e "================\n"
 	else
 		echo -e "======== Nothing changed since last build ========\n"
-		[[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "release" ]] && exit 0
+		[[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "release" ]] && [ -z "$MANUAL_GERRIT_TOPIC" ] && exit 0
 	fi
 fi
 

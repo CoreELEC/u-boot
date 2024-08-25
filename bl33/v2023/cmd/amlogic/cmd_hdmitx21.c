@@ -185,6 +185,107 @@ static void hdmitx_mask_rx_info(struct hdmitx_dev *hdev)
 }
 
 /*
+ * env_get() may return null, so use below to check
+ * if env0 and env1 are same, return 1; else return 0
+ */
+static bool hdmi_cmp_env(const char *env0, const char *env1)
+{
+	if (!env0 && !env1)
+		return 1;
+	if (!env0)
+		return 0;
+	if (!env1)
+		return 0;
+	if (strcmp(env0, env1))
+		return 0;
+	return 1;
+}
+
+#define HDMI_ENV_PARAM_MAX_LEN 32
+static void check_hdmi_env_params(void)
+{
+	static char env_hdmimode[HDMI_ENV_PARAM_MAX_LEN];
+	static char env_outputmode[HDMI_ENV_PARAM_MAX_LEN];
+	static char env_colorattr[HDMI_ENV_PARAM_MAX_LEN];
+	static char env_usercolorattr[HDMI_ENV_PARAM_MAX_LEN];
+	char *tmpstr = NULL;
+
+	/* if 4 hdmi environments are not changing, return */
+	if ((hdmi_cmp_env(env_hdmimode, env_get("hdmimode"))) &&
+		(hdmi_cmp_env(env_outputmode, env_get("outputmode"))) &&
+		(hdmi_cmp_env(env_colorattr, env_get("colorattribute"))) &&
+		(hdmi_cmp_env(env_usercolorattr, env_get("user_colorattribute"))))
+		return;
+
+	/* if changes, print and save those values */
+	tmpstr = env_get("hdmimode");
+	pr_info("hdmimode: %s\n", tmpstr ? tmpstr : "");
+	memset(env_hdmimode, 0, HDMI_ENV_PARAM_MAX_LEN);
+	if (tmpstr)
+		strncpy(env_hdmimode, tmpstr, HDMI_ENV_PARAM_MAX_LEN - 1);
+
+	tmpstr = env_get("outputmode");
+	pr_info("outputmode: %s\n", tmpstr ? tmpstr : "");
+	memset(env_outputmode, 0, HDMI_ENV_PARAM_MAX_LEN);
+	if (tmpstr)
+		strncpy(env_outputmode, tmpstr, HDMI_ENV_PARAM_MAX_LEN - 1);
+
+	tmpstr = env_get("colorattribute");
+	pr_info("colorattribute: %s\n", tmpstr ? tmpstr : "");
+	memset(env_colorattr, 0, HDMI_ENV_PARAM_MAX_LEN);
+	if (tmpstr)
+		strncpy(env_colorattr, tmpstr, HDMI_ENV_PARAM_MAX_LEN - 1);
+
+	tmpstr = env_get("user_colorattribute");
+	pr_info("user_colorattribute: %s\n", tmpstr ? tmpstr : "");
+	memset(env_usercolorattr, 0, HDMI_ENV_PARAM_MAX_LEN);
+	if (tmpstr)
+		strncpy(env_usercolorattr, tmpstr, HDMI_ENV_PARAM_MAX_LEN - 1);
+}
+
+static void save_hdmi_tfr_mode(void)
+{
+	const char *tfr_mode = NULL;
+	const char *mode = NULL;
+	const struct hdmi_timing *tfr_timing = NULL;
+	const struct hdmi_timing *mode_timing = NULL;
+
+	/*
+	 * case1: hdmimode not none
+	 *        if TV changed, hdmimode != outputmode
+	 */
+	tfr_mode = env_get("hdmimode");
+	if (tfr_mode) {
+		tfr_timing = hdmitx21_gettiming_from_name(tfr_mode);
+		if (tfr_timing) {
+			mode = env_get("outputmode");
+			mode_timing= hdmitx21_gettiming_from_name(mode);
+			if ((mode_timing->h_active < tfr_timing->h_active) &&
+				(mode_timing->v_freq < tfr_timing->v_freq))
+				env_set("tfr_mode", env_get("outputmode"));
+			else
+				env_set("tfr_mode", env_get("hdmimode"));
+			pr_info("hdmitx: qms: save tfr mode %s from hdmimode\n", tfr_mode);
+			return;
+		}
+	}
+
+	/*
+	 * case2: hdmimode as none, or NULL
+	 */
+	tfr_mode = env_get("outputmode");
+	if (tfr_mode) {
+		tfr_timing = hdmitx21_gettiming_from_name(tfr_mode);
+		if (tfr_timing) {
+			env_set("tfr_mode", tfr_mode);
+			pr_info("hdmitx: qms: save tfr mode %s from outputmoe\n", tfr_mode);
+			return;
+		}
+	}
+	pr_info("hdmitx: qms: failed to save tfr mode\n");
+}
+
+/*
  * If environment qms_en is true, and RX supports QMS, and the
  * output mode is BRR then enable TX QMS
  */
@@ -193,7 +294,8 @@ static void qms_scene_pre_process(struct hdmitx_dev *hdev)
 	bool env_qms_en = 0;
 	bool rx_qms_cap = 0;
 	enum hdmi_vic qms_brr_vic = HDMI_UNKNOWN;
-	const struct hdmi_timing *t = NULL;
+	const struct hdmi_timing *tfr_timing = NULL;
+	const struct hdmi_timing *brr_timing = NULL;
 	char *color = NULL;
 	const char *i_modes[3] = {
 		"480i", "576i", "1080i",
@@ -203,8 +305,24 @@ static void qms_scene_pre_process(struct hdmitx_dev *hdev)
 
 	/* default as 0 */
 	hdev->qms_en = 0;
+
+	if (hdev->vic == HDMI_UNKNOWN)
+		return;
+
+	rx_qms_cap = hdev->RXCap.qms;
+
+	/* save current hdmimode/outputmode is QMS/TFR mode */
+	if (!rx_qms_cap)
+		return;
+
+	/* check uboot environment */
+	if (env_get("qms_en") && (env_get_ulong("qms_en", 10, 0) == 1))
+		env_qms_en = 1;
+	else
+		return;
+
 	/* if current mode is interlaced mode, then skip QMS */
-	mode = env_get("hdmimode");
+	mode = env_get("outputmode");
 	if (!mode)
 		return;
 	for (i = 0; i < 3; i++) {
@@ -212,50 +330,55 @@ static void qms_scene_pre_process(struct hdmitx_dev *hdev)
 			return;
 	}
 
-	/* check uboot environment */
-	if (env_get("qms_en") && (env_get_ulong("qms_en", 10, 0) == 1))
-		env_qms_en = 1;
+	check_hdmi_env_params();
 
-	rx_qms_cap = hdev->RXCap.qms;
+	save_hdmi_tfr_mode();
 
-	qms_brr_vic = hdmitx_find_brr_vic(hdev->vic);
+	mode = env_get("tfr_mode");
+	if (!mode)
+		return;
+	tfr_timing = hdmitx21_gettiming_from_name(mode);
+	qms_brr_vic = hdmitx_find_brr_vic(tfr_timing->vic);
 
 	if (env_qms_en && rx_qms_cap && qms_brr_vic != HDMI_UNKNOWN)
 		hdev->qms_en = 1;
-	pr_info("QMS: env %d rx %d vic %d brr_vic %d\n", env_qms_en, rx_qms_cap,
-		hdev->vic, qms_brr_vic);
-	if (!hdev->qms_en)
+	else
 		return;
-	hdev->brr_vic = qms_brr_vic;
-	/* reconfig the hdmi para */
-	t = hdmitx21_gettiming_from_vic(hdev->brr_vic);
-	if (!t) {
-		pr_info("not find brr_vic %d timing\n", hdev->brr_vic);
+	/* check tfr is less than brr */
+	mode = env_get("outputmode");
+	brr_timing = hdmitx21_gettiming_from_vic(qms_brr_vic);
+	if (brr_timing->v_freq < tfr_timing->v_freq) {
+		hdev->qms_en = 0;
+		color = env_get("colorattribute");
+		hdev->vic = tfr_timing->vic;
+		mode = tfr_timing->sname ? tfr_timing->sname : tfr_timing->name;
+		hdev->para = hdmitx21_get_fmtpara(mode, color);
+		pr_info("hdmitx: qms: tfr %s larger than brr %s\n", env_get("tfr_mode"), mode);
 		return;
 	}
+
+	pr_info("hdmitx: qms: env %d rx %d vic %d brr_vic %d\n",
+		env_qms_en, rx_qms_cap, hdev->vic, qms_brr_vic);
+
+	hdev->brr_vic = qms_brr_vic;
+	/* reconfig the hdmi para */
+	brr_timing = hdmitx21_gettiming_from_vic(hdev->brr_vic);
 	color = env_get("colorattribute");
 	/* save brr_vic to vic without the environment */
 	hdev->vic = hdev->brr_vic;
-	hdev->para = hdmitx21_get_fmtpara(t->sname ? t->sname : t->name, color);
+	mode = brr_timing->sname ? brr_timing->sname : brr_timing->name;
+	hdev->para = hdmitx21_get_fmtpara(mode, color);
+	check_hdmi_env_params();
 }
 
 static void qms_scene_post_process(struct hdmitx_dev *hdev)
 {
-	const struct hdmi_timing *t = NULL;
+	if (!hdev->qms_en)
+		return;
 
 	/* Init QMS parameter */
 	vrr_init_qms_para(hdev);
-
-	/* set the BRR name as hdmimode and outputmode */
-	if (hdev->qms_en) {
-		t = hdmitx21_gettiming_from_vic(hdev->brr_vic);
-		if (t) {
-			env_set("hdmimode", t->sname ? t->sname : t->name);
-			/* reassing to outputmode */
-			env_set("outputmode", env_get("hdmimode"));
-			pr_info("set outputmode as %s %d\n", env_get("outputmode"), hdev->brr_vic);
-		}
-	}
+	env_set("tfr_mode", NULL);
 }
 
 static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
@@ -328,8 +451,11 @@ static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 		}
 		if (!env_get("colorattribute"))
 			env_set("colorattribute", "444,8bit");
-		hdev->para = hdmitx21_get_fmtpara(argv[1], env_get("colorattribute"));
-		hdev->vic = hdev->para->timing.vic;
+		/* if QMS is enabled, no need to use argv[1] */
+		if (!hdev->qms_en) {
+			hdev->para = hdmitx21_get_fmtpara(argv[1], env_get("colorattribute"));
+			hdev->vic = hdev->para->timing.vic;
+		}
 		if (hdev->vic == HDMI_0_UNKNOWN) {
 			/* Not find VIC */
 			printf("Not find '%s' mapped VIC\n", argv[1]);
@@ -390,6 +516,7 @@ static int do_output(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 		 * driver will pass it to kernel, and do
 		 * mode setting again when vout init in kernel
 		 */
+		qms_scene_pre_process(hdev);
 		hdmitx21_set(hdev);
 		qms_scene_post_process(hdev);
 		if (hdev->para->frl_rate && !hdev->flt_train_st) {
@@ -1248,11 +1375,6 @@ void scene_process(struct hdmitx_dev *hdev,
 {
 	struct meson_policy_in input;
 
-	// QMS BRR selection
-	// 120 or 60
-	// TX cap & Rx Cap
-	qms_scene_pre_process(hdev);
-
 	hdmitx_set_mode_policy();
 	memset(&input, 0, sizeof(struct meson_policy_in));
 	get_hdmi_input(hdev, &input);
@@ -1264,8 +1386,6 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 	struct hdmitx_dev *hdev = get_hdmitx21_device();
 	unsigned char *edid = hdev->rawedid;
 	unsigned char *store_checkvalue;
-
-	memset(edid, 0, EDID_BLK_SIZE * EDID_MAX_BLOCK);
 	unsigned int i;
 	unsigned int checkvalue[4];
 	unsigned int checkvalue1;
@@ -1291,6 +1411,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 	 */
 	bool no_manual_output = false;
 
+	memset(edid, 0, EDID_BLK_SIZE * EDID_MAX_BLOCK);
+
 	if (!hdev->hpd_state) {
 		printf("HDMI HPD low, no need parse EDID\n");
 		return 1;
@@ -1298,6 +1420,13 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 	memset(&output, 0, sizeof(struct meson_policy_out));
 
 	get_parse_edid_data(hdev);
+	/*
+	 * QMS BRR selection
+	 * 120 or 60
+	 * TX cap & Rx Cap
+	 */
+	if (0)
+		qms_scene_pre_process(hdev);
 
 	/* check if the tv has changed or anything wrong */
 	store_checkvalue = (unsigned char *)env_get("hdmichecksum");
@@ -1492,7 +1621,8 @@ static int do_get_parse_edid(cmd_tbl_t *cmdtp, int flag, int argc, char *const a
 		env_set("colorattribute", colorattribute);
 	}
 	env_set("save_outputmode", sel_hdmimode);
-	/* ubootenv dolby_status is used for is_dv_preference() decision,
+	/*
+	 * ubootenv dolby_status is used for is_dv_preference() decision,
 	 * system_control save current dv output status in it.
 	 * it will be used by dv module later to decide DV output later.
 	 * if currently adaptive hdr, then we should set dolby_status to

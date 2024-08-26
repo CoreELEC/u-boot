@@ -179,6 +179,10 @@ __attribute__ ((section(".misc_param"))) = {
 #else
 	{ PWM_PWM_A,		   VDDEE_VAL_REG, 0xffffffff, 0, 0, 0},
 #endif
+	/* Push-pull the GPIOD_14 output high to make VDDCPU_EN more stable */
+	{ PADCTRL_GPIOD_O,         (0x1 << 14),  (0x1 << 14), 0, 0, 0 },
+	{ PADCTRL_GPIOD_OEN,       (0x0 << 14),  (0x1 << 14), 0, 0, 0 },
+	{ PADCTRL_PIN_MUX_REGC,    (0x0 << 24),  (0xf << 24), 0, 0, 0 },
 	{ PWM_PWM_B,		   VCCK_VAL_REG,  0xffffffff, 0, 0, 0 },
 	{ PWM_MISC_REG_A,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
 	{ PWM_MISC_REG_B,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },

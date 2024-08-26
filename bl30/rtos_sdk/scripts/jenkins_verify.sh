@@ -119,6 +119,11 @@ source scripts/cherry_pick.sh
 [ "$?" -ne 0 ] && gerrit_review_for_gerrit_topic FAIL && exit 1
 gerrit_review_for_gerrit_topic Start
 
+#The default patch required by patchbuild
+if [[ "$SUBMIT_TYPE" == "patch" ]]; then
+	MANUAL_GERRIT_TOPIC="SWPL-PatchBuild"
+	apply_patch_by_gerrit_topic
+fi
 # Generate Jenkins trigger
 JENKINS_TRIGGER="$OUTPUT_DIR/jenkins_trigger.txt"
 [[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "patch" ]] && source scripts/gen_jenkins_trigger.sh

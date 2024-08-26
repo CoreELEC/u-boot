@@ -96,6 +96,6 @@ while IFS= read -r LINE; do
 	fi
 done <"$BUILD_COMBINATION"
 
-[[ "$SUBMIT_TYPE" == "daily" ]] && post_publish_images >> $BUILD_LOG 2>&1 && show_download_url
+[[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "patch" ]] && post_publish_images >> $BUILD_LOG 2>&1 && show_download_url
 
 echo -e "======== Done ========\n" | tee -a $BUILD_LOG

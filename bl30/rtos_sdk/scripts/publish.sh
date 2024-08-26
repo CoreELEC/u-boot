@@ -22,7 +22,7 @@ LOCAL_PATH=$OUTPUT_DIR
 
 BUILD_DATE=$(date +%F)
 REMOTE_BASE=/data/shanghai/image/RTOS
-if [[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "release" ]]; then
+if [[ "$SUBMIT_TYPE" == "daily" || "$SUBMIT_TYPE" == "release" || "$SUBMIT_TYPE" == "patch" ]]; then
 	REMOTE_PATH=$REMOTE_BASE/$SUBMIT_TYPE/$BUILD_DATE
 else
 	REMOTE_PATH=$REMOTE_BASE/$SUBMIT_TYPE

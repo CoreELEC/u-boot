@@ -138,25 +138,25 @@ int r1p1_temp_trim(int tempbase, int tempver, int type)
 		index_ts = 6;
 		cnt = 0;
 		/*enable thermal1 */
-		//writel(T_CONTROL_DATA, TS_PLL_CFG_REG1);
+		writel(T_CONTROL_DATA, ts_cfg_reg1[type - 1]);
 		writel(T_TSCLK_DATA, CLKCTRL_TS_CLK_CTRL);
 		for (i = 0; i <= 10; i++) {
 			udelay(50);
-			//value_ts = readl(TS_PLL_STAT0) & 0xffff;
+			value_ts = readl(ts_state0_reg[type - 1]) & 0xffff;
 		}
 		for (i = 0; i <= T_AVG_NUM; i++) {
 			udelay(T_DLY_TIME);
-			//value_ts = readl(TS_PLL_STAT0) & 0xffff;
-			printf("pll tsensor read: 0x%x\n", value_ts);
+			value_ts = readl(ts_state0_reg[type - 1]) & 0xffff;
+			printf("cpu tsensor read: 0x%x\n", value_ts);
 			if (value_ts >= T_VALUE_MIN && value_ts <= T_VALUE_MAX) {
 				value_all_ts += value_ts;
 				cnt++;
 			}
 		}
 		value_ts = value_all_ts / cnt;
-		printf("pll tsensor avg: 0x%x\n", value_ts);
+		printf("cpu tsensor avg: 0x%x\n", value_ts);
 		if (value_ts == 0) {
-			printf("pll tsensor read temp is zero\n");
+			printf("cpu tsensor read temp is zero\n");
 			return -1;
 		}
 		u_efuse = r1p1_temptocode(value_ts, tempbase);
@@ -166,7 +166,45 @@ int r1p1_temp_trim(int tempbase, int tempver, int type)
 		u_efuse = u_efuse | 0x8000;
 		printf("ts efuse:0x%x, index: %d\n", u_efuse, index_ts);
 		if (tsensor_tz_calibration(index_ts, u_efuse) < 0) {
-			printf("pll tsensor thermal_calibration send error\n");
+			printf("cpu tsensor thermal_calibration send error\n");
+			return -1;
+		}
+		break;
+	case 2:
+		value_ts = 0;
+		value_all_ts = 0;
+		index_ts = 7;
+		cnt = 0;
+		/*enable thermal2 */
+		writel(T_CONTROL_DATA, ts_cfg_reg1[type - 1]);
+		writel(T_TSCLK_DATA, CLKCTRL_TS_CLK_CTRL);
+		for (i = 0; i <= 10; i++) {
+			udelay(50);
+			value_ts = readl(ts_state0_reg[type - 1]) & 0xffff;
+		}
+		for (i = 0; i <= T_AVG_NUM; i++) {
+			udelay(T_DLY_TIME);
+			value_ts = readl(ts_state0_reg[type - 1]) & 0xffff;
+			printf("top tsensor read: 0x%x\n", value_ts);
+			if (value_ts >= T_VALUE_MIN && value_ts <= T_VALUE_MAX) {
+				value_all_ts += value_ts;
+				cnt++;
+			}
+		}
+		value_ts = value_all_ts / cnt;
+		printf("top tsensor avg: 0x%x\n", value_ts);
+		if (value_ts == 0) {
+			printf("top tsensor read temp is zero\n");
+			return -1;
+		}
+		u_efuse = r1p1_temptocode(value_ts, tempbase);
+		printf("ts efuse:%d\n", u_efuse);
+		if (u_efuse & 0x8000)
+			u_efuse = u_efuse | 0x4000;
+		u_efuse = u_efuse | 0x8000;
+		printf("ts efuse:0x%x, index: %d\n", u_efuse, index_ts);
+		if (tsensor_tz_calibration(index_ts, u_efuse) < 0) {
+			printf("top tsensor thermal_calibration send error\n");
 			return -1;
 		}
 		break;
@@ -219,16 +257,19 @@ int temp_trim_entry(int tempbase, int tempver)
 	switch (tempver) {
 	case 0x84:
 		r1p1_temp_trim(tempbase, tempver, 1);
+		r1p1_temp_trim(tempbase, tempver, 2);
 		r1p1_temp_trim(tempbase, tempver, 0);
 		printf("triming the thermal by bbt-sw\n");
 		break;
 	case 0x85:
 		r1p1_temp_trim(tempbase, tempver, 1);
+		r1p1_temp_trim(tempbase, tempver, 2);
 		r1p1_temp_trim(tempbase, tempver, 0);
 		printf("triming the thermal by bbt-ops\n");
 		break;
 	case 0x87:
 		r1p1_temp_trim(tempbase, tempver, 1);
+		r1p1_temp_trim(tempbase, tempver, 2);
 		r1p1_temp_trim(tempbase, tempver, 0);
 		printf("triming the thermal by slt\n");
 		break;

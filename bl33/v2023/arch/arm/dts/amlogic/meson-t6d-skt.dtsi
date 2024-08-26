@@ -13,6 +13,7 @@
 		serial1 = &uart_b;
 		spi0 = &spi_nfc;
 		spi1 = &spicc0;
+		spi2 = &spicc1;
 		i2c0 = &i2c0;
 		i2c1 = &i2c1;
 		i2c2 = &i2c2;
@@ -291,9 +292,14 @@
 	};
 };
 
-&spicc0 {
-	status = "disabled";
+&spicc0 {	//for TCON
+	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&spicc0_pins_x>;
+	pinctrl-0 = <&spicc0_pins_h>;
 };
 
+&spicc1 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&spicc1_pins_z>;
+};

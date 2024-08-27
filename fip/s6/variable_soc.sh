@@ -173,6 +173,8 @@ declare CONFIG_SOC_NAME="s6"
 
 if [ "${BL30_SELECT}" == "s6_bl201" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="bl201_s905x5"
+elif [ "${BL30_SELECT}" == "s6_bl204" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="bl204_s905x5"
 elif [ "${BL30_SELECT}" == "s6_bl208" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="bl208_s905x5"
 elif [ "${BL30_SELECT}" == "s6_bl209" ]; then

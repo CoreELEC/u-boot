@@ -29,9 +29,21 @@ void tcon_lut_dma_start(struct aml_lcd_drv_s *pdrv)
 	lcd_tcon_setb(0x367, 1, 16, 1); // enable tcon intr
 }
 
+void tcon_lut_dma_start_t6d(struct aml_lcd_drv_s *pdrv)
+{
+	lcd_tcon_setb(0x36f, 1, 15, 1); // enale tcon intr
+	lcd_tcon_setb(0x36f, 1, 0, 14); // triger delay
+	lcd_tcon_setb(0x222, 1, 31, 1); // enable dma clk
+}
+
 void tcon_lut_dma_stop(struct aml_lcd_drv_s *pdrv)
 {
 	lcd_tcon_setb(0x367, 0, 16, 1); // disable tcon intr
+}
+
+void tcon_lut_dma_stop_t6d(struct aml_lcd_drv_s *pdrv)
+{
+	lcd_tcon_setb(0x36f, 0, 15, 1); // disable tcon intr
 }
 
 void tcon_lut_dma_init_t5m(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *ops)
@@ -56,8 +68,19 @@ void tcon_lut_dma_deinit(struct aml_lcd_drv_s *pdrv, struct lcd_tcon_dma_ops_s *
 	if (!pdrv || !ops)
 		return;
 
-	lcd_tcon_setb(0x367, 0, 16, 1); // disable tcon intr
-	lcd_tcon_setb(0x207, 0, 31, 1); //disable dma clk
+	switch (pdrv->data->chip_type) {
+	case LCD_CHIP_T5M:
+	case LCD_CHIP_T3X:
+		lcd_tcon_setb(0x367, 0, 16, 1); // disable tcon intr
+		lcd_tcon_setb(0x207, 0, 31, 1); // disable dma clk
+		break;
+	case LCD_CHIP_T6D:
+		lcd_tcon_setb(0x36f, 0, 15, 1); // disable tcon intr
+		lcd_tcon_setb(0x222, 0, 31, 1); // disable dma clk
+		break;
+	default:
+		break;
+	}
 
 	while (ops->addr_list) {
 		info = list_entry(ops->addr_list, struct lcd_tcon_dma_info_s, list);

@@ -19,7 +19,7 @@
 
 #define PM_ETH		PM_MAX
 
-unsigned long viu_init_psci_smc(void);
+unsigned long viu_init_psci_smc(unsigned long flag);
 unsigned long pwr_ctrl_psci_smc(unsigned int power_domain, bool power_control);
 unsigned long pwr_ctrl_status_psci_smc(unsigned int power_domain);
 #endif

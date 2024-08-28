@@ -63,6 +63,12 @@ aml_library_sources(
 	)
 endif()
 
+if(CONFIG_STACK_PROTECTOR_STRONG)
+aml_library_sources(
+	aml_stackprotector.c
+	)
+endif()
+
 aml_library_link_libraries(arch__${ARCH})
 aml_library_link_libraries(drivers)
 aml_library_link_libraries(kernel__${KERNEL})

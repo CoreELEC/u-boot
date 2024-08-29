@@ -20,24 +20,26 @@ static inline void show_pwm_regs(void)
 		printf("PADCTRL_PIN_MUX_REGD 0x%x\n", REG32(PADCTRL_PIN_MUX_REGD));
 		printf("PADCTRL_GPIOE_DS 0x%x\n", REG32(PADCTRL_GPIOE_DS));
 		printf("CLKCTRL_PWM_CLK_AB_CTRL 0x%x\n", REG32(CLKCTRL_PWM_CLK_AB_CTRL));
-		printf("PWMAB_MISC_REG_AB 0x%x\n", REG32(PWMAB_MISC_REG_AB));
-		temp_val = REG32(PWMAB_PWM_A);
+		printf("PWM_MISC_REG_A 0x%x\n", REG32(PWM_MISC_REG_A));
+		printf("PWM_MISC_REG_B 0x%x\n", REG32(PWM_MISC_REG_B));
+		temp_val = REG32(PWM_PWM_A);
 		table_size = vPwmMesonGetVoltTableSize(VDDEE_VOLT);
 		for (int i = 0; i < table_size; i++)
 			if (temp_val == vddee_table[i].Duty_reg) {
 				vol = vddee_table[i].Voltage_mv;
 				break;
 			}
-		printf("PWMAB_PWM_A 0x%x,vddee vol %d mV\n", temp_val, vol);
-		if (REG32(PWMEF_MISC_REG_AB) & (1 << 1)) {
-			temp_val = REG32(PWMAB_PWM_B);
+		printf("PWM_PWM_A 0x%x,vddee vol %d mV\n", temp_val, vol);
+
+		if (REG32(PWM_MISC_REG_B) & (1 << 0)) {
+			temp_val = REG32(PWM_PWM_B);
 			table_size = vPwmMesonGetVoltTableSize(VDDCPU_VOLT);
 			for (int i = 0; i < table_size; i++)
 				if (temp_val == vddcpu_table[i].Duty_reg) {
 					vol = vddcpu_table[i].Voltage_mv;
 					break;
 				}
-			printf("PWMAB_PWM_B 0x%x,vddcpu %d mV\n", temp_val, vol);
+			printf("PWM_PWM_B 0x%x,vddcpu %d mV\n", temp_val, vol);
 		} else
 			printf("vddcpu is poweroff\n");
 	}

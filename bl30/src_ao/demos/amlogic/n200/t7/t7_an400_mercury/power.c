@@ -88,7 +88,8 @@ void str_hw_init(void)
 	vKeyPadInit();
 	Bt_GpioIRQRegister();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-	hdmirx_GpioIRQRegister();
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQRegister();
 #endif
 }
 
@@ -106,7 +107,8 @@ void str_hw_disable(void)
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-	hdmirx_GpioIRQFree();
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQFree();
 #endif
 }
 

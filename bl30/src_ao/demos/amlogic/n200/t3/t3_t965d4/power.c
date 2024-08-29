@@ -104,7 +104,8 @@ void str_hw_init(void)
 	if (ret == MBOX_CALL_MAX)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-	hdmirx_GpioIRQRegister();
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQRegister();
 #endif
 }
 
@@ -124,7 +125,8 @@ void str_hw_disable(void)
 
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
-	hdmirx_GpioIRQFree();
+	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
+		hdmirx_GpioIRQFree();
 #endif
 }
 

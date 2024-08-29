@@ -52,13 +52,13 @@ extern uint32_t suspend_debug_flag;
 /* show function call log */
 #define enter_func_print() do { \
 	if (IS_EN(BL30_SHOW_FUNC_LOG)) \
-		printf("enter %s line %d,TE: %ud\n", \
+		printf("bl30 enter %s line %d,TE: %ud\n", \
 			__func__, __LINE__, REG32(TIMERE_ADDR)); \
 } while (0)
 
 #define exit_func_print() do { \
 	if (IS_EN(BL30_SHOW_FUNC_LOG)) \
-		printf("exit %s line %d,TE: %ud\n", \
+		printf("bl30 exit %s line %d,TE: %ud\n", \
 			__func__, __LINE__, REG32(TIMERE_ADDR)); \
 } while (0)
 

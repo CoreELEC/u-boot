@@ -8,15 +8,7 @@
 #RTOS root directory
 RTOS_BASE_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
-PARSED=$(getopt --options o:a:b:s:h --long address:,board:,bl22:,sensor:,out:,uboot:,ipc-ddr-size:,ubootcfg:,help --name "$0" -- "$@")
-
-if [[ $? -ne 0 ]]; then
-    exit 1
-fi
-
-eval set -- "$PARSED"
-
-while true; do
+while [[ $# -gt 0 ]]; do
     case "$1" in
     -a | --address)
         RTOS_TARGET_ADDRESS=$2
@@ -72,8 +64,12 @@ while true; do
         shift
         break
         ;;
-    *)
+    -*|--*)
         echo "Invalid option: $1" >&2
+        exit 1
+        ;;
+    *)
+        echo "No more options, just arguments" >&2
         exit 1
         ;;
     esac

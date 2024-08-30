@@ -64,7 +64,6 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"uart_base=0xfe078400\0"\
 	"usb_burning=" CONFIG_USB_TOOL_ENTRY "\0"\
-	"baudrate=115200\0"\
 	"model_name=FHD2HDMI\0"\
 	"panel_type=lvds_0\0"\
 	"model_name=FHD2HDMI\0" \

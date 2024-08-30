@@ -52,6 +52,7 @@
 #include "stick_mem.h"
 #include "pm.h"
 #include "eth.h"
+#include "ir.h"
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -152,6 +153,7 @@ int main(void)
 	vCecCallbackInit(CEC_CHIP_T3);
 	vRtcInit();
 	vETHMailboxCallback();
+	vIRMailboxEnable();
 	create_str_task();
 	find_static_power_dev();
 #if defined(ACS_DIS_PRINT_FLAG) && configSUPPORT_STICK_MEM

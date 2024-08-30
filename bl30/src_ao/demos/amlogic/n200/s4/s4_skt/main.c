@@ -51,6 +51,7 @@
 #include "version.h"
 #include "eth.h"
 #include "stick_mem.h"
+#include "ir.h"
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
 #define INT_TEST_GPIO_NUM  6
@@ -175,6 +176,7 @@ int main(void)
 //	vCecCallbackInit(CEC_CHIP_SC2);
 //	vRtcInit();
 	vETHMailboxCallback();
+	vIRMailboxEnable();
 //	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");

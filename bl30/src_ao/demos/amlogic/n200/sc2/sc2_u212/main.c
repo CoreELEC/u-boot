@@ -50,6 +50,7 @@
 #include "mailbox-api.h"
 #include "version.h"
 #include "stick_mem.h"
+#include "ir.h"
 
 //#include "printf.h"
 #define INT_TEST_NEST_DEPTH  6
@@ -178,6 +179,7 @@ int main(void)
 
 	vCecCallbackInit(CEC_CHIP_SC2);
 	vRtcInit();
+	vIRMailboxEnable();
 	create_str_task();
 
 #if configBL30_VERSION_SAVE

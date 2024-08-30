@@ -88,7 +88,6 @@ struct lcd_clk_data_s {
 	void (*clktree_set)(struct aml_lcd_drv_s *pdrv);
 	void (*clk_config_init_print)(struct aml_lcd_drv_s *pdrv);
 	void (*clk_config_print)(struct aml_lcd_drv_s *pdrv);
-	void (*prbs_clk_config)(struct aml_lcd_drv_s *pdrv, unsigned int lcd_prbs_mode);
 	int (*prbs_test)(struct aml_lcd_drv_s *pdrv, unsigned int ms, unsigned int mode_flag);
 };
 
@@ -96,6 +95,7 @@ struct lcd_clk_config_s { /* unit: Hz */
 	/* IN-OUT parameters */
 	unsigned int fin;
 	unsigned int fout;
+	unsigned int prbs_mode;
 
 	/* pll parameters */
 	unsigned int pll_id;

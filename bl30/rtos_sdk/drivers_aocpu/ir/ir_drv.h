@@ -115,6 +115,7 @@ struct xIRDrvData {
 	uint8_t ucPowerKeyNum;
 	uint16_t ucCurWorkMode;
 	uint32_t ulFrameCode;
+	uint32_t ulLastPowerKey;
 	struct IRPowerKey *ulPowerKeyList;
 	void (*vIRHandler)(struct IRPowerKey *pkey);
 };

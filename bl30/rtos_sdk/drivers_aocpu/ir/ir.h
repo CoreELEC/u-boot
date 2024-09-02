@@ -25,7 +25,15 @@ enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
 #define MODE_HARD_NEC 0x1
 #define MODE_HARD_NEC_32K	0x10
 #define MODE_HARD_LEAGCY_NEC 0xff
-#define MAX_KEY_NUM 80
+#define MAX_KEY_NUM 16
+
+enum IrMboxCmdType {
+	IR_MBOX_CMD_SET_WAKEUP_LIST,
+	IR_MBOX_CMD_SET_DEBUG_LOG,
+	IR_MBOX_CMD_GET_WAKEUP_KEY,
+	IR_MBOX_CMD_SET_STATUS,
+	IR_MBOX_CMD_GET_PREBOOT_KEY
+};
 
 /**
  * Other protocol used by customer, due to size of firmware will not enabled
@@ -79,7 +87,6 @@ extern int8_t ucIsIRInit(void);
  */
 extern void vIRDeint(void);
 extern uint32_t vIRMailboxEnable(void);
-extern void vIRGetKeyCode(struct IRPowerKey *ulPowerKeyList);
 extern void vIR32KInit(uint32_t ulFrame0, uint32_t ulFrame1);
 #ifdef __cplusplus
 }

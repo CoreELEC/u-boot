@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "aml_stackprotector.h"
+#include "ssp.h"
 #include "gcc_compiler_attributes.h"
 #ifdef CONFIG_BACKTRACE
 #include "stack_trace.h"

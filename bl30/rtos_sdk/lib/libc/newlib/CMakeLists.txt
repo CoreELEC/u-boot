@@ -25,5 +25,10 @@ aml_library_link_libraries(drivers)
 
 aml_link_libraries()
 
+if(CONFIG_STACK_PROTECTOR_STRONG)
+add_subdirectory(libssp)
+add_subdirectory(libssp_nonshared)
+endif()
+
 endif()
 

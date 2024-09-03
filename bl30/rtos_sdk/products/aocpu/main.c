@@ -88,3 +88,11 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     for ( ;; );
 }
 /*-----------------------------------------------------------*/
+
+#ifdef CONFIG_STACK_PROTECTOR_STRONG
+void additional_message_hook(void *address)
+{
+	printf("bl30 stack smashing detected, stop here!\n");
+	printf("The last addr of smashing function: 0x%x\n", address);
+}
+#endif

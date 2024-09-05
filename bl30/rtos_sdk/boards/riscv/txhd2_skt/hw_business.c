@@ -13,6 +13,7 @@
 #include "hdmi_cec.h"
 #include "keypad.h"
 #include "fsm.h"
+#include "ir.h"
 
 #define RTOS_BOOT_SUCC_REG		AO_DEBUG_REG2
 
@@ -23,6 +24,7 @@ void hw_business_process(void)
 	vCecCallbackInit(CEC_CHIP_TXHD2);
 	vRtcInit();
 	vETHMailboxCallback();
+	vIRMailboxEnable();
 	create_str_task();
 	vKeyPadCreate();
 }

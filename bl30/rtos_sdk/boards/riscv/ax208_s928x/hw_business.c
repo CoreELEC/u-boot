@@ -14,6 +14,7 @@
 #include "suspend.h"
 #include "vrtc.h"
 #include "hwspinlock.h"
+#include "ir.h"
 
 void hw_business_process(void)
 {
@@ -21,6 +22,7 @@ void hw_business_process(void)
 	vCecCallbackInit(CEC_CHIP_S5);
 	vRtcInit();
 	vETHMailboxCallback();
+	vIRMailboxEnable();
 	create_str_task();
 	vHwLockInit(HW_SPIN_LOCK0, 0);
 }

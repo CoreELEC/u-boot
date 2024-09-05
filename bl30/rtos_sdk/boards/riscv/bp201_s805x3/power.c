@@ -28,6 +28,7 @@
 #include "suspend_debug_s7.h"
 #endif
 #include "rtc.h"
+#include "stick_mem.h"
 
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
@@ -61,6 +62,7 @@ static void vIRHandler(struct IRPowerKey *pkey)
 	else if (pkey->type == IR_CUSTOM)
 		buf[0] = REMOTE_CUS_WAKEUP;
 
+	stick_mem_write(STICK_IR_WAKEUP_KEY, pkey->code);
 	/* do sth below  to wakeup*/
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };

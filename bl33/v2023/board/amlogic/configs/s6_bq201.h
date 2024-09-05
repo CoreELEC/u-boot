@@ -92,7 +92,7 @@
 	"connector0_type=HDMI-A-A\0" \
 	"connector1_type=NULL\0" \
 	"outputmode=1080p60hz\0"\
-	"outputmode2=10080p60hz\0"\
+	"outputmode2=1080p60hz\0"\
 	"hdmimode=none\0"\
 	"qms_en=1\0"\
 	"colorattribute=444,8bit\0"\

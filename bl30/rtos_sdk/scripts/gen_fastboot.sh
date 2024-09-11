@@ -8,6 +8,12 @@
 #RTOS root directory
 RTOS_BASE_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
+RTOS_TARGET_ADDRESS=0x2200000
+BOARD_TYPE=aw402_c302x
+SENSOR_TYPE=SC301IOT
+DDR_SIZE=128m
+UBOOT_CFG=c3_aw402
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
     -a | --address)

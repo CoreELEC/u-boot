@@ -25,8 +25,7 @@
 #include "mailbox-api.h"
 #include "board_common.h"
 #include "stick_mem.h"
-
-
+#include "dsp.h"
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
 
@@ -63,16 +62,6 @@ static void vIRHandler(struct IRPowerKey *pkey)
 	STR_Wakeup_src_Queue_Send_FromISR(buf);
 };
 
-static void *xMboxVadWakeup(void *msg)
-{
-	uint32_t buf[4] = { 0 };
-
-	buf[0] = VAD_WAKEUP;
-	STR_Wakeup_src_Queue_Send(buf);
-
-	return NULL;
-}
-
 void str_hw_init(void)
 {
 	int ret;
@@ -91,6 +80,7 @@ void str_hw_init(void)
 #if CONFIG_WIFI_BT_WAKE
 	wifi_bt_wakeup_init();
 #endif
+	vDSPVadWakeupInit();
 }
 
 void str_hw_disable(void)
@@ -110,6 +100,7 @@ void str_hw_disable(void)
 
 	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
+	vDSPVadWakeupDeinit();
 }
 
 #define STEP_VOL	30  // 30mV steps

@@ -31,6 +31,7 @@
 
 #define ONE_TICK_MS (1000 / configTICK_RATE_HZ)
 #define BT_DELAY_INTERVAL 40
+#define BT_WAKEUP_SPECIAL_DELAY 1000
 #define WIFI_DELAY_INTERVAL (ONE_TICK_MS * 2)
 
 #ifdef WIFI_WAKE_CFG
@@ -69,16 +70,16 @@ static void wakeup_special_handle(uint16_t gpio_en, uint16_t gpio_wake, uint32_t
 	}
 }
 
-static void wakeup_task_init(TaskFunction_t task_callback, const char * const name, TaskHandle_t * const task)
+static void wakeup_task_init(TaskFunction_t task_callback, const char * const name,
+	TaskHandle_t * const task, void * const pvParameters)
 {
 	int32_t ret;
 
-	ret = xTaskCreate(task_callback, name, configMINIMAL_STACK_SIZE, NULL, 3, task);
-	if (ret != pdPASS) {
+	ret = xTaskCreate(task_callback, name, configMINIMAL_STACK_SIZE, pvParameters, 3, task);
+	if (ret != pdPASS)
 		INFO("%s:create failed", name);
-	}
-
-	DBG("%s:create success", name);
+	else
+		DBG("%s:create success", name);
 }
 
 static void wakeup_task_deinit(TaskHandle_t task, uint16_t gpio)
@@ -144,6 +145,7 @@ suspend:
 
 #ifdef BT_WAKE_CFG
 static TaskHandle_t bt_task = NULL;
+static TaskHandle_t bt_special_handle;
 
 static void vBTWakeup(void)
 {
@@ -151,19 +153,32 @@ static void vBTWakeup(void)
 	xTaskResumeFromISR(bt_task);
 }
 
+/* For some modules, bt_wake_host level has been low since entering suspend */
+static void bt_special_task(void *args)
+{
+	unsigned int *p_flag = (unsigned int *)args;
+
+	vTaskDelay(pdMS_TO_TICKS(BT_WAKEUP_SPECIAL_DELAY));
+	INFO("p_flag = %d ", *p_flag);
+	if (!(*p_flag))
+		wakeup_special_handle(BT_EN, BT_WAKE_HOST, BT_WAKEUP);
+	else
+		INFO("found trigger falling");
+	vTaskSuspend(bt_special_handle);
+}
+
 static void bt_wakeup_task(void *args)
 {
-	uint32_t key_val, flag;
+	uint32_t key_val, flag = 0;
 
 	UNUSED(args);
-	wakeup_special_handle(BT_EN, BT_WAKE_HOST, BT_WAKEUP);
 	xGpioSetDir(BT_WAKE_HOST, GPIO_DIR_IN);
 	xRequestGpioIRQ(BT_WAKE_HOST, vBTWakeup, IRQF_TRIGGER_FALLING);
+	wakeup_task_init(bt_special_task, "bt_wakeup_special", &bt_special_handle, (void *)(&flag));
 
 	while (1) {
 		vTaskSuspend(bt_task);
 		flag = 0;
-
 		vTaskDelay(pdMS_TO_TICKS(BT_DELAY_INTERVAL));  // waiting fall to low level
 		while (flag < 20) {
 			if (!xGpioGetValue(BT_WAKE_HOST)) {  // detected as low level
@@ -199,11 +214,11 @@ correcting clock inaccuracies 2 ticks≈40ms */
 void wifi_bt_wakeup_init(void)
 {
 #ifdef WIFI_WAKE_CFG
-	wakeup_task_init(wifi_wakeup_task, "wifi_wakeup", &wifi_task);
+	wakeup_task_init(wifi_wakeup_task, "wifi_wakeup", &wifi_task, NULL);
 #endif
 
 #ifdef BT_WAKE_CFG
-	wakeup_task_init(bt_wakeup_task, "bt_wakeup", &bt_task);
+	wakeup_task_init(bt_wakeup_task, "bt_wakeup", &bt_task, NULL);
 #endif
 }
 
@@ -214,6 +229,7 @@ void wifi_bt_wakeup_deinit(void)
 #endif
 
 #ifdef BT_WAKE_CFG
+	vTaskDelete(bt_special_handle);
 	wakeup_task_deinit(bt_task, BT_WAKE_HOST);
 #endif
 }

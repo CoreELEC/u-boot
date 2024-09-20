@@ -34,8 +34,6 @@ GE_GPIO_CTRL(VCC_5V, GPIOH_7, NOINVERT)
 GE_GPIO_CTRL(VCC_5V_HDMI, GPIOH_6, NOINVERT)
 HIZ_GPIO_CTRL(VCC_5V_USB, GPIOH_8)
 GE_GPIO_CTRL(VDDCPU, GPIO_TEST_N, NOINVERT)
-GE_GPIO_CTRL(ETH_RESET, GPIOZ_15, NOINVERT)
-
 
 static int vdd_ee;
 static int vdddos_npu_vpu;
@@ -132,10 +130,6 @@ void str_power_on(int shutdown_flag)
 	VCC3V3_CSI_DVB_on();
 	VCC_5V_on();
 	VCC_5V_USB_on();
-	if (exeth_wol_n_flag) {
-		printf("exeth power on\n");
-		ETH_RESET_on();
-	}
 
 	/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
 	vTaskDelay(POWERON_VDDCPU_DELAY);
@@ -149,10 +143,6 @@ void str_power_off(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	if (exeth_wol_n_flag) {
-		printf("exeth wol set\n");
-		ETH_RESET_off();
-	}
 	VCC_5V_USB_off();
 	VCC_5V_off();
 	VCC3V3_CSI_DVB_off();

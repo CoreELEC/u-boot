@@ -84,10 +84,11 @@ static struct lcd_enc_test_t lcd_enc_tst_t6d[] = {
 	{"6-Green",        0,      0x0,   0x3ff,   0x0, 1, 0, 3},  /* 6 */
 	{"7-Blue",         0,      0x0,     0x0, 0x3ff, 1, 0, 3},  /* 7 */
 	{"8-Black",        0,      0x0,     0x0,   0x0, 1, 0, 3},  /* 8 */
-	{"9-Gray Scale",   5, 0xffffffff,   0x7,   0x7, 1, 0, 3},  /* 9 */
-	{"10-Red Scale",   5,      0x1,     0x0,   0x1, 1, 0, 3},  /* 10 */
-	{"11-Green Scale", 5,      0x1,     0x0,   0x2, 1, 0, 3},  /* 11 */
-	{"12-Blue Scale",  5,      0x1,     0x0,   0x4, 1, 0, 3},  /* 12 */
+	{"9-Not support",  0,    0x200,   0x200, 0x200, 0, 1, 3},  /* 9 */
+	{"10-Gray Scale",  5, 0xffffffff,   0x7,   0x7, 1, 0, 3},  /* 10 */
+	{"11-Red Scale",   5,      0x1,     0x0,   0x1, 1, 0, 3},  /* 11 */
+	{"12-Green Scale", 5,      0x1,     0x0,   0x2, 1, 0, 3},  /* 12 */
+	{"13-Blue Scale",  5,      0x1,     0x0,   0x4, 1, 0, 3},  /* 13 */
 };
 
 static int lcd_venc_debug_test(struct aml_lcd_drv_s *pdrv, unsigned int num)

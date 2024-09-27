@@ -18,7 +18,7 @@ homeConfigFilePath = "~/.sign.cfg"
 types = ["ta", "vmxta", "irdetota", "bl32", "bl31", "bl2", "bl2e", "bl2x", "bl40", "aucpufw", "vdecfw"]
 casProviders = ["", "VMX", "nagra", "nagra-dev", "vo-dev", "vo", "gs-dev", "gs", "irdeto"]
 ddrTypes = ["ddr4", "lpddr4", "ddr3", "lpddr3", "lpddr4_lpddr5"]
-chipVariants = ["", "general", "nocs-jts-ap", "nocs-prod", "onboot"]
+chipVariants = ["", "general", "nocs-jts-ap", "nocs-prod", "onboot", "nocs-jts-a"]
 csSigSchemes = ["", "rsa", "rsa-mldsa"]
 dvSigSchemes = ["", "rsa", "rsa-mldsa"]
 

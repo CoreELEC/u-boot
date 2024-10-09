@@ -135,7 +135,7 @@ function build_uboot() {
 			set +e
 			if [ -f "./bl33z/build/bl33z.bin" -a -f "./build/u-boot.bin" ]; then
 				# place bl33z at end of u-boot.bin, _end align(4096)
-				END_LENS=`ls -l ./build/u-boot.bin | awk '{print $5}'`
+				END_LENS=$(stat -c%s "./build/u-boot.bin")
 				END_ALIGN=4096
 				BL33Z_LOAD=`echo "((($END_LENS-1) / $END_ALIGN * $END_ALIGN) + $END_ALIGN)" | bc`
 				echo "uboot.bin size:$END_LENS, align:$END_ALIGN, new uboot size:$BL33Z_LOAD"

@@ -460,7 +460,7 @@ function mk_uboot() {
 	fi
 
 	attach_blob_hdr ${bb1st}
-	if [ "$CONFIG_DYNAMIC_SZ" == "y"] ; then
+	if [ "$CONFIG_DYNAMIC_SZ" == "y" ] ; then
 		local bl2e_sz=`stat -c "%s" ${bl2e}`
 		local bl2x_sz=`stat -c "%s" ${bl2x}`
 		if [ "$CONFIG_BL2E_96K" == "y" ] && [ "$bl2e_sz" -lt "116912" ]; then

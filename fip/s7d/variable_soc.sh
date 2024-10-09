@@ -186,4 +186,4 @@ else
 fi
 
 declare BLOB_HDR_FOLDER=""
-#CONFIG_DYNAMIC_SZ=y
+CONFIG_DYNAMIC_SZ=y

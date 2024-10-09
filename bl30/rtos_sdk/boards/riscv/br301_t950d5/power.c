@@ -17,7 +17,9 @@
 #include "pwm_plat.h"
 #include "keypad.h"
 #include "timer_source.h"
-#include "wakeup.h"
+#if CONFIG_WIFI_BT_WAKE
+#include "wifi_bt_wake.h"
+#endif
 #include "power.h"
 #include "mailbox-api.h"
 #include "hdmi_cec.h"
@@ -145,7 +147,9 @@ void str_hw_init(void)
 		printf("skiped SARADC wakeup function\n");
 #endif
 	vGpioIRQInit();
-	Bt_GpioIRQRegister();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_init();
+#endif
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	/*ctrl of 5v wake up*/
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
@@ -178,7 +182,9 @@ void str_hw_disable(void)
 		vTaskDelete(cecTask);
 		cec_req_irq(0);
 	}
-	Bt_GpioIRQFree();
+#if CONFIG_WIFI_BT_WAKE
+	wifi_bt_wakeup_deinit();
+#endif
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	/*ctrl of 5v wake up*/
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)

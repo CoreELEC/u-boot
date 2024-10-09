@@ -25,5 +25,6 @@ config BOARD_BR309_T950D5
 	select VERSION_FULL_INFO
 #	select HDMIRX
 	select PM
+	select WIFI_BT_WAKE
 	help
 	  Enable Amlogic BR309_T950D5 Board.

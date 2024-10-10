@@ -1,0 +1,30 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_T6W_SKT
+	bool "Amlogic T6W_SKT Board"
+	select SOC_T6W
+	select LIBC_AML
+	select COMMON
+	select BRINGUP
+	select GET_VERSION
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VRTC
+#	select HWSPINLOCK
+	select VERSION_FULL_INFO
+#	select HDMIRX
+	select PM
+	help
+	  Enable Amlogic T6W_SKT Board.

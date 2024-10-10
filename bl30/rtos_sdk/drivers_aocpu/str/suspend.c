@@ -114,13 +114,13 @@ __weak void check_poweroff_status(void)
 }
 
 #if BL30_SUSPEND_DEBUG_EN
-inline void split_suspend_flag(uint32_t *temp)
+inline void split_suspend_debug_flag(uint32_t *temp)
 {
 	suspend_debug_flag = (*temp) & SUSPEND_DEBUG_MASK;
 	*temp = (*temp) & ~SUSPEND_DEBUG_MASK;
 }
 
-inline uint32_t get_suspend_flag(void)
+inline uint32_t get_suspend_debug_flag(void)
 {
 	return suspend_debug_flag;
 }
@@ -176,7 +176,7 @@ void system_suspend(uint32_t pm)
 {
 	uint32_t shutdown_flag = 0;
 #if BL30_SUSPEND_DEBUG_EN
-	split_suspend_flag(&pm);
+	split_suspend_debug_flag(&pm);
 	enter_func_print();
 	start_debug_task();
 #endif

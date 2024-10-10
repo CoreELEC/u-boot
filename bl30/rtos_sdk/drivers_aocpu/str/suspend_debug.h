@@ -38,8 +38,8 @@
 
 #define TEST_TASK1_DELAY		(1000)	// ms
 
-void split_suspend_flag(uint32_t *temp);
-uint32_t get_suspend_flag(void);
+void split_suspend_debug_flag(uint32_t *temp);
+uint32_t get_suspend_debug_flag(void);
 extern uint32_t suspend_debug_flag;
 #define IS_EN(x) (suspend_debug_flag & x)
 

@@ -30,6 +30,7 @@ enum cec_chip_ver {
 	CEC_CHIP_S7D,
 	CEC_CHIP_S6,
 	CEC_CHIP_T6D,
+	CEC_CHIP_T6W
 };
 
 #define CEC_A 0

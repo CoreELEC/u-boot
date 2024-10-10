@@ -119,7 +119,7 @@ function build_uboot() {
 	fi
 
 	SOC_GROUP=`echo ${SOCNAME} | cut -d '_' -f 1`
-	skiped=("a1" "c1" "c2" "c3" "g12a" "g12b" "sm1" "t5w")
+	skiped=("c1" "c2" "c3" "g12a" "g12b" "sm1" "t5w")
 	if [[ "${skiped[@]}"  =~ "${SOC_GROUP}" ]]; then
 		echo ""
 		echo "The soc(${SOC_GROUP}) does not support bl33z, skip."

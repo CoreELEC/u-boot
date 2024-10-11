@@ -392,7 +392,7 @@ int xTransferMessageAsync(uint32_t ulChan, uint32_t ulCmd,
 	st.size = mbSize;
 	st.sync = MB_ASYNC;
 
-	strncpy((char *)mbData.data, data, size);
+	memcpy((char *)mbData.data, data, size);
 	mbData.taskid = (uint32_t)(void *)xTaskGetCurrentTaskHandle();
 	mbData.status = 1;
 	vBuildPayload(addr, &mbData, mbSize);

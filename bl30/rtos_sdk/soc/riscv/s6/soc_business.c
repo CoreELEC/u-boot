@@ -83,3 +83,20 @@ void soc_business_process(void)
 	create_mte_fix_task();
 }
 
+#define PWR_STATE_WAIT_ON 16
+void check_poweroff_status(void)
+{
+	const TickType_t xTimeout = pdMS_TO_TICKS(500); //Set timeout duration to 500ms
+	TickType_t xStartTick;
+
+	xStartTick = xTaskGetTickCount();
+
+	/*Wait for cputop fsm switch to WAIT_ON*/
+	while (((REG32(PWRCTRL_CPUTOP_FSM_STS0) >> 12) & 0x1F) != PWR_STATE_WAIT_ON) {
+		if (xTaskGetTickCount() - xStartTick >= xTimeout) {
+			printf("cputop fsm check timed out!\n");
+			printf("PWRCTRL_CPUTOP_FSM_STS0: %x\n", REG32(PWRCTRL_CPUTOP_FSM_STS0));
+			vTaskSuspend(NULL);
+		}
+	}
+}

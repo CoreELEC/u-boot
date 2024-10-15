@@ -8,11 +8,22 @@
 #RTOS root directory
 RTOS_BASE_DIR=$(realpath $(dirname $(readlink -f ${BASH_SOURCE[0]:-$0}))/..)
 
+#Board default config
 RTOS_TARGET_ADDRESS=0x2200000
 BOARD_TYPE=aw402_c302x
 SENSOR_TYPE=SC301IOT
 DDR_SIZE=128m
 UBOOT_CFG=c3_aw402
+
+#ISP default config
+ISP_MCNR_BUFFER_BASE=0x3000000
+ISP_PTNR_BUFFER_BASE=0x37C6000
+ISP_STATS_BUFFER_BASE=0x3B86000
+ISP_PARAM_BUFFER_BASE=0x3C86000
+ISP_PRESET_BASE=0x3D06000
+ISP_IMG_BUFFER_BASE=0x3E00000
+ISP_RGB_IMG_BUFFER_BASE=0x6000000
+ISP_WDR_VI_RAW_BASE=0x01000000
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -49,6 +60,10 @@ while [[ $# -gt 0 ]]; do
         ;;
     -o | --out)
         INSTALL_DIR=$2
+        shift 2
+        ;;
+    --rtos-dir)
+        RTOS_BASE_DIR=$2
         shift 2
         ;;
     -h | --help)
@@ -135,44 +150,119 @@ function toolchain_prepare() {
     echo "<============ TOOLCHAIN INFO RTOS ============>"
 }
 
-#Configure the compile-time address.
-function rtos_config_prepare() {
+function sensor_config_choose() {
+    VENC_CONFIG_H=lib/venc/include/venc_config.h
     CONFIG_FILE=$RTOS_BASE_DIR/boards/$ARCH/$BOARD/lscript.h
+
+    #Configure the compile-time address.
     sed -i '/.*#define configTEXT_BASE*/c\#define configTEXT_BASE '${RTOS_TARGET_ADDRESS}'' $CONFIG_FILE
     sed -i '/.*#define CONFIG_SCATTER_LOAD_ADDRESS*/c\#define CONFIG_SCATTER_LOAD_ADDRESS '${RTOS2_TARGET_ADDRESS}'' $CONFIG_FILE
+
+	sed -i '/CONFIG_SENSOR_SC301IOT/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	sed -i '/CONFIG_SENSOR_SC401AI/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	sed -i '/CONFIG_SENSOR_SC5336P/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+	sed -i '/.*#define MINI_ENC_300W*/c\#define MINI_ENC_300W '0'' $VENC_CONFIG_H
+	sed -i '/.*#define MINI_ENC_400W*/c\#define MINI_ENC_400W '0'' $VENC_CONFIG_H
+	sed -i '/.*#define MINI_ENC_2880X1620*/c\#define MINI_ENC_2880X1620 '0'' $VENC_CONFIG_H
+
     case $DDR_SIZE in
     '128m')
-        sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x3000000'' $CONFIG_FILE
-        sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x1700000'' $CONFIG_FILE
-        sed -i '/.*#define configVENC_BASE*/c\#define configVENC_BASE '0x04700000'' $CONFIG_FILE
-        sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x0B00000'' $CONFIG_FILE
-        sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x6000000'' $CONFIG_FILE
-        ;;
+        case $SENSOR_TYPE in
+            'SC301IOT')
+                sed -i '$ a CONFIG_SENSOR_SC301IOT=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+                sed -i '/.*#define MINI_ENC_300W*/c\#define MINI_ENC_300W '1'' $VENC_CONFIG_H
+                ISP_MCNR_BUFFER_BASE=0x3000000
+                ISP_PTNR_BUFFER_BASE=0x37C6000
+                ISP_STATS_BUFFER_BASE=0x3B86000
+                ISP_PARAM_BUFFER_BASE=0x3C86000
+                ISP_PRESET_BASE=0x3D06000
+                ISP_IMG_BUFFER_BASE=0x3E00000
+                ISP_RGB_IMG_BUFFER_BASE=0x6000000
+                ISP_WDR_VI_RAW_BASE=0x01000000
+            ;;
+            'SC401AI')
+                sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+                sed -i '/.*#define MINI_ENC_400W*/c\#define MINI_ENC_400W '1'' $VENC_CONFIG_H
+                    ISP_MCNR_BUFFER_BASE=0x3000000
+                    ISP_PTNR_BUFFER_BASE=0x391A000
+                    ISP_STATS_BUFFER_BASE=0x3D7F000
+                    ISP_PARAM_BUFFER_BASE=0x3E7F000
+                    ISP_PRESET_BASE=0x3EFF000
+                    ISP_IMG_BUFFER_BASE=0x3F00000
+                    ISP_RGB_IMG_BUFFER_BASE=0x6000000
+                    ISP_WDR_VI_RAW_BASE=0x01000000
+                ;;
+            esac
+
+            sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x3000000'' $CONFIG_FILE
+            sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x1700000'' $CONFIG_FILE
+            sed -i '/.*#define configVENC_BASE*/c\#define configVENC_BASE '0x04700000'' $CONFIG_FILE
+            sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x0B00000'' $CONFIG_FILE
+            sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x6000000'' $CONFIG_FILE
+
+            sed -i '/.*#define VENC_PHY_MEM_BASE_ADDR*/c\#define VENC_PHY_MEM_BASE_ADDR '0x4700000'' $VENC_CONFIG_H
+            sed -i '/.*#define VENC_PHY_MEM_SIZE*/c\#define VENC_PHY_MEM_SIZE '0x900000'' $VENC_CONFIG_H
+            ;;
     '256m')
+        case $SENSOR_TYPE in
+            'SC301IOT')
+                sed -i '$ a CONFIG_SENSOR_SC301IOT=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+                sed -i '/.*#define MINI_ENC_300W*/c\#define MINI_ENC_300W '1'' $VENC_CONFIG_H
+                #	start_addr
+                ISP_MCNR_BUFFER_BASE=0x9B00000
+                ISP_PTNR_BUFFER_BASE=0xA2C6000
+                ISP_STATS_BUFFER_BASE=0xA686000
+                ISP_PARAM_BUFFER_BASE=0xA786000
+                ISP_PRESET_BASE=0xA806000
+                ISP_IMG_BUFFER_BASE=0xA807000
+                ISP_RGB_IMG_BUFFER_BASE=0x6000000
+                ISP_WDR_VI_RAW_BASE=0x01000000
+                ;;
+            'SC401AI')
+                sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+                sed -i '/.*#define MINI_ENC_400W*/c\#define MINI_ENC_400W '1'' $VENC_CONFIG_H
+                ISP_MCNR_BUFFER_BASE=0x9B00000
+                ISP_PTNR_BUFFER_BASE=0xA41A000
+                ISP_STATS_BUFFER_BASE=0xA87F000
+                ISP_PARAM_BUFFER_BASE=0xA97F000
+                ISP_PRESET_BASE=0xA9FF000
+                ISP_IMG_BUFFER_BASE=0xAA00000
+                ISP_RGB_IMG_BUFFER_BASE=0x6000000
+                ISP_WDR_VI_RAW_BASE=0x01000000
+                ;;
+            'SC5336P')
+                sed -i '$ a CONFIG_SENSOR_SC5336P=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
+                sed -i '/.*#define MINI_ENC_2880X1620*/c\#define MINI_ENC_2880X1620 '1'' $VENC_CONFIG_H
+                ISP_MCNR_BUFFER_BASE=0x9B00000
+                ISP_PTNR_BUFFER_BASE=0xA681000
+                ISP_STATS_BUFFER_BASE=0xAC11000
+                ISP_PARAM_BUFFER_BASE=0xAD11000
+                ISP_PRESET_BASE=0xAD91000
+                ISP_IMG_BUFFER_BASE=0xAD92000
+                ISP_RGB_IMG_BUFFER_BASE=0x3700000
+                ISP_WDR_VI_RAW_BASE=0x01000000
+                ;;
+        esac
         sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x9B00000'' $CONFIG_FILE
         sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x3200000'' $CONFIG_FILE
         sed -i '/.*#define configVENC_BASE*/c\#define configVENC_BASE '0xCD00000'' $CONFIG_FILE
         sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x2A00000'' $CONFIG_FILE
         sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x3700000'' $CONFIG_FILE
-        ;;
-    *)
-        sed -i '/.*#define configSRAM_START*/c\#define configSRAM_START '0x3000000'' $CONFIG_FILE
-        sed -i '/.*#define configSRAM_LEN*/c\#define configSRAM_LEN '0x1700000'' $CONFIG_FILE
-        sed -i '/.*#define configVENC_LEN*/c\#define configVENC_LEN '0x04700000'' $CONFIG_FILE
-        sed -i '/.*#define configISP_RGB_BASE*/c\#define configISP_RGB_BASE '0x6000000'' $CONFIG_FILE
+
+        sed -i '/.*#define VENC_PHY_MEM_BASE_ADDR*/c\#define VENC_PHY_MEM_BASE_ADDR '0xCD00000'' $VENC_CONFIG_H
+        sed -i '/.*#define VENC_PHY_MEM_SIZE*/c\#define VENC_PHY_MEM_SIZE '0x2800000'' $VENC_CONFIG_H
         ;;
     esac
-}
+        #config isp buffer base
+        sed -i '/.*#define AML_ISP_MCNR_BUFFER_BASE_ADDR*/c\#define AML_ISP_MCNR_BUFFER_BASE_ADDR '${ISP_MCNR_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_PTNR_BUFFER_BASE_ADDR*/c\#define AML_ISP_PTNR_BUFFER_BASE_ADDR '${ISP_PTNR_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_STATS_BUFFER_BASE_ADDR*/c\#define AML_ISP_STATS_BUFFER_BASE_ADDR '${ISP_STATS_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_PARAM_BUFFER_BASE_ADDR*/c\#define AML_ISP_PARAM_BUFFER_BASE_ADDR '${ISP_PARAM_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_PRESET_BASE_ADDR*/c\#define AML_ISP_PRESET_BASE_ADDR '${ISP_PRESET_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_IMG_BUFFER_BASE_ADDR*/c\#define AML_ISP_IMG_BUFFER_BASE_ADDR '${ISP_IMG_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_RGB_IMG_BUFFER_BASE_ADDR*/c\#define AML_ISP_RGB_IMG_BUFFER_BASE_ADDR '${ISP_RGB_IMG_BUFFER_BASE}'' $CONFIG_FILE
+        sed -i '/.*#define AML_ISP_WDR_VI_RAW_BASE_ADDR*/c\#define AML_ISP_WDR_VI_RAW_BASE_ADDR '${ISP_WDR_VI_RAW_BASE}'' $CONFIG_FILE
 
-function sensor_config_choose() {
-	sed -i '/CONFIG_SENSOR_SC401AI/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-	sed -i '/CONFIG_SENSOR_SC5336P/d' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-	if [ "${SENSOR_TYPE}" == "SC401AI" ]; then
-		sed -i '$ a CONFIG_SENSOR_SC401AI=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-	fi
-	if [ "${SENSOR_TYPE}" == "SC5336P" ]; then
-		sed -i '$ a CONFIG_SENSOR_SC5336P=y' $RTOS_BASE_DIR/boards/$ARCH/$BOARD/defconfig
-	fi
 }
 
 function lz4_rtos() {
@@ -317,8 +407,6 @@ function debug_info() {
     echo "<============ JENKINS FOR RTOS ============>"
 }
 
-#Configure the RTOS environment
-rtos_config_prepare
 #choose sensor
 sensor_config_choose
 #Compile toolchain preparation

@@ -60,6 +60,7 @@
 //#define CONFIG_SYS_MAXARGS  64
 #ifdef CONFIG_ZAPPER_IRDETO_BOOT
 #define CONFIG_EXTRA_ENV_SETTINGS \
+	"scramble_reg=0xfe02e030\0"\
 	"uart_base=0xfe07a000\0"\
 	"silent=1\0"\
 	"usb_burning=" CONFIG_USB_TOOL_ENTRY "\0"\
@@ -105,6 +106,7 @@
 
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS \
+	"scramble_reg=0xfe02e030\0"\
 	"uart_base=0xfe07a000\0"\
 	"silent=1\0"\
 	"usb_burning=" CONFIG_USB_TOOL_ENTRY "\0"\

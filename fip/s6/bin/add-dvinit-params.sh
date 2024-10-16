@@ -17,9 +17,10 @@ BASEDIR_TOP=$(readlink -f ${EXEC_BASEDIR}/..)
 #
 
 BASEDIR_TEMPLATE=$1
-BASEDIR_PAYLOAD=$2
-BASEDIR_OUTPUT_BLOB=$3
-SOC_FAMILY=$4
+BASEDIR_INPUT_BL2E=$2
+BASEDIR_PAYLOAD=$3
+BASEDIR_OUTPUT_BLOB=$4
+SOC_FAMILY=$5
 
 #
 # Arguments
@@ -45,6 +46,9 @@ fi
 
 ### Input: template ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-template-bb1st=${BASEDIR_TEMPLATE}"
+
+### Input: payload ###
+BB1ST_ARGS="${BB1ST_ARGS} --infile-blob-bl2e=${BASEDIR_INPUT_BL2E}"
 
 ### Input: payloads ###
 BB1ST_ARGS="${BB1ST_ARGS} --infile-dvinit-params=${BASEDIR_PAYLOAD}"

@@ -542,7 +542,7 @@ function mk_uboot() {
 		seek_sector=$[seek/sector+seek_sector]
 		#nPayloadOffset=$[sector*(seek_sector+1)]
 		nPayloadOffset=$[sector*(seek_sector)]
-		echo ${file} ${seek_sector} ${size_sector} $[sector*(seek_sector)] 
+		echo ${file} ${seek_sector} ${size_sector} $[sector*(seek_sector)]
 		dd if=${file} of=${bootloader} bs=${sector} seek=${seek_sector} conv=notrunc status=none
 
 		echo ${arrPayload[$index]} > ${file_info_cfg_temp}.x
@@ -645,6 +645,7 @@ function rename_blx_remove_sig_scheme() {
 	done
 }
 
+
 declare CHIPACS_SIZE="8192"
 declare DDRFW_SIZE="212992"
 function process_blx() {
@@ -709,7 +710,6 @@ function process_blx() {
 	# Remove sig scheme because some parts of the script doesn't use BLX_BIN_NAME
 	rename_blx_remove_sig_scheme
 
-
 	if [ ! -f ${BUILD_PATH}/device_acs.bin ]; then
 		echo "dev acs params not exist !"
 		exit -1
@@ -725,8 +725,8 @@ function process_blx() {
 		dd if=${BUILD_PATH}/device_acs.bin of=${BUILD_PATH}/dvinit-params.bin conv=notrunc &> /dev/null
 	fi
 
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
-	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
+	./${FIP_FOLDER}${CUR_SOC}/bin/add-dvinit-params.sh ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/dvinit-params.bin ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed ${CUR_SOC}
 
 	# fix size for BL30 128KB
 	if [ -f ${BUILD_PATH}/bl30.bin ]; then

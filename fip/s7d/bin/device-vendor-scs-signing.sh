@@ -51,6 +51,7 @@ function attach_blob_hdr () {
 }
 
 function mk_uboot() {
+
 	output_images=$1
 	input_payloads=$2
 	postfix=$3
@@ -406,6 +407,7 @@ export DV_SIGNING_SCHEME=${sig_scheme}
 export DEVICE_VARIANT_SUFFIX=${chipset_variant_suffix}
 
 export DEVICE_STORAGE_SUFFIX=.sto
+
 make -C ${BASEDIR_TOP} dv-boot-blobs
 export DEVICE_STORAGE_SUFFIX=.usb
 make -C ${BASEDIR_TOP} dv-boot-blobs

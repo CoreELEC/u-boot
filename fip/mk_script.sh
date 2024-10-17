@@ -542,6 +542,11 @@ function parser() {
 				CONFIG_TEE_TYPE="${argv[$i]}"
 				export CONFIG_TEE_TYPE
 				continue ;;
+			--ddrfip-indep)
+				echo ~~~~~~ ddrfip independent ~~~~~~
+				CONFIG_DDRFIP_INDEP=1
+				export CONFIG_DDRFIP_INDEP
+				continue ;;
 			--clean|--distclean)
 				clean
 				exit ;;

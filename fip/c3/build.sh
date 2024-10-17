@@ -435,7 +435,13 @@ function mk_ddr_fip()
 		dd if=/dev/zero of=${BUILD_PATH}/_tmp.bin bs=1024 count=256 &> /dev/null
 	fi
 	dd if=${BUILD_PATH}/ddr-fip.bin of=${BUILD_PATH}/_tmp.bin conv=notrunc &> /dev/null
-	mv ${BUILD_PATH}/_tmp.bin ${BUILD_PATH}/ddr-fip.bin
+	if [ "${CONFIG_DDRFIP_INDEP}" == "1" ]; then
+		echo "==== not package ddr-fip, used as an independent partition  ===="
+		mv ${BUILD_PATH}/_tmp.bin ${BUILD_PATH}/u-boot.bin.ddrfip
+		dd if=/dev/zero of=${BUILD_PATH}/ddr-fip.bin bs=1024 count=0 &> /dev/null
+	else
+		mv ${BUILD_PATH}/_tmp.bin ${BUILD_PATH}/ddr-fip.bin
+	fi
 }
 
 

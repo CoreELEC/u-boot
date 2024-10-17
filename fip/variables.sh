@@ -65,5 +65,5 @@ declare -a  COMPILE_PARA_LIST=("--h" "--help" "--config" "--chip-varient" "--che
 			"--nasc_nagra_tier_1" "--cas" "--systemroot" "--avb2" "--vab" \
 			"--fastboot-write" "--signpipe" "--avb2-recovery" "--patch" "--gpt" \
 			"--display-pipeline" "--testkey" "--ipc-type" "--ipc-ddr-size" \
-			"--ipc-tee-type" \
+			"--ipc-tee-type" "--ddrfip-indep" \
 			)

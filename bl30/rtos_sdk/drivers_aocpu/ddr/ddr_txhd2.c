@@ -12,6 +12,7 @@
 #include "task.h"
 #include "soc.h"
 #include "suspend_debug.h"
+#include "../timer_source/timer_source.h"
 
 #define timere_read()	REG32(TIMERE_LOW_REG)
 /* io defines */
@@ -30,7 +31,8 @@
 	do {                                                                                       \
 	} while (data != (rd_reg(addr)))
 
-#define _udelay(tim) vTaskDelay(tim)
+//#define _udelay(tim) vTaskDelay(tim)
+#define _udelay(tim) udelay(tim*1000)
 #define DDR_SUSPEND_MODE_MANUAL_TRIGGER_DFI_INIT_START 2
 
 unsigned int g_nFlagASR;
@@ -187,7 +189,7 @@ static unsigned int pll_lock(unsigned int ddr_channel)
 
 	//poll_reg_phy(phy_base_add, 0x0000e044, 0, 0x80000000, 0x80000000);
 	do {
-		_udelay(1);//delay time need debug
+		_udelay(20);//delay time need debug
 	} while (((rd_reg(phy_base_add_temp + 0xe044) &
 		(1 << 31)) != (1 << 31)) && (lock_cnt_ch0--));
 

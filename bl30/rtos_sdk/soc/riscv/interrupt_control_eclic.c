@@ -324,7 +324,7 @@ void clean_int_src(void)
 {
 	for (uint32_t i = 0; i < 8; i++)
 		REG32(AOCPU_IRQ_SEL0 + i * 4) = 0;
-#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+#ifdef AOCPU_IRQ_NUMS_ABOVE_255
 	for (uint32_t i = 0; i < 8; i++)
 		REG32(AOCPU_IRQ_SEL8 + i * 4) = 0;
 #endif
@@ -346,7 +346,7 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
-#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+#ifdef AOCPU_IRQ_NUMS_ABOVE_255
 	index = ulIrq / 2;
 
 	if (ulIrq < 16) {
@@ -377,7 +377,7 @@ int int_src_clean(uint32_t ulIrq)
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
-#ifdef AOCPU_IRQ_REG_NONCONTINUOUS
+#ifdef AOCPU_IRQ_NUMS_ABOVE_255
 	index = ulIrq / 2;
 
 	if (ulIrq < 16)

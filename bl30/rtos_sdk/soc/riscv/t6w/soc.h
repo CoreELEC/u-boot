@@ -27,6 +27,12 @@
 #define IO_BEGIN                 (IO_BASE)
 #define IO_END                   (IO_BASE + IO_SIZE)
 
+/* There're more than 255 interrupts in this chip, each interrupt
+ * mapping need at least 9 bits, so each register has only two
+ * regions to map the interrupt.
+ */
+#define AOCPU_IRQ_NUMS_ABOVE_255
+
 /*SoC/Shadow register mapping*/
 #define VRTC_PARA_REG SYSCTRL_STATUS_REG2
 #define VRTC_STICKY_REG SYSCTRL_STICKY_REG2

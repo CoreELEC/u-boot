@@ -28,11 +28,15 @@
  * UART driver
  */
 
+#include "FreeRTOS.h"
+#include "timers.h"
 #include "common.h"
 #include "FreeRTOSConfig.h"
 #include "uart.h"
 #include "register.h"
 #include "soc.h"
+#include "string.h"
+#include "timer_source.h"
 
 //#define UART_PORT_CONS UART_B_WFIFO
 
@@ -70,6 +74,26 @@
 #define P_UART_MODE(uart_base)		P_UART(uart_base, UART_MODE)
 #define P_UART_CTRL(uart_base)		P_UART(uart_base, UART_CTRL)
 #define P_UART_STATUS(uart_base)	P_UART(uart_base, UART_STATUS)
+
+#define UART_TX_BUF_SIZE        (512)
+#define POLL_TX_FIFO_PRD        (portTICK_PERIOD_MS)
+#define POLL_TX_BUF_PRD         (portTICK_PERIOD_MS * 10)
+#define UART_TXBUF_TASK_PRI     (3)
+#define UART_TX_FIFO_FULL_WAIT  (5000) //us
+
+struct xUartTxBuf_t {
+	char *pcTxBuf;
+	uint32_t ulRdPtr;
+	uint32_t ulWrPtr;
+	uint32_t ulBufCnt;
+	uint32_t ulTimerPeriod;
+	TimerHandle_t xTimer;
+	uint8_t ucWarnMsgPrtEn;
+	uint8_t ucBufReady;
+};
+
+static const char cWarnMsg[] = "\r\nWarning: AOCPU log is lost due to TX FIFO full!\n";
+static struct xUartTxBuf_t xUartTxBuf;
 
 #ifdef ACS_DIS_PRINT_FLAG
 static uint8_t bl30_print_en;
@@ -112,6 +136,66 @@ void vUartTxFlush(void)
 		UART_STAT_MASK_TFIFO_EMPTY));
 }
 
+static int prvFillTxBuf(char c)
+{
+	char *pcBuf;
+
+	taskENTER_CRITICAL();
+	if (xUartTxBuf.ulBufCnt >= UART_TX_BUF_SIZE) {
+		xUartTxBuf.ucWarnMsgPrtEn = 1;
+		taskEXIT_CRITICAL();
+		return 1;
+	}
+
+	pcBuf = xUartTxBuf.pcTxBuf;
+	pcBuf[xUartTxBuf.ulWrPtr] = c;
+	xUartTxBuf.ulWrPtr++;
+	xUartTxBuf.ulBufCnt++;
+	if (xUartTxBuf.ulWrPtr >= UART_TX_BUF_SIZE)
+		xUartTxBuf.ulWrPtr = 0;
+	taskEXIT_CRITICAL();
+	return 0;
+}
+
+static int prvFillTxBufStr(const char *s)
+{
+	const char *pcChar = s;
+	int iCnt = 0;
+
+	while (*pcChar) {
+		if ('\n' == *pcChar) {
+			prvFillTxBuf('\r');
+			iCnt++;
+		}
+		prvFillTxBuf(*s);
+		iCnt++;
+		pcChar++;
+	}
+
+	return iCnt;
+}
+
+static uint8_t prvChkTxFifoBusy(void)
+{
+	uint8_t ucIsTxBusy = 0;
+	uint32_t time_start;
+	uint32_t time_end;
+	uint32_t time_elapse;
+
+	/* Check if UART TX FIFO is busy */
+	time_start = timere_read_us();
+	while (prvUartTxIsFull()) {
+		time_end = timere_read_us();
+		time_elapse = time_end - time_start;
+		if (time_elapse > UART_TX_FIFO_FULL_WAIT) {
+			ucIsTxBusy = 1;
+			break;
+		}
+	}
+
+	return ucIsTxBusy;
+}
+
 void vUartPutc(const char c)
 {
 #ifdef ACS_DIS_PRINT_FLAG
@@ -134,13 +218,25 @@ void vUartPutc(const char c)
 
 	while (prvUartTxIsFull());
 	REG32(P_UART_WFIFO(UART_PORT_CONS)) = (char)c;
-	vUartTxFlush();
 }
 
 void vUartPuts(const char *s)
 {
-	while (*s)
-		vUartPutc(*s++);
+	uint8_t ucIsTxBusy;
+
+	while (*s) {
+		ucIsTxBusy = prvChkTxFifoBusy();
+		/* If Uart TX FIFO is busy, send string to TX Buffer */
+		if (ucIsTxBusy && xUartTxBuf.ucBufReady) {
+			prvFillTxBufStr(s);
+			break;
+		}
+
+		if (!ucIsTxBusy || !xUartTxBuf.ucBufReady) {
+			vUartPutc(*s);
+			s++;
+		}
+	}
 }
 
 void vUartTxStart(void)
@@ -215,6 +311,41 @@ void uart_interrupt(void)
 DECLARE_IRQ(IRQ_AO_UART_NUM, uart_interrupt, 1);
 #endif
 
+static void prvUartTxBufHandle(TimerHandle_t xTimer)
+{
+	char cTxChar;
+	uint32_t ulIsTxFifoEmpty;
+
+	(void)xTimer;
+	taskENTER_CRITICAL();
+	if (xUartTxBuf.ulBufCnt == 0) {
+		if (xUartTxBuf.ulTimerPeriod != POLL_TX_BUF_PRD) {
+			xUartTxBuf.ulTimerPeriod = POLL_TX_BUF_PRD;
+			xTimerChangePeriod(xUartTxBuf.xTimer, xUartTxBuf.ulTimerPeriod, 0);
+		}
+		ulIsTxFifoEmpty = (REG32(P_UART_STATUS(UART_PORT_CONS)) &
+				UART_STAT_MASK_TFIFO_EMPTY);
+		if (ulIsTxFifoEmpty && xUartTxBuf.ucWarnMsgPrtEn) {
+			xUartTxBuf.ucWarnMsgPrtEn = 0;
+			vUartPuts(cWarnMsg);
+		}
+	} else {
+		if (xUartTxBuf.ulTimerPeriod != POLL_TX_FIFO_PRD) {
+			xUartTxBuf.ulTimerPeriod = POLL_TX_FIFO_PRD;
+			xTimerChangePeriod(xUartTxBuf.xTimer, xUartTxBuf.ulTimerPeriod, 0);
+		}
+		while (xUartTxBuf.ulBufCnt) {
+			cTxChar = xUartTxBuf.pcTxBuf[xUartTxBuf.ulRdPtr];
+			vUartPutc(cTxChar);
+			xUartTxBuf.ulRdPtr++;
+			xUartTxBuf.ulBufCnt--;
+			if (xUartTxBuf.ulRdPtr >= UART_TX_BUF_SIZE)
+				xUartTxBuf.ulRdPtr = 0;
+		}
+	}
+	taskEXIT_CRITICAL();
+}
+
 /*
  *	Set UART to 115200-8-N-1
  *
@@ -224,4 +355,25 @@ DECLARE_IRQ(IRQ_AO_UART_NUM, uart_interrupt, 1);
  */
 void vUartInit(void)
 {
+	TimerHandle_t xUartTimer = NULL;
+
+	xUartTxBuf.pcTxBuf = pvPortMalloc(UART_TX_BUF_SIZE);
+	if (xUartTxBuf.pcTxBuf) {
+		memset(xUartTxBuf.pcTxBuf, 0, UART_TX_BUF_SIZE);
+		xUartTimer = xTimerCreate("UartTimer", pdMS_TO_TICKS(POLL_TX_BUF_PRD),
+				pdTRUE, NULL, prvUartTxBufHandle);
+		if (xUartTimer) {
+			xUartTxBuf.ulRdPtr = 0;
+			xUartTxBuf.ulWrPtr = 0;
+			xUartTxBuf.ulBufCnt = 0;
+			xUartTxBuf.ucWarnMsgPrtEn = 0;
+			xUartTxBuf.ucBufReady = 1;
+			xUartTxBuf.xTimer = xUartTimer;
+			xUartTxBuf.ulTimerPeriod = POLL_TX_BUF_PRD;
+			xTimerStart(xUartTxBuf.xTimer, 0);
+		} else {
+			vPortFree(xUartTxBuf.pcTxBuf);
+			vUartPuts("Warning: xUartTimer create fail\n");
+		}
+	}
 }

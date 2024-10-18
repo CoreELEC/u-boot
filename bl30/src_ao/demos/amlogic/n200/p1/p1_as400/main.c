@@ -153,6 +153,7 @@ int main(void)
 
 	hardware_init();
 
+	vUartInit();
 	printf("\n[ao]Starting AOCPU FreeRTOS...\r\n");
 	printf("\n[ao]Current board p1_as400...\r\n");
 	version();

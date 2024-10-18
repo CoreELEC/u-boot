@@ -129,6 +129,7 @@ int main(void)
 
 	hardware_init();
 
+	vUartInit();
 	printf("\nStarting AOCPU FreeRTOS...\r\n");
 	version();
 

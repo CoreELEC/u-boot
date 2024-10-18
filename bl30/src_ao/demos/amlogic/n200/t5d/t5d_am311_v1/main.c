@@ -168,6 +168,7 @@ extern void create_str_task(void);
 // Test target board
 int main(void)
 {
+	vUartInit();
 	vUartPuts("Starting AOCPU FreeRTOS\n");
 	version();
 

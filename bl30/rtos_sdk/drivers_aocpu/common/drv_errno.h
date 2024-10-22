@@ -53,6 +53,7 @@ enum{
 #define DRV_ERRNO_MAILBOX_BASE     0x81010000
 #define DRV_ERRNO_IR_BASE        0x81020000
 #define DRV_ERRNO_I2C_BASE         0x81030000
+#define DRV_ERRNO_UART_BASE        0x81040000
 
 int amlDrvGetErrno(void);
 void amlDrvSetErrno(int no);

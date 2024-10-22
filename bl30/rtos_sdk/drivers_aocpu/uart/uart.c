@@ -4,13 +4,18 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "FreeRTOS.h"
+#include "timers.h"
 #include "common.h"
 #include "uart.h"
 #include "register.h"
 #include "soc.h"
 #include "interrupt.h"
 #include "suspend.h"
+#include "string.h"
 #include <stdio.h>
+#include "drv_errno.h"
+#include "timer_source.h"
 #ifdef CONFIG_SOC_A4
 #include "uart-plat.h"
 #endif
@@ -60,6 +65,28 @@
 #define P_UART_MISC(uart_base) P_UART(uart_base, UART_MISC)
 #define P_UART_REG5(uart_base) P_UART(uart_base, UART_REG5)
 
+#define UART_TX_BUF_SIZE        (512)
+#define POLL_TX_FIFO_PRD        (portTICK_PERIOD_MS)
+#define POLL_TX_BUF_PRD         (portTICK_PERIOD_MS * 10)
+#define UART_TXBUF_TASK_PRI     (3)
+#define UART_TX_FIFO_FULL_WAIT  (5000) //us
+
+#define ERR_UART(errno) (DRV_ERRNO_UART_BASE | errno)
+
+struct xUartTxBuf_t {
+	char *pcTxBuf;
+	uint32_t ulRdPtr;
+	uint32_t ulWrPtr;
+	uint32_t ulBufCnt;
+	uint32_t ulTimerPeriod;
+	TimerHandle_t xTimer;
+	uint8_t ucWarnMsgPrtEn;
+	uint8_t ucBufReady;
+};
+
+static const char cWarnMsg[] = "\r\nWarning: AOCPU log is lost due to TX FIFO full!";
+static struct xUartTxBuf_t xUartTxBuf;
+
 #ifdef ACS_DIS_PRINT_FLAG
 static uint8_t bl30_print_en;
 void enable_bl30_print(uint8_t enable)
@@ -100,6 +127,66 @@ void vUartTxFlush(void)
 		;
 }
 
+static int prvFillTxBuf(char c)
+{
+	char *pcBuf;
+
+	taskENTER_CRITICAL();
+	if (xUartTxBuf.ulBufCnt >= UART_TX_BUF_SIZE) {
+		xUartTxBuf.ucWarnMsgPrtEn = 1;
+		taskEXIT_CRITICAL();
+		return 1;
+	}
+
+	pcBuf = xUartTxBuf.pcTxBuf;
+	pcBuf[xUartTxBuf.ulWrPtr] = c;
+	xUartTxBuf.ulWrPtr++;
+	xUartTxBuf.ulBufCnt++;
+	if (xUartTxBuf.ulWrPtr >= UART_TX_BUF_SIZE)
+		xUartTxBuf.ulWrPtr = 0;
+	taskEXIT_CRITICAL();
+	return 0;
+}
+
+static int prvFillTxBufStr(const char *s)
+{
+	const char *pcChar = s;
+	int iCnt = 0;
+
+	while (*pcChar) {
+		if ('\n' == *pcChar) {
+			prvFillTxBuf('\r');
+			iCnt++;
+		}
+		prvFillTxBuf(*s);
+		iCnt++;
+		pcChar++;
+	}
+
+	return iCnt;
+}
+
+static uint8_t prvChkTxFifoBusy(void)
+{
+	uint8_t ucIsTxBusy = 0;
+	uint32_t time_start;
+	uint32_t time_end;
+	uint32_t time_elapse;
+
+	/* Check if UART TX FIFO is busy */
+	time_start = timere_read_us();
+	while (prvUartTxIsFull()) {
+		time_end = timere_read_us();
+		time_elapse = time_end - time_start;
+		if (time_elapse > UART_TX_FIFO_FULL_WAIT) {
+			ucIsTxBusy = 1;
+			break;
+		}
+	}
+
+	return ucIsTxBusy;
+}
+
 void vUartPutc(const char c)
 {
 #ifdef ACS_DIS_PRINT_FLAG
@@ -120,7 +207,6 @@ void vUartPutc(const char c)
 	while (prvUartTxIsFull())
 		;
 	REG32(P_UART_WFIFO(UART_PORT_CONS)) = (char)c;
-	vUartTxFlush();
 }
 
 int vUartPuts(const char *s)
@@ -138,6 +224,35 @@ int vUartPuts(const char *s)
 	n++;
 
 	return n;
+}
+
+int iUartBufPuts(const char *s)
+{
+	int iCnt = 0;
+	int iTxBufCnt = 0;
+	uint8_t ucIsTxBusy;
+
+	while (*s) {
+		ucIsTxBusy = prvChkTxFifoBusy();
+		/* If Uart TX FIFO is busy, send string to TX Buffer */
+		if (ucIsTxBusy && xUartTxBuf.ucBufReady) {
+			iTxBufCnt = prvFillTxBufStr(s);
+			iCnt += iTxBufCnt;
+			break;
+		}
+
+		if (!ucIsTxBusy || !xUartTxBuf.ucBufReady) {
+			if ('\n' == *s) {
+				vUartPutc('\r');
+				iCnt++;
+			}
+			vUartPutc(*s);
+			iCnt++;
+			s++;
+		}
+	}
+
+	return iCnt;
 }
 
 void vUartTxStart(void)
@@ -211,6 +326,41 @@ long lUartTxReady(void)
 	return !(REG32(P_UART_STATUS(UART_PORT_CONS)) & UART_STAT_MASK_TFIFO_FULL);
 }
 
+static void prvUartTxBufHandle(TimerHandle_t xTimer)
+{
+	char cTxChar;
+	uint32_t ulIsTxFifoEmpty;
+
+	(void)xTimer;
+	taskENTER_CRITICAL();
+	if (xUartTxBuf.ulBufCnt == 0) {
+		if (xUartTxBuf.ulTimerPeriod != POLL_TX_BUF_PRD) {
+			xUartTxBuf.ulTimerPeriod = POLL_TX_BUF_PRD;
+			xTimerChangePeriod(xUartTxBuf.xTimer, xUartTxBuf.ulTimerPeriod, 0);
+		}
+		ulIsTxFifoEmpty = (REG32(P_UART_STATUS(UART_PORT_CONS)) &
+				UART_STAT_MASK_TFIFO_EMPTY);
+		if (ulIsTxFifoEmpty && xUartTxBuf.ucWarnMsgPrtEn) {
+			xUartTxBuf.ucWarnMsgPrtEn = 0;
+			vUartPuts(cWarnMsg);
+		}
+	} else {
+		if (xUartTxBuf.ulTimerPeriod != POLL_TX_FIFO_PRD) {
+			xUartTxBuf.ulTimerPeriod = POLL_TX_FIFO_PRD;
+			xTimerChangePeriod(xUartTxBuf.xTimer, xUartTxBuf.ulTimerPeriod, 0);
+		}
+		while (xUartTxBuf.ulBufCnt) {
+			cTxChar = xUartTxBuf.pcTxBuf[xUartTxBuf.ulRdPtr];
+			vUartPutc(cTxChar);
+			xUartTxBuf.ulRdPtr++;
+			xUartTxBuf.ulBufCnt--;
+			if (xUartTxBuf.ulRdPtr >= UART_TX_BUF_SIZE)
+				xUartTxBuf.ulRdPtr = 0;
+		}
+	}
+	taskEXIT_CRITICAL();
+}
+
 /*
  *	Set UART to 115200-8-N-1
  *
@@ -218,8 +368,30 @@ long lUartTxReady(void)
  *	So the clk81 can be dynamically changed and not
  *	diturb UART transfers.
  */
-void vUartInit(void)
+int iUartInit(void)
 {
+	TimerHandle_t xUartTimer = NULL;
+
+	xUartTxBuf.pcTxBuf = pvPortMalloc(UART_TX_BUF_SIZE);
+	if (xUartTxBuf.pcTxBuf) {
+		memset(xUartTxBuf.pcTxBuf, 0, UART_TX_BUF_SIZE);
+		xUartTimer = xTimerCreate("UartTimer", pdMS_TO_TICKS(POLL_TX_BUF_PRD),
+				pdTRUE, NULL, prvUartTxBufHandle);
+		if (xUartTimer) {
+			xUartTxBuf.ulRdPtr = 0;
+			xUartTxBuf.ulWrPtr = 0;
+			xUartTxBuf.ulBufCnt = 0;
+			xUartTxBuf.ucWarnMsgPrtEn = 0;
+			xUartTxBuf.ucBufReady = 1;
+			xUartTxBuf.xTimer = xUartTimer;
+			xUartTxBuf.ulTimerPeriod = POLL_TX_BUF_PRD;
+			xTimerStart(xUartTxBuf.xTimer, 0);
+		} else {
+			vPortFree(xUartTxBuf.pcTxBuf);
+			return ERR_UART(DRV_ERROR_UNSUPPORTED);
+		}
+	}
+	return 0;
 }
 
 #ifdef CONFIG_UART_WAKEUP

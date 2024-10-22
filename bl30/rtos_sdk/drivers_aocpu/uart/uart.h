@@ -27,7 +27,7 @@ void vBL30PrintControlInit(void);
 #endif
 #endif
 
-extern void vUartInit(void);
+extern int iUartInit(void);
 
 extern int vUartPuts(const char *s);
 
@@ -58,6 +58,7 @@ extern void vUartWakeupInit(uint16_t GpioRx, uint16_t GpioTx,
 			    void (*vIRHandler)(void), uint32_t baudrate, uint32_t source);
 
 extern void vUartWakeupDeint(void (*vIRHandler)(void));
+
 #ifdef __cplusplus
 }
 #endif

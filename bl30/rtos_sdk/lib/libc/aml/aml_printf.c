@@ -10,6 +10,7 @@
 #include "serial.h"
 #else
 #include "uart.h"
+__attribute__((__weak__)) int iUartBufPuts(const char *s);
 #endif
 
 #define MAX_BUFFER_LEN 512
@@ -26,23 +27,31 @@ int printf(const char *fmt, ...)
 	vsnprintf(p, MAX_BUFFER_LEN, fmt, args);
 	va_end(args);
 
+#if (1 == CONFIG_ARM64)
 	while (*p) {
 		if ('\n' == *p) {
-#if (1 == CONFIG_ARM64)
 			vSerialPutChar(ConsoleSerial, '\r');
-#else
-			vUartPutc('\r');
-#endif
 			n++;
 		}
-#if (1 == CONFIG_ARM64)
 		vSerialPutChar(ConsoleSerial, *p);
-#else
-		vUartPutc(*p);
-#endif
 		n++;
 		p++;
 	}
+#else
+	if (iUartBufPuts) {
+		n = iUartBufPuts(printbuffer);
+	} else {
+		while (*p) {
+			if ('\n' == *p) {
+				vUartPutc('\r');
+				n++;
+			}
+			vUartPutc(*p);
+			n++;
+			p++;
+		}
+	}
+#endif
 
 	return n;
 }

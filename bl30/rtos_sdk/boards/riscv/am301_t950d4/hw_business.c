@@ -21,6 +21,7 @@
 
 void hw_business_process(void)
 {
+	iUartInit();
 	vMbInit();
 	vCoreFsmIdleInit();
 	vCecCallbackInit(CEC_CHIP_T5);

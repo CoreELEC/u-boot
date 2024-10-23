@@ -23,6 +23,7 @@ static TaskHandle_t SpiMasterTaskHandler;
 
 void hw_business_process(void)
 {
+	iUartInit();
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_T5M);
 	vRtcInit();

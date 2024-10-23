@@ -17,6 +17,7 @@
 
 void hw_business_process(void)
 {
+	iUartInit();
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_S6);
 	vRtcInit();

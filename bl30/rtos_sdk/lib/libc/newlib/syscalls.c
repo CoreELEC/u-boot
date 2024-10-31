@@ -540,6 +540,16 @@ void __wrap__free_r(struct _reent *reent, void *ptr)
 	vPortFree(ptr);
 }
 
+int _link(const char *oldpath, const char *newpath)
+{
+#if CONFIG_VFS
+	return vfs_link(oldpath, newpath);
+#else
+	errno = ENOENT;
+	return -1;
+#endif
+}
+
 int _unlink(const char *__path)
 {
 #if CONFIG_VFS

@@ -25,6 +25,7 @@
 #include "hdmirx_wake.h"
 #include "stick_mem.h"
 
+#define CONFIG_HDMIRX_PLUGIN_WAKEUP
 /* hdmirx tmds wakeup function,disable for default */
 //#define CONFIG_HDMIRX_TMDS_WAKEUP
 
@@ -112,6 +113,10 @@ void str_hw_init(void)
 	vGpioIRQInit();
 	vKeyPadInit();
 	Bt_GpioIRQRegister();
+	#ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
+	if (REG32(TOP_EDID_RAM_OVR0_DATA_T3X) & 0x1)
+		hdmirx_GpioIRQRegister();
+	#endif
 }
 
 void str_hw_disable(void)
@@ -132,6 +137,10 @@ void str_hw_disable(void)
 		vTaskDelete(hdmirxTask);
 	#endif
 	Bt_GpioIRQFree();
+	#ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
+	if (REG32(TOP_EDID_RAM_OVR0_DATA_T3X) & 0x1)
+		hdmirx_GpioIRQFree();
+	#endif
 }
 
 #define VCC5V_GPIO	GPIO_TEST_N

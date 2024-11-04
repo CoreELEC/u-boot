@@ -23,7 +23,7 @@ config BOARD_BR301_T950D5
 	select VRTC
 	select HWSPINLOCK
 	select VERSION_FULL_INFO
-#	select HDMIRX
+	select HDMIRX
 	select PM
 	select WIFI_BT_WAKE
 	help

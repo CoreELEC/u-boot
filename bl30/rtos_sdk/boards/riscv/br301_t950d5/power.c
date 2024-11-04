@@ -30,7 +30,7 @@
 #if BL30_SUSPEND_DEBUG_EN
 #include "suspend_debug_t6d.h"
 #endif
-// #define CONFIG_HDMIRX_PLUGIN_WAKEUP
+#define CONFIG_HDMIRX_PLUGIN_WAKEUP
 
 static TaskHandle_t cecTask;
 #if BL30_SUSPEND_DEBUG_EN

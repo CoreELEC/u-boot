@@ -12,14 +12,14 @@
 #define CPU_CLK                                 1800
 
 /* board vmin_value defines */
-#define VMIN_FF_VALUE                           770
-#define VMIN_TT_VALUE                           800
-#define VMIN_SS_VALUE                           810
+#define VMIN_FF_VALUE                           760
+#define VMIN_TT_VALUE                           790
+//#define VMIN_SS_VALUE                           830
 /* board vddee_value defines */
-/* SS/TT/FF = 0.86V */
-#define VDDEE_FF_VALUE                          0x0006000c
-#define VDDEE_TT_VALUE                          0x0006000c
-#define VDDEE_SS_VALUE                          0x0006000c
+/* SS/TT/FF = 0.87/0.87/0.85V */
+#define VDDEE_VALUE_GROUP3                          0x0007000b
+#define VDDEE_VALUE_GROUP2                          0x0005000d
+#define VDDEE_VALUE_GROUP1                          0x0005000d
 
 board_clk_set_t __board_clk_setting
 __attribute__ ((section(".clk_param"))) = {
@@ -168,14 +168,14 @@ bl2_reg_t __bl2_reg[] __attribute__ ((section(".generic_param"))) = {
 register_ops_t __bl2_ops_reg[MAX_REG_OPS_ENTRIES]
 __attribute__ ((section(".misc_param"))) = {
 	/* config vmin_ft value */
-	{ 0, VMIN_SS_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VMIN_FLAG_1, 0 },
+	//{ 0, VMIN_SS_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VMIN_FLAG_1, 0 },
 	{ 0, VMIN_TT_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VMIN_FLAG_2, 0 },
 	{ 0, VMIN_FF_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VMIN_FLAG_3, 0 },
 	/* config vddee and vcck pwm - pwm_e and pwm_f*/
 #ifdef CONFIG_PDVFS_ENABLE
-	{ PWM_PWM_A, VDDEE_SS_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_1, 0 },
-	{ PWM_PWM_A, VDDEE_TT_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_2, 0 },
-	{ PWM_PWM_A, VDDEE_FF_VALUE, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_3, 0 },
+	{ PWM_PWM_A, VDDEE_VALUE_GROUP1, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_1, 0 },
+	{ PWM_PWM_A, VDDEE_VALUE_GROUP2, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_2, 0 },
+	{ PWM_PWM_A, VDDEE_VALUE_GROUP3, 0xffffffff, 0, BL2_INIT_STAGE_VDDCORE_CONFIG_3, 0 },
 #else
 	{ PWM_PWM_A,		   VDDEE_VAL_REG, 0xffffffff, 0, 0, 0},
 #endif

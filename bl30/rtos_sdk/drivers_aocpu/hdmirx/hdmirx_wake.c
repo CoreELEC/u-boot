@@ -9,6 +9,7 @@
 #include "suspend.h"
 #include "task.h"
 #include "gpio.h"
+#include "gpio-data.h"
 #include "common.h"
 
 #include "queue.h"    /* RTOS queue related API prototypes. */
@@ -17,10 +18,11 @@
 #include "hdmirx_wake.h"
 #include "timer_source.h"
 
+#define GPIOW_13_PORT4 301
 #define GPIO_HDMI_RX1_POWER	GPIOW_1
 #define GPIO_HDMI_RX2_POWER	GPIOW_9
 #define GPIO_HDMI_RX3_POWER	GPIOW_5
-#define GPIO_HDMI_RX4_POWER	GPIOW_13
+#define GPIO_HDMI_RX4_POWER	GPIOW_13_PORT4//for port4
 
 static void hdmirx_IRQHandle(void)
 {

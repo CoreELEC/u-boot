@@ -15,7 +15,7 @@ extern "C" {
 
 #if CONFIG_WIFI_BT_WAKE
 
-//#define WIFI_WAKE_CFG 0
+#define WIFI_WAKE_CFG 1
 #define WIFI_WAKE_HOST GPIOD_12
 #define WIFI_PWREN GPIOD_11
 

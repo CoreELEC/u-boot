@@ -11,7 +11,9 @@
 #include "soc.h"
 #include "keypad.h"
 #include "gpio.h"
+#ifdef CONFIG_SARADC
 #include "saradc.h"
+#endif
 #include "suspend.h"
 #include "vad_suspend.h"
 
@@ -46,6 +48,7 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 	       event.responseTime);
 }
 
+#ifdef CONFIG_SARADC
 static void vAdcKeyCallBack(struct xReportEvent event)
 {
 	uint32_t buf[4] = { 0 };
@@ -63,6 +66,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 	printf("ADC key event 0x%x, key code %d, responseTime %d\n", event.event, event.ulCode,
 	       event.responseTime);
 }
+#endif
 
 struct xGpioKeyInfo gpioKeyInfo[] = {
 	/*
@@ -75,22 +79,28 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 
 };
 
+#ifdef CONFIG_SARADC
 struct xAdcKeyInfo adcKeyInfo[] = {
 	ADC_KEY_INFO(ADC_KEY_ID_MENU, 0, SARADC_CH1, EVENT_SHORT, vAdcKeyCallBack, NULL),
 };
+#endif
 
 void vKeyPadInit(void)
 {
+#ifdef CONFIG_SARADC
 	vCreateAdcKey(adcKeyInfo, sizeof(adcKeyInfo) / sizeof(struct xAdcKeyInfo));
 	vAdcKeyEnable();
+#endif
 	vCreateGpioKey(gpioKeyInfo, sizeof(gpioKeyInfo) / sizeof(struct xGpioKeyInfo));
 	vGpioKeyEnable();
 }
 
 void vKeyPadDeinit(void)
 {
+#ifdef CONFIG_SARADC
 	vAdcKeyDisable();
 	vDestroyAdcKey();
+#endif
 	vGpioKeyDisable();
 	vDestroyGpioKey();
 }

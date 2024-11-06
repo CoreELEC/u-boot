@@ -15,6 +15,11 @@
 #include "vrtc.h"
 #include "hwspinlock.h"
 #include "ir.h"
+#if CONFIG_SPI
+#include "spi.h"
+static TaskHandle_t SpiMasterTaskHandler;
+#define SpiMasterTaskPriority 4
+#endif
 
 void hw_business_process(void)
 {
@@ -26,4 +31,11 @@ void hw_business_process(void)
 	vIRMailboxEnable();
 	create_str_task();
 	vHwLockInit(HW_SPIN_LOCK0, 0);
+#if CONFIG_SPI
+	vSpicc1Init();
+	vMbSpiInit();
+	xTaskCreate(vSpiMasterTask, "SpiMaster", configMINIMAL_STACK_SIZE, NULL,
+		    SpiMasterTaskPriority, &SpiMasterTaskHandler);
+#endif
+
 }

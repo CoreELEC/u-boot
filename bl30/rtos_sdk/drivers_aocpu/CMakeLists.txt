@@ -32,6 +32,7 @@ add_subdirectory_if_kconfig(ethernet)
 add_subdirectory_if_kconfig(hdmirx)
 add_subdirectory_if_kconfig(pm)
 add_subdirectory_if_kconfig(wifi_bt_wake)
+add_subdirectory_if_kconfig(spi)
 
 aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/stick_mem
@@ -58,6 +59,7 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/pm
 	${SDK_BASE}/drivers_aocpu/wifi_bt_wake
 	${SDK_BASE}/drivers_aocpu/common
+	${SDK_BASE}/drivers_aocpu/spi
 )
 
 aml_library_link_libraries(arch__${ARCH})

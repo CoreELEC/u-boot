@@ -750,9 +750,13 @@ function bin_path_parser() {
 				if [ "${cas}" == "nsk" ]; then
 					CONFIG_CAS=${cas}
 				fi
-				if [[ "${CONFIG_CAS}" == "irdeto" || \
-					  "${CONFIG_CAS}" == "vmx" || \
-					  "${CONFIG_CAS}" == "nagra" ]]; then
+				if [ "${cas}" == "nagra" ]; then
+					CONFIG_CAS=${cas}
+					CONFIG_NAGRA_NOCS=1
+					export CONFIG_NAGRA_NOCS
+				fi
+				if [ "${CONFIG_CAS}" == "irdeto" || \
+					  "${CONFIG_CAS}" == "vmx"]; then
 					CONFIG_AML_SIGNED_UBOOT=y
 					export CONFIG_AML_SIGNED_UBOOT
 				fi

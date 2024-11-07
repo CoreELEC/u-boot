@@ -361,3 +361,4 @@ defined(CONFIG_STORE_COMPATIBLE)
 
 #endif
 
+#define CONFIG_CMD_AFM 1

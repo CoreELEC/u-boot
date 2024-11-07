@@ -21,7 +21,7 @@ extern "C" {
 #include <saradc.h>
 
 /* common macro */
-#define TIMER_CYCLE_TIME	100
+#define TIMER_CYCLE_TIME	40
 #define KEY_JITTER_COUNT	1
 
 /* key event */

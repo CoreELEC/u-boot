@@ -27,8 +27,8 @@ struct xOneAdcKeyInfo {
 static struct xOneAdcKeyInfo *xHeadKey;
 static TimerHandle_t xAdcKeyCycleTimer;
 
-/* short press: 100ms */
-static uint16_t shortPressCycle = (100 / TIMER_CYCLE_TIME);
+/* short press: 40ms */
+static uint16_t shortPressCycle = (40 / TIMER_CYCLE_TIME);
 /* long press: 8000ms */
 static uint16_t longPressCycle = (8000 / TIMER_CYCLE_TIME);
 

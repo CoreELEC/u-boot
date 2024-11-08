@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-if((CONFIG_SOC_S5) OR (CONFIG_SOC_T5M) OR (CONFIG_SOC_T3X) OR (CONFIG_SOC_T6D))
+if((CONFIG_SOC_S5) OR (CONFIG_SOC_T5M) OR (CONFIG_SOC_T3X) OR (CONFIG_SOC_T6D) OR (CONFIG_SOC_T6W))
     aml_library_sources_ifdef(
         CONFIG_HWSPINLOCK
         hwspinlock.c

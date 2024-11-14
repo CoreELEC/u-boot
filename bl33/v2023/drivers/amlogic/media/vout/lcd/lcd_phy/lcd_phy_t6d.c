@@ -13,7 +13,7 @@
 #ifdef CONFIG_MESON_T6D
 #define PHY_DEF_ODT  0x17
 #define PHY_DEF_BIAS 0x10
-static unsigned int cali_bias, cali_odt;
+static unsigned int cali_bias, cali_odt, phy_ctrl_bit_on;
 static u32 chreg_reg[] = {
 	ANACTRL_DIF_PHY_CNTL1, ANACTRL_DIF_PHY_CNTL2,
 	ANACTRL_DIF_PHY_CNTL3, ANACTRL_DIF_PHY_CNTL4,
@@ -173,6 +173,9 @@ static void lcd_phy_common_update(struct aml_lcd_drv_s *pdrv, unsigned int cntl1
 	unsigned int cntl15 = 0x17300000;
 	struct phy_attr_s *phy = pdrv->config.phy_cfg.act_phy;
 
+	if (phy_ctrl_bit_on)
+		cntl15 = 0x17b00000;
+
 	/* vswing */
 	cntl14 &= ~(0xf << 26);
 	cntl14 |= (phy->vswing & 0xf) << 26;
@@ -214,7 +217,10 @@ static void lcd_phy_cntl_set(struct aml_lcd_drv_s *pdrv, int status)
 	} else {
 		reg_data = 0;
 		lcd_ana_write(ANACTRL_DIF_PHY_CNTL14, 0x1300d100);
-		lcd_ana_write(ANACTRL_DIF_PHY_CNTL15, 0x17900000);
+		if (phy_ctrl_bit_on)
+			lcd_ana_setb(ANACTRL_DIF_PHY_CNTL15, 0x10, 16, 8);
+		else
+			lcd_ana_setb(ANACTRL_DIF_PHY_CNTL15, 0x90, 16, 8);
 	}
 
 	for (i = 0; i < 10; i++) {
@@ -358,6 +364,8 @@ struct lcd_phy_ctrl_s *lcd_phy_config_init_t6d(struct aml_lcd_data_s *pdata)
 {
 	cali_odt = lcd_phy_get_def_odt();
 	cali_bias = lcd_phy_get_def_bias();
+	phy_ctrl_bit_on = (pdata->rev_type > 0xa) ? 1 : 0;
+
 	return &lcd_phy_ctrl_t6d;
 }
 #endif

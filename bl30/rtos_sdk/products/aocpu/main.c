@@ -52,23 +52,23 @@ void vApplicationIdleHook( void )
 	asm volatile ("wfi"); // enter low power mode
 }
 /*-----------------------------------------------------------*/
-void vApplicationMallocFailedHook( void );
-
-void vApplicationMallocFailedHook( void )
+void vApplicationMallocFailedHook(void);
+void vApplicationMallocFailedHook(void)
 {
-    /* The malloc failed hook is enabled by setting
-    configUSE_MALLOC_FAILED_HOOK to 1 in FreeRTOSConfig.h.
+	/* The malloc failed hook is enabled by setting
+	 * configUSE_MALLOC_FAILED_HOOK to 1 in FreeRTOSConfig.h.
+	 *
+	 * Called if a call to pvPortMalloc() fails because there is insufficient
+	 * free memory available in the FreeRTOS heap. pvPortMalloc() is called
+	 * internally by FreeRTOS API functions that create tasks, queues, software
+	 * timers, and semaphores. The size of the FreeRTOS heap is set by the
+	 * configTOTAL_HEAP_SIZE configuration constant in FreeRTOSConfig.h.
+	 */
 
-    Called if a call to pvPortMalloc() fails because there is insufficient
-    free memory available in the FreeRTOS heap.  pvPortMalloc() is called
-    internally by FreeRTOS API functions that create tasks, queues, software
-    timers, and semaphores.  The size of the FreeRTOS heap is set by the
-    configTOTAL_HEAP_SIZE configuration constant in FreeRTOSConfig.h. */
-	//write(1,"malloc failed\n", 14);
-
-	printf("vApplicationMallocFailedHook\n");
+	printf("bl30 task %s malloc failed\n", pcTaskGetName(xTaskGetCurrentTaskHandle()));
 	vPrintFreeListAfterMallocFail();
-    for ( ;; );
+	for ( ;; )
+		;
 }
 /*-----------------------------------------------------------*/
 

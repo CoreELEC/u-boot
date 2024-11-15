@@ -36,76 +36,80 @@ __attribute__ ((section(".clk_param"))) = {
 #define VCCK_VAL                                AML_VCCK_INIT_VOLTAGE
 #define VDDEE_VAL                               AML_VDDEE_INIT_VOLTAGE
 /* VCCK PWM table */
-#if   (VCCK_VAL == 1040)
+#if   (VCCK_VAL == 1049)
+#define VCCK_VAL_REG    0x3e8
+#elif (VCCK_VAL == 1039)
 #define VCCK_VAL_REG    0x1D03C9
-#elif (VCCK_VAL == 1030)
+#elif (VCCK_VAL == 1029)
 #define VCCK_VAL_REG    0x3B03AB
-#elif (VCCK_VAL == 1020)
+#elif (VCCK_VAL == 1019)
 #define VCCK_VAL_REG    0x59038D
-#elif (VCCK_VAL == 1010)
+#elif (VCCK_VAL == 1009)
 #define VCCK_VAL_REG    0x77036F
-#elif (VCCK_VAL == 1000)
+#elif (VCCK_VAL == 999)
 #define VCCK_VAL_REG    0x8B035B
-#elif (VCCK_VAL == 990)
+#elif (VCCK_VAL == 989)
 #define VCCK_VAL_REG    0xA9033D
-#elif (VCCK_VAL == 980)
+#elif (VCCK_VAL == 979)
 #define VCCK_VAL_REG    0xC7031F
-#elif (VCCK_VAL == 970)
+#elif (VCCK_VAL == 969)
 #define VCCK_VAL_REG    0xE50301
-#elif (VCCK_VAL == 960)
-#define VCCK_VAL_REG    0x10302E3
-#elif (VCCK_VAL == 950)
-#define VCCK_VAL_REG    0x12102C5
-#elif (VCCK_VAL == 940)
+#elif (VCCK_VAL == 959)
+#define VCCK_VAL_REG    0xF902ED
+#elif (VCCK_VAL == 949)
+#define VCCK_VAL_REG    0x11702CF
+#elif (VCCK_VAL == 939)
 #define VCCK_VAL_REG    0x13502B1
-#elif (VCCK_VAL == 930)
+#elif (VCCK_VAL == 929)
 #define VCCK_VAL_REG    0x1530293
-#elif (VCCK_VAL == 920)
+#elif (VCCK_VAL == 919)
 #define VCCK_VAL_REG    0x1710275
-#elif (VCCK_VAL == 910)
-#define VCCK_VAL_REG    0x18F0257
-#elif (VCCK_VAL == 900)
-#define VCCK_VAL_REG    0x1AD0239
-#elif (VCCK_VAL == 890)
+#elif (VCCK_VAL == 909)
+#define VCCK_VAL_REG    0x1850261
+#elif (VCCK_VAL == 899)
+#define VCCK_VAL_REG    0x1A30243
+#elif (VCCK_VAL == 889)
 #define VCCK_VAL_REG    0x1C10225
-#elif (VCCK_VAL == 880)
+#elif (VCCK_VAL == 879)
 #define VCCK_VAL_REG    0x1DF0207
-#elif (VCCK_VAL == 870)
-#define VCCK_VAL_REG    0x1FD01E9
-#elif (VCCK_VAL == 860)
-#define VCCK_VAL_REG    0x21B01CB
-#elif (VCCK_VAL == 850)
+#elif (VCCK_VAL == 869)
+#define VCCK_VAL_REG    0x1F301F3
+#elif (VCCK_VAL == 859)
+#define VCCK_VAL_REG    0x21101D5
+#elif (VCCK_VAL == 849)
 #define VCCK_VAL_REG    0x22F01B7
-#elif (VCCK_VAL == 840)
+#elif (VCCK_VAL == 839)
 #define VCCK_VAL_REG    0x24D0199
-#elif (VCCK_VAL == 830)
+#elif (VCCK_VAL == 829)
 #define VCCK_VAL_REG    0x26B017B
-#elif (VCCK_VAL == 820)
-#define VCCK_VAL_REG    0x289015D
-#elif (VCCK_VAL == 810)
-#define VCCK_VAL_REG    0x2A7013F
-#elif (VCCK_VAL == 800)
+#elif (VCCK_VAL == 819)
+#define VCCK_VAL_REG    0x27F0167
+#elif (VCCK_VAL == 809)
+#define VCCK_VAL_REG    0x29D0149
+#elif (VCCK_VAL == 799)
 #define VCCK_VAL_REG    0x2BB012B
-#elif (VCCK_VAL == 790)
+#elif (VCCK_VAL == 789)
 #define VCCK_VAL_REG    0x2D9010D
-#elif (VCCK_VAL == 780)
-#define VCCK_VAL_REG    0x2F700EF
-#elif (VCCK_VAL == 770)
-#define VCCK_VAL_REG    0x31500D1
-#elif (VCCK_VAL == 760)
+#elif (VCCK_VAL == 779)
+#define VCCK_VAL_REG    0x2ED00F9
+#elif (VCCK_VAL == 769)
+#define VCCK_VAL_REG    0x30B00DB
+#elif (VCCK_VAL == 759)
 #define VCCK_VAL_REG    0x32900BD
-#elif (VCCK_VAL == 750)
+#elif (VCCK_VAL == 749)
 #define VCCK_VAL_REG    0x347009F
-#elif (VCCK_VAL == 740)
+#elif (VCCK_VAL == 739)
 #define VCCK_VAL_REG    0x3650081
-#elif (VCCK_VAL == 730)
+#elif (VCCK_VAL == 729)
 #define VCCK_VAL_REG    0x379006D
-#elif (VCCK_VAL == 720)
+#elif (VCCK_VAL == 719)
 #define VCCK_VAL_REG    0x397004F
-#elif (VCCK_VAL == 710)
+#elif (VCCK_VAL == 709)
 #define VCCK_VAL_REG    0x3B50031
-#elif (VCCK_VAL == 700)
+#elif (VCCK_VAL == 699)
 #define VCCK_VAL_REG    0x3D30013
+#elif (VCCK_VAL == 689)
+#define VCCK_VAL_REG    0x3E80000
 #else
 #error "VCCK val out of range\n"
 #endif

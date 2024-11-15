@@ -231,13 +231,13 @@ void str_power_on(int shutdown_flag)
 			printf("VDD_EE pwm set fail\n");
 			return;
 		}
-		/* set GPIOE_1 pinmux to pwm */
-		xPinmuxSet(GPIOE_1, PIN_FUNC1);
+		/* set GPIOE_1(VDDCPU_PWM) pinmux to fun1(PWM_B) */
+		// xPinmuxSet(GPIOE_1, PIN_FUNC1);
 
-		/* enable vddcpu PWM channel */
+		/* enable vddcpu PWM_B_EN */
 		REG32(PWM_MISC_REG_B) |= (1 << 0);
 
-		/* open PWM clk */
+		/* open vddcpu PWM B clk_en */
 		REG32(CLKCTRL_PWM_CLK_AB_CTRL) |= (1 << 24);
 
 		/***set vdd_cpu val***/
@@ -247,7 +247,7 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 
-		/***power on vdd_cpu***/
+		/***power on vdd_cpu VDDCPU_EN ***/
 		ret = xGpioSetDir(GPIOD_14, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vdd_cpu set gpio dir fail\n");
@@ -312,6 +312,7 @@ void str_power_on(int shutdown_flag)
 	/* size over load */
 	dump_cpu_fsm_regs();
 	stop_debug_task();
+	show_pwm_regs();
 	exit_func_print();
 #endif
 }
@@ -369,14 +370,14 @@ void str_power_off(int shutdown_flag)
 			return;
 		}
 
-		/***set vdd_cpu val***/
+		/***get vdd_cpu val***/
 		vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
 		if (vdd_cpu < 0) {
 			printf("VDD_CPU pwm get fail\n");
 			return;
 		}
 
-		/***power off vdd_cpu***/
+		/***power off vdd_cpu VDDCPU_EN ***/
 		ret = xGpioSetDir(GPIOD_14, GPIO_DIR_OUT);
 		if (ret < 0) {
 			printf("vdd_cpu set gpio dir fail\n");
@@ -389,8 +390,8 @@ void str_power_off(int shutdown_flag)
 			return;
 		}
 
-		/* set GPIOE_1 pinmux to gpio */
-		xPinmuxSet(GPIOE_1, PIN_FUNC0);
+		/* set GPIOE_1(VDDCPU_PWM) pinmux to fun(0)gpio */
+		// xPinmuxSet(GPIOE_1, PIN_FUNC0); //bl31 have set to gpio
 
 		/***set vddcpu pwm to input***/
 		ret = xGpioSetDir(GPIOE_1, GPIO_DIR_IN);
@@ -399,19 +400,20 @@ void str_power_off(int shutdown_flag)
 			return;
 		}
 
-		/*disable PWM CLK*/
+		/*disable vddcpu PWM B clk_en */
 		REG32(CLKCTRL_PWM_CLK_AB_CTRL) &= ~(1 << 24);
 
-		/* disable PWM channel */
+		/* disable vddcpu PWM_B_EN */
 		REG32(PWM_MISC_REG_B) &= ~(1 << 0);
 
-		/***set vdd_ee val***/
+		/***get vdd_ee val***/
 		vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
 		if (vdd_ee < 0) {
 			printf("vdd_EE pwm get fail\n");
 			return;
 		}
 
+		/***set vdd_ee val***/
 		ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
 		if (ret < 0) {
 			printf("vdd_EE pwm set fail\n");

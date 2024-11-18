@@ -23,5 +23,6 @@ config BOARD_BM209_S905X5M
 	select ETHERNET
 	select VRTC
 	select VERSION_FULL_INFO
+	select WIFI_BT_WAKE
 	help
 	  Enable Amlogic BM209_S905X5M Board.

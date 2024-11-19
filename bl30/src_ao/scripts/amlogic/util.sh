@@ -1,5 +1,6 @@
 ARCH_DIRS="n200"
-SOC_DIRS="sc2 t5 t5d t7 s4 t3 p1 t5w a5"
+SOC_DIRS="sc2 t5 t5d t7 s4 t3 p1 t5w"
+BYPASS_BOARDS="t7_skt s4_skt t3_skt p1_skt t5w_skt"
 
 function list_boards()
 {
@@ -7,7 +8,10 @@ function list_boards()
 		for soc in ${SOC_DIRS}; do
 			for board in demos/amlogic/${arch}/${soc}/*; do
 				if [ -d ${board} -a -e ${board}/config.mk ]; then
-					echo `basename "${board}"`
+					folder_name=$(basename "${board}")
+					if ! echo "$BYPASS_BOARDS" | grep -qw "$folder_name"; then
+						echo `basename "${board}"`
+					fi
 				fi
 			done
 		done

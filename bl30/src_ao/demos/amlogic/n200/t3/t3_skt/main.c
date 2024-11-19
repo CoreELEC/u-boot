@@ -148,7 +148,7 @@ int main(void)
 	vCecCallbackInit(CEC_CHIP_T3);
 //	vRtcInit();
 	vETHMailboxCallback();
-	vIRMailboxEnable();
+//	vIRMailboxEnable();
 //	create_str_task();
 
 	printf("Starting task scheduler ...\r\n");

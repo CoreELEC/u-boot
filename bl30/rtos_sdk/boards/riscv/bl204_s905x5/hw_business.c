@@ -13,6 +13,7 @@
 #include "suspend.h"
 #include "vrtc.h"
 #include "hw_business.h"
+#include "ir.h"
 
 void hw_business_process(void)
 {
@@ -21,5 +22,6 @@ void hw_business_process(void)
 	vRtcInit();
 	//rtc_init();
 	vETHMailboxCallback();
+	vIRMailboxEnable();
 	create_str_task();
 }

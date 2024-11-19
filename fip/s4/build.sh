@@ -744,6 +744,13 @@ function build_signed() {
 		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"
 	fi
 	u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
+
+	# irdeto package
+	if [ "${SOCNAME}" == "s4_aq2432" ] || [ "${SOCNAME}" == "s4_ap232" ]; then
+		source ${FIP_FOLDER}${CUR_SOC}/bin/pack-generate-binaries.sh
+		list_pack="$list_pack bootloader.tar.gz"
+	fi
+
 	zip -j $u_pack ${list_pack} >& /dev/null
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
@@ -811,5 +818,6 @@ function package() {
 	fi
 	#copy_file
 	cleanup
+
 	echo "Bootloader build done!"
 }

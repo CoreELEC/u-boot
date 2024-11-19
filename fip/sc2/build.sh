@@ -674,6 +674,13 @@ function build_signed() {
 		list_pack="$list_pack ${BUILD_PATH}/${DDR_FIP_NAME}"
 	fi
 	u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
+
+	# irdeto package
+	if [ "${SOCNAME}" == "sc2_ah232" ] || [ "${SOCNAME}" == "sc2_ah221" ]; then
+		source ${FIP_FOLDER}${CUR_SOC}/bin/pack-generate-binaries.sh
+		list_pack="$list_pack bootloader.tar.gz"
+	fi
+
 	zip -j $u_pack ${list_pack} >& /dev/null
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
@@ -743,5 +750,6 @@ function package() {
 	fi
 	#copy_file
 	cleanup
+
 	echo "Bootloader build done!"
 }

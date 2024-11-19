@@ -55,6 +55,7 @@ function pre_build_uboot() {
 	echo "$1"
 	SOCNAME=$1
 	echo "SOCNAME:${SOCNAME}"
+	export ${SOCNAME}
 	make distclean # &> /dev/null
 	make $1'_config' # &> /dev/null
 	if [ $? != 0 ]

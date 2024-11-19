@@ -497,6 +497,10 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 	run_command("update_pdvfs", 0);
 	run_command("update_cooling_state", 0);
 #endif
+
+	if (IS_ENABLED(CONFIG_CMD_SCMI_SHMEM_ADDR))
+		run_command("update_scmi_shmem", 0);
+
 #ifdef  CONFIG_KEY_PRESERVE
 	(*((volatile unsigned int *)(STARTUP_KEY_PRESERVE))) |= 0x1;
 #endif

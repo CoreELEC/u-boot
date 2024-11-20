@@ -97,14 +97,10 @@ function compile_rtos_for_arm() {
     BINARY_FILE=${IMAGE_PATH}/${KERNEL}-signed.bin
     DEBUG_FILE_PREFIX=${OUTPUT_PATH}/${KERNEL}/${KERNEL}
     XIP_CONFIG_FILE=${RTOS_BUILD_DIR}/boards/$1/$3/lscript.h
-    BUILD_LINK_FILE=${RTOS_BUILD_DIR}/boards/$1/$3/lscript.h
+    BUILD_DISASSEMBLY_FILE=${DEBUG_FILE_PREFIX}.lst
 
     # Clean up rtos compilation intermediate files
     rm -rf $OUTPUT_PATH
-
-    # rtos load address
-    LINE=$(grep -m 1 "configTEXT_BASE" $BUILD_LINK_FILE)
-    RTOS_LOAD_ADDR=$(echo "$LINE" | grep -oP '0x[0-9a-fA-F]+')
 
     # determine whether to enable the xip function
     RTOS_XIP=$(grep -E "^#define\s+CONFIG_XIP\s+[01]$" "$XIP_CONFIG_FILE" | awk '{print $3}')
@@ -130,6 +126,9 @@ function compile_rtos_for_arm() {
         make -f ${BUILD_SYSTEM_DIR}/xip.mk xip
         cp ${OUTPUT_PATH}/${KERNEL}/${KERNEL}.bin ${BINARY_FILE}
     fi
+
+    # rtos load address
+    RTOS_LOAD_ADDR=$(sed -n 's/^0*\([0-9a-fA-F]*\) <__image_copy_start>:/0x\1/p' $BUILD_DISASSEMBLY_FILE | sed 's/0x0*/0x/')
 
 	if [ -n "$BUILD_MCUBOOT" ]; then
         package_kernel_for_mcuboot $1 $3 $4
@@ -201,8 +200,17 @@ function build_bootloader() {
     if [ "$1" == "mcuboot" ]; then
         source $RTOS_BUILD_DIR/scripts/package_mcuboot.sh
         compile_mcuboot ${pkg_arch[0]} ${pkg_soc[0]} ${pkg_board[0]} mcuboot $AML_IMAGE_STORAGE_PATH
+        AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_mcuboot.conf
         echo "Compilation of MCUBoot is successful"
     else
+        #Select the packaging configuration file.
+        if [ -e "$AML_IMAGE_STORAGE_PATH/dspboot.bin" ]; then
+            AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf
+        elif [ -e "$AML_IMAGE_STORAGE_PATH/rtos-xipA.bin" ]; then
+            AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf
+        elif [ -e "$AML_IMAGE_STORAGE_PATH/u-boot.bin" ]; then
+            AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf
+        fi
         #Select the compile parameters of the bootstrap
         case ${pkg_board[0]} in
         'ad401_a113l')
@@ -210,6 +218,14 @@ function build_bootloader() {
             ;;
         'ad403_a113l')
             uboot_type="a1_ad403_nor_rtos"
+            ;;
+        'ad401_a113l_hifi4a_psram')
+            uboot_type="a1_ad401_nor_rtos"
+            AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_dsp.conf
+            ;;
+        'ad403_a113l_hifi4a')
+            uboot_type="a1_ad403_nand_rtos"
+            AML_PACKAGE_CONFIG_FILE=$IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_dsp.conf
             ;;
         *) ;;
         esac
@@ -231,21 +247,7 @@ function aml_image_package() {
     install $IMAGE_BOARD_CONFIG_DIR/usb_flow.aml $AML_IMAGE_STORAGE_PATH/
     install $IMAGE_BOARD_CONFIG_DIR/aml_sdc_burn.ini $AML_IMAGE_STORAGE_PATH/
 
-    if [ -e "$AML_IMAGE_STORAGE_PATH/mcuboot.bin" ]; then
-        cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_mcuboot.conf \
-        $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-    elif [ -e "$AML_IMAGE_STORAGE_PATH/u-boot.bin" ]; then
-        if [ -e "$AML_IMAGE_STORAGE_PATH/dspboot.bin" ]; then
-            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package.conf \
-            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-        elif [ -e "$AML_IMAGE_STORAGE_PATH/rtos-xipA.bin" ]; then
-            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_xip.conf \
-            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-        elif [ -e "$AML_IMAGE_STORAGE_PATH/u-boot.bin" ]; then
-            cp $IMAGE_BOARD_CONFIG_DIR/aml_upgrade_package_ndsp.conf \
-            $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
-        fi
-    fi
+    cp $AML_PACKAGE_CONFIG_FILE $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf
 
     $RTOS_BUILD_DIR/image_packer/aml_image_v2_packer -r $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.conf $AML_IMAGE_STORAGE_PATH $AML_IMAGE_STORAGE_PATH/aml_upgrade_package.img
 
@@ -253,6 +255,6 @@ function aml_image_package() {
 }
 
 package_target_verify
-build_bootloader mcuboot
 compile_rtos_for_all
+build_bootloader uboot
 aml_image_package

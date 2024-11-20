@@ -495,6 +495,7 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 {
 #ifdef  CONFIG_AML_UPDATE_PDVFS
 	run_command("update_pdvfs", 0);
+	run_command("update_cooling_state", 0);
 #endif
 #ifdef  CONFIG_KEY_PRESERVE
 	(*((volatile unsigned int *)(STARTUP_KEY_PRESERVE))) |= 0x1;
@@ -689,7 +690,6 @@ int do_bootm_linux(int flag, int argc, char *const argv[],
 		boot_jump_linux(images, flag);
 		return 0;
 	}
-
 	boot_prep_linux(images);
 	boot_jump_linux(images, flag);
 	return 0;

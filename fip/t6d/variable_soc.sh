@@ -176,6 +176,8 @@ if [ "${BL30_SELECT}" == "t6d_br301" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="br301_t950d5"
 elif [ "${BL30_SELECT}" == "t6d_br309" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="br309_t950d5"
+elif [ "${BL30_SELECT}" == "t6d_t335" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="t335_t950d5"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="t6d_skt"
 fi

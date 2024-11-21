@@ -46,10 +46,10 @@ int main(void)
 
 void vApplicationIdleHook( void )
 {
-   //printf("enter idle task\n");
+	//printf("enter idle task\n");
 
-   //write_csr(mie, 1); // open mstatue.mie
-   //asm volatile ("wfi"); // enter low power mode
+	//write_csr(mie, 1); // open mstatue.mie
+	asm volatile ("wfi"); // enter low power mode
 }
 /*-----------------------------------------------------------*/
 void vApplicationMallocFailedHook( void );

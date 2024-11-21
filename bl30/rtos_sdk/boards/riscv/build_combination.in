@@ -46,4 +46,5 @@ riscv s6 bq209_s905d5 aocpu
 riscv t6d t6d_skt aocpu
 riscv t6d br301_t950d5 aocpu
 riscv t6d br309_t950d5 aocpu
+riscv t6d t335_t950d5 aocpu
 riscv t6w t6w_skt aocpu

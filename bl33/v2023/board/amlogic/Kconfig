@@ -637,6 +637,13 @@ config T6D_BR309
 	select TARGET_T6D_BR309
 	help
 		Select T6D BR309 config
+
+config T6D_T335
+	bool "T6D_T335"
+	select TARGET_T6D_T335
+	help
+		Select T6D T335 config
+
 endchoice
 
 config TARGET_T6D_SKT
@@ -650,6 +657,10 @@ config TARGET_T6D_BR301
 config TARGET_T6D_BR309
 	bool "T6D BR309 board"
 	depends on T6D_BR309
+
+config TARGET_T6D_T335
+	bool "T6D T335 board"
+	depends on T6D_T335
 
 endif
 
@@ -929,6 +940,8 @@ source "board/amlogic/t6d_skt/Kconfig"
 source "board/amlogic/t6d_br301/Kconfig"
 
 source "board/amlogic/t6d_br309/Kconfig"
+
+source "board/amlogic/t6d_t335/Kconfig"
 
 source "board/amlogic/t5m_ay301/Kconfig"
 

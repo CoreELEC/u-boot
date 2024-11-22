@@ -90,7 +90,7 @@ static const struct GpioIRQBank irqBanks[BANK_NUM_MAX] = {
 	GPIO_IRQ_BK("H",      37, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("X",      46, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("Z",      66, eeIRQs, ARRAY_SIZE(eeIRQs)),
-	GPIO_IRQ_BK("A",      92, eeIRQs, ARRAY_SIZE(eeIRQs)),
+	GPIO_IRQ_BK("A",      82, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("TEST_N", 98, eeIRQs, ARRAY_SIZE(eeIRQs)),
 	GPIO_IRQ_BK("CC",      99, eeIRQs, ARRAY_SIZE(eeIRQs)),
 };

@@ -16,7 +16,7 @@ MEMORY
 }
 SECTIONS
 {
-    __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
+    __stack_size = DEFINED(__stack_size) ? __stack_size : 1K;
     .text :
     {
         . = ALIGN(4);
@@ -53,7 +53,7 @@ SECTIONS
     .stack :
     {
         PROVIDE( _stack = . );
- . = ALIGN(1024);
+	. = ALIGN(4);
         . += __stack_size;
         PROVIDE( _sp = . );
     } >ram

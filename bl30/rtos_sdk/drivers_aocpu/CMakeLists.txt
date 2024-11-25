@@ -62,6 +62,14 @@ aml_library_include_directories(
 	${SDK_BASE}/drivers_aocpu/spi
 )
 
+redefine_file_macro()
+
+target_compile_options(
+	${CURRENT_LIBRARY}
+	PRIVATE
+	-Wno-builtin-macro-redefined
+)
+
 aml_library_link_libraries(arch__${ARCH})
 aml_library_link_libraries(soc__${ARCH})
 aml_library_link_libraries(boards__${ARCH})

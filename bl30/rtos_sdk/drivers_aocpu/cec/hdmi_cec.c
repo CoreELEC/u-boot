@@ -1569,6 +1569,14 @@ static int is_playback_dev(int addr)
 	return 1;
 }
 
+static int is_audio_system_dev(int addr)
+{
+	if ((addr & 0xf) == CEC_AUDIO_SYSTEM_ADDR)
+		return 1;
+
+	return 0;
+}
+
 /* kernel will recovery the port info from msg. only for backup */
 static u32 cec_save_port_id(void)
 {
@@ -1704,7 +1712,28 @@ static u32 cec_handle_message(void)
 				printf("active src power on:0x%x\n", data);
 			}
 			break;
-
+		case CEC_OC_SYSTEM_AUDIO_MODE_REQUEST:
+			/* soundbar will wakeup when receive this msg */
+			if (((hdmi_cec_func_config >> CEC_FUNC_MASK) & 0x1) &&
+			    ((hdmi_cec_func_config >> AUTO_POWER_ON_MASK) & 0x1) &&
+			    is_audio_system_dev(cec_msg.log_addr)) {
+				phy_addr = 0xffff;
+				cec_msg.cec_power = 0x1;
+				cec_wakup.wk_logic_addr = source;
+				cec_wakup.wk_phy_addr = phy_addr;
+				data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
+					(cec_wakup.wk_port_id << 24);
+				set_cec_wakeup_port_info(data);
+				memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
+				cec_otp_msg[0] = cec_msg.buf[cec_msg.rx_read_pos].msg_len;
+				if (cec_otp_msg[0] <= MAX_MSG)
+					memcpy(&cec_otp_msg[1],
+						cec_msg.buf[cec_msg.rx_read_pos].msg,
+						cec_otp_msg[0]);
+				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
+				printf("system audio mode request wakeup\n");
+			}
+			break;
 		default:
 			break;
 		}

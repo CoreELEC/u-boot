@@ -24,6 +24,14 @@ endif()
 
 add_subdirectory(${SOC})
 
+redefine_file_macro()
+
+target_compile_options(
+	${CURRENT_LIBRARY}
+	PRIVATE
+	-Wno-builtin-macro-redefined
+)
+
 aml_library_link_libraries(arch__${ARCH})
 
 aml_link_libraries()

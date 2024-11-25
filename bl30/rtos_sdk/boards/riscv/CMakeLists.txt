@@ -13,6 +13,14 @@ aml_library_include_directories(
 
 add_subdirectory(${BOARD})
 
+redefine_file_macro()
+
+target_compile_options(
+	${CURRENT_LIBRARY}
+	PRIVATE
+	-Wno-builtin-macro-redefined
+)
+
 aml_library_link_libraries(kernel__${KERNEL})
 aml_library_link_libraries(drivers)
 

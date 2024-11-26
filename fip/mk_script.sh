@@ -625,6 +625,17 @@ function bin_path_parser() {
 				fi
 				update_bin_path 5 "${argv[@]:$((i))}"
 				continue ;;
+			--bl2e-usb)
+				if [ "${argv[@]:$((i))}"x == ""x ] || [ ! -f "${argv[@]:$((i))}" ]; then
+					echo "PATH: ${argv[@]:$((i))} is not exit !!!"
+					exit 1
+				fi
+
+				BL2E_USB_BIN_FIXED_PATH=${argv[@]:$((i))}
+				BL2E_USB_BIN_FIXED_PATH=${BL2E_USB_BIN_FIXED_PATH%%--*}
+
+				BIN_PATH[3]=${BL2E_USB_BIN_FIXED_PATH}
+				continue ;;
 			--bl2e-size)
 				BL2E_PAYLOAD_SIZE="${argv[i]}"
 				export BL2E_PAYLOAD_SIZE

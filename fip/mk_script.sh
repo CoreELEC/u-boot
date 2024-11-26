@@ -284,6 +284,10 @@ function build() {
 		echo "export BOARD_COMPILE_HDMITX_ONLY=null"
 		export BOARD_COMPILE_HDMITX_ONLY=null
 	fi
+	if [ ! $BOARD_KERNEL_VERSION]; then
+		echo "export BOARD_KERNEL_VERSION=null"
+		export BOARD_KERNEL_VERSION=null
+	fi
 	if [ ! $BOARD_DISPLAY_PIPELINE ]; then
 		echo "export BOARD_DISPLAY_PIPELINE=null"
 		export BOARD_DISPLAY_PIPELINE=null
@@ -533,6 +537,10 @@ function parser() {
 			--display-pipeline)
 				export BOARD_DISPLAY_PIPELINE="${argv[$i]}"
 				echo "export BOARD_DISPLAY_PIPELINE="${argv[$i]}""
+				continue ;;
+			--kernel-version)
+				export BOARD_KERNEL_VERSION="${argv[$i]}"
+				echo "export BOARD_KERNEL_VERSION="${argv[$i]}""
 				continue ;;
 			--ipc-ddr-size)
 				CONFIG_IPC_DDR_SIZE="${argv[$i]}"

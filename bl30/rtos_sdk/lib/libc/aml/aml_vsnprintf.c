@@ -464,6 +464,13 @@ repeat:
 			qualifier = *fmt;
 			fmt++;
 		}
+#if CONFIG_LIBC_AML_LONG_LONG_PRINT
+		if (((*(fmt-1) == 'l') && (*fmt == 'l'))
+			|| ((*(fmt - 1) == 'L') && (*fmt == 'L'))) {
+			qualifier = 'j';
+			fmt++;
+		}
+#endif
 
 		// Default base
 		base = 10;
@@ -552,6 +559,13 @@ repeat:
 
 		if (qualifier == 'l')
 			num = va_arg(args, unsigned long);
+#if CONFIG_LIBC_AML_LONG_LONG_PRINT
+		else if (qualifier == 'j')
+			if (flags & SIGN)
+				num = va_arg(args, signed long long);
+			else
+				num = va_arg(args, unsigned long long);
+#endif
 		else if (flags & SIGN)
 			num = va_arg(args, int);
 		else

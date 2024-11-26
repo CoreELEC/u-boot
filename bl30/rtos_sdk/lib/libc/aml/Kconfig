@@ -13,4 +13,9 @@ config LIBC_AML_FLOAT_PRINT
 	bool "Float number print supported"
 	help
 	  Float number print supported
+
+config LIBC_AML_LONG_LONG_PRINT
+	bool "Long long number print supported"
+	help
+	  Long long number print supported
 endif

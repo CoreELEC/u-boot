@@ -38,7 +38,6 @@ SemaphoreHandle_t xSTRFlagSem;
 uint32_t suspend_flag;
 #if BL30_SUSPEND_DEBUG_EN
 uint32_t suspend_debug_flag;
-static TaskHandle_t printTask;
 #endif
 uint32_t power_mode;
 

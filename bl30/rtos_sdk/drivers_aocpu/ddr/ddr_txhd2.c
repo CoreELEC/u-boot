@@ -11,7 +11,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "soc.h"
-#include "suspend_debug.h"
+#include "suspend_debug_ddr.h"
 #include "../timer_source/timer_source.h"
 
 #define timere_read()	REG32(TIMERE_LOW_REG)

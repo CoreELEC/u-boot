@@ -181,7 +181,7 @@ function amfc_compress() {
 	./fip/tools/zstd $1/bl33.bin.org -$comp_lv -o $1/bl33.bin.zstd
 	bin_org_size=`stat -c %s $1/bl33.bin.org`
 	bin_zstd_size=`stat -c %s $1/bl33.bin.zstd`
-	printf "%s" "@ZSTD" >  $amfc_zstd_hdr
+	printf "%s" "ZSTD" >  $amfc_zstd_hdr
 
 	printf "%02x%02x%02x%02x" $[(bin_org_size) & 0xff] \
 	$[((bin_org_size) >> 8) & 0xff] $[((bin_org_size) >> 16) & 0xff] \

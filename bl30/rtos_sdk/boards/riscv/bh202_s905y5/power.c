@@ -23,6 +23,7 @@
 #endif
 #include "power.h"
 #include "mailbox-api.h"
+
 #include "suspend_debug.h"
 #if BL30_SUSPEND_DEBUG_EN
 #include "suspend_debug_s7.h"
@@ -30,12 +31,8 @@
 #include "rtc.h"
 #include "stick_mem.h"
 
-
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
-#if BL30_SUSPEND_DEBUG_EN
-static TaskHandle_t printTask;
-#endif
 
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
 
@@ -95,8 +92,6 @@ void str_hw_init(void)
 	if (IS_EN(BL30_RTC_WAKEUP_MASK)) {
 		printf("skiped RTC wakeup function\n");
 		alarm_clr();
-#endif
-#if BL30_SUSPEND_DEBUG_EN
 	}
 #endif
 	vETHInit(0);
@@ -108,8 +103,15 @@ void str_hw_init(void)
 	vGpioIRQInit();
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped BT wakeup function\n");
+#endif
+#endif //CONFIG_WIFI_BT_WAKE
 
 #if BL30_SUSPEND_DEBUG_EN
 	exit_func_print();
@@ -134,8 +136,11 @@ void str_hw_disable(void)
 	}
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_deinit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_deinit();
+#endif //CONFIG_WIFI_BT_WAKE
 
 	vRestoreGpioIrqReg();
 #if BL30_SUSPEND_DEBUG_EN
@@ -175,7 +180,7 @@ void str_power_on(int shutdown_flag)
 
 	/* size over load */
 	dump_cpu_fsm_regs();
-	stop_debug_task();
+	show_pwm_regs();
 	exit_func_print();
 #endif
 }
@@ -187,7 +192,6 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 #if BL30_SUSPEND_DEBUG_EN
 	enter_func_print();
-	start_debug_task();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 		/***power off A55 vdd_cpu***/
@@ -206,7 +210,8 @@ void str_power_off(int shutdown_flag)
 		printf("Power down done.\n");
 #if BL30_SUSPEND_DEBUG_EN
 	} else
-		printf("skiped power switch\n");
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
 	show_pwm_regs();
 	exit_func_print();
 #endif

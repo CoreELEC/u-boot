@@ -22,6 +22,10 @@
 #include "power.h"
 #include "mailbox-api.h"
 #include "rtc.h"
+#include "suspend_debug.h"
+#if BL30_SUSPEND_DEBUG_EN
+#include "suspend_debug_a5.h"
+#endif
 
 /*#define SHOW_LATENCY */
 
@@ -74,14 +78,32 @@ void str_hw_init(void)
 {
 	int ret;
 
+
 #ifdef SHOW_LATENCY
 	start_suspend_time = timere_read_us();
 #endif
-	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
-		vIRHandler);
-	vETHInit(0);
 
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	/*enable device & wakeup source interrupt*/
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRInit(MODE_HARD_NEC, GPIOD_5, PIN_FUNC1, prvPowerKeyList,
+			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+#if BL30_SUSPEND_DEBUG_EN
+		else
+			printf("skiped IR wakeup function\n");
+#endif
+
+	rtc_enable_irq();
+#if BL30_SUSPEND_DEBUG_EN
+	if (IS_EN(BL30_RTC_WAKEUP_MASK)) {
+		printf("skiped RTC wakeup function\n");
+		rtc_disable_irq();
+	}
+#endif
+
+	vETHInit(0);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP,
 									xMboxVadWakeup, 0);
@@ -89,22 +111,45 @@ void str_hw_init(void)
 		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
 
 	vBackupAndClearGpioIrqReg();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadInit();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped SARADC wakeup function\n");
+#endif
 	vGpioIRQInit();
-	vKeyPadInit();
-	rtc_enable_irq();
+
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
 }
 
 void str_hw_disable(void)
 {
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+#endif
 	/*disable wakeup source interrupt*/
-	vIRDeint();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRDeint();
+
 	vETHDeint();
 
 	xUninstallRemoteMessageCallback(AODSPA_CHANNEL, MBX_CMD_VAD_AWE_WAKEUP);
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadDeinit();
 
-	vKeyPadDeinit();
 	vRestoreGpioIrqReg();
 	rtc_disable_irq();
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
 }
 
 static void str_gpio_backup(void)
@@ -131,84 +176,98 @@ void str_power_on(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	/* open PWM clk */
-	REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
-
-	/* set GPIOE_1 pinmux to pwm */
-	xPinmuxSet(GPIOE_1, PIN_FUNC1);
-
-	/* enable vddcpu PWM channel */
-	REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
-
-	/***set vdd_cpu val***/
-	ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
-	if (ret < 0) {
-		printf("VDD_CPU pwm set fail\n");
-		return;
-	}
-
-	/***power on vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
-
-	/***set vdd_ee val***/
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
-	if (ret < 0) {
-		printf("VDD_EE pwm set fail\n");
-		return;
-	}
-
-	if (shutdown_flag) {
-		/***power on vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
-		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
-			return;
-		}
-
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_HIGH);
-		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
-			return;
-		}
-	}
-
-	/***power on vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vcc_5v set gpio dir fail\n");
-		return;
-	}
-
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_HIGH);
-	if (ret < 0) {
-		printf("vcc_5v gpio val fail\n");
-		return;
-	}
-
-	/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
-	vTaskDelay(POWERON_VDDCPU_DELAY);
-
-	printf("vdd_cpu on\n");
-#ifdef SHOW_LATENCY
-	end_resume_time = timere_read_us();
-	printf("BL30 system_suspend TS: %d  TE: %d\n", start_suspend_time, end_suspend_time);
-	printf("BL30 system_resume TS: %d  TE: %d\n", start_resume_time, end_resume_time);
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
-	/* this reset must excute immediately after power on because the wrapper is reseted*/
-	if (shutdown_flag)
-		watchdog_reset_system();
 
-	str_gpio_restore();
+		/* open PWM clk */
+		REG32(CLKCTRL_PWM_CLK_EF_CTRL) |= (1 << 24) | (1 << 8);
+
+		/* set GPIOE_1 pinmux to pwm */
+		xPinmuxSet(GPIOE_1, PIN_FUNC1);
+
+		/* enable vddcpu PWM channel */
+		REG32(PWMEF_MISC_REG_AB) |= (1 << 1);
+
+		/***set vdd_cpu val***/
+		ret = vPwmMesonsetvoltage(VDDCPU_VOLT, vdd_cpu);
+		if (ret < 0) {
+			printf("VDD_CPU pwm set fail\n");
+			return;
+		}
+
+		/***power on vdd_cpu***/
+		ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio val fail\n");
+			return;
+		}
+
+		/***set vdd_ee val***/
+		ret = vPwmMesonsetvoltage(VDDEE_VOLT, vdd_ee);
+		if (ret < 0) {
+			printf("VDD_EE pwm set fail\n");
+			return;
+		}
+
+		if (shutdown_flag) {
+			/***power on vcc_3.3v***/
+			ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+			if (ret < 0) {
+				printf("vcc_3.3v set gpio dir fail\n");
+				return;
+			}
+
+			ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_HIGH);
+			if (ret < 0) {
+				printf("vcc_3.3v gpio val fail\n");
+				return;
+			}
+		}
+
+		/***power on vcc_5v***/
+		ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vcc_5v set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("vcc_5v gpio val fail\n");
+			return;
+		}
+
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+		vTaskDelay(POWERON_VDDCPU_DELAY);
+
+		printf("vdd_cpu on\n");
+#ifdef SHOW_LATENCY
+		end_resume_time = timere_read_us();
+		printf("BL30 system_suspend TS: %d TE: %d\n", start_suspend_time, end_suspend_time);
+		printf("BL30 system_resume TS: %d  TE: %d\n", start_resume_time, end_resume_time);
+#endif
+		/*this reset must excute immediately after power on because the wrapper is reseted*/
+		if (shutdown_flag)
+			watchdog_reset_system();
+
+		str_gpio_restore();
+
+#if BL30_SUSPEND_DEBUG_EN
+	}
+
+	/* size over load */
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
+#endif
 }
 
 void str_power_off(int shutdown_flag)
@@ -219,91 +278,104 @@ void str_power_off(int shutdown_flag)
 
 	(void)shutdown_flag;
 
-	/***power off vcc_5v***/
-	ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vcc_5v set gpio dir fail\n");
-		return;
-	}
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
+#endif
 
-	ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vcc_5v gpio val fail\n");
-		return;
-	}
-
-	if (shutdown_flag) {
-		/***power off vcc_3.3v***/
-		ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+		/***power off vcc_5v***/
+		ret = xGpioSetDir(GPIOD_6, GPIO_DIR_OUT);
 		if (ret < 0) {
-			printf("vcc_3.3v set gpio dir fail\n");
+			printf("vcc_5v set gpio dir fail\n");
 			return;
 		}
 
-		ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_LOW);
+		ret = xGpioSetValue(GPIOD_6, GPIO_LEVEL_LOW);
 		if (ret < 0) {
-			printf("vcc_3.3v gpio val fail\n");
+			printf("vcc_5v gpio val fail\n");
 			return;
 		}
-	}
 
-	/***set vdd_ee val***/
-	vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
-	if (vdd_ee < 0) {
-		printf("vdd_EE pwm get fail\n");
-		return;
-	}
+		if (shutdown_flag) {
+			/***power off vcc_3.3v***/
+			ret = xGpioSetDir(GPIOD_2, GPIO_DIR_OUT);
+			if (ret < 0) {
+				printf("vcc_3.3v set gpio dir fail\n");
+				return;
+			}
 
-	ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
-	if (ret < 0) {
-		printf("vdd_EE pwm set fail\n");
-		return;
-	}
+			ret = xGpioSetValue(GPIOD_2, GPIO_LEVEL_LOW);
+			if (ret < 0) {
+				printf("vcc_3.3v gpio val fail\n");
+				return;
+			}
+		}
 
-	/***set vdd_cpu val***/
-	vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
-	if (vdd_ee < 0) {
-		printf("VDD_CPU pwm get fail\n");
-		return;
-	}
+		/***set vdd_ee val***/
+		vdd_ee = vPwmMesongetvoltage(VDDEE_VOLT);
+		if (vdd_ee < 0) {
+			printf("vdd_EE pwm get fail\n");
+			return;
+		}
 
-	/***power off vdd_cpu***/
-	ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio dir fail\n");
-		return;
-	}
+		ret = vPwmMesonsetvoltage(VDDEE_VOLT, 770);
+		if (ret < 0) {
+			printf("vdd_EE pwm set fail\n");
+			return;
+		}
 
-	ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_LOW);
-	if (ret < 0) {
-		printf("vdd_cpu set gpio val fail\n");
-		return;
-	}
+		/***set vdd_cpu val***/
+		vdd_cpu = vPwmMesongetvoltage(VDDCPU_VOLT);
+		if (vdd_ee < 0) {
+			printf("VDD_CPU pwm get fail\n");
+			return;
+		}
 
-	/* set GPIOE_1 pinmux to gpio */
-	xPinmuxSet(GPIOE_1, PIN_FUNC0);
+		/***power off vdd_cpu***/
+		ret = xGpioSetDir(GPIO_TEST_N, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio dir fail\n");
+			return;
+		}
 
-	/***set vddcpu pwm to input***/
-	ret = xGpioSetDir(GPIOE_1, GPIO_DIR_IN);
-	if (ret < 0) {
-		printf("GPIOE_1 set gpio dir fail\n");
-		return;
-	}
+		ret = xGpioSetValue(GPIO_TEST_N, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio val fail\n");
+			return;
+		}
 
-	/*disable PWM CLK*/
-	REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
+		/* set GPIOE_1 pinmux to gpio */
+		xPinmuxSet(GPIOE_1, PIN_FUNC0);
 
-	/* disable PWM channel */
-	REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
+		/***set vddcpu pwm to input***/
+		ret = xGpioSetDir(GPIOE_1, GPIO_DIR_IN);
+		if (ret < 0) {
+			printf("GPIOE_1 set gpio dir fail\n");
+			return;
+		}
 
-	if (shutdown_flag) {
-		/* disable sar adc */
-		vKeyPadDeinit();
-	}
+		/*disable PWM CLK*/
+		REG32(CLKCTRL_PWM_CLK_EF_CTRL) &= ~(1 << 24);
 
-	printf("vdd_cpu off\n");
+		/* disable PWM channel */
+		REG32(PWMEF_MISC_REG_AB) &= ~(1 << 1);
+
+		if (shutdown_flag) {
+			/* disable sar adc */
+			vKeyPadDeinit();
+		}
+
+		printf("a5 vdd_cpu off\n");
 
 #ifdef SHOW_LATENCY
-	end_suspend_time = timere_read_us();
+		end_suspend_time = timere_read_us();
+#endif
+
+#if BL30_SUSPEND_DEBUG_EN
+	} else
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
 #endif
 }

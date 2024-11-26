@@ -23,6 +23,7 @@
 #endif
 #include "power.h"
 #include "mailbox-api.h"
+
 #include "suspend_debug.h"
 #if BL30_SUSPEND_DEBUG_EN
 #include "suspend_debug_s7.h"
@@ -31,9 +32,6 @@
 
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
-#if BL30_SUSPEND_DEBUG_EN
-static TaskHandle_t printTask;
-#endif
 
 #define VCC5V_GPIO	GPIOC_7
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
@@ -190,7 +188,6 @@ void str_power_on(int shutdown_flag)
 
 	/* size over load */
 	dump_cpu_fsm_regs();
-	stop_debug_task();
 	exit_func_print();
 #endif
 }
@@ -202,7 +199,6 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 #if BL30_SUSPEND_DEBUG_EN
 	enter_func_print();
-	start_debug_task();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 		/***power off hdmi_pw when shutdown***/

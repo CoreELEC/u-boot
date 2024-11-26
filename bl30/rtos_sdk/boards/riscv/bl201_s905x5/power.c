@@ -23,6 +23,11 @@
 #endif
 #include "power.h"
 #include "mailbox-api.h"
+#include "suspend_debug.h"
+#if BL30_SUSPEND_DEBUG_EN
+#include "suspend_debug_s6.h"
+#endif
+#include "rtc.h"
 #include "board_common.h"
 #include "stick_mem.h"
 #include "dsp.h"
@@ -35,7 +40,6 @@ GE_GPIO_CTRL(VCC_5V_HDMI, GPIOH_6, NOINVERT)
 HIZ_GPIO_CTRL(VCC_5V_USB, GPIOH_8)
 GE_GPIO_CTRL(VDDCPU, GPIO_TEST_N, NOINVERT)
 GE_GPIO_CTRL(ETH_RESET, GPIOZ_15, NOINVERT)
-
 
 static struct IRPowerKey prvPowerKeyList[] = {
 	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
@@ -65,9 +69,23 @@ static void vIRHandler(struct IRPowerKey *pkey)
 void str_hw_init(void)
 {
 	int ret;
+
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
 	/*enable device & wakeup source interrupt*/
-	vIRInit(MODE_HARD_NEC, GPIOF_3, PIN_FUNC1, prvPowerKeyList, ARRAY_SIZE(prvPowerKeyList),
-		vIRHandler);
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRInit(MODE_HARD_NEC, GPIOF_3, PIN_FUNC1, prvPowerKeyList,
+			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped IR wakeup function\n");
+
+	if (IS_EN(BL30_RTC_WAKEUP_MASK)) {
+		printf("skiped RTC wakeup function\n");
+		alarm_clr();
+	}
+#endif
 	vETHInit(0);
 
 	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
@@ -75,18 +93,44 @@ void str_hw_init(void)
 
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
-	vKeyPadInit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadInit();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped SARADC wakeup function\n");
+#endif
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped BT wakeup function\n");
+#endif
+#endif //CONFIG_WIFI_BT_WAKE
+
 	vDSPVadWakeupInit();
+
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
 }
 
 void str_hw_disable(void)
 {
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+#endif
 	/*disable wakeup source interrupt*/
-	vIRDeint();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRDeint();
+
 	vETHDeint();
 
 	if (cecTask) {
@@ -95,12 +139,23 @@ void str_hw_disable(void)
 	}
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_deinit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_deinit();
+#endif //CONFIG_WIFI_BT_WAKE
 
-	vKeyPadDeinit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadDeinit();
+
 	vRestoreGpioIrqReg();
 	vDSPVadWakeupDeinit();
+
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
 }
 
 #define STEP_VOL	30  // 30mV steps
@@ -179,21 +234,35 @@ void str_power_on(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
+#endif
+		VDDCPU_on();
 
-	VDDCPU_on();
-	vddee_and_vddddr_ctrl(0);
-	VCC3V3_CSI_DVB_on();
-	VCC_5V_on();
-	VCC_5V_USB_on();
-	if (exeth_wol_n_flag) {
-		printf("exeth power on\n");
-		ETH_RESET_on();
+		vddee_and_vddddr_ctrl(0);
+
+		VCC3V3_CSI_DVB_on();
+
+		VCC_5V_on();
+		VCC_5V_USB_on();
+
+		if (exeth_wol_n_flag) {
+			printf("exeth power on\n");
+			ETH_RESET_on();
+		}
+
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+		vTaskDelay(POWERON_VDDCPU_DELAY);
+
+		printf("vdd_cpu on\n");
+#if BL30_SUSPEND_DEBUG_EN
 	}
-
-	/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
-	vTaskDelay(POWERON_VDDCPU_DELAY);
-
-	printf("vdd_cpu on\n");
+	/* size over load */
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
+#endif
 }
 
 void str_power_off(int shutdown_flag)
@@ -201,22 +270,33 @@ void str_power_off(int shutdown_flag)
 	int ret;
 
 	(void)shutdown_flag;
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
+#endif
+		if (exeth_wol_n_flag) {
+			printf("exeth wol set\n");
+			ETH_RESET_off();
+		}
 
-	if (exeth_wol_n_flag) {
-		printf("exeth wol set\n");
-		ETH_RESET_off();
-	}
+		VCC_5V_USB_off();
+		VCC_5V_off();
+		VCC3V3_CSI_DVB_off();
 
-	VCC_5V_USB_off();
-	VCC_5V_off();
-	VCC3V3_CSI_DVB_off();
+		if (shutdown_flag)
+			VCC_5V_HDMI_off();
 
-	if (shutdown_flag)
-		VCC_5V_HDMI_off();
+		vddee_and_vddddr_ctrl(1);
 
-	vddee_and_vddddr_ctrl(1);
-	/***power off A510 vdd_cpu***/
-	VDDCPU_off();
+		/***power off A510 vdd_cpu***/
+		VDDCPU_off();
 
-	printf("Power down done.\n");
+		printf("Power down done.\n");
+#if BL30_SUSPEND_DEBUG_EN
+	} else
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
+#endif
 }

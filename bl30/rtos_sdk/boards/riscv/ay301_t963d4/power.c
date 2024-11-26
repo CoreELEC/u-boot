@@ -34,9 +34,6 @@
 #define CONFIG_HDMIRX_PLUGIN_WAKEUP
 
 static TaskHandle_t cecTask;
-#if BL30_SUSPEND_DEBUG_EN
-static TaskHandle_t printTask;
-#endif
 
 static int vdd_ee;
 static int vdd_cpu;
@@ -76,19 +73,6 @@ static void *xMboxVadWakeup(void *msg)
 	return NULL;
 }
 
-#if BL30_SUSPEND_DEBUG_EN
-void vPrintTask(void *pvParameters)
-{
-	/*make compiler happy*/
-	(void) pvParameters;
-
-	for ( ;; ) {
-		printf("vPTask1...\n");
-		vTaskDelay(pdMS_TO_TICKS(TEST_TASK1_DELAY));
-	}
-}
-#endif
-
 void str_hw_init(void)
 {
 	int ret;
@@ -125,9 +109,18 @@ void str_hw_init(void)
 		printf("skiped SARADC wakeup function\n");
 #endif
 	vGpioIRQInit();
+
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped BT wakeup function\n");
+#endif
+#endif //CONFIG_WIFI_BT_WAKE
+
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	/*ctrl of 5v wake up*/
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
@@ -162,8 +155,12 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_deinit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_deinit();
+#endif //CONFIG_WIFI_BT_WAKE
+
 #ifdef CONFIG_HDMIRX_PLUGIN_WAKEUP
 	/*ctrl of 5v wake up*/
 	if (REG32(TOP_EDID_RAM_OVR0_DATA) & 0x1)
@@ -286,7 +283,7 @@ void str_power_on(int shutdown_flag)
 
 	/* size over load */
 	dump_cpu_fsm_regs();
-	stop_debug_task();
+	show_pwm_regs();
 	exit_func_print();
 #endif
 }
@@ -300,7 +297,6 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 #if BL30_SUSPEND_DEBUG_EN
 	enter_func_print();
-	start_debug_task();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 		/***power off vcc_5v***/
@@ -396,7 +392,8 @@ void str_power_off(int shutdown_flag)
 		printf("vdd_cpu off\n");
 #if BL30_SUSPEND_DEBUG_EN
 	} else
-		printf("skiped power switch\n");
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
 	show_pwm_regs();
 	exit_func_print();
 #endif

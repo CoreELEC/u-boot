@@ -23,6 +23,7 @@
 #endif
 #include "power.h"
 #include "mailbox-api.h"
+
 #include "suspend_debug.h"
 #if BL30_SUSPEND_DEBUG_EN
 #include "suspend_debug_s7.h"
@@ -32,9 +33,6 @@
 
 #include "hdmi_cec.h"
 static TaskHandle_t cecTask;
-#if BL30_SUSPEND_DEBUG_EN
-static TaskHandle_t printTask;
-#endif
 
 #define VCC5V_GPIO	GPIOC_7
 #define VDDCPU_A55_GPIO	GPIO_TEST_N
@@ -114,8 +112,15 @@ void str_hw_init(void)
 #endif
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped BT wakeup function\n");
+#endif
+#endif //CONFIG_WIFI_BT_WAKE
 
 #if BL30_SUSPEND_DEBUG_EN
 	exit_func_print();
@@ -140,8 +145,11 @@ void str_hw_disable(void)
 	}
 
 #if CONFIG_WIFI_BT_WAKE
-	wifi_bt_wakeup_deinit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
 #endif
+		wifi_bt_wakeup_deinit();
+#endif //CONFIG_WIFI_BT_WAKE
 
 #if BL30_SUSPEND_DEBUG_EN
 	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
@@ -162,7 +170,6 @@ void str_power_on(int shutdown_flag)
 	enter_func_print();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
-
 		/***power on A55 vdd_cpu***/
 		ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
 		if (ret < 0) {
@@ -183,7 +190,7 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 
-		/*Wait POWERON_VDDCPU_DELAY for VDDCPU statable*/
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
 		vTaskDelay(POWERON_VDDCPU_DELAY);
 
 		printf("vdd_cpu on\n");
@@ -192,7 +199,7 @@ void str_power_on(int shutdown_flag)
 
 	/* size over load */
 	dump_cpu_fsm_regs();
-	stop_debug_task();
+	show_pwm_regs();
 	exit_func_print();
 #endif
 }
@@ -204,7 +211,6 @@ void str_power_off(int shutdown_flag)
 	(void)shutdown_flag;
 #if BL30_SUSPEND_DEBUG_EN
 	enter_func_print();
-	start_debug_task();
 	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
 #endif
 
@@ -237,7 +243,8 @@ void str_power_off(int shutdown_flag)
 		printf("Power down done.\n");
 #if BL30_SUSPEND_DEBUG_EN
 	} else
-		printf("skiped power switch\n");
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
 	show_pwm_regs();
 	exit_func_print();
 #endif

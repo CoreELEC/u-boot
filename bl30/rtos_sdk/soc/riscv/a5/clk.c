@@ -357,7 +357,7 @@ void vCLK_suspend(uint32_t st_f)
 {
 	int xIdx = 0;
 
-	printf("[AOCPU]: enter vCLK_suspend.\n");
+	printf("[AOCPU]: a5 enter vCLK_suspend.\n");
 
 	if (st_f) {
 		/* close mem_pd of srama and sramb */

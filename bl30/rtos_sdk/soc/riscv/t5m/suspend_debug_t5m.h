@@ -7,8 +7,6 @@
 #ifndef __SUSPEND_DEBUG_T5M_H__
 #define __SUSPEND_DEBUG_T5M_H__
 
-#include "suspend_debug.h"
-
 #if BL30_SUSPEND_DEBUG_EN
 extern struct xPwmMesonVoltage vddee_table[];
 extern struct xPwmMesonVoltage vddcpu_table[];
@@ -47,22 +45,21 @@ static const char * const cpu_str[] = {
 	[1] = "CPU1",
 	[2] = "CPU2",
 	[3] = "CPU3",
-	[4] = "CPU4",
-	[5] = "CPU_TOP",
+	[4] = "CPU_TOP",
 };
 
 static inline void dump_cpuN_fsm_regs(uint32_t i)
 {
 	printf("%s_FSM\n", cpu_str[i]);
 	for (int j = 0; j < 0x30; j++)
-		printf("0x%x\n", REG32(0x30*i + PWRCTRL_CPU0_FSM_START_ON + 4 * j));
+		printf("0x%x\n", REG32(0x30*i + PWRCTRL_CPU0_AUTO_OFF_CTRL0 + 4 * j));
 }
 
 static inline void dump_cpu_fsm_regs(void)
 {
 	/* for t5m,dump fsm regs */
 	if (IS_EN(BL30_DUMP_CPU_FSM)) {
-		for (int id = 0; id < 6; id++)
+		for (int id = 0; id < 5; id++)
 			dump_cpuN_fsm_regs(id);
 	}
 }

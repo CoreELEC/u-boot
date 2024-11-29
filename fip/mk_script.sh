@@ -265,6 +265,13 @@ function clean() {
 		cd ${BL33_PATH3}
 		make distclean
 	fi
+
+	if [ -e ${BL33_PATH4} ]; then
+		cd ${MAIN_FOLDER}
+		cd ${BL33_PATH4}
+		make distclean
+	fi
+
 	cd ${MAIN_FOLDER}
 	rm ${FIP_BUILD_FOLDER} -rf
 	rm ${BUILD_FOLDER}/* -rf

@@ -5,7 +5,7 @@ function select_uboot() {
 
 	cd ${MAIN_FOLDER}
 
-	for file in `ls -d ${BL33_DEFCFG1}/* ${BL33_DEFCFG2}/* ${BL33_DEFCFG3}/*`; do
+	for file in `ls -d ${BL33_DEFCFG1}/* ${BL33_DEFCFG2}/* ${BL33_DEFCFG3}/* ${BL33_DEFCFG4}/*`; do
 		temp_file=`basename $file`
 		#echo $temp_file
 		temp_file=${temp_file%_*}
@@ -17,6 +17,8 @@ function select_uboot() {
 					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION2}
 				elif [ "2023" == "${CONFIG_BUILD_VERSION}" ]; then
 					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION3}
+				elif [ "2025" == "${CONFIG_BUILD_VERSION}" ]; then
+					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION4}
 				else
 					echo "input parameter error"
 					exit 1
@@ -28,6 +30,8 @@ function select_uboot() {
 					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION2}
 				elif [ "${BL33_DEFCFG3}" == "$(dirname $file)" ]; then
 					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION3}
+				elif [ "${BL33_DEFCFG4}" == "$(dirname $file)" ]; then
+					bl33_path=${UBOOT_FOLDER}/${UBOOT_VERSION4}
 				else
 					echo "not found defconfig"
 					exit 1
@@ -165,7 +169,7 @@ function build_uboot() {
 
 function uboot_config_list() {
 	echo "      ******Amlogic Configs******"
-	for file in `ls -d ${BL33_DEFCFG1}/* ${BL33_DEFCFG2}/* ${BL33_DEFCFG3}/*`; do
+	for file in `ls -d ${BL33_DEFCFG1}/* ${BL33_DEFCFG2}/* ${BL33_DEFCFG3}/* ${BL33_DEFCFG4}/*`; do
 		temp_file=`basename $file`
 		#echo "$temp_file"
 		temp_file=${temp_file%_*}

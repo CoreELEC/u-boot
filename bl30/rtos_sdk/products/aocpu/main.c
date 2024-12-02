@@ -74,25 +74,24 @@ void vApplicationMallocFailedHook(void)
 
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
-    ( void ) pcTaskName;
-    ( void ) xTask;
+	(void)xTask;
 
-    /* Run time stack overflow checking is performed if
-    configconfigCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
-    function is called if a stack overflow is detected.  pxCurrentTCB can be
-    inspected in the debugger if the task name passed into this function is
-    corrupt. */
-    //write(1, "Stack Overflow\n", 15);
-	printf("vApplicationStackOverflowHook, current task is %s\n", pcTaskName);
+	/* Run time stack overflow checking is performed if
+	 * configconfigCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook
+	 * function is called if a stack overflow is detected. pxCurrentTCB can be
+	 * inspected in the debugger if the task name passed into this function is
+	 * corrupt.
+	 */
+	printf("bl30 task %s stack overflow\n", pcTaskName);
 	vTaskDumpStack(NULL);
-    for ( ;; );
+	for ( ;; )
+		;
 }
 /*-----------------------------------------------------------*/
 
 #ifdef CONFIG_STACK_PROTECTOR_STRONG
 void additional_message_hook(void *address)
 {
-	printf("bl30 stack smashing detected, stop here!\n");
-	printf("The last addr of smashing function: 0x%x\n", address);
+	printf("bl30 stack smashing func last addr: 0x%x, stop!\n", address);
 }
 #endif

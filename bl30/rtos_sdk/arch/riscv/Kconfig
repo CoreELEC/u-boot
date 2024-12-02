@@ -1,0 +1,37 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+menu "RISCV Options"
+
+config RISCV
+	bool
+	select KERNEL
+	help
+	  RISC-V architecture
+
+menu "Toolchain Options"
+	rsource "toolchain/Kconfig"
+endmenu
+
+config VERSION_FULL_INFO
+	bool "Version full information"
+	help
+	  Select print full version information.
+
+config AOCPU_ALIVE_DETECTION
+	bool "AOCPU alive detection mechanism"
+	help
+	  Record AOCPU tickcount to register.
+
+config AOCPU_BUSRESPERR_DETECTION
+	bool "AOCPU bus response error detection mechanism"
+	help
+	  Generate irq and show error pc and address.
+
+config RISCV_WCN
+	bool "RISCV for WCN"
+	help
+	  RISCV for WCN.
+
+endmenu

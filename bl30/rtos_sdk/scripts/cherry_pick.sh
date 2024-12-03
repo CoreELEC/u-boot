@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 #
 
+changed_repositories=""
+
 get_repo_path() {
 	for keyword in $keyline; do
 		if [[ $keyword == $pattern* ]]; then
@@ -47,6 +49,7 @@ apply_patch_by_change_number() {
 	keyline=`grep "name=\"$GERRIT_PROJECT\"" $MANIFEST`
 	pattern="path="
 	get_repo_path
+	changed_repositories="$GERRIT_PROJECT"
 
 	cherry_pick
 	[ "$?" -ne 0 ] && return 1
@@ -63,8 +66,10 @@ apply_patch_by_gerrit_topic() {
 	echo -e "======== Manually applying Gerrit Topic: $MANUAL_GERRIT_TOPIC ========"
 
 	i=1
+	changed_repositories=""
 	for GERRIT_PROJECT in $GERRIT_PROJECTS; do
 		echo "-------- Applying patch $i on Project $GERRIT_PROJECT --------"
+		changed_repositories="$GERRIT_PROJECT#$changed_repositories"
 		keyline=`grep "name=\"$GERRIT_PROJECT\"" $MANIFEST`
 		pattern="path="
 		get_repo_path

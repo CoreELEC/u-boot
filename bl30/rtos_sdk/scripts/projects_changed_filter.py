@@ -91,19 +91,25 @@ def main():
                 repository = (name_str, path_str)
                 all_repository_set.add_repository(repository)
 
-    dirs_file = project_path + "/freertos/module_dirs.txt"
+    dirs_file = project_path + "/freertos/CMakeFiles/TargetDirectories.txt"
     prj_repository_set = repository_set_c()
     prj_repository_unique_set = set()
     with open(dirs_file) as f:
-        lines = f.read().split('#')
+        lines = iter(f)
         for line in lines:
             line = line.strip()
-            keyword = base_path
-            index = line.find(keyword)
-            if (index < 0) or (len(line) == 0):
+            keyword = "/obj/"
+            index_left = line.find(keyword)
+            if (index_left < 0):
                 continue
             else:
-                module_dir = line[index + len(keyword) + 1 : ]
+                index_left = index_left + len(keyword)
+            keyword = "/CMakeFiles/"
+            index_right = line.find(keyword)
+            if (index_right < 0) or (index_left > index_right):
+                continue
+            else:
+                module_dir = line[index_left : index_right]
                 if (len(module_dir) == 0):
                     continue
                 name_str = all_repository_set.get_repository_name(module_dir)
@@ -112,6 +118,7 @@ def main():
                     prj_repository_unique_set.add(name_str)
     prj_repository_unique_set.add("rtos_sdk/build")
     prj_repository_unique_set.add("rtos_sdk/scripts")
+    prj_repository_unique_set.add("rtos_sdk/product/" + os.environ.get('PRODUCT'))
 
     changed_reps_set = changed_reps.split('#')
     changed_flag = 0

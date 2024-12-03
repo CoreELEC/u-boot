@@ -75,7 +75,7 @@ while IFS= read -r LINE; do
 			echo -n -e "$nr. Building $LINE ...\t"
 			make >> $BUILD_LOG 2>&1
 		else
-			echo -n -e "$nr. $LINE is not changed, building none...\t"
+			echo -n -e "$nr. $LINE is unchanged, skip...\t"
 			:
 		fi
 	else

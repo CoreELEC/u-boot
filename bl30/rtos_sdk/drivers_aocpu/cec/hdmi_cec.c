@@ -34,6 +34,7 @@
 #define NULL ((void *)0)
 #endif
 
+#define CEC_DBG_PRINT 0
 #define CEC_REG_DEBUG 0
 #define CEC_CFG_DEBUG 0
 #define CEC_TASK_DEBUG 0
@@ -49,6 +50,12 @@
 #define DEVICE_AUDIO_SYSTEM 5
 #define DEVICE_PURE_CEC_SWITCH 6
 #define DEVICE_VIDEO_PROCESSOR 7
+
+#if CEC_DBG_PRINT
+#define CEC_DBG_LOG(fmt, args...) printf(fmt, ##args)
+#else
+#define CEC_DBG_LOG(...)
+#endif
 
 struct cec_wakeup {
 	unsigned int wk_logic_addr : 8;
@@ -631,11 +638,11 @@ void *cec_update_config_data(void *data)
 	if (cec_mailbox.cec_config & CEC_CFG_DBG_EN) {
 		printf("cec_config:0x%x\n", cec_mailbox.cec_config);
 		printf("phy_addr:0x%x\n", cec_mailbox.phy_addr);
-		printf("vendor_id:0x%x\n", cec_mailbox.vendor_id);
-		printf("osd_name:");
+		CEC_DBG_LOG("vendor_id:0x%x\n", cec_mailbox.vendor_id);
+		CEC_DBG_LOG("osd_name:");
 		for (i = 0; i < 16; i++)
-			printf(" 0x%x", cec_mailbox.osd_name[i]);
-		printf("\n");
+			CEC_DBG_LOG(" 0x%x", cec_mailbox.osd_name[i]);
+		CEC_DBG_LOG("\n");
 	}
 
 	return NULL;
@@ -645,7 +652,7 @@ void cec_update_phyaddress(unsigned int phyaddr)
 {
 	cec_mailbox.phy_addr = cec_mailbox.phy_addr & 0xffff0000;
 	cec_mailbox.phy_addr |= phyaddr & 0xffff;
-	printf("update phyaddr:0x%x\n", phyaddr);
+	CEC_DBG_LOG("update phyaddr:0x%x\n", phyaddr);
 }
 
 void cec_update_func_cfg(unsigned int cfg)
@@ -653,7 +660,7 @@ void cec_update_func_cfg(unsigned int cfg)
 	cec_mailbox.cec_config = cfg;
 
 	if (hdmi_cec_func_config & CEC_CFG_DBG_EN)
-		printf("cec_config:0x%x\n", cfg);
+		CEC_DBG_LOG("cec_config:0x%x\n", cfg);
 }
 
 static void write_ao(enum cec_reg_idx addr, unsigned int data)
@@ -663,7 +670,7 @@ static void write_ao(enum cec_reg_idx addr, unsigned int data)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("%s no reg:0x%x", __func__, addr);
+		CEC_DBG_LOG("%s no reg:0x%x", __func__, addr);
 		return;
 	}
 #if CEC_FW_DEBUG
@@ -680,7 +687,7 @@ static unsigned int read_ao(enum cec_reg_idx addr)
 	real_addr = cec_reg_tab[addr];
 
 	if (real_addr == 0xffff) {
-		printf("%s no reg:0x%x\n", __func__, addr);
+		CEC_DBG_LOG("%s no reg:0x%x\n", __func__, addr);
 		return 0x0;
 	}
 
@@ -703,7 +710,7 @@ static unsigned long cecb_rd_reg(unsigned long addr)
 	write_ao(CECB_REG_RW_REG, data32);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 500) {
-			printf("cecb r reg 0x%x fail\n", (unsigned int)addr);
+			CEC_DBG_LOG("cecb r reg 0x%x fail\n", (unsigned int)addr);
 			break;
 		}
 		data32 = read_ao(CECB_REG_RW_REG); /*REG32(CECB_RW_REG);*/
@@ -721,7 +728,7 @@ static void cecb_wr_reg(unsigned long addr, unsigned long data)
 	data32 = read_ao(CECB_REG_RW_REG);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 200) {
-			printf("cecb w reg 0x%x fail\n", (unsigned int)addr);
+			CEC_DBG_LOG("cecb w reg 0x%x fail\n", (unsigned int)addr);
 			break;
 		}
 		/*data32 = REG32(CECB_RW_REG);*/
@@ -757,7 +764,7 @@ static unsigned long ceca_rd_reg(unsigned long addr)
 	write_ao(CECA_REG_RW_REG, data32);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 500) {
-			printf("cecb r reg 0x%x fail\n", (unsigned int)addr);
+			CEC_DBG_LOG("cecb r reg 0x%x fail\n", (unsigned int)addr);
 			break;
 		}
 		data32 = read_ao(CECA_REG_RW_REG);
@@ -775,7 +782,7 @@ static void ceca_wr_reg(unsigned long addr, unsigned long data)
 	data32 = read_ao(CECA_REG_RW_REG);
 	while (data32 & (1 << 23)) {
 		if (timeout++ > 200) {
-			printf("cecb w reg 0x%x fail\n", (unsigned int)addr);
+			CEC_DBG_LOG("cecb w reg 0x%x fail\n", (unsigned int)addr);
 			break;
 		}
 		data32 = read_ao(CECA_REG_RW_REG);
@@ -879,7 +886,7 @@ static void dump_cec_reg(void)
 /* for back, replace it with cec_set_wk_msg() */
 static u32 set_cec_wakeup_port_info(unsigned int port_info)
 {
-	printf("%s wakeup port info:0x%x\n", __func__, port_info);
+	//printf("%s wakeup port info:0x%x\n", __func__, port_info);
 	/* write_ao(CEC_REG_STICK_DATA1, port_info); */
 	return 0;
 }
@@ -897,7 +904,7 @@ static void *cec_get_wakeup_info1(void *msg)
 	 */
 	write_ao(CEC_REG_STICK_DATA1, 0);
 	*(u32 *)msg = val;
-	printf("[%s]: info=0x%x\n", __func__, val);
+	//printf("[%s]: info=0x%x\n", __func__, val);
 
 	return NULL;
 }
@@ -913,7 +920,7 @@ static void *cec_get_wakeup_info2(void *msg)
 	 */
 	write_ao(CEC_REG_STICK_DATA2, 0);
 	*(u32 *)msg = val;
-	printf("[%s]: info=0x%x\n", __func__, val);
+	//printf("[%s]: info=0x%x\n", __func__, val);
 
 	return NULL;
 }
@@ -971,7 +978,7 @@ static u32 cecb_hw_reset(void)
 	unsigned int reg;
 	unsigned int data32;
 
-	printf("cecb reset\n");
+	//printf("cecb reset\n");
 	reg = (0 << 31) | (0 << 30) | (1 << 28) | /* clk_div0/clk_div1 in turn */
 	      ((732 - 1) << 12) | /* Div_tcnt1 */
 	      ((733 - 1) << 0); /* Div_tcnt0 */
@@ -1167,7 +1174,7 @@ static int cec_queue_tx_msg(unsigned char *msg, unsigned char len)
 	s_idx = cec_tx_msgs.send_idx;
 	q_idx = cec_tx_msgs.queue_idx;
 	if (((q_idx + 1) & CEC_TX_MSG_BUF_MASK) == s_idx) {
-		printf("tx buffer full, abort msg\n");
+		CEC_DBG_LOG("tx buffer full, abort msg\n");
 		cec_reset_addr();
 		return -1;
 	}
@@ -1187,7 +1194,7 @@ static int cecb_triggle_tx(unsigned char *msg, unsigned char len)
 		/* send is in process */
 		lock = cecb_rd_reg(DWC_CECB_LOCK_BUF);
 		if (lock) {
-			printf("rx msg in tx\n");
+			CEC_DBG_LOG("rx msg in tx\n");
 			return -1;
 		}
 		if (cecb_rd_reg(DWC_CECB_CTRL) & 0x01)
@@ -1195,7 +1202,7 @@ static int cecb_triggle_tx(unsigned char *msg, unsigned char len)
 		else
 			break;
 		if (i > 25) {
-			printf("lock:0x%x, wait busy timeout\n", lock);
+			CEC_DBG_LOG("lock:0x%x, wait busy timeout\n", lock);
 			return -1;
 		}
 		cec_delay(50);
@@ -1228,7 +1235,7 @@ static int ceca_triggle_tx(unsigned char *msg, unsigned char len)
 			break;
 
 		if (!(j--)) {
-			printf("ceca waiting busy timeout\n");
+			CEC_DBG_LOG("ceca waiting busy timeout\n");
 			ceca_wr_reg(CECA_TX_MSG_CMD, TX_ABORT);
 			cec_timeout_cnt++;
 			if (cec_timeout_cnt > 0x08)
@@ -1241,17 +1248,17 @@ static int ceca_triggle_tx(unsigned char *msg, unsigned char len)
 
 	tx_stat = ceca_rd_reg(CECA_TX_MSG_STATUS);
 	if (tx_stat == TX_IDLE || tx_stat == TX_DONE) {
-		printf("cec T:");
+		CEC_DBG_LOG("cec T:");
 		for (i = 0; i < len; i++) {
 			ceca_wr_reg(CECA_TX_MSG_0_HEADER + i, msg[i]);
-			printf(" 0x%02x", msg[i]);
+			CEC_DBG_LOG(" 0x%02x", msg[i]);
 		}
-		printf("\n");
+		CEC_DBG_LOG("\n");
 
 		ceca_wr_reg(CECA_TX_MSG_LENGTH, len - 1);
 		ceca_wr_reg(CECA_TX_MSG_CMD, TX_REQ_CURRENT);
 	} else {
-		printf("err tx state 0x%x\n", tx_stat);
+		CEC_DBG_LOG("err tx state 0x%x\n", tx_stat);
 	}
 
 	return 0;
@@ -1300,24 +1307,24 @@ static int cecb_check_irq_sts(void)
 		if (reg & CECB_IRQ_TX_NACK) {
 			ret = TX_ERROR;
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
-			printf("tx:TX_NACK %d\n", cnt);
+			CEC_DBG_LOG("tx:TX_NACK %d\n", cnt);
 			break;
 		}
 		if (reg & CECB_IRQ_TX_ARB_LOST) {
 			ret = TX_BUSY;
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
-			printf("tx:TX_ABT_LOST %d\n", cnt);
+			CEC_DBG_LOG("tx:TX_ABT_LOST %d\n", cnt);
 			break;
 		}
 		if (reg & CECB_IRQ_TX_ERR_INITIATOR) {
 			ret = TX_BUSY;
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
-			printf("tx:TX_ERR_INIT %d\n", cnt);
+			CEC_DBG_LOG("tx:TX_ERR_INIT %d\n", cnt);
 			break;
 		}
 
 		if (cnt++ >= 200) {
-			printf("%s time out %d\n", __func__, cnt);
+			CEC_DBG_LOG("%s time out %d\n", __func__, cnt);
 			/* cnt = 0; */
 			break;
 		}
@@ -1345,7 +1352,7 @@ static int ceca_check_irq_sts(void)
 			ret = TX_DONE;
 			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
-			printf("ping_cec_ll_tx:TX_DONE\n");
+			//printf("ping_cec_ll_tx:TX_DONE\n");
 			break;
 		}
 
@@ -1353,7 +1360,7 @@ static int ceca_check_irq_sts(void)
 			ret = TX_ERROR;
 			cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
 			ceca_wr_reg(CECA_TX_MSG_CMD, TX_NO_OP);
-			printf("ping_cec_ll_tx:TX_ERROR\n");
+			//printf("ping_cec_ll_tx:TX_ERROR\n");
 			break;
 		}
 
@@ -1361,7 +1368,7 @@ static int ceca_check_irq_sts(void)
 			break;
 
 		if (cnt++ >= 200) {
-			printf("%s time out %d\n", __func__, cnt);
+			//printf("%s time out %d\n", __func__, cnt);
 			/* cnt = 0; */
 			break;
 		}
@@ -1443,7 +1450,7 @@ static void cec_set_stream_path(void)
 				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg,
 				       cec_otp_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("%s power on\n", __func__);
+				CEC_DBG_LOG("%s power on\n", __func__);
 			}
 		}
 	}
@@ -1467,7 +1474,7 @@ static int cec_routing_change(void)
 				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg,
 				       cec_otp_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("%s power on\n", __func__);
+				CEC_DBG_LOG("%s power on\n", __func__);
 			}
 		}
 	}
@@ -1551,12 +1558,12 @@ static int check_addr(int phy_addr)
 		a = local_addr & mask;
 		b = phy_addr & mask;
 		if (a != b) { // node is not same
-			printf("addr fail 1\n");
+			CEC_DBG_LOG("addr fail 1\n");
 			return 0;
 		}
 		mask >>= 4;
 	}
-	printf("addr ok\n");
+	CEC_DBG_LOG("addr ok\n");
 	return 1;
 }
 
@@ -1585,7 +1592,7 @@ static u32 cec_save_port_id(void)
 	u32 data;
 
 	phy_addr = cec_wakup.wk_phy_addr;
-	printf("save port id\n");
+	//printf("save port id\n");
 	if ((phy_addr == 0xFFFF) || ((phy_addr & 0xF000) == 0)) {
 		cec_wakup.wk_port_id = 0xFF;
 		data = cec_wakup.wk_logic_addr | (cec_wakup.wk_phy_addr << 8) |
@@ -1660,7 +1667,7 @@ static u32 cec_handle_message(void)
 				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg,
 				       cec_otp_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("user power on\n");
+				CEC_DBG_LOG("user power on\n");
 			}
 			break;
 		case CEC_OC_MENU_REQUEST:
@@ -1686,7 +1693,7 @@ static u32 cec_handle_message(void)
 				memcpy(&cec_otp_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg,
 				       cec_otp_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("otp power on\n");
+				CEC_DBG_LOG("otp power on\n");
 			}
 			break;
 
@@ -1709,7 +1716,7 @@ static u32 cec_handle_message(void)
 				memcpy(&cec_as_msg[1], cec_msg.buf[cec_msg.rx_read_pos].msg,
 				       cec_as_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("active src power on:0x%x\n", data);
+				CEC_DBG_LOG("active src power on:0x%x\n", data);
 			}
 			break;
 		case CEC_OC_SYSTEM_AUDIO_MODE_REQUEST:
@@ -1731,7 +1738,7 @@ static u32 cec_handle_message(void)
 						cec_msg.buf[cec_msg.rx_read_pos].msg,
 						cec_otp_msg[0]);
 				cec_set_wk_msg(cec_otp_msg, cec_as_msg);
-				printf("system audio mode request wakeup\n");
+				CEC_DBG_LOG("system audio mode request wakeup\n");
 			}
 			break;
 		default:
@@ -1833,11 +1840,11 @@ static u32 cecb_irq_handler(void)
 #endif
 	}
 	if (irq & CECB_IRQ_RX_ERR_FOLLOWER) {
-		printf("RX_ERROR\n");
+		//printf("RX_ERROR\n");
 		cecb_wr_reg(DWC_CECB_LOCK_BUF, 0);
 	}
 	if (irq & CECB_IRQ_RX_WAKEUP) {
-		printf("rx wake up\n");
+		//printf("rx wake up\n");
 		cecb_wr_reg(DWC_CECB_WAKEUPCTRL, 0);
 		/* TODO: wake up system if needed */
 	}
@@ -1846,7 +1853,7 @@ static u32 cecb_irq_handler(void)
 		cec_tx_msgs.send_idx = (cec_tx_msgs.send_idx + 1) & CEC_TX_MSG_BUF_MASK;
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) {
-			printf("TX_OK\n");
+			//printf("TX_OK\n");
 			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf, cec_tx_msgs.msg[s_idx].len);
 		} else {
 #if CEC_REG_DEBUG
@@ -1857,7 +1864,7 @@ static u32 cecb_irq_handler(void)
 	}
 
 	if (irq & CECB_IRQ_TX_NACK) {
-		printf("@TX_NACK\n");
+		CEC_DBG_LOG("@TX_NACK\n");
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.msg[s_idx].retry < 2) {
 			cec_tx_msgs.msg[s_idx].retry++;
@@ -1870,7 +1877,7 @@ static u32 cecb_irq_handler(void)
 	}
 
 	if (irq & CECB_IRQ_TX_ERR_INITIATOR) {
-		printf("@TX_ERR_INIT\n");
+		CEC_DBG_LOG("@TX_ERR_INIT\n");
 		s_idx = cec_tx_msgs.send_idx;
 		if (cec_tx_msgs.send_idx != cec_tx_msgs.queue_idx) { // triggle tx if idle
 			cec_triggle_tx(cec_tx_msgs.msg[s_idx].buf, cec_tx_msgs.msg[s_idx].len);
@@ -1881,7 +1888,7 @@ static u32 cecb_irq_handler(void)
 	if (irq & CECB_IRQ_TX_ARB_LOST) {
 		busy_count++;
 		if (busy_count >= 2000) {
-			printf("busy too long, reset hw\n");
+			CEC_DBG_LOG("busy too long, reset hw\n");
 			cec_reset_addr();
 			busy_count = 0;
 		}
@@ -2122,10 +2129,10 @@ static void cec_node_init(void)
 		} else {
 			tx_stat = cec_check_irq_sts();
 			if (tx_stat == TX_BUSY) { // can't get cec bus
-				printf("TX_BUSY");
+				//printf("TX_BUSY");
 				cec_hw_reset();
 				if (retry++ > 4) {
-					printf("TX_BUSY retry too much, log_addr:0x%x\n",
+					CEC_DBG_LOG("TX_BUSY retry too much, log_addr:0x%x\n",
 					       probe[sub_idx]);
 					retry = 0;
 				}
@@ -2136,7 +2143,7 @@ static void cec_node_init(void)
 				/*address had allocated*/
 				cec_msg.log_addr = player_dev[idx][sub_idx];
 				cec_set_log_addr(cec_msg.log_addr);
-				printf("Set log_addr:0x%x,addr0:0x%x\n", cec_msg.log_addr,
+				CEC_DBG_LOG("Set log_addr:0x%x,addr0:0x%x\n", cec_msg.log_addr,
 				       cec_get_log_addr());
 				probe = NULL;
 				/*regist_devs = 0;*/
@@ -2145,7 +2152,7 @@ static void cec_node_init(void)
 				ping_state = 0;
 				return;
 			} else if (tx_stat == TX_DONE) {
-				printf("TX_DONE sombody takes cec log_addr:0x%x\n",
+				CEC_DBG_LOG("TX_DONE somebody takes cec log_addr:0x%x\n",
 				       player_dev[idx][sub_idx]);
 				ping_state = 0;
 			} else {
@@ -2178,9 +2185,9 @@ static u32 cec_suspend_wakeup_chk(void)
 			if (cec_msg.active_source) {
 				cec_save_port_id();
 				timeout_flag = 1;
-				printf("active src cmd in, wakeup\n");
+				CEC_DBG_LOG("active src cmd in, wakeup\n");
 			}
-			printf(".");
+			CEC_DBG_LOG(".");
 		} else {
 			timeout_flag = 1;
 		}
@@ -2188,7 +2195,7 @@ static u32 cec_suspend_wakeup_chk(void)
 
 	if (timeout_flag) {
 		cec_wakup_flag = 1;
-		printf("wakeup\n");
+		//printf("wakeup\n");
 		/*set_cec_val0(CEC_WAKEUP);*/
 		return 1;
 	} else {
@@ -2219,10 +2226,10 @@ u32 cec_suspend_handle(void)
 	}
 
 	if (active_src_flag) {
-		printf("active source:0x%x\n", cec_msg.active_source);
-		printf("wk_logic_addr:0x%x\n", cec_wakup.wk_logic_addr);
-		printf("wk_phy_addr:0x%x\n", cec_wakup.wk_phy_addr);
-		printf("wk_port_id:0x%x\n", cec_wakup.wk_port_id);
+		CEC_DBG_LOG("active source:0x%x\n", cec_msg.active_source);
+		CEC_DBG_LOG("wk_logic_addr:0x%x\n", cec_wakup.wk_logic_addr);
+		CEC_DBG_LOG("wk_phy_addr:0x%x\n", cec_wakup.wk_phy_addr);
+		CEC_DBG_LOG("wk_port_id:0x%x\n", cec_wakup.wk_port_id);
 		return 1;
 	} else
 		return 0;
@@ -2241,7 +2248,7 @@ u32 cec_init_config(void)
 	/*cec_mailbox.cec_config = hdmi_cec_func_config;*/
 	cec_mailbox.phy_addr = read_ao(CEC_REG_STS1);
 	cec_ip = CEC_IP;
-	printf("cec_ip %d\n", cec_ip);
+	//printf("cec_ip %d\n", cec_ip);
 	if (cec_mailbox.cec_config & CEC_CFG_DBG_EN) {
 		printf("%s\n", CEC_VERSION);
 		printf("cec cfg1:0x%x\n", hdmi_cec_func_config);
@@ -2309,7 +2316,7 @@ static void cec_set_wk_msg(unsigned char *otp_msg, unsigned char *as_msg)
 		return;
 
 	if (otp_msg[0] > 8) {
-		printf("wrong otp msg len: %d\n", otp_msg[0]);
+		//printf("wrong otp msg len: %d\n", otp_msg[0]);
 		if (as_msg[0] == 4) {
 			tmp_as_msg = as_msg[1] << 24 | as_msg[2] << 16 | as_msg[3] << 8 | as_msg[4];
 			write_ao(CEC_REG_STICK_DATA2, tmp_as_msg);
@@ -2340,7 +2347,7 @@ void vCEC_task(void __unused * pvParameters)
 	memset(cec_otp_msg, 0, sizeof(cec_otp_msg));
 	memset(cec_as_msg, 0, sizeof(cec_as_msg));
 	if (CEC_ON == 0) {
-		printf("cec define disabled\n");
+		CEC_DBG_LOG("cec define disabled\n");
 		goto idle;
 	}
 
@@ -2348,7 +2355,7 @@ void vCEC_task(void __unused * pvParameters)
 	/* pvParameters = pvParameters; */
 	ret = cec_init_config();
 	if (!ret) {
-		printf("cec not enable\n");
+		CEC_DBG_LOG("cec not enable\n");
 		goto idle;
 	}
 	cec_delay(100);
@@ -2357,7 +2364,7 @@ void vCEC_task(void __unused * pvParameters)
 		vTaskDelay(pdMS_TO_TICKS(20));
 		cec_suspend_handle();
 		if (cec_get_wakup_flag()) {
-			printf("%s wakeup\n", __func__);
+			CEC_DBG_LOG("%s wakeup\n", __func__);
 			STR_Wakeup_src_Queue_Send(buf);
 			break;
 		}
@@ -2393,17 +2400,17 @@ void vCecCallbackInit(enum __unused cec_chip_ver chip_mode)
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO1,
 						    cec_get_wakeup_info1, 1);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO1);
+		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO1);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO2,
 						    cec_get_wakeup_info2, 1);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO2);
+		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO2);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_CEC_DATA,
 						    cec_update_config_data, 1);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
+		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
 
 	/* only for suspend/resume case, for shutdown/resume
 	 * case, need sticky registers to store wakeup info.
@@ -2413,12 +2420,12 @@ void vCecCallbackInit(enum __unused cec_chip_ver chip_mode)
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_OTP_MSG,
 						    cec_get_wakeup_otp_msg, 1);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_OTP_MSG);
+		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_OTP_MSG);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_AS_MSG,
 						    cec_get_wakeup_as_msg, 1);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_AS_MSG);
+		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_AS_MSG);
 
 		/* only for temp debug, only for no resume function */
 #if (CEC_TASK_DEBUG)

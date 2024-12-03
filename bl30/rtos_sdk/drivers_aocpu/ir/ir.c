@@ -27,14 +27,14 @@ static uint8_t ucDefWakeupNum;
 #define IR_PRT_ENABLE	0
 
 static uint8_t ucIsDebugEnable;
-#define IRDebug(fmt, x...)                                                                         \
-	do {                                                                                       \
-		if (ucIsDebugEnable)                                                               \
-			printf("%sDebug: %s: " fmt, DRIVE_NAME, __func__, ##x);                    \
+#define IRDebug(fmt, x...)                                                    \
+	do {                                                                  \
+		if (ucIsDebugEnable)                                          \
+			printf("%s " fmt, DRIVE_NAME, ##x);                  \
 	} while (0)
 
 #if (IR_PRT_ENABLE)
-#define IRError(fmt, x...) printf("%sError: %s: " fmt, DRIVE_NAME, __func__, ##x)
+#define IRError(fmt, x...) printf("%s " fmt, DRIVE_NAME, ##x)
 #else
 #define IRError(fmt, x...)
 #endif
@@ -126,7 +126,7 @@ void vInitIRWorkMode(uint16_t usWorkMode)
 	else
 		prvIRRegWrite(LEGACY_CTL, REG_REG1, 0);
 
-	IRDebug("change mode to 0x%x\n", usWorkMode);
+	IRDebug("mode: 0x%x\n", usWorkMode);
 	if (MULTI_IR_CTL_MASK(usWorkMode))
 		vSetIRWorkMode(MULTI_IR_CTL_MASK(usWorkMode), MULTI_CTL);
 }
@@ -139,17 +139,15 @@ static void prvCheckPowerKey(void)
 
 	xDrvData = pGetIRDrvData();
 	ulPowerKeyList = xDrvData->ulPowerKeyList;
-	if (!xDrvData->ulFrameCode) {
-		IRDebug("invalid key or repeat :0x%x\n", xDrvData->ulFrameCode);
+	IRDebug("rec: 0x%x\n", xDrvData->ulFrameCode);
+	if (!xDrvData->ulFrameCode)
 		return;
-	};
 
-	IRDebug("receive key code :0x%x\n", xDrvData->ulFrameCode);
 	/* search power key list */
 	for (; ucIndex < xDrvData->ucPowerKeyNum; ucIndex++)
 		if (ulPowerKeyList[ucIndex].code == xDrvData->ulFrameCode) {
 			xDrvData->ulLastPowerKey = xDrvData->ulFrameCode;
-			printf("receive the right power key:0x%x\n", xDrvData->ulFrameCode);
+			printf("[ir] key:0x%x\n", xDrvData->ulFrameCode);
 			if (xDrvData->vIRHandler)
 				xDrvData->vIRHandler(&ulPowerKeyList[ucIndex]);
 		}

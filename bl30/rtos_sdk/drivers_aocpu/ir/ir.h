@@ -23,8 +23,12 @@ enum PowerKeyType { IR_NORMAL, IR_CUSTOM };
 /*supported protocol*/
 #define MODE_SOFT 0x0
 #define MODE_HARD_NEC 0x1
+
+#ifdef CONFIG_SOC_A4
 #define MODE_HARD_NEC_32K	0x10
-#define MODE_HARD_LEAGCY_NEC 0xff
+#endif
+
+//#define MODE_HARD_LEAGCY_NEC 0xff
 #define MAX_KEY_NUM 16
 
 enum IrMboxCmdType {

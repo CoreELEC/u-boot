@@ -207,6 +207,9 @@ function get_blx_bin() {
 	# if uboot code without git for binary directory
 	if [ "1" == "${CONFIG_WITHOUT_BIN_GIT}" ]; then
 		cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_BIN_SUB_FOLDER}/${BLX_BIN_NAME[index]} ${FIP_BUILD_FOLDER} -f
+		if [ "y" == "${CONFIG_FIP_IMG_SUPPORT}" ]; then
+			cp ${BLX_BIN_FOLDER[index]}/${CUR_SOC}/${BLX_IMG_NAME[index]} ${FIP_BUILD_FOLDER} 2>/dev/null
+		fi
 	else
 		git_operate ${BLX_BIN_FOLDER[index]} log --pretty=oneline
 

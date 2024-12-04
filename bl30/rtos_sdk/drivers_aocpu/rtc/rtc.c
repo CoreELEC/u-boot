@@ -21,7 +21,13 @@
 #include "interrupt_control_eclic.h"
 
 #undef TAG
-#define TAG "AOCPU RTC"
+#define TAG "RTC"
+
+#ifdef RTC_DEBUG
+#define RTC_DBG(...)	printf(__VA_ARGS__)
+#else
+#define RTC_DBG(...)
+#endif
 
 static TimerHandle_t xAlarmTimer;
 static int alarm_flags;
@@ -109,7 +115,7 @@ void *MboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
 
-	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
+	RTC_DBG("[%s]: %s val=0x%x\n", TAG, __func__, val);
 	set_rtc(val);
 
 	return NULL;
@@ -123,7 +129,7 @@ void *MboxGetRTC(void *msg)
 	memset(msg, 0, MBOX_BUF_LEN);
 	*(uint32_t *)msg = val;
 
-	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
+	RTC_DBG("[%s]: %s val=0x%x\n", TAG, __func__, val);
 
 	return NULL;
 }
@@ -149,7 +155,7 @@ void rtc_enable_irq(void)
 	if (val > 0) {
 		ret = RegisterIrq(RTC_IRQ, 6, vRTCInterruptHandler);
 		if (ret)
-			printf("RTC_irq RegisterIrq error, ret = %d\n", ret);
+			printf("RTC_irq Register err, ret = %d\n", ret);
 		EnableIrq(RTC_IRQ);
 		printf("[%s]: alarm val=%d S\n", TAG, val);
 		if (xAlarmTimer != NULL) {
@@ -168,7 +174,7 @@ void rtc_disable_irq(void)
 		DisableIrq(RTC_IRQ);
 		ret = UnRegisterIrq(RTC_IRQ);
 		if (ret)
-			printf("RTC_irq UnRegisterIrq error, ret = %d\n", ret);
+			printf("RTC_irq UnRegister err, ret = %d\n", ret);
 	}
 }
 
@@ -180,10 +186,10 @@ static void rtc_alarm_timer_handler(TimerHandle_t xAlarmTimer)
 
 	status = REG32(RTC_DIG_INT_STATUS) & 0x1;
 	if (status && !alarm_flags) {
-		printf("warning: rtc interrupt lost!trigger rtc interrupt manually!\n");
+		printf("warning: rtc irq lost! trigger it manually!\n");
 		irq_num = RTC_IRQ % 32;
 		reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
-		printf("[%s]: timer read rtc irqctrl status: 0x%x !!\n", TAG, reg_val);
+		printf("[%s]: irqctrl status: 0x%x !!\n", TAG, reg_val);
 		rtc_irq = GetIrqInner(RTC_IRQ);
 		if (rtc_irq)
 			eclic_set_pending(rtc_irq);
@@ -201,7 +207,7 @@ void alarm_clr(void)
 
 	irq_num = RTC_IRQ % 32;
 	reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
-	printf("[%s]: rtc irqctrl status: 0x%x !!\n", TAG, reg_val);
+	printf("[%s]: irqctrl status: 0x%x !!\n", TAG, reg_val);
 	if (reg_val)
 		REG32(IRQCTRL_IRQ_LATCH_CLR4) |= (0x1 << irq_num);
 	reg_val = REG32(IRQCTRL_IRQ_LATCH4) >> irq_num & 0x1;
@@ -218,7 +224,7 @@ void rtc_init(void)
 	int ret;
 	uint32_t reboot_mode;
 
-	printf("[%s]: init rtc\n", TAG);
+	RTC_DBG("[%s]: init rtc\n", TAG);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, MboxSetRTC, 0);
 	if (ret)

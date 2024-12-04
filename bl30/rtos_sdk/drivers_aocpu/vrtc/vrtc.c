@@ -19,6 +19,12 @@
 #undef TAG
 #define TAG "VRTC"
 
+#ifdef VRTC_DEBUG
+#define VRTC_DBG(...)	printf(__VA_ARGS__)
+#else
+#define VRTC_DBG(...)
+#endif
+
 static uint32_t last_time;
 
 void set_rtc(uint32_t val)
@@ -68,7 +74,7 @@ void poweroff_get_rtc_min_sec(char *time)
 		sprintf(time, "%02d", tm.tm_min);
 		sprintf(time+2, "%02d", tm.tm_sec);
 	} else {
-		printf("non-poweroff mode callback, invalid called !\n");
+		printf("not poweroff mode, invalid called!\n");
 		time = NULL;
 	}
 }
@@ -77,7 +83,7 @@ void *xMboxSetRTC(void *msg)
 {
 	unsigned int val = *(uint32_t *)msg;
 
-	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
+	VRTC_DBG("[%s]: %s val=0x%x\n", TAG, __func__, val);
 	set_rtc(val);
 
 	return NULL;
@@ -90,7 +96,7 @@ void *xMboxGetRTC(void *msg)
 	get_rtc(&val);
 	memset(msg, 0, MBOX_BUF_LEN);
 	*(uint32_t *)msg = val;
-	printf("[%s]: %s val=0x%x\n", TAG, __func__, val);
+	VRTC_DBG("[%s]: %s val=0x%x\n", TAG, __func__, val);
 
 	return NULL;
 }
@@ -98,6 +104,8 @@ void *xMboxGetRTC(void *msg)
 void vRtcInit(void)
 {
 	int ret;
+
+	VRTC_DBG("[%s]: init vrtc\n", TAG);
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, xMboxSetRTC, 0);
 	if (ret)

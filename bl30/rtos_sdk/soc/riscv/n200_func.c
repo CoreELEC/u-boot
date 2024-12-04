@@ -41,7 +41,7 @@ static uint32_t pmpcfg_order_get(uint32_t pmp_size)
 	int pmpcfg_order = 0;
 
 	if ((pmp_size & (pmp_size - 1)) != 0) {
-		printf("error: pmp_size is not 2^n\n");
+		PMP_PRINT("err: pmp_size is not 2^n\n");
 		return 0;
 	}
 
@@ -82,8 +82,7 @@ uint32_t config_pmp(void)
 	int pmp_entry_used = 0;
 	uint32_t pmp_region_base = start_text_addr;
 
-	PMP_PRINT("AOCPU: configure PMP for memory 0x%lx ~ 0x%lx\n",
-			start_text_addr, end_text_addr);
+	PMP_PRINT("PMP config range %lx ~ %lx\n", start_text_addr, end_text_addr);
 
 	while (text_len_left > 0) {
 		if ((text_len_left >= SIZE_64K) && ((pmp_region_base & (SIZE_64K - 1)) == 0))
@@ -102,8 +101,8 @@ uint32_t config_pmp(void)
 			next_seg_len = SIZE_1K;
 
 		if (next_seg_len == 0) {
-			PMP_PRINT("pmp config error: not aligned.\n");
-			PMP_PRINT("pmp base: 0x%x, segment left: 0x%x\n",
+			PMP_PRINT("PMP config err: not align.\n");
+			PMP_PRINT_DEBUG("pmp base: 0x%x, segment left: 0x%x\n",
 				pmp_region_base, text_len_left);
 			break;
 		}
@@ -153,7 +152,7 @@ uint32_t config_pmp(void)
 				(pmp_cfg[5] << 8) | (pmp_cfg[4] << 0));
 	PMP_PRINT_DEBUG("pmpcfg1  : %lx\n", read_csr(pmpcfg1));
 
-	PMP_PRINT("AOCPU: configure PMP end\n");
+	PMP_PRINT("PMP config end\n");
 
 	return 0;
 }

@@ -37,15 +37,6 @@ void eclic_init(uint32_t num_irq)
 	CLICINTCTLBITS = eclic_get_clicintctlbits();
 }
 
-void print_eclic(void)
-{
-	typedef volatile uint32_t vuint32_t;
-
-	vuint32_t *ptr = (vuint32_t *)(ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET + 7 * 4);
-
-	printf("\nTIME=0x%lx\n", *ptr);
-}
-
 void eclic_enable_interrupt(uint32_t source)
 {
 	*(volatile uint8_t *)(ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET + source * 4) = 1;
@@ -334,14 +325,10 @@ int int_src_sel(uint32_t ulIrq, uint32_t src)
 {
 	uint32_t index;
 
-	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
-		printf("Error ulIrq!\n");
+	if ((ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS) || (ulIrq > ECLIC_NUM_INTERRUPTS - 1) ||
+	    (src > IRQ_NUM_MAX)) {
+		//printf("irq src select err, internal Irq: %ld src: %ld\n", ulIrq, src);
 		return -1;
-	}
-
-	if (src > IRQ_NUM_MAX) {
-		printf("Error src!\n");
-		return -2;
 	}
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
@@ -370,10 +357,8 @@ int int_src_clean(uint32_t ulIrq)
 {
 	uint32_t index;
 
-	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS - 1) {
-		printf("Error ulIrq!\n");
+	if (ulIrq < ECLIC_INTERNAL_NUM_INTERRUPTS || ulIrq > ECLIC_NUM_INTERRUPTS - 1)
 		return -1;
-	}
 
 	ulIrq -= ECLIC_INTERNAL_NUM_INTERRUPTS;
 
@@ -399,10 +384,8 @@ int eclic_map_interrupt(uint32_t ulIrq, uint32_t src)
 {
 	uint8_t val;
 
-	if (int_src_sel(ulIrq, src)) {
-		printf("Enable %ld irq, %ld src fail!\n", ulIrq, src);
+	if (int_src_sel(ulIrq, src))
 		return -1;
-	}
 
 	val = eclic_get_intattr(ulIrq);
 	val |= ECLIC_INT_ATTR_MACH_MODE;
@@ -421,7 +404,7 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 	/* Prevent duplicate registration with the same interrupt. */
 	for (irq = ECLIC_INTERNAL_NUM_INTERRUPTS; irq < ECLIC_NUM_INTERRUPTS; irq++) {
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == int_num) {
-			printf("Warning: the irq %ld has already been registered!\n", int_num);
+			printf("Warning: irq %ld already registered!\n", int_num);
 			return 0;
 		}
 	}
@@ -431,7 +414,7 @@ int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler)
 			break;
 	}
 	if (eclic_map_interrupt(irq, int_num) < 0) {
-		printf("eclic map error.\n");
+		printf("irq %ld register fail\n", int_num);
 		return -1;
 	}
 	eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = int_num;
@@ -450,13 +433,9 @@ int UnRegisterIrq(uint32_t ulIrq)
 		if (eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] == ulIrq)
 			break;
 	}
-	if (irq > ECLIC_NUM_INTERRUPTS - 1) {
-		printf("Error ulIrq!\n");
-		return -1;
-	}
 
 	if (int_src_clean(irq)) {
-		printf("unregister %ld irq, %ld src fail!\n", ulIrq, irq);
+		printf("irq %ld unregister fail!\n", ulIrq);
 		return -1;
 	}
 	eclic_interrupt_inner[irq - ECLIC_INTERNAL_NUM_INTERRUPTS] = 0;

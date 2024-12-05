@@ -25,8 +25,7 @@ static void vKeyCallBack(struct xReportEvent event)
 	buf[0] = POWER_KEY_WAKEUP;
 	STR_Wakeup_src_Queue_Send(buf);
 
-	printf("dynamic key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
-	       event.responseTime);
+	printf("DYNKEY: EVENT 0x%x,%d,%d\n", event.event, event.ulCode, event.responseTime);
 }
 
 static void *xMboxSetKeypad(void *msg)
@@ -42,18 +41,18 @@ static void *xMboxSetKeypad(void *msg)
 	}
 
 	if ((key_info[3] < 1) || (key_info[3] > 2)) {
-		printf("keypad: illegal key event\n");
+		printf("DYNKEY: INVAL PARAM\n");
 		return NULL;
 	}
 
 	if (key_info[0] >= ADCKEY_ID_BASE) {
 		if (key_info[1] > ((1 << 12) - 1)) {
-			printf("keypad: illegal adc voltage value\n");
+			printf("DYNKEY: INVAL ADC VAL\n");
 			return NULL;
 		}
 
 		if (key_info[2] > 7) {
-			printf("keypad: illegal adc channel\n");
+			printf("DYNKEY: INVAL ADC CHAN\n");
 			return NULL;
 		}
 
@@ -64,7 +63,7 @@ static void *xMboxSetKeypad(void *msg)
 		vCreateAdcKey(adcKey, 1);
 	} else if (key_info[0] < ADCKEY_ID_BASE) {
 		if (key_info[1] > 1) {
-			printf("keypad: illegal gpio key status\n");
+			printf("DYNKEY: INVAL LEVEL\n");
 			return NULL;
 		}
 
@@ -84,5 +83,5 @@ void vDynamicKeypadInit(void)
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, CMD_SET_KEYPAD, xMboxSetKeypad,
 						    0);
 	if (ret)
-		printf("mbox cmd 0x%x register fail\n", CMD_SET_KEYPAD);
+		printf("DYNKEY: MBOX SETUP FAIL %x\n", CMD_SET_KEYPAD);
 }

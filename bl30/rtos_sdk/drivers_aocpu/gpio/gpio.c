@@ -15,7 +15,7 @@
 #include "gpio_drv.h"
 #include "portmacro.h"
 
-#define DRIVER_NAME "gpio"
+#define DRIVER_NAME "GPIO"
 
 struct BankBackup {
 	uint32_t pinmux[4];
@@ -77,7 +77,7 @@ int xGpioSetDir(uint16_t gpio, enum GpioDirType dir)
 	const struct GpioBank *bk;
 
 	if (dir >= GPIO_DIR_INVALID) {
-		printf("%s: invalid DIR [OUT=0, IN=1]: %d\n", DRIVER_NAME, dir);
+		printf("%s: INVAL DIR %d\n", DRIVER_NAME, dir);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -98,7 +98,7 @@ int xGpioSetValue(uint16_t gpio, enum GpioOutLevelType level)
 	const struct GpioBank *bk;
 
 	if (level >= GPIO_LEVEL_INVALID) {
-		printf("%s: invalid output level [LOW=1, HIGH=0]: %d\n", DRIVER_NAME, level);
+		printf("%s: INVAL OUT %d\n", DRIVER_NAME, level);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -181,8 +181,7 @@ int xPinmuxSet(uint16_t gpio, enum PinMuxType func)
 	const struct GpioRegDesc *desc;
 
 	if (func >= PIN_FUNC_INVALID) {
-		printf("%s: invalid pin Function [0 - %d]: %d\n", DRIVER_NAME, PIN_FUNC_INVALID - 1,
-		       func);
+		printf("%s: INVAL FUNC %d\n", DRIVER_NAME, func);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 

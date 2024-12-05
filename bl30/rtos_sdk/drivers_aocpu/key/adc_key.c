@@ -142,7 +142,7 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 			xTimerCreate((const char *)"xAdcKeyTimer", pdMS_TO_TICKS(TIMER_CYCLE_TIME),
 				     pdTRUE, (void *)1, (TimerCallbackFunction_t)prAdcKeyProcess);
 		if (!xAdcKeyCycleTimer) {
-			printf("adc timer create failed!\n");
+			printf("ADCKEY: TIMER FAIL\n");
 			return;
 		}
 	}
@@ -151,7 +151,7 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 		keyInitInfo = &(keyArr[i].keyInitInfo);
 
 		if (keyInitInfo->ulKeyId < ADCKEY_ID_BASE) {
-			printf("adc key:[%d] key code not less than 512.\n", i);
+			printf("ADCKEY: %d < 512 FAIL\n", i);
 			continue;
 		}
 
@@ -169,7 +169,7 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 		xOneKey->adcKeyInfo = adcKeyInfo;
 		prvAddAdcKey(xOneKey);
 
-		printf("keypad: add adc key [%ld]\n", keyInitInfo->ulKeyId);
+		printf("ADCKEY: SETUP %ld\n", keyInitInfo->ulKeyId);
 	}
 
 	return;
@@ -177,7 +177,7 @@ void vCreateAdcKey(struct xAdcKeyInfo *keyArr, uint16_t keyNum)
 fail_alloc1:
 	vPortFree(xOneKey);
 fail_alloc2:
-	printf("adc key: [%d] malloc failed!\n", i);
+	printf("ADCKEY: NOMEM %d\n", i);
 }
 
 void vAdcKeySetShortPressCycle(uint16_t cycle)
@@ -205,7 +205,7 @@ void vDestroyAdcKey(void)
 
 		vPortFree(xTmpBtn);
 
-		printf("keypad: del adc key [%ld]\n", key_id);
+		printf("ADCKEY: REMOVE %ld\n", key_id);
 	}
 
 	xHeadKey = NULL;

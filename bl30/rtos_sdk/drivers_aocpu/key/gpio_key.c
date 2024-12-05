@@ -110,7 +110,7 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 			xTimerCreate((const char *)"xGpioKeyTimer", 1, pdFALSE, (void *)1,
 				     (TimerCallbackFunction_t)prvDetectGpioKey);
 		if (!xGpioKeyCycleTimer) {
-			printf("gpio timer create failed!\n");
+			printf("GPIOKEY: TIMER FAIL\n");
 			return;
 		}
 	}
@@ -131,7 +131,7 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 		xOneKey->gpioKeyInfo = gpioKeyInfo;
 		prvAddGpioKey(xOneKey);
 
-		printf("keypad: add gpio key [%ld]\n", xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
+		printf("GPIOKEY: SETUP %ld\n", xOneKey->gpioKeyInfo->keyInitInfo.ulKeyId);
 	}
 
 	return;
@@ -139,7 +139,7 @@ void vCreateGpioKey(struct xGpioKeyInfo *keyArr, uint16_t keyNum)
 fail_alloc1:
 	vPortFree(xOneKey);
 fail_alloc2:
-	printf("gpio key: [%d] malloc failed!\n", i);
+	printf("GPIOKEY: NOMEM %d\n", i);
 }
 
 void vDestroyGpioKey(void)
@@ -157,7 +157,7 @@ void vDestroyGpioKey(void)
 
 		vPortFree(xTmpBtn);
 
-		printf("keypad: del gpio key [%ld]\n", key_id);
+		printf("GPIOKEY: REMOVE %ld\n", key_id);
 	}
 
 	xHeadKey = NULL;

@@ -16,7 +16,7 @@
 #include "n200_func.h"
 #include "common.h"
 
-#define SARADC_DRV_NAME				"saradc"
+#define SARADC_DRV_NAME				"SARADC"
 
 #define SARADC_MAX_FIFO_SIZE			16
 
@@ -385,8 +385,7 @@ int32_t xAdcGetSample(uint16_t *data, uint16_t datNum, struct AdcInstanceConfig 
 	xSemaphoreGive(adcSemaphoreMutex);
 
 	if (ret <= 0) {
-		printf("%s: failed to read sample for channel %d: %d\n", SARADC_DRV_NAME,
-		       conf->channel, ret);
+		printf("%s: INVAL SAMPLE %d,%d\n", SARADC_DRV_NAME, conf->channel, ret);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -426,7 +425,7 @@ static int32_t xAdcDoCalibration(void)
 	vAdcHwDisable();
 	return 0;
 err:
-	printf("%s: An exception occurred during calibration\n", SARADC_DRV_NAME);
+	printf("%s: CAL FAIL\n", SARADC_DRV_NAME);
 	vAdcHwDisable();
 	return -pdFREERTOS_ERRNO_EINVAL;
 }

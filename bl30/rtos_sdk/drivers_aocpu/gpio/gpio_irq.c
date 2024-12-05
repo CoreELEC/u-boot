@@ -14,7 +14,7 @@
 #include "n200_func.h"
 #include "common.h"
 
-#define DRIVER_NAME "gpio_irq"
+#define DRIVER_NAME "GPIOIRQ"
 
 static uint32_t GpioIrqRegBackup[IRQ_REG_NUM] = { 0 };
 
@@ -56,7 +56,7 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler, uint
 
 	for (i = 0; i < bk->parentIRQNum; i++) {
 		if (bk->parentIRQs[i].owner == gpio && (bk->parentIRQs[i].flags == flags)) {
-			printf("%s: irq had been allocated for gpio[%d]\n", DRIVER_NAME, gpio);
+			printf("%s: EXIST %d\n", DRIVER_NAME, gpio);
 			return -pdFREERTOS_ERRNO_EINVAL;
 		}
 		if (bk->parentIRQs[i].owner == GPIO_INVALID)
@@ -64,7 +64,7 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler, uint
 	}
 
 	if (i == bk->parentIRQNum) {
-		printf("%s: no more gpio irqs available for gpio[%d]\n", DRIVER_NAME, gpio);
+		printf("%s: NOSPC %d\n", DRIVER_NAME, gpio);
 		return -pdFREERTOS_ERRNO_EINVAL;
 	}
 
@@ -73,7 +73,7 @@ static int32_t prvRequestParentIRQ(uint16_t gpio, GpioIRQHandler_t handler, uint
 
 	prvGpioSetupIRQ(irq, i, flags);
 
-	printf("bk->parentIRQs[i].irq is %d\n", bk->parentIRQs[i].irq);
+	printf("%s: SETUP %d\n", DRIVER_NAME, bk->parentIRQs[i].irq);
 
 	RegisterIrq(bk->parentIRQs[i].irq, 2, handler);
 	ClearPendingIrq(bk->parentIRQs[i].irq);
@@ -103,7 +103,6 @@ int32_t xRequestGpioIRQ(uint16_t gpio, GpioIRQHandler_t handler, uint32_t flags)
 
 	ret = prvRequestParentIRQ(gpio, handler, flags);
 	if (ret) {
-		printf("%s: fail to allocate Parent irq for gpio[%d]\n", DRIVER_NAME, gpio);
 		prvFreeParentIRQ(gpio);
 		return ret;
 	}

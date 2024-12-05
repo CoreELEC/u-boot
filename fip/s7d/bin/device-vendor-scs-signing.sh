@@ -202,7 +202,16 @@ function amfc_compress() {
 	${BASEDIR_TOP_TOP}/tools/zstd $1/bl33.bin.temp -$comp_lv -o $1/bl33.bin.zstd
 	bin_org_size=`stat -c %s $1/bl33.bin.temp`
 	bin_zstd_size=`stat -c %s $1/bl33.bin.zstd`
-	printf "%s" "ZSTD" >  $amfc_zstd_hdr
+	if [ -f ${path}/bl33-payload.bin ]; then
+		local bl33_compress_head=`head -c 5 ${path}/bl33-payload.bin`
+		if [ $bl33_compress_head == "@ZSTD" ]; then
+			printf "%s" "@ZSTD" >  $amfc_zstd_hdr
+		elif [ ${bl33_compress_head:0:4} == "ZSTD" ]; then
+			printf "%s" "ZSTD" >  $amfc_zstd_hdr
+		fi
+	else
+		printf "%s" "ZSTD" >  $amfc_zstd_hdr
+	fi
 
 	printf "%02x%02x%02x%02x" $[(bin_org_size) & 0xff] \
 	$[((bin_org_size) >> 8) & 0xff] $[((bin_org_size) >> 16) & 0xff] \

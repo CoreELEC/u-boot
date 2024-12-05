@@ -35,7 +35,7 @@ static void vGpioKeyCallBack(struct xReportEvent event)
 		break;
 	}
 #endif
-	printf("GPIO key event 0x%x, key code %d, responseTicks %d\n", event.event, event.ulCode,
+	printf("GPIOKEY: EVENT 0x%x,%d,%d\n", event.event, event.ulCode,
 	       event.responseTime);
 }
 
@@ -52,7 +52,7 @@ static void vAdcKeyCallBack(struct xReportEvent event)
 		break;
 	}
 
-	printf("ADC key event 0x%x, key code %d, responseTime %d\n", event.event, event.ulCode,
+	printf("ADCKEY: EVENT 0x%x,%d,%d\n", event.event, event.ulCode,
 	       event.responseTime);
 }
 

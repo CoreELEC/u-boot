@@ -20,6 +20,9 @@ cat <<EOF
 - aml_cmgrep:     Greps on all local project CMakelists.txt files.
 - aml_shgrep:     Greps on all local project shell files.
 
+- aml_dirs_tracer:Trace the dependent dirs of current project.
+- aml_files_tracer:Trace the dependent files of current project.
+
 EOF
 }
 
@@ -154,3 +157,24 @@ function aml_shgrep()
     	\( -name '*.sh' \) -exec grep --color -n "$@" {} +
 }
 
+function aml_dirs_tracer()
+{
+    deps_file="$(aml_top)/output/$ARCH-$BOARD-$PRODUCT/$KERNEL/build.ninja"
+    if [ -f $deps_file ]; then
+        keyword="DEP_FILE ="
+        grep "$keyword" -nR "$deps_file" | sed -n 's|.*obj/\(.*\)/CMakeFiles.*|\1|p' | sort | uniq
+    else
+        echo "Not found $deps_file,make project please."
+    fi
+}
+
+function aml_files_tracer()
+{
+    deps_file="$(aml_top)/output/$ARCH-$BOARD-$PRODUCT/$KERNEL/build.ninja"
+    if [ -f $deps_file ]; then
+        keyword="DEP_FILE ="
+        grep "$keyword" -nR "$deps_file" | sort | uniq
+    else
+        echo "Not found $deps_file,make project please."
+    fi
+}

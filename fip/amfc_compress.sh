@@ -22,7 +22,7 @@ mv -f $INPUT $COMPRESS_ORG
 ${TOOLBIN} ${COMPRESS_ORG} -9 -o ${COMPRESS_ZSTD}
 bin_org_size=`stat -c %s ${COMPRESS_ORG}`
 bin_zstd_size=`stat -c %s ${COMPRESS_ZSTD}`
-printf "%s" "ZSTD" >  ${AMFC_ZSTD_HDR}
+printf "%s" "@ZSTD" >  ${AMFC_ZSTD_HDR}
 
 printf "%02x%02x%02x%02x" $[(bin_org_size) & 0xff] \
 $[((bin_org_size) >> 8) & 0xff] $[((bin_org_size) >> 16) & 0xff] \

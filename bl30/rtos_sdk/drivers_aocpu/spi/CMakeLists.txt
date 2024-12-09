@@ -6,5 +6,4 @@ aml_library_sources_ifdef(
 	CONFIG_SPI
 	spi.c
 	spicc.c
-	spicc_test.c
 )

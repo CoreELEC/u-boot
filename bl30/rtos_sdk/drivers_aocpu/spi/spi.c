@@ -117,11 +117,11 @@ struct SpiDevice *pxSpiNewDevice(struct SpiBoardInfo *chip)
 
 			/* Add spi device to device list */
 			xAddSpiDeviceList(spi);
-			spi_dbg
+			spi_info
 			    ("spi %s-device @controller%d: ",
 			     spi->master->is_slave ? "slave" : "master",
 			     spi->master->bus_num);
-			spi_dbg
+			spi_info
 			    ("mode %d, %s%s%s%s%ubits/w, %uHz\n",
 			     (int)(spi->mode & (SPI_CPOL | SPI_CPHA)),
 			     (spi->mode & SPI_CS_HIGH) ? "cs_high, " : "",
@@ -309,6 +309,7 @@ int xSpiSync(struct SpiDevice *spi, struct SpiMessage *msg)
 	return prvSpiTransferOneMessage(master, msg);
 }
 
+#if CONFIG_MBSPI
 struct MbSpiTransfer {
 	uint8_t bus_num;
 	uint8_t chip_select;
@@ -323,7 +324,7 @@ static void *prvMbSpiNewDevice(void *data)
 
 	spi = pxSpiNewDevice(chip);
 	if (!spi)
-		spi_dbg("%s: new mbspi device failed\n", __func__);
+		spi_err("%s: new mbspi device failed\n", __func__);
 
 	return NULL;
 }
@@ -378,12 +379,102 @@ void vMbSpiInit(void)
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
 						    MBX_CMD_SPI_DEV,
 						    prvMbSpiNewDevice, 1);
-	spi_dbg("register MBX_CMD_SPI_DEV %s\n",
+	spi_info("register MBX_CMD_SPI_DEV %s\n",
 		(ret == MBOX_CALL_MAX) ? "failed" : "success");
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
 						    MBX_CMD_SPI_XFER,
 						    prvMbSpiXfer, 1);
-	spi_dbg("register MBX_CMD_SPI_XFER %s\n",
+	spi_info("register MBX_CMD_SPI_XFER %s\n",
 		(ret == MBOX_CALL_MAX) ? "failed" : "success");
 }
+#endif // end of CONFIG_MBSPI
+
+#if CONFIG_SPI_TEST
+static int xSpiMemCmp(void *src1, void *src2, int len)
+{
+	u8 *d1 = (u8 *)src1;
+	u8 *d2 = (u8 *)src2;
+	int i, diff = 0;
+
+	if (!d1 || !d2) {
+		spi_dbg("\tnull pointer, total %d\n", len);
+		return 0;
+	}
+
+	for (i = 0; i < len; i++) {
+		if (*d1 != *d2) {
+			spi_dbg("\t%d: 0x%x, 0x%x\n", i, *d1, *d2);
+			diff++;
+		}
+		d1++;
+		d2++;
+	}
+
+	return diff;
+}
+
+static void vSpiMemSet(void *dest, u8 val, int len, u8 step)
+{
+	u8 *d = (u8 *)dest;
+	int i;
+
+	for (i = 0; i < len; i++) {
+		*d++ = val & 0xff;
+		val += step;
+	}
+}
+
+void vSpiTestTask(void *pvParameter)
+{
+	struct SpiDevice *spi = (struct SpiDevice *)pvParameter;
+	struct SpiMessage msg;
+	struct SpiTransfer *t;
+	int count = 0, i;
+	int ret;
+
+	struct SpiTransfer xfers[] = {
+		{
+		    .len = 64,
+		    .delay_usecs = 0,
+		    .cs_change = 0,
+		},
+	};
+
+	for (i = 0; i < ARRAY_SIZE(xfers); i++) {
+		t = &xfers[i];
+		t->tx_buf = pvPortMallocAlign(t->len, 0xF);
+		t->rx_buf = pvPortMallocAlign(t->len, 0xF);
+		vSpiMemSet((void *)t->tx_buf, 1, t->len, i + 1);
+	}
+
+	vSpiMessageInit(&msg, xfers, ARRAY_SIZE(xfers));
+	while (++count <= 5) {
+		int diff;
+
+		vTaskDelay(pdMS_TO_TICKS(1000));
+		ret = xSpiSync(spi, &msg);
+		spi_dbg("\n%dth test %s, time %d usec\n", count,
+		       ret ? "failed" : "success", msg.time_consump);
+		if (ret)
+			continue;
+
+		for (i = 0; i < msg.num_xfers; i++) {
+			t = &msg.xfers[i];
+			diff = xSpiMemCmp((void *)t->tx_buf, t->rx_buf, t->len);
+			spi_dbg("xfer[%d]: total %d, diff %d, time %d\n",
+			       i, t->len, diff, t->time_consump);
+			memset(t->rx_buf, 0, t->len);
+		}
+	}
+
+	vSpiUnregisterDevice(spi);
+	for (i = 0; i < ARRAY_SIZE(xfers); i++) {
+		t = &xfers[i];
+		vPortFree((void *)t->tx_buf);
+		vPortFree(t->rx_buf);
+	}
+
+	vTaskDelete(NULL);
+}
+#endif // end of CONFIG_SPI_TEST

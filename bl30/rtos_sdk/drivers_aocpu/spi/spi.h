@@ -12,7 +12,8 @@ extern "C" {
 #endif
 
 #define spi_err printf
-#define spi_dbg printf
+#define spi_info //printf
+#define spi_dbg //printf
 
 #if defined(HIFI) || defined(ARCH_CPU_M4)
 #define SPI_AXI_SRAM_AVAILABLE
@@ -239,9 +240,13 @@ _* @transfer_one: transfer a single SpiTransfer.
 	}
 
 	extern int xSpiccProbe(struct SpiccHwPlatformData *pdata);
-	extern void vSpicc1Init(void);
-	extern void vSpiMasterTask(void *pvParameter);
+
+#if CONFIG_MBSPI
 	extern void vMbSpiInit(void);
+#endif
+#if CONFIG_SPI_TEST
+	extern void vSpiTestTask(void *pvParameter);
+#endif
 
 #ifdef __cplusplus
 }

@@ -1048,7 +1048,7 @@ int xSpiccProbe(struct SpiccHwPlatformData *pdata)
 		//spi_put_master(master);
 		return ret;
 	}
-	spi_dbg("spi %s-controller%d@0x%x initialized(compatible=%d)\n",
+	spi_info("spi %s-controller%d@0x%x initialized(compatible=%d)\n",
 		master->is_slave ? "slave" : "master",
 		pdata->bus_num, (unsigned int)pdata->reg, pdata->compatible);
 

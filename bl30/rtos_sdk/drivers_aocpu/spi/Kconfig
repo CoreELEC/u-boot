@@ -6,3 +6,15 @@ config SPI
 	bool "SPI Driver"
 	help
 	  This enable SPI and SPICC Driver.
+
+if SPI
+config MBSPI
+	bool "mailbox SPI driver"
+	help
+	  This enable mailbox SPI Driver.
+
+config SPI_TEST
+	bool "SPI test task"
+	help
+	  This is a SPI test task.
+endif

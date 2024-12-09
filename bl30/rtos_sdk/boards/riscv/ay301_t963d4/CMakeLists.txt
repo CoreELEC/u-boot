@@ -16,3 +16,8 @@ aml_library_sources_ifdef(
 	CONFIG_LEDS
 	leds_plat.c
 )
+
+aml_library_sources_ifdef(
+	CONFIG_SPI
+	spi_plat.c
+)

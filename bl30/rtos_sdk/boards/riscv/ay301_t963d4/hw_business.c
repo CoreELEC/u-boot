@@ -17,8 +17,13 @@
 #include "ir.h"
 #if CONFIG_SPI
 #include "spi.h"
-static TaskHandle_t SpiMasterTaskHandler;
-#define SpiMasterTaskPriority 4
+#endif
+
+#if CONFIG_SPI
+extern void vSpicc1Init(void);
+#if CONFIG_SPI_TEST
+extern void vSpicc1Test(void);
+#endif
 #endif
 
 void hw_business_process(void)
@@ -34,9 +39,11 @@ void hw_business_process(void)
 	vHwLockInit(HW_SPIN_LOCK0, 0);
 #if CONFIG_SPI
 	vSpicc1Init();
+#if CONFIG_MBSPI
 	vMbSpiInit();
-	xTaskCreate(vSpiMasterTask, "SpiMaster", configMINIMAL_STACK_SIZE, NULL,
-		    SpiMasterTaskPriority, &SpiMasterTaskHandler);
 #endif
-
+#if CONFIG_SPI_TEST
+	vSpicc1Test();
+#endif
+#endif
 }

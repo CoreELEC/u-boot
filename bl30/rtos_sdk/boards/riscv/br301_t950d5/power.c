@@ -231,7 +231,7 @@ void str_power_on(int shutdown_flag)
 			return;
 		}
 		/* set GPIOE_1(VDDCPU_PWM) pinmux to fun1(PWM_B) */
-		// xPinmuxSet(GPIOE_1, PIN_FUNC1);
+		xPinmuxSet(GPIOE_1, PIN_FUNC1);
 
 		/* enable vddcpu PWM_B_EN */
 		REG32(PWM_MISC_REG_B) |= (1 << 0);
@@ -388,7 +388,7 @@ void str_power_off(int shutdown_flag)
 		}
 
 		/* set GPIOE_1(VDDCPU_PWM) pinmux to fun(0)gpio */
-		// xPinmuxSet(GPIOE_1, PIN_FUNC0); //bl31 have set to gpio
+		xPinmuxSet(GPIOE_1, PIN_FUNC0);
 
 		/***set vddcpu pwm to input***/
 		ret = xGpioSetDir(GPIOE_1, GPIO_DIR_IN);

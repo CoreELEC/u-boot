@@ -84,12 +84,8 @@ static void xCore3FsmIdleHandleIsr(void)
 
 void vCoreFsmIdleInit(void)
 {
-	int ret;
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_CPU_FSM_IDLE,
-						    xMboxCoreFsmIdle, 0);
-	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CPU_FSM_IDLE);
+	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL,
+			MBX_CMD_CPU_FSM_IDLE, xMboxCoreFsmIdle, 0);
 
 	RegisterIrq(IRQ_NUM_OUT_0, 1, xCore0FsmIdleHandleIsr);
 	RegisterIrq(IRQ_NUM_OUT_1, 1, xCore1FsmIdleHandleIsr);

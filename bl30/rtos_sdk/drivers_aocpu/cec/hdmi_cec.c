@@ -2382,8 +2382,6 @@ static TaskHandle_t cecTask_temp;
 #endif
 void vCecCallbackInit(enum __unused cec_chip_ver chip_mode)
 {
-	int ret;
-
 	if (CEC_ON == 0)
 		return;
 
@@ -2397,35 +2395,22 @@ void vCecCallbackInit(enum __unused cec_chip_ver chip_mode)
 	cec_mailbox.osd_name[14] = 3;
 
 	/* for shutdown/resume case */
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO1,
-						    cec_get_wakeup_info1, 1);
-	if (ret)
-		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO1);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_CEC_INFO2,
-						    cec_get_wakeup_info2, 1);
-	if (ret)
-		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_CEC_INFO2);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_CEC_DATA,
-						    cec_update_config_data, 1);
-	if (ret)
-		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_SET_CEC_DATA);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_CEC_INFO1, cec_get_wakeup_info1, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_CEC_INFO2, cec_get_wakeup_info2, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_SET_CEC_DATA, cec_update_config_data, 1);
 
 	/* only for suspend/resume case, for shutdown/resume
 	 * case, need sticky registers to store wakeup info.
 	 * as box have no CEC sticky registers, now wakeup
 	 * msg can only be transfered under suspend/resume.
 	 */
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_OTP_MSG,
-						    cec_get_wakeup_otp_msg, 1);
-	if (ret)
-		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_OTP_MSG);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_AS_MSG,
-						    cec_get_wakeup_as_msg, 1);
-	if (ret)
-		CEC_DBG_LOG("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_AS_MSG);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_WAKEUP_OTP_MSG, cec_get_wakeup_otp_msg, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_CLR_WAKEUP_AS_MSG, cec_get_wakeup_as_msg, 1);
 
 		/* only for temp debug, only for no resume function */
 #if (CEC_TASK_DEBUG)

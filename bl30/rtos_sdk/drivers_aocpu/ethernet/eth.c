@@ -105,12 +105,6 @@ static void *prvETHSetWol(void *msg)
 
 void vETHMailboxCallback(void)
 {
-	int32_t ret;
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_ETHERNET_WOL,
-		prvETHSetWol, 1);
-	if (ret) {
-		printf("mailbox cmd 0x%x register fail\n");
-		return;
-	}
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_SET_ETHERNET_WOL, prvETHSetWol, 1);
 }

@@ -407,33 +407,19 @@ loop:
 
 void create_str_task(void)
 {
-	int ret;
-
 	if (xTaskCreate(vSTRTask, "STR_task", configMINIMAL_STACK_SIZE, NULL, 3, NULL) < 0)
 		printf("STR_task create fail!!\n");
 
 	vCreat_alarm_timer();
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_SUSPEND,
-						    xMboxSuspend_Sem, 0);
-	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_SUSPEND);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_WAKEUP_REASON,
-						    xMboxGetWakeupReason, 1);
-	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_GET_WAKEUP_REASON);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_CLR_WAKEUP_REASON,
-						    xMboxClrWakeupReason, 0);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_STICK_REBOOT_FLAG,
-						    xMboxGetStickRebootFlag, 1);
-	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_CLR_WAKEUP_REASON);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_PM_FREEZE, xMboxpm_sem,
-						    1);
-	if (ret)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_PM_FREEZE);
+	xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL,
+			MBX_CMD_SUSPEND, xMboxSuspend_Sem, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_WAKEUP_REASON, xMboxGetWakeupReason, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_CLR_WAKEUP_REASON, xMboxClrWakeupReason, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_STICK_REBOOT_FLAG, xMboxGetStickRebootFlag, 1);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_PM_FREEZE, xMboxpm_sem, 1);
 }

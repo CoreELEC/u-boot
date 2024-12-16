@@ -221,18 +221,13 @@ static void rtc_alarm_timer_init(void)
 
 void rtc_init(void)
 {
-	int ret;
 	uint32_t reboot_mode;
 
 	RTC_DBG("[%s]: init rtc\n", TAG);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, MboxSetRTC, 0);
-	if (ret)
-		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_SET_RTC);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, MboxSetRTC, 0);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC, MboxGetRTC, 1);
-	if (ret)
-		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC, MboxGetRTC, 1);
 
 	reboot_mode = get_reboot_mode();
 	if (reboot_mode == COLD_REBOOT)

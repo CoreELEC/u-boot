@@ -198,7 +198,7 @@ static inline void vGetPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("%s: addr:0x%x, 0x%x\n", __func__, addr, size);
+	PRINT_DBG("%s addr 0x%x\n", __func__, addr);
 	if (data != NULL)
 		mbmemcpy(data, addr, size);
 }
@@ -207,7 +207,7 @@ static inline void vBuildPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("%s: addr:0x%x\n", __func__, addr);
+	PRINT_DBG("%s addr 0x%x\n", __func__, addr);
 	if (data != NULL)
 		mbmemcpy(addr, data, size);
 }
@@ -216,7 +216,7 @@ static inline void vReBuildPayload(void *addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("vBuildPayload: addr:0x%x\n", addr);
+	PRINT_DBG("%s addr 0x%x\n", __func__, addr);
 	if (data != NULL) {
 		mbmemset(addr, 0, MAILBOX_BUFFER_SIZE);
 		mbmemcpy(addr, data, size);

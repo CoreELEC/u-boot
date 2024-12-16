@@ -103,17 +103,12 @@ void *xMboxGetRTC(void *msg)
 
 void vRtcInit(void)
 {
-	int ret;
-
 	VRTC_DBG("[%s]: init vrtc\n", TAG);
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_RTC, xMboxSetRTC, 0);
-	if (ret)
-		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_SET_RTC);
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_GET_RTC, xMboxGetRTC, 1);
-	if (ret)
-		printf("[%s]: mbox cmd 0x%x register fail\n", TAG, MBX_CMD_GET_RTC);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_SET_RTC, xMboxSetRTC, 0);
+	xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL,
+			MBX_CMD_GET_RTC, xMboxGetRTC, 1);
 }
 
 #ifndef configVRTC_DISABLE_ALARM

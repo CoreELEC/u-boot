@@ -196,7 +196,7 @@ static inline void MbWrite(uint32_t to, void *from, long count)
 	PRINT_DBG("vMbWrite Count: 0x%x, len: 0x%x\n", count, len);
 	while (len > 0) {
 		aml_writel32(p[i], to + (4 * i));
-		PRINT_DBG("vMbwrite reg: 0x%x\n", REG32(to + 4 * i + 0x800));
+		PRINT_DBG("write: 0x%x\n", REG32(to + 4 * i + 0x800));
 		len--;
 		i++;
 	}
@@ -211,7 +211,7 @@ static inline void MbRead(void *to, uint32_t from, long count)
 	PRINT_DBG("vMbRead Count:0x%x, len: 0x%x\n", count, len);
 	while (len > 0) {
 		p[i] = aml_readl32(from + (4 * i));
-		PRINT_DBG("vMbread p: 0x%x\n", p[i]);
+		PRINT_DBG("read: 0x%x\n", p[i]);
 		len--;
 		i++;
 	}
@@ -240,7 +240,7 @@ static inline void vGetPayload(uint32_t addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("get payload: addr:0x%x\n", addr);
+	PRINT_DBG("%s addr:0x%x\n", __func__, addr);
 	if (data != NULL)
 		MbRead(data, addr, size);
 }
@@ -249,7 +249,7 @@ static inline void vBuildPayload(uint32_t addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("%s: addr:0x%x\n", __func__, addr);
+	PRINT_DBG("%s addr:0x%x\n", __func__, addr);
 	if (data != NULL)
 		MbWrite(addr, data, size);
 }
@@ -258,7 +258,7 @@ static inline void vReBuildPayload(uint32_t addr, void *data, size_t size)
 {
 	VALID_BUFFER_SIZE(size);
 
-	PRINT_DBG("vBuildPayload: addr:0x%x\n", addr);
+	PRINT_DBG("%s addr:0x%x\n", __func__, addr);
 	if (data != NULL) {
 		MbWrite(addr, 0, MAILBOX_BUFFER_SIZE);
 		MbWrite(addr, data, size);

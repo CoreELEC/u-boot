@@ -317,7 +317,6 @@ uint32_t vIRMailboxEnable(void)
 						    MBX_CMD_GET_IR_INFO,
 						    prvIRGetInfo, 1);
 	if (ret == MBOX_CALL_MAX) {
-		IRError("mailbox cmd 0x%x register fail\n");
 		return ERR_IR(DRV_ERROR_UNSUPPORTED);
 	}
 	return 0;

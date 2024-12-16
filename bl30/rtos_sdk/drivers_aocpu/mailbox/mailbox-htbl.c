@@ -11,8 +11,9 @@
 
 #include "mailbox-htbl.h"
 
-#define PRINT(...) //printf(__VA_ARGS__)
-#define PRINT_ERR(...) printf(__VA_ARGS__)
+#define PRINT(...)       //printf(__VA_ARGS__)
+#define PRINT_DEBUG(...) //printf(__VA_ARGS__)
+#define PRINT_ERR(...)     printf(__VA_ARGS__)
 
 struct entry {
 	uint32_t cmd;
@@ -82,7 +83,7 @@ uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, handler_t handler)
 
 	for (i = 0; i != tabLen; i++) {
 		if (p[i].cmd == cmd && p[i].handler != NULL) {
-			PRINT_ERR("FATAL ERROR: reg repeat cmd=%lx handler=%p\n", cmd, handler);
+			PRINT_ERR("Err: reg repeat cmd=%lx handler=%p\n", cmd, handler);
 			for (;;)
 				;
 		}
@@ -90,7 +91,7 @@ uint32_t mailbox_htbl_reg(void *pHTbl, uint32_t cmd, handler_t handler)
 			p[i].cmd = cmd;
 			p[i].handler = handler;
 			p[i].needFdBak = 0;
-			PRINT_ERR("AOCPU reg cmd=%lx handler=%p\n", cmd, handler);
+			PRINT_DEBUG("reg cmd=%lx handler=%p\n", cmd, handler);
 			return i;
 		}
 	}
@@ -106,7 +107,7 @@ uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd, handler_t handler,
 
 	for (i = 0; i != tabLen; i++) {
 		if (p[i].cmd == cmd && p[i].handler != NULL) {
-			PRINT_ERR("FATAL ERROR: reg repeat cmd=%lx handler=%p\n", cmd, handler);
+			PRINT_ERR("Err: reg repeat cmd=%lx handler=%p\n", cmd, handler);
 			for (;;)
 				;
 		}
@@ -114,7 +115,7 @@ uint32_t mailbox_htbl_reg_feedback(void *pHTbl, uint32_t cmd, handler_t handler,
 			p[i].cmd = cmd;
 			p[i].handler = handler;
 			p[i].needFdBak = needFdBak;
-			PRINT("reg idx=%ld cmd=%lx handler=%p\n", i, cmd, handler);
+			PRINT_DEBUG("reg cmd=%lx handler=%p\n", cmd, handler);
 			return i;
 		}
 	}
@@ -129,7 +130,7 @@ uint32_t mailbox_htbl_unreg(void *pHTbl, uint32_t cmd)
 
 	for (i = 0; i != tabLen; i++) {
 		if (p[i].cmd == cmd) {
-			PRINT("unreg cmd=%lx handler=%p\n", cmd, p[i].handler);
+			PRINT_DEBUG("unreg cmd=%lx handler=%p\n", cmd, p[i].handler);
 			p[i].cmd = 0;
 			p[i].handler = NULL;
 			p[i].needFdBak = 0;
@@ -141,16 +142,14 @@ uint32_t mailbox_htbl_unreg(void *pHTbl, uint32_t cmd)
 
 uint32_t mailbox_htbl_invokeCmd(void *pHTbl, uint32_t cmd, void *arg)
 {
-	PRINT("AOCPU search in cmd handler table pHTbl=%p cmd=%lx arg=%p\n", pHTbl, cmd, arg);
 	struct entry *p = pHTbl;
 	uint32_t i;
 	uint32_t tabLen = p[0].tabLen;
 
 	for (i = 0; i != tabLen; i++) {
-		PRINT("AOCPU input_cmd=%x i=%ld cmd=%lx\n", cmd, i, p[i].cmd);
 		if (p[i].cmd == cmd) {
-			PRINT("AOCPU idx=%ld cmd=%lx handler=%p arg=%p\n", i, p[i].cmd,
-			      p[i].handler, arg);
+			PRINT_DEBUG("AOCPU idx=%ld cmd=%lx handler=%p arg=%p\n", i, p[i].cmd,
+					p[i].handler, arg);
 			if (p[i].handler == NULL)
 				return tabLen;
 			p[i].handler(arg);

@@ -76,17 +76,13 @@ static int vRegisterRpcCallBack(void)
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_RPCUINTREE_TEST,
 						    (void *)xMboxUintReeTestCase, 1);
-	if (ret) {
-		PRINT("[%s]: mbox cmd 0x%x register fail\n", MBTAG, MBX_CMD_RPCUINTREE_TEST);
+	if (ret)
 		return ERR_MBOX(ENOSPC);
-	}
 
 	ret = xInstallRemoteMessageCallbackFeedBack(AOTEE_CHANNEL, MBX_CMD_RPCUINTTEE_TEST,
 						    (void *)xMboxUintTeeTestCase, 0);
-	if (ret) {
-		PRINT("[%s]: mbox cmd 0x%x register fail\n", MBTAG, MBX_CMD_RPCUINTTEE_TEST);
+	if (ret)
 		return ERR_MBOX(ENOSPC);
-	}
 
 	return 0;
 }

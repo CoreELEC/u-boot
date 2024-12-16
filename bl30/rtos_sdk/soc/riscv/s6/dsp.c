@@ -23,14 +23,10 @@ static void *xMboxVadWakeup(void *msg)
 
 void vDSPVadWakeupInit(void)
 {
-	int ret;
-
-	ret = xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL,
-						    MBX_CMD_VAD_AWE_WAKEUP,
-						    xMboxVadWakeup,
-						    1);
-	if (ret == MBOX_CALL_MAX)
-		printf("mbox cmd 0x%x register fail\n", MBX_CMD_VAD_AWE_WAKEUP);
+	xInstallRemoteMessageCallbackFeedBack(AODSPA_CHANNEL,
+					      MBX_CMD_VAD_AWE_WAKEUP,
+					      xMboxVadWakeup,
+					      1);
 }
 
 void vDSPVadWakeupDeinit(void)

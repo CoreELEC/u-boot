@@ -22,11 +22,18 @@
 #endif
 
 #ifndef INFO
-#define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
+#define INFO(fmt, args...) printf(fmt "\n", ##args)
 #endif
 
 #ifndef DBG
-#define DBG(fmt, args...) {if (DBG_IO) {printf("[%s] " fmt "\n", __func__, ##args);}}
+
+#define DBG(fmt, args...) \
+do { \
+	if (DBG_IO) { \
+		printf(fmt "\n", ##args); \
+	} \
+} while (0)
+
 #endif
 
 #define ONE_TICK_MS (1000 / configTICK_RATE_HZ)

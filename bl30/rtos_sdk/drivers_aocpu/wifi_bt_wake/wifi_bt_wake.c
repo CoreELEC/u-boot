@@ -29,7 +29,7 @@
 #endif
 
 #ifndef INFO
-#define INFO(fmt, args...) printf("[%s] " fmt "\n", __func__, ##args)
+#define INFO(fmt, args...) printf(fmt "\n", ##args)
 #endif
 
 #ifndef DBG
@@ -37,7 +37,7 @@
 #define DBG(fmt, args...) \
 do { \
 	if (DBG_IO) { \
-		printf("[%s] " fmt "\n", __func__, ##args); \
+		printf(fmt "\n", ##args); \
 	} \
 } while (0)
 

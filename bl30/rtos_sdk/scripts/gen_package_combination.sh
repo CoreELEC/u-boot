@@ -61,15 +61,22 @@ fi
 if [ ! -s "$PACKAGE_COMBINATION" ] || [ $PACKAGE_COMBINATION -ot $PACKAGE_COMBINATION_INPUT ]; then
 	: >$PACKAGE_COMBINATION
 	while IFS= read -r LINE; do
-		ARRY=($(echo $LINE | tr ' ' ' '))
+		valid_line=true
+		read -a ARRY <<< "$LINE"
 		for ((loop = 0; loop < ${#ARRY[@]}; loop += 4)); do
 			arch=${ARRY[loop]}
 			soc=${ARRY[loop + 1]}
 			board=${ARRY[loop + 2]}
 			product=${ARRY[loop + 3]}
 			check_package_combination $arch $soc $board $product
-			[ "$?" -ne 0 ] && echo "package_combination is error!!!" && exit 1
+			if [ $? -ne 0 ]; then
+                valid_line=false
+                break
+            fi
 		done
+        if [ "$valid_line" = false ]; then
+            continue
+        fi
 		echo $LINE >>$PACKAGE_COMBINATION
 	done <$PACKAGE_COMBINATION_INPUT
 fi

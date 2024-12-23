@@ -9,7 +9,7 @@
 #include <ddr_timing.c>
 
 /* board clk defines */
-#define CPU_CLK                                 2004
+#define CPU_CLK                                 2508
 
 /* board vmin_value defines */
 #define VMIN_FF_VALUE                           670
@@ -37,68 +37,64 @@ __attribute__ ((section(".clk_param"))) = {
 #define VCCK_VAL                                AML_VCCK_INIT_VOLTAGE
 #define VDDEE_VAL                               AML_VDDEE_INIT_VOLTAGE
 /* VCCK PWM table */
-#if   (VCCK_VAL == 980)
-#define VCCK_VAL_REG    0x00003e8
-#elif (VCCK_VAL == 970)
-#define VCCK_VAL_REG    0x02003c6
-#elif (VCCK_VAL == 960)
-#define VCCK_VAL_REG    0x04103a5
-#elif (VCCK_VAL == 950)
-#define VCCK_VAL_REG    0x0620384
-#elif (VCCK_VAL == 940)
-#define VCCK_VAL_REG    0x0830363
-#elif (VCCK_VAL == 930)
-#define VCCK_VAL_REG    0x0a40342
-#elif (VCCK_VAL == 920)
-#define VCCK_VAL_REG    0x0c50321
-#elif (VCCK_VAL == 910)
-#define VCCK_VAL_REG    0x0e60300
-#elif (VCCK_VAL == 900)
-#define VCCK_VAL_REG    0x10702df
-#elif (VCCK_VAL == 890)
-#define VCCK_VAL_REG    0x12802be
-#elif (VCCK_VAL == 880)
-#define VCCK_VAL_REG    0x149029d
-#elif (VCCK_VAL == 870)
-#define VCCK_VAL_REG    0x16a027c
-#elif (VCCK_VAL == 860)
-#define VCCK_VAL_REG    0x18b025b
-#elif (VCCK_VAL == 850)
-#define VCCK_VAL_REG    0x1ac023a
-#elif (VCCK_VAL == 840)
-#define VCCK_VAL_REG    0x1cd0219
-#elif (VCCK_VAL == 830)
-#define VCCK_VAL_REG    0x1ee01f8
-#elif (VCCK_VAL == 820)
-#define VCCK_VAL_REG    0x21901cd
-#elif (VCCK_VAL == 810)
-#define VCCK_VAL_REG    0x23a01ac
-#elif (VCCK_VAL == 800)
-#define VCCK_VAL_REG    0x25b018b
-#elif (VCCK_VAL == 790)
-#define VCCK_VAL_REG    0x27c016a
-#elif (VCCK_VAL == 780)
-#define VCCK_VAL_REG    0x29d0149
-#elif (VCCK_VAL == 770)
-#define VCCK_VAL_REG    0x2be0128
-#elif (VCCK_VAL == 760)
-#define VCCK_VAL_REG    0x2df0107
-#elif (VCCK_VAL == 750)
-#define VCCK_VAL_REG    0x30000e6
-#elif (VCCK_VAL == 740)
-#define VCCK_VAL_REG    0x32100c5
-#elif (VCCK_VAL == 730)
-#define VCCK_VAL_REG    0x34200a4
-#elif (VCCK_VAL == 720)
-#define VCCK_VAL_REG    0x3630083
-#elif (VCCK_VAL == 710)
-#define VCCK_VAL_REG    0x3840062
-#elif (VCCK_VAL == 700)
-#define VCCK_VAL_REG    0x3a50041
-#elif (VCCK_VAL == 690)
-#define VCCK_VAL_REG    0x3c60020
-#elif (VCCK_VAL == 680)
-#define VCCK_VAL_REG    0x3e80000
+#if (VCCK_VAL == 969)
+#define VCCK_VAL_REG  0x0000001c
+#elif (VCCK_VAL == 959)
+#define VCCK_VAL_REG  0x0001001b
+#elif (VCCK_VAL == 949)
+#define VCCK_VAL_REG  0x0002001a
+#elif (VCCK_VAL == 939)
+#define VCCK_VAL_REG  0x00030019
+#elif (VCCK_VAL == 929)
+#define VCCK_VAL_REG  0x00040018
+#elif (VCCK_VAL == 919)
+#define VCCK_VAL_REG  0x00050017
+#elif (VCCK_VAL == 909)
+#define VCCK_VAL_REG  0x00060016
+#elif (VCCK_VAL == 899)
+#define VCCK_VAL_REG  0x00070015
+#elif (VCCK_VAL == 889)
+#define VCCK_VAL_REG  0x00080014
+#elif (VCCK_VAL == 879)
+#define VCCK_VAL_REG  0x00090013
+#elif (VCCK_VAL == 869)
+#define VCCK_VAL_REG  0x000a0012
+#elif (VCCK_VAL == 859)
+#define VCCK_VAL_REG  0x000b0011
+#elif (VCCK_VAL == 849)
+#define VCCK_VAL_REG  0x000c0010
+#elif (VCCK_VAL == 839)
+#define VCCK_VAL_REG  0x000d000f
+#elif (VCCK_VAL == 829)
+#define VCCK_VAL_REG  0x000e000e
+#elif (VCCK_VAL == 819)
+#define VCCK_VAL_REG  0x000f000d
+#elif (VCCK_VAL == 809)
+#define VCCK_VAL_REG  0x0010000c
+#elif (VCCK_VAL == 799)
+#define VCCK_VAL_REG  0x0011000b
+#elif (VCCK_VAL == 789)
+#define VCCK_VAL_REG  0x0012000a
+#elif (VCCK_VAL == 779)
+#define VCCK_VAL_REG  0x00130009
+#elif (VCCK_VAL == 769)
+#define VCCK_VAL_REG  0x00140008
+#elif (VCCK_VAL == 759)
+#define VCCK_VAL_REG  0x00150007
+#elif (VCCK_VAL == 749)
+#define VCCK_VAL_REG  0x00160006
+#elif (VCCK_VAL == 739)
+#define VCCK_VAL_REG  0x00170005
+#elif (VCCK_VAL == 729)
+#define VCCK_VAL_REG  0x00180004
+#elif (VCCK_VAL == 719)
+#define VCCK_VAL_REG  0x00190003
+#elif (VCCK_VAL == 709)
+#define VCCK_VAL_REG  0x001a0002
+#elif (VCCK_VAL == 699)
+#define VCCK_VAL_REG  0x001b0001
+#elif (VCCK_VAL == 689)
+#define VCCK_VAL_REG  0x001c0000
 #else
 #error "VCCK val out of range\n"
 #endif
@@ -164,9 +160,9 @@ __attribute__ ((section(".misc_param"))) = {
 	{ PWM_MISC_REG_H,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
 	{ PWM_MISC_REG_J,	   (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
 	/* set pwm h clock rate to 500M, enable them */
-	/* set pwm j clock rate to 500M, enable them */
+	/* set pwm j clock rate to fdiv3, enable them */
 	{ CLKCTRL_PWM_CLK_GH_CTRL, (0x1 << 24), 0xffffffff, 0, 0, 0 },
-	{ CLKCTRL_PWM_CLK_IJ_CTRL, (0x1 << 24) | (0x2 << 25), 0xffffffff, 0, 0, 0 },
+	{ CLKCTRL_PWM_CLK_IJ_CTRL, (0x1 << 24), 0xffffffff, 0, 0, 0 },
 	/* set GPIOE_0 GPIOE_1 drive strength to 3 */
 	{ PADCTRL_GPIOE_DS,	   0xf,		  0xf,	      0, 0, 0 },
 	/* set GPIOE_0 GPIOE_1 mux to pwmh pwmj */

@@ -159,7 +159,6 @@ fi
 ${BASEDIR_TOP}/gen_all_device_key.sh \
     --template-dir "$template_dir" \
     --project "$part" \
-	--device-soc "$device_soc" \
     --rsa-size "$size" \
     --out-dir "${stbm_key_dir}/outdir" \
     --key-dir "${stbm_key_dir}/keydir"
@@ -167,7 +166,6 @@ ${BASEDIR_TOP}/gen_all_device_key.sh \
 ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
     --template-dir "$template_dir" \
     --project "$part" \
-	--device-soc "$device_soc" \
     --arb-config "$arb_config" \
     --out-dir "${stbm_key_dir}/outdir" \
     --key-dir "${stbm_key_dir}/keydir"

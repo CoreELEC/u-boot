@@ -142,7 +142,6 @@ fi
 ${BASEDIR_TOP}/export_signing_keys_and_sign_template.sh \
     --template-dir "$template_dir" \
     --project "$part" \
-	--device-soc "$device_soc" \
     --arb-config "$arb_config" \
     --out-dir "${stbm_key_dir}/outdir" \
     --key-dir "${stbm_key_dir}/keydir"

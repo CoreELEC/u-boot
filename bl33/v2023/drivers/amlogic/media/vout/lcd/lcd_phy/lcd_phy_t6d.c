@@ -227,8 +227,10 @@ static void lcd_phy_cntl_set(struct aml_lcd_drv_s *pdrv, int status)
 		if (phy_cfg->lane_valid & (1 << i)) {
 			bit = i & 0x1 ? 16 : 0;
 			chreg = reg_data;
-			chdig = 1 << 10 |
-				(is_mlvds ? 0xf : 0) << 2; //pn swap;
+			if (is_mlvds)
+				chdig = 0xf << 2;  //pn swap
+			else
+				chdig = 1 << 10;   //clk inv
 			if (status) {
 				chdig |= 1 << 15;
 				chreg |= (phy->lane[i].preem & 0xf) << 12;

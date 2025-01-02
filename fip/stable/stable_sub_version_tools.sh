@@ -30,7 +30,7 @@ else
 fi
 
 if [[ -z "${ANDROID_TARGET_BRANCH}" ]]; then
-	ANDROID_TARGET_BRANCH="u-tv-dev"
+	ANDROID_TARGET_BRANCH="openlinux/ott/u-amlogic"
 else
 	echo "External settings env: ANDROID_TARGET_BRANCH=${ANDROID_TARGET_BRANCH}"
 fi
@@ -56,7 +56,7 @@ BL2_S7D_BRANCH="projects/openlinux/bl-s7d-${STABLE_MAJOR_VERSION}"
 BL2_S6_BRANCH="projects/openlinux/bl-s6-${STABLE_MAJOR_VERSION}"
 
 # push uboot.bin to android dir
-declare -a OPENLINUX_BOARD_TYPE=("ohm" "oppen" "tyson" "t7_an400" "qurra" "ross" "raman")
+declare -a OPENLINUX_BOARD_TYPE=("ohm" "oppen" "tyson" "bluebell" "qurra" "ross" "raman")
 declare -a OPENLINUX_BOARD_BRANCH=("${BL2_SC2_BRANCH}" "${BL2_S4_BRANCH}" "${BL2_S5_BRANCH}" "${BL2_T7_BRANCH}" "${BL2_S7_BRANCH}" "${BL2_S7D_BRANCH}" "${BL2_S6_BRANCH}")
 declare -a OPENLINUX_BOARD_CONFIG=("sc2_ah212" "s4_ap222" "s5_ax201" "t7_an400_lpddr4x" "s7_bh201" "s7d_bm201" "s6_bl201")
 ANDROID_DEV_DIR="device/amlogic"

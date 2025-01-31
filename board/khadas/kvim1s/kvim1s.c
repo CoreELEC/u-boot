@@ -166,8 +166,6 @@ int board_late_init(void)
 #ifdef CONFIG_AML_CVBS
 	cvbs_init();
 #endif
-	emmc_quirks();
-
 	aml_board_late_init_tail(NULL);
 	return 0;
 }

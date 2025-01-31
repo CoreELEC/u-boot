@@ -272,7 +272,6 @@ int board_late_init(void)
 	} else {
 		env_set("cpu_id", "1234567890");
 	}
-	emmc_quirks();
 	return 0;
 }
 

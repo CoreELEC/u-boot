@@ -18,9 +18,12 @@
 #include <malloc.h>
 #include <splash.h>
 #include <amlogic/video.h>
+#include <gzip.h>
 #ifdef CONFIG_ZAPPER_IRDETO_BOOT
 #include <amlogic/zapper_boot.h>
 #endif
+
+#define CONFIG_SYS_VIDEO_LOGO_MAX_SIZE CONFIG_VIDEO_LOGO_MAX_SIZE
 
 extern int osd_enabled;
 
@@ -67,7 +70,7 @@ bmp_image_t *gunzip_bmp(unsigned long addr, unsigned long *lenp,
 	bmp = dst;
 
 	/* align to 32-bit-aligned-address + 2 */
-	bmp = (bmp_image_t *)((((unsigned int)dst + 1) & ~3) + 2);
+	bmp = (bmp_image_t *)((((unsigned long)dst + 1) & ~3) + 2);
 
 	if (gunzip(bmp, CONFIG_SYS_VIDEO_LOGO_MAX_SIZE, (uchar *)addr, &len) != 0) {
 		free(dst);

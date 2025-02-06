@@ -269,7 +269,7 @@ function build() {
 	# IMPORTANT!!!!
 	# don't change sequence of following function call
 	# *************************************************
-	clean
+#	clean
 
 	# pre-build, get .config defines
 	if [ ! $BOARD_COMPILE_HDMITX_ONLY ]; then
@@ -322,7 +322,7 @@ function build() {
 		CONFIG_TESTKEY=null
 	fi
 
-	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY} ${CONFIG_AB_UPDATE} ${CONFIG_AML_GPT}
+#	build_uboot ${CONFIG_SYSTEM_AS_ROOT} ${CONFIG_AVB2} ${CONFIG_CMD_BOOTCTOL_VAB} ${CONFIG_FASTBOOT_WRITING_CMD} ${CONFIG_AVB2_RECOVERY} ${CONFIG_TESTKEY} ${CONFIG_AB_UPDATE} ${CONFIG_AML_GPT}
 
 	# source other configs after uboot compile
 	init_variable_late

@@ -21,14 +21,14 @@ function pre_build_uboot() {
 	echo "$1"
 	SOCNAME=$1
 	echo "SOCNAME:${SOCNAME}"
-	make distclean # &> /dev/null
-	make $1'_config' # &> /dev/null
-	if [ $? != 0 ]
-	then
-		echo "Pre-build failed! exit!"
-		cd ${MAIN_FOLDER}
-		exit -1
-	fi
+#	make distclean # &> /dev/null
+#	make $1'_config' # &> /dev/null
+#	if [ $? != 0 ]
+#	then
+#		echo "Pre-build failed! exit!"
+#		cd ${MAIN_FOLDER}
+#		exit -1
+#	fi
 	cd ${MAIN_FOLDER}
 }
 

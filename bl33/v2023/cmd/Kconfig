@@ -2036,6 +2036,13 @@ config CMD_RTC
 	help
 	  Enable the 'rtc' command for low-level access to RTC devices.
 
+config CMD_SHOWLOGO
+        bool "initialize display and show hardkernel logo"
+        depends on VIDEO
+        select BMP_24BPP
+        select VIDEO_BMP_GZIP
+        default n
+
 config CMD_TIME
 	bool "time"
 	help

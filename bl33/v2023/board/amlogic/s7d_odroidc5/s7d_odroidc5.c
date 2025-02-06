@@ -216,6 +216,7 @@ int board_late_init(void)
 #ifdef CONFIG_AML_VPP
 	vpp_init();
 #endif
+	run_command("showlogo", 0);
 
 	memset(chipid, 0, 16);
 	env_set("cpu_id", "1234567890");

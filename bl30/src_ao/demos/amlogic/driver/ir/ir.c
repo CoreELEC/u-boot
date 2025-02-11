@@ -38,7 +38,7 @@
 
 #include "ir_drv.h"
 
-static uint8_t ucIsDebugEnable = 1;
+static uint8_t ucIsDebugEnable = 0;
 static IRPowerKey_t prvKeyCodeList[MAX_KEY_NUM] = {};
 static uint32_t key_cnt;
 

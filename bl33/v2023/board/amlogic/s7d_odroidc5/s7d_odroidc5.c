@@ -45,6 +45,7 @@
 #ifdef CONFIG_CMD_SND
 #include "amlogic/auge_sound.h"
 #endif
+#include <asm/amlogic/arch/efuse.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 extern int cc_statue, bc_status;
@@ -154,6 +155,42 @@ void set_usb_status(void) {
 		break;
 	}
 	return;
+}
+
+int eth_get_efuse_mac(struct udevice *dev) {
+	char buf[32], str[37];
+	loff_t offset = 0;
+	int ret, i, n = 0;
+
+	memset(buf, 0, sizeof(buf));
+	ret = efuse_read_usr(buf, 32, (loff_t *)&offset);
+	if (ret != 32) {
+		printf("ERROR: efuse read user data fail!\n");
+		return -1;
+	}
+	for (i = 0; i < 16; ++i) {
+		if (buf[i + 16] != 0) {
+			n = 16;
+			break;
+		}
+	}
+
+	sprintf(str, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+		buf[n + 0], buf[n + 1], buf[n + 2], buf[n + 3],
+		buf[n + 4], buf[n + 5], buf[n + 6], buf[n + 7],
+		buf[n + 8], buf[n + 9], buf[n + 10], buf[n + 11],
+		buf[n + 12], buf[n + 13], buf[n + 14], buf[n + 15]
+	);
+	printf("board id: %s\n", str);
+	env_set("serial#", str);
+
+	sprintf(str, "%02x:%02x:%02x:%02x:%02x:%02x",
+		buf[n + 10], buf[n + 11], buf[n + 12], buf[n + 13], buf[n + 14], buf[n + 15]
+	);
+	printf("mac address: %s\n", str);
+	env_set("ethaddr", str);
+
+	return 0;
 }
 
 int board_init(void)

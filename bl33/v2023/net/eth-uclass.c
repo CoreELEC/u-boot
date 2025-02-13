@@ -535,7 +535,7 @@ static bool eth_dev_get_mac_address(struct udevice *dev, u8 mac[ARP_HLEN])
 #endif
 }
 #if defined(CONFIG_AMLOGIC_ETH)
-static int eth_get_efuse_mac(struct udevice *dev)
+__weak int eth_get_efuse_mac(struct udevice *dev)
 {
 #ifndef CONFIG_UNIFY_KEY_MANAGE
 	debug("\nWarning: %s MAC addresses is not from dtb\n",

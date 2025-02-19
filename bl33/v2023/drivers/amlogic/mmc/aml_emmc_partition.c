@@ -275,6 +275,13 @@ int fill_ept_by_gpt(struct mmc *mmc)
 		return 1;
 	}
 
+#ifdef CONFIG_S7D_ODROIDC5
+	if (resize_gpt(mmc)) {
+		ret = 1;
+		return ret;
+	}
+#endif
+
 	ALLOC_CACHE_ALIGN_BUFFER_PAD(gpt_header, gpt_head, 1, dev_desc->blksz);
 
 	if (is_gpt_valid(dev_desc, (dev_desc->lba - 1), gpt_head, &gpt_pte) != 1) {
@@ -291,10 +298,12 @@ int fill_ept_by_gpt(struct mmc *mmc)
 			return ret;
 	}
 
+#ifndef CONFIG_S7D_ODROIDC5
 	if (resize_gpt(mmc)) {
 		ret = 1;
 		goto _out;
 	}
+#endif
 
 	for (i = 0; i < le32_to_cpu(gpt_head->num_partition_entries); i++) {
 		if (!is_pte_valid(&gpt_pte[i]))
@@ -340,7 +349,9 @@ int fill_ept_by_gpt(struct mmc *mmc)
 		}
 	}
 	ept->count = i;
+#ifndef CONFIG_S7D_ODROIDC5
 _out:
+#endif
 	free(gpt_pte);
 	return ret;
 }

@@ -108,6 +108,15 @@
 		"\0"\
 
 #ifndef CONFIG_PXP_DDR
+#define CONFIG_PREBOOT  \
+		"run bcb_cmd; "\
+		"run upgrade_check;"\
+		"run init_display;"\
+		"run storeargs;"\
+		"run upgrade_key;" \
+		"bcb uboot-command;"\
+		"run switch_bootmode;"
+#else
 #define CONFIG_PREBOOT  "echo preboot"
 #endif
 //#define CONFIG_ENV_SIZE   (64 * 1024)

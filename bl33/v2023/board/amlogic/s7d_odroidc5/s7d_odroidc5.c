@@ -118,45 +118,6 @@ void board_init_mem(void)
 	}
 }
 
-//read the power status and set env.
-void set_usb_status(void) {
-	print_aml_cc_ufp_current_type();
-	switch (cc_statue) {
-	case 0:
-		printf("usb power supply is detach\n");
-		//env_set("usb_status", "0.5a@5v");
-		break;
-	case 1:
-		printf("usb power supply is 0.5a@5v\n");
-		env_set("usb_status", "0.5a@5v");
-		break;
-	case 2:
-		printf("usb power supply is 1.5a@5v\n");
-		env_set("usb_status", "1.5a@5v");
-		break;
-	case 3:
-		printf("usb power supply is 3a@5v\n");
-		env_set("usb_status", "3a@5v");
-		break;
-	case 4:
-		printf("CC_STATUS_TYPEA_SDP\n");
-		env_set("usb_status", "0.5a@5v");
-		break;
-	case 5:
-		printf("CC_STATUS_TYPEA_DCP\n");
-		env_set("usb_status", "1.5a@5v");
-		break;
-	case 6:
-		printf("CC_STATUS_TYPEA_CDP\n");
-		env_set("usb_status", "3a@5v");
-		break;
-	default:
-		printf("error status %s:%d\n", __func__, __LINE__);
-		break;
-	}
-	return;
-}
-
 int eth_get_efuse_mac(struct udevice *dev) {
 	char buf[32], str[37];
 	loff_t offset = 0;
@@ -257,7 +218,6 @@ int board_late_init(void)
 #ifdef CONFIG_AML_VPP
 	vpp_init();
 #endif
-	set_usb_status();
 	aml_board_late_init_tail(NULL);
 	return 0;
 }

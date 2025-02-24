@@ -204,6 +204,8 @@ int board_init(void)
 
 int board_late_init(void)
 {
+	unsigned char chipid[16];
+
 	board_init_mem();
 
 	get_stick_reboot_flag_mbx();
@@ -214,7 +216,29 @@ int board_late_init(void)
 #ifdef CONFIG_AML_VPP
 	vpp_init();
 #endif
-	aml_board_late_init_tail(NULL);
+
+	memset(chipid, 0, 16);
+	env_set("cpu_id", "1234567890");
+	if (get_chip_id(chipid, 16) != -1) {
+		char chipid_str[32];
+		int i, j;
+		char buf_tmp[4];
+
+		memset(chipid_str, 0, 32);
+
+		char *buff = &chipid_str[0];
+
+		for (i = 0, j = 0; i < 12; ++i) {
+			sprintf(&buf_tmp[0], "%02x", chipid[15 - i]);
+			if (strcmp(buf_tmp, "00") != 0) {
+				sprintf(buff + j, "%02x", chipid[15 - i]);
+				j = j + 2;
+			}
+		}
+		env_set("cpu_id", chipid_str);
+		printf("buff: %s\n", buff);
+	}
+
 	return 0;
 }
 

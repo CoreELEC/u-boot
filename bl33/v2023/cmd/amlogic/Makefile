@@ -56,6 +56,7 @@ endif
 endif
 
 obj-$(CONFIG_AML_LCD) += cmd_lcd.o
+ifndef CONFIG_S7D_ODROIDC5
 ifdef CONFIG_CMD_INI
 obj-y += ini/model.o
 obj-y += ini/model_lcd_tcon.o
@@ -68,6 +69,7 @@ obj-y += ini/ini_io.o
 obj-y += ini/ini_handler.o
 obj-y += ini/ini_core.o
 obj-y += ini/ini_log.o
+endif
 endif
 
 ifdef CONFIG_NASC_NAGRA_TIER_1

@@ -2749,7 +2749,6 @@ config MMC_SPEED_MODE_SET
 
 config CMD_INI
         bool "support ini command"
-        depends on UNIFY_KEY_MANAGE && SECURE_STORAGE
         default n
         help
           support ini command

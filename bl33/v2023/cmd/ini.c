@@ -255,6 +255,7 @@ U_BOOT_CMD(
 	"section [[file-address] file-size]"
 );
 
+#ifndef CONFIG_S7D_ODROIDC5
 static int do_ini_model_list(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	int ret;
@@ -293,3 +294,4 @@ U_BOOT_CMD(
 	"parse ini file by env model_name",
 	" "
 );
+#endif

@@ -611,12 +611,14 @@ static void flash(char *cmd_parameter, char *response)
 		char partname[32] = {0};
 
 #ifdef CONFIG_MESON_S7D
+#ifdef CONFIG_AML_V3_FACTORY_BURN
 		ret = update_boot_hdr_4_s7d_reva(fastboot_buf_addr, image_size, 0);
 		if (ret) {
 			printf("Failed to write s7d reva boot0\n");
 			fastboot_fail("Failed to write s7d reva boot0", response);
 			return;
 		}
+#endif
 #endif//#ifdef CONFIG_MESON_S7D
 
 		slot_name = env_get("active_slot");
@@ -659,10 +661,12 @@ static void flash(char *cmd_parameter, char *response)
 			if (erase_flag == 1) {
 				printf("partition changes, erase emmc\n");
 				//run_command("store erase.chip 0;", 0);
+#ifdef CONFIG_AML_V3_FACTORY_BURN
 				if (usb_burn_erase_data(0x3)) {
 					printf("partition erase failed!\n");
 					return;
 				}
+#endif
 			}
 
 			if (write_mbr_and_gpt_partitions(dev_desc, fastboot_buf_addr + 0x3DFE00)) {
@@ -687,10 +691,12 @@ static void flash(char *cmd_parameter, char *response)
 			if (mem_addr && erase_flag == 1) {
 				printf("partition changes, erase emmc\n");
 				//run_command("store erase.chip 0;", 0);
+#ifdef CONFIG_AML_V3_FACTORY_BURN
 				if (usb_burn_erase_data(0x3)) {
 					printf("partition erase failed!\n");
 					return;
 				}
+#endif
 				printf("write _aml_dtb\n");
 				addr = (void *)simple_strtoul(mem_addr, NULL, 16);
 				ret = dtb_write(addr);
@@ -810,12 +816,14 @@ static void flash(char *cmd_parameter, char *response)
 	} else if (!strcmp(cmd_parameter, "bootloader-boot0") ||
 		!strcmp(cmd_parameter, "bootloader-boot1")) {
 #ifdef CONFIG_MESON_S7D
+#ifdef CONFIG_AML_V3_FACTORY_BURN
 		ret = update_boot_hdr_4_s7d_reva(fastboot_buf_addr, image_size, 0);
 		if (ret) {
 			printf("Failed to write s7d reva boot0\n");
 			fastboot_fail("Failed to write s7d reva boot0-1", response);
 			return;
 		}
+#endif
 #endif//#ifdef CONFIG_MESON_S7D
 		strlcpy(name, cmd_parameter, 31);
 	} else {

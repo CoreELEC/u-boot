@@ -204,12 +204,8 @@ int board_init(void)
 
 int board_late_init(void)
 {
-	printf("board late init\n");
-	env_set("defenv_para", "-c");
-	aml_board_late_init_front(NULL);
-#ifdef CONFIG_PXP_EMULATOR
-	return 0;
-#endif
+	board_init_mem();
+
 	get_stick_reboot_flag_mbx();
 
 #ifdef CONFIG_AML_VPU

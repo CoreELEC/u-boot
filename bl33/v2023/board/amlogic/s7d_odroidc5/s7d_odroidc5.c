@@ -42,9 +42,6 @@
 #ifdef CONFIG_AMLOGIC_AMFC
 #include <amlogic/amfc.h>
 #endif
-#ifdef CONFIG_CMD_SND
-#include "amlogic/auge_sound.h"
-#endif
 #include <asm/amlogic/arch/efuse.h>
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -77,31 +74,13 @@ int board_eth_init(bd_t *bis)
 	return 0;
 }
 
-int active_clk(void)
-{
-	struct udevice *clk = NULL;
-	int err;
-
-	err = uclass_get_device_by_name(UCLASS_CLK, "xtal-clk", &clk);
-	if (err) {
-		pr_err("Can't find xtal-clk clock (%d)\n", err);
-		return err;
-	}
-	err = uclass_get_device_by_name(UCLASS_CLK, "clock-controller@0", &clk);
-	if (err) {
-		pr_err("Can't find clock-controller@0 clock (%d)\n", err);
-		return err;
-	}
-
-	return 0;
-}
-
 #ifdef CONFIG_AML_HDMITX20
 static void hdmitx_set_hdmi_5v(void)
 {
 	/*Power on VCC_5V for HDMI_5V */
 }
 #endif
+
 void board_init_mem(void)
 {
 	/* config bootm low size, make sure whole dram/psram space can be used */
@@ -162,39 +141,16 @@ int board_init(void)
 	hdmitx21_init();
 #endif
 
-#if 0
-	run_command("startdsp 0 0x300a0000 0", 0);
-	printf("dsp start!\n");
-	while (1)
-		;
-#endif
-
 #if !defined(CONFIG_PXP_DDR)	//bypass below operations for pxp
 	aml_set_bootsequence(0);
-	//Please keep try usb boot first in board_init,
-	//as other init before usb may cause burning failure
-#if defined(CONFIG_AML_V3_FACTORY_BURN) && defined(CONFIG_AML_V3_USB_TOOl)
-	if ((readl(SYSCTRL_SEC_STICKY_REG2) != 0x1b8ec003) &&
-	    (readl(SYSCTRL_SEC_STICKY_REG2) != 0x1b8ec004)) {
-		aml_v3_factory_usb_burning(0, gd->bd);
-		//
-	}
-#endif //#if defined(CONFIG_AML_V3_FACTORY_BURN) && defined(CONFIG_AML_V3_USB_TOOl)
 
-#if 0
-	active_clk();
-#endif
 	run_command("gpio set GPIOH_7", 0);
 #ifdef CONFIG_AML_HDMITX20
 	hdmitx_set_hdmi_5v();
 	hdmitx_init();
 #endif
-#ifdef CONFIG_CMD_SND
-	/* pinmux HDMITX_HPD_IN: GPIOH_2,  */
-	update_bits(PADCTRL_PIN_MUX_REGB, 0xf << 8, 0x1 << 8);
-	earcrx_init(EARC_RX_ANA_V3);
-#endif
 #endif // #if !defined(CONFIG_PXP_DDR) //bypass below operations for pxp
+
 	pinctrl_devices_active(PIN_CONTROLLER_NUM);
 #ifdef CONFIG_AMLOGIC_AMFC
 	amfc_init();

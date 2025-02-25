@@ -49,6 +49,8 @@ extern int cc_statue, bc_status;
 
 void sys_led_init(void)
 {
+	run_command("gpio set GPIODV_5", 0);
+	run_command("gpio clear GPIODV_6", 0);
 }
 
 int serial_set_pin_port(unsigned long port_base)
@@ -136,6 +138,9 @@ int eth_get_efuse_mac(struct udevice *dev) {
 int board_init(void)
 {
 	printf("board init\n");
+
+	sys_led_init();
+
 #ifdef CONFIG_AML_HDMITX21
 	hdmitx21_chip_type_init(MESON_CPU_ID_S7D);
 	hdmitx21_init();

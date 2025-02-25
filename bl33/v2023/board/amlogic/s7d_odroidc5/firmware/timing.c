@@ -181,6 +181,17 @@ __attribute__ ((section(".misc_param"))) = {
 	/* set VDDCPU_EN to high */
 	{ PADCTRL_TESTN_OEN,       (0x0 << 0),	  (0x1 << 0), 0, 0, 0 },
 	{ PADCTRL_TESTN_O,         (0x1 << 0),	  (0x1 << 0), 0, 0, 0 },
+
+	// GPIO_DV 4:1 set MUX 0, disable JTAG
+	{ PADCTRL_PIN_MUX_REG2,      (0x0),    (0xFFFF0), 0, 0, 0 },
+
+	// SYS LED
+	{ PADCTRL_GPIODV_OEN,      (0x0 << 5),    (0x1 << 5), 0, 0, 0 },
+	{ PADCTRL_GPIODV_O,        (0x0 << 5),    (0x1 << 5), 0, 0, 0 },
+
+	// PWR LED
+	{ PADCTRL_GPIODV_OEN,      (0x0 << 6),    (0x1 << 6), 0, 0, 0 },
+	{ PADCTRL_GPIODV_O,        (0x0 << 6),    (0x1 << 6), 0, 0, 0 },
 };
 
 #define DEV_FIP_SIZE 0x300000

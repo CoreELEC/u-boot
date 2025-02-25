@@ -2397,7 +2397,7 @@
 // -----------------------------------------------
 #define PADCTRL_PIN_MUX_REG0                       ((0x0000  << 2) + 0xfe004000)
 #define PADCTRL_PIN_MUX_REG1                       ((0x0001  << 2) + 0xfe004000)
-//`define PADCTRL_PIN_MUX_REG2          8'h02
+#define PADCTRL_PIN_MUX_REG2                       ((0x0002  << 2) + 0xfe004000)
 #define PADCTRL_PIN_MUX_REG3                       ((0x0003  << 2) + 0xfe004000)
 #define PADCTRL_PIN_MUX_REG4                       ((0x0004  << 2) + 0xfe004000)
 #define PADCTRL_PIN_MUX_REG5                       ((0x0005  << 2) + 0xfe004000)
@@ -2483,6 +2483,14 @@
 #define PADCTRL_GPIOB_LOCK                         ((0x0095  << 2) + 0xfe004000)
 #define PADCTRL_GPIOB_PROT                         ((0x0096  << 2) + 0xfe004000)
 #define PADCTRL_GPIOB_DS                           ((0x0097  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_I                           ((0x00a0  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_O                           ((0x00a1  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_OEN                         ((0x00a2  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_PULL_EN                     ((0x00a3  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_PULL_UP                     ((0x00a4  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_LOCK                        ((0x00a5  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_PROT                        ((0x00a6  << 2) + 0xfe004000)
+#define PADCTRL_GPIODV_DS                          ((0x00a7  << 2) + 0xfe004000)
 //`define PADCTRL_GPIOA_I               8'hA0
 //`define PADCTRL_GPIOA_O               8'hA1
 //`define PADCTRL_GPIOA_OEN             8'hA2

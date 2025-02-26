@@ -53,13 +53,6 @@
 #define CONFIG_AML_AVB2_ANTIROLLBACK 1
 #define CONFIG_AVB_VERIFY 1
 
-/* Bootloader Control Block function
-   That is used for recovery and the bootloader to talk to each other
-*/
-#ifndef CONFIG_PXP_DDR
-#define CONFIG_BOOTLOADER_CONTROL_BLOCK
-#endif// #ifndef CONFIG_PXP_DDR
-
 /* args/envs */
 #define CONFIG_SYS_MAXARGS  64
 

@@ -762,6 +762,8 @@ config S7D_T232
 config S7D_ODROIDC5
 	bool "S7D_ODROIDC5"
 	select TARGET_S7D_ODROIDC5
+	select CMD_SHOWLOGO
+	select VIDEO
 	help
 		Select S7D Odroid-C5config
 endchoice

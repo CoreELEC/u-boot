@@ -222,7 +222,9 @@ enum hdmi_vic {
 	HDMI_217_10240x4320p120_64x27	= 217,
 	HDMI_218_4096x2160p100_256x135	= 218,
 	HDMI_219_4096x2160p120_256x135	= 219,
+#ifdef CONFIG_S7D_ODROIDC5
 	HDMI_250_1920x720p60_8x3	= 250,
+#endif
 	HDMI_CEA_VIC_END,
 
 	/*Vesa mode which dont have vic, we specify value for them also*/

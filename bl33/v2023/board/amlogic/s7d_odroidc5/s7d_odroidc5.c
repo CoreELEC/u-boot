@@ -246,3 +246,8 @@ void __attribute__((weak)) md5_wd(unsigned char *input, int len, unsigned char o
 				  unsigned int chunk_sz)
 {
 }
+
+int mmc_get_env_dev(void)
+{
+	return 1;
+}

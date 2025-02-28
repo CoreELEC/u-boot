@@ -39,6 +39,7 @@
 #endif
 #ifdef CONFIG_AML_HDMITX21
 #include <amlogic/media/vout/hdmitx21/hdmitx_module.h>
+#include <amlogic/media/vout/hdmitx21/hdmi_common.h>
 #endif
 #ifdef CONFIG_AMLOGIC_AMFC
 #include <amlogic/amfc.h>
@@ -47,6 +48,11 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 extern int cc_statue, bc_status;
+
+/*
+ * Internal function in 'drivers/amlogic/media/vout/hdmitx/hdmitx21/hdmi_param.c'
+ */
+extern const struct hdmi_timing *hdmitx21_gettiming_from_name(const char *name);
 
 void sys_led_init(void)
 {
@@ -223,9 +229,41 @@ int mach_cpu_init(void)
 	return 0;
 }
 
+static int odroid_fixup_display(void *blob, const char *default_mode)
+{
+	const char *mode = default_mode ? : "1080p60hz";
+	const char *property = "fbdev_sizes";
+	int bits_per_pixel = 32;	// FIXME: may or not
+	int err, nodeoffset;
+	struct hdmi_timing *timing;
+
+	timing	= (struct hdmi_timing*)hdmitx21_gettiming_from_name(mode);
+	if (!timing)
+		return -EINVAL;
+
+	err = fdt_check_header(blob);
+	if (err < 0)
+		return err;
+
+	nodeoffset = fdt_find_or_add_subnode(blob, 0, "drm-subsystem");
+	if (nodeoffset < 0)
+		return nodeoffset;
+
+	fdt32_t fbset[] = {
+		[0] = cpu_to_fdt32(timing->h_active),
+		[1] = cpu_to_fdt32(timing->v_active),
+		[2] = cpu_to_fdt32(timing->h_active),
+		[3] = cpu_to_fdt32(timing->v_active * 2),
+		[4] = cpu_to_fdt32(bits_per_pixel),
+	};
+
+	return fdt_setprop(blob, nodeoffset, property, fbset, sizeof(fbset));
+}
+
 int ft_board_setup(void *blob, bd_t *bd)
 {
-	/* eg: bl31/32 rsv */
+	odroid_fixup_display(blob, env_get("outputmode"));
+
 	return 0;
 }
 

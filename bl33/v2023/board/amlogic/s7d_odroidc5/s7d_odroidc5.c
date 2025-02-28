@@ -260,9 +260,45 @@ static int odroid_fixup_display(void *blob, const char *default_mode)
 	return fdt_setprop(blob, nodeoffset, property, fbset, sizeof(fbset));
 }
 
+static int odroid_fixup_reserved_heap_gfx(void *blob, u64 size)
+{
+	int err, nodeoffset;
+
+	nodeoffset = fdt_path_offset(blob, "/reserved-memory");
+	if (nodeoffset < 0)
+		return nodeoffset;
+
+	int size_cells = fdt_size_cells(blob, nodeoffset);
+	if ((size_cells < 0) || (size_cells > 2))
+		return -EINVAL;
+
+	nodeoffset = fdt_subnode_offset(blob, nodeoffset, "heap-gfx");
+	if (nodeoffset < 0)
+		return nodeoffset;
+
+	if (size_cells == 2)
+		err = fdt_setprop_u64(blob, nodeoffset, "size", size);
+	else
+		err = fdt_setprop_u32(blob, nodeoffset, "size", size);
+
+	return err;
+}
+
 int ft_board_setup(void *blob, bd_t *bd)
 {
+	char *gfx_heap_size;
+	u64 size = 0;
+
 	odroid_fixup_display(blob, env_get("outputmode"));
+
+	// Use GFX heap buffer in size of 'gfx-heap-size'
+	gfx_heap_size = env_get("gfx-heap-size");	// in MB
+	if (gfx_heap_size)
+		size = simple_strtoul(gfx_heap_size, NULL, 10) * SZ_1M;
+
+	// So need to fix the heap size in the device tree
+	if (size)
+		odroid_fixup_reserved_heap_gfx(blob, size);
 
 	return 0;
 }

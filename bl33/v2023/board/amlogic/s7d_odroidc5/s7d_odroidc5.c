@@ -25,6 +25,7 @@
 #include <asm-generic/u-boot.h>
 #include <command.h>
 #include <asm/amlogic/arch/usb.h>
+#include <asm/amlogic/arch/romboot.h>
 #include <asm/amlogic/arch/stick_mem.h>
 
 #ifdef CONFIG_AML_VPU
@@ -252,7 +253,34 @@ void __attribute__((weak)) md5_wd(unsigned char *input, int len, unsigned char o
 {
 }
 
+const char *boot_device_name(int n)
+{
+        struct names {
+                int id;
+                const char* name;
+        } names[] = {
+                { BOOT_ID_RESERVED, "RESERVED" },
+                { BOOT_ID_EMMC, "EMMC" },
+                { BOOT_ID_NAND, "NAND" },
+                { BOOT_ID_SPI, "SPI" },
+                { BOOT_ID_SDCARD, "SD" },
+                { BOOT_ID_USB, "USB" },
+        };
+        int i;
+
+        for (i = 0; i < ARRAY_SIZE(names); i++)
+                if (names[i].id == n)
+                        return names[i].name;
+
+        return NULL;
+}
+
+int get_boot_device(void)
+{
+	return (readl(SYSCTRL_SEC_STATUS_REG2) >> 4) & 0xf;
+}
+
 int mmc_get_env_dev(void)
 {
-	return 1;
+	return (get_boot_device() == BOOT_ID_SDCARD) ? 0 : 1;
 }

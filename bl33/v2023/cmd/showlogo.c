@@ -34,7 +34,7 @@ static int init_hdmi(const char* mode, bool bestmode) {
 
 	/* hdmi config */
 	ret = run_command("hdmitx hpd", 0);
-	if (ret < 0) {
+	if (ret == 0) {
 		printf("hdmi not connected!\n");
 		return -1;
 	}

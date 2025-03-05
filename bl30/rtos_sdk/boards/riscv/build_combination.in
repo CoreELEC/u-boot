@@ -34,6 +34,7 @@ riscv s7d s7d_skt aocpu
 riscv s7d bm201_s905x5m aocpu
 riscv s7d bm202_s905x5m aocpu
 riscv s7d bm209_s905x5m aocpu
+riscv s7d s7d_odroidc5 aocpu
 riscv s7d t232_s905x5m aocpu
 riscv s6 s6_skt aocpu
 riscv s6 bl201_s905x5 aocpu

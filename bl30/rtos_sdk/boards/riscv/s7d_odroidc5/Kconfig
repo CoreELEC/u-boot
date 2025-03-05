@@ -1,0 +1,25 @@
+# Copyright (c) 2025 Hardkernel Co., Ltd. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_S7D_ODROIDC5
+	bool "Hardkernel ODROID-C5"
+	select SOC_S7D
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select IR
+	select ETHERNET
+	select VRTC
+	select VERSION_FULL_INFO
+	help
+	  Enable Hardkernel ODROID-C5 Board.

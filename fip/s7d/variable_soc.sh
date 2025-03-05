@@ -181,6 +181,8 @@ elif [ "${BL30_SELECT}" == "s7d_bm209" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="bm209_s905x5m"
 elif [ "${BL30_SELECT}" == "s7d_t232" ]; then
 	declare CONFIG_BOARD_PACKAGE_NAME="t232_s905x5m"
+elif [ "${BL30_SELECT}" == "s7d_odroidc5" ]; then
+	declare CONFIG_BOARD_PACKAGE_NAME="s7d_odroidc5"
 else
 	declare CONFIG_BOARD_PACKAGE_NAME="s7d_skt"
 fi

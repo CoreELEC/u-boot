@@ -34,7 +34,9 @@ static void *xMboxSetKeypad(void *msg)
 
 	if (key_info[0] == 0xFFFFFFFF) {
 		/* remove all key */
+#ifndef CONFIG_BOARD_S7D_ODROIDC5
 		vDestroyAdcKey();
+#endif
 		vDestroyGpioKey();
 
 		return NULL;
@@ -46,6 +48,7 @@ static void *xMboxSetKeypad(void *msg)
 	}
 
 	if (key_info[0] >= ADCKEY_ID_BASE) {
+#ifndef CONFIG_BOARD_S7D_ODROIDC5
 		if (key_info[1] > ((1 << 12) - 1)) {
 			printf("DYNKEY: INVAL ADC VAL\n");
 			return NULL;
@@ -61,6 +64,7 @@ static void *xMboxSetKeypad(void *msg)
 							      key_info[3], vKeyCallBack, NULL) };
 
 		vCreateAdcKey(adcKey, 1);
+#endif
 	} else if (key_info[0] < ADCKEY_ID_BASE) {
 		if (key_info[1] > 1) {
 			printf("DYNKEY: INVAL LEVEL\n");

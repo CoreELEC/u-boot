@@ -4,8 +4,11 @@
 
 aml_library_sources_ifdef(
 	CONFIG_KEY
-	adc_key.c
 	gpio_key.c
 	dynamic_keypad.c
 )
 
+aml_library_sources_ifndef(
+	CONFIG_BOARD_S7D_ODROIDC5
+	adc_key.c
+)

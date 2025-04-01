@@ -80,7 +80,7 @@ void vDynamicKeypadInit(void)
 {
 	int ret;
 
-	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, CMD_SET_KEYPAD, xMboxSetKeypad,
+	ret = xInstallRemoteMessageCallbackFeedBack(AOREE_CHANNEL, MBX_CMD_SET_KEYPAD, xMboxSetKeypad,
 						    0);
 	if (ret)
 		printf("DYNKEY: MBOX SETUP FAIL %x\n", CMD_SET_KEYPAD);

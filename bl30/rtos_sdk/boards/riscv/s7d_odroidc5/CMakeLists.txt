@@ -9,6 +9,7 @@ aml_library_include_directories(
 aml_library_sources(
 	power.c
 	hw_business.c
+	extphy.c
 )
 
 aml_library_sources_ifdef(

@@ -24,6 +24,9 @@
 
 #include "hdmi_cec.h"
 
+extern void vExtPhyInit(void);
+extern void vExtPhyDeinit(void);
+
 static TaskHandle_t cecTask;
 
 #define VCC5V_GPIO		GPIOC_7
@@ -96,6 +99,7 @@ void str_hw_init(void)
 
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
+	vExtPhyInit();
 	vGpioKeyEnable();
 
 #if BL30_SUSPEND_DEBUG_EN
@@ -117,6 +121,7 @@ void str_hw_disable(void)
 	}
 
 	vGpioKeyDisable();
+	vExtPhyDeinit();
 	vRestoreGpioIrqReg();
 
 #if BL30_SUSPEND_DEBUG_EN

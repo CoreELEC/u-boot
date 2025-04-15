@@ -136,7 +136,7 @@ ddr_set_ps0_only_t __ddr_setting[] __attribute__ ((section(".ddr_param"))) = {
 
 #if DDR4_ODROID
 //ODROID-C5 DDR4 freq
-#define  CACLU_CLK_D4   1968 // 600 //1200 //1792//600 //1200 //(1900)// (1440)//(1008)
+#define  CACLU_CLK_D4   1896 // 600 //1200 //1792//600 //1200 //(1900)// (1440)//(1008)
 //#define  CACLU_CLK_D4   1584// 600 //1200 //1792//600 //1200 //(1900)// (1440)//(1008)
 	{
 		.cfg_board_common_setting.timming_magic = 0,

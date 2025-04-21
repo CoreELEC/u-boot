@@ -27,6 +27,9 @@
 #include <asm/amlogic/arch/usb.h>
 #include <asm/amlogic/arch/romboot.h>
 #include <asm/amlogic/arch/stick_mem.h>
+#include <fs.h>
+#include <blk.h>
+#include <mmc.h>
 
 #ifdef CONFIG_AML_VPU
 #include <amlogic/media/vpu/vpu.h>
@@ -48,6 +51,8 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 extern int cc_statue, bc_status;
+
+int mmc_get_env_dev(void);
 
 /*
  * Internal function in 'drivers/amlogic/media/vout/hdmitx/hdmitx21/hdmi_param.c'
@@ -170,6 +175,63 @@ int board_init(void)
 	return 0;
 }
 
+static int load_from_mmc(unsigned long addr, int devnum, int partnum, char *filename)
+{
+	int ret;
+	char buf[16];
+
+	snprintf(buf, sizeof(buf), "%d:%d", devnum, partnum);
+
+	ret = fs_set_blk_dev("mmc", buf, FS_TYPE_ANY);
+	if (!ret) {
+		loff_t len_read;
+		ret = fs_read(filename, addr, 0, 0, &len_read);
+		if (!ret) {
+			env_set_ulong("filesize", len_read);
+			printf("%llu bytes read\n", len_read);
+			return 0;
+		}
+	}
+
+	return ret;
+}
+
+int load_odroid_bios(void)
+{
+	const char *bootcmd = "cramfsload $loadaddr boot.scr; source $loadaddr";
+	unsigned long addr;
+	int n;
+	int ret;
+	struct blk_desc *dev_desc;
+	struct mmc *mmc = find_mmc_device(mmc_get_env_dev());
+	if (!mmc)
+		return -EIO;
+
+	dev_desc = mmc_get_blk_desc(mmc);
+	if (!dev_desc)
+		return -EIO;
+
+	addr = env_get_hex("cramfsaddr", 0);
+	if (!addr) {
+		addr = 0x38000000;
+		env_set_hex("cramfsaddr", addr);
+	}
+
+	/* Clear memory at $crarmfsaddr */
+	memset((void*)addr, 0, 256);
+
+	for (n = 1; n <= 3; n++) {
+		ret = load_from_mmc(addr, dev_desc->devnum, n, "ODROIDBIOS.BIN");
+		if (!ret) {
+			env_set_hex("devnum", dev_desc->devnum);
+			env_set("bootcmd", bootcmd);
+			return 0;
+		}
+	}
+
+	return -EIO;
+}
+
 int board_late_init(void)
 {
 	unsigned char chipid[16];
@@ -207,6 +269,8 @@ int board_late_init(void)
 		env_set("cpu_id", chipid_str);
 		printf("buff: %s\n", buff);
 	}
+
+	load_odroid_bios();
 
 	return 0;
 }

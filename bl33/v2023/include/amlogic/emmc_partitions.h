@@ -182,7 +182,11 @@ struct aml_pattern {
 
 #define DOS_PARTITION_COUNT 32
 
+#ifdef CONFIG_S7D_ODROIDC5
+#define STORAGE_EMMC 0
+#else
 #define STORAGE_EMMC 1
+#endif
 
 #define KEY_BACKUP
 

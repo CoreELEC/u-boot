@@ -270,7 +270,10 @@ int board_late_init(void)
 		printf("buff: %s\n", buff);
 	}
 
-	load_odroid_bios();
+	if (load_odroid_bios() != 0) {
+		env_set("mmc_list",
+				(mmc_get_env_dev() == 0) ? "0 1" : "1 0");
+	}
 
 	return 0;
 }
@@ -420,5 +423,5 @@ int get_boot_device(void)
 
 int mmc_get_env_dev(void)
 {
-	return (get_boot_device() == BOOT_ID_SDCARD) ? 0 : 1;
+	return (get_boot_device() == BOOT_ID_SDCARD) ? 1 : 0;
 }

@@ -17,6 +17,8 @@
 		i2c1 = &i2c1;
 		i2c2 = &i2c2;
 		i2c3 = &i2c3;
+		mmc0 = &sd_emmc_c;
+		mmc1 = &sd_emmc_b;
 	};
 
 	chosen {

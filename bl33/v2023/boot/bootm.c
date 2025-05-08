@@ -39,6 +39,12 @@
 #include <image-android-dt.h>
 #endif
 
+#if defined(CONFIG_S7D_ODROIDC5)
+extern struct mmc *find_mmc_device(int dev_num);
+extern struct blk_desc *mmc_get_blk_desc(struct mmc *mmc);
+extern int mmc_get_env_dev(void);
+#endif
+
 #define MAX_CMDLINE_SIZE	SZ_4K
 
 #define IH_INITRD_ARCH IH_ARCH_DEFAULT
@@ -320,6 +326,19 @@ static int read_fdto_partition(void)
 	char dtbo_partition[32] = {0};
 	char *s1;
 	struct	dt_table_header hdr;
+#if defined(CONFIG_S7D_ODROIDC5)
+	struct blk_desc *dev_desc;
+	struct disk_partition info;
+	struct mmc *mmc = find_mmc_device(mmc_get_env_dev());
+	int ret;
+
+	if (!mmc)
+		return -EIO;
+
+	dev_desc = mmc_get_blk_desc(mmc);
+	if (!dev_desc)
+		return -EIO;
+#endif
 
 	//run_command("get_valid_slot;", 0);
 	s1 = env_get("active_slot");
@@ -329,6 +348,14 @@ static int read_fdto_partition(void)
 		strcpy(dtbo_partition, "dtbo_a");
 	else if (s1 && (strcmp(s1, "_b") == 0))
 		strcpy(dtbo_partition, "dtbo_b");
+
+#if defined(CONFIG_S7D_ODROIDC5)
+	ret = part_get_info_by_name(dev_desc, dtbo_partition, &info);
+	if (ret) {
+		pr_err("Skip to read missing '%s' partition\n", dtbo_partition);
+		return -1;
+	}
+#endif
 
 	/*
 	* Though it is really no need to parse the adtimg infos

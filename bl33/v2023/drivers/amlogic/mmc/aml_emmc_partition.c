@@ -1761,6 +1761,20 @@ int mmc_partition_init(void)
 		return -1;
 	}
 
+#ifdef CONFIG_S7D_ODROIDC5
+	{
+		const char *sign = "@ML";
+		int len = strlen(sign);
+		char buf[512];
+
+		ret = blk_dread(mmc_get_blk_desc(mmc), 1, 1, buf);
+		if (ret) {
+			if (!memcmp(buf, sign, len))
+				return 0;
+		}
+	}
+#endif
+
 	iptbl_inh.count = get_emmc_partition_arraysize();
 	if (iptbl_inh.count) {
 		iptbl_inh.partitions = emmc_partition_table;

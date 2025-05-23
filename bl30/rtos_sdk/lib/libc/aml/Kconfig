@@ -1,0 +1,21 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config LIBC_AML
+	bool "Libc implement by AML"
+	select KERNEL
+	help
+		Enable libc of AML's implementation.
+
+if LIBC_AML
+config LIBC_AML_FLOAT_PRINT
+	bool "Float number print supported"
+	help
+	  Float number print supported
+
+config LIBC_AML_LONG_LONG_PRINT
+	bool "Long long number print supported"
+	help
+	  Long long number print supported
+endif

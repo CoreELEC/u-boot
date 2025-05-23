@@ -1,0 +1,14 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+menuconfig LIBC
+	bool "Generic_C_lib"
+	help
+	  Select generic C library
+
+if LIBC
+	rsource "aml/Kconfig"
+	rsource "newlib/Kconfig"
+	rsource "qlibc/Kconfig"
+endif

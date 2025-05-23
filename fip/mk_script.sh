@@ -233,8 +233,8 @@ copy_bootloader() {
 
 	if [ ! -z ${CONFIG_CHIPID_SUPPORT} ]; then
 		mv ${BUILD_FOLDER}/u-boot.bin.signed 	${BUILD_FOLDER}/u-boot.bin.${CONFIG_RAMDUMP_CHIPID}.signed
-		#mv ${BUILD_FOLDER}/u-boot.bin.sd.bin.signed 	${BUILD_FOLDER}/u-boot.bin.${CONFIG_RAMDUMP_CHIPID}.sd.bin.signed
-		#mv ${BUILD_FOLDER}/u-boot.bin.usb.signed 	${BUILD_FOLDER}/u-boot.bin.${CONFIG_RAMDUMP_CHIPID}.usb.signed
+		mv ${BUILD_FOLDER}/u-boot.bin.sd.bin.signed 	${BUILD_FOLDER}/u-boot.bin.${CONFIG_RAMDUMP_CHIPID}.sd.bin.signed
+		mv ${BUILD_FOLDER}/u-boot.bin.usb.signed 	${BUILD_FOLDER}/u-boot.bin.${CONFIG_RAMDUMP_CHIPID}.usb.signed
 	fi
 }
 

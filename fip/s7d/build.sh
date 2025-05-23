@@ -491,7 +491,7 @@ function mk_uboot() {
 	file_info_cfg_temp=${temp_cfg}.temp
 
 	bootloader="${output_images}/u-boot.bin${storage_type_suffix}${postfix}"
-	#sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
+	sdcard_image="${output_images}/u-boot.bin.sd.bin${postfix}"
 
 	#fake ddr fip 256KB
 	ddr_fip="${input_payloads}/ddr-fip.bin"
@@ -566,12 +566,12 @@ function mk_uboot() {
 	dd if=${MAIN_FOLDER}/fip/${CUR_SOC}/bin/hdr_revA of=${bootloader} bs=512 seek=543 conv=notrunc status=none
 
 	if [ ${storage_type_suffix} == ".sto" ]; then
-		#echo "Image SDCARD"
-		#total_size=$[total_size+512]
-		#rm -f ${sdcard_image}
-		#dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
-		#dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
-		#dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
+		echo "Image SDCARD"
+		total_size=$[total_size+512]
+		rm -f ${sdcard_image}
+		dd if=/dev/zero of=${sdcard_image} bs=${total_size} count=1 status=none
+		dd if=${file_info_cfg}   of=${sdcard_image} conv=notrunc status=none
+		dd if=${bootloader} of=${sdcard_image} bs=512 seek=1 conv=notrunc status=none
 		mv ${bootloader} ${output_images}/u-boot.bin${postfix}
 	fi
 
@@ -629,7 +629,7 @@ function build_fip() {
 	# build final bootloader
 	#mk_uboot ${BUILD_PATH} ${BUILD_PATH}
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .sto ${CHIPSET_VARIANT_SUFFIX}
-	#mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .usb ${CHIPSET_VARIANT_SUFFIX}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} "" .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	return
 }
@@ -788,7 +788,7 @@ function build_signed() {
 	./${FIP_FOLDER}${CUR_SOC}/bin/gen-bl.sh ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${BUILD_PATH} ${CHIPSET_VARIANT_SUFFIX}
 	postfix=.signed
 	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .sto ${CHIPSET_VARIANT_SUFFIX}
-	#mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
+	mk_uboot ${BUILD_PATH} ${BUILD_PATH} ${postfix} .usb ${CHIPSET_VARIANT_SUFFIX}
 
 	list_pack="${BUILD_PATH}/bb1st.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/bb1st.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
 	list_pack="$list_pack ${BUILD_PATH}/blob-bl2e.sto${CHIPSET_VARIANT_SUFFIX}.bin.signed ${BUILD_PATH}/blob-bl2e.usb${CHIPSET_VARIANT_SUFFIX}.bin.signed"
@@ -797,8 +797,8 @@ function build_signed() {
 	if [ -f ${BUILD_PATH}/ddr-fip.bin ]; then
 		list_pack="$list_pack ${BUILD_PATH}/ddr-fip.bin"
 	fi
-	#u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
-	#zip -j $u_pack ${list_pack} >& /dev/null
+	u_pack=${BUILD_FOLDER}/"$(basename ${BOARD_DIR})"-u-boot.aml.zip
+	zip -j $u_pack ${list_pack} >& /dev/null
 
 	if [ "y" == "${CONFIG_AML_SIGNED_UBOOT}" ]; then
 		if [ ! -d "${UBOOT_SRC_FOLDER}/${BOARD_DIR}/device-keys" ]; then

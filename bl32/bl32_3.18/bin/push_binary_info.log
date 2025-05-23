@@ -1,0 +1,7 @@
+remote: remote: Processing changes: (\)remote: Processing changes: refs: 1 (|)remote: Processing changes: refs: 1 (/)remote: Processing changes: new: 1, refs: 1 (/)remote: Processing changes: new: 1, refs: 1, done            
+remote: 
+remote: New Changes:        
+remote:   https://scgit.amlogic.com/415824 commit 711ed361bcccc0f96462a9931c777e7caf47c9a5 Author: bingju.wang ...        
+remote: 
+To ssh://scgit.amlogic.com:29418/firmware/bin/bl32
+ * [new branch]        HEAD -> refs/for/amlogic-dev-3.18.0%topic=SWPL-162571

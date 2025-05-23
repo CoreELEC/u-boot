@@ -178,7 +178,7 @@ VPATH_LIST:=$(VPATH_LIST:%=%/firmware/)
 
 vpath %.c $(VPATH_LIST)
 
-ACS_STRUCT_CRC := $(shell crc32 ${buildsrc}/arch/arm/include/asm/amlogic/arch-${SOC}/acs_struct.h |awk '{print $$1}')
+ACS_STRUCT_CRC := $(shell python3 -c "import zlib; print(format(zlib.crc32(open('${buildsrc}/arch/arm/include/asm/amlogic/arch-${SOC}/acs_struct.h', 'rb').read()) & 0xFFFFFFFF, 'x'))")
 $(info  ACS_STRUCT_CRC:$(ACS_STRUCT_CRC))
 
 ASFLAGS			+= 	-nostdinc -ffreestanding -Wa,--fatal-warnings	\

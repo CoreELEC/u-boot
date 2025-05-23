@@ -1,0 +1,201 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
+ */
+
+/* Common DTSI for devices which are based on the P212 reference board. */
+
+#include "amlogic/meson-s7d-txxx.dtsi"
+
+/ {
+	aliases {
+		serial0 = &uart_a;
+		serial1 = &uart_b;
+		spi0 = &spi_nfc;
+		spi1 = &spicc0;
+		i2c0 = &i2c0;
+		i2c1 = &i2c1;
+		i2c2 = &i2c2;
+		i2c3 = &i2c3;
+		mmc0 = &sd_emmc_c;
+		mmc1 = &sd_emmc_b;
+	};
+
+	chosen {
+		stdout-path = "serial1:115200n8";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x0 0x0 0x80000000>;
+	};
+
+	tflash_vdd: regulator-tflash_vdd {
+		compatible = "regulator-fixed";
+		regulator-name = "TFLASH_VDD";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		gpio = <&gpio GPIOH_7 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
+	tf_io: gpio-regulator-tf_io {
+		compatible = "regulator-gpio";
+
+		regulator-name = "TF_IO";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <3300000>;
+
+		enable-gpio = <&gpio GPIOH_6 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+
+		gpios = <&gpio GPIODV_4 GPIO_ACTIVE_HIGH>;
+		gpios-states = <0>;
+
+		states = <3300000 0>,
+			 <1800000 1>;
+	};
+
+	vddio_ao18: regulator-vddio_ao18 {
+		compatible = "regulator-fixed";
+		regulator-name = "VDDIO_AO18";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+
+	vcc_3v3: regulator-vcc_3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "VCC_3V3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+	};
+
+	emmc_pwrseq: emmc-pwrseq {
+		compatible = "mmc-pwrseq-emmc";
+		/*reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;*/
+	};
+
+	tee: tee {
+		compatible = "linaro,optee-tz";
+		method = "smc";
+	};
+};
+
+&vpu {
+	clk_level = <8>;
+};
+
+&ir {
+	status = "disabled";
+	/* pinctrl-0 = <&remote_input_ao_pins>; */
+	/* pinctrl-names = "default"; */
+};
+
+&saradc {
+	status = "disabled";
+	vref-supply = <&vddio_ao18>;
+};
+
+/* SD card */
+&sd_emmc_b {
+	status = "okay";
+	pinctrl-0 = <&sdcard_pins>;
+	//pinctrl-1 = <&sdcard_clk_gate_pins>;
+	//pinctrl-names = "sd_all_pins", "clk-gate";
+	pinctrl-1 = <&sdcard_pins &to_sduart_pins>;
+	pinctrl-names = "sd_all_pins", "sd_uart";
+
+	bus-width = <4>;
+	cap-sd-highspeed;
+	max-frequency = <100000000>;
+	disable-wp;
+
+	cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_HIGH>;
+	cd-inverted;
+
+	card_type = <5>;
+
+	init_co_phase = <2>;
+	init_tx_phase = <0>;
+
+	sd_hs_co_phase = <2>;
+	sd_hs_to_phase = <0>;
+
+	vmmc-supply = <&tflash_vdd>;
+	vqmmc-supply = <&tf_io>;
+};
+
+/* eMMC */
+&sd_emmc_c {
+	status = "okay";
+	pinctrl-0 = <&emmc_pins>;
+	pinctrl-names = "default";
+
+	bus-width = <8>;
+	cap-mmc-highspeed;
+	mmc-hs200-1_8v;
+	max-frequency = <200000000>;
+	non-removable;
+	disable-wp;
+	/* mmc-ddr-1_8v; */
+	card_type = <1>;
+
+	init_co_phase = <2>;
+	init_tx_phase = <0>;
+
+	hs_co_phase = <2>;
+	hs_to_phase = <0>;
+
+	hs2_co_phase = <2>;
+	hs2_to_phase = <0>;
+
+	hw_reset = <&gpio GPIOB_9 GPIO_ACTIVE_HIGH>;
+
+	//mmc-pwrseq = <&emmc_pwrseq>;
+	//vmmc-supply = <&vcc_3v3>;
+	//vqmmc-supply = <&vddio_boot>;
+};
+
+&crg1 {
+	status = "okay";
+	dr_mode = "host";
+};
+
+&usb21_phy_v2 {
+	status = "okay";
+	portnum = <1>;
+};
+
+&usb31_phy_v2 {
+	status = "okay";
+	portnum = <0>;
+	/* gpio-vbus-power = "GPIOD_6"; */
+	/* gpios = <&gpio GPIOD_6 GPIO_ACTIVE_HIGH>; */
+};
+
+&crg2 {
+	status = "okay";
+	dr_mode = "host";
+};
+
+&usb22_phy_v2 {
+	status = "okay";
+	portnum = <1>;
+};
+
+&usb32_phy_v2 {
+	status = "okay";
+	portnum = <0>;
+	gpio-vbus-power = "GPIOH_8";
+	gpios = <&gpio GPIOH_8 GPIO_ACTIVE_HIGH>;
+};
+
+&spicc0 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&spicc0_pins_x>;
+};
+

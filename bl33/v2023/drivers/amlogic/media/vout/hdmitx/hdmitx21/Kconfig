@@ -1,0 +1,7 @@
+config AML_HDMITX21
+	bool "Amlogic HDMITX21 drivers Support"
+	depends on AML_HDMITX
+	help
+		HDMITX21 Output Enable
+
+source "drivers/amlogic/media/vout/hdmitx/hdmitx21/dsc/Kconfig"

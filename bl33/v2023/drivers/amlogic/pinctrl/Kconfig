@@ -1,0 +1,39 @@
+if ARCH_MESON
+
+config PINCTRL_MESON_S4
+	bool "Amlogic Meson S4 SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_A4
+	bool "Amlogic Meson A4 SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_S1A
+	bool "Amlogic Meson S1A SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_S7
+	bool "Amlogic Meson S7 SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_T6D
+	bool "Amlogic Meson T6D SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_T5M
+	bool "Amlogic Meson T5M SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_S7D
+	bool "Amlogic Meson S7D SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_S6
+	bool "Amlogic Meson S6 SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+config PINCTRL_MESON_T6D
+	bool "Amlogic Meson T6D SoC pinctrl driver"
+	select PINCTRL_MESON_AXG_PMX
+
+endif

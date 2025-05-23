@@ -1,0 +1,2 @@
+config PMIC_BD71837
+    bool "Amlogic device bd71837"

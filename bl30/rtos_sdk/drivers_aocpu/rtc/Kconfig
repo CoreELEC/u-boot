@@ -1,0 +1,11 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config RTC
+	bool "RTC Driver"
+
+config RTC_STORAGE_FORMAT_GRAY
+	bool "RTC Storage Time Format"
+	help
+		"judge whether the rtc stores time with gray code"

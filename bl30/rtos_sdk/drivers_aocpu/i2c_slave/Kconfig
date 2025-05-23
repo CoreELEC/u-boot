@@ -1,0 +1,8 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config I2C_SLAVE
+	bool "I2C_SLAVE Driver"
+	help
+	  Enable I2C_SLAVE Driver.

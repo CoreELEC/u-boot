@@ -1,0 +1,14 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config UART
+	bool "UART Driver"
+
+if UART
+config UART_WAKEUP
+	bool "UART Wake up Function"
+	help
+	    help select uart wake up function setting.
+
+endif # UART

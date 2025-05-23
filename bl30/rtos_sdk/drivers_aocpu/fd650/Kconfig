@@ -1,0 +1,8 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config FD650
+	bool "FD650 Display Driver"
+	help
+	  Enable FD650 Display Driver.

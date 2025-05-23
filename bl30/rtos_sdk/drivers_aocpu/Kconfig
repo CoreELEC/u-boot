@@ -1,0 +1,28 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+rsource "stick_mem/Kconfig"
+rsource "uart/Kconfig"
+rsource "cec/Kconfig"
+rsource "ddr/Kconfig"
+rsource "mailbox/Kconfig"
+rsource "vrtc/Kconfig"
+rsource "str/Kconfig"
+rsource "gpio/Kconfig"
+rsource "key/Kconfig"
+rsource "pwm/Kconfig"
+rsource "leds/Kconfig"
+rsource "fd650/Kconfig"
+rsource "timer_source/Kconfig"
+rsource "saradc/Kconfig"
+rsource "ir/Kconfig"
+rsource "rtc/Kconfig"
+rsource "hwspinlock/Kconfig"
+rsource "i2c/Kconfig"
+rsource "i2c_slave/Kconfig"
+rsource "ethernet/Kconfig"
+rsource "hdmirx/Kconfig"
+rsource "pm/Kconfig"
+rsource "wifi_bt_wake/Kconfig"
+rsource "spi/Kconfig"

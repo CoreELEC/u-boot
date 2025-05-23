@@ -1,0 +1,29 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+choice TOOLCHAIN
+	bool "Toolchain selection"
+	default TOOLCHAIN_GCC
+	help
+	  "Select toolchain"
+
+	config TOOLCHAIN_GCC
+	bool "GCC"
+	help
+	  "Select GCC toolchain"
+endchoice
+
+if TOOLCHAIN_GCC
+
+config LTO_OPTIMIZATION
+	bool "LTO flag"
+	help
+	  "Select The link-time optimizations flag"
+
+config STACK_PROTECTOR_STRONG
+	bool "stack protecter strong flag"
+	help
+	  "Select stack protecter string flag"
+
+endif

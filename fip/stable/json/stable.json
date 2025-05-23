@@ -1,0 +1,31 @@
+{
+	"source_gits" : [
+		{"blType" : "bl2_sc2",				"gitPath" : "bl2/core", 						"lastCommit" : "9adf9f689822c1f2b74af7d4ac5d668a4a6943f5"},
+		{"blType" : "bl2_s4",				"gitPath" : "bl2/core",  						"lastCommit" : "1fa0a498cd0ea3c203b0e176fc6d25fb8bb11916"},
+		{"blType" : "bl2_s5",				"gitPath" : "bl2/core",  						"lastCommit" : "2652c35850aef26b5a7eee47ab5a71032cff7733"},
+		{"blType" : "bl2_t7",				"gitPath" : "bl2/core",  						"lastCommit" : "1c80dc83f1969a3547ff9d24fc83d3e0bb533697"},
+		{"blType" : "bl2_s7",				"gitPath" : "bl2/core",  						"lastCommit" : "1072552b9940b3b78a3ce55717acc39a02ea0a5e"},
+		{"blType" : "bl2_s7d",				"gitPath" : "bl2/core",  						"lastCommit" : "3f153f32be51700274dfda5f3ee6222c5d077d6b"},
+		{"blType" : "bl2_s6",				"gitPath" : "bl2/core",  						"lastCommit" : "c2096cf1df1eadbd1f651dd964b61f261225fa00"},
+		{"blType" : "ddr",					"gitPath" : "bl2/core/ddr_src/ddr",  			"lastCommit" : "87fc3d3fc1a016bf7b4dfc6171b73dd70ad8ea64"},
+		{"blType" : "bl2_ree",	 			"gitPath" : "bl2/ree", 							"lastCommit" : "23af49b3596cb00f18baf1f082abe40adda3e3e2"},
+		{"blType" : "bl2_tee",	 			"gitPath" : "bl2/tee", 							"lastCommit" : "932a27651ff6fa08e99f2f147fa284a38d469b27"},
+		{"blType" : "bl30_aocpu",			"gitPath" : "bl30/src_ao", 						"lastCommit" : "df57ecf2aeb14bd3430a86b1653accbf8eb2528e"},
+		{"blType" : "rtos_arch",			"gitPath" : "bl30/rtos_sdk/arch/riscv", 		"lastCommit" : "5e5d4441d1b6cff41771934309f4c647ca1d1dd8"},
+		{"blType" : "rtosboards",			"gitPath" : "bl30/rtos_sdk/boards/riscv", 		"lastCommit" : "d4711447093412fdef8675cc13a4425f5b7b1fba"},
+		{"blType" : "rtos_build",			"gitPath" : "bl30/rtos_sdk/build_system", 		"lastCommit" : "1087fb0ee9a103c35e37c85dd6405d8c729823ac"},
+		{"blType" : "rtos_driver_aocpu",	"gitPath" : "bl30/rtos_sdk/drivers_aocpu", 		"lastCommit" : "0d92d6fa56cbdfe0d8e0232ad24c82e4f0b443cc"},
+		{"blType" : "rtos_freertos",		"gitPath" : "bl30/rtos_sdk/kernel/freertos", 	"lastCommit" : "468a1ad772c80c8206173fbd62941deb5c1bd371"},
+		{"blType" : "rtos_libc",			"gitPath" : "bl30/rtos_sdk/lib/libc", 			"lastCommit" : "cff695baea487a6f49e97ef5241324b9074b9e5e"},
+		{"blType" : "rtos_products_aocpu",	"gitPath" : "bl30/rtos_sdk/products/aocpu", 	"lastCommit" : "e2b11810551858ad1f845e84791d143e9e2752af"},
+		{"blType" : "rtos_scripts",			"gitPath" : "bl30/rtos_sdk/scripts", 			"lastCommit" : "7232fef7b03e584264ee8aab496e57b8ec6ee9ee"},
+		{"blType" : "rtos_soc",				"gitPath" : "bl30/rtos_sdk/soc/riscv", 			"lastCommit" : "11b631eab540ef938bb19f456f2a4c01546b5bf3"},
+		{"blType" : "bl31_1.3",	 			"gitPath" : "bl31/bl31_1.3/src", 				"lastCommit" : "02c4dadbfbb87278ce97dd6c46d30b0e47459221"},
+		{"blType" : "bl31_2.7",	 			"gitPath" : "bl31/bl31_2.7/src", 				"lastCommit" : "ae038172a6949f7b4049c899f957442391d03dd9"},
+		{"blType" : "bl32_3.8",	 			"gitPath" : "bl32/bl32_3.8/src", 				"lastCommit" : "2760c02b8a504f4e4c210ec5c212bc224eb2574d"},
+		{"blType" : "bl32_3.18",	 		"gitPath" : "bl32/bl32_3.18/src", 				"lastCommit" : "86746eef0b3f140aa104e08053983eafe442dbad"},
+		{"blType" : "bl33_v2019",		 	"gitPath" : "bl33/v2019", 						"lastCommit" : "34db340881dc19b3fe8c20212d29e27ddcddca65"},
+		{"blType" : "bl33_v2023",		 	"gitPath" : "bl33/v2023", 						"lastCommit" : "2d7cb9631732d9e947d34a14b9ae26f92f5ae29b"},
+		{"blType" : "fip",		 			"gitPath" : "fip", 								"lastCommit" : "f6e5da9a2c76deadf9702eecf81a1a129d24ea78"}
+	]
+}

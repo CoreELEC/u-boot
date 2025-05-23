@@ -1,0 +1,27 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_AV409_A113X2
+	bool "Amlogic AV409 Board"
+	select SOC_A5
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select BL30_VERSION_SAVE
+	select UART
+	select CEC
+	select MAILBOX
+	select RTC
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VERSION_FULL_INFO
+	help
+	  Enable Amlogic AV409 Board.

@@ -1,0 +1,29 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_AT301_T962D4
+	bool "Amlogic AT301 Board"
+	select SOC_T5W
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select BL30_VERSION_SAVE
+	select UART
+	select CEC
+	select DDR
+	select MAILBOX
+	select VRTC
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VERSION_FULL_INFO
+	select WIFI_BT_WAKE
+	help
+	  Enable Amlogic AT301 Board.

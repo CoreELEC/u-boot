@@ -1,0 +1,8 @@
+#
+# Copyright (c) 2025 Hardkernel Co., Ltd. All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
+CONFIG_BOARD_S7D_ODROIDC5=y
+

@@ -1,0 +1,27 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config BOARD_BQ201_S905D5
+	bool "Amlogic BQ201_S905D5 Board"
+	select SOC_S6
+	select LIBC_AML
+	select COMMON
+	select GET_VERSION
+	select UART
+	select CEC
+	select MAILBOX
+	select STR
+	select GPIO
+	select KEY
+	select PWM
+	select LEDS
+#	select I2C_SLAVE
+	select TIMER_SOURCE
+	select SARADC
+	select IR
+	select ETHERNET
+	select VRTC
+	select VERSION_FULL_INFO
+	help
+	  Enable Amlogic BQ201_S905D5 Board.

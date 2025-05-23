@@ -1,0 +1,307 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <stdio.h>
+#include "FreeRTOS.h"
+#include "common.h"
+#include "gpio.h"
+#include "ir.h"
+#include "eth.h"
+#include "soc.h"
+#include "suspend.h"
+#include "task.h"
+#include "gpio.h"
+#include "pwm.h"
+#include "pwm_plat.h"
+#include "keypad.h"
+#include "timer_source.h"
+#if CONFIG_WIFI_BT_WAKE
+#include "wifi_bt_wake.h"
+#endif
+#include "power.h"
+#include "mailbox-api.h"
+#include "suspend_debug.h"
+#if BL30_SUSPEND_DEBUG_EN
+#include "suspend_debug_s7d.h"
+#endif
+#include "rtc.h"
+#include "stick_mem.h"
+
+#include "hdmi_cec.h"
+static TaskHandle_t cecTask;
+
+#define VCC5V_GPIO	GPIOC_7
+#define VDDCPU_A55_GPIO	GPIO_TEST_N
+#define HDMI_PW	GPIOH_6
+
+#define PWR_STATE_WAIT_ON	16
+
+static int vdddos_npu_vpu;
+static TaskHandle_t vadTask;
+
+static struct IRPowerKey prvPowerKeyList[] = {
+	{ 0xef10fe01, IR_NORMAL }, /* ref tv pwr */
+	{ 0xba45bd02, IR_NORMAL }, /* small ir pwr */
+	{ 0xef10fb04, IR_NORMAL }, /* old ref tv pwr */
+	{ 0xf20dfe01, IR_NORMAL },
+	{ 0xe51afb04, IR_NORMAL },
+	{ 0xde217788, IR_NORMAL },
+	{ 0x3ac5bd02, IR_CUSTOM },
+	{}
+};
+
+static void vIRHandler(struct IRPowerKey *pkey)
+{
+	uint32_t buf[4] = { 0 };
+
+	if (pkey->type == IR_NORMAL)
+		buf[0] = REMOTE_WAKEUP;
+	else if (pkey->type == IR_CUSTOM)
+		buf[0] = REMOTE_CUS_WAKEUP;
+
+	stick_mem_write(STICK_IR_WAKEUP_KEY, pkey->code);
+	/* do sth below  to wakeup*/
+	STR_Wakeup_src_Queue_Send_FromISR(buf);
+};
+
+static void *xMboxVadWakeup(void *msg)
+{
+	uint32_t buf[4] = { 0 };
+
+	buf[0] = VAD_WAKEUP;
+	STR_Wakeup_src_Queue_Send(buf);
+
+	return NULL;
+}
+
+void check_poweroff_status(void)
+{
+	const TickType_t xTimeout = pdMS_TO_TICKS(500);	//Set timeout duration to 500ms
+	TickType_t xStartTick;
+
+	xStartTick = xTaskGetTickCount();
+
+	/*Wait for cputop fsm switch to WAIT_ON*/
+	while (((REG32(PWRCTRL_CPUTOP_FSM_STS0) >> 12) & 0x1F) != PWR_STATE_WAIT_ON) {
+		if (xTaskGetTickCount() - xStartTick >= xTimeout) {
+			printf("cputop fsm check timed out!\n");
+			printf("PWRCTRL_CPUTOP_FSM_STS0: %x\n", REG32(PWRCTRL_CPUTOP_FSM_STS0));
+			printf("PWRCTRL_CPU0_FSM_STS0: %x\n", REG32(PWRCTRL_CPU0_FSM_STS0));
+			printf("PWRCTRL_CPU1_FSM_STS0: %x\n", REG32(PWRCTRL_CPU1_FSM_STS0));
+			printf("PWRCTRL_CPU2_FSM_STS0: %x\n", REG32(PWRCTRL_CPU2_FSM_STS0));
+			printf("PWRCTRL_CPU3_FSM_STS0: %x\n", REG32(PWRCTRL_CPU3_FSM_STS0));
+			vTaskSuspend(NULL);
+		}
+	}
+}
+
+void str_hw_init(void)
+{
+	int ret;
+
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	/*enable device & wakeup source interrupt*/
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRInit(MODE_HARD_NEC, GPIODV_0, PIN_FUNC1, prvPowerKeyList,
+			ARRAY_SIZE(prvPowerKeyList), vIRHandler);
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped IR wakeup function\n");
+
+	if (IS_EN(BL30_RTC_WAKEUP_MASK)) {
+		printf("skiped RTC wakeup function\n");
+		alarm_clr();
+	}
+#endif
+	vETHInit(0);
+
+	xTaskCreate(vCEC_task, "CECtask", configMINIMAL_STACK_SIZE,
+		    NULL, CEC_TASK_PRI, &cecTask);
+
+	vBackupAndClearGpioIrqReg();
+	vGpioIRQInit();
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadInit();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped SARADC wakeup function\n");
+#endif
+
+#if CONFIG_WIFI_BT_WAKE
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
+#endif
+		wifi_bt_wakeup_init();
+#if BL30_SUSPEND_DEBUG_EN
+	else
+		printf("skiped BT wakeup function\n");
+#endif
+#endif //CONFIG_WIFI_BT_WAKE
+
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
+}
+
+void str_hw_disable(void)
+{
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+#endif
+	/*disable wakeup source interrupt*/
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_IR_WAKEUP_MASK))
+#endif
+		vIRDeint();
+
+	vETHDeint();
+
+	if (cecTask) {
+		vTaskDelete(cecTask);
+		cec_req_irq(0);
+	}
+
+#if CONFIG_WIFI_BT_WAKE
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_BT_WAKEUP_MASK))
+#endif
+		wifi_bt_wakeup_deinit();
+#endif //CONFIG_WIFI_BT_WAKE
+
+#if BL30_SUSPEND_DEBUG_EN
+	if (!IS_EN(BL30_SARADC_WAKEUP_MASK))
+#endif
+		vKeyPadDeinit();
+
+	vRestoreGpioIrqReg();
+
+#if BL30_SUSPEND_DEBUG_EN
+	exit_func_print();
+#endif
+}
+
+void str_power_on(int shutdown_flag)
+{
+	int ret;
+
+	(void)shutdown_flag;
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
+#endif
+		/***power on A55 vdd_cpu***/
+		ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_HIGH);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio val fail\n");
+			return;
+		}
+
+		if (shutdown_flag) {
+			/***power on vcc_3.3v***/
+
+			//ret = xGpioSetDir(VCC3V3_GPIO, GPIO_DIR_OUT);
+			//if (ret < 0) {
+			//	printf("vcc_3.3v set gpio dir fail\n");
+			//	return;
+			//}
+
+			//ret = xGpioSetValue(VCC3V3_GPIO, GPIO_LEVEL_HIGH);
+			//if (ret < 0) {
+			//	printf("vcc_3.3v gpio val fail\n");
+			//	return;
+			//}
+
+		}
+
+		/***power on vcc_5v***/
+		ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_IN);
+		if (ret < 0) {
+			printf("vcc_5v set gpio dir fail\n");
+			return;
+		}
+
+		/*Wait POWERON_VDDCPU_DELAY for VDDCPU stable*/
+		vTaskDelay(POWERON_VDDCPU_DELAY);
+
+		printf("vdd_cpu on\n");
+#if BL30_SUSPEND_DEBUG_EN
+	}
+	/* size over load */
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
+#endif
+}
+
+void str_power_off(int shutdown_flag)
+{
+	int ret;
+
+	(void)shutdown_flag;
+#if BL30_SUSPEND_DEBUG_EN
+	enter_func_print();
+	if (!IS_EN(BL30_SKIP_POWER_SWITCH)) {
+#endif
+		/***power off hdmi_pw when shutdown***/
+		if (shutdown_flag == 1) {
+			ret = xGpioSetDir(HDMI_PW, GPIO_DIR_OUT);
+			if (ret < 0) {
+				printf("hdmi_pw set gpio dir fail\n");
+				return;
+			}
+
+			ret = xGpioSetValue(HDMI_PW, GPIO_LEVEL_LOW);
+			if (ret < 0) {
+				printf("hdmi_pw set gpio val fail\n");
+				return;
+			}
+		}
+
+		/***power off vcc_5v***/
+		ret = xGpioSetDir(VCC5V_GPIO, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vcc_5v set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(VCC5V_GPIO, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vcc_5v gpio val fail\n");
+			return;
+		}
+
+		/***power off A55 vdd_cpu***/
+		ret = xGpioSetDir(VDDCPU_A55_GPIO, GPIO_DIR_OUT);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio dir fail\n");
+			return;
+		}
+
+		ret = xGpioSetValue(VDDCPU_A55_GPIO, GPIO_LEVEL_LOW);
+		if (ret < 0) {
+			printf("vdd_cpu set gpio val fail\n");
+			return;
+		}
+
+		printf("Power down done.\n");
+#if BL30_SUSPEND_DEBUG_EN
+	} else
+		printf("skiped power switch...\n");
+	dump_cpu_fsm_regs();
+	show_pwm_regs();
+	exit_func_print();
+#endif
+}

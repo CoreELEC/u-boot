@@ -1,0 +1,20 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_T5D
+	bool "T5D"
+	select RISCV
+	select SOC_OLD_ARCH
+	select STICK_MEM
+	help
+	  Enable T5D SOC of RISCV.
+
+choice
+	prompt "Serial"
+	default N200_REVA
+	config N200_REVA
+	bool "N200 REVA"
+	help
+	  Enable N200 REVA serial of RISCV.
+endchoice

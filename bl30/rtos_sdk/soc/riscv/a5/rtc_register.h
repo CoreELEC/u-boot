@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#ifdef RTC_REGISTER_H
+#else
+#define RTC_REGISTER_H
+
+#define RTC_IRQ     (131)
+
+#define RTC_DIG_CTRL		    RTC_CTRL
+#define RTC_DIG_COUNTER_REG	    RTC_COUNTER_REG
+#define RTC_DIG_ALARM0_REG	    RTC_ALARM0_REG
+#define RTC_DIG_ALARM1_REG	    RTC_ALARM1_REG
+#define RTC_DIG_ALARM2_REG	    RTC_ALARM2_REG
+#define RTC_DIG_ALARM3_REG	    RTC_ALARM3_REG
+#define RTC_DIG_SEC_ADJUST_REG	    RTC_SEC_ADJUST_REG
+#define RTC_DIG_WIDEN_VAL	    RTC_WIDEN_VAL
+#define RTC_DIG_INT_MASK	    RTC_INT_MASK
+#define RTC_DIG_INT_CLR		    RTC_INT_CLR
+#define RTC_DIG_OSCIN_CTRL0	    RTC_OSCIN_CTRL0
+#define RTC_DIG_OSCIN_CTRL1	    RTC_OSCIN_CTRL1
+#define RTC_DIG_INT_STATUS	    RTC_INT_STATUS
+#define RTC_DIG_REAL_TIME	    RTC_REAL_TIME
+
+#endif // RTC_REGISTER_H
+

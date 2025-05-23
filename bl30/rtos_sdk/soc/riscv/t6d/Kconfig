@@ -1,0 +1,15 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_T6D
+	bool "T6D"
+	select RISCV
+	select STICK_MEM
+	select AOCPU_ALIVE_DETECTION
+	select AOCPU_BUSRESPERR_DETECTION
+	select BL30_VERSION_SAVE
+	select STACK_PROTECTOR_STRONG
+	help
+	  Enable T6D SOC of RISCV.
+

@@ -1,0 +1,13 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_T5M
+	bool "T5M"
+	select RISCV
+	select STICK_MEM
+	select AOCPU_ALIVE_DETECTION
+	select AOCPU_BUSRESPERR_DETECTION
+	help
+	  Enable T5M SOC of RISCV.
+

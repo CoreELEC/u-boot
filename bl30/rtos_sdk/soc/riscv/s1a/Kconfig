@@ -1,0 +1,12 @@
+# Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+
+# SPDX-License-Identifier: MIT
+
+config SOC_S1A
+	bool "S1A"
+	select RISCV
+	select STICK_MEM
+	select AOCPU_BUSRESPERR_DETECTION
+	help
+	  Enable S1A SOC of RISCV.
+

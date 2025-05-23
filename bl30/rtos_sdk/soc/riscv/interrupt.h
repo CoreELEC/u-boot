@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2021-2022 Amlogic, Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#ifndef INTERRUPT_H
+#define INTERRUPT_H
+
+typedef void (*function_ptr_t)(void);
+
+void wfe(void);
+
+int EnableIrq(uint32_t ulIrq);
+
+int DisableIrq(uint32_t ulIrq);
+
+int SetIrqPriority(uint32_t ulIrq, uint32_t ulProi);
+
+int ClearPendingIrq(uint32_t ulIrq);
+
+int RegisterIrq(uint32_t int_num, uint32_t int_priority, function_ptr_t handler);
+
+int UnRegisterIrq(uint32_t ulIrq);
+
+unsigned long interrupt_status_get(void);
+
+void interrupt_disable(void);
+
+void interrupt_enable(void);
+
+int GetIrqInner(uint32_t irq_num);
+
+#endif

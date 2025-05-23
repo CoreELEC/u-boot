@@ -2759,4 +2759,10 @@ config CMD_SCRIPT
         help
           simple plain script run from mem without mkimage wrappers
 
+config CMD_CFGLOAD
+        bool "support boot.ini"
+        default n
+        help
+          support load boot.ini
+
 endmenu

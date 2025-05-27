@@ -47,7 +47,7 @@ static int load_boot_logo(void)
 {
 	const char *logofiles[] = {
 #ifdef CONFIG_VIDEO_BMP_GZIP
-		"boot-logo.bmp.gz",
+		"boot-logo-1080.bmp.gz",
 #endif
 		"boot-logo.bmp"
 	};

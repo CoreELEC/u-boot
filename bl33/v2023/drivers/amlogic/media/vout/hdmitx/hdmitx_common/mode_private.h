@@ -30,8 +30,8 @@ extern "C" {
  * default value
  */
 #define MESON_DEFAULT_COLOR_FORMAT_4K       "420,8bit"
-#define MESON_DEFAULT_COLOR_FORMAT          "rgb,8bit"
-#define MESON_DEFAULT_HDMI_MODE             "720p60hz"
+#define MESON_DEFAULT_COLOR_FORMAT          "444,8bit"
+#define MESON_DEFAULT_HDMI_MODE             "1080p60hz"
 
 /*
  * check high frame rate support dv or not

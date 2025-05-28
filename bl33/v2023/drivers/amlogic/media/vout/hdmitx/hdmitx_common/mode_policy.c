@@ -1272,16 +1272,12 @@ int32_t meson_mode_get_policy_output(int32_t connector,
     /*
      * 3. not find outputmode and use default mode
      */
-    if (strlen(output->displaymode) == 0) {
-        strlcpy(output->displaymode, MESON_DEFAULT_HDMI_MODE, sizeof(output->displaymode));
-    }
+    strlcpy(output->displaymode, MESON_DEFAULT_HDMI_MODE, sizeof(output->displaymode));
 
     /*
      * 4. not find color space and use default mode
      */
-    if (!strstr(output->deepcolor, "bit")) {
-        strlcpy(output->deepcolor, MESON_DEFAULT_COLOR_FORMAT, sizeof(output->deepcolor));
-    }
+    strlcpy(output->deepcolor, MESON_DEFAULT_COLOR_FORMAT, sizeof(output->deepcolor));
 
     mp->output = *output;
 

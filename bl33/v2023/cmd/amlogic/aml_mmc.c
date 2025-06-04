@@ -33,7 +33,7 @@
 
 #define fb_err(fmt, ...)   printf("%s()-%d: " fmt , \
 				__func__, __LINE__, ##__VA_ARGS__)
-
+#define CONFIG_SYS_MMC_ENV_DEV		1
 struct aml_dtb_rsv {
 	u8 data[DTB_BLK_SIZE*DTB_BLK_CNT - 4*sizeof(u32)];
 	u32 magic;

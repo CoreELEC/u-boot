@@ -58,6 +58,7 @@ function pre_build_uboot() {
 	export ${SOCNAME}
 	make distclean # &> /dev/null
 	make $1'_config' # &> /dev/null
+	make savedefconfig
 	if [ $? != 0 ]
 	then
 		echo "Pre-build failed! exit!"

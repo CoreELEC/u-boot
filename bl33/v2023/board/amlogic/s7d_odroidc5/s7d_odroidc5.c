@@ -240,7 +240,7 @@ int board_late_init(void)
 #ifdef CONFIG_AML_VPP
 	vpp_init();
 #endif
-	run_command("showlogo", 0);
+	run_command("showlogo 1080p60hz 1920 1080", 0);
 
 	memset(chipid, 0, 16);
 	env_set("cpu_id", "1234567890");

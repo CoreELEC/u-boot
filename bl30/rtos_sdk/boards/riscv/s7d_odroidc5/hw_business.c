@@ -22,7 +22,6 @@ void hw_business_process(void)
 	vMbInit();
 	vCecCallbackInit(CEC_CHIP_S7D);
 	vRtcInit();
-	vDynamicKeypadInit();
 	vETHMailboxCallback();
 	vIRMailboxEnable();
 	create_str_task();

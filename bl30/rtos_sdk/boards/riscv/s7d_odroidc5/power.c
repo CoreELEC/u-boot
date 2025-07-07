@@ -100,7 +100,7 @@ void str_hw_init(void)
 	vBackupAndClearGpioIrqReg();
 	vGpioIRQInit();
 	vExtPhyInit();
-	vGpioKeyEnable();
+	vKeyPadInit();
 
 #if BL30_SUSPEND_DEBUG_EN
 	exit_func_print();
@@ -120,7 +120,7 @@ void str_hw_disable(void)
 		cec_req_irq(0);
 	}
 
-	vGpioKeyDisable();
+	vKeyPadDeinit();
 	vExtPhyDeinit();
 	vRestoreGpioIrqReg();
 

@@ -30,7 +30,8 @@ struct xGpioKeyInfo gpioKeyInfo[] = {
 
 void vExtPhyInit(void)
 {
-	vCreateGpioKey(gpioKeyInfo, sizeof(gpioKeyInfo) / sizeof(struct xGpioKeyInfo));
+	if (get_ETHWol_flag())
+		vCreateGpioKey(gpioKeyInfo, sizeof(gpioKeyInfo) / sizeof(struct xGpioKeyInfo));
 }
 
 void vExtPhyDeinit(void)

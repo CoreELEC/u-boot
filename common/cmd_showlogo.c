@@ -13,7 +13,10 @@
 #include <asm/errno.h>
 #include <vsprintf.h>
 #include <linux/kernel.h>
+#include <linux/sizes.h>
 #include <../board/hardkernel/odroid-common/odroid-common.h>
+
+DECLARE_GLOBAL_DATA_PTR;
 
 static struct odroid_resolution {
 	const char *name;
@@ -120,7 +123,7 @@ static int display_logo(const char* mode, const char* bmp_width, const char* bmp
 
 display_logo:
 	/* for video_hw_init in osd_fb.c */
-	setenv("fb_addr", "0x3d800000");
+	setenv("fb_addr", gd->ram_size > SZ_2G ? "0x7f800000" : "0x3d800000");
 	setenv("display_bpp", "24");
 	setenv("display_color_index", "24");
 	setenv("display_layer", "osd1");
